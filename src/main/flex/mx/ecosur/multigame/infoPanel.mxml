@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="Player Information" styleName="panel">
+	
+	<mx:Script> 
+        <![CDATA[
+        	import mx.ecosur.multigame.entity.Player;
+        	
+        	private var _player:Player;
+        	
+        	public function set player(player:Player):void{
+        		playerName.text = player.name;
+        		playerColor.text = player.color;
+        		playerLastRegistration.text = player.lastRegistration.toString();
+        		playerWins.text = player.wins.toString();
+        	}
+        	        
+        ]]>
+    </mx:Script>
+    
+    <mx:Grid>
+    	<mx:GridRow>
+    		<mx:GridItem>
+    			<mx:Label text="Name" styleName="fieldLit"/>
+    		</mx:GridItem>
+    		<mx:GridItem paddingRight="20">
+    			<mx:Label id="playerName" styleName="field"/>
+    		</mx:GridItem>
+			<mx:GridItem>
+    			<mx:Label text="Color" styleName="fieldLit"/>
+    		</mx:GridItem>
+    		<mx:GridItem>
+    			<mx:Label id="playerColor" styleName="field"/>
+    		</mx:GridItem>
+    	</mx:GridRow>
+    	<mx:GridRow>
+    		<mx:GridItem>
+    			<mx:Label text="Registered" styleName="fieldLit"/>
+    		</mx:GridItem>
+    		<mx:GridItem paddingRight="20">
+    			<mx:Label id="playerLastRegistration" styleName="field"/>
+    		</mx:GridItem>
+			<mx:GridItem>
+    			<mx:Label text="Wins" styleName="fieldLit"/>
+    		</mx:GridItem>
+    		<mx:GridItem>
+    			<mx:Label id="playerWins" styleName="field"/>
+    		</mx:GridItem>
+    	</mx:GridRow>
+    </mx:Grid>
+    
+    
+</mx:Panel>
