@@ -26,6 +26,8 @@ import org.junit.Test;
 
 public class CheckersSharedBoardTest {
 	
+	RegistrarRemote registrar;
+	
 	private SharedBoardRemote board;
 	
 	private GameGrid jumpGrid;
@@ -46,8 +48,9 @@ public class CheckersSharedBoardTest {
 	public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException {
 		InitialContext ic = new InitialContext();
 		
-		RegistrarRemote registrar = (RegistrarRemote) ic.lookup(
+		registrar = (RegistrarRemote) ic.lookup(
 			"mx.ecosur.multigame.ejb.RegistrarRemote");
+		
 		alice = registrar.locatePlayer("alice");
 		bob = registrar.locatePlayer("bob");
 		
@@ -69,13 +72,11 @@ public class CheckersSharedBoardTest {
 	
 	@After
 	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
-		InitialContext ic = new InitialContext();
-		
-		RegistrarRemote registrar = (RegistrarRemote) ic.lookup(
-			"mx.ecosur.multigame.ejb.RegistrarRemote");
-		List<Player> players = board.getPlayers();
-		for (Player p : players) {
-			registrar.unregisterPlayer(p, GameType.CHECKERS);
+		if (board != null && registrar != null) {
+			List<Player> players = board.getPlayers();
+			for (Player p : players) {
+				registrar.unregisterPlayer(p, GameType.CHECKERS);
+			}
 		}
 	}
 	
@@ -143,11 +144,9 @@ public class CheckersSharedBoardTest {
 		
 		Move move = new Move (board.getGame(), alice, start,destination);
 		try {
-			move = board.validateMove(move);
+			board.validateMove(move);
 			fail ("Exception must be thrown!");
 		} catch (InvalidMoveException e) {}
-		
-		assertTrue (move.getStatus() == Move.Status.INVALID);
 	}
 	
 	/**
@@ -208,9 +207,10 @@ public class CheckersSharedBoardTest {
 		move = board.validateMove(move);
 		board.move(move);
 		
-		assertTrue (move.getStatus() == Move.Status.MOVED);
-		assertTrue (board.getGame().getGrid().getLocation(move.getDestination()) != null);
-		assertFalse (board.getGame().getGrid().getLocation(move.getCurrent()) == null);
+		assertTrue (board.getGame().getGrid().getLocation(
+				move.getDestination()) != null);
+		assertTrue (board.getGame().getGrid().getLocation(
+				move.getCurrent()) == null);
 	}
 	
 	/**
