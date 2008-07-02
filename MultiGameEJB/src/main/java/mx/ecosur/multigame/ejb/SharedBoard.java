@@ -10,7 +10,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateful;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -19,6 +27,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import mx.ecosur.multigame.Cell;
+import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
@@ -40,6 +49,12 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	
 	@PersistenceContext (unitName="MultiGame")
 	private EntityManager em;
+	
+	@Resource(mappedName="jms/TopicConnectionFactory")
+	private ConnectionFactory connectionFactory;
+
+	@Resource(mappedName="CHECKERS")
+	private Topic topic; 
 	
 	private Game game;
 
@@ -246,6 +261,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		if (em != null) {
 			em.persist(game);
 		}
+		
+		incrementTurn(move.getPlayer());
 	}
 
 	public Dimension getSize() {
@@ -300,6 +317,23 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		if (em != null)
 			em.persist(nextPlayer);
 		
+		sendGameEvent(GameEvent.TURN);
+		
+	}
+	
+	private void sendGameEvent(GameEvent event){
+		try {
+			Connection connection = connectionFactory.createConnection();
+			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			MessageProducer producer = session.createProducer(topic);
+			MapMessage message = session.createMapMessage();
+			message.setIntProperty("GAME_ID", game.getId());
+			message.setStringProperty("GAME_EVENT", event.toString());
+			producer.send(message);
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 
 	public List<Player> getPlayers() {

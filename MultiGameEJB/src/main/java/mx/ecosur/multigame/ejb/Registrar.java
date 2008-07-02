@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateful;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -17,6 +25,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
@@ -28,6 +37,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 	@PersistenceContext(unitName = "MultiGame")
 	public EntityManager em;
+	
+	@Resource(mappedName="jms/TopicConnectionFactory")
+	private ConnectionFactory connectionFactory;
+
+	@Resource(mappedName="CHECKERS")
+	private Topic topic; 
 
 	Map<GameType, List<Color>> availableColors;
 
@@ -136,6 +151,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			} catch (RemoteException e) {
 				throw new InvalidRegistrationException(e.getMessage());
 			}
+			
+			//if is the last player to join the game can begin
+			if (getAvailableColors(type).size() == 0){
+				sendGameEvent(game, GameEvent.BEGIN);
+			}
+			
 		} else {
 			ret = player.getColor();
 		}
@@ -225,6 +246,21 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		return game;
 	}
+	
+	private void sendGameEvent(Game game, GameEvent event){
+		try {
+			Connection connection = connectionFactory.createConnection();
+			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			MessageProducer producer = session.createProducer(topic);
+			MapMessage message = session.createMapMessage();
+			message.setIntProperty("GAME_ID", game.getId());
+			message.setStringProperty("GAME_EVENT", event.toString());
+			producer.send(message);
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
 
 	/**
 	 * @param name
@@ -238,4 +274,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.persist(player);
 		return player;
 	}
+	
+	
 }
