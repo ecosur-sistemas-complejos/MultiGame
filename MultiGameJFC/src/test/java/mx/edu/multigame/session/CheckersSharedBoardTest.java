@@ -20,6 +20,7 @@ import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.checkers.JumpMove;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,15 +51,6 @@ public class CheckersSharedBoardTest {
 		alice = registrar.locatePlayer("alice");
 		bob = registrar.locatePlayer("bob");
 		
-		board = (SharedBoardRemote) ic.lookup(
-				"mx.ecosur.multigame.ejb.SharedBoardRemote");
-		board.locateSharedBoard(GameType.CHECKERS);
-		
-		List<Player> players = board.getPlayers();
-		for (Player p : players) {
-			registrar.unregisterPlayer(p, GameType.CHECKERS);
-		}
-		
 		registrar.registerPlayer(alice, GameType.CHECKERS);
 		registrar.registerPlayer(bob, GameType.CHECKERS);
 		
@@ -67,6 +59,23 @@ public class CheckersSharedBoardTest {
 		jumpGrid.updateCell (new Checker (0,0,Color.BLACK));
 		for (int i = 0; i < jumps.length; i++) {
 			jumpGrid.updateCell(jumps [ i ]);
+		}
+		
+		/* Get the SharedBoard */
+		board = (SharedBoardRemote) ic.lookup(
+				"mx.ecosur.multigame.ejb.SharedBoardRemote");
+		board.locateSharedBoard(GameType.CHECKERS, alice);	
+	}
+	
+	@After
+	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
+		InitialContext ic = new InitialContext();
+		
+		RegistrarRemote registrar = (RegistrarRemote) ic.lookup(
+			"mx.ecosur.multigame.ejb.RegistrarRemote");
+		List<Player> players = board.getPlayers();
+		for (Player p : players) {
+			registrar.unregisterPlayer(p, GameType.CHECKERS);
 		}
 	}
 	
@@ -164,22 +173,22 @@ public class CheckersSharedBoardTest {
 	/**
 	 * Simple test for incrementing turns between two players of
 	 * checkers.
+	 * @throws RemoteException 
 	 * @throws RemoteException
 	 */
 	@Test
 	public void testIncrementTurn() throws RemoteException {
 		alice.setTurn(true);
 		bob.setTurn (false);
-		
 		board.incrementTurn(alice);
 		
-		assertTrue (bob.isTurn());
-		assertFalse (alice.isTurn());
-		
-		board.incrementTurn(bob);
-		
-		assertTrue (alice.isTurn());
-		assertFalse (bob.isTurn());
+		List<Player> players = board.getPlayers();
+		for (Player p : players) {
+			if (p.getName().equals(bob.getName()))
+					assertTrue (p.isTurn());
+			else if (p.getName().equals(alice.getName())) 
+				assertFalse (p.isTurn());
+		}
 	}
 	
 	/**

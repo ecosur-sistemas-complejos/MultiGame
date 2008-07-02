@@ -79,4 +79,22 @@ public class Cell implements Serializable, Cloneable {
 		return "Column = " + column + ", Row = " + row + ", Color = " + color
 				+ ", Characteristic = " + characteristic;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		
+		if (obj instanceof Cell) {
+			Cell comparator = (Cell) obj;
+			ret = (comparator.column == this.column && 
+					comparator.row == this.row);
+		} else { 
+			ret = super.equals(obj);
+		}
+		
+		return ret;
+	}
 }
