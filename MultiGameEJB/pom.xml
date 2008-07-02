@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>mx.ecosur</groupId>
+  <artifactId>multi-game-ejb</artifactId>
+  <packaging>ejb</packaging>
+  <version>0.0.1</version>
+  <description>This project is for demonstrating the applicability of multiple rulesets
+		against a variety of games, all played upon a grid. Users will be able to switch
+		applicable rulesets against the grid in play, allowing the evaluation of new moves in
+		the new rule based context.
+		The games to be modeled are:
+		
+		1) Pente 2) Checkers
+		
+		This is the backend implementation of the for the multi-game. As such, it is an EJB3
+		implementation including all required Drools rule bases. In future version, rules
+		will be shared resources, accessible on the network.</description>
+  <developers>
+    <developer>
+      <name>Andrew Waterman</name>
+      <email>awaterma@ecosur.mx</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Max Pimm</name>
+      <email>maxmil@gmail.com</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>	  
+  </developers>
+  <contributors>
+    <contributor>
+      <name>Luis Garcia Barrios</name>
+      <email>lgarcia@ecosur.mx</email>
+      <roles>
+        <role>Project Creator</role>
+        <role>Project Advisor</role>
+      </roles>
+    </contributor>
+  </contributors>
+  <properties>
+	  <test.skip>false</test.skip>
+  </properties>
+  <build>
+	<resources>
+		<resource>
+			<directory>src/main/rules</directory>
+			<targetPath>/mx/ecosur/multigame</targetPath>
+		</resource>
+		<resource>
+			<directory>src/main/resources</directory>
+		</resource>
+	</resources>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+				<skip>${test.skip}</skip>
+			</configuration>
+		</plugin>
+		<plugin>
+			<artifactId>maven-ejb-plugin</artifactId>
+			<configuration>
+				<ejbVersion>3.0</ejbVersion>
+				<generateClient>true</generateClient>
+				<clientExcludes>
+				    <clientExclude>**/SharedBoard.class</clientExclude>
+				    <clientExclude>**/Registrar.class</clientExclude>
+				    <clientExclude>**/CheckersChat.class</clientExclude>
+				    <clientExclude>**/PenteChat.class</clientExclude>
+				</clientExcludes>
+				<archive>
+					<manifest>
+						<addClasspath>true</addClasspath>
+					</manifest>
+				</archive>
+			</configuration>
+		</plugin>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.5</source>
+				<target>1.5</target>
+			</configuration>
+		</plugin>
+	</plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb</artifactId>
+      <version>3.0</version>
+      <scope>system</scope>
+      <systemPath>${glassfish}/lib/javaee.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-rt</artifactId>
+      <version>3.0</version>
+      <scope>system</scope>
+      <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>4.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>4.0.7</version>
+    </dependency>
+	<dependency>
+		<groupId>commons-collections</groupId>
+		<artifactId>commons-collections</artifactId>
+		<version>3.2.1</version>
+	</dependency>  
+	<dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+	  <version>1.3</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.bm</groupId>
+      <artifactId>ejb3unit</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

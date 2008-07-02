@@ -1,0 +1,347 @@
+package mx.ecosur.multigame.checkers;
+
+import mx.ecosur.multigame.Cell;
+import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.GameGrid;
+import mx.ecosur.multigame.GameState;
+import mx.ecosur.multigame.GameType;
+
+import mx.ecosur.multigame.checkers.Checker;
+import mx.ecosur.multigame.checkers.CheckerCharacteristic;
+
+
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.ejb.entity.Move.Status;
+
+import mx.ecosur.multigame.ejb.entity.checkers.JumpMove;
+
+import java.awt.Dimension;
+import java.lang.Integer;
+import java.util.ArrayList;
+import java.util.List;
+
+#Functions
+
+function GameGrid populateBoard (Game game) {
+    Dimension size = game.getSize();
+    int width = (int) size.getWidth();
+    int height = (int) size.getHeight();
+
+    /* Create the initial board pieces */
+    GameGrid grid = new GameGrid();
+    
+    /* Populate the whole board */
+    for (int row = 0; row < height; row++) {
+            for (int column = 0; column < width; column++) {
+                if (( row + column ) % 2 == 0) {
+                    Checker checker;
+                    if (row < 3) {
+                        checker = new Checker (row, column, Color.BLACK);
+                        grid.updateCell (checker);
+                    }
+                    else if (row > (height - 4)) {
+                        checker = new Checker (row, column, Color.RED);
+                        grid.updateCell (checker);
+                    }
+                }
+            }
+        }
+    
+    return grid;
+}
+
+/*
+    Determines if the destination of the requested move is
+    empty on the grid.
+*/
+function boolean isEmptyDestination (GameGrid grid, Move move) {
+    Cell destination = move.getDestination();
+    Cell currentDestination = grid.getLocation (destination);
+    boolean ret = (currentDestination == null);
+    if (!ret)
+        move.setStatus (Move.Status.INVALID);
+    return ret;
+}
+
+/*
+    Determiens if the starting position of the requested move
+    holds a token of the same color
+*/
+function boolean isValidStart (GameGrid grid, Move move) {
+    boolean ret = false;
+    Cell start = move.getCurrent ();
+    Cell current = grid.getLocation(start);
+    if ( current != null && current.getColor() == start.getColor() )
+        ret = true;
+    else
+        move.setStatus(Move.Status.INVALID);
+    return ret;
+}
+
+/*
+    Determines if the direction of the move is valid.  In Checkers,
+    pieces are only allowed to move forward, unless the piece is a King.
+    Forward, is determined here by the Color of the Token.  If the Token
+    is Black, forward is column++, otherwise, forward is column--.
+*/
+function boolean isValidDirection (GameGrid grid, Move move) {
+    boolean ret = false;    
+    
+    /* Now, ensure that the direction is valid */
+    CheckerCharacteristic character = (CheckerCharacteristic) 
+        move.getCurrent().getCharacteristic();
+    int currentX = move.getCurrent().getRow();
+    int currentY = move.getCurrent().getColumn();
+        
+    int destX = move.getDestination().getRow();
+    int destY = move.getDestination().getColumn();
+    
+    Color color = move.getCurrent().getColor();
+    
+    if (!character.isKinged()) { 
+        /* North is Black, South is RED */
+        if (color == Color.BLACK) 
+            ret = (destY == currentY + 1) && (destX == currentX - 1 || 
+                destX == currentX + 1);
+        else
+            ret =  (destY == currentY - 1) && (destX == currentX - 1 || 
+                destX == currentX + 1);
+    } else {
+            /* North is Black, South is RED */
+        if (color == Color.BLACK) 
+            ret = (destY == currentY + 1) && (destX == currentX + 1);
+        else
+            ret =  (destY == currentY - 1) && (destX == currentX);
+    }
+    
+    if (!ret)
+        move.setStatus(Move.Status.INVALID);
+    return ret;
+}
+
+/*
+    Determines if a move is a JumpMove 
+*/
+function boolean isJump (Move move) {
+    return (move instanceof JumpMove);
+}
+
+/*
+    Determines if a specific JumpMove is valid.  If the
+    move is not a Jump, the function always returns false.
+    For moves that are Jumps, each specific jump in the 
+    sequence is evaluated, and the following characteristics
+    are determined:
+    
+    1.  Is the jump on a diagonal?
+    2.  Is there an opposing piece on the grid in-between
+        the jump's "current" and "destination" cells?
+*/   
+
+function boolean isValidJump (GameGrid grid, Move move) {
+    boolean ret = false;
+    if (move instanceof JumpMove) {
+        JumpMove jumpMove = (JumpMove) move;
+        for (Move jump : jumpMove.getJumps ()) {
+                /* Ensure that the jump's destination is empty */
+            Cell destination = jump.getDestination();
+            Cell current = grid.getLocation (destination.getRow(), 
+                destination.getColumn());
+            ret = (current == null);
+                /* Ensure that there is a "enemy" cell in-between */
+            Cell enemy = grid.getLocation(jumpMove.getEnemy(move));
+            ret = (enemy != null);
+            if (ret) {
+                move.setStatus (Move.Status.INVALID);
+                break;
+            }
+        }
+    }
+    
+    return ret;
+}
+
+
+/*
+    Actually runs a sequence of jumps through the
+    current grid.  Each individual jump causes 
+    the opposing cell to be removed.
+*/    
+function GameGrid doJump (GameGrid grid, JumpMove jump) {
+    grid.removeCell (jump.getCurrent());
+    ArrayList<Move> jumps = jump.getJumps();
+    for (Move move : jumps) {
+        grid.removeCell (jump.getEnemy (move) );
+    }
+    grid.updateCell (jump.getDestination());
+    return grid;
+}
+
+
+/*
+    Determines if a move on the board is onto the
+    final space on the checkers grid, for that 
+    specific piece's color.  If so, the piece
+    is turned into a King,that can move and jump
+    horizontally.
+*/
+function boolean isKing (Game game, Move move) {
+    Cell destination = move.getDestination ();
+    return  (destination.getRow () == 0 || 
+       destination.getRow() == game.getSize().getHeight() -1);
+}
+
+
+/*
+    Determines if there are any tokens left on
+    the board.
+*/
+function boolean isTokensLeft (GameGrid grid) {
+    boolean ret = false;
+    List<Cell> cells = grid.getCells();
+    ArrayList<Color> seenColors = new ArrayList<Color>(2);
+    for (Cell c : cells) {
+        if (! seenColors.contains (c.getColor()))
+            seenColors.add(c.getColor());
+            
+        /* Simple  terminating switch, if there are more than 
+           one color in the list, than the game still has opposing
+           tokens. */
+        if (seenColors.size () > 1) {
+            ret = true;
+            break;
+        }
+    }
+    
+    return ret;
+}
+
+/*
+
+    Determines the winner of the game (if one exists).
+    
+    @TODO implement
+*/
+function Player getWinner (Game game) {
+    GameGrid grid = game.getGrid();
+    List<Cell> cells = grid.getCells();
+    Color winningColor = cells.get(0).getColor();
+    List<Player> players = game.getPlayers();
+    Player winner = null;
+    for (Player p : players) {
+        if (p.getColor().equals(winningColor)) {
+            winner = p;
+            break;
+        }
+    }
+    
+    return winner;
+}
+
+
+#Rules 
+#rules for the game of Checkers
+
+#Setup the board
+rule "new-game" 
+    agenda-group "initialize"
+when 
+   game : Game (state == GameState.BEGIN) 
+then
+    GameGrid initialGrid = populateBoard (game);
+    modify (game) { setGrid (initialGrid) }
+    modify (game) { setState (GameState.PLAY) }
+end
+
+# Verify a simple move
+rule "verify-move"
+    agenda-group "verify"
+when 
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.UNVERIFIED)
+    eval (isValidStart (game.getGrid(), move))
+    eval (isEmptyDestination (game.getGrid(), move))
+    eval (isValidDirection  (game.getGrid(), move))
+    eval (!(isJump(move)))   
+then 
+    modify (move) { setStatus (Move.Status.VERIFIED) }
+end
+
+#Verify a jump
+rule "verify-jump"
+    agenda-group "verify"
+when 
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.UNVERIFIED)
+    eval (isEmptyDestination (game.getGrid(), move))
+    eval (isValidJump  (game.getGrid(), move))
+then 
+    modify (move) { setStatus (Move.Status.VERIFIED) }
+end
+
+
+# Make a simple move
+
+rule "move-token"
+    agenda-group "move"
+when 
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.VERIFIED)
+    eval (!isJump (move))
+then 
+    GameGrid grid = game.getGrid();
+    grid.removeCell (move.getCurrent());
+    grid.updateCell (move.getDestination()); 
+    modify (move) { setStatus (Move.Status.MOVED) }
+    modify (game) { setGrid (grid) }
+end
+
+
+#Make a jump move
+rule "jump-tokens"
+    agenda-group "move"
+when
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.VERIFIED)
+    eval (isJump (move))
+then
+    GameGrid grid = doJump (game.getGrid(), (JumpMove) move);
+    modify (move) { setStatus (Move.Status.MOVED) }
+    modify (game) { setGrid (grid) }
+end   
+
+#King a token
+rule "make-king"
+    agenda-group "evaluate"
+when
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.VERIFIED)
+    eval (isKing (game, move))
+then
+    GameGrid grid = game.getGrid();
+    grid.removeCell (move.getCurrent());
+    Cell cell = move.getDestination();
+    grid.removeCell (cell);
+    CheckerCharacteristic kingMe = (CheckerCharacteristic) 
+        cell.getCharacteristic();
+    kingMe.setKinged(true);
+    cell.setCharacteristic (kingMe);
+    grid.updateCell (cell);
+    modify (game) { setGrid (grid) } 
+end 
+
+
+#Win the game
+rule "find-the-winner"
+    agenda-group "evaluate"
+when
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Move.Status.VERIFIED)
+    eval (! (isTokensLeft (game.getGrid())))
+then
+    Player winner = getWinner (game);
+    winner.setWins (winner.getWins () + 1);
+    modify (game) { setState (GameState.END) }
+end 
