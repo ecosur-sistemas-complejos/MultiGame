@@ -29,8 +29,8 @@ public class Cell implements Serializable, Cloneable {
 	 * Color
 	 */
 	public Cell(int x, int y, Color color) {
-		this.row = x;
-		this.column = y;
+		this.column = x;
+		this.row = y;
 		this.color = color;
 		this.characteristic = null;
 	}
