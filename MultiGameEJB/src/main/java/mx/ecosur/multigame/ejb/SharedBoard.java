@@ -94,6 +94,25 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		}
 	}
 	
+	public void locateSharedBoard(GameType type, Player player) throws RemoteException {
+		Query query = em.createQuery("select g from Game as g, Player as player " +
+				"where player=:player and player MEMBER OF g.players " +
+				"and g.type=:type and g.state <>:state");
+		query.setParameter("player", player);
+		query.setParameter("type", type);
+		query.setParameter("state", GameState.END);
+		try {
+			Game game = (Game) query.getSingleResult();
+			this.setGame(game);
+		} catch (EntityNotFoundException e) {
+			throw new RemoteException("Unable to find game with specified id!");
+		} catch (NonUniqueResultException e) {
+			throw new RemoteException("More than one game of that type found!");
+		} catch (NoResultException e) {
+			createGame(type);
+		}
+	}	
+	
 	public void locateSharedBoard (int gameId) throws RemoteException {
 		Query query = em.createQuery("select g from Game g where g.id=:id " +
 		"and g.state<>:state");
@@ -242,12 +261,15 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	
 	/**
 	 * Applies the validated move to the game grid.
+	 * @throws RemoteException 
 	 */
-	public void move (Move move) throws InvalidMoveException {
+	public void move (Move move) throws InvalidMoveException, RemoteException {
 		if (move.getStatus() != Move.Status.VERIFIED)
 			throw new InvalidMoveException ("Unverified or Invalid move!");
-		if (em != null)
+		if (!em.contains(game))
 			game = em.merge(game);
+		if (!em.contains(move))
+			move = em.merge(move);
 		
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(game);
@@ -258,9 +280,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.dispose();
 		
 		/* Persist the move */
-		if (em != null) {
-			em.persist(game);
-		}
+		em.persist(game);
+		em.persist(move);
 		
 		incrementTurn(move.getPlayer());
 	}
@@ -276,7 +297,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	public void setGame(Game game) throws RemoteException {
 		if (game == null)
 			throw new RemoteException ("Attempting to set null game into SharedBoard!");
-		this.game = game;
+		this.game = em.merge(game);
 		initialize();
 	}
 	
@@ -296,15 +317,16 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		em.persist(cm);
 	}
 
-	public void incrementTurn(Player player) {
+	public void incrementTurn(Player player) throws RemoteException {
+		if (!player.isTurn())
+			throw new RemoteException ("Only the Player with the " +
+					"turn can increment the turn!");
+		if (!em.contains(player))
+			player = em.merge(player);
+		player.setTurn(false);
+		em.persist(player);
+		
 		List<Player> players = game.getPlayers();
-		
-		for (Player p : players) {
-			p.setTurn(false);
-			if (em != null)
-				em.persist(p);
-		}
-		
 		int playerNumber = players.indexOf(player);
 		Player nextPlayer = null;
 		if (playerNumber == players.size() - 1) {
@@ -312,11 +334,11 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		} else {
 			nextPlayer = players.get(playerNumber + 1);
 		}
-		
+
+		if (!em.contains(nextPlayer))
+			nextPlayer = em.merge(nextPlayer);
 		nextPlayer.setTurn(true);
-		if (em != null)
-			em.persist(nextPlayer);
-		
+		em.persist(nextPlayer);
 		sendGameEvent(GameEvent.TURN);
 		
 	}

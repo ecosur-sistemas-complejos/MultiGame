@@ -205,6 +205,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			game.setState(GameState.END);
 			initColors(type);
 		}
+		
+		game.removePlayer(player);
+		
 		em.persist(game);
 	}
 
@@ -274,6 +277,4 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.persist(player);
 		return player;
 	}
-	
-	
 }

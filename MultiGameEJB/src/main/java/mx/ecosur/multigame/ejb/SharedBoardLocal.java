@@ -30,6 +30,11 @@ public interface SharedBoardLocal {
 	 */
 	public void locateSharedBoard (GameType type) throws RemoteException;
 	
+	/** 
+	 * Locates a game of the type, "type", and with the Player "player"
+	 */
+	public void locateSharedBoard(GameType type, Player player) throws RemoteException;	
+	
 	/**
 	 * Locates a game with the specified id. 
 	 */
@@ -43,7 +48,7 @@ public interface SharedBoardLocal {
 	/**
 	 * Makes the specified move on the game grid
 	 */
-	public void move (Move move) throws InvalidMoveException;
+	public void move (Move move) throws InvalidMoveException, RemoteException;
 	
 	/**
 	 * Returns the a GameGrid object, populated with the current
@@ -95,7 +100,7 @@ public interface SharedBoardLocal {
 	/** 
 	 * Increments the turn for GamePlay
 	 */
-	public void incrementTurn (Player player);
+	public void incrementTurn (Player player) throws RemoteException;
 	
 	/**
 	 * Gets the Players playing on this shared board 
