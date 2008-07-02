@@ -68,8 +68,6 @@ public class GameFrame extends JFrame {
 		 * if so, set the GameState to BEGIN.
 		 */
 		Game game = this.sharedBoard.getGame();
-		if (game.getPlayers().size() > 1) 
-			game.setState(GameState.BEGIN);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		JDesktopPane layers = new JDesktopPane();

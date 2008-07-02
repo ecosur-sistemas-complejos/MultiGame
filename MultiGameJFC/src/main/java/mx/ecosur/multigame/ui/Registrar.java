@@ -39,10 +39,7 @@ import mx.ecosur.multigame.ejb.entity.Player;
  */
 public class Registrar extends JFrame {
 	
-	Properties env;
-	
 	public Registrar () {
-		env = new Properties ();
 		this.initialize();
 	}
 	
@@ -141,8 +138,7 @@ public class Registrar extends JFrame {
 		{
 		    this.gameType = GameType.valueOf(((String)
 	        		comboBox.getSelectedItem()).toUpperCase());
-			InitialContext ic = new InitialContext(env);
-	        
+			InitialContext ic = new InitialContext();
 			
 	        /* Register the user */
 	        RegistrarRemote registrar = (RegistrarRemote) ic.lookup(
