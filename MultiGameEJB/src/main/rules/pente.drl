@@ -12,6 +12,8 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 
 
@@ -27,7 +29,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
     Determines if the destination of the requested move
     is in the center of the grid.
 */
-function boolean isCenter (PenteGame game, PenteMove move) {
+function boolean isCenter (Game game, Move move) {
     Dimension size = game.getSize();
     Cell destination = move.getDestination ();
     
@@ -45,7 +47,7 @@ function boolean isCenter (PenteGame game, PenteMove move) {
     Determines if the destination of the requested move is
     empty on the grid.
 */
-function boolean isEmpty (GameGrid grid, PenteMove move) {
+function boolean isEmpty (GameGrid grid, Move move) {
     Cell destination = move.getDestination();
     Cell current = grid.getLocation (destination.getRow(), destination.getColumn());
     boolean ret = (current == null);
@@ -107,9 +109,9 @@ function boolean hasWinner (PenteGame game) {
     schemas, this function should return a PriorityQueue of Players 
     based upon positions on the board.
 */
-function Player getWinner (PenteGame game) {
+function PentePlayer getWinner (PenteGame game) {
     SortedSet<Player> winners = (SortedSet<Player>) game.getWinners();
-    return winners.first();
+    return (PentePlayer) winners.first();
 }
 
 
@@ -121,7 +123,7 @@ rule "setup-turns"
     agenda-group "initialize"
     no-loop true
 when
-    game : PenteGame (state == GameState.BEGIN)
+    game : Game (state == GameState.BEGIN)
 then
     List<Player> players = game.getPlayers();
     for (Player p : players) {
@@ -138,7 +140,7 @@ end
 rule "setup-board"
     agenda-group "initialize"
 when
-    game : PenteGame (state == GameState.BEGIN)
+    game : Game (state == GameState.BEGIN)
 then
     GameGrid grid = new GameGrid ();
     modify (game) { setGrid (grid) }
@@ -149,9 +151,9 @@ end
 rule "first-move"
     agenda-group "evaluate"
 when
-    game  : PenteGame (state == GameState.PLAY, $grid : grid)
+    game  : Game (state == GameState.PLAY, $grid : grid)
     grid  : GameGrid (cells.size == 0)
-    move  : PenteMove (player.turn == true, player.color == Color.BLACK)
+    move  : Move (player.turn == true, player.color == Color.BLACK)
     eval (isCenter (game, move))    
 then
     modify (move) { setStatus (Status.VERIFIED) }
@@ -161,9 +163,9 @@ end
 rule "evaluate-move"
     agenda-group "evaluate"
 when
-    game  : PenteGame (state == GameState.PLAY, $grid : grid)
+    game  : Game (state == GameState.PLAY, $grid : grid)
     grid  : GameGrid (cells.size > 0)
-    move  : PenteMove (player.turn == true)
+    move  : Move (player.turn == true)
     eval (isEmpty (game.getGrid(), move))   
 then
     modify (move) { setStatus (Status.VERIFIED) }
@@ -173,8 +175,8 @@ end
 rule "execute-move"
     agenda-group "move"
 when 
-    game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Status.VERIFIED)  
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Status.VERIFIED)  
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell (move.getDestination());
@@ -185,11 +187,11 @@ end
 rule "execute-capture"
     agenda-group "analyze"
 when
-    game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Status.VERIFIED)
-    eval (isCapture (game, (PenteMove) move))
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Status.VERIFIED)
+    eval (isCapture ((PenteGame) game, (PenteMove) move))
 then  
-    GameGrid grid = removeCaptures (game, (PenteMove) move);
+    GameGrid grid = removeCaptures ((PenteGame) game, (PenteMove) move);
 end  
 
 # Finds the winner (currently, there is no payoff schema in place, a game win
@@ -197,11 +199,11 @@ end
 rule "find-the-winner"
     agenda-group "analyze"
 when
-    game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Status.VERIFIED)
-    eval (hasWinner(game))
+    game  : Game (state == GameState.PLAY)
+    move  : Move (player.turn == true, status == Status.VERIFIED)
+    eval (hasWinner((PenteGame) game))
 then
-    Player winner = getWinner (game);
+    PentePlayer winner = getWinner ((PenteGame) game);
     winner.setWins (winner.getWins () + 1);
-    modify (game) { setState (GameState.END) }
+    modify (game) { setState (GameState.END)}
 end
