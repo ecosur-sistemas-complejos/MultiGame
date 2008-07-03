@@ -51,8 +51,22 @@
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfpolling" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
                 <polling-enabled>true</polling-enabled>
-                <polling-interval-seconds>4</polling-interval-seconds>
-            </properties>
+                <polling-interval-millis>2000</polling-interval-millis>
+			    <!-- Optional. Default is 0. This parameter specifies the number
+			        of milliseconds the server poll response thread will wait
+			        for new messages to arrive when the server has no messages
+			        for the client at the time of poll request handling. Zero means
+			        that server does not wait for new messages for the client
+			        and returns an empty acknowledgment as usual. -1 means that
+			        server waits indefinitely until new messages arrive for the
+			        client before responding to the client poll request. -->
+			    <!--<wait-interval-millis>-1</wait-interval-millis> -->
+			    <!-- Optional. Default is 0. This parameter specifies the maximum
+			        number of server poll response threads that can be in wait
+			        state. When this limit is reached, the subsequent poll requests
+			        will be treated as having zero wait-interval-millis.-->
+			    <!--  <max-waiting-poll-requests>0</max-waiting-poll-requests>-->
+            </properties>          
         </channel-definition>
 
         <!--
