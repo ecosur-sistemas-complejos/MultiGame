@@ -36,6 +36,7 @@ import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 
 import org.drools.FactException;
 import org.drools.RuleBase;
@@ -135,8 +136,20 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 * @throws RemoteException
 	 */
 	void createGame(GameType type) throws RemoteException {
+		
+		Game game;
+		
 		/* Create a new Game */
-		Game game = new Game();
+		switch (type) {
+			case PENTE:
+				PenteGame pg = new PenteGame ();
+				game = (Game) pg;
+				break;
+			default:
+				game = new Game();
+				break;
+		}
+		
 		game.initialize(type);
 		this.setGame(game);
 	}
