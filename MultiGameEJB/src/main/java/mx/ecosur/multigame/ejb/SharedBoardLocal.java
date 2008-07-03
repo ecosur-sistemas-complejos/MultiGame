@@ -99,8 +99,12 @@ public interface SharedBoardLocal {
 	
 	/** 
 	 * Increments the turn for GamePlay
+	 * 
+	 * Returns the player whose turn is next.
+	 * 
+	 * @throws RemoteException 
 	 */
-	public void incrementTurn (Player player) throws RemoteException;
+	public Player incrementTurn (Player player) throws RemoteException;
 	
 	/**
 	 * Gets the Players playing on this shared board 

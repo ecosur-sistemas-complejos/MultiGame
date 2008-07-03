@@ -4,8 +4,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.collections.buffer.PriorityBuffer;
+import java.util.SortedSet;
 
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.Cell;
@@ -13,7 +12,8 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 
-import mx.ecosur.multigame.ejb.entity.Move.Status;
+import mx.ecosur.multigame.ejb.entity.Move.*;
+
 
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
@@ -33,8 +33,12 @@ function boolean isCenter (PenteGame game, PenteMove move) {
     
     int centerWidth = (int) size.getWidth()/2;
     int centerHeight = (int) size.getHeight()/2;
-  
-    return (destination.getRow () == centerHeight && destination.getColumn() == centerWidth);
+    
+    boolean ret = (destination.getRow () == centerHeight && 
+        destination.getColumn() == centerWidth);
+    if (!ret)
+        move.setStatus (Status.INVALID);
+    return ret;
 }
 
 /*
@@ -44,7 +48,10 @@ function boolean isCenter (PenteGame game, PenteMove move) {
 function boolean isEmpty (GameGrid grid, PenteMove move) {
     Cell destination = move.getDestination();
     Cell current = grid.getLocation (destination.getRow(), destination.getColumn());
-    return (current == null);
+    boolean ret = (current == null);
+    if (!ret)
+        move.setStatus (Status.INVALID);
+    return ret;
 }
 
 /*
@@ -101,8 +108,8 @@ function boolean hasWinner (PenteGame game) {
     based upon positions on the board.
 */
 function Player getWinner (PenteGame game) {
-    PriorityBuffer queue = game.getWinners();
-    return (Player) queue.remove ();
+    SortedSet<Player> winners = (SortedSet<Player>) game.getWinners();
+    return winners.first();
 }
 
 
@@ -167,7 +174,7 @@ rule "execute-move"
     agenda-group "move"
 when 
     game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Move.Status.VERIFIED)  
+    move  : PenteMove (player.turn == true, status == Status.VERIFIED)  
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell (move.getDestination());
@@ -179,7 +186,7 @@ rule "execute-capture"
     agenda-group "analyze"
 when
     game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Move.Status.VERIFIED)
+    move  : PenteMove (player.turn == true, status == Status.VERIFIED)
     eval (isCapture (game, (PenteMove) move))
 then  
     GameGrid grid = removeCaptures (game, (PenteMove) move);
@@ -191,7 +198,7 @@ rule "find-the-winner"
     agenda-group "analyze"
 when
     game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Move.Status.VERIFIED)
+    move  : PenteMove (player.turn == true, status == Status.VERIFIED)
     eval (hasWinner(game))
 then
     Player winner = getWinner (game);

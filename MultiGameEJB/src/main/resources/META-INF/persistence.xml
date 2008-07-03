@@ -4,9 +4,6 @@
 	version="1.0">
 	<persistence-unit name="MultiGame">
         <jta-data-source>jdbc/__default</jta-data-source>
-		<class>mx.ecosur.multigame.ejb.entity.Game</class>
-        <class>mx.ecosur.multigame.ejb.entity.Player</class>
-        <class>mx.ecosur.multigame.ejb.entity.ChatMessage</class>
 		<properties>
 			<property name="toplink.ddl-generation" 
 				value="drop-and-create-tables"/> 

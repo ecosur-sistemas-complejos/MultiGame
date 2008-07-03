@@ -317,7 +317,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		em.persist(cm);
 	}
 
-	public void incrementTurn(Player player) throws RemoteException {
+	public Player incrementTurn(Player player) throws RemoteException {
 		if (!player.isTurn())
 			throw new RemoteException ("Only the Player with the " +
 					"turn can increment the turn!");
@@ -340,6 +340,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		nextPlayer.setTurn(true);
 		em.persist(nextPlayer);
 		sendGameEvent(GameEvent.TURN);
+		
+		return nextPlayer;
 		
 	}
 	

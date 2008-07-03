@@ -5,12 +5,12 @@ package mx.ecosur.multigame.ejb.entity.pente;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
+import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.Game;
-
-import org.apache.commons.collections.buffer.PriorityBuffer;
 
 
 
@@ -22,9 +22,9 @@ import org.apache.commons.collections.buffer.PriorityBuffer;
 @DiscriminatorValue("PENTE")
 public class PenteGame extends Game {
 	
-	private PriorityBuffer winners;
+	private TreeSet<Player> winners;
 	
-	public PriorityBuffer getWinners () {
+	public Set <Player> getWinners () {
 		if (winners == null) {
 			winners = determineWinners ();
 		}
@@ -32,28 +32,30 @@ public class PenteGame extends Game {
 		return winners;
 	}
 	
-	public void setWinners (PriorityBuffer queue) {
-		this.winners = queue;
-	}
-	
-	private PriorityBuffer determineWinners() {
-		PriorityBuffer ret = new PriorityBuffer (new PlayerComparator ());
-		
+	private TreeSet<Player> determineWinners() {
+		TreeSet<Player> ret = new TreeSet<Player> (new PlayerComparator());
+		for (Player p : getPlayers()) {
+			PentePlayer player = (PentePlayer) p;
+			ret.add(player);
+		}
 		
 		return ret;
 	}
+	
+	
+	class PlayerComparator implements Comparator <Player>{
 
-	class PlayerComparator implements Comparator<PentePlayer> {
-
-		public int compare(PentePlayer p1, PentePlayer p2) {
+		public int compare(Player alice, Player bob) {
 			int ret = 0;
-		
-			if (p1.getPoints() >p2.getPoints())
-				ret = 1;
-			else if (p1.getPoints() < p2.getPoints())
-				ret = -1;
 			
-			return ret;
+			if (alice instanceof PentePlayer && bob instanceof PentePlayer) {
+				PentePlayer p1 = (PentePlayer) alice, p2 = (PentePlayer) bob;
+				if (p1.getPoints() > p2.getPoints())
+					ret = 1;
+				else if (p1.getPoints() < p2.getPoints())
+					ret = -1;
+			}
+			return ret;	
 		}
 	}
 }
