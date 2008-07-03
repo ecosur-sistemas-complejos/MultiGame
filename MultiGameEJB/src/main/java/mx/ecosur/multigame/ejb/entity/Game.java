@@ -134,7 +134,7 @@ public class Game implements Serializable {
 		
 		/* If we've reached the max, then set the GameState to begin */
 		if (players.size() == max)
-			state = GameState.SETUP;
+			state = GameState.BEGIN;
 	}
 	
 	public void updatePlayer (Player player) {

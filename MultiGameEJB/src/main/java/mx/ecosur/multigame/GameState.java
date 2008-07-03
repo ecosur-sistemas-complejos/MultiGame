@@ -9,6 +9,6 @@ package mx.ecosur.multigame;
  */
 public enum GameState {
 	
-	WAITING, SETUP, BEGIN, PLAY, END
+	WAITING, BEGIN, PLAY, END
 
 }

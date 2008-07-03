@@ -247,8 +247,9 @@ function Player getWinner (Game game) {
 #Sets up the first turn
 rule "setup-turns"
     agenda-group "initialize"
+    no-loop true
 when
-    game : Game (state == GameState.SETUP)
+    game : Game (state == GameState.BEGIN)
 then
     List<Player> players = game.getPlayers();
     for (Player p : players) {
@@ -258,7 +259,6 @@ then
         }
     }
     modify (game) { setPlayers (players) }
-    modify (game) { setState (GameState.BEGIN) }
 end
 
 #Setup the board
