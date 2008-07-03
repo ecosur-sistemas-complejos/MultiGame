@@ -1,3 +1,4 @@
+
 package mx.edu.ecosur.multigame.flexClient.service;
 
 import java.rmi.RemoteException;
@@ -67,7 +68,7 @@ public class GameService {
 		RegistrarRemote registrar = getRegistrar();
 		GameType gameType = GameType.valueOf(gameTypeStr);
 		try {
-			player.setColor(registrar.registerPlayer(player, gameType));
+			player = registrar.registerPlayer(player, gameType);
 			logger.info("player registered with color " + player.getColor());
 		} catch (RemoteException e) {
 			logger.severe("Not able to register player " + player.getName()
@@ -113,7 +114,7 @@ public class GameService {
 		String moveCode;
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < cols; c++) {
-				destination = new Cell(r, c, cell.getColor());
+				destination = new Cell(c, r, cell.getColor());
 				move = new Move(sharedBoard.getGame(), player, cell, destination);
 				try {
 					sharedBoard.validateMove(move);
@@ -129,6 +130,9 @@ public class GameService {
 				}
 			}
 		}
+		if(validMoves.size() == 0){
+			logger.info("No valid moves for cell " + cell);
+		}
 		return validMoves;
 	}
 	
@@ -141,7 +145,10 @@ public class GameService {
 		} catch (InvalidMoveException e) {
 			logger.severe("Exception doing move " + move);
 			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		}
+
 	}
 	
 	//TODO: This method is temporary for development purposes. It will be deleted
