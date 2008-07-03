@@ -108,8 +108,27 @@ function Player getWinner (PenteGame game) {
 
 #Rules for the game of PENTE
 
+#Sets up the first turn
+
+rule "setup-turns"
+    agenda-group "initialize"
+when
+    game : PenteGame (state == GameState.SETUP)
+then
+    List<Player> players = game.getPlayers();
+    for (Player p : players) {
+        if (p.getColor() == Color.BLACK) {
+            p.setTurn(true);
+            break;
+        }
+    }
+    modify (game) { setPlayers (players) }
+    modify (game) { setState (GameState.BEGIN) }
+end
+
+
 #Sets up the empty game grid and sets thate game into the PLAY state
-rule "setup"
+rule "setup-board"
     agenda-group "initialize"
 when
     game : PenteGame (state == GameState.BEGIN)

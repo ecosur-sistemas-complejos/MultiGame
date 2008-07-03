@@ -97,10 +97,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * 
 	 */
 
-	public Color registerPlayer(Player playerDAO, GameType type)
+	public Player registerPlayer(Player playerDAO, GameType type)
 			throws InvalidRegistrationException, RemoteException {
-
-		Color ret = playerDAO.getColor();
 
 		/*
 		 * Use the EM to pull a non-detached Player from the Store, update that
@@ -124,9 +122,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		if (!game.getPlayers().contains(player)) {
 			boolean colorAvailable = getAvailableColors(type).contains(
 					playerDAO.getColor());
-			if (colorAvailable) {
-				ret = playerDAO.getColor();
-			} else if (!colorAvailable) {
+			if (!colorAvailable) {
 				/*
 				 * Pick a color from the list of available colors for the game
 				 * type
@@ -138,12 +134,11 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 				} else {
 					Color color = iter.next();
 					playerDAO.setColor(color);
-					ret = color;
 				}
 			}
 
-			/* Set the new player's color */
-			player.setColor(ret);
+			/* Set the player's color */
+			player.setColor(playerDAO.getColor());
 
 			/* Add the new player to the game */
 			try {
@@ -152,15 +147,13 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 				throw new InvalidRegistrationException(e.getMessage());
 			}
 			
-			//if is the last player to join the game can begin
+			/* if is the last player to join the game can begin */
 			if (getAvailableColors(type).size() == 0){
 				sendGameEvent(game, GameEvent.BEGIN);
 			}
 			
-		} else {
-			ret = player.getColor();
 		}
-
+		
 		/*
 		 * Update the player with the current time for registration and persist
 		 * the individual into the system.
@@ -170,8 +163,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		/* Persist the game and the player */
 		em.persist(player);
 		em.persist(game);
-
-		return ret;
+		
+		return player;
 	}
 
 	public Game locateGame(GameType type) throws RemoteException {

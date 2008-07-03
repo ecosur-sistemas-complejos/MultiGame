@@ -38,7 +38,7 @@ public interface RegistrarLocal {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public Color registerPlayer (Player player, GameType gameType) throws 
+	public Player registerPlayer (Player player, GameType gameType) throws 
 		InvalidRegistrationException, RemoteException;
 	
 	/**
