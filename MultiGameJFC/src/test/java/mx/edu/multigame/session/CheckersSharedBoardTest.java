@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class CheckersSharedBoardTest {
 	
-	RegistrarRemote registrar;
+	private RegistrarRemote registrar;
 	
 	private SharedBoardRemote board;
 	
@@ -77,6 +77,9 @@ public class CheckersSharedBoardTest {
 			for (Player p : players) {
 				registrar.unregisterPlayer(p, GameType.CHECKERS);
 			}
+		} else {
+			System.out.println ("Null board or registrar! board [" + board + 
+					"], registrar [" + registrar + "]");
 		}
 	}
 	
@@ -179,15 +182,9 @@ public class CheckersSharedBoardTest {
 	public void testIncrementTurn() throws RemoteException {
 		alice.setTurn(true);
 		bob.setTurn (false);
-		board.incrementTurn(alice);
-		
-		List<Player> players = board.getPlayers();
-		for (Player p : players) {
-			if (p.getName().equals(bob.getName()))
-					assertTrue (p.isTurn());
-			else if (p.getName().equals(alice.getName())) 
-				assertFalse (p.isTurn());
-		}
+		Player next = board.incrementTurn(alice);
+		assertNotNull (next);
+		assertTrue (next.isTurn());
 	}
 	
 	/**
