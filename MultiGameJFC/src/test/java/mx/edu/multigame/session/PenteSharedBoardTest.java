@@ -1,5 +1,6 @@
 package mx.edu.multigame.session;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -89,8 +90,8 @@ public class PenteSharedBoardTest {
 	public void testFirstMoveValidate () throws InvalidMoveException {
 		Cell center = new Cell (10, 10, alice.getColor());
 		PenteMove move = new PenteMove (board.getGame(), alice, center);
-		move = (PenteMove) board.validateMove(move);
-		assertTrue (Move.Status.VERIFIED.equals(move.getStatus()));
+		Move ret = board.validateMove(move);
+		assertEquals (Move.Status.VERIFIED, ret.getStatus());
 	}
 	
 	/** 
@@ -98,13 +99,12 @@ public class PenteSharedBoardTest {
 	 * @throws InvalidMoveException 
 	 * @throws RemoteException 
 	 */
-
+	@Test
 	public void testFirstMove () throws InvalidMoveException, RemoteException {
 		Cell center = new Cell (10,10,alice.getColor());
 		PenteMove move = new PenteMove (board.getGame(), alice, center);
 		Move validMove = board.validateMove(move);
-		assertNotNull (validMove);
-		assertTrue(validMove.getStatus() == Move.Status.VERIFIED);
+		assertEquals (Move.Status.VERIFIED, validMove.getStatus());
 		board.move(validMove);
 		
 		GameGrid grid = board.getGameGrid();

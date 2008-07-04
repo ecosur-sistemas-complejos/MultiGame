@@ -9,10 +9,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.InputStream;
 import java.rmi.RemoteException;
-import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -23,14 +20,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
-import javax.swing.ProgressMonitor;
-import javax.swing.Timer;
 
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
-import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.Player;
 
 /**
@@ -151,8 +145,7 @@ public class Registrar extends JFrame {
 	        
 			String name = this.textField.getText();
 			Player player = registrar.locatePlayer(name);
-			player.setColor(
-					registrar.registerPlayer(player, sharedBoard.getGameType()));
+			player= registrar.registerPlayer(player, sharedBoard.getGameType());
 	        return player;
 		}
 	}
