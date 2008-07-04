@@ -244,21 +244,22 @@ function Player getWinner (Game game) {
 #Rules 
 #rules for the game of Checkers
 
-#Sets up the first turn
+#Sets the players in the game so that Black has the first turn
 rule "setup-turns"
     agenda-group "initialize"
+    salience 1
     no-loop true
 when
     game : Game (state == GameState.BEGIN)
 then
     List<Player> players = game.getPlayers();
     for (Player p : players) {
-        if (p.getColor() == Color.BLACK) {
+        if (p.getColor() == Color.BLACK)
             p.setTurn(true);
-            break;
-        }
+        else
+            p.setTurn(false);
     }
-    modify (game) { setPlayers (players) }
+    modify (game) { setPlayers (players) } 
 end
 
 #Setup the board

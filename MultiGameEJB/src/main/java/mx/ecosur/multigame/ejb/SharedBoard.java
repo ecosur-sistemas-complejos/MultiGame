@@ -367,6 +367,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			message.setIntProperty("GAME_ID", game.getId());
 			message.setStringProperty("GAME_EVENT", event.toString());
 			producer.send(message);
+			session.close();
+			connection.close();
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

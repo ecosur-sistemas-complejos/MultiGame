@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import mx.ecosur.multigame.Cell;
@@ -41,6 +40,7 @@ public class Move implements Serializable {
 	}
 
 	public Move(Game game, Player player, Cell destination) {
+		this.game = game;
 		this.player = player;
 		this.current = null;
 		this.destination = destination;
@@ -48,6 +48,7 @@ public class Move implements Serializable {
 	}
 
 	public Move(Game game, Player player, Cell current, Cell destination) {
+		this.game = game;
 		this.player = player;
 		this.current = current;
 		this.destination = destination;

@@ -117,43 +117,31 @@ function PentePlayer getWinner (PenteGame game) {
 
 #Rules for the game of PENTE
 
-#Sets up the first turn
-
-rule "setup-turns"
+#Sets the players in the game so that Black has the first turn
+#Sets up the empty game grid and sets thate game into the PLAY state
+rule "setup"
     agenda-group "initialize"
-    no-loop true
 when
     game : Game (state == GameState.BEGIN)
 then
     List<Player> players = game.getPlayers();
     for (Player p : players) {
-        if (p.getColor() == Color.BLACK) {
+        if (p.getColor() == Color.BLACK)
             p.setTurn(true);
-            break;
-        }
+        else
+            p.setTurn(false);
     }
-    modify (game) { setPlayers (players) }
-end
-
-
-#Sets up the empty game grid and sets thate game into the PLAY state
-rule "setup-board"
-    agenda-group "initialize"
-when
-    game : Game (state == GameState.BEGIN)
-then
     GameGrid grid = new GameGrid ();
-    modify (game) { setGrid (grid) }
-    modify (game) { setState (GameState.PLAY) }
+    modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) } 
 end
 
 #Black must move first, and that move can only be at the center of the board
-rule "first-move"
-    agenda-group "evaluate"
+rule "evaluate-first-move"
+    agenda-group "verify"
 when
     game  : Game (state == GameState.PLAY, $grid : grid)
-    grid  : GameGrid (cells.size == 0)
-    move  : Move (player.turn == true, player.color == Color.BLACK)
+    move  : Move (status == Status.UNVERIFIED, player.turn == true, player.color == Color.BLACK)
+    eval ($grid.getCells().isEmpty())
     eval (isCenter (game, move))    
 then
     modify (move) { setStatus (Status.VERIFIED) }
@@ -161,11 +149,11 @@ end
 
 #Subsequent moves must occur on a non-empty board, on empty locations
 rule "evaluate-move"
-    agenda-group "evaluate"
+    agenda-group "verify"
 when
     game  : Game (state == GameState.PLAY, $grid : grid)
-    grid  : GameGrid (cells.size > 0)
-    move  : Move (player.turn == true)
+    move  : Move (status == Status.UNVERIFIED, player.turn == true)
+    eval (!$grid.getCells().isEmpty())
     eval (isEmpty (game.getGrid(), move))   
 then
     modify (move) { setStatus (Status.VERIFIED) }
@@ -180,12 +168,14 @@ when
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell (move.getDestination());
+    modify (move) { setStatus (Status.MOVED) }
     modify (game) { setGrid (modifiedGrid) }
 end
 
+/*
 # Captures any opposition tokens
 rule "execute-capture"
-    agenda-group "analyze"
+    agenda-group "evaluate"
 when
     game  : Game (state == GameState.PLAY)
     move  : Move (player.turn == true, status == Status.VERIFIED)
@@ -197,7 +187,7 @@ end
 # Finds the winner (currently, there is no payoff schema in place, a game win
 # is simply a "win.")
 rule "find-the-winner"
-    agenda-group "analyze"
+    agenda-group "evaluate"
 when
     game  : Game (state == GameState.PLAY)
     move  : Move (player.turn == true, status == Status.VERIFIED)
@@ -207,3 +197,4 @@ then
     winner.setWins (winner.getWins () + 1);
     modify (game) { setState (GameState.END)}
 end
+*/
