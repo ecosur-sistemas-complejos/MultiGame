@@ -50,7 +50,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>multi-game-flex-client-webapp</finalName>
+    <finalName>${artifactId}</finalName>
     <plugins>
         <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -58,6 +58,53 @@
                 <source>1.5</source>
                 <target>1.5</target>
             </configuration>
+        </plugin>
+        <plugin>
+            <!-- Use the EXEC plugin to build the flex application and deploy war on server -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+                <execution>
+                    <id>compile-flex</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>${flex-sdk}/bin/mxmlc</executable>
+                        <workingDirectory>.</workingDirectory>
+                        <arguments>
+			    <argument>-compiler.services=src/main/webapp/WEB-INF/flex/services-config.xml</argument>
+			    <argument>-compiler.strict=true</argument>
+			    <argument>-compiler.context-root=${artifactId}</argument>
+			    <argument>-output=src/main/webapp/checkers.swf</argument>
+			    <argument>src/main/flex/checkers.mxml</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+	        <execution>
+                    <id>deploy-war</id>
+                    <phase>install</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>${glassfish}/bin/asadmin</executable>
+                        <workingDirectory>.</workingDirectory>
+                        <arguments>
+                            <argument>deploy</argument>
+                            <argument>--user</argument>
+                            <argument>admin</argument>
+                            <argument>--passwordfile</argument>
+                            <argument>src/main/resources/passwd</argument>
+                            <argument>--name</argument>
+                            <argument>${artifactId}</argument>
+                            <argument>target/${artifactId}.war</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>
         </plugin>
     </plugins>
   </build>

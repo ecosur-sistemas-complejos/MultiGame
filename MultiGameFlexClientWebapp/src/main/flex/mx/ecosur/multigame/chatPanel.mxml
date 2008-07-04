@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="panel" title="Instant Messaging" creationComplete="//consumer.subscribe();">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="panel" title="Instant Messaging">
 
 	<mx:Script> 
         <![CDATA[
@@ -11,6 +11,7 @@
 			import mx.messaging.events.MessageFaultEvent;
 			import mx.ecosur.multigame.entity.Player;
 			import mx.ecosur.multigame.entity.ChatMessage;
+			import mx.ecosur.multigame.GameEvent;
 			import mx.controls.Alert;
 			
             [Bindable]
@@ -26,13 +27,14 @@
 				o.dateSent = int((new Date()).time);
 				o.body = msg.text;
 				message.body = o;
+				message.headers.GAME_ID = gameId;
+				message.headers.GAME_EVENT = GameEvent.CHAT;
 				producer.send(message);
 				msg.text = "";
 			}
         	
-        	private function messageHandler(message:IMessage):void {
-				var o:Object = message.body;
-				log.text += "(" + new Date(o.dateSent).toLocaleTimeString() + ") " + o.senderName + ": " + o.body + "\n";
+        	public function addMessage(messageBody:Object):void {
+				log.text += "(" + new Date(messageBody.dateSent).toLocaleTimeString() + ") " + messageBody.senderName + ": " + messageBody.body + "\n";
 			}
 
 			private function acknowledgeHandler(event:MessageAckEvent):void{
@@ -48,7 +50,6 @@
     </mx:Script>
     
     <mx:Producer id="producer" destination="multigame-chat" acknowledge="acknowledgeHandler(event)" fault="faultHandler(event)"/>
-	<mx:Consumer id="consumer" destination="multigame-chat" message="messageHandler(event.message)" acknowledge="acknowledgeHandler(event)" fault="faultHandler(event)"/>
 
 	<mx:TextArea id="log" width="100%" height="100%" backgroundColor="#cccccc" borderThickness="0" editable="false"/>
 	<mx:ControlBar verticalAlign="top">

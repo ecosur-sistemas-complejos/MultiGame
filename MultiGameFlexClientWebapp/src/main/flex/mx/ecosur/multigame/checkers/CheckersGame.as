@@ -1,16 +1,19 @@
 package mx.ecosur.multigame.checkers{
 	import flash.events.MouseEvent;
 	
+	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.DragSource;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
+	import mx.ecosur.multigame.Color;
 	import mx.ecosur.multigame.entity.BoardCell;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.entity.GameGrid;
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.entity.Player;
 	import mx.events.DragEvent;
+	import mx.events.FlexEvent;
 	import mx.managers.DragManager;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
@@ -28,6 +31,7 @@ package mx.ecosur.multigame.checkers{
 		
 		//flags
 		private var _isMoving:Boolean;
+		private var _isTurn:Boolean;
 		
 		public function CheckersGame(){
 			super();
@@ -40,34 +44,92 @@ package mx.ecosur.multigame.checkers{
 			
 			//TODO: Reset valid moves on turn change
 			_validMoves = new Object();
+			this.addEventListener(FlexEvent.CREATION_COMPLETE, function(event:FlexEvent):void{getGrid()});
 		}
 		
 		public function set player(player:Player):void{
 			_player = player;
+			if (_isTurn != player.turn){
+				_isTurn = player.turn;
+				initTurn();
+			}
 		}
 		
 		public function set gameId(gameId:int):void{
-			if (gameId != _gameId){
-				_gameId = gameId;
-				var call:Object = _gameService.getGameGrid(_gameId);
-				call.operation = "getGameGrid";
-			}
+			_gameId = gameId;
 		}  
+		
+		public function begin():void{
+			getGrid();
+		}
+		
+		public function turn():void{
+			getGrid();
+			var call:Object = _gameService.getPlayers();
+			call.operation = "getPlayers";
+		}
+		
+		public function playerChange():void{
+			var call:Object = _gameService.getPlayers();
+			call.operation = "getPlayers";
+		}
+		
+		public function end():void{
+			Alert.show("Game ended");	
+		}
+		
+		private function getGrid():void{
+			var call:Object = _gameService.getGameGrid();
+			call.operation = "getGameGrid";
+		}
 		
 		private function initGrid(gameGrid:GameGrid):void{
 			var checker:Checker;
 			_gameGrid = gameGrid;
+			_board.clearCells();
 			if (_gameGrid.cells){
 				for (var i:Number = 0; i < _gameGrid.cells.length; i++){
 					checker = Checker(_gameGrid.cells[i]);
 					_board.addCell(checker);
-					checker.addEventListener(MouseEvent.MOUSE_OVER, highlightCell);
-					checker.addEventListener(MouseEvent.MOUSE_OUT, restoreCell);
-					checker.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
-					checker.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
 				}
 			}
+			initTurn();
 		} 
+		
+		private function initTurn():void{
+			var checker:Checker;
+			if (_gameGrid.cells){
+				for (var i:Number = 0; i < _gameGrid.cells.length; i++){
+					checker = Checker(_gameGrid.cells[i]);
+					_board.addCell(checker);
+					if (_isTurn && checker.color == _player.color){
+						checker.buttonMode = true;
+						checker.addEventListener(MouseEvent.MOUSE_OVER, highlightCell);
+						checker.addEventListener(MouseEvent.MOUSE_OUT, restoreCell);
+						checker.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
+						checker.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
+					}else{
+						checker.buttonMode = false;
+						if (checker.color == _player.color){
+							checker.removeEventListener(MouseEvent.MOUSE_OVER, highlightCell);
+							checker.removeEventListener(MouseEvent.MOUSE_OUT, restoreCell);
+							checker.removeEventListener(MouseEvent.MOUSE_DOWN, startMove);
+							checker.removeEventListener(DragEvent.DRAG_COMPLETE, endMove);
+						}
+					}
+				}
+			}
+		}
+		
+		private function updatePlayers(players:ArrayCollection):void{
+			var player:Player;
+			for (var i:int = 0; i < players.length; i++){
+				player = Player(players[i]); 
+				if (player.id == _player.id){
+					this.player = player;
+				}
+			} 
+		}
 		
 		private function resultHandler(event:ResultEvent):void{
 			var call:Object = event.token;
@@ -78,6 +140,9 @@ package mx.ecosur.multigame.checkers{
 				case "getValidMoves":
 					defineValidMoves(event.result, call.cell);
 					break;
+				case "getPlayers":
+					updatePlayers(ArrayCollection(event.result));
+					break;
 			}
 		}
 		
@@ -86,40 +151,44 @@ package mx.ecosur.multigame.checkers{
 		}
 		
 		private function highlightCell(evt:MouseEvent):void{
-			if (!_isMoving){
+			if (!_isMoving && _isTurn){
+				evt.currentTarget.useHandCursor = true;
 				evt.currentTarget.alpha = Cell.HIGHLIGHT_ALPHA;
 			}
 		}
 		
 		private function restoreCell(evt:MouseEvent):void{
-			if (!_isMoving){
+			if (!_isMoving && _isTurn){
+				evt.currentTarget.useHandCursor = false;
 				evt.currentTarget.alpha = Cell.DEFAULT_ALPHA;
 			}
 		}
 		
 		private function startMove(evt:MouseEvent):void{
 			
-			//select the cell
-            var cell:Cell = Cell(evt.currentTarget);
-			BoardCell(cell.parent).select(cell.colorCode);
+			if (!_isMoving && _isTurn){
 			
-			//initialize drag source
-            var ds:DragSource = new DragSource();
-            ds.addData(cell, "cell");
-            
-            //get valid cells
-            if (!_validMoves[cell.column + "#" + cell.row]){
-            	//TODO: integrate with turns
-            	_player.turn = true;
-            	var call:Object = _gameService.getValidMoves(_player, cell);
-            	call.operation = "getValidMoves";
-            	call.cell = cell;
-            }
-            
-            //create proxy image and start drag
-            var dragImage:IFlexDisplayObject = cell.createDragImage();
-            DragManager.doDrag(cell, ds, evt, dragImage);
-            _isMoving = true;
+				//select the cell
+	            var cell:Cell = Cell(evt.currentTarget);
+				BoardCell(cell.parent).select(cell.colorCode);
+				
+				//initialize drag source
+	            var ds:DragSource = new DragSource();
+	            ds.addData(cell, "cell");
+	            
+	            //get valid cells
+	            if (!_validMoves[cell.column + "#" + cell.row]){
+	            	var call:Object = _gameService.getValidMoves(_player, cell);
+	            	call.operation = "getValidMoves";
+	            	call.cell = cell;
+	            }
+	            
+	            //create proxy image and start drag
+	            var dragImage:IFlexDisplayObject = cell.createDragImage();
+	            DragManager.doDrag(cell, ds, evt, dragImage);
+            	_isMoving = true;
+            	
+   			}
 		} 
 		
 		public function dragEnterCell(evt:DragEvent):void{
@@ -152,7 +221,8 @@ package mx.ecosur.multigame.checkers{
 				move.current = cell;
 				move.destination = destination;
 				move.status = Move.UNVERIFIED;
-            	_gameService.doMove(move);
+            	var call:Object = _gameService.doMove(move);
+            	call.operation = "doMove";
 				
 				//do move in interface
 				BoardCell(cell.parent).reset();
@@ -187,20 +257,43 @@ package mx.ecosur.multigame.checkers{
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			
+			//inforce minimum width and height: TODO - This allows other components to overlap - look for solution
+			//unscaledWidth = Math.max(unscaledWidth, 300);
+			//unscaledHeight = Math.max(unscaledHeight, 300);
+			
 			//redefine cell size of board and position in center of game
 			if (unscaledWidth / _board.nCols >= unscaledHeight / _board.nRows){
 				
 				//board limited by height, expand to height of game and center x
 				_board.cellSize = unscaledHeight / _board.nRows;
-				_board.x = (unscaledWidth - _board.cellSize * _board.nCols) / 2;
-				_board.y = 0;
+				
+				//rotate board if player is black
+				if (_player.color == Color.BLACK){
+					_board.rotation = - 90;
+					_board.x = (unscaledWidth - _board.cellSize * _board.nCols) / 2;
+					_board.y = _board.cellSize * _board.nRows;
+				}else{
+					_board.rotation = 90;
+					_board.x = (unscaledWidth + _board.cellSize * _board.nCols) / 2;
+					_board.y = 0;
+				}
 				
 			}else{
 				
 				//board limited by width, expand to width of game and center y
 				_board.cellSize = unscaledWidth / _board.nCols;
-				_board.x = 0;
-				_board.y = (unscaledHeight - _board.cellSize * _board.nRows) / 2;
+				
+				//rotate board if player is black
+				if (_player.color == Color.BLACK){
+					_board.rotation = - 90;
+					_board.x = 0;
+					_board.y = (unscaledHeight + _board.cellSize * _board.nRows) / 2;  
+				}else{
+					_board.rotation = 90;
+					_board.x = _board.cellSize * _board.nCols;
+					_board.y = (unscaledHeight - _board.cellSize * _board.nRows) / 2;
+				}
+				
 			}
 		}
 		

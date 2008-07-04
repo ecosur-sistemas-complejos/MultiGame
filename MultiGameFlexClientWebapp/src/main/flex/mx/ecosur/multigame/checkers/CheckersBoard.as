@@ -3,7 +3,7 @@ package mx.ecosur.multigame.checkers {
 	import mx.ecosur.multigame.entity.BoardCell;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.events.DragEvent;
-	import mx.controls.Alert;
+	import mx.events.FlexEvent;
 	
 	[Style(name="cellBgColor1", type="uint", format="Color")]
 	[Style(name="cellBgColor2", type="uint", format="Color")]
@@ -81,6 +81,16 @@ package mx.ecosur.multigame.checkers {
 			boardCell.cell = cell;
 			cell.row = boardCell.row;
 			cell.column = boardCell.column;
+		}
+		
+		public function clearCells():void{
+			var boardCell:BoardCell;
+			for (var i:Number = 0; i < _nCols; i++){
+				for (var j:Number = 0; j < _nRows; j++){
+					boardCell = BoardCell(boardCells[i][j]);
+					boardCell.cell = null;
+				}
+			}
 		}
 		
 		override protected function createChildren():void {
