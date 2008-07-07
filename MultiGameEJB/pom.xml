@@ -7,43 +7,6 @@
   <artifactId>multi-game-ejb</artifactId>
   <packaging>ejb</packaging>
   <version>0.0.1</version>
-  <description>This project is for demonstrating the applicability of multiple rulesets
-		against a variety of games, all played upon a grid. Users will be able to switch
-		applicable rulesets against the grid in play, allowing the evaluation of new moves in
-		the new rule based context.
-		The games to be modeled are:
-		
-		1) Pente 2) Checkers
-		
-		This is the backend implementation of the for the multi-game. As such, it is an EJB3
-		implementation including all required Drools rule bases. In future version, rules
-		will be shared resources, accessible on the network.</description>
-  <developers>
-    <developer>
-      <name>Andrew Waterman</name>
-      <email>awaterma@ecosur.mx</email>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <name>Max Pimm</name>
-      <email>maxmil@gmail.com</email>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>	  
-  </developers>
-  <contributors>
-    <contributor>
-      <name>Luis Garcia Barrios</name>
-      <email>lgarcia@ecosur.mx</email>
-      <roles>
-        <role>Project Creator</role>
-        <role>Project Advisor</role>
-      </roles>
-    </contributor>
-  </contributors>
   <properties>
 	  <test.skip>false</test.skip>
   </properties>

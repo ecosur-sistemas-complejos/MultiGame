@@ -4,9 +4,10 @@
 package mx.ecosur.multigame;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.persistence.Embedded;
 
@@ -22,16 +23,16 @@ import javax.persistence.Embedded;
  */
 public class GameGrid implements Serializable {
 
-	List<Cell> cells;
+	TreeSet<Cell> cells;
 	
 	public GameGrid () {
-		cells = new ArrayList<Cell>();
+		cells = new TreeSet<Cell>(new CellComparator());
 	}
 
 	/**
 	 * Initializes a GameGrid object containing the List of Cells.
 	 */
-	public GameGrid(List<Cell> cells) {
+	public GameGrid(TreeSet<Cell> cells) {
 		this.cells = cells;
 	}
 	
@@ -40,31 +41,29 @@ public class GameGrid implements Serializable {
 	 * Returns the Cell at the specified location
 	 */
 	public Cell getLocation (int x, int y) {
+		return getLocation (new Cell(x,y,Color.UNKNOWN));
+	}
+	
+	/* 
+	 * Returns the cell at the location specified by the passed in Cell, null
+	 * if no Cell exists at that location.  As we parse only the tail of an
+	 * ordered list, this method should return in log(n) time.
+	 */
+	public Cell getLocation (Cell location) {
 		Cell ret = null;
+		CellComparator comparator = (CellComparator) cells.comparator();
+		SortedSet<Cell> sublist = cells.tailSet(location);
 		
-		/* Search all cells in the list for the requested co-ordinates */
-		/* TODO Update this search to be more efficient */
-		ListIterator<Cell> iter = cells.listIterator();
-		while (iter.hasNext()) {
-			Cell candidate = iter.next();
-			if (candidate.getRow() == x && candidate.getColumn() == y) {
-				ret = candidate;
-				break;
-			}
+		for (Cell c : sublist) {
+			int value = comparator.compare(location, c);
+			if (value == 0)
+				ret = c;
 		}
 		
 		return ret;
-		
-	}
-	
-	public Cell getLocation (Cell location) {
-		return getLocation(location.getRow(), location.getColumn());
 	}
 	
 	public void updateCell (Cell cell) {
-		Cell existing = getLocation(cell.getRow(), cell.getColumn());
-		if (existing != null)
-			cells.remove(existing);
 		cells.add(cell);
 	}
 	
@@ -73,17 +72,17 @@ public class GameGrid implements Serializable {
 	}
 	
 	@Embedded
-	public List<Cell> getCells () {
+	public Set<Cell> getCells () {
 		return cells;
 	}
 	
-	public void setCells(List<Cell> cells){
-		this.cells = cells;
+	public void setCells(Set<Cell> cells){
+		this.cells = (TreeSet<Cell>) cells;
 	}
 	
 	public String toString () {
 		StringBuffer buf = new StringBuffer();
-		ListIterator<Cell> iter = cells.listIterator();
+		Iterator<Cell> iter = cells.iterator();
 		buf.append ("Grid: [");
 		while (iter.hasNext()) {
 			Cell cell = iter.next();
@@ -99,4 +98,5 @@ public class GameGrid implements Serializable {
 		
 		return buf.toString();
 	}
+	
 }

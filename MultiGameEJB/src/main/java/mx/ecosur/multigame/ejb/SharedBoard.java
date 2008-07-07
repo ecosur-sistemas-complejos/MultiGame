@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -27,6 +28,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import mx.ecosur.multigame.Cell;
+import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
@@ -227,8 +229,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 * @throws CloneNotSupportedException 
 	 */
 	public GameGrid getGameGrid() {
-		List<Cell> ret = new ArrayList<Cell> (); 
-		
+		TreeSet<Cell> ret = new TreeSet<Cell> (new CellComparator()); 
 		try {
 			for (Cell c : game.getGrid().getCells()) {
 				Cell cell = c.clone();

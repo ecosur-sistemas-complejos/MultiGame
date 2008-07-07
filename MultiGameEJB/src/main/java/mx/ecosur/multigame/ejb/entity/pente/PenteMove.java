@@ -6,6 +6,7 @@ package mx.ecosur.multigame.ejb.entity.pente;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
@@ -40,50 +41,71 @@ public class PenteMove extends Move {
 	/*
 	 * Returns a set of captured pieces, computed once. 
 	 */
-	public Set<Cell> getCaptures (Color[] candidateColors) {
+	public Set<Cell> getCaptures () {
 		GameGrid grid = this.getGame().getGrid();
 		
 		if (captures == null) {
 			captures = new HashSet<Cell>();
 			
 			/* Find 2 levels of cells in all directions, from this move */
-			Set<AnnotatedCell> candidates = findCandidates (
-					new AnnotatedCell (getDestination()), candidateColors, 2);
+			Color [] candidateColors = getCandidateColors ();
+			for (Color c : candidateColors) {
+				Color [] searchColors = { c };
+				Set<AnnotatedCell> candidates = findCandidates (
+					new AnnotatedCell (getDestination()), searchColors, 2);
 			
-			/* Directional Hash of cells */
-			HashMap <Direction,ArrayList<Cell>> directionalMap = 
-				new HashMap<Direction,ArrayList<Cell>>();
+				/* Directional Hash of cells */
+				HashMap <Direction,ArrayList<Cell>> directionalMap = 
+					new HashMap<Direction,ArrayList<Cell>>();
 		
-			/* Sort the candidates */
-			for (AnnotatedCell candidate : candidates) {
-				if (directionalMap.containsKey(candidate.getDirection())) {
-					ArrayList<Cell> lst = directionalMap.get(candidate.getDirection());
-					lst.add(candidate.getCell());
-					directionalMap.put (candidate.getDirection(), lst);
-				} else {
-					ArrayList<Cell> lst = new ArrayList<Cell> ();
-					lst.add(candidate.getCell());
-					directionalMap.put(candidate.getDirection(), lst);
+				/* Sort the candidates */
+				for (AnnotatedCell candidate : candidates) {
+					if (directionalMap.containsKey(candidate.getDirection())) {
+						ArrayList<Cell> lst = directionalMap.get(candidate.getDirection());
+						lst.add(candidate.getCell());
+						directionalMap.put (candidate.getDirection(), lst);
+					} else {
+						ArrayList<Cell> lst = new ArrayList<Cell> ();
+						lst.add(candidate.getCell());
+						directionalMap.put(candidate.getDirection(), lst);
+					}
 				}
-			}
 			
-			/* For each Direction, check and see if the last cell in the list
-			 * is bounded by a cell of this color 
-			 */
-			Set<Direction> keys = directionalMap.keySet();
-			for (Direction direction : keys) {
-				ArrayList<Cell> trapped = directionalMap.get(direction);
-				if (trapped.size() != 2) 
-					continue;
-				Cell cell = trapped.get(1);
-				Cell result = searchGrid (grid, direction, cell);
-				if (result.getColor() == getDestination().getColor()) {
-					captures.addAll(trapped);
+				/* For each Direction, check and see if the last cell in the list
+				 * is bounded by a cell of this color 
+				 */
+				Set<Direction> keys = directionalMap.keySet();
+				for (Direction direction : keys) {
+					ArrayList<Cell> trapped = directionalMap.get(direction);
+					if (trapped.size() != 2) 
+						continue;
+					Cell cell = trapped.get(1);
+					Cell result = searchGrid (grid, direction, cell);
+					if (result.getColor() == getDestination().getColor()) {
+						captures.addAll(trapped);
+					}
 				}
 			}
 		}
 		
 		return captures;
+		
+	}
+
+	private Color[] getCandidateColors() {
+		Color [] ret;
+		
+		List<Player> players = getGame().getPlayers();
+		ArrayList<Color> colors = new ArrayList<Color>();
+		
+		ret = new Color [ players.size() -1 ];
+		for (Player p : players) {
+			if (p.equals(this.getPlayer()))
+				continue;
+			colors.add(p.getColor());
+		}
+		
+		return colors.toArray(ret);
 		
 	}
 
@@ -107,6 +129,8 @@ public class PenteMove extends Move {
 		
 		if (startingCell.getDirection() == Direction.UNKNOWN) {
 			for (Direction direction : Direction.values()) {
+				if (direction == Direction.UNKNOWN)
+					break;
 				AnnotatedCell start = new AnnotatedCell (startingCell.getCell(), 
 					direction);
 				ret.addAll(findCandidates (start, targetColors, depth));
@@ -146,14 +170,24 @@ public class PenteMove extends Move {
 				column = cell.getColumn() + 1;
 				break;
 			case SOUTHEAST:
+				row = cell.getRow () + 1;
+				column = cell.getColumn() + 1;
 				break;
 			case SOUTH:
+				row = cell.getRow() + 1;
+				column = cell.getColumn();
 				break;
 			case SOUTHWEST:
+				row = cell.getRow() + 1;
+				column = cell.getColumn () -1;
 				break;
 			case WEST:
+				row = cell.getRow();
+				column = cell.getColumn () - 1;
 				break;
 			case NORTHWEST:
+				row = cell.getRow() - 1;
+				column = cell.getColumn () - 1;
 				break;
 			default:
 				break;
@@ -164,7 +198,7 @@ public class PenteMove extends Move {
 	}
 	
 	
-	class AnnotatedCell {
+	private class AnnotatedCell {
 		
 		private Direction direction;
 		

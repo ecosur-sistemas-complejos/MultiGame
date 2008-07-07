@@ -20,6 +20,8 @@ import mx.ecosur.multigame.ejb.entity.checkers.JumpMove;
 import java.awt.Dimension;
 import java.lang.Integer;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.List;
 
 #Functions
@@ -200,7 +202,7 @@ function boolean isKing (Game game, Move move) {
 */
 function boolean isTokensLeft (GameGrid grid) {
     boolean ret = false;
-    List<Cell> cells = grid.getCells();
+    Set<Cell> cells = grid.getCells();
     ArrayList<Color> seenColors = new ArrayList<Color>(2);
     for (Cell c : cells) {
         if (! seenColors.contains (c.getColor()))
@@ -226,8 +228,8 @@ function boolean isTokensLeft (GameGrid grid) {
 */
 function Player getWinner (Game game) {
     GameGrid grid = game.getGrid();
-    List<Cell> cells = grid.getCells();
-    Color winningColor = cells.get(0).getColor();
+    SortedSet<Cell> cells = (SortedSet<Cell>) grid.getCells();
+    Color winningColor = cells.first().getColor();
     List<Player> players = game.getPlayers();
     Player winner = null;
     for (Player p : players) {

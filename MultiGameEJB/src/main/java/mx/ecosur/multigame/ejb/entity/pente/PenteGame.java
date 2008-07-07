@@ -22,9 +22,9 @@ import mx.ecosur.multigame.ejb.entity.Game;
 @DiscriminatorValue("PENTE")
 public class PenteGame extends Game {
 	
-	private TreeSet<Player> winners;
+	private TreeSet<PentePlayer> winners;
 	
-	public Set <Player> getWinners () {
+	public Set <PentePlayer> getWinners () {
 		if (winners == null) {
 			winners = determineWinners ();
 		}
@@ -32,10 +32,10 @@ public class PenteGame extends Game {
 		return winners;
 	}
 	
-	private TreeSet<Player> determineWinners() {
-		TreeSet<Player> ret = new TreeSet<Player> (new PlayerComparator());
+	private TreeSet<PentePlayer> determineWinners() {
+		TreeSet<PentePlayer> ret = new TreeSet<PentePlayer> (new PlayerComparator());
 		for (Player p : getPlayers()) {
-			PentePlayer player = (PentePlayer) p;
+			PentePlayer player = new PentePlayer(p);
 			ret.add(player);
 		}
 		
@@ -43,18 +43,16 @@ public class PenteGame extends Game {
 	}
 	
 	
-	class PlayerComparator implements Comparator <Player>{
+	class PlayerComparator implements Comparator <PentePlayer>{
 
-		public int compare(Player alice, Player bob) {
+		public int compare(PentePlayer alice, PentePlayer bob) {
 			int ret = 0;
 			
-			if (alice instanceof PentePlayer && bob instanceof PentePlayer) {
-				PentePlayer p1 = (PentePlayer) alice, p2 = (PentePlayer) bob;
-				if (p1.getPoints() > p2.getPoints())
-					ret = 1;
-				else if (p1.getPoints() < p2.getPoints())
-					ret = -1;
-			}
+			PentePlayer p1 = (PentePlayer) alice, p2 = (PentePlayer) bob;
+			if (p1.getPoints() > p2.getPoints())
+				ret = 1;
+			else if (p1.getPoints() < p2.getPoints())
+				ret = -1;
 			return ret;	
 		}
 	}

@@ -4,10 +4,12 @@ import static org.junit.Assert.*;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameType;
@@ -90,7 +92,9 @@ public class CheckersSharedBoardTest {
 	 */
 	@Test
 	public void testGetGameGrid() throws RemoteException {
-		assertTrue (board.getGameGrid().getCells().size() == 24);
+		GameGrid grid = board.getGameGrid();
+		Set<Cell> cells = grid.getCells();
+		assertEquals (24, cells.size());
 	}
 
 	/**

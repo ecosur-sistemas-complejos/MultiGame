@@ -27,6 +27,8 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.spi.Activation;
+import org.drools.spi.AgendaFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -114,6 +116,7 @@ public class PenteRulesTest {
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
+		statefulSession.clearAgenda();
 		statefulSession.insert(move);
 		statefulSession.setFocus ("verify");
 		statefulSession.fireAllRules();
@@ -137,7 +140,7 @@ public class PenteRulesTest {
 		statefulSession.fireAllRules();
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
-		assertEquals (game.getGrid().getLocation(center), center);
+		assertEquals (center, game.getGrid().getLocation(center));
 		
 	}
 	
@@ -167,7 +170,7 @@ public class PenteRulesTest {
 		game.getGrid().updateCell(center);
 		game.setState(GameState.PLAY);
 		
-		Cell next = new Cell (10,9, alice.getColor());
+		Cell next = new Cell (10, 9, alice.getColor());
 		PenteMove subsequent = new PenteMove (game, alice, next);
 		
 		statefulSession.insert(game);
@@ -178,12 +181,10 @@ public class PenteRulesTest {
 		statefulSession.fireAllRules();
 		
 		assertEquals (Move.Status.MOVED, subsequent.getStatus());
-		assertEquals (game.getGrid().getLocation(next), next);
+		assertEquals (next, game.getGrid().getLocation(next));
 	}
 	
-	
-	class DebugEventListener implements WorkingMemoryEventListener {
-		
+	private class DebugEventListener implements WorkingMemoryEventListener {	
 		private Logger logger;
 		
 		public DebugEventListener () {
@@ -201,6 +202,5 @@ public class PenteRulesTest {
 		public void objectUpdated(ObjectUpdatedEvent event) {
 			logger.info (event.getObject().toString());
 		}
-		
 	}
 }
