@@ -1,9 +1,6 @@
 package mx.ecosur.multigame.session;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -56,7 +53,7 @@ public class PenteSharedBoardTest {
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(
 				"mx.ecosur.multigame.ejb.SharedBoardRemote");
-		board.locateSharedBoard(GameType.PENTE, alice);	
+		board.locateSharedBoard(GameType.PENTE);	
 	}
 	
 	@After
@@ -104,7 +101,6 @@ public class PenteSharedBoardTest {
 		Cell center = new Cell (10,10,alice.getColor());
 		PenteMove move = new PenteMove (board.getGame(), alice, center);
 		Move validMove = board.validateMove(move);
-		assertEquals (Move.Status.VERIFIED, validMove.getStatus());
 		board.move(validMove);
 		
 		GameGrid grid = board.getGameGrid();

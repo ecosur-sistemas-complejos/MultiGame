@@ -69,7 +69,7 @@ public class CheckersSharedBoardTest {
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(
 				"mx.ecosur.multigame.ejb.SharedBoardRemote");
-		board.locateSharedBoard(GameType.CHECKERS, alice);	
+		board.locateSharedBoard(GameType.CHECKERS);	
 	}
 	
 	@After

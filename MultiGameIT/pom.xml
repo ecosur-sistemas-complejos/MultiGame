@@ -22,53 +22,67 @@
 	            <version>2.4.2</version>
 	            <executions>
 	                <execution>
+	                    <id>integration</id>
 	                    <goals><goal>test</goal></goals>
 	                    <phase>integration-test</phase>
 	                </execution>
 	            </executions>
 	        </plugin>
+	        <plugin>
+                <groupId>org.easyb</groupId>
+                <artifactId>maven-easyb-plugin</artifactId>
+                <version>0.8</version>
+                <configuration>
+                    <easybTestDirectory>${basedir}/src/test/groovy</easybTestDirectory>
+                    <xmlReport>${project.build.directory}/surefire-reports/TEST-easyb-scenarios.xml</xmlReport>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals><goal>test</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>mx.ecosur</groupId>
-			<artifactId>multi-game-ejb</artifactId>
-			<version>0.0.1</version>
-			<type>ejb-client</type>
-		</dependency>
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>ejb</artifactId>
-			<version>3.0</version>
-			<scope>system</scope>
-			<systemPath>${glassfish}/lib/javaee.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>ejb-rt</artifactId>
-			<version>3.0</version>
-			<scope>system</scope>
-			<systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>toplink</artifactId>
-			<version>3.0</version>
-			<scope>system</scope>
-			<systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
-		</dependency>
+	   <dependency>
+	        <groupId>mx.ecosur</groupId>
+            <artifactId>multi-game-ejb</artifactId>
+            <version>0.0.1</version>
+            <type>ejb</type>
+	   </dependency>
+	   <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${glassfish}/lib/javaee.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>ejb-rt</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>toplink</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
+        </dependency>
+	    <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>multi-game-ejb</artifactId>
+            <version>0.0.1</version>
+            <type>ejb-client</type>
+        </dependency>
 		<dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.0</version>
-            <scope>test</scope>
-        </dependency>
-		<dependency>
-            <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-ejb</artifactId>
-            <version>0.0.1</version>
-            <type>ejb</type>
-			<scope>test</scope>
         </dependency>
 	</dependencies>
 </project>
