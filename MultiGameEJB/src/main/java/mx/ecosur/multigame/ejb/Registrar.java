@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -34,6 +36,7 @@ import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 
 @Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 	@PersistenceContext(unitName = "MultiGame")

@@ -25,6 +25,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Version;
 
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
@@ -72,6 +73,8 @@ public class Game implements Serializable {
 	private GameGrid grid;
 	
 	private GameState state;
+	
+	private long version;
 	
 	/* Dimensioning for storage */
 	private int rows, columns;
@@ -222,6 +225,19 @@ public class Game implements Serializable {
 	public void setDimension(Dimension dimension) {
 		 this.rows = (int) dimension.getHeight();
 		 this.columns = (int) dimension.getWidth();
+	}
+	
+	/*
+	 * Ensures ACIDity in Game objects in database.
+	 * 
+	 */
+	@Version
+	public long getVersion () {
+		return version;
+	}
+	
+	public void setVersion (long version) {
+		this.version = version;
 	}
 	
 	public int getMaxPlayers () {	

@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateful;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -47,6 +49,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 
 @Stateful
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	
 	@PersistenceContext (unitName="MultiGame")
