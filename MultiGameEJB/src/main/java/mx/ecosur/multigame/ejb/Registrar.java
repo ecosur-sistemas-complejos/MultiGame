@@ -142,15 +142,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		}
 		
 		/*
-		 * Update the player with the current time for registration and persist
-		 * the individual into the system.
+		 * Update the player with the current time for registration 
 		 */
 		player.setLastRegistration(System.currentTimeMillis());
-
-		/* Persist the game and the player */
-		em.persist(player);
-		em.persist(game);
-		
 		return player;
 	}
 
@@ -173,8 +167,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 				game = new PenteGame();
 			else
 				game = new Game();
-			
 			game.initialize(type);
+			em.persist(game);
 		}
 		return game;
 	}
@@ -190,11 +184,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		}
 		
 		game.removePlayer(player);
-		
-		if (game.getType().equals(GameType.PENTE) && !(game instanceof PenteGame))
-			throw new RemoteException ("Cannot serialize a PENTE game as  REGULAR GAME!");
-		
-		em.persist(game);
 	}
 
 	public Player locatePlayer(String name) throws RemoteException {

@@ -270,9 +270,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
 		
-		/* Persist the changes */
-		em.flush();
-		
 		incrementTurn(move.getPlayer());
 	}
 
@@ -328,10 +325,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		}
 
 		nextPlayer.setTurn(true);
-
-		/* Flush all changes */
-		em.flush();
-		
 		sendGameEvent(GameEvent.TURN);
 		
 		return nextPlayer;
@@ -350,7 +343,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			session.close();
 			connection.close();
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}
