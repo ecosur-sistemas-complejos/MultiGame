@@ -202,6 +202,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 * @throws CloneNotSupportedException 
 	 */
 	public GameGrid getGameGrid() {
+		game = em.find(Game.class, game.getId());
 		TreeSet<Cell> ret = new TreeSet<Cell> (new CellComparator()); 
 		try {
 			for (Cell c : game.getGrid().getCells()) {
@@ -266,9 +267,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
 		
-		/* Persist the move */
-		em.persist(game);
-		em.persist(move);
+		/* Persist the changes */
+		em.flush();
 		
 		incrementTurn(move.getPlayer());
 	}
@@ -309,9 +309,11 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			throw new RemoteException ("Only the Player with the " +
 					"turn can increment the turn!");
 		if (!em.contains(player))
-			player = em.merge(player);
+				player = em.find(Player.class, player.getId());
 		player.setTurn(false);
-		em.persist(player);
+		
+		if (!em.contains(game))
+			game = em.find(Game.class, game.getId());
 		
 		List<Player> players = game.getPlayers();
 		int playerNumber = players.indexOf(player);
@@ -322,10 +324,11 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			nextPlayer = players.get(playerNumber + 1);
 		}
 
-		if (!em.contains(nextPlayer))
-			nextPlayer = em.merge(nextPlayer);
 		nextPlayer.setTurn(true);
-		em.persist(nextPlayer);
+
+		/* Flush all changes */
+		em.flush();
+		
 		sendGameEvent(GameEvent.TURN);
 		
 		return nextPlayer;
