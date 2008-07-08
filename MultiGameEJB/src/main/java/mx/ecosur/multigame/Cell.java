@@ -68,7 +68,7 @@ public class Cell implements Serializable, Cloneable {
 	}
 
 	public Cell clone() throws CloneNotSupportedException {
-		Cell clone = new Cell(this.row, this.column, Color
+		Cell clone = new Cell(this.column, this.row, Color
 				.valueOf(color.name()));
 		if (this.characteristic != null)
 			clone.characteristic = characteristic.clone();
