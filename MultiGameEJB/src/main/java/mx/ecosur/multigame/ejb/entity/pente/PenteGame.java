@@ -3,8 +3,12 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -18,18 +22,29 @@ import mx.ecosur.multigame.ejb.entity.Game;
  * @author awater
  *
  */
+@NamedQueries ({
+	@NamedQuery(name="getPenteGame",
+			query="select g from PenteGame g where g.type=:type " +
+				"and g.state <>:state"),
+	@NamedQuery(name="getPenteGameById",
+			query="select g from PenteGame g where g.id=:id " +
+				"and g.state<>:state")})
 @Entity
-@DiscriminatorValue("PENTE")
 public class PenteGame extends Game {
 	
-	private TreeSet<PentePlayer> winners;
+	private Set<PentePlayer> winners;
 	
+	@ManyToMany (fetch=FetchType.EAGER)
 	public Set <PentePlayer> getWinners () {
 		if (winners == null) {
 			winners = determineWinners ();
 		}
 		
 		return winners;
+	}
+	
+	public void setWinners (Set<PentePlayer> winners) {
+		this.winners = winners;
 	}
 	
 	private TreeSet<PentePlayer> determineWinners() {

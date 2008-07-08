@@ -23,6 +23,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
@@ -34,10 +36,21 @@ import mx.ecosur.multigame.GameType;
  *
  */
 
+@NamedQueries ({
+	@NamedQuery(name="getGameByType",
+			query="select g from Game g where g.type=:type " +
+				"and g.state <>:state"),
+	@NamedQuery(name="getGameById",
+			query="select g from Game g where g.id=:id " +
+		"and g.state<>:state"),
+	@NamedQuery(name="getGameByTypeAndPlayer",
+			query="select g from Game as g, Player as player " +
+				"where player=:player and player MEMBER OF g.players " +
+				"and g.type=:type and g.state <>:state")
+	})
+
 @Entity
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="DISCRIMINATOR", discriminatorType=DiscriminatorType.STRING)
-@DiscriminatorValue("GAME")
+@Inheritance(strategy=InheritanceType.JOINED)
 public class Game implements Serializable {
 	
 	/**

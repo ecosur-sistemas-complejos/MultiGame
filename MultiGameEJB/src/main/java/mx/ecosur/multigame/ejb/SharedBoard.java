@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -81,27 +80,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 */
 	
 	public void locateSharedBoard(GameType type) throws RemoteException {
-		Query query = em.createQuery("select g from Game g where g.type=:type " +
-				"and g.state <>:state");
-		query.setParameter("type", type);
-		query.setParameter("state", GameState.END);
-		try {
-			Game game = (Game) query.getSingleResult();
-			this.setGame(game);
-		} catch (EntityNotFoundException e) {
-			throw new RemoteException("Unable to find game with specified id!");
-		} catch (NonUniqueResultException e) {
-			throw new RemoteException("More than one game of that type found!");
-		} catch (NoResultException e) {
-			createGame(type);
-		}
-	}
-	
-	public void locateSharedBoard(GameType type, Player player) throws RemoteException {
-		Query query = em.createQuery("select g from Game as g, Player as player " +
-				"where player=:player and player MEMBER OF g.players " +
-				"and g.type=:type and g.state <>:state");
-		query.setParameter("player", player);
+		Query query = em.createNamedQuery(type.getNamedQuery());
 		query.setParameter("type", type);
 		query.setParameter("state", GameState.END);
 		try {
@@ -116,9 +95,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		}
 	}	
 	
-	public void locateSharedBoard (int gameId) throws RemoteException {
-		Query query = em.createQuery("select g from Game g where g.id=:id " +
-		"and g.state<>:state");
+	public void locateSharedBoard (GameType type, int gameId) throws RemoteException {
+		Query query = em.createQuery(type.getNamedQuery(gameId));
 		query.setParameter("id", gameId);
 		query.setParameter("state", GameState.END);
 		try {
@@ -138,22 +116,18 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 * @throws RemoteException
 	 */
 	void createGame(GameType type) throws RemoteException {
-		
-		Game game;
-		
 		/* Create a new Game */
 		switch (type) {
 			case PENTE:
 				PenteGame pg = new PenteGame ();
-				game = (Game) pg;
+				pg.initialize(type);
+				this.setGame(pg);
 				break;
 			default:
-				game = new Game();
-				break;
+				Game rg = new Game();
+				rg.initialize(type);
+				this.setGame(rg);
 		}
-		
-		game.initialize(type);
-		this.setGame(game);
 	}
 	
 	/**
@@ -199,7 +173,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 				 */
 			 ruleset = RuleBaseFactory.newRuleBase();
 			 ruleset.addPackage( builder.getPackage() );
-			 
 			 statefulSession = ruleset.newStatefulSession(false);
 			 
 			 	/* Set the initial fact (game), and focus on the initialization

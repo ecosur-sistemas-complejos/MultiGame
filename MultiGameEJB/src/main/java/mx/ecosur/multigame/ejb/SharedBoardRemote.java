@@ -30,15 +30,10 @@ public interface SharedBoardRemote {
 	 */
 	public void locateSharedBoard (GameType type) throws RemoteException;
 	
-	/** 
-	 * Locates a game of the type, "type", and with the Player "player"
-	 */
-	public void locateSharedBoard(GameType type, Player player) throws RemoteException;
-	
 	/**
 	 * Locates a game with the specified id. 
 	 */
-	public void locateSharedBoard (int gameId) throws RemoteException;
+	public void locateSharedBoard (GameType type, int gameId) throws RemoteException;
 	
 	/**
 	 * Validates a specific move against a specific RuleBase

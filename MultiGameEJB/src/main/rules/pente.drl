@@ -60,8 +60,9 @@ function boolean isEmpty (GameGrid grid, Move move) {
     Determines if the move captures any two pieces of an opponent's color
     in any direction.
 */
-function boolean isCapture (PenteMove move) {
-    Set<Cell> captures = move.getCaptures();
+function boolean isCapture (Move move) {
+    PenteMove pente = (PenteMove) move;
+    Set<Cell> captures = pente.getCaptures();
     return (captures.size() > 0);
 }
 
@@ -71,12 +72,26 @@ function boolean isCapture (PenteMove move) {
     specific move.
 */
 
-function GameGrid removeCaptures (PenteMove move, GameGrid grid) {
-    Set<Cell> captures = move.getCaptures();
+function GameGrid removeCaptures (Move move, GameGrid grid) {
+    PenteMove pente = (PenteMove) move;
+    Set<Cell> captures = pente.getCaptures();
     for (Cell capture : captures) {
         grid.removeCell (capture);
     }
     return grid;
+}
+
+function boolean isTria (Move move) {
+    return false;
+}
+
+function boolean isTessera (Move move) {
+    return false;
+}
+
+/* Determines if a specific move results in Pente */
+function boolean isPente (Move move) {
+    return false;
 }
 
 
@@ -84,7 +99,8 @@ function GameGrid removeCaptures (PenteMove move, GameGrid grid) {
     Determines if the game has a winner.
 */
 function boolean hasWinner (Game game) {
-    return false;
+     PenteGame pente = (PenteGame) game;
+     return (pente.getWinners().size() > 0);
 }
 
 /*
@@ -92,8 +108,9 @@ function boolean hasWinner (Game game) {
     schemas, this function should return a PriorityQueue of Players 
     based upon positions on the board.
 */
-function PentePlayer getWinner (PenteGame game) {
-    SortedSet<PentePlayer> winners = (SortedSet<PentePlayer>) game.getWinners();
+function PentePlayer getWinner (Game game) {   
+    PenteGame pente = (PenteGame) game;
+    SortedSet<PentePlayer> winners = (SortedSet<PentePlayer>) pente.getWinners();
     return winners.first();
 }
 
@@ -155,6 +172,17 @@ then
     modify (game) { setGrid (modifiedGrid) }
 end
 
+# Finds all terceros
+rule "find-pente"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : Game (state == GameState.PLAY)
+    move  : Move ($player : player, player.turn == true, status == Status.MOVED)
+    eval (isPente(move))
+then
+    System.out.println ("Pente!");
+end
 
 # Captures any opposition tokens
 rule "execute-capture"
@@ -163,10 +191,11 @@ rule "execute-capture"
 when
     game  : Game (state == GameState.PLAY)
     move  : Move (player.turn == true, status == Status.MOVED)
-    eval (isCapture ((PenteMove) move))
+    eval (isCapture (move))
 then  
-    GameGrid grid = removeCaptures ((PenteMove) move, game.getGrid());
-end  
+    GameGrid grid = removeCaptures (move, game.getGrid());
+end
+ 
 
 # Finds the winner (currently, there is no payoff schema in place, a game win
 # is simply a "win.")

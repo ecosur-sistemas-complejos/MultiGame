@@ -31,6 +31,7 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 
 @Stateful
 public class Registrar implements RegistrarRemote, RegistrarLocal {
@@ -97,31 +98,17 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * 
 	 */
 
-	public Player registerPlayer(Player playerDAO, GameType type)
+	public Player registerPlayer(Player player, GameType type)
 			throws InvalidRegistrationException, RemoteException {
-
-		/*
-		 * Use the EM to pull a non-detached Player from the Store, update that
-		 * player with the current registration time and settings from the
-		 * PlayerDAO, and persist the entity into the store.
-		 * 
-		 * Catch the RemoteException for the case of a new Player.
-		 */
-		Player player;
-
-		try {
-			player = this.locatePlayer(playerDAO.getName());
-		} catch (RemoteException e) {
-			player = new Player();
-			player.setName(playerDAO.getName());
-		}
-
+		if (!em.contains(player))
+			player = em.merge(player);
+		
 		/* Load the Game */
 		Game game = locateGame(type);
 
 		if (!game.getPlayers().contains(player)) {
 			boolean colorAvailable = getAvailableColors(type).contains(
-					playerDAO.getColor());
+					player.getColor());
 			if (!colorAvailable) {
 				/*
 				 * Pick a color from the list of available colors for the game
@@ -133,12 +120,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 							"No colors available, game full!");
 				} else {
 					Color color = iter.next();
-					playerDAO.setColor(color);
+					player.setColor(color);
 				}
 			}
-
-			/* Set the player's color */
-			player.setColor(playerDAO.getColor());
 
 			/* Add the new player to the game */
 			try {
@@ -172,8 +156,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		/* Locate the game */
 		try {
-			Query query = em
-					.createQuery("select g from Game g where g.type=:type and g.state<>:state");
+			Query query = em.createNamedQuery(type.getNamedQuery());
 			query.setParameter("type", type);
 			query.setParameter("state", GameState.END);
 			game = (Game) query.getSingleResult();
@@ -183,7 +166,11 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		} catch (NonUniqueResultException e) {
 			throw new RemoteException(e.getMessage());
 		} catch (NoResultException e) {
-			game = new Game();
+			if (type == GameType.PENTE)
+				game = new PenteGame();
+			else
+				game = new Game();
+			
 			game.initialize(type);
 		}
 		return game;
@@ -201,12 +188,14 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		
 		game.removePlayer(player);
 		
+		if (game.getType().equals(GameType.PENTE) && !(game instanceof PenteGame))
+			throw new RemoteException ("Cannot serialize a PENTE game as  REGULAR GAME!");
+		
 		em.persist(game);
 	}
 
 	public Player locatePlayer(String name) throws RemoteException {
-		Query query = em
-				.createQuery("select p from Player p where p.name=:name");
+		Query query = em.createQuery("select p from Player p where p.name=:name");
 		query.setParameter("name", name);
 		Player player;
 		try {
@@ -224,8 +213,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return player;
 	}
 
-	public Game locateGame(int id) throws RemoteException {
-		Query query = em.createQuery("select g from Game g where g.id=:id");
+	public Game locateGame(GameType type, int id) throws RemoteException {
+		Query query = em.createNamedQuery(type.getNamedQuery(id));
 		query.setParameter("id", id);
 		Game game;
 

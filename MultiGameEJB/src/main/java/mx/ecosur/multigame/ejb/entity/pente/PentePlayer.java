@@ -3,8 +3,9 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.ejb.entity.Player;
 
@@ -12,8 +13,11 @@ import mx.ecosur.multigame.ejb.entity.Player;
  * @author awater
  *
  */
+
+@NamedQueries ({
+	@NamedQuery(name="getPentePlayer",
+			query="select p from PentePlayer p where p.name=:name")})
 @Entity
-@DiscriminatorValue("PENTE")
 public class PentePlayer extends Player {
 	
 	public PentePlayer () {

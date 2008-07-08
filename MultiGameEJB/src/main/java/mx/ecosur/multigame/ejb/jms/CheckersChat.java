@@ -11,6 +11,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import mx.ecosur.multigame.GameEvent;
+import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.RegistrarLocal;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -39,6 +40,7 @@ public class CheckersChat implements MessageListener {
 				
 				//get data from message
 				int gameId = map.getIntProperty("GAME_ID");
+				GameType gameType = GameType.valueOf(map.getString("GAME_TYPE"));
 
 				String senderName = map.getString("senderName");
 				double dateSent = map.getDouble("dateSent");
@@ -46,7 +48,7 @@ public class CheckersChat implements MessageListener {
 				String body = map.getString("body");
 				
 				//locate shared board and player
-				sharedBoard.locateSharedBoard(gameId);
+				sharedBoard.locateSharedBoard(gameType, gameId);
 				Player player = registrar.locatePlayer(senderName);
 
 				// TODO: Add relation between move and chatMessage
