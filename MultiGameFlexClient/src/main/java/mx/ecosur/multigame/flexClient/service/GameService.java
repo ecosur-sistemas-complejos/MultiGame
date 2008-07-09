@@ -1,7 +1,8 @@
 
-package mx.edu.ecosur.multigame.flexClient.service;
+package mx.ecosur.multigame.flexClient.service;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.flexClient.exception.GameException;
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
 
@@ -38,8 +40,8 @@ public class GameService {
 						.lookup(SharedBoardRemote.class.getName());
 				session.setAttribute("sharedBoard", sharedBoard);
 			} catch (NamingException e) {
-				logger.severe("Not able to get new instance of shared board");
 				e.printStackTrace();
+				throw new GameException(e);
 			}
 		}
 		return sharedBoard;
@@ -56,8 +58,8 @@ public class GameService {
 						.getName());
 				session.setAttribute("registrar", registrar);
 			} catch (NamingException e) {
-				logger.severe("Not able to get new instance of registrar");
 				e.printStackTrace();
+				throw new GameException(e);
 			}
 		}
 		return registrar;
@@ -68,15 +70,30 @@ public class GameService {
 		RegistrarRemote registrar = getRegistrar();
 		GameType gameType = GameType.valueOf(gameTypeStr);
 		try {
+			//TODO: This is a tempory fix to allow a player to reenter a game already started without knowing its id.
+			//the client interface should be enhanced to allow a player to select from games that he/she is already in.
+			player = registrar.locatePlayer(player.getName());
+
 			player = registrar.registerPlayer(player, gameType);
-			logger.info("player registered with color " + player.getColor());
+			
+			//TODO: This is a temporary fix until the pente player info is moved to gamePlayer
+			if (!player.getClass().equals(Player.class)){
+				Player player2 = new Player();
+				player2.setColor(player.getColor());
+				player2.setGamecount(player.getGamecount());
+				player2.setId(player.getId());
+				player2.setLastRegistration(player.getLastRegistration());
+				player2.setName(player.getName());
+				player2.setTurn(player.isTurn());
+				player2.setWins(player.getWins());
+				player = player2;
+			}
 		} catch (RemoteException e) {
-			logger.severe("Not able to register player " + player.getName()
-					+ " for gameType " + gameType);
 			e.printStackTrace();
+			throw new GameException(e);
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
-			throw (e);
+			throw new GameException(e);
 		}
 		return player;
 	}
@@ -87,8 +104,8 @@ public class GameService {
 		try {
 			sharedBoard.locateSharedBoard(gameType);
 		} catch (RemoteException e) {
-			logger.severe("Not able to get game id for gameType " + gameType);
 			e.printStackTrace();
+			throw new GameException(e);
 		}
 		int gameId = sharedBoard.getGame().getId();
 		return gameId;
@@ -97,13 +114,33 @@ public class GameService {
 	public GameGrid getGameGrid() {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		FlexSession session = FlexContext.getFlexSession();
-		System.out.println("Getting grid for session " + session.getId());
 		return sharedBoard.getGameGrid();
 	}
 	
 	public List<Player> getPlayers(){
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		return sharedBoard.getPlayers();
+		List<Player> players = sharedBoard.getPlayers();
+		
+		//TODO: This is a temporary fix until the pente player info is moved to gamePlayer
+		List<Player> players2 = new ArrayList<Player>();
+		Player player2;
+		for (Player player : players){
+			if (!player.getClass().equals(Player.class)){
+				player2 = new Player();
+				player2.setColor(player.getColor());
+				player2.setGamecount(player.getGamecount());
+				player2.setId(player.getId());
+				player2.setLastRegistration(player.getLastRegistration());
+				player2.setName(player.getName());
+				player2.setTurn(player.isTurn());
+				player2.setWins(player.getWins());
+				players2.add(player2);
+			}else{
+				players2.add(player);
+			}
+		}
+		
+		return players2;
 	}
 
 	public Map<String, Boolean> getValidMoves(Player player, Cell cell) {
@@ -125,10 +162,7 @@ public class GameService {
 					validMoves.put(moveCode, true);
 					logger.info("valid move " + moveCode + "\n" + move);
 				} catch (InvalidMoveException e) {
-					// Do nothing move is not valid
-				} catch (Exception e){
-					logger.severe("Exception validating move: " + move);
-					//throw(e);
+					//do not add move to valid moved but continue executing
 				}
 			}
 		}
@@ -145,12 +179,12 @@ public class GameService {
 			Move validatedMove = sharedBoard.validateMove(move);
 			sharedBoard.move(validatedMove);
 		} catch (InvalidMoveException e) {
-			logger.severe("Exception doing move " + move);
 			e.printStackTrace();
+			throw new GameException(e);
 		} catch (RemoteException e) {
 			e.printStackTrace();
+			throw new GameException(e);
 		}
-
 	}
 	
 	//TODO: This method is temporary for development purposes. It will be deleted
@@ -170,6 +204,7 @@ public class GameService {
 			}
 		} catch (RemoteException e) {
 			e.printStackTrace();
+			throw new GameException(e);
 		}
 	}
 }

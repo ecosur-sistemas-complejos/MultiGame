@@ -11,7 +11,7 @@
 			import mx.messaging.events.MessageFaultEvent;
 			import mx.ecosur.multigame.entity.Player;
 			import mx.ecosur.multigame.entity.ChatMessage;
-			import mx.ecosur.multigame.GameEvent;
+			import mx.ecosur.multigame.event.GameEvent;
 			import mx.controls.Alert;
 			
             [Bindable]

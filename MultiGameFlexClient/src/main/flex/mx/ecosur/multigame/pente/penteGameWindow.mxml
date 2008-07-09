@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:pente="mx.ecosur.multigame.pente.*" 
+	xmlns:multigame="mx.ecosur.multigame.*" 
+	width="100%" height="100%" 
+	paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10" 
+	creationComplete="consumer.subscribe();">
+	
+	<mx:Script> 
+        <![CDATA[
+        	import mx.collections.ArrayCollection;
+
+        	import mx.messaging.MessageResponder;
+        	import mx.rpc.events.HeaderEvent;
+        	import mx.messaging.messages.AsyncMessage;
+			import mx.messaging.messages.IMessage;
+			import mx.messaging.events.MessageFaultEvent;
+            import mx.ecosur.multigame.entity.Player;
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.event.GameEvent;
+            
+            [Bindable]
+            public var currentPlayer:Player;
+            
+            [Bindable]
+            public var players:ArrayCollection;
+            
+			[Bindable]            
+            public var gameId:int;
+            
+            
+            private function messageHandler(message:IMessage):void {
+				var body:Object = message.body;
+				var gameId:Number = message.headers.GAME_ID;
+				var gameEvent:String = message.headers.GAME_EVENT;
+				
+				//Alert.show("game event received " + gameEvent);
+		
+				switch (gameEvent){
+					case GameEvent.BEGIN:
+						game.begin();
+						break;
+					case GameEvent.CHAT:
+						chatPanel.addMessage(message.body);
+						break;
+					case GameEvent.END:
+						game.end();
+						break;
+					case GameEvent.TURN:
+						game.turn();
+						break;
+					case GameEvent.PLAYER_CHANGE:
+						game.playerChange();
+						break;
+				}
+			}
+			private function faultHandler(event:MessageFaultEvent):void {
+				Alert.show(event.faultString, "Error");
+			}  
+			     
+        ]]>
+    </mx:Script>
+	<mx:Consumer id="consumer" destination="multigame-chat" message="messageHandler(event.message)" fault="faultHandler(event)"/>
+	<pente:PenteGame id="game" width="100%" height="100%" gameId="{gameId}" currentPlayer="{currentPlayer}" players="{players}" />
+	<mx:VBox height="100%">
+		<mx:Panel title="Players" width="300">
+			<pente:PentePlayersViewer width="100%" currentPlayer="{currentPlayer}" players="{game.players}" />
+		</mx:Panel>
+		<multigame:chatPanel id="chatPanel" width="300" height="100%" player="{currentPlayer}" gameId="{gameId}"/>
+	</mx:VBox>
+</mx:HBox>

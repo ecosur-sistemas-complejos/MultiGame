@@ -7,6 +7,7 @@
 
 	<mx:Script> 
         <![CDATA[
+        	import mx.collections.ArrayCollection;
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
             import flash.events.MouseEvent;
@@ -14,7 +15,8 @@
             import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
             
-            public var player:Player;
+            public var currentPlayer:Player;
+            public var players:ArrayCollection;
             public var gameType:String;
             public var gameId:int;
     
@@ -33,23 +35,27 @@
             	}
             	
             	//register player
-            	player = new Player();
-            	player.name = txtName.text;
+            	currentPlayer = new Player();
+            	currentPlayer.color = Color.UNKNOWN;
+            	currentPlayer.name = txtName.text;
             	gameType = cbGame.selectedItem.data;
-            	var call:Object = gameService.registerPlayer(player, gameType);
+            	var call:Object = gameService.registerPlayer(currentPlayer, gameType);
             	call.operation = "register";
             }
             
             private function resultHandler(event:ResultEvent):void{
             	var call:Object = event.token;
             	if(call.operation == "register"){
-            		player = Player(event.result);
-            		//Alert.show("Player registered and color " + player.color);
+            		currentPlayer = Player(event.result);
             		var callGameId:Object = gameService.getGameId(gameType);
             		callGameId.operation = "getGameId";
             	}else if (call.operation == "getGameId") {
             		gameId = int(event.result);
-            		dispatchEvent(new Event("complete"));
+            		var callPlayers:Object = gameService.getPlayers();
+            		callPlayers.operation = "getPlayers";
+            	}else if (call.operation == "getPlayers"){
+            		players = ArrayCollection(event.result);
+            	    dispatchEvent(new Event("complete"));
             	}else if (call.operation == "unregisterAll"){
             		Alert.show("All unregistered");
             	}
@@ -79,7 +85,7 @@
 				<mx:TextInput id="txtName" />
 			</mx:FormItem>
 			<mx:FormItem label="Game" required="true">
-				<mx:ComboBox id="cbGame" selectedIndex="1">
+				<mx:ComboBox id="cbGame" selectedIndex="2">
       				<mx:ArrayCollection>
       					<mx:Object label="-- Select --" data=""/>
       					<mx:Object label="Checkers" data="CHECKERS"/>

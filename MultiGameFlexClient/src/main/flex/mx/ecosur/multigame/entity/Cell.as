@@ -1,7 +1,5 @@
 package mx.ecosur.multigame.entity {
 	
-	[RemoteClass (alias="mx.ecosur.multigame.Cell")]
-	
 	import flash.display.Shape;
 	import flash.filters.BevelFilter;
 	import flash.filters.BitmapFilterQuality;
@@ -9,11 +7,14 @@ package mx.ecosur.multigame.entity {
 	import flash.filters.DropShadowFilter;
 	import flash.filters.GlowFilter;
 	import flash.filters.GradientBevelFilter;
-	import mx.ecosur.multigame.checkers.CheckerCharacteristic;
 	
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
 	
+	import mx.ecosur.multigame.Color;
+	import mx.ecosur.helper.ColorUtils;
+	
+	[RemoteClass (alias="mx.ecosur.multigame.Cell")]
 	public class Cell extends UIComponent{
 		
 		private var _bg:Shape;
@@ -25,6 +26,7 @@ package mx.ecosur.multigame.entity {
 		
 		//Constants
 		public static const DEFAULT_ALPHA:Number = 0.8;
+		public static const DISACTIVATED_ALPHA:Number = 0.5;
 		public static const HIGHLIGHT_ALPHA:Number = 1;
 		public static const BORDER_THICKNESS:Number = 1;
 		
@@ -56,20 +58,7 @@ package mx.ecosur.multigame.entity {
 		
 		public function set color(color:String):void{
 			if (color != _color){
-				switch (color){
-					case "BLACK":
-						_colorCode = 0x000000;
-					break;
-					case "GREEN":
-						_colorCode = 0x00ff00;
-					break;
-					case "BLUE":
-						_colorCode = 0x0000ff;
-					break;
-					case "RED":
-						_colorCode = 0xff0000;
-					break;
-				}
+				_colorCode = Color.getColorCode(color);
 				_color = color;
 				invalidateDisplayList();
 			}
@@ -93,6 +82,15 @@ package mx.ecosur.multigame.entity {
 			dragImage.width = width;
 			dragImage.height = height;
 			return IFlexDisplayObject(dragImage);
+		}
+		
+		public function clone():Cell{
+			var clone:Cell = new Cell();
+			clone.color = _color;
+			clone.column = _column;
+			clone.row = _row;
+			clone.player = _player;
+			return clone; 
 		}
 				
 		override protected function createChildren():void{
@@ -141,7 +139,8 @@ package mx.ecosur.multigame.entity {
 			var gradientBevel:GradientBevelFilter = new GradientBevelFilter();
 			gradientBevel.distance = 8;
 			gradientBevel.angle = 225; // opposite of 45 degrees
-			gradientBevel.colors = [0xFFFFFF, color, 0x666666];
+			//TODO find intermediate colors
+			gradientBevel.colors = [ColorUtils.findIntermediateColor(0xffffff, colorCode), colorCode, ColorUtils.findIntermediateColor(0x000000, colorCode)];
 			gradientBevel.alphas = [1, 0, 1];
 			gradientBevel.ratios = [0, 128, 255];
 			gradientBevel.blurX = 8;

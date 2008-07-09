@@ -78,6 +78,8 @@ package mx.ecosur.multigame.entity {
 				removeChild(_cell);
 			}
 			if (cell != null){
+				cell.row = _row;
+				cell.column = _column;
 				addChild(cell);
 			}
 			_cell = cell;
