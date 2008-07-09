@@ -18,6 +18,7 @@ import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.checkers.Checker;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.checkers.JumpMove;
@@ -34,9 +35,9 @@ public class CheckersSharedBoardTest {
 	
 	private GameGrid jumpGrid;
 	
-	private Player alice;
+	private GamePlayer alice;
 	
-	private Player bob;
+	private GamePlayer bob;
 	
 	private int id = 0;
 	
@@ -53,11 +54,11 @@ public class CheckersSharedBoardTest {
 		registrar = (RegistrarRemote) ic.lookup(
 			"mx.ecosur.multigame.ejb.RegistrarRemote");
 		
-		alice = registrar.locatePlayer("alice");
-		bob = registrar.locatePlayer("bob");
+		Player a = registrar.locatePlayer("alice");
+		Player b = registrar.locatePlayer("bob");
 		
-		registrar.registerPlayer(alice, GameType.CHECKERS);
-		registrar.registerPlayer(bob, GameType.CHECKERS);
+		alice = registrar.registerPlayer(a, Color.BLACK, GameType.CHECKERS);
+		bob = registrar.registerPlayer(b, Color.RED, GameType.CHECKERS);
 		
 		/* Initalize the jumpGrid */
 		jumpGrid = new GameGrid();
@@ -73,16 +74,9 @@ public class CheckersSharedBoardTest {
 	}
 	
 	@After
-	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
-		if (board != null && registrar != null) {
-			List<Player> players = board.getPlayers();
-			for (Player p : players) {
-				registrar.unregisterPlayer(p, GameType.CHECKERS);
-			}
-		} else {
-			System.out.println ("Null board or registrar! board [" + board + 
-					"], registrar [" + registrar + "]");
-		}
+	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {		
+		registrar.unregisterPlayer(alice);
+		registrar.unregisterPlayer(bob);
 	}
 	
 	/**
@@ -112,7 +106,7 @@ public class CheckersSharedBoardTest {
 		/* Move a piece diagonally and validate */
 		Checker start = new Checker(2,0, alice.getColor());
 		Checker destination = new Checker(3,1, alice.getColor());
-		Move move = new Move(board.getGame(), alice, start, destination);
+		Move move = new Move(alice, start, destination);
 		move = board.validateMove(move);
 		assertTrue(move.getStatus() == Move.Status.VERIFIED);
 	}
@@ -129,7 +123,7 @@ public class CheckersSharedBoardTest {
 		/* Move a piece horizontally and validate */
 		Checker start = new Checker (2,0, alice.getColor());
 		Checker destination = new Checker (3,0, alice.getColor());
-		Move move = new Move (board.getGame(), alice, start,destination);
+		Move move = new Move (alice, start,destination);
 		
 		try {
 			board.validateMove(move);
@@ -149,7 +143,7 @@ public class CheckersSharedBoardTest {
 		Checker start = new Checker (3,1, alice.getColor());
 		Checker destination = new Checker (4,2, alice.getColor());
 		
-		Move move = new Move (board.getGame(), alice, start,destination);
+		Move move = new Move (alice, start,destination);
 		try {
 			board.validateMove(move);
 			fail ("Exception must be thrown!");
@@ -168,7 +162,7 @@ public class CheckersSharedBoardTest {
 		Checker start = new Checker (0,0, alice.getColor());
 		Checker destination = new Checker (1,1, alice.getColor());
 		
-		Move move = new Move (board.getGame(), alice, start, destination);
+		Move move = new Move (alice, start, destination);
 		assertTrue (move.getStatus() == Move.Status.UNVERIFIED);
 		try {
 			board.validateMove(move);
@@ -186,7 +180,7 @@ public class CheckersSharedBoardTest {
 	public void testIncrementTurn() throws RemoteException {
 		alice.setTurn(true);
 		bob.setTurn (false);
-		Player next = board.incrementTurn(alice);
+		GamePlayer next = board.incrementTurn(alice);
 		assertNotNull (next);
 		assertTrue (next.isTurn());
 	}
@@ -204,7 +198,7 @@ public class CheckersSharedBoardTest {
 		/* Move a piece diagonally and validate */
 		Checker start = new Checker(2, 0, alice.getColor());
 		Checker destination = new Checker(3, 1, alice.getColor());
-		Move move = new Move(board.getGame(), alice, start, destination);
+		Move move = new Move(alice, start, destination);
 		move = board.validateMove(move);
 		board.move(move);
 		
@@ -225,7 +219,7 @@ public class CheckersSharedBoardTest {
 		/* Move a piece horizontally and validate */
 		Checker start = new Checker (2,2, alice.getColor());
 		Checker destination = new Checker (3,2, alice.getColor());
-		Move move = new Move (board.getGame(), alice, start,destination);
+		Move move = new Move (alice, start,destination);
 		
 		try {
 			move = board.validateMove(move);
@@ -248,7 +242,7 @@ public class CheckersSharedBoardTest {
 		Checker start = new Checker (0,0, alice.getColor());
 		Checker stop = new Checker (6,2,alice.getColor());
 		
-		JumpMove jump = new JumpMove (board.getGame(), alice, start, stop);
+		JumpMove jump = new JumpMove (alice, start, stop);
 		List<Move> moves = composeJumpSequence (jumps);
 		for (Move m : moves) {
 			jump.addJump(m);
