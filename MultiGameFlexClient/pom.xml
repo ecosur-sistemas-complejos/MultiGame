@@ -73,13 +73,13 @@
                     </goals>
                     <configuration>
                         <executable>${flexSDK}/bin/mxmlc</executable>
-                        <workingDirectory>.</workingDirectory>
+                        <workingDirectory>src/main/flex</workingDirectory>
                         <arguments>
-                            <argument>-compiler.services=src/main/webapp/WEB-INF/flex/services-config.xml</argument>
+                            <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
                             <argument>-compiler.strict=true</argument>
                             <argument>-compiler.context-root=${artifactId}</argument>
-                            <argument>-output=src/main/webapp/main.swf</argument>
-                            <argument>src/main/flex/main.mxml</argument>
+                            <argument>-output=../webapp/main.swf</argument>
+                            <argument>main.mxml</argument>
                         </arguments>
                     </configuration>
                 </execution>
