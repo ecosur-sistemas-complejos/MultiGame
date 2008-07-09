@@ -37,6 +37,7 @@ import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 
 public class GameFrame extends JFrame {
@@ -52,9 +53,9 @@ public class GameFrame extends JFrame {
 	/*
 	 * The local player 
 	 */
-	Player player;
+	GamePlayer player;
 
-	public GameFrame(String title, SharedBoardRemote board, Player player) {
+	public GameFrame(String title, SharedBoardRemote board, GamePlayer player) {
 		super();
 		this.setTitle(title);
 		this.gameType = board.getGameType();
@@ -143,7 +144,7 @@ public class GameFrame extends JFrame {
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
 		textArea.setText(String.format("%s: Hi, cool game.\nLuis:  Si, es bueno.", 
-				player.getName()));
+				player.getPlayer().getName()));
 		JScrollPane readerPane = new JScrollPane (textArea);
 		readerPane.add(new JButton());
 		
@@ -168,7 +169,7 @@ public class GameFrame extends JFrame {
 		/* info panel */
 		JPanel info = new JPanel(new GridLayout (4,1));
 		JLabel label = new JLabel ("Name:");
-		JLabel name = new JLabel (player.getName());
+		JLabel name = new JLabel (player.getPlayer().getName());
 		JSplitPane split = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, label, 
 				name);
 		info.add(split);
@@ -179,13 +180,13 @@ public class GameFrame extends JFrame {
 		info.add(split);
 		
 		label = new JLabel ("Join time:");
-		String date = String.format("%ta %<tb %<td %<tY %<tT", new Date(player.getLastRegistration()));
+		String date = String.format("%ta %<tb %<td %<tY %<tT", new Date(player.getPlayer().getLastRegistration()));
 		JLabel lastReg = new JLabel (date);
 		split = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, label, lastReg);
 		info.add(split);
 		
 		label = new JLabel ("Wins:");
-		JLabel wins = new JLabel ("" + player.getWins());
+		JLabel wins = new JLabel ("" + player.getPlayer().getWins());
 		split = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT, label, wins);
 		info.add(split);
 		
@@ -216,25 +217,16 @@ public class GameFrame extends JFrame {
 		return frame;
 	}
 
-	private String playerList (List<Player> list) {
+	private String playerList (List<GamePlayer> list) {
 		StringBuffer buf = new StringBuffer();
-		if (list == null) {
-			buf.append("No other players.");
-		} else {
-			ListIterator<Player> iter = list.listIterator();
-			while (iter.hasNext()) {
-				Player p = iter.next();
-				if (p.getName() != player.getName()) {
-					buf.append(p.getName());
-					if (iter.hasNext())
-						buf.append (",");
-					else 
-						buf.append (" ");
-				}
-			}
+		for (GamePlayer p : list) {
+			if (p.equals(player))
+				continue;
+			buf.append (p.getPlayer().getName());
+			buf.append (" ");
 		}
 		
-		return buf.toString();
+		return buf.toString().trim();
 	}
 
 	private JMenuBar createMenuBar() {

@@ -5,6 +5,7 @@ import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.SharedBoard;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ui.GameFrame;
 
@@ -23,9 +24,14 @@ public class TokenTest  {
 		SharedBoard board = new SharedBoard ();
 		Game game = new Game();
 		game.initialize(GameType.CHECKERS);
+		board.setGame(game);
 		
-		Player alice = test.createPlayer("alice", Color.BLACK);
-		Player bob = test.createPlayer ("bob", Color.RED);
+		Player a = test.createPlayer("alice");
+		Player b = test.createPlayer ("bob");
+		
+		GamePlayer alice = new GamePlayer (game,a, Color.BLACK);
+		GamePlayer bob = new GamePlayer (game, b, Color.RED);
+		
 		game.addPlayer(alice);
 		game.addPlayer(bob);
 		
@@ -41,10 +47,9 @@ public class TokenTest  {
 		
 	}
 	
-	private Player createPlayer(String name, Color color) {
+	private Player createPlayer(String name) {
 		Player player = new Player ();
 		player.setName(name);
-		player.setColor(color);
 		player.setId(++id);
 		player.setLastRegistration(System.currentTimeMillis());
 		player.setGamecount(0);

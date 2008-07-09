@@ -21,10 +21,12 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
+import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 
 /**
@@ -107,7 +109,7 @@ public class Registrar extends JFrame {
 		public void actionPerformed(ActionEvent event) {
 	        try {
 	        	if (event.getActionCommand() == "Play") {
-	        		Player player = register();
+	        		GamePlayer player = register();
 	        		GameFrame game = new GameFrame (
 	        				"Multi-Game", sharedBoard, player);
 	        		game.pack();
@@ -127,7 +129,7 @@ public class Registrar extends JFrame {
 			}
 		}
 
-		private Player register() throws NamingException, 
+		private GamePlayer register() throws NamingException, 
 		InvalidRegistrationException, RemoteException 
 		{
 		    this.gameType = GameType.valueOf(((String)
@@ -145,8 +147,9 @@ public class Registrar extends JFrame {
 	        
 			String name = this.textField.getText();
 			Player player = registrar.locatePlayer(name);
-			player= registrar.registerPlayer(player, sharedBoard.getGameType());
-	        return player;
+			GamePlayer ret = registrar.registerPlayer(player, Color.BLACK, 
+					sharedBoard.getGameType());
+	        return ret;
 		}
 	}
 	
