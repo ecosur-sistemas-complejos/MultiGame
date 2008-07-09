@@ -4,16 +4,10 @@ import java.awt.Dimension;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,9 +16,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import mx.ecosur.multigame.GameGrid;
@@ -68,7 +62,7 @@ public class Game implements Serializable {
 	 * The players involved in the game 
 	 * @TODO Make this a Set so there can be no duplicate players
 	 */
-	private ArrayList<Player> players;
+	private List<GamePlayer> players;
 	
 	private GameGrid grid;
 	
@@ -78,14 +72,31 @@ public class Game implements Serializable {
 	
 	/* Dimensioning for storage */
 	private int rows, columns;
-
-	private HashMap<Date, String> messages;	
 	
 	public Game () {
 		super();
-		messages = new HashMap<Date,String>();
-		players = new ArrayList<Player>();
+		players = new ArrayList<GamePlayer> ();
 	}
+	
+	public void initialize (GameType type) {
+		setType(type);
+		setGrid(new GameGrid());
+		setState(GameState.WAITING);
+		switch (type) {
+			case CHECKERS:
+				this.setRows (8);
+				this.setColumns (8);
+				break;
+			case PENTE:
+				this.setRows (19);
+				this.setColumns (19);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	/** Bean methods **/
 
 	/**
 	 * @return the id
@@ -121,41 +132,17 @@ public class Game implements Serializable {
 	/**
 	 * @return the players
 	 */
-	@ManyToMany (fetch=FetchType.EAGER)
-	public List<Player> getPlayers() {
+	@OneToMany (cascade={CascadeType.ALL},
+			fetch=FetchType.EAGER)
+	public List<GamePlayer> getPlayers() {
 		return players;
 	}
 
 	/**
 	 * @param players the players to set
 	 */
-	public void setPlayers(List<Player> players) {
-		this.players = new ArrayList<Player>();
-		ListIterator<Player> iter = players.listIterator();
-		while (iter.hasNext()) {
-			Player player = iter.next();
-			this.players.add(player);
-		}
-	}
-	
-	public void addPlayer (Player player) throws RemoteException {
-		if (players == null) {
-			players = new ArrayList<Player> ();
-		}
-		
-		int max = getMaxPlayers();
-		if (players.size() == max)
-			throw new RemoteException ("Maximum Players reached!");
-		players.add(player);
-		
-		/* If we've reached the max, then set the GameState to begin */
-		if (players.size() == max)
-			state = GameState.BEGIN;
-	}
-	
-	public void updatePlayer (Player player) {
-		players.remove(player);
-		players.add(player);
+	public void setPlayers(List<GamePlayer> players) {
+		this.players = players;
 	}
 
 	/**
@@ -186,11 +173,11 @@ public class Game implements Serializable {
 	public void setState(GameState state) {
 		this.state = state;
 	}
-
-	public Dimension getSize() {
-		return new Dimension (rows, columns);
-	}
 	
+	/**
+	 * The number of rows of the grid contained by this game. 
+	 * @return
+	 */
 	@Column (name="nRows")
 	public int getRows() {
 		return rows;
@@ -199,6 +186,20 @@ public class Game implements Serializable {
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
+	
+	@Version
+	public long getVersion () {
+		return version;
+	}
+	
+	public void setVersion (long version) {
+		this.version = version;
+	}
+	
+	/**
+	 * The number of columns in the grid contained by this game.
+	 * @return
+	 */
 
 	@Column (name="nColumns")
 	public int getColumns() {
@@ -208,36 +209,34 @@ public class Game implements Serializable {
 	public void setColumns(int columns) {
 		this.columns = columns;
 	}
-
-	public Set<Date> getMessageTimes () {
-		return this.messages.keySet();
-	}
-
-	public String getMessage (Date date) {
-		return this.messages.get(date);
-	}
-
-	public void addMessage(String message) {
-		Date now = new Date (System.currentTimeMillis());
-		this.messages.put(now, message);
-	}
-
-	public void setDimension(Dimension dimension) {
-		 this.rows = (int) dimension.getHeight();
-		 this.columns = (int) dimension.getWidth();
+	
+	/** Non bean methods **/
+	public Dimension getSize() {
+		return new Dimension (rows, columns);
 	}
 	
-	/*
-	 * Ensures ACIDity in Game objects in database.
-	 * 
-	 */
-	@Version
-	public long getVersion () {
-		return version;
+	public void addPlayer (GamePlayer player) throws RemoteException {
+		if (players == null) {
+			players = new ArrayList<GamePlayer> ();
+		}
+		
+		int max = getMaxPlayers();
+		if (players.size() == max)
+			throw new RemoteException ("Maximum Players reached!");
+		players.add(player);
+		
+		/* If we've reached the max, then set the GameState to begin */
+		if (players.size() == max)
+			state = GameState.BEGIN;
 	}
 	
-	public void setVersion (long version) {
-		this.version = version;
+	public void updatePlayer (GamePlayer player) {
+		players.remove(player);
+		players.add(player);
+	}
+	
+	public void removePlayer(GamePlayer player) {
+		this.players.remove(player);
 	}
 	
 	public int getMaxPlayers () {	
@@ -253,25 +252,5 @@ public class Game implements Serializable {
 		}
 		
 		return ret;
-	}
-	
-	public void initialize (GameType type) {
-		setType(type);
-		setGrid(new GameGrid());
-		setState(GameState.WAITING);
-		switch (type) {
-			case CHECKERS:
-				setDimension (new Dimension (8,8));
-				break;
-			case PENTE:
-				setDimension (new Dimension (20, 20));
-				break;
-			default:
-				setDimension (new Dimension (0,0));
-		}
-	}
-
-	public void removePlayer(Player player) {
-		this.players.remove(player);
 	}
 }

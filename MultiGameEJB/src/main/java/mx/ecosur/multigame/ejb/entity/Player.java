@@ -10,8 +10,6 @@ package mx.ecosur.multigame.ejb.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -19,13 +17,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import mx.ecosur.multigame.Color;
-
 @NamedQueries ({
-	@NamedQuery(name="getGamePlayer",
+	@NamedQuery(name="getPlayer",
 			query="select p from Player p where p.name=:name")})
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Player implements Serializable {
 
 	/*
@@ -37,9 +32,6 @@ public class Player implements Serializable {
 	 * The player's name
 	 */
 	private String name;
-
-	/* The color that the player has picked */
-	private Color color;
 
 	/*
 	 * The number of games this player has played
@@ -55,11 +47,6 @@ public class Player implements Serializable {
 	 * Last time this player logged in to play
 	 */
 	private long lastRegistration;
-
-	/*
-	 * Whether it is this Player's turn.
-	 */
-	private boolean turn;
 
 	public Player() {
 		super();
@@ -100,22 +87,6 @@ public class Player implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the color
-	 */
-	@Enumerated (EnumType.STRING)
-	public Color getColor() {
-		return color;
-	}
-
-	/**
-	 * @param color
-	 *            the color to set
-	 */
-	public void setColor(Color color) {
-		this.color = color;
 	}
 
 	/**
@@ -163,25 +134,9 @@ public class Player implements Serializable {
 		this.lastRegistration = lastRegistration;
 	}
 
-	/**
-	 * @return the turn
-	 */
-	public boolean isTurn() {
-		return turn;
-	}
-
-	/**
-	 * @param turn
-	 *            the turn to set
-	 */
-	public void setTurn(boolean turn) {
-		this.turn = turn;
-	}
-
 	public String toString() {
 		return "id = " + id + ", name = " + name + ", gamecount = " + gamecount
 				+ ", lastRegistration = " + lastRegistration + ", wins = "
 				+ wins;
 	}
-
 }

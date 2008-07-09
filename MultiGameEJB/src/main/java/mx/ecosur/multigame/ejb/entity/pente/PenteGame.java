@@ -4,16 +4,14 @@
 package mx.ecosur.multigame.ejb.entity.pente;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.Game;
 
 
@@ -34,7 +32,6 @@ public class PenteGame extends Game {
 	
 	private Set<PentePlayer> winners;
 	
-	@ManyToMany (fetch=FetchType.EAGER)
 	public Set <PentePlayer> getWinners () {
 		if (winners == null) {
 			winners = determineWinners ();
@@ -49,16 +46,11 @@ public class PenteGame extends Game {
 	
 	private TreeSet<PentePlayer> determineWinners() {
 		TreeSet<PentePlayer> ret = new TreeSet<PentePlayer> (new PlayerComparator());
-		for (Player p : getPlayers()) {
-			PentePlayer player = new PentePlayer(p);
-			ret.add(player);
-		}
-		
 		return ret;
 	}
 	
 	
-	class PlayerComparator implements Comparator <PentePlayer>{
+	class PlayerComparator implements Serializable, Comparator <PentePlayer>{
 
 		public int compare(PentePlayer alice, PentePlayer bob) {
 			int ret = 0;

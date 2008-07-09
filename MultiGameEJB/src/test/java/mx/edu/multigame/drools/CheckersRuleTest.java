@@ -56,7 +56,6 @@ public class CheckersRuleTest {
 		 
 		 game = new Game ();
 		 game.initialize(GameType.CHECKERS);
-		 game.setDimension(new Dimension(8,8));
 	}
 	
 	@After

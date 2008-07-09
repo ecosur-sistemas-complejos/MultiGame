@@ -19,11 +19,4 @@ public enum GameType {
 		else 
 			return "getGameById";
 	}
-	
-	public String getNamedQuery (Player player) {
-		if (this.equals(GameType.PENTE))
-			return "getPentePlayer";
-		else
-			return "getGamePlayer";
-	}
 }

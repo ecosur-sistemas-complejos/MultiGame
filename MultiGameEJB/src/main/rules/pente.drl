@@ -17,7 +17,7 @@ import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 
 
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
@@ -124,8 +124,8 @@ rule "setup"
 when
     game : Game (state == GameState.BEGIN)
 then
-    List<Player> players = game.getPlayers();
-    for (Player p : players) {
+    List<GamePlayer> players = game.getPlayers();
+    for (GamePlayer p : players) {
         if (p.getColor() == Color.BLACK)
             p.setTurn(true);
         else

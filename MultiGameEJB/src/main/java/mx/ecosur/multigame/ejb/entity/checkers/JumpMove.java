@@ -10,9 +10,8 @@ import javax.persistence.Entity;
 
 import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 /**
  * @author awater
@@ -29,8 +28,8 @@ public class JumpMove extends Move {
 		jumps = new ArrayList<Move>();
 	}
 	
-	public JumpMove(Game game, Player player, Cell current, Cell destination) {
-		super(game, player, current, destination);
+	public JumpMove(GamePlayer player, Cell current, Cell destination) {
+		super(player, current, destination);
 		jumps = new ArrayList<Move> ();
 		jumps.add(this);
 	}

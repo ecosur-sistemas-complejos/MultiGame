@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,6 +13,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
@@ -27,8 +28,6 @@ import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class PenteRulesTest {
 	
 	private Game game;
 	
-	private Player alice, bob, charlie, denise;
+	private GamePlayer alice, bob, charlie, denise;
 
 	private StatefulSession statefulSession;
 	
@@ -72,18 +71,21 @@ public class PenteRulesTest {
 		statefulSession = Ruleset.newStatefulSession();
 		if (DEBUG)
 			statefulSession.addEventListener(new DebugEventListener());
-		alice = createPlayer("alice", Color.BLACK);
-		bob = createPlayer ("bob", Color.BLUE);
-		charlie = createPlayer ("charlie", Color.GREEN);
-		denise = createPlayer ("denise", Color.RED);
-	}
-
-	private Player createPlayer(String name, Color color) throws RemoteException {
-		Player ret = new Player ();
-		ret.setName(name);
-		ret.setColor(color);
-		game.addPlayer (ret);
-		return ret;
+		Player a, b, c, d;
+		a = new Player ("alice");
+		b = new Player ("bob");
+		c = new Player ("charlie");
+		d = new Player ("denise");
+		
+		alice = new GamePlayer (game, a, Color.BLACK);
+		bob = new GamePlayer (game, b, Color.BLUE);
+		charlie = new GamePlayer (game, c, Color.GREEN);
+		denise = new GamePlayer (game, d, Color.RED);
+		
+		game.addPlayer(alice);
+		game.addPlayer(bob);
+		game.addPlayer(charlie);
+		game.addPlayer(denise);
 	}
 	
 	@After
@@ -99,18 +101,20 @@ public class PenteRulesTest {
 		statefulSession.fireAllRules();
 	
 		assertTrue (game.getGrid().getCells().size() == 0);
-		List<Player> players = game.getPlayers();
+		List<GamePlayer> players = game.getPlayers();
 		
-		Player p = players.get(players.indexOf(alice));
+		GamePlayer p = players.get(players.indexOf(alice));
 		assertNotNull (p);
-		assertEquals ("alice", p.getName());
+		assertEquals ("alice", p.getPlayer().getName());
 		assertEquals (true, p.isTurn());
 	}
 	
 	@Test
 	public void testFirstMoveValidate ()  {
-		Cell center = new Cell (10, 10, alice.getColor());
-		PenteMove move = new PenteMove (game, alice, center);
+		int row = game.getRows() / 2;
+		int col = game.getColumns() / 2;
+		Cell center = new Cell (row, col, alice.getColor());
+		PenteMove move = new PenteMove (alice, center);
 		
 		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
@@ -126,8 +130,10 @@ public class PenteRulesTest {
 	
 	@Test 
 	public void testExecuteFirstMove ()  {
-		Cell center = new Cell (10, 10, alice.getColor());
-		PenteMove move = new PenteMove (game, alice, center);
+		int row = game.getRows() / 2;
+		int col = game.getColumns() / 2;
+		Cell center = new Cell (row, col, alice.getColor());
+		PenteMove move = new PenteMove (alice, center);
 		
 		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
@@ -152,7 +158,7 @@ public class PenteRulesTest {
 		game.setState(GameState.PLAY);
 		
 		Cell next = new Cell (10,9, alice.getColor());
-		PenteMove subsequent = new PenteMove (game, alice, next);
+		PenteMove subsequent = new PenteMove (alice, next);
 		
 		statefulSession.insert(game);
 		statefulSession.insert(subsequent);
@@ -171,7 +177,7 @@ public class PenteRulesTest {
 		game.setState(GameState.PLAY);
 		
 		Cell next = new Cell (10, 9, alice.getColor());
-		PenteMove subsequent = new PenteMove (game, alice, next);
+		PenteMove subsequent = new PenteMove (alice, next);
 		
 		statefulSession.insert(game);
 		statefulSession.insert(subsequent);

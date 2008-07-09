@@ -11,9 +11,10 @@ import mx.ecosur.multigame.checkers.CheckerCharacteristic;
 
 
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.Status;
+import mx.ecosur.multigame.ejb.entity.Player;
 
 import mx.ecosur.multigame.ejb.entity.checkers.JumpMove;
 
@@ -226,13 +227,13 @@ function boolean isTokensLeft (GameGrid grid) {
     
     @TODO implement
 */
-function Player getWinner (Game game) {
+function GamePlayer getWinner (Game game) {
     GameGrid grid = game.getGrid();
     SortedSet<Cell> cells = (SortedSet<Cell>) grid.getCells();
     Color winningColor = cells.first().getColor();
-    List<Player> players = game.getPlayers();
-    Player winner = null;
-    for (Player p : players) {
+    List<GamePlayer> players = game.getPlayers();
+    GamePlayer winner = null;
+    for (GamePlayer p : players) {
         if (p.getColor().equals(winningColor)) {
             winner = p;
             break;
@@ -254,8 +255,8 @@ rule "setup-turns"
 when
     game : Game (state == GameState.BEGIN)
 then
-    List<Player> players = game.getPlayers();
-    for (Player p : players) {
+    List<GamePlayer> players = game.getPlayers();
+    for (GamePlayer p : players) {
         if (p.getColor() == Color.BLACK)
             p.setTurn(true);
         else
@@ -361,7 +362,8 @@ when
     move  : Move (player.turn == true, status == Move.Status.VERIFIED)
     eval (! (isTokensLeft (game.getGrid())))
 then
-    Player winner = getWinner (game);
+    GamePlayer player = getWinner (game);
+    Player winner = player.getPlayer();
     winner.setWins (winner.getWins () + 1);
     modify (game) { setState (GameState.END) }
 end 

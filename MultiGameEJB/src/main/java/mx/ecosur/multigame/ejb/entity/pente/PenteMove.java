@@ -17,6 +17,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 
@@ -34,15 +35,15 @@ public class PenteMove extends Move {
 		super ();
 	}
 
-	public PenteMove(Game game, Player player, Cell destination) {
-		super(game, player, destination);
+	public PenteMove(GamePlayer player, Cell destination) {
+		super(player, destination);
 	}
 	
 	/*
 	 * Returns a set of captured pieces, computed once. 
 	 */
 	public Set<Cell> getCaptures () {
-		GameGrid grid = this.getGame().getGrid();
+		GameGrid grid = getPlayer().getGame().getGrid();
 		
 		if (captures == null) {
 			captures = new HashSet<Cell>();
@@ -95,11 +96,10 @@ public class PenteMove extends Move {
 	private Color[] getCandidateColors() {
 		Color [] ret;
 		
-		List<Player> players = getGame().getPlayers();
+		List<GamePlayer> players = getPlayer().getGame().getPlayers();
 		ArrayList<Color> colors = new ArrayList<Color>();
-		
 		ret = new Color [ players.size() -1 ];
-		for (Player p : players) {
+		for (GamePlayer p : players) {
 			if (p.equals(this.getPlayer()))
 				continue;
 			colors.add(p.getColor());
@@ -119,7 +119,7 @@ public class PenteMove extends Move {
 	private Set<AnnotatedCell> findCandidates(AnnotatedCell startingCell, 
 			Color[] targetColors, int depth) 
 	{
-		GameGrid grid = this.getGame().getGrid();
+		GameGrid grid = getPlayer().getGame().getGrid();
 		Set<AnnotatedCell> ret = new HashSet<AnnotatedCell> ();
 		
 		/* If the annotated cell has no direction, search in all

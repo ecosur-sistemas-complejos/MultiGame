@@ -24,9 +24,8 @@ import mx.ecosur.multigame.Cell;
 public class Move implements Serializable {
 
 	private int id;
-	private Player player;
+	private GamePlayer player;
 	private Cell current, destination;
-	private Game game;
 
 	public enum Status {
 		INVALID, VERIFIED, UNVERIFIED, MOVED
@@ -39,16 +38,14 @@ public class Move implements Serializable {
 		this.status = Status.UNVERIFIED;
 	}
 
-	public Move(Game game, Player player, Cell destination) {
-		this.game = game;
+	public Move(GamePlayer player, Cell destination) {
 		this.player = player;
 		this.current = null;
 		this.destination = destination;
 		this.status = Status.UNVERIFIED;
 	}
 
-	public Move(Game game, Player player, Cell current, Cell destination) {
-		this.game = game;
+	public Move(GamePlayer player, Cell current, Cell destination) {
 		this.player = player;
 		this.current = current;
 		this.destination = destination;
@@ -84,11 +81,11 @@ public class Move implements Serializable {
 	}
 
 	@OneToOne
-	public Player getPlayer() {
+	public GamePlayer getPlayer() {
 		return this.player;
 	}
 
-	public void setPlayer(Player player) {
+	public void setPlayer(GamePlayer player) {
 		this.player = player;
 	}
 
@@ -108,18 +105,9 @@ public class Move implements Serializable {
 		this.status = status;
 	}
 
-	@OneToOne
-	public Game getGame() {
-		return game;
-	}
-
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 	public String toString() {
 		return "Player: " + player + "\nCurrent: " + current
 				+ "\nDestination: " + destination + "\nStatus: " + status
-				+ "\nGame: " + game;
+				+ "\nGame: " + player.getGame();
 	}
 }

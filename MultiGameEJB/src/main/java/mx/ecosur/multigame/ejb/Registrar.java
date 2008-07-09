@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -32,6 +31,7 @@ import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 
@@ -48,47 +48,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	@Resource(mappedName="CHECKERS")
 	private Topic topic; 
 
-	Map<GameType, List<Color>> availableColors;
-
-	public Registrar() {
-		availableColors = new HashMap<GameType, List<Color>>();
-
-		/* Populate the initial lists of available colors per game type */
-		initColors(GameType.CHECKERS);
-		initColors(GameType.PENTE);
-	}
-
-	public void initColors(GameType type) {
-
-		List<Color> colors = new ArrayList<Color>();
-
-		if (type == GameType.CHECKERS) {
-			colors.add(Color.BLACK);
-			colors.add(Color.RED);
-		} else if (type == GameType.PENTE) {
-			colors.add(Color.BLACK);
-			colors.add(Color.BLUE);
-			colors.add(Color.GREEN);
-			colors.add(Color.RED);
-		}
-		
-		availableColors.remove(type);
-		availableColors.put(type, colors);
-	}
-
-	public List<Color> getAvailableColors(GameType type) throws RemoteException {
-		List<Color> colors = availableColors.get(type);
-		Game game = locateGame(type);
-		List<Player> players = game.getPlayers();
-		ListIterator<Player> iter = players.listIterator();
-		while (iter.hasNext()) {
-			Player p = iter.next();
-			colors.remove(p.getColor());
-		}
-
-		return colors;
-	}
-
 	/**
 	 * Registers a player into the System. Player registration consists of
 	 * maintaining a stateful hash of all active games in the system, and
@@ -101,23 +60,34 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * 
 	 */
 
-	public Player registerPlayer(Player player, GameType type)
-			throws InvalidRegistrationException, RemoteException {
-		if (!em.contains(player))
-			player = em.merge(player);
+	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
+			GameType type)
+		throws InvalidRegistrationException, RemoteException
+	{
 		
 		/* Load the Game */
 		Game game = locateGame(type);
+		
+		/* Load the registrant reference */
+		if (!em.contains(registrant))
+			registrant = locatePlayer (registrant.getName());	
+		/*
+		 * Update the player with the current time for registration 
+		 */
+		registrant.setLastRegistration(System.currentTimeMillis());
+		
+		/* Locate the game player */
+		GamePlayer player =  locateGamePlayer (game, registrant, favoriteColor);
 
-		if (!game.getPlayers().contains(player)) {
-			boolean colorAvailable = getAvailableColors(type).contains(
-					player.getColor());
+		if (!game.getPlayers().contains(player)) {			
+			boolean colorAvailable = getAvailableColors(game).contains(player.getColor());
+			
 			if (!colorAvailable) {
 				/*
 				 * Pick a color from the list of available colors for the game
 				 * type
 				 */
-				Iterator<Color> iter = getAvailableColors(type).iterator();
+				Iterator<Color> iter = getAvailableColors(game).iterator();
 				if (!iter.hasNext()) {
 					throw new InvalidRegistrationException(
 							"No colors available, game full!");
@@ -133,19 +103,74 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			} catch (RemoteException e) {
 				throw new InvalidRegistrationException(e.getMessage());
 			}
-			
-			/* if is the last player to join the game can begin */
-			if (getAvailableColors(type).size() == 0){
-				sendGameEvent(game, GameEvent.BEGIN);
-			}
-			
 		}
 		
-		/*
-		 * Update the player with the current time for registration 
-		 */
-		player.setLastRegistration(System.currentTimeMillis());
+		/* if is the last player to join the game can begin */
+		if (getAvailableColors(game).size() == 0){
+			try {
+				sendGameEvent(game, GameEvent.BEGIN);
+			} catch (JMSException e) {
+				throw new RemoteException (e.getMessage());
+			}
+		}
+
 		return player;
+	}
+	
+	private GamePlayer locateGamePlayer (Game game, Player player, 
+			Color favoriteColor) throws RemoteException 
+	{
+		GamePlayer ret;
+		
+		try {
+			Query query = em.createNamedQuery(GamePlayer.getNamedQuery());
+			query.setParameter("game",game);
+			query.setParameter("player",player);
+			query.setParameter("color",favoriteColor);
+			ret = (GamePlayer) query.getSingleResult();
+		} catch (EntityNotFoundException e) {
+			throw new RemoteException ("Unable to find that GamePlayer!");
+		} catch (NonUniqueResultException e) {
+			throw new RemoteException ("More than one GamePlayer with that " +
+					"name found!");
+		} catch (NoResultException e) {
+			ret = new GamePlayer (game, player, favoriteColor);
+			em.persist(ret);
+		}
+		
+		return ret;
+	}
+	
+	public List<Color> getAvailableColors(Game game) throws RemoteException {
+		List<Color> colors =  getColors (game.getType());
+		List<GamePlayer> players = game.getPlayers();
+		for (GamePlayer player : players) {
+			colors.remove (player.getColor());
+		}
+
+		return colors;
+	}
+	
+	/*
+	 * Returns the list of colors typically available for a specific
+	 * GameType.
+	 */
+	private List<Color> getColors(GameType type) {
+
+		List<Color> colors = new ArrayList<Color>();
+
+		if (type == GameType.CHECKERS) {
+			colors.add(Color.BLACK);
+			colors.add(Color.RED);
+		} else if (type == GameType.PENTE) {
+			for (Color c : Color.values()) {
+				if (c.equals(Color.UNKNOWN))
+					continue;
+				colors.add(c);
+			}
+		}
+		
+		return colors;
 	}
 
 	public Game locateGame(GameType type) throws RemoteException {
@@ -173,21 +198,20 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return game;
 	}
 
-	public void unregisterPlayer(Player player, GameType type)
+	public void unregisterPlayer(GamePlayer player)
 			throws InvalidRegistrationException, RemoteException {
 		/* Remove the user from the Game */
-		Game game = locateGame(type);
-		if (game.getId() > 0) {
-			game.removePlayer(player);
-			game.setState(GameState.END);
-			initColors(type);
-		}
-		
+		Game game = player.getGame();
+		if (!em.contains(game))
+			game = em.find(game.getClass(), game.getId());
+		/* refresh the game object */
+		em.refresh(game);
 		game.removePlayer(player);
+		game.setState(GameState.END);
 	}
 
 	public Player locatePlayer(String name) throws RemoteException {
-		Query query = em.createQuery("select p from Player p where p.name=:name");
+		Query query = em.createNamedQuery("getPlayer");
 		query.setParameter("name", name);
 		Player player;
 		try {
@@ -216,7 +240,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			throw new RemoteException("Unable to find game with specified id!");
 		} catch (NonUniqueResultException e) {
 			throw new RemoteException(
-					"More than one player of that name found!");
+					"More than one Game found!");
 		} catch (NoResultException e) {
 			throw new RemoteException("Unable to find game with specified id!");
 		}
@@ -224,21 +248,16 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return game;
 	}
 	
-	private void sendGameEvent(Game game, GameEvent event){
-		try {
-			Connection connection = connectionFactory.createConnection();
-			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			MessageProducer producer = session.createProducer(topic);
-			MapMessage message = session.createMapMessage();
-			message.setIntProperty("GAME_ID", game.getId());
-			message.setStringProperty("GAME_EVENT", event.toString());
-			producer.send(message);
-			session.close();
-			connection.close();
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+	private void sendGameEvent(Game game, GameEvent event) throws JMSException{
+		Connection connection = connectionFactory.createConnection();
+		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+		MessageProducer producer = session.createProducer(topic);
+		MapMessage message = session.createMapMessage();
+		message.setIntProperty("GAME_ID", game.getId());
+		message.setStringProperty("GAME_EVENT", event.toString());
+		producer.send(message);
+		session.close();
+		connection.close();
 	}
 
 	/**

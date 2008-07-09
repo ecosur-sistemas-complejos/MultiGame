@@ -17,7 +17,7 @@ import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.Player;
 
 @MessageDriven(mappedName = "CHECKERS")
-public class CheckersChat implements MessageListener {
+public class GameChat implements MessageListener {
 
 	@EJB
 	private SharedBoardLocal sharedBoard;

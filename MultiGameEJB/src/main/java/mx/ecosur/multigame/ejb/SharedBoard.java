@@ -37,6 +37,7 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
@@ -99,7 +100,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	}	
 	
 	public void locateSharedBoard (GameType type, int gameId) throws RemoteException {
-		Query query = em.createQuery(type.getNamedQuery(gameId));
+		Query query = em.createNamedQuery(type.getNamedQuery(gameId));
 		query.setParameter("id", gameId);
 		query.setParameter("state", GameState.END);
 		try {
@@ -234,8 +235,14 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	 * shared board
 	 * 
 	 *  @throws InvalidMoveException
+	 * @throws RemoteException 
 	 */
 	public Move validateMove(Move move) throws InvalidMoveException {
+		Game game = move.getPlayer().getGame();
+		if (!em.contains(game))
+			game = em.find(game.getClass(), game.getId());
+		em.refresh(game);
+		
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(game);
 		statefulSession.insert(move);
@@ -257,10 +264,10 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	public void move (Move move) throws InvalidMoveException, RemoteException {
 		if (move.getStatus() != Move.Status.VERIFIED)
 			throw new InvalidMoveException ("Unverified or Invalid move!");
+		Game game = move.getPlayer().getGame();
 		if (!em.contains(game))
-			game = em.merge(game);
-		if (!em.contains(move))
-			move = em.merge(move);
+			game = em.find(game.getClass(), game.getId());
+		em.refresh(game);
 		
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(game);
@@ -270,6 +277,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
 		
+		em.persist(move);
 		incrementTurn(move.getPlayer());
 	}
 
@@ -287,14 +295,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		this.game = em.merge(game);
 		initialize();
 	}
-	
-	public Set<Date> getMessageTimes () {
-		return game.getMessageTimes();
-	}
-
-	public String getMessage (Date date) {
-		return game.getMessage(date);
-	}
 
 	public void addMessage(Player sender, String body, Date dateSent) {
 		ChatMessage cm = new ChatMessage();
@@ -304,20 +304,20 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		em.persist(cm);
 	}
 
-	public Player incrementTurn(Player player) throws RemoteException {
+	public GamePlayer incrementTurn(GamePlayer player) throws RemoteException {
 		if (!player.isTurn())
 			throw new RemoteException ("Only the Player with the " +
 					"turn can increment the turn!");
 		if (!em.contains(player))
-				player = em.find(Player.class, player.getId());
+				player = em.find(GamePlayer.class, player.getId());
 		player.setTurn(false);
 		
 		if (!em.contains(game))
 			game = em.find(Game.class, game.getId());
 		
-		List<Player> players = game.getPlayers();
+		List<GamePlayer> players = game.getPlayers();
 		int playerNumber = players.indexOf(player);
-		Player nextPlayer = null;
+		GamePlayer nextPlayer = null;
 		if (playerNumber == players.size() - 1) {
 			nextPlayer = players.get(0);
 		} else {
@@ -347,7 +347,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		} 
 	}
 
-	public List<Player> getPlayers() {
+	public List<GamePlayer> getPlayers() {
 		return game.getPlayers();
 	}	
 

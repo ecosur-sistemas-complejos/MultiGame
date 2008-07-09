@@ -12,6 +12,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 
 /**
@@ -33,13 +34,13 @@ public interface RegistrarRemote {
 	 * player has already been registered, or if the type of game no longer 
 	 * takes any players.
 	 * 
-	 * @param player, type
-	 * @return Color
+	 * @param player, color, type
+	 * @return GamePlayer
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public Player registerPlayer (Player player, GameType gameType) throws 
-		InvalidRegistrationException, RemoteException;
+	public GamePlayer registerPlayer (Player player, Color color, GameType type) 
+		throws InvalidRegistrationException, RemoteException;
 	
 	/**
 	 * Unregisters a player from the system (when the Player quits playing 
@@ -49,7 +50,7 @@ public interface RegistrarRemote {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public void unregisterPlayer (Player player, GameType type) throws 
+	public void unregisterPlayer (GamePlayer player) throws 
 		InvalidRegistrationException, RemoteException;
 	
 	/**
@@ -59,7 +60,7 @@ public interface RegistrarRemote {
 	 * @param type 
 	 * @return A list of Colors that are still available
 	 */
-	public List<Color> getAvailableColors (GameType type) throws 
+	public List<Color> getAvailableColors (Game game) throws 
 		RemoteException;
 	
 	/**
