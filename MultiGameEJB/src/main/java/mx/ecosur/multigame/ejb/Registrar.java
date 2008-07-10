@@ -126,7 +126,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			Query query = em.createNamedQuery(GamePlayer.getNamedQuery());
 			query.setParameter("game",game);
 			query.setParameter("player",player);
-			query.setParameter("color",favoriteColor);
 			ret = (GamePlayer) query.getSingleResult();
 		} catch (EntityNotFoundException e) {
 			throw new RemoteException ("Unable to find that GamePlayer!");

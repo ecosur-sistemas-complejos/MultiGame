@@ -28,7 +28,7 @@ import mx.ecosur.multigame.Color;
 @NamedQueries ({
 	@NamedQuery(name="getGamePlayer",
 			query="select gp from GamePlayer gp where gp.player=:player " +
-					"and gp.game=:game and gp.color=:color")})
+					"and gp.game=:game")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GamePlayer implements Serializable {
