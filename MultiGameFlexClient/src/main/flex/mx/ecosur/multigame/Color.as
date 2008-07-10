@@ -10,13 +10,13 @@ package mx.ecosur.multigame {
 		public static const UNKNOWN:String = "UNKNOWN";
 		
 		//icon assets
-		[Embed(source='assets/icons.swf#cellIconRED')]
+		[Embed(source='/assets/icons.swf#cellIconRED')]
   		private static var iconRED:Class;
-  		[Embed(source='assets/icons.swf#cellIconBLACK')]
+  		[Embed(source='/assets/icons.swf#cellIconBLACK')]
   		private static var iconBLACK:Class;
-  		[Embed(source='assets/icons.swf#cellIconBLUE')]
+  		[Embed(source='/assets/icons.swf#cellIconBLUE')]
   		private static var iconBLUE:Class;
-  		[Embed(source='assets/icons.swf#cellIconGREEN')]
+  		[Embed(source='/assets/icons.swf#cellIconGREEN')]
   		private static var iconGREEN:Class;
 		
 		public static function getColorCode(color:String):uint{

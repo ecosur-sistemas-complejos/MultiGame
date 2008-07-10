@@ -28,7 +28,9 @@
 				o.body = msg.text;
 				message.body = o;
 				message.headers.GAME_ID = gameId;
-				message.headers.GAME_EVENT = GameEvent.CHAT;
+				//TODO put GameEvent.CHAT when compiler gets its act together
+				//message.headers.GAME_EVENT = GameEvent.CHAT;
+				message.headers.GAME_EVENT = "CHAT";
 				producer.send(message);
 				msg.text = "";
 			}

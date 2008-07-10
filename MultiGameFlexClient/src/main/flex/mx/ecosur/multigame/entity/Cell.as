@@ -140,7 +140,7 @@ package mx.ecosur.multigame.entity {
 			gradientBevel.distance = 8;
 			gradientBevel.angle = 225; // opposite of 45 degrees
 			//TODO find intermediate colors
-			gradientBevel.colors = [ColorUtils.findIntermediateColor(0xffffff, colorCode), colorCode, ColorUtils.findIntermediateColor(0x000000, colorCode)];
+			gradientBevel.colors = [ColorUtils.findIntermediateColor(0xffffff, colorCode, 0.5), colorCode, ColorUtils.findIntermediateColor(0x000000, colorCode, 0.5)];
 			gradientBevel.alphas = [1, 0, 1];
 			gradientBevel.ratios = [0, 128, 255];
 			gradientBevel.blurX = 8;

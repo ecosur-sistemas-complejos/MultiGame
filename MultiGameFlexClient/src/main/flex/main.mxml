@@ -49,11 +49,12 @@
         	
         	private function startGame(event:Event):void {
         		if (registrationWindow.gameType == "CHECKERS"){
-        			checkersGameWindow.player = registrationWindow.player;
+        			checkersGameWindow.player = registrationWindow.currentPlayer;
         			checkersGameWindow.gameId = registrationWindow.gameId;
         			vstack.selectedChild = checkersGameWindow;	
         		}else if (registrationWindow.gameType == "PENTE"){
-        			penteGameWindow.player = registrationWindow.player;
+        			penteGameWindow.players = registrationWindow.players;
+        			penteGameWindow.currentPlayer = registrationWindow.currentPlayer;
         			penteGameWindow.gameId = registrationWindow.gameId;
         			vstack.selectedChild = penteGameWindow;
         		}

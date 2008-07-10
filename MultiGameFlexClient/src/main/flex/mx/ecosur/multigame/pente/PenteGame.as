@@ -8,6 +8,8 @@ package mx.ecosur.multigame.pente{
 	import mx.core.IFlexDisplayObject;
 	import mx.core.ScrollPolicy;
 	import mx.core.UIComponent;
+	import mx.ecosur.helper.ColorUtils;
+	import mx.ecosur.multigame.Color;
 	import mx.ecosur.multigame.entity.BoardCell;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.entity.GameGrid;
@@ -21,8 +23,6 @@ package mx.ecosur.multigame.pente{
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
-	import mx.ecosur.helper.ColorUtils;
-	import mx.ecosur.multigame.Color;
 	
 	//define player change event
 	[Event(name = "playerChange")]
@@ -44,7 +44,8 @@ package mx.ecosur.multigame.pente{
 		private var _isBoardEmtpy:Boolean;
 		
 		//constants
-		private static const CELL_STORE_WIDTH:int = 150;
+		private static const CELL_STORE_MIN_WIDTH:int = 150;
+		private static const CELL_STORE_MAX_WIDTH:int = 300;
 		private static const N_CELLS_IN_STORE:int = 50;
 		
 		public function PenteGame(){
@@ -314,7 +315,10 @@ package mx.ecosur.multigame.pente{
 			_cellStore = new Canvas();
 			_cellStore.horizontalScrollPolicy = ScrollPolicy.OFF;
 			_cellStore.verticalScrollPolicy = ScrollPolicy.OFF;
-			_cellStore.width = CELL_STORE_WIDTH;
+			_cellStore.setStyle("backgroundColor", 0x666666);
+			_cellStore.setStyle("borderColor", 0xffffff);
+			_cellStore.setStyle("borderThickness", 5);
+			_cellStore.setStyle("borderStyle", "inset");
 			addChild(_cellStore);
 			
 			//create cells and add to store
@@ -343,33 +347,38 @@ package mx.ecosur.multigame.pente{
 			
 			
 			//redefine cell size of board and position in center of game
-			var boardWidth:Number = unscaledWidth - CELL_STORE_WIDTH;
+			var boardWidth:Number = unscaledWidth - CELL_STORE_MIN_WIDTH - 10;
+			var cellStoreWidth:Number;
 			if (boardWidth / _board.nCols >= unscaledHeight / _board.nRows){
 				
-				//board limited by height, expand to height of game and center x
+				//board limited by height, calculate maximum cell size
 				_board.boardCellSize = unscaledHeight / _board.nRows;
-				_board.x = CELL_STORE_WIDTH + (boardWidth - _board.boardCellSize * _board.nCols) / 2;
-			    _board.y = 0;
+				
+				//calculate cellStore width and position board
+				boardWidth = _board.boardCellSize * _board.nCols
+				cellStoreWidth = Math.min(CELL_STORE_MAX_WIDTH, unscaledWidth - boardWidth - 10);
+				_board.x = cellStoreWidth + (unscaledWidth - cellStoreWidth - boardWidth) / 2;
 				
 			}else{
 				
-				//board limited by width, expand to width of game and center y
+				//board limited by height, calculate maximum cell size
 				_board.boardCellSize = boardWidth / _board.nCols;
-				_board.x = CELL_STORE_WIDTH;
-			    _board.y = (unscaledHeight - _board.boardCellSize * _board.nRows) / 2;
+				
+				//calculate cellStore width and position board
+				boardWidth = _board.boardCellSize * _board.nCols
+				cellStoreWidth = CELL_STORE_MIN_WIDTH + 10;
+				_board.x = cellStoreWidth;
 			}
 			
 			//draw cell store
 			var cell:Cell; 
 			var cellW:Number = _board.boardCellSize - _board.cellPadding;
 			var cellH:Number =   _board.boardCellSize - _board.cellPadding;
-			var cellsPerRow:int = Math.floor((CELL_STORE_WIDTH - (cellW * 0.4)) / (cellW * 0.6));
-			var paddingLeft:Number = (CELL_STORE_WIDTH - (cellsPerRow * cellW * 0.6) - (cellW * 0.4)) / 2; 
+			var cellsPerRow:int = Math.floor((cellStoreWidth - (cellW * 0.4)) / (cellW * 0.6));
+			var paddingLeft:Number = (cellStoreWidth - (cellsPerRow * cellW * 0.6) - (cellW * 0.4)) / 2; 
+			_cellStore.width = cellStoreWidth;
 			_cellStore.height = Math.ceil(_cellStore.getChildren().length / cellsPerRow) * (cellH * 0.6) + (cellH * 0.4) + 10;
-			_cellStore.setStyle("backgroundColor", ColorUtils.findIntermediateColor(Color.getColorCode(_currentPlayer.color), 0xffffff));
-			_cellStore.setStyle("borderColor", 0xffffff);
-			_cellStore.setStyle("borderThickness", 1);
-			_cellStore.setStyle("borderStyle", "solid");
+			_cellStore.setStyle("borderColor", Color.getColorCode(_currentPlayer.color));
 			for(var i:int = 0; i < _cellStore.getChildren().length; i++){
 				
 				cell = Cell(_cellStore.getChildAt(i));
