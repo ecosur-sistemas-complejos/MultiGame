@@ -1,5 +1,6 @@
 package mx.ecosur.multigame.pente{
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	
 	import mx.collections.ArrayCollection;
 	import mx.containers.Canvas;
@@ -8,7 +9,8 @@ package mx.ecosur.multigame.pente{
 	import mx.core.IFlexDisplayObject;
 	import mx.core.ScrollPolicy;
 	import mx.core.UIComponent;
-	import mx.ecosur.helper.ColorUtils;
+	import mx.events.CloseEvent;
+	import mx.events.CloseEvent;
 	import mx.ecosur.multigame.Color;
 	import mx.ecosur.multigame.entity.BoardCell;
 	import mx.ecosur.multigame.entity.Cell;
@@ -16,7 +18,9 @@ package mx.ecosur.multigame.pente{
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.entity.Player;
 	import mx.ecosur.multigame.exception.ExceptionType;
+	import mx.effects.AnimateProperty;
 	import mx.events.DragEvent;
+	import mx.events.EffectEvent;
 	import mx.events.FlexEvent;
 	import mx.managers.DragManager;
 	import mx.messaging.messages.ErrorMessage;
@@ -107,8 +111,10 @@ package mx.ecosur.multigame.pente{
 			var errorMessage:ErrorMessage = ErrorMessage(event.message);
 			if (errorMessage.extendedData != null){
 				if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
-					undoLastMove();
-					Alert.show("Sorry but this move is not valid");
+					var fnc:Function = function (event:CloseEvent):void{
+						undoLastMove();
+					}
+					Alert.show("Sorry but this move is not valid", "Woops!", Alert.OK, null, fnc);
 				}
 			}else{
 				Alert.show(event.fault.faultString, "Server Error");
@@ -275,6 +281,7 @@ package mx.ecosur.multigame.pente{
 		}
 		
 		private function validateMove(boardCell:BoardCell):Boolean{
+			return true;
 			if(_isBoardEmtpy){
 				if(boardCell.row == Math.floor(_board.nRows / 2) && boardCell.column == Math.floor(_board.nCols / 2)){
 					return true;
@@ -293,12 +300,37 @@ package mx.ecosur.multigame.pente{
 			var move:Move = _moves.pop();
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
 			
-			//add cell to store and remove cell from board
-			addStoreCell();
-			boardCell.cell = null;
+			//get position of bottom right of store relative to the cell
+			var cell:Cell = boardCell.cell;
+			var pt:Point = new Point((_cellStore.x + _cellStore.width), (_cellStore.y + _cellStore.height));
+			pt = localToGlobal(pt);
+			pt = boardCell.globalToLocal(pt);
 			
-			//force update of display list
-			invalidateDisplayList();
+			//define motion animation
+			var apX:AnimateProperty = new AnimateProperty(cell);
+			apX.toValue = pt.x;
+			apX.duration = 1000;
+			apX.property = "x";
+			var apY:AnimateProperty = new AnimateProperty(cell);
+			apY.toValue = pt.y;
+			apY.duration = 1000;
+			apY.property = "y";
+			
+			//define handler for effect end
+			var endEffect:Function = function(event:EffectEvent):void{
+				
+				//add cell to store and remove cell from board
+				addStoreCell();
+				boardCell.cell = null;
+			
+				//force update of display list
+				invalidateDisplayList();
+			}
+			apX.addEventListener(EffectEvent.EFFECT_END, endEffect);
+			
+			//start effect
+			apX.play();
+			apY.play();
 		}
 		
 		//-----------------------------------------------------------------------------------
