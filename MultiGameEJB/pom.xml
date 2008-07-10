@@ -36,8 +36,7 @@
 				<clientExcludes>
 				    <clientExclude>**/SharedBoard.class</clientExclude>
 				    <clientExclude>**/Registrar.class</clientExclude>
-				    <clientExclude>**/CheckersChat.class</clientExclude>
-				    <clientExclude>**/PenteChat.class</clientExclude>
+				    <clientExclude>**/GameChat.class</clientExclude>
 				</clientExcludes>
 				<archive>
 					<manifest>
