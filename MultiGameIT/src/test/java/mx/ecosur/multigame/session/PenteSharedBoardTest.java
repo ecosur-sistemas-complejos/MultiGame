@@ -20,6 +20,7 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class PenteSharedBoardTest {
 	
 	private SharedBoardRemote board;
 	
-	private GamePlayer alice, bob, charlie, denise;
+	private PentePlayer alice, bob, charlie, denise;
 	
 	private Cell center;
 	
@@ -70,13 +71,13 @@ public class PenteSharedBoardTest {
 		for (GamePlayer p : players) {
 			for (Player r : registrants) {
 				if (p.getPlayer().getName().equals("alice"))
-					alice = p;
+					alice = (PentePlayer) p;
 				else if (p.getPlayer().getName().equals("bob"))
-					bob = p;
+					bob = (PentePlayer) p;
 				else if (p.getPlayer().getName().equals("charlie"))
-					charlie = p;
+					charlie = (PentePlayer) p;
 				else if (p.getPlayer().getName().equals("denise"))
-					denise = p;
+					denise = (PentePlayer) p;
 			}
 		}
 	}
