@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:checkers="mx.ecosur.multigame.checkers.*"
 	xmlns:pente="mx.ecosur.multigame.pente.*"
 	xmlns:multigame="mx.ecosur.multigame.*"
 	layout="absolute" 
@@ -49,9 +48,9 @@
         	
         	private function startGame(event:Event):void {
         		if (registrationWindow.gameType == "CHECKERS"){
-        			checkersGameWindow.player = registrationWindow.currentPlayer;
-        			checkersGameWindow.gameId = registrationWindow.gameId;
-        			vstack.selectedChild = checkersGameWindow;	
+        			//checkersGameWindow.currentPlayer = registrationWindow.currentPlayer;
+        			//checkersGameWindow.gameId = registrationWindow.gameId;
+        			//vstack.selectedChild = checkersGameWindow;	
         		}else if (registrationWindow.gameType == "PENTE"){
         			penteGameWindow.players = registrationWindow.players;
         			penteGameWindow.currentPlayer = registrationWindow.currentPlayer;
@@ -65,7 +64,7 @@
 	
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
 		<multigame:registrationWindow id="registrationWindow" complete="startGame(event)" />
-		<checkers:checkersGameWindow id="checkersGameWindow"/>
+		<!--checkers:checkersGameWindow id="checkersGameWindow"/-->
 		<pente:penteGameWindow id="penteGameWindow"/>
 	</mx:ViewStack>
 </mx:Application>

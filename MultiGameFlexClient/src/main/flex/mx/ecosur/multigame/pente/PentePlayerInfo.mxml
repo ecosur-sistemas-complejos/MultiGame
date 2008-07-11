@@ -3,16 +3,17 @@
 	
 	<mx:Script> 
         <![CDATA[
-        	import mx.ecosur.multigame.entity.Player;
+        	import mx.ecosur.multigame.entity.GamePlayer;
         	import mx.controls.Alert;
         	
-        	private var _player:Player;
+        	private var _gamePlayer:GamePlayer;
         	
-        	public function set player(player:Player):void{
-        		playerName.text = player.name;
-        		playerColor.text = player.color;
-        		playerLastRegistration.text = player.lastRegistration.toString();
-        		playerWins.text = player.wins.toString();
+        	public function set gamePlayer(gamePlayer:GamePlayer):void{
+        		playerName.text = gamePlayer.player.name;
+        		playerColor.text = gamePlayer.color;
+        		var d:Date = new Date(gamePlayer.player.lastRegistration);
+        		playerLastRegistration.text = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
+        		playerWins.text = gamePlayer.player.wins.toString();
         	}
         	        
         ]]>

@@ -1,17 +1,18 @@
 package mx.ecosur.multigame.entity
 {
 	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.entity.Player;
+	import mx.ecosur.multigame.entity.GamePlayer;
 
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Move")]
 	public class Move
 	{
 		
 		private var _id:int;
-		private var _player:Player;
+		private var _player:GamePlayer;
 		private var _current:Cell;
 		private var _destination:Cell;
 		private var _status:String;
+
 		
 		public static const UNVERIFIED:String = "UNVERIFIED";
 		public static const VERIFIED:String = "VERIFIED";
@@ -31,11 +32,11 @@ package mx.ecosur.multigame.entity
 			_id = id;
 		}
 		
-		public function get player():Player{
+		public function get player():GamePlayer{
 			return _player;
 		}
 		
-		public function set player(player:Player):void{
+		public function set player(player:GamePlayer):void{
 			_player = player;
 		}
 		
@@ -62,6 +63,7 @@ package mx.ecosur.multigame.entity
 		public function set status(status:String):void{
 			_status = status;
 		}
+
 		
 		
 		

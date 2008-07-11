@@ -1,8 +1,6 @@
-
 package mx.ecosur.multigame.flexClient.service;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,12 +10,15 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.Cell;
+import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.flexClient.exception.GameException;
@@ -65,29 +66,14 @@ public class GameService {
 		return registrar;
 	}
 
-	public Player registerPlayer(Player player, String gameTypeStr)
-			throws InvalidRegistrationException {
+	public GamePlayer registerPlayer(Player player, Color preferedColor,
+			String gameTypeStr) throws InvalidRegistrationException {
 		RegistrarRemote registrar = getRegistrar();
 		GameType gameType = GameType.valueOf(gameTypeStr);
+		GamePlayer gamePlayer;
 		try {
-			//TODO: This is a tempory fix to allow a player to reenter a game already started without knowing its id.
-			//the client interface should be enhanced to allow a player to select from games that he/she is already in.
-			player = registrar.locatePlayer(player.getName());
-
-			player = registrar.registerPlayer(player, gameType);
-			
-			//TODO: This is a temporary fix until the pente player info is moved to gamePlayer
-			if (!player.getClass().equals(Player.class)){
-				Player player2 = new Player();
-				player2.setColor(player.getColor());
-				player2.setGamecount(player.getGamecount());
-				player2.setId(player.getId());
-				player2.setLastRegistration(player.getLastRegistration());
-				player2.setName(player.getName());
-				player2.setTurn(player.isTurn());
-				player2.setWins(player.getWins());
-				player = player2;
-			}
+			gamePlayer = registrar.registerPlayer(player, preferedColor,
+					gameType);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -95,7 +81,7 @@ public class GameService {
 			e.printStackTrace();
 			throw new GameException(e);
 		}
-		return player;
+		return gamePlayer;
 	}
 
 	public int getGameId(String gameTypeStr) {
@@ -116,34 +102,14 @@ public class GameService {
 		FlexSession session = FlexContext.getFlexSession();
 		return sharedBoard.getGameGrid();
 	}
-	
-	public List<Player> getPlayers(){
+
+	public List<GamePlayer> getPlayers() {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<Player> players = sharedBoard.getPlayers();
-		
-		//TODO: This is a temporary fix until the pente player info is moved to gamePlayer
-		List<Player> players2 = new ArrayList<Player>();
-		Player player2;
-		for (Player player : players){
-			if (!player.getClass().equals(Player.class)){
-				player2 = new Player();
-				player2.setColor(player.getColor());
-				player2.setGamecount(player.getGamecount());
-				player2.setId(player.getId());
-				player2.setLastRegistration(player.getLastRegistration());
-				player2.setName(player.getName());
-				player2.setTurn(player.isTurn());
-				player2.setWins(player.getWins());
-				players2.add(player2);
-			}else{
-				players2.add(player);
-			}
-		}
-		
-		return players2;
+		List<GamePlayer> players = sharedBoard.getPlayers();
+		return players;
 	}
 
-	public Map<String, Boolean> getValidMoves(Player player, Cell cell) {
+	public Map<String, Boolean> getValidMoves(GamePlayer gamePlayer, Cell cell) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		HashMap<String, Boolean> validMoves = new HashMap<String, Boolean>();
 		Move move;
@@ -154,28 +120,26 @@ public class GameService {
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < cols; c++) {
 				destination = new Cell(c, r, cell.getColor());
-				move = new Move(sharedBoard.getGame(), player, cell, destination);
+				move = new Move(gamePlayer, cell, destination);
 				try {
 					sharedBoard.validateMove(move);
-					moveCode = Integer.toString(c) + "#"
-					+ Integer.toString(r);
+					moveCode = Integer.toString(c) + "#" + Integer.toString(r);
 					validMoves.put(moveCode, true);
 					logger.info("valid move " + moveCode + "\n" + move);
 				} catch (InvalidMoveException e) {
-					//do not add move to valid moved but continue executing
+					// do not add move to valid moved but continue executing
 				}
 			}
 		}
-		if(validMoves.size() == 0){
+		if (validMoves.size() == 0) {
 			logger.info("No valid moves for cell " + cell);
 		}
 		return validMoves;
 	}
-	
-	public void doMove(Move move){
+
+	public void doMove(Move move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		try {
-			move.setGame(sharedBoard.getGame());
 			Move validatedMove = sharedBoard.validateMove(move);
 			sharedBoard.move(validatedMove);
 		} catch (InvalidMoveException e) {
@@ -186,19 +150,18 @@ public class GameService {
 			throw new GameException(e);
 		}
 	}
-	
-	//TODO: This method is temporary for development purposes. It will be deleted
+
+	// TODO: This method is temporary for development purposes. It will be
+	// deleted
 	public void unregisterAllPlayers(String gameTypeStr)
 			throws InvalidRegistrationException {
 		RegistrarRemote registrar = getRegistrar();
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		GameType gameType = GameType.valueOf(gameTypeStr);
 		try {
 			if (sharedBoard.getGame() != null) {
-				for (Player p : sharedBoard.getGame().getPlayers()) {
-
-					registrar.unregisterPlayer(p, gameType);
-					logger.info("Unregistering player " + p.getId()
+				for (GamePlayer gp : sharedBoard.getGame().getPlayers()) {
+					registrar.unregisterPlayer(gp);
+					logger.info("Unregistering player " + gp.getPlayer().getId()
 							+ " from game " + sharedBoard.getGame().getId());
 				}
 			}

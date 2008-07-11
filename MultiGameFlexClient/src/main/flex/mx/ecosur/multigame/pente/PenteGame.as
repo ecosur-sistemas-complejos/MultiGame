@@ -9,16 +9,15 @@ package mx.ecosur.multigame.pente{
 	import mx.core.IFlexDisplayObject;
 	import mx.core.ScrollPolicy;
 	import mx.core.UIComponent;
-	import mx.events.CloseEvent;
-	import mx.events.CloseEvent;
 	import mx.ecosur.multigame.Color;
 	import mx.ecosur.multigame.entity.BoardCell;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.entity.GameGrid;
+	import mx.ecosur.multigame.entity.GamePlayer;
 	import mx.ecosur.multigame.entity.Move;
-	import mx.ecosur.multigame.entity.Player;
 	import mx.ecosur.multigame.exception.ExceptionType;
 	import mx.effects.AnimateProperty;
+	import mx.events.CloseEvent;
 	import mx.events.DragEvent;
 	import mx.events.EffectEvent;
 	import mx.events.FlexEvent;
@@ -33,7 +32,7 @@ package mx.ecosur.multigame.pente{
 
 	public class PenteGame extends UIComponent{
 		
-		private var _currentPlayer:Player;
+		private var _currentPlayer:GamePlayer;
 		private var _players:ArrayCollection;
 		private var _gameGrid:GameGrid;
 		private var _gameId:int;
@@ -70,8 +69,9 @@ package mx.ecosur.multigame.pente{
 		/*
 		 * Getters and setters
 		 */
-		public function set currentPlayer(currentPlayer:Player):void{
+		public function set currentPlayer(currentPlayer:GamePlayer):void{
 			_currentPlayer = currentPlayer;
+			//Alert.show(_currentPlayer.game.id.toString());
 			if (_isTurn != currentPlayer.turn){
 				_isTurn = currentPlayer.turn;
 				initTurn();
@@ -121,12 +121,12 @@ package mx.ecosur.multigame.pente{
 			}
 		}
 		
-		private function updatePlayers(players:ArrayCollection):void{
-			var player:Player;
+		public function updatePlayers(players:ArrayCollection):void{
+			var gamePlayer:GamePlayer;
 			for (var i:int = 0; i < players.length; i++){
-				player = Player(players[i]); 
-				if (player.id == _currentPlayer.id){
-					this.currentPlayer = player;
+				gamePlayer = GamePlayer(players[i]); 
+				if (gamePlayer.id == _currentPlayer.id){
+					this.currentPlayer = gamePlayer;
 				}
 			}
 			this.players = players;
@@ -136,15 +136,61 @@ package mx.ecosur.multigame.pente{
 			getGrid();
 		}
 		
+		/*
 		public function turn():void{
 			getGrid();
 			var call:Object = _gameService.getPlayers();
 			call.operation = "getPlayers";
-		}
+		}*/
 		
+		/*
 		public function playerChange():void{
 			var call:Object = _gameService.getPlayers();
 			call.operation = "getPlayers";
+		}*/
+		
+		public function addMove(move:Move):void{
+			if (_moves.length > 0){
+				var lastMove:Move = _moves[_moves.length - 1]
+				if (move.destination.row == lastMove.destination.row && move.destination.column == lastMove.destination.column){
+					//move is already shown, this client must have done the move
+					return;
+				} 
+			}
+			animateMove(move);
+			_moves.push(move);
+		}
+		
+		public function animateMove(move:Move):void{
+			
+			//get board cell destination for move
+			var cell:Cell = move.destination;
+			var boardCell:BoardCell = _board.getBoardCell(cell.column, cell.row);
+			var cellPadding:Number = boardCell.getStyle("padding");
+			cell.width = boardCell.width - 2 * cellPadding;
+			cell.height = boardCell.height - 2 * cellPadding;
+			boardCell.cell = cell;
+			
+			//get position of bottom right of store relative to the cell
+			var pt:Point = new Point((_cellStore.x + _cellStore.width), (_cellStore.y + _cellStore.height));
+			pt = localToGlobal(pt);
+			pt = boardCell.globalToLocal(pt);
+			
+			//define motion animation
+			var apX:AnimateProperty = new AnimateProperty(cell);
+			apX.fromValue = pt.x;
+			apX.toValue = boardCell.width / 2;
+			apX.duration = 1000;
+			apX.property = "x";
+			var apY:AnimateProperty = new AnimateProperty(cell);
+			apY.fromValue = pt.y;
+			apY.toValue = boardCell.height / 2;
+			apY.duration = 1000;
+			apY.property = "y";
+			
+			//start effect
+			apX.play();
+			apY.play();
 		}
 		
 		public function end():void{
@@ -281,7 +327,6 @@ package mx.ecosur.multigame.pente{
 		}
 		
 		private function validateMove(boardCell:BoardCell):Boolean{
-			return true;
 			if(_isBoardEmtpy){
 				if(boardCell.row == Math.floor(_board.nRows / 2) && boardCell.column == Math.floor(_board.nCols / 2)){
 					return true;
@@ -340,7 +385,7 @@ package mx.ecosur.multigame.pente{
 		override protected function createChildren():void {
 			
 			//create board
-			_board = new PenteBoard(15, 15, dragEnterBoardCell, dragDropCell, dragExitCell);
+			_board = new PenteBoard(19, 19, dragEnterBoardCell, dragDropCell, dragExitCell);
 			addChild(_board);
 			
 			//create cell store

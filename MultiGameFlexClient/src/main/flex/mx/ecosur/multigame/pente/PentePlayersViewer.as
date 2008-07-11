@@ -5,13 +5,13 @@ package mx.ecosur.multigame.pente {
 	import mx.controls.Button;
 	import mx.ecosur.multigame.Color;
 	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.entity.Player;
+	import mx.ecosur.multigame.entity.GamePlayer;
 	import mx.ecosur.helper.ColorUtils;
 	
 	public class PentePlayersViewer extends Accordion {
 		
 		private var _players:ArrayCollection; 
-		private var _currentPlayer:Player;
+		private var _currentPlayer:GamePlayer;
 		
 		public function PentePlayersViewer(){
 			super();
@@ -27,7 +27,7 @@ package mx.ecosur.multigame.pente {
 		}
 		
 		//TODO: Avoid calling create players twice when players and principal are set
-		public function set currentPlayer(currentPlayer:Player):void{
+		public function set currentPlayer(currentPlayer:GamePlayer):void{
 			//Alert.show("setting current player " + currentPlayer.color);
 			_currentPlayer = currentPlayer;
 			updatePlayers();
@@ -37,30 +37,30 @@ package mx.ecosur.multigame.pente {
 			var ppi:PentePlayerInfo;
 			var btn:Button;
 			var cell:Cell;
-			var player:Player;
+			var gamePlayer:GamePlayer;
 			var i:int;
 			for (i = 0; i < _players.length; i++){
-				player = Player(_players[i]);
+				gamePlayer = GamePlayer(_players[i]);
 				if (getChildren().length > i) {
 					ppi = PentePlayerInfo(getChildAt(i));
 				}else{
 					ppi = new PentePlayerInfo();
 					addChild(ppi);
 				}
-				ppi.player = player;
+				ppi.gamePlayer = gamePlayer;
 				btn = getHeaderAt(i);
-				btn.label = player.name;
-				btn.setStyle("icon", Color.getCellIcon(player.color));
+				btn.label = gamePlayer.player.name;
+				btn.setStyle("icon", Color.getCellIcon(gamePlayer.color));
 				btn.setStyle("paddingBottom", 5);
 				btn.setStyle("paddingTop", 5);
-				if (player.turn){
+				if (gamePlayer.turn){
 					var fillColor:uint;
 					/*if (player.id == _currentPlayer.id){
 						fillColor = 0x33cc00;
 					}else{
 						fillColor = 0xff8000;
 					}*/
-					fillColor = ColorUtils.findIntermediateColor(Color.getColorCode(player.color), 0x000000, 0.5);
+					fillColor = ColorUtils.findIntermediateColor(Color.getColorCode(gamePlayer.color), 0x000000, 0.5);
 					btn.setStyle("fillColors", [fillColor, 0xffffff]);
 					btn.setStyle("fillAlphas", [1, 1]);
 					btn.setStyle("borderColor", fillColor);

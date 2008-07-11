@@ -92,6 +92,10 @@ package mx.ecosur.multigame.entity {
 			clone.player = _player;
 			return clone; 
 		}
+		
+		override public function toString():String{
+			return "id = " + id + ", color = " + color + ", colorCode = " + ",  column = " + column + ", row = " + row + " player = " + player; 
+		}
 				
 		override protected function createChildren():void{
 			_bg = new Shape();

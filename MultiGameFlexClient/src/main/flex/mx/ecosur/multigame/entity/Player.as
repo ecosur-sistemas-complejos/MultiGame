@@ -6,11 +6,9 @@ package mx.ecosur.multigame.entity {
 		
 		private var _id:int;
 		private var _name:String;
-		private var _color:String;
 		private var _gamecount:int;
 		private var _wins:int;
 		private var _lastRegistration:int;
-		private var _turn:Boolean;
 		
 		public function Player(){
 			super();
@@ -30,14 +28,6 @@ package mx.ecosur.multigame.entity {
 		
 		public function set name(name:String):void {
 			_name = name;
-		}
-		
-		public function get color():String{
-			return _color;
-		}
-		
-		public function set color(color:String):void {
-			_color = color;
 		}
 		
 		public function get gamecount():int{
@@ -64,13 +54,8 @@ package mx.ecosur.multigame.entity {
 			_lastRegistration = lastRegistration;
 		}
 		
-		public function get turn():Boolean{
-			return _turn;
+		public function toString():String{
+			return "id = " + id + ", name = " + name + ", gamecount = " + gamecount + ", lastRegistration = " + lastRegistration + ", wins = " + wins;
 		}
-		
-		public function set turn(turn:Boolean):void {
-			_turn = turn;
-		}
-
 	}
 }

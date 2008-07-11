@@ -15,7 +15,7 @@
 		<properties>
 	    	<jms>
 	    		<destination-type>Topic</destination-type>
-	    		<message-type>javax.jms.MapMessage</message-type>
+	    		<message-type>javax.jms.ObjectMessage</message-type>
 	    		<connection-factory>jms/TopicConnectionFactory</connection-factory>
 	    		<destination-jndi-name>CHECKERS</destination-jndi-name>
 	    		<delivery-mode>NON_PERSISTENT</delivery-mode>

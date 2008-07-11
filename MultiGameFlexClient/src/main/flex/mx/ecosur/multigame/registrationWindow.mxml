@@ -14,8 +14,9 @@
             import mx.controls.Alert;
             import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
+            import mx.ecosur.multigame.entity.GamePlayer;
             
-            public var currentPlayer:Player;
+            public var currentPlayer:GamePlayer;
             public var players:ArrayCollection;
             public var gameType:String;
             public var gameId:int;
@@ -35,18 +36,17 @@
             	}
             	
             	//register player
-            	currentPlayer = new Player();
-            	currentPlayer.color = Color.UNKNOWN;
-            	currentPlayer.name = txtName.text;
+            	var player:Player = new Player();
+            	player.name = txtName.text;
             	gameType = cbGame.selectedItem.data;
-            	var call:Object = gameService.registerPlayer(currentPlayer, gameType);
+            	var call:Object = gameService.registerPlayer(player, Color.UNKNOWN, gameType);
             	call.operation = "register";
             }
             
             private function resultHandler(event:ResultEvent):void{
             	var call:Object = event.token;
             	if(call.operation == "register"){
-            		currentPlayer = Player(event.result);
+            		currentPlayer = GamePlayer(event.result);
             		var callGameId:Object = gameService.getGameId(gameType);
             		callGameId.operation = "getGameId";
             	}else if (call.operation == "getGameId") {
@@ -62,13 +62,13 @@
             }   
                         
             private function faultHandler(event:FaultEvent):void{
-            	var i:int = event.fault.faultString.indexOf(":"); 
+            	//TODO:Tempory fix to remove players from a game
+            	var i:int = event.fault.faultString.indexOf("game full"); 
             	if (i > -1){
             		Alert.show(event.fault.faultString.substring(i + 1, event.fault.faultString.length), "Registration failed");
             		if (event.token.operation != "unregisterAll"){
             			var call:Object = gameService.unregisterAllPlayers(cbGame.selectedItem.data);
             			call.operation= "unregisterAll";
-            			
             		}
             	}else{
             		Alert.show(event.fault.faultString, "Error");
@@ -89,7 +89,7 @@
       				<mx:ArrayCollection>
       					<mx:Object label="-- Select --" data=""/>
       					<mx:Object label="Checkers" data="CHECKERS"/>
-      					<mx:Object label="Pente" data="PENTE"/>
+      					<mx:Object label="Penteee" data="PENTE"/>
     	  			</mx:ArrayCollection>                     
     			</mx:ComboBox>
 			</mx:FormItem>

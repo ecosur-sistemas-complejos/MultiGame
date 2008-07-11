@@ -9,21 +9,18 @@
 			import mx.messaging.messages.IMessage;
 			import mx.messaging.events.MessageAckEvent;
 			import mx.messaging.events.MessageFaultEvent;
-			import mx.ecosur.multigame.entity.Player;
+			import mx.ecosur.multigame.entity.GamePlayer;
 			import mx.ecosur.multigame.entity.ChatMessage;
 			import mx.ecosur.multigame.event.GameEvent;
 			import mx.controls.Alert;
 			
-            [Bindable]
-            public var player:Player;
-            
-            [Bindable]
+            public var gamePlayer:GamePlayer;
             public var gameId:int;
 			
 			private function send():void {
 				var message:IMessage = new AsyncMessage();
 				var o:Object = new Object();
-				o.senderName = player.name;
+				o.senderName = gamePlayer.player.name;
 				o.dateSent = int((new Date()).time);
 				o.body = msg.text;
 				message.body = o;
