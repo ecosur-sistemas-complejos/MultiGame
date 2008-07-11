@@ -2,22 +2,12 @@ package mx.ecosur.multigame.ejb;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -25,11 +15,13 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
+import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -41,12 +33,16 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 	@PersistenceContext(unitName = "MultiGame")
 	public EntityManager em;
-	
-	@Resource(mappedName="jms/TopicConnectionFactory")
-	private ConnectionFactory connectionFactory;
 
-	@Resource(mappedName="CHECKERS")
-	private Topic topic; 
+	private MessageSender messageSender;
+	
+	/**
+	 * Default constructor 
+	 */
+	public Registrar() {
+		super();
+		messageSender = new MessageSender();
+	}
 
 	/**
 	 * Registers a player into the System. Player registration consists of
@@ -100,17 +96,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			/* Add the new player to the game */
 			try {
 				game.addPlayer(player);
+				messageSender.sendPlayerChange(game);
 			} catch (RemoteException e) {
 				throw new InvalidRegistrationException(e.getMessage());
-			}
-		}
-		
-		/* if is the last player to join the game can begin */
-		if (getAvailableColors(game).size() == 0){
-			try {
-				sendGameEvent(game, GameEvent.BEGIN);
-			} catch (JMSException e) {
-				throw new RemoteException (e.getMessage());
 			}
 		}
 
@@ -247,18 +235,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return game;
 	}
 	
-	private void sendGameEvent(Game game, GameEvent event) throws JMSException{
-		Connection connection = connectionFactory.createConnection();
-		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		MessageProducer producer = session.createProducer(topic);
-		MapMessage message = session.createMapMessage();
-		message.setIntProperty("GAME_ID", game.getId());
-		message.setStringProperty("GAME_EVENT", event.toString());
-		producer.send(message);
-		session.close();
-		connection.close();
-	}
-
 	/**
 	 * @param name
 	 * @return

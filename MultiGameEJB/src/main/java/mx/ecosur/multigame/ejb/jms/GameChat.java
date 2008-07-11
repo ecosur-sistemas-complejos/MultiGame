@@ -1,20 +1,13 @@
 package mx.ecosur.multigame.ejb.jms;
 
-import java.rmi.RemoteException;
-import java.util.Date;
-
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
-import mx.ecosur.multigame.GameEvent;
-import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.RegistrarLocal;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 @MessageDriven(mappedName = "CHECKERS")
 public class GameChat implements MessageListener {
@@ -31,6 +24,8 @@ public class GameChat implements MessageListener {
 	 */
 	public void onMessage(Message message) {
 
+		ObjectMessage obj = (ObjectMessage) message;
+		/*
 		MapMessage map = (MapMessage) message;
 		try {
 			// TODO: Add selector or filter to only treat CHAT messages
@@ -58,6 +53,6 @@ public class GameChat implements MessageListener {
 			e.printStackTrace();
 		} catch (RemoteException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

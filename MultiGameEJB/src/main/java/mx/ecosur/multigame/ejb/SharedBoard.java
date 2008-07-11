@@ -6,21 +6,12 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.Topic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
@@ -30,11 +21,13 @@ import javax.persistence.Query;
 
 import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.CellComparator;
+import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
+import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
@@ -56,23 +49,20 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	@PersistenceContext (unitName="MultiGame")
 	private EntityManager em;
 	
-	@Resource(mappedName="jms/TopicConnectionFactory")
-	private ConnectionFactory connectionFactory;
-
-	@Resource(mappedName="CHECKERS")
-	private Topic topic; 
-	
 	private Game game;
 
 	private RuleBase ruleset;
 
 	private StatefulSession statefulSession;
 	
+	private MessageSender messageSender;
+	
 	private static Logger logger = Logger.getLogger(
 			SharedBoard.class.getCanonicalName());
 	
 	public SharedBoard () {
 		game = null;
+		messageSender = new MessageSender();
 	}
 	
 	/**
@@ -278,6 +268,9 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.dispose();
 		
 		em.persist(move);
+		
+		//TODO: Should be moved to rules and rules and in the case of pente rules should send QualifyMove message first
+		messageSender.sendMoveComplete(move);
 		incrementTurn(move.getPlayer());
 	}
 
@@ -325,26 +318,10 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		}
 
 		nextPlayer.setTurn(true);
-		sendGameEvent(GameEvent.TURN);
+		messageSender.sendPlayerChange(game);
 		
 		return nextPlayer;
 		
-	}
-	
-	private void sendGameEvent(GameEvent event){
-		try {
-			Connection connection = connectionFactory.createConnection();
-			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			MessageProducer producer = session.createProducer(topic);
-			MapMessage message = session.createMapMessage();
-			message.setIntProperty("GAME_ID", game.getId());
-			message.setStringProperty("GAME_EVENT", event.toString());
-			producer.send(message);
-			session.close();
-			connection.close();
-		} catch (JMSException e) {
-			e.printStackTrace();
-		} 
 	}
 
 	public List<GamePlayer> getPlayers() {

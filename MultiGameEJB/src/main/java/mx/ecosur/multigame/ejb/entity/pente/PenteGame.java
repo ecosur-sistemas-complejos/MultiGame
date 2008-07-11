@@ -3,14 +3,15 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.ejb.entity.Game;
 
@@ -32,6 +33,7 @@ public class PenteGame extends Game {
 	
 	private Set<PentePlayer> winners;
 	
+	@Transient
 	public Set <PentePlayer> getWinners () {
 		if (winners == null) {
 			winners = determineWinners ();

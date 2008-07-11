@@ -9,6 +9,6 @@ package mx.ecosur.multigame;
  */
 public enum GameEvent {
 	
-	BEGIN, TURN, END, CHAT, PLAYER_CHANGE
+	BEGIN, PLAYER_CHANGE, QUALIFY_MOVE, MOVE_COMPLETE, CHAT, END 
 
 }
