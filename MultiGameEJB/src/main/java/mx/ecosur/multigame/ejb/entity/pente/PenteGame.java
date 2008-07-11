@@ -3,17 +3,18 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import java.io.Serializable;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
-
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Transient;
+
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
 
 
 
@@ -27,27 +28,27 @@ import mx.ecosur.multigame.ejb.entity.Game;
 				"and g.state <>:state"),
 	@NamedQuery(name="getPenteGameById",
 			query="select g from PenteGame g where g.id=:id " +
-				"and g.state<>:state")})
+				"and g.state<>:state"),
+	@NamedQuery(name="getPenteGamePlayer",
+			query="select pgp from PentePlayer pgp where pgp.player=:player " +
+					"and pgp.game=:game and pgp.color=:color")
+})
 @Entity
 public class PenteGame extends Game {
 	
-	private Set<PentePlayer> winners;
-	
-	@Transient
 	public Set <PentePlayer> getWinners () {
-		if (winners == null) {
-			winners = determineWinners ();
-		}
-		
-		return winners;
-	}
-	
-	public void setWinners (Set<PentePlayer> winners) {
-		this.winners = winners;
+		return determineWinners();
 	}
 	
 	private TreeSet<PentePlayer> determineWinners() {
 		TreeSet<PentePlayer> ret = new TreeSet<PentePlayer> (new PlayerComparator());
+		List <GamePlayer> players = this.getPlayers();
+		for (GamePlayer p : players) {
+			PentePlayer player = (PentePlayer) p;
+			if (player.getPoints() > 0)
+			ret.add(player);
+		}
+		
 		return ret;
 	}
 	

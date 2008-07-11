@@ -41,9 +41,11 @@ import mx.ecosur.multigame.GameType;
 	@NamedQuery(name="getGameByTypeAndPlayer",
 			query="select g from Game as g, Player as player " +
 				"where player=:player and player MEMBER OF g.players " +
-				"and g.type=:type and g.state <>:state")
+				"and g.type=:type and g.state <>:state"),
+	@NamedQuery(name="getGamePlayer",
+			query="select gp from GamePlayer gp where gp.player=:player " +
+					"and gp.game=:game and gp.color=:color")
 	})
-
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public class Game implements Serializable {
@@ -132,7 +134,7 @@ public class Game implements Serializable {
 	/**
 	 * @return the players
 	 */
-	@OneToMany (cascade={CascadeType.ALL},
+	@OneToMany (mappedBy="game", cascade={CascadeType.ALL},
 			fetch=FetchType.EAGER)
 	public List<GamePlayer> getPlayers() {
 		return players;

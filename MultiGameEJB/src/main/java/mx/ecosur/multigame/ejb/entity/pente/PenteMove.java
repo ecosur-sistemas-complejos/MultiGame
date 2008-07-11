@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
-import mx.ecosur.multigame.GameGrid;
-import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.pente.BeadString;
 
 /**
  * @author awater
@@ -31,20 +31,21 @@ public class PenteMove extends Move {
 	
 	HashSet<Cell> captures;
 	
+	HashSet<BeadString> trias, tesseras;
+	
 	public PenteMove () {
 		super ();
 	}
 
-	public PenteMove(GamePlayer player, Cell destination) {
+	public PenteMove(PentePlayer player, Cell destination) {
 		super(player, destination);
 	}
 	
 	/*
 	 * Returns a set of captured pieces, computed once. 
 	 */
+	@Transient
 	public Set<Cell> getCaptures () {
-		GameGrid grid = getPlayer().getGame().getGrid();
-		
 		if (captures == null) {
 			captures = new HashSet<Cell>();
 			
@@ -81,7 +82,7 @@ public class PenteMove extends Move {
 					if (trapped.size() != 2) 
 						continue;
 					Cell cell = trapped.get(1);
-					Cell result = searchGrid (grid, direction, cell);
+					Cell result = searchGrid (direction, cell);
 					if (result.getColor() == getDestination().getColor()) {
 						captures.addAll(trapped);
 					}
@@ -91,6 +92,48 @@ public class PenteMove extends Move {
 		
 		return captures;
 		
+	}
+	
+	/**
+	 * Gets the Trias that this move created.
+	 */
+	public HashSet<BeadString> getTrias () {
+		if (trias == null) {
+			trias = new HashSet<BeadString> ();
+			Map<Direction, BeadString> stringMap = getString (3);
+			for (Direction d: stringMap.keySet()) {
+				trias.add(stringMap.get(d));
+			}
+		}
+		
+		return trias;
+	}
+	
+	public void setTrias (HashSet<BeadString> trias) {
+		this.trias = trias;
+	}
+	
+	/**
+	 * Gets the Tesseras that this move created.  This search will include
+	 * this color's compliment.
+	 * 
+	 * NOTE:  This call works with the GENTE rules.  Eligible candidate for
+	 * refactoring.
+	 */
+	public HashSet<BeadString> getTesseras () {
+		if (tesseras == null) {
+			tesseras = new HashSet<BeadString> ();
+			Map<Direction, BeadString> stringMap = getString (4);
+			for (Direction d: stringMap.keySet()) {
+				tesseras.add(stringMap.get(d));
+			}
+		}
+		
+		return tesseras;
+	}	
+	
+	public void setTesseras (HashSet<BeadString> tesseras) {
+		this.tesseras = tesseras;
 	}
 
 	private Color[] getCandidateColors() {
@@ -119,7 +162,6 @@ public class PenteMove extends Move {
 	private Set<AnnotatedCell> findCandidates(AnnotatedCell startingCell, 
 			Color[] targetColors, int depth) 
 	{
-		GameGrid grid = getPlayer().getGame().getGrid();
 		Set<AnnotatedCell> ret = new HashSet<AnnotatedCell> ();
 		
 		/* If the annotated cell has no direction, search in all
@@ -137,7 +179,7 @@ public class PenteMove extends Move {
 			}
 		} else {
 			for (int i = 0; i < depth; i++) {
-				Cell result = this.searchGrid(grid, startingCell.getDirection(), 
+				Cell result = this.searchGrid(startingCell.getDirection(), 
 						startingCell.getCell());
 				
 				for (Color targetColor: targetColors) {
@@ -154,7 +196,7 @@ public class PenteMove extends Move {
 	}
 	
 	
-	private Cell searchGrid(GameGrid grid, Direction direction, Cell cell) {
+	private Cell searchGrid(Direction direction, Cell cell) {
 		int row = 0, column = 0;
 		switch (direction) {
 			case NORTH:
@@ -194,9 +236,61 @@ public class PenteMove extends Move {
 
 		}
 
-		return grid.getLocation(row, column);
+		return this.getPlayer().getGame().getGrid().getLocation(row, column);
 	}
 	
+	private Map<Direction, BeadString> getString (int stringlength) {
+		return getString (stringlength, false);
+	}
+	
+	private Map<Direction, BeadString> getString(int stringlength, boolean compliment) {
+		HashMap<Direction, BeadString> ret = new HashMap<Direction, BeadString> ();
+		
+		AnnotatedCell start = new AnnotatedCell (getDestination());
+			/* We are only interested in cells of this color */
+		
+		Color[] colors;
+		if (compliment) {
+			colors = new Color [ 1 ];
+			colors [ 0 ] = this.getDestination().getColor();
+		} else {
+			colors = new Color [ 2 ];
+			colors [ 0 ] = this.getDestination().getColor();
+			colors [ 1 ] = colors [ 0 ].getCompliment();
+		}
+		/* Perform a search to the depth of stringlength + 1, to pickup 
+		 * any non-valid configurations */
+		Set<AnnotatedCell> candidates = findCandidates(start, colors, stringlength + 1);
+		
+		/* Directional Hash of cells */
+		HashMap <Direction,BeadString> directionalMap = 
+			new HashMap<Direction,BeadString>();
+
+		/* Sort the candidates */
+		for (AnnotatedCell candidate : candidates) {
+			if (directionalMap.containsKey(candidate.getDirection())) {
+				BeadString string = directionalMap.get(candidate.getDirection());
+				string.add(candidate.getCell());
+				directionalMap.put (candidate.getDirection(), string);
+			} else {
+				BeadString string = new BeadString ();
+				string.add(candidate.getCell());
+				directionalMap.put(candidate.getDirection(), string);
+			}
+		}
+		
+		/* Pull each list of cells from the directional map, and ensure that
+		 * there are only stringlength - 1 cells in that list. */
+		for (Direction d : directionalMap.keySet()) {
+			BeadString string = directionalMap.get(d);
+			if (string.size() == (stringlength -1) ) {
+				string.add(getDestination());
+				ret.put(d, string);
+			}
+		}
+		
+		return ret;
+	}
 	
 	private class AnnotatedCell {
 		

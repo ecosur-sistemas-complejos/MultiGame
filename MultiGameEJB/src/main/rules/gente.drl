@@ -1,0 +1,242 @@
+package mx.ecosur.multigame.pente;
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+
+import mx.ecosur.multigame.Cell;
+import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.Direction;
+import mx.ecosur.multigame.GameGrid;
+import mx.ecosur.multigame.GameState;
+
+import mx.ecosur.multigame.ejb.entity.Move.*;
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
+
+#GENTE
+
+#These rules have been seperated from the main Pente rule set for 
+#use in the modified game of Pente, GENTE, invented by 
+#Dr. Luis Garcia Barrios at ECOSUR, in San Crist—bal de Las Casas,
+#Chiapas, Mexico.
+
+
+#Functions for the modified Game of PENTE, "GENTE"
+
+/*
+    Determines if the destination of the requested move
+    is in the center of the grid.
+*/
+function boolean isCenter (PenteGame game, PenteMove move) {
+    Dimension size = game.getSize();
+    Cell destination = move.getDestination ();
+    
+    int centerWidth = (int) size.getWidth()/2;
+    int centerHeight = (int) size.getHeight()/2;
+    
+    boolean ret = (destination.getRow () == centerHeight && 
+        destination.getColumn() == centerWidth);
+    if (!ret)
+        move.setStatus (Status.INVALID);
+    return ret;
+}
+
+/*
+    Determines if the destination of the requested move is
+    empty on the grid.
+*/
+function boolean isEmpty (GameGrid grid, PenteMove move) {
+    Cell destination = move.getDestination();
+    Cell current = grid.getLocation (destination.getRow(), destination.getColumn());
+    boolean ret = (current == null);
+    if (!ret)
+        move.setStatus (Status.INVALID);
+    return ret;
+}
+
+function boolean isTria (PenteMove move) {
+    return (move.getTrias().size() > 0);
+}
+
+function boolean isTessera (PenteMove move) {
+    return (move.getTesseras().size() > 0);
+}
+
+function int scorePlayer (PenteMove move) {
+    int ret = 0;
+    PentePlayer player = (PentePlayer) move.getPlayer();
+    if (player.getTrias().size() == 2)
+        ret = 10;
+    else if (player.getTesseras().size() == 3) 
+        ret = 5;
+    return ret;
+}
+
+function PentePlayer getPartner (PentePlayer player) {
+    PentePlayer ret = null;
+
+    Color compliment = player.getColor().getCompliment();
+    Game game = player.getGame();
+    List<GamePlayer> players = game.getPlayers();
+    for (GamePlayer p : players) {
+        if (!p.getColor().equals(compliment)) 
+            continue;   
+         ret = (PentePlayer) p;
+         break;
+    }
+    
+    return ret;
+}
+
+
+/*
+    Determines if the game has a winner.
+*/
+function boolean hasWinner (PenteGame game) {
+     PenteGame pente = (PenteGame) game;
+     return (pente.getWinners().size() > 0);
+}
+
+/*
+    Gets the winner from a specified game.  For more complicated payoff
+    schemas, this function should return a PriorityQueue of Players 
+    based upon positions on the board.
+*/
+function PentePlayer getWinner (PenteGame game) {   
+    PenteGame pente = (PenteGame) game;
+    SortedSet<PentePlayer> winners = (SortedSet<PentePlayer>) pente.getWinners();
+    return winners.first();
+}
+
+
+#Rules for the game of PENTE
+
+#Sets the players in the game so that Black has the first turn
+#Sets up the empty game grid and sets thate game into the PLAY state
+rule "setup"
+    agenda-group "initialize"
+when
+    game : PenteGame (state == GameState.BEGIN)
+then
+    List<GamePlayer> players = game.getPlayers();
+    for (GamePlayer p : players) {
+        if (p.getColor() == Color.BLACK)
+            p.setTurn(true);
+        else
+            p.setTurn(false);
+    }
+    GameGrid grid = new GameGrid ();
+    modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) } 
+end
+
+#Black must move first, and that move can only be at the center of the board
+rule "evaluate-first-move"
+    agenda-group "verify"
+when
+    game  : PenteGame (state == GameState.PLAY, $grid : grid)
+    move  : PenteMove (status == Status.UNVERIFIED, player.turn == true, player.color == Color.BLACK)
+    eval ($grid.getCells().isEmpty())
+    eval (isCenter (game, move))    
+then
+    modify (move) { setStatus (Status.VERIFIED) }
+end
+
+#Subsequent moves must occur on a non-empty board, on empty locations
+rule "evaluate-move"
+    agenda-group "verify"
+when
+    game  : PenteGame (state == GameState.PLAY, $grid : grid)
+    move  : PenteMove (status == Status.UNVERIFIED, player.turn == true)
+    eval (!$grid.getCells().isEmpty())
+    eval (isEmpty (game.getGrid(), move))   
+then
+    modify (move) { setStatus (Status.VERIFIED) }
+end   
+
+# Executes a simple move
+rule "execute-move"
+    agenda-group "move"
+when 
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.VERIFIED)  
+then 
+    GameGrid modifiedGrid = game.getGrid();   
+    modifiedGrid.updateCell (move.getDestination());
+    modify (move) { setStatus (Status.MOVED) }
+    modify (game) { setGrid (modifiedGrid) }
+end
+ 
+rule "find-the-trias"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (isTria (move))
+then
+    PentePlayer player = (PentePlayer) move.getPlayer();
+    Set <BeadString> trias = move.getTrias();
+    for (BeadString  t : trias) {
+        player.addTria(t);
+    }
+    modify (move) { setPlayer (player) }
+end
+
+rule "find-the-tesseras"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (isTessera (move))
+then
+    PentePlayer player = (PentePlayer) move.getPlayer();
+    Set<BeadString> tesseras = move.getTesseras();
+    for (BeadString  t : tesseras) {
+        player.addTessera (t);
+    }
+    modify (move) { setPlayer (player) }
+end
+
+/*
+    TODO:  We may not be serializing the teammate's score, as only
+    the move is serialized in this case.  This should be 
+    checked.
+*/ 
+rule "score"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+then
+    int score = scorePlayer (move);
+    PentePlayer player = (PentePlayer) move.getPlayer ();
+    if (score == 5) {
+        PentePlayer teammate = getPartner (player);
+        teammate.setPoints (score);
+    }
+    player.setPoints (score);
+    modify (move) { setPlayer (player) }
+end
+
+# Finds the winner 
+rule "find-the-winner"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (hasWinner(game))
+then
+    PentePlayer winner = getWinner ((PenteGame) game);
+    System.out.println ("Found winner!");
+    modify (game) { setState (GameState.END)}
+end

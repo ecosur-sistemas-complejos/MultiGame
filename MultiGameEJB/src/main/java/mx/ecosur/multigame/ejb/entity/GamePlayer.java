@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -76,6 +77,7 @@ public class GamePlayer implements Serializable {
 	}
 
 	@ManyToOne
+	@JoinColumn(name="GAME_ID")
 	public Game getGame() {
 		return game;
 	}

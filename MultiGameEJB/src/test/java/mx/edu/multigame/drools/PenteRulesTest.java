@@ -18,6 +18,7 @@ import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -40,7 +41,7 @@ public class PenteRulesTest {
 	
 	private Game game;
 	
-	private GamePlayer alice, bob, charlie, denise;
+	private PentePlayer alice, bob, charlie, denise;
 
 	private StatefulSession statefulSession;
 	
@@ -49,7 +50,7 @@ public class PenteRulesTest {
 		PackageBuilder builder = new PackageBuilder();
 		InputStreamReader reader = new InputStreamReader( 
 				PenteRulesTest.class.getResourceAsStream(
-					"/mx/ecosur/multigame/pente.drl"));
+					"/mx/ecosur/multigame/gente.drl"));
 		try {
 			builder.addPackageFromDrl(reader);
 			Ruleset = RuleBaseFactory.newRuleBase();
@@ -77,10 +78,10 @@ public class PenteRulesTest {
 		c = new Player ("charlie");
 		d = new Player ("denise");
 		
-		alice = new GamePlayer (game, a, Color.BLACK);
-		bob = new GamePlayer (game, b, Color.BLUE);
-		charlie = new GamePlayer (game, c, Color.GREEN);
-		denise = new GamePlayer (game, d, Color.RED);
+		alice = new PentePlayer (game, a, Color.BLACK);
+		bob = new PentePlayer (game, b, Color.BLUE);
+		charlie = new PentePlayer (game, c, Color.GREEN);
+		denise = new PentePlayer (game, d, Color.RED);
 		
 		game.addPlayer(alice);
 		game.addPlayer(bob);

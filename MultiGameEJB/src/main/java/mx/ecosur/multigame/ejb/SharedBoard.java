@@ -21,8 +21,6 @@ import javax.persistence.Query;
 
 import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
@@ -90,18 +88,20 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	}	
 	
 	public void locateSharedBoard (GameType type, int gameId) throws RemoteException {
-		Query query = em.createNamedQuery(type.getNamedQuery(gameId));
+		Query query = em.createNamedQuery(type.getNamedQueryById());
 		query.setParameter("id", gameId);
 		query.setParameter("state", GameState.END);
 		try {
 			Game game = (Game) query.getSingleResult();
 			this.setGame(game);
 		} catch (EntityNotFoundException e) {
-			throw new RemoteException("Unable to find running game with specified id!");
+			throw new RemoteException("Unable to find running game with " +
+					"specified id!");
 		} catch (NonUniqueResultException e) {
 			throw new RemoteException("More than one game of that type found!");
 		} catch (NoResultException e) {
-			throw new RemoteException ("Unable to find running game with specified id!");
+			throw new RemoteException ("Unable to find running game with " +
+					"specified id!");
 		}		
 	}
 
@@ -152,7 +152,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 				case PENTE:
 					reader = new InputStreamReader(
 						this.getClass().getResourceAsStream(
-								"/mx/ecosur/multigame/pente.drl"));
+								"/mx/ecosur/multigame/gente.drl"));
 					builder.addPackageFromDrl(reader);
 					break;
 				default:
@@ -269,7 +269,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		
 		em.persist(move);
 		
-		//TODO: Should be moved to rules and rules and in the case of pente rules should send QualifyMove message first
+		/*TODO: Should be moved to rules and rules and in the case of pente 
+		 * rules should send QualifyMove message first */
 		messageSender.sendMoveComplete(move);
 		incrementTurn(move.getPlayer());
 	}
@@ -284,7 +285,8 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 
 	public void setGame(Game game) throws RemoteException {
 		if (game == null)
-			throw new RemoteException ("Attempting to set null game into SharedBoard!");
+			throw new RemoteException (
+					"Attempting to set null game into SharedBoard!");
 		this.game = em.merge(game);
 		initialize();
 	}

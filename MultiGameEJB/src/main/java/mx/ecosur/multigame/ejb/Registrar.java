@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
@@ -15,9 +15,7 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidRegistrationException;
@@ -26,8 +24,9 @@ import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 
-@Stateful
+@Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class Registrar implements RegistrarRemote, RegistrarLocal {
 
@@ -43,13 +42,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		super();
 		messageSender = new MessageSender();
 	}
-
 	/**
 	 * Registers a player into the System. Player registration consists of
 	 * maintaining a stateful hash of all active games in the system, and
 	 * player's registered with those games (for the handing out of available
 	 * colors). The GAME entity bean is loaded by this method, and as player's
-	 * join, the Games are updated with registered pleayers.
+	 * join, the Games are updated with registered players.
 	 * 
 	 * @throws RemoteException
 	 * @throws RemoteException
@@ -121,7 +119,15 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			throw new RemoteException ("More than one GamePlayer with that " +
 					"name found!");
 		} catch (NoResultException e) {
-			ret = new GamePlayer (game, player, favoriteColor);
+			switch (game.getType()) {
+				case PENTE:
+					ret = new PentePlayer (game, player, favoriteColor);
+					break;
+				default:
+					ret = new GamePlayer (game, player, favoriteColor);
+					break;
+			}
+		
 			em.persist(ret);
 		}
 		
@@ -175,10 +181,15 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		} catch (NonUniqueResultException e) {
 			throw new RemoteException(e.getMessage());
 		} catch (NoResultException e) {
-			if (type == GameType.PENTE)
-				game = new PenteGame();
-			else
-				game = new Game();
+			switch (type) {
+				case PENTE:
+					game = new PenteGame ();
+					break;
+				default:
+					game = new Game();
+					break;
+			}
+			
 			game.initialize(type);
 			em.persist(game);
 		}
@@ -217,7 +228,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	}
 
 	public Game locateGame(GameType type, int id) throws RemoteException {
-		Query query = em.createNamedQuery(type.getNamedQuery(id));
+		Query query = em.createNamedQuery(type.getNamedQueryById());
 		query.setParameter("id", id);
 		Game game;
 
@@ -234,7 +245,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		return game;
 	}
-	
+
 	/**
 	 * @param name
 	 * @return
