@@ -265,6 +265,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(game);
 		statefulSession.insert(move);
+		statefulSession.insert(messageSender);
 
 		statefulSession.setFocus("move");
 		statefulSession.fireAllRules();
@@ -272,11 +273,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 
 		em.persist(move);
 
-		/*
-		 * TODO: Should be moved to rules and rules and in the case of pente
-		 * rules should send QualifyMove message first
-		 */
-		messageSender.sendMoveComplete(move);
+		/* TODO: This could be moved out to the rules */
 		incrementTurn(move.getPlayer());
 	}
 

@@ -12,6 +12,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
+import mx.ecosur.multigame.MessageSender;
 
 import mx.ecosur.multigame.ejb.entity.Move.*;
 import mx.ecosur.multigame.ejb.entity.Game;
@@ -24,7 +25,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 
 #These rules have been seperated from the main Pente rule set for 
 #use in the modified game of Pente, GENTE, invented by 
-#Dr. Luis Garcia Barrios at ECOSUR, in San Crist—bal de Las Casas,
+#Dr. Luis Garcia Barrios at ECOSUR, in San Cristï¿½bal de Las Casas,
 #Chiapas, Mexico.
 
 
@@ -134,6 +135,9 @@ then
     }
     GameGrid grid = new GameGrid ();
     modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) } 
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendPlayerChange(game);
+    messageSender.sendStartGame(game);
 end
 
 #Black must move first, and that move can only be at the center of the board
@@ -171,8 +175,10 @@ then
     modifiedGrid.updateCell (move.getDestination());
     modify (move) { setStatus (Status.MOVED) }
     modify (game) { setGrid (modifiedGrid) }
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendMoveComplete(move);
 end
- 
+/* 
 rule "find-the-trias"
     agenda-group "evaluate"
     no-loop true
@@ -204,12 +210,13 @@ then
     }
     modify (move) { setPlayer (player) }
 end
-
+*/
 /*
     TODO:  We may not be serializing the teammate's score, as only
     the move is serialized in this case.  This should be 
     checked.
 */ 
+/*
 rule "score"
     agenda-group "evaluate"
     no-loop true
@@ -226,7 +233,7 @@ then
     player.setPoints (score);
     modify (move) { setPlayer (player) }
 end
-
+*/
 # Finds the winner 
 rule "find-the-winner"
     agenda-group "evaluate"
