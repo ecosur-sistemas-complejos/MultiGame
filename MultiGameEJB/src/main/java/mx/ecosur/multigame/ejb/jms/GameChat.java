@@ -1,17 +1,25 @@
 package mx.ecosur.multigame.ejb.jms;
 
+import java.util.logging.Logger;
+
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.ejb.RegistrarLocal;
+import mx.ecosur.multigame.ejb.SharedBoard;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
+import mx.ecosur.multigame.ejb.entity.ChatMessage;
 
 @MessageDriven(mappedName = "CHECKERS")
 public class GameChat implements MessageListener {
 
+	private static Logger logger = Logger.getLogger(GameChat.class
+			.getCanonicalName());
 	@EJB
 	private SharedBoardLocal sharedBoard;
 
@@ -24,35 +32,20 @@ public class GameChat implements MessageListener {
 	 */
 	public void onMessage(Message message) {
 
-		ObjectMessage obj = (ObjectMessage) message;
-		/*
-		MapMessage map = (MapMessage) message;
+		ObjectMessage msg = (ObjectMessage) message;
+		GameEvent gameEvent;
+		int gameId;
 		try {
 			// TODO: Add selector or filter to only treat CHAT messages
-			GameEvent gameEvent = GameEvent.valueOf(map
-					.getStringProperty("GAME_EVENT"));
+			gameEvent = GameEvent.valueOf(msg.getStringProperty("GAME_EVENT"));
+			gameId = msg.getIntProperty("GAME_ID");
 			if (gameEvent.equals(GameEvent.CHAT)) {
-				
-				//get data from message
-				int gameId = map.getIntProperty("GAME_ID");
-				GameType gameType = GameType.valueOf(map.getString("GAME_TYPE"));
-
-				String senderName = map.getString("senderName");
-				double dateSent = map.getDouble("dateSent");
-				Date date = new Date(new Double(dateSent).longValue());
-				String body = map.getString("body");
-				
-				//locate shared board and player
-				sharedBoard.locateSharedBoard(gameType, gameId);
-				Player player = registrar.locatePlayer(senderName);
-
-				// TODO: Add relation between move and chatMessage
-				sharedBoard.addMessage(player, body, date);
+				ChatMessage chatMessage = (ChatMessage) msg.getObject();
+				sharedBoard.addMessage(chatMessage);
 			}
 		} catch (JMSException e) {
+			logger.warning("Not able to save game message: " + e.getMessage());
 			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		}*/
+		}
 	}
 }

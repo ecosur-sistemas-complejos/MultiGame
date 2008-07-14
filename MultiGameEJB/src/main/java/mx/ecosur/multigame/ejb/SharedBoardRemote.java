@@ -13,6 +13,7 @@ import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
+import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
@@ -75,11 +76,6 @@ public interface SharedBoardRemote {
 	 */
 	public Dimension getSize ();
 	
-	/**
-	 * Adds a message to the current message stream 
-	 */
-	public void addMessage(Player sender, String body, Date dateSent);
-	
 	/** 
 	 * Increments the turn for GamePlay
 	 * 
@@ -93,5 +89,10 @@ public interface SharedBoardRemote {
 	 * Gets the Players playing on this shared board 
 	 */
 	public List<GamePlayer> getPlayers();
+	
+	/**
+	 * Adds a message to the current message stream 
+	 */
+	public void addMessage(ChatMessage chatMessage);	
 	
 }

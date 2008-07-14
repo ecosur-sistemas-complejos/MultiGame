@@ -15,6 +15,8 @@ import javax.persistence.TemporalType;
 @Entity
 public class ChatMessage implements Serializable {
 	
+	//TODO: Chat messages should be related to moves
+	
 	/**
 	 * Primary key
 	 */
