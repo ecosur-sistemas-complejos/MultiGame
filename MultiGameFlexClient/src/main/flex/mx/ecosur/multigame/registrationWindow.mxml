@@ -7,6 +7,7 @@
 
 	<mx:Script> 
         <![CDATA[
+        	import mx.ecosur.multigame.entity.pente.PentePlayer;
         	import mx.collections.ArrayCollection;
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
@@ -20,6 +21,7 @@
             public var players:ArrayCollection;
             public var gameType:String;
             public var gameId:int;
+            public var pentePlayer:PentePlayer;
     
             private function doRegister(eventObj:MouseEvent):void {
             	
@@ -89,7 +91,7 @@
       				<mx:ArrayCollection>
       					<mx:Object label="-- Select --" data=""/>
       					<mx:Object label="Checkers" data="CHECKERS"/>
-      					<mx:Object label="Penteee" data="PENTE"/>
+      					<mx:Object label="Che Gente" data="PENTE"/>
     	  			</mx:ArrayCollection>                     
     			</mx:ComboBox>
 			</mx:FormItem>

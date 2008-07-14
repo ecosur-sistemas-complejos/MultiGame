@@ -157,6 +157,7 @@ package mx.ecosur.multigame.pente{
 					return;
 				} 
 			}
+			_isBoardEmtpy = false;
 			animateMove(move);
 			_moves.push(move);
 		}

@@ -17,6 +17,7 @@
 			import mx.messaging.messages.IMessage;
 			import mx.messaging.events.MessageFaultEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.entity.ChatMessage;
             import mx.controls.Alert;
             import mx.ecosur.multigame.event.GameEvent;
             
@@ -41,7 +42,7 @@
 						game.begin();
 						break;
 					case GameEvent.CHAT:
-						chatPanel.addMessage(message.body);
+						chatPanel.addMessage(ChatMessage(message.body));
 						break;
 					case GameEvent.END:
 						game.end();

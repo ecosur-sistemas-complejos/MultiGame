@@ -19,11 +19,11 @@
 			
 			private function send():void {
 				var message:IMessage = new AsyncMessage();
-				var o:Object = new Object();
-				o.senderName = gamePlayer.player.name;
-				o.dateSent = int((new Date()).time);
-				o.body = msg.text;
-				message.body = o;
+				var chatMessage:ChatMessage = new ChatMessage();
+				chatMessage.sender = gamePlayer.player;
+				chatMessage.body = msg.text;
+				chatMessage.dateSent = new Date();
+				message.body = chatMessage;
 				message.headers.GAME_ID = gameId;
 				//TODO put GameEvent.CHAT when compiler gets its act together
 				//message.headers.GAME_EVENT = GameEvent.CHAT;
@@ -32,8 +32,8 @@
 				msg.text = "";
 			}
         	
-        	public function addMessage(messageBody:Object):void {
-				log.text += "(" + new Date(messageBody.dateSent).toLocaleTimeString() + ") " + messageBody.senderName + ": " + messageBody.body + "\n";
+        	public function addMessage(chatMessage:ChatMessage):void {
+				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.name + ": " + chatMessage.body + "\n";
 			}
 
 			private function acknowledgeHandler(event:MessageAckEvent):void{
