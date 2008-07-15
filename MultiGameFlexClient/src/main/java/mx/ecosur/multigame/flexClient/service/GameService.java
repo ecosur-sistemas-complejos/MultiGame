@@ -84,7 +84,7 @@ public class GameService {
 		return gamePlayer;
 	}
 
-	public int getGameId(String gameTypeStr) {
+	public Game getGame(String gameTypeStr) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		GameType gameType = GameType.valueOf(gameTypeStr);
 		try {
@@ -93,8 +93,7 @@ public class GameService {
 			e.printStackTrace();
 			throw new GameException(e);
 		}
-		int gameId = sharedBoard.getGame().getId();
-		return gameId;
+		return sharedBoard.getGame();
 	}
 
 	public GameGrid getGameGrid() {

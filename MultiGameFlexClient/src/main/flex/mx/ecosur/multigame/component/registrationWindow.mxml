@@ -16,12 +16,13 @@
             import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
             import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.entity.Game;
             import mx.ecosur.multigame.helper.Color;
             
             public var currentPlayer:GamePlayer;
             public var players:ArrayCollection;
             public var gameType:String;
-            public var gameId:int;
+            public var game:Game;
             public var pentePlayer:PentePlayer;
     
             private function doRegister(eventObj:MouseEvent):void {
@@ -50,8 +51,13 @@
             	var call:Object = event.token;
             	if(call.operation == "register"){
             		currentPlayer = GamePlayer(event.result);
-            		var callGameId:Object = gameService.getGameId(gameType);
-            		callGameId.operation = "getPlayers";
+            		var callGame:Object = gameService.getGame(gameType);
+            		callGame.operation = "getGame";
+            	}else if (call.operation == "getGame"){
+            		//TODO: Get players once game controller is loaded
+            		game = Game(event.result);
+            		var callPlayers:Object = gameService.getPlayers();
+            		callPlayers.operation = "getPlayers";
             	}else if (call.operation == "getPlayers"){
             		players = ArrayCollection(event.result);
             	    dispatchEvent(new Event("complete"));
