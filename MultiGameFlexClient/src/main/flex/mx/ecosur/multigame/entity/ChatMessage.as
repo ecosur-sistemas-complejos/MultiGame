@@ -2,8 +2,10 @@ package mx.ecosur.multigame.entity {
 	
 	import mx.ecosur.multigame.entity.Player;
 	
+	/**
+	 * Represents the server side ChatMessage object
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.ChatMessage")]
-	
 	public class ChatMessage{
 		
 		private var _id:int;

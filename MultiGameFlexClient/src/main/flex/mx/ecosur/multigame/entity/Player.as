@@ -1,7 +1,9 @@
 package mx.ecosur.multigame.entity {
 	
+	/**
+	 * Represents a server side Player object.
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Player")]
-	
 	public class Player {
 		
 		private var _id:int;

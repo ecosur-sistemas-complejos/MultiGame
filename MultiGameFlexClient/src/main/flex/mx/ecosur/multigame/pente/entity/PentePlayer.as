@@ -1,8 +1,11 @@
-package mx.ecosur.multigame.entity.pente {
+package mx.ecosur.multigame.pente.entity {
 	
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	
+	/**
+	 * Represents a server side GamePlayer object
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.pente.PentePlayer")]
 	public class PentePlayer extends GamePlayer{
 		

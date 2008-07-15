@@ -2,8 +2,10 @@ package mx.ecosur.multigame.entity {
 	
 	import mx.collections.ArrayCollection;
 	
+	/**
+	 * Represents a server side GameGrid object.
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.GameGrid")]
-	
 	public class GameGrid {
 		
 		private var _cells:ArrayCollection;

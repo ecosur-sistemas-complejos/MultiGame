@@ -1,7 +1,6 @@
 package mx.ecosur.multigame.checkers {
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.entity.BoardCell;
-	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.component.BoardCell	import mx.ecosur.multigame.entity.Cell;
 	import mx.events.DragEvent;
 	import mx.events.FlexEvent;
 	

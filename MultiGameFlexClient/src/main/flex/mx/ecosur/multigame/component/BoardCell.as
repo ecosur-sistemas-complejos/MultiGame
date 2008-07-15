@@ -1,42 +1,55 @@
-package mx.ecosur.multigame.entity {
+package mx.ecosur.multigame.component {
 	
 	import flash.display.Shape;
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
 	
+	import mx.ecosur.multigame.component.Token;
+	
 	import mx.core.UIComponent;
-	import mx.controls.Alert;
 	
 	[Style(name="padding", type="Number", format="Length")]
 
-	public class BoardCell extends UIComponent
-	{
+	/**
+	 * Represents a cell on the board.
+	 */
+	public class BoardCell extends UIComponent {
 		
 		private var _bg:Shape;
-		private var _cell:Cell;
+		private var _token:Token;
 		private var _row:int;
 		private var _column:int;
 		
-		//colors
+		/* colors */
 		private var _bgColor:uint;
 		private var _borderColor:uint;
 		private var _borderThickness:Number;
 		
-		//default colors
+		/* default colors */
 		private var _defaultBgColor:uint;
 		private var _defaultBorderColor:uint;
 		private var _defaultBorderThickness:Number;
 		
-		//selected move colors
+		/* selected move colors */
 		private var _selectedBgColor:uint;
 		private var _selectedBorderColor:uint;
 		private var _selectedBorderThickness:Number;
 		
-		//filters for background
+		/* filters for background */
 		private var _bgFilters:Array;
 		private var _bgDefaultFilters:Array;
 		private var _bgSelectedFilters:Array;
 		
+		/**
+		 * Constructor
+		 *  
+		 * @param row the row number, 0 indicates the top row
+		 * @param column the column number, 0 indicates the left most column 
+		 * @param bgColor a hexidecimal representation of the background color
+		 * @param borderColor a hexidecimal representation of the the border color
+		 * @param borderThickness the thickness, in pixels, of the border
+		 * 
+		 */
 		public function BoardCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number){
 			super();
 			
@@ -69,20 +82,22 @@ package mx.ecosur.multigame.entity {
 			
 		}
 		
-		public function get cell():Cell{
-			return _cell;
+		/* Getters and setters */
+		
+		public function get token():Token{
+			return _token;
 		}
 		
-		public function set cell(cell:Cell):void{
-			if (_cell != null){
-				removeChild(_cell);
+		public function set token(token:Token):void{
+			if (_token != null){
+				removeChild(_token);
 			}
-			if (cell != null){
-				cell.row = _row;
-				cell.column = _column;
-				addChild(cell);
+			if (token != null){
+				token.cell.row = _row;
+				token.cell.column = _column;
+				addChild(token);
 			}
-			_cell = cell;
+			_token = token;
 		}
 		
 		public function get row():int{
@@ -93,12 +108,14 @@ package mx.ecosur.multigame.entity {
 			return _column;
 		}		
 		
+		/**
+		 * Visualy selects the board cell.
+		 *  
+		 * @param color the selected color
+		 */
 		public function select(color:uint):void{
 			
-			//move cell to top of children
-			//parent.swapChildrenAt(parent.numChildren - 1, parent.getChildIndex(this));
-			
-			//change filters
+			/* change filters */
 			var glow:GlowFilter = GlowFilter(_bgSelectedFilters[0]);
 			glow.color = color;
 			_bgFilters = _bgSelectedFilters;
@@ -106,16 +123,19 @@ package mx.ecosur.multigame.entity {
 			
 		}
 		
+		/**
+		 * Visualy resets the board cell after selection.
+		 *  
+		 */
 		public function reset():void{
 			
-			//move cell to bottom of children
-			//parent.swapChildrenAt(0, parent.getChildIndex(this));
-			
-			//change filters
+			/* change filters */
 			_bgFilters = _bgDefaultFilters;
 			_bg.filters = _bgFilters;
 			invalidateDisplayList();
 		}
+		
+		/* Overrides */
 		
 		override protected function createChildren():void{
 			_bg = new Shape();
@@ -137,12 +157,12 @@ package mx.ecosur.multigame.entity {
     		_bg.graphics.endFill();
     		_bg.filters = _bgFilters;
     		
-    		//define size of token by size of cell
-    		if (_cell){
-    			_cell.width = unscaledWidth - getStyle("padding");
-    			_cell.height = unscaledHeight - getStyle("padding");
-    			_cell.x = unscaledWidth / 2;
-    			_cell.y = unscaledHeight / 2;
+    		//define size of token acording the the size of this
+    		if (_token){
+    			_token.width = unscaledWidth - getStyle("padding");
+    			_token.height = unscaledHeight - getStyle("padding");
+    			_token.x = unscaledWidth / 2;
+    			_token.y = unscaledHeight / 2;
     		}
         }
         

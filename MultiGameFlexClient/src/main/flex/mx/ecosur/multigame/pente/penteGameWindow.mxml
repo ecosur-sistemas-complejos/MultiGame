@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" 
 	xmlns:pente="mx.ecosur.multigame.pente.*" 
-	xmlns:multigame="mx.ecosur.multigame.*" 
+	xmlns:component="mx.ecosur.multigame.component.*" 
 	width="100%" height="100%" 
 	paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10" 
 	creationComplete="consumer.subscribe();">
 	
 	<mx:Script> 
         <![CDATA[
+        	import mx.ecosur.multigame.entity.Game;
         	import mx.ecosur.multigame.entity.Move;
         	import mx.collections.ArrayCollection;
 
@@ -18,18 +19,22 @@
 			import mx.messaging.events.MessageFaultEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.ChatMessage;
+            import mx.ecosur.multigame.pente.entity.PenteGame;
             import mx.controls.Alert;
             import mx.ecosur.multigame.event.GameEvent;
             
             [Bindable]
             public var currentPlayer:GamePlayer;
-            
+
             [Bindable]
             public var players:ArrayCollection;
+
+            [Bindable]
+            private var penteGame:PenteGame;
             
-			[Bindable]            
-            public var gameId:int;
-            
+            public function set game(game:Game):void{
+            	penteGame = PenteGame(game);
+            }
             
             private function messageHandler(message:IMessage):void {
 				var gameId:Number = message.headers.GAME_ID;
@@ -39,21 +44,21 @@
 		
 				switch (gameEvent){
 					case GameEvent.BEGIN:
-						game.begin();
+						gameController.begin();
 						break;
 					case GameEvent.CHAT:
 						chatPanel.addMessage(ChatMessage(message.body));
 						break;
 					case GameEvent.END:
-						game.end();
+						gameController.end();
 						break;
 					case GameEvent.MOVE_COMPLETE:
 						var move:Move = Move(message.body);
-						game.addMove(move);
+						gameController.addMove(move);
 						break;
 					case GameEvent.PLAYER_CHANGE:
 						var players:ArrayCollection = ArrayCollection(message.body);
-						game.updatePlayers(players);
+						gameController.updatePlayers(players);
 						break;
 				}
 			}
@@ -64,11 +69,11 @@
         ]]>
     </mx:Script>
 	<mx:Consumer id="consumer" destination="multigame-chat" message="messageHandler(event.message)" fault="faultHandler(event)"/>
-	<pente:PenteGame id="game" width="100%" height="100%" gameId="{gameId}" currentPlayer="{currentPlayer}" players="{players}" />
+	<pente:PenteGameController id="gameController" width="100%" height="100%" game="{penteGame}" currentPlayer="{currentPlayer}" players="{players}" />
 	<mx:VBox height="100%">
 		<mx:Panel title="Players" width="300">
-			<pente:PentePlayersViewer width="100%" currentPlayer="{currentPlayer}" players="{game.players}" />
+			<pente:PentePlayersViewer width="100%" currentPlayer="{currentPlayer}" players="{gameController.players}" />
 		</mx:Panel>
-		<multigame:chatPanel id="chatPanel" width="300" height="100%" gamePlayer="{currentPlayer}" gameId="{gameId}"/>
+		<component:chatPanel id="chatPanel" width="300" height="100%" gamePlayer="{currentPlayer}" game="{penteGame}"/>
 	</mx:VBox>
 </mx:HBox>

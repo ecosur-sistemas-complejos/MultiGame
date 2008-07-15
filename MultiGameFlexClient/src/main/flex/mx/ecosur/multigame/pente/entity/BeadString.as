@@ -1,8 +1,11 @@
-package mx.ecosur.multigame.entity.pente {
+package mx.ecosur.multigame.pente.dto {
 	
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Player;
 	
+	/**
+	 * Represents a server side BeadString object.
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.pente.BeadString")]
 	public class BeadString{
 		

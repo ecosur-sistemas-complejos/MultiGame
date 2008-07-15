@@ -1,9 +1,9 @@
 package mx.ecosur.multigame.pente {
+	
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.entity.BoardCell;
-	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.component.BoardCell;
+	import mx.ecosur.multigame.component.Token;
 	import mx.events.DragEvent;
-	import mx.events.FlexEvent;
 	
 	[Style(name="cellBgColor", type="uint", format="Color")]
 	[Style(name="cellBgAlpha", type="Number", format="Length")]
@@ -18,14 +18,14 @@ package mx.ecosur.multigame.pente {
 		private var _boardCellSize:Number; //size of cell containers. BoardCell are presumed to be square.
 		private var boardCells:Array; //two dimensional array of BoardCell
 		
-		//default cell style properties
+		/* default cell style properties */
 		private static const DEFAULT_CELL_BG_COLOR:uint = 0xffffff;
 		private static const DEFAULT_CELL_BG_ALPHA:Number = 1;
 		private static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
 		private static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
 		private static const DEFAULT_CELL_PADDING:Number = 5;
 		
-		//dirty flags
+		/* dirty flags */
 		private var _cellsDirty:Boolean;
 		private var _doResize:Boolean;
 		private var _dragEnterHandler:Function;
@@ -51,6 +51,8 @@ package mx.ecosur.multigame.pente {
 			_nRows = nRows;
 			_nCols = nCols;
 		}
+		
+		/* Getters and setters */
 		
 		public function get nRows():int{
 			return _nRows;
@@ -80,23 +82,37 @@ package mx.ecosur.multigame.pente {
 			}
 		}
 		
-		public function addCell(cell:Cell):void{
-			getBoardCell(cell.column, cell.row).cell = cell;
-		}
 		
-		public function clearCells():void{
+		/**
+		 * Adds a Token to the board. The token should contain a Cell
+		 * with defined row and column values.
+		 *  
+		 * @param token the token to add to the board.
+		 */
+		public function addToken(token:Token):void{
+			getBoardCell(token.cell.column, token.cell.row).token = token;
+		}
+				
+		/**
+		 * Removes all tokens from all board cells. This has the
+		 * effect of cleaning the board. 
+		 */
+		public function clearTokens():void{
 			var boardCell:BoardCell;
 			for (var i:Number = 0; i < _nCols; i++){
 				for (var j:Number = 0; j < _nRows; j++){
 					boardCell = BoardCell(boardCells[i][j]);
-					boardCell.cell = null;
+					boardCell.token = null;
 				}
 			}
 		}
 		
+		
+		/* Overrides */
+		
 		override protected function createChildren():void {
 			
-			//create all cells
+			/* create all cells */
 			var boardCell:BoardCell;
 			boardCells = new Array();
 			for (var i:Number = 0; i < _nCols; i++){
@@ -116,11 +132,11 @@ package mx.ecosur.multigame.pente {
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			
-			//if size of component has changed then scale and reposition cells 
+			/* if size of component has changed then scale and reposition cells */ 
 			if (_doResize){
 				_doResize = false;
 				
-				//loop through cells positioning and scaling them
+				/* loop through cells positioning and scaling them */
 				var boardCell:BoardCell;
 				for (var i:Number = 0; i < _nCols; i++){
 					for (var j:Number = 0; j < _nRows; j++){
@@ -134,10 +150,8 @@ package mx.ecosur.multigame.pente {
 			}
 		}
 		
-//-------------------------------------------------------------------------------------------------------
-// style management
-//-------------------------------------------------------------------------------------------------------		
 		
+		/* Style management */	
 
 		public function get cellBgColor():uint {
 			var prop:uint = getStyle("cellBgColor");

@@ -2,6 +2,9 @@ package mx.ecosur.multigame.entity {
 	
 	import mx.ecosur.multigame.entity.Game;
 	
+	/**
+	 * Represents a server side GamePlayer object.
+	 */
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.GamePlayer")]
 	public class GamePlayer {
 		
@@ -58,6 +61,5 @@ package mx.ecosur.multigame.entity {
 		public function toString():String{
 			return "id = " + id + ", player = {" + player + "}, color = " + color + ", turn = " + turn + ", game = {" + game + "}";
 		}
-
 	}
 }

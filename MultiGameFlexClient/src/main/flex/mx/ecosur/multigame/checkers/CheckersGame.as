@@ -6,9 +6,8 @@ package mx.ecosur.multigame.checkers{
 	import mx.core.DragSource;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.Color;
-	import mx.ecosur.multigame.entity.BoardCell;
-	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.helper.Colory.Colory.Color;
+	import mx.ecosur.multigame.component.BoardCell	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.entity.GameGrid;
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.entity.Player;

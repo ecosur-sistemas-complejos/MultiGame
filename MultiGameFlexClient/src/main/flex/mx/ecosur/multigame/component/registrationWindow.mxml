@@ -7,7 +7,7 @@
 
 	<mx:Script> 
         <![CDATA[
-        	import mx.ecosur.multigame.entity.pente.PentePlayer;
+        	import mx.ecosur.multigame.pente.entity.PentePlayer;
         	import mx.collections.ArrayCollection;
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
@@ -16,6 +16,7 @@
             import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
             import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.helper.Color;
             
             public var currentPlayer:GamePlayer;
             public var players:ArrayCollection;
@@ -50,11 +51,7 @@
             	if(call.operation == "register"){
             		currentPlayer = GamePlayer(event.result);
             		var callGameId:Object = gameService.getGameId(gameType);
-            		callGameId.operation = "getGameId";
-            	}else if (call.operation == "getGameId") {
-            		gameId = int(event.result);
-            		var callPlayers:Object = gameService.getPlayers();
-            		callPlayers.operation = "getPlayers";
+            		callGameId.operation = "getPlayers";
             	}else if (call.operation == "getPlayers"){
             		players = ArrayCollection(event.result);
             	    dispatchEvent(new Event("complete"));

@@ -11,11 +11,12 @@
 			import mx.messaging.events.MessageFaultEvent;
 			import mx.ecosur.multigame.entity.GamePlayer;
 			import mx.ecosur.multigame.entity.ChatMessage;
+			import mx.ecosur.multigame.entity.Game;
 			import mx.ecosur.multigame.event.GameEvent;
 			import mx.controls.Alert;
 			
             public var gamePlayer:GamePlayer;
-            public var gameId:int;
+            public var game:Game;
 			
 			private function send():void {
 				var message:IMessage = new AsyncMessage();
@@ -24,10 +25,8 @@
 				chatMessage.body = msg.text;
 				chatMessage.dateSent = new Date();
 				message.body = chatMessage;
-				message.headers.GAME_ID = gameId;
-				//TODO put GameEvent.CHAT when compiler gets its act together
-				//message.headers.GAME_EVENT = GameEvent.CHAT;
-				message.headers.GAME_EVENT = "CHAT";
+				message.headers.GAME_ID = game.id;
+				message.headers.GAME_EVENT = GameEvent.CHAT;
 				producer.send(message);
 				msg.text = "";
 			}
