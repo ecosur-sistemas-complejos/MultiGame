@@ -1,10 +1,7 @@
 package mx.edu.multigame.drools;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -33,28 +30,27 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PenteRulesTest {
+public class PenteRulesTest extends RulesTestBase {
 	
 	private static RuleBase Ruleset;
 	
-	private static boolean DEBUG = false;
-	
-	private Game game;
-	
-	private PentePlayer alice, bob, charlie, denise;
-
 	private StatefulSession statefulSession;
 	
+	private static boolean DEBUG = false;
+
+	private Game game;
+
+	private PentePlayer alice, bob, charlie, denise;
+
 	/** Static Initializer only loads rules once from the file system */
 	static {
 		PackageBuilder builder = new PackageBuilder();
-		InputStreamReader reader = new InputStreamReader( 
-				PenteRulesTest.class.getResourceAsStream(
-					"/mx/ecosur/multigame/gente.drl"));
+		InputStreamReader reader = new InputStreamReader(PenteRulesTest.class
+				.getResourceAsStream("/mx/ecosur/multigame/gente.drl"));
 		try {
 			builder.addPackageFromDrl(reader);
 			Ruleset = RuleBaseFactory.newRuleBase();
-			Ruleset.addPackage( builder.getPackage() );
+			Ruleset.addPackage(builder.getPackage());
 		} catch (DroolsParserException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -62,152 +58,160 @@ public class PenteRulesTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}	
-	
-	
+	}
+
 	@Before
-	public void before () throws Exception {;
-		game = new PenteGame ();
+	public void setUp() throws Exception {
+
+		super.setUp();
+		
+		game = new PenteGame();
 		game.initialize(GameType.PENTE);
 		statefulSession = Ruleset.newStatefulSession();
 		if (DEBUG)
 			statefulSession.addEventListener(new DebugEventListener());
 		Player a, b, c, d;
-		a = new Player ("alice");
-		b = new Player ("bob");
-		c = new Player ("charlie");
-		d = new Player ("denise");
-		
-		alice = new PentePlayer (game, a, Color.BLACK);
-		bob = new PentePlayer (game, b, Color.BLUE);
-		charlie = new PentePlayer (game, c, Color.GREEN);
-		denise = new PentePlayer (game, d, Color.RED);
-		
+		a = new Player("alice");
+		b = new Player("bob");
+		c = new Player("charlie");
+		d = new Player("denise");
+
+		alice = new PentePlayer(game, a, Color.BLACK);
+		bob = new PentePlayer(game, b, Color.BLUE);
+		charlie = new PentePlayer(game, c, Color.GREEN);
+		denise = new PentePlayer(game, d, Color.RED);
+
 		game.addPlayer(alice);
 		game.addPlayer(bob);
 		game.addPlayer(charlie);
 		game.addPlayer(denise);
 	}
-	
+
 	@After
-	public void after () {
+	public void tearDown() throws Exception {
+		super.tearDown();
 		statefulSession.dispose();
 	}
-	
+
 	@Test
-	public void testInitialize () {
+	public void testInitialize() {
+
 		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
-	
-		assertTrue (game.getGrid().getCells().size() == 0);
+
+		assertTrue(game.getGrid().getCells().size() == 0);
 		List<GamePlayer> players = game.getPlayers();
-		
+
 		GamePlayer p = players.get(players.indexOf(alice));
-		assertNotNull (p);
-		assertEquals ("alice", p.getPlayer().getName());
-		assertEquals (true, p.isTurn());
+		assertNotNull(p);
+		assertEquals("alice", p.getPlayer().getName());
+		assertEquals(true, p.isTurn());
+
 	}
-	
+
 	@Test
-	public void testFirstMoveValidate ()  {
+	public void testFirstMoveValidate() {
+
 		int row = game.getRows() / 2;
 		int col = game.getColumns() / 2;
-		Cell center = new Cell (row, col, alice.getColor());
-		PenteMove move = new PenteMove (alice, center);
-		
+		Cell center = new Cell(row, col, alice.getColor());
+		PenteMove move = new PenteMove(alice, center);
+
 		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
 		statefulSession.clearAgenda();
 		statefulSession.insert(move);
-		statefulSession.setFocus ("verify");
+		statefulSession.setFocus("verify");
 		statefulSession.fireAllRules();
-		
-		assertEquals (Move.Status.VERIFIED, move.getStatus());
+
+		assertEquals(Move.Status.VERIFIED, move.getStatus());
+
 	}
-	
-	@Test 
-	public void testExecuteFirstMove ()  {
+
+	@Test
+	public void testExecuteFirstMove() {
+
 		int row = game.getRows() / 2;
 		int col = game.getColumns() / 2;
-		Cell center = new Cell (row, col, alice.getColor());
-		PenteMove move = new PenteMove (alice, center);
-		
+		Cell center = new Cell(row, col, alice.getColor());
+		PenteMove move = new PenteMove(alice, center);
+
 		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
 		statefulSession.insert(move);
-		statefulSession.setFocus ("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
-		
-		assertEquals (Move.Status.MOVED, move.getStatus());
-		assertEquals (center, game.getGrid().getLocation(center));
-		
-	}
-	
-	@Test
-	public void testValidateSubsequentMove () {
-		alice.setTurn (true);
-		Cell center = new Cell (10, 10, alice.getColor());
-		game.getGrid().updateCell(center);
-		game.setState(GameState.PLAY);
-		
-		Cell next = new Cell (10,9, alice.getColor());
-		PenteMove subsequent = new PenteMove (alice, next);
-		
-		statefulSession.insert(game);
-		statefulSession.insert(subsequent);
 		statefulSession.setFocus("verify");
 		statefulSession.fireAllRules();
-		
-		assertEquals (Move.Status.VERIFIED, subsequent.getStatus());
-		
+		statefulSession.setFocus("move");
+		statefulSession.fireAllRules();
+
+		assertEquals(Move.Status.MOVED, move.getStatus());
+		assertEquals(center, game.getGrid().getLocation(center));
 	}
 
 	@Test
-	public void testExecuteSubsequentMove () {
+	public void testValidateSubsequentMove() {
 		alice.setTurn(true);
-		Cell center = new Cell (10, 10, alice.getColor());
+		Cell center = new Cell(10, 10, alice.getColor());
 		game.getGrid().updateCell(center);
 		game.setState(GameState.PLAY);
-		
-		Cell next = new Cell (10, 9, alice.getColor());
-		PenteMove subsequent = new PenteMove (alice, next);
-		
+
+		Cell next = new Cell(10, 9, alice.getColor());
+		PenteMove subsequent = new PenteMove(alice, next);
+
 		statefulSession.insert(game);
 		statefulSession.insert(subsequent);
 		statefulSession.setFocus("verify");
 		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
-		
-		assertEquals (Move.Status.MOVED, subsequent.getStatus());
-		assertEquals (next, game.getGrid().getLocation(next));
+
+		assertEquals(Move.Status.VERIFIED, subsequent.getStatus());
+
 	}
-	
-	private class DebugEventListener implements WorkingMemoryEventListener {	
+
+	@Test
+	public void testExecuteSubsequentMove() {
+
+		alice.setTurn(true);
+		Cell center = new Cell(10, 10, alice.getColor());
+		game.getGrid().updateCell(center);
+		game.setState(GameState.PLAY);
+
+		Cell next = new Cell(10, 9, alice.getColor());
+		PenteMove subsequent = new PenteMove(alice, next);
+
+		statefulSession.insert(game);
+		statefulSession.insert(subsequent);
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus("move");
+		statefulSession.fireAllRules();
+
+		assertEquals(Move.Status.MOVED, subsequent.getStatus());
+		assertEquals(next, game.getGrid().getLocation(next));
+	}
+
+	private class DebugEventListener implements WorkingMemoryEventListener {
 		private Logger logger;
-		
-		public DebugEventListener () {
+
+		public DebugEventListener() {
 			logger = Logger.getLogger(PenteRulesTest.class.getCanonicalName());
 		}
 
 		public void objectInserted(ObjectInsertedEvent event) {
-			//logger.info(event.getObject().toString());
+			// logger.info(event.getObject().toString());
 		}
 
 		public void objectRetracted(ObjectRetractedEvent event) {
-			//logger.info(event.getOldObject().toString());
+			// logger.info(event.getOldObject().toString());
 		}
 
 		public void objectUpdated(ObjectUpdatedEvent event) {
-			logger.info (event.getObject().toString());
+			logger.info(event.getObject().toString());
 		}
 	}
 }
