@@ -20,6 +20,8 @@ public class Cell implements Serializable, Cloneable {
 
 	private Characteristic characteristic;
 
+	private CellComparator comparator;
+
 	public Cell() {
 
 	}
@@ -33,6 +35,7 @@ public class Cell implements Serializable, Cloneable {
 		this.row = y;
 		this.color = color;
 		this.characteristic = null;
+		this.comparator = new CellComparator();
 	}
 
 	public int getRow() {
@@ -76,7 +79,7 @@ public class Cell implements Serializable, Cloneable {
 	}
 
 	public String toString() {
-		return "Column = " + column + ", Row = " + row + ", Color = " + color
+		return "(Column, Row) Column = " + column + ", Row = " + row + ", Color = " + color
 				+ ", Characteristic = " + characteristic;
 	}
 
@@ -88,12 +91,11 @@ public class Cell implements Serializable, Cloneable {
 		boolean ret = false;
 		
 		if (obj instanceof Cell) {
-			Cell comparator = (Cell) obj;
-			ret = (comparator.column == this.column && 
-					comparator.row == this.row);
-		} else { 
+			Cell comparison = (Cell) obj;
+			if (comparator.compare(this, comparison) == 0)
+				ret = true;
+		} else 
 			ret = super.equals(obj);
-		}
 		
 		return ret;
 	}

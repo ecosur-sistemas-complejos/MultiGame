@@ -36,14 +36,6 @@ public class GameGrid implements Serializable {
 		this.cells = cells;
 	}
 	
-	
-	/*
-	 * Returns the Cell at the specified location
-	 */
-	public Cell getLocation (int x, int y) {
-		return getLocation (new Cell(x,y,Color.UNKNOWN));
-	}
-	
 	/* 
 	 * Returns the cell at the location specified by the passed in Cell, null
 	 * if no Cell exists at that location.  As we parse only the tail of an
@@ -89,7 +81,7 @@ public class GameGrid implements Serializable {
 			buf.append("row: " + cell.getRow() + ", column: " + cell.getColumn() +
 					", color: " + cell.getColor());
 			if (iter.hasNext()) {
-				buf.append (",");
+				buf.append ("; ");
 			}
 			else {
 				buf.append ("]");

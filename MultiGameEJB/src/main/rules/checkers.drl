@@ -150,8 +150,7 @@ function boolean isValidJump (GameGrid grid, Move move) {
         for (Move jump : jumpMove.getJumps ()) {
                 /* Ensure that the jump's destination is empty */
             Cell destination = jump.getDestination();
-            Cell current = grid.getLocation (destination.getRow(), 
-                destination.getColumn());
+            Cell current = grid.getLocation (destination);
             ret = (current == null);
                 /* Ensure that there is a "enemy" cell in-between */
             Cell enemy = grid.getLocation(jumpMove.getEnemy(move));

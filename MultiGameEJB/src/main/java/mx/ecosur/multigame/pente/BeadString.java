@@ -36,5 +36,9 @@ public class BeadString implements Serializable {
 	public int size () {
 		return beads.size();
 	}
+	
+	public boolean contains (Cell cell) {
+		return beads.contains(cell);
+	}
 
 }

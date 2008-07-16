@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
+import mx.ecosur.multigame.Vertice;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.pente.BeadString;
@@ -82,9 +83,10 @@ public class PenteMove extends Move {
 					if (trapped.size() != 2) 
 						continue;
 					Cell cell = trapped.get(1);
-					Cell result = searchGrid (direction, cell);
-					if (result.getColor() == getDestination().getColor()) {
-						captures.addAll(trapped);
+					Cell result = searchGrid (direction, cell, 
+							getDestination().getColor(), 1);
+					if (result != null) {
+						captures.addAll (trapped);
 					}
 				}
 			}
@@ -100,9 +102,9 @@ public class PenteMove extends Move {
 	public HashSet<BeadString> getTrias () {
 		if (trias == null) {
 			trias = new HashSet<BeadString> ();
-			Map<Direction, BeadString> stringMap = getString (3);
-			for (Direction d: stringMap.keySet()) {
-				trias.add(stringMap.get(d));
+			Map<Vertice, BeadString> stringMap = getString (3);
+			for (Vertice v: stringMap.keySet()) {
+				trias.add(stringMap.get(v));
 			}
 		}
 		
@@ -123,9 +125,9 @@ public class PenteMove extends Move {
 	public HashSet<BeadString> getTesseras () {
 		if (tesseras == null) {
 			tesseras = new HashSet<BeadString> ();
-			Map<Direction, BeadString> stringMap = getString (4);
-			for (Direction d: stringMap.keySet()) {
-				tesseras.add(stringMap.get(d));
+			Map<Vertice, BeadString> stringMap = getString (4, true);
+			for (Vertice v: stringMap.keySet()) {
+				tesseras.add(stringMap.get(v));
 			}
 		}
 		
@@ -171,23 +173,22 @@ public class PenteMove extends Move {
 		
 		if (startingCell.getDirection() == Direction.UNKNOWN) {
 			for (Direction direction : Direction.values()) {
-				if (direction == Direction.UNKNOWN)
-					break;
-				AnnotatedCell start = new AnnotatedCell (startingCell.getCell(), 
-					direction);
-				ret.addAll(findCandidates (start, targetColors, depth));
+				if (direction != Direction.UNKNOWN) {
+					AnnotatedCell start = new AnnotatedCell (startingCell.getCell(), 
+							direction);
+					ret.addAll(findCandidates (start, targetColors, depth));
+				}
 			}
 		} else {
-			for (int i = 0; i < depth; i++) {
-				Cell result = this.searchGrid(startingCell.getDirection(), 
-						startingCell.getCell());
-				
-				for (Color targetColor: targetColors) {
+			for (int i = 1; i < depth; i++) {
+				for (Color targetColor : targetColors) {
+					Cell result = this.searchGrid(startingCell.getDirection(), 
+							startingCell.getCell(), targetColor, i);
 					if (result != null && result.getColor() == targetColor) {
 						ret.add(new AnnotatedCell (result, 
 								startingCell.getDirection()));
 						break;
-					}	
+					}
 				}
 			}
 		}
@@ -195,97 +196,114 @@ public class PenteMove extends Move {
 		return ret;
 	}
 	
+	/**
+	 * Returns a Cell to be searched for within a grid, with a factor of 
+	 * change defined by "factor".  North is considered the "top" of the 
+	 * board, meaning the lowest row.  All other cardinal points are derived 
+	 * from this simple map.
+	 * @param direction
+	 * @param cell
+	 * @param factor
+	 * @return
+	 */
 	
-	private Cell searchGrid(Direction direction, Cell cell) {
+	
+	private Cell searchGrid(Direction direction, Cell cell, Color color, int factor) {
 		int row = 0, column = 0;
 		switch (direction) {
 			case NORTH:
-				row = cell.getRow() - 1;
 				column = cell.getColumn();
-				break;
-			case NORTHEAST:
-				row = cell.getRow() - 1;
-				column = cell.getColumn() + 1;
-				break;
-			case EAST:
-				row = cell.getRow();
-				column = cell.getColumn() + 1;
-				break;
-			case SOUTHEAST:
-				row = cell.getRow () + 1;
-				column = cell.getColumn() + 1;
+				row = cell.getRow() - factor;
 				break;
 			case SOUTH:
-				row = cell.getRow() + 1;
 				column = cell.getColumn();
+				row = cell.getRow() + factor;
 				break;
-			case SOUTHWEST:
-				row = cell.getRow() + 1;
-				column = cell.getColumn () -1;
+			case EAST:
+				column = cell.getColumn() + factor;
+				row = cell.getRow();
 				break;
 			case WEST:
+				column = cell.getColumn () - factor;
 				row = cell.getRow();
-				column = cell.getColumn () - 1;
+				break;
+			case NORTHEAST:
+				column = cell.getColumn() + factor;
+				row = cell.getRow() - factor;
 				break;
 			case NORTHWEST:
-				row = cell.getRow() - 1;
-				column = cell.getColumn () - 1;
+				column = cell.getColumn () - factor;
+				row = cell.getRow() - factor;
+				break;
+			case SOUTHEAST:
+				column = cell.getColumn() + factor;
+				row = cell.getRow () + factor;
+				break;	
+			case SOUTHWEST:
+				column = cell.getColumn () - factor;
+				row = cell.getRow() + factor;
 				break;
 			default:
 				break;
 
 		}
 
-		return this.getPlayer().getGame().getGrid().getLocation(row, column);
+		Cell searchCell = new Cell (column, row, color);
+		return this.getPlayer().getGame().getGrid().getLocation(searchCell);
 	}
 	
-	private Map<Direction, BeadString> getString (int stringlength) {
+	private Map<Vertice, BeadString> getString (int stringlength) {
 		return getString (stringlength, false);
 	}
 	
-	private Map<Direction, BeadString> getString(int stringlength, boolean compliment) {
-		HashMap<Direction, BeadString> ret = new HashMap<Direction, BeadString> ();
+	private Map<Vertice, BeadString> getString(int stringlength, boolean compliment) {
+		
+		/*TODO:  Change this to a VERTICE map */
+		HashMap<Vertice, BeadString> ret = new HashMap<Vertice, BeadString> ();
 		
 		AnnotatedCell start = new AnnotatedCell (getDestination());
 			/* We are only interested in cells of this color */
 		
 		Color[] colors;
 		if (compliment) {
-			colors = new Color [ 1 ];
-			colors [ 0 ] = this.getDestination().getColor();
-		} else {
 			colors = new Color [ 2 ];
 			colors [ 0 ] = this.getDestination().getColor();
 			colors [ 1 ] = colors [ 0 ].getCompliment();
+		} else {
+			colors = new Color [ 1 ];
+			colors [ 0 ] = this.getDestination().getColor();			
 		}
 		/* Perform a search to the depth of stringlength + 1, to pickup 
 		 * any non-valid configurations */
 		Set<AnnotatedCell> candidates = findCandidates(start, colors, stringlength + 1);
 		
-		/* Directional Hash of cells */
-		HashMap <Direction,BeadString> directionalMap = 
-			new HashMap<Direction,BeadString>();
+		/* Vertice Hash of cells */
+		HashMap <Vertice,BeadString> directionalMap = 
+			new HashMap<Vertice,BeadString>();
 
-		/* Sort the candidates */
+		/* Sort the candidates by Vertice */
 		for (AnnotatedCell candidate : candidates) {
-			if (directionalMap.containsKey(candidate.getDirection())) {
-				BeadString string = directionalMap.get(candidate.getDirection());
+			if (directionalMap.containsKey(candidate.getDirection().getVertice())) {
+				BeadString string = directionalMap.get(candidate.getDirection().getVertice());
 				string.add(candidate.getCell());
-				directionalMap.put (candidate.getDirection(), string);
+				directionalMap.put (candidate.getDirection().getVertice(), string);
 			} else {
 				BeadString string = new BeadString ();
 				string.add(candidate.getCell());
-				directionalMap.put(candidate.getDirection(), string);
+				directionalMap.put(candidate.getDirection().getVertice(), string);
 			}
 		}
 		
 		/* Pull each list of cells from the directional map, and ensure that
-		 * there are only stringlength - 1 cells in that list. */
-		for (Direction d : directionalMap.keySet()) {
-			BeadString string = directionalMap.get(d);
-			if (string.size() == (stringlength -1) ) {
+		 * there are at least stringlength cells in that list. */
+		for (Vertice v : directionalMap.keySet()) {
+			BeadString string = directionalMap.get(v);
+			if (string.size() == stringlength - 1) {
 				string.add(getDestination());
-				ret.put(d, string);
+			} 
+			
+			if (string.contains(getDestination()) && string.size() >= stringlength) {
+				ret.put (v, string);
 			}
 		}
 		

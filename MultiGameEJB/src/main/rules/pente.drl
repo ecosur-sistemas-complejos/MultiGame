@@ -49,7 +49,7 @@ function boolean isCenter (Game game, Move move) {
 */
 function boolean isEmpty (GameGrid grid, Move move) {
     Cell destination = move.getDestination();
-    Cell current = grid.getLocation (destination.getRow(), destination.getColumn());
+    Cell current = grid.getLocation (destination);
     boolean ret = (current == null);
     if (!ret)
         move.setStatus (Status.INVALID);

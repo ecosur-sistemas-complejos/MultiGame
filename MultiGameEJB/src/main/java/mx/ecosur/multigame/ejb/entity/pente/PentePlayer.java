@@ -29,8 +29,6 @@ public class PentePlayer extends GamePlayer {
 	
 	public PentePlayer () {
 		super ();
-		trias = new HashSet<BeadString> ();
-		tesseras = new HashSet<BeadString> ();
 	}
 	
 	public PentePlayer(Game game, Player player, Color favoriteColor) {
@@ -47,6 +45,8 @@ public class PentePlayer extends GamePlayer {
 	}
 
 	public HashSet<BeadString> getTrias() {
+		if (trias == null)
+			trias = new HashSet<BeadString>();
 		return trias;
 	}
 
@@ -55,11 +55,17 @@ public class PentePlayer extends GamePlayer {
 	}
 	
 	public void addTria (BeadString tria) {
+		if (trias == null) {
+			trias = new HashSet<BeadString> ();
+		}
+		
 		if (tria.size() == 3)
 			trias.add (tria);
 	}
 
 	public HashSet<BeadString> getTesseras() {
+		if (tesseras == null) 
+			tesseras = new HashSet<BeadString>();
 		return tesseras;
 	}
 
@@ -68,6 +74,10 @@ public class PentePlayer extends GamePlayer {
 	}
 	
 	public void addTessera (BeadString tessera) {
+		if (tesseras == null) {
+			tesseras = new HashSet<BeadString> ();
+		}
+		
 		if (tessera.size() == 4)
 			tesseras.add(tessera);
 	}
