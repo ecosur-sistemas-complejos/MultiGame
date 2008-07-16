@@ -112,8 +112,7 @@ function PentePlayer getPartner (PentePlayer player) {
     Determines if the game has a winner.
 */
 function boolean hasWinner (PenteGame game) {
-     PenteGame pente = (PenteGame) game;
-     return (pente.getWinners().size() > 0);
+     return (game.getWinners().size() > 0);
 }
 
 /*
@@ -254,7 +253,8 @@ when
     move  : PenteMove (player.turn == true, status == Status.MOVED)
     eval (hasWinner(game))
 then
-    PentePlayer winner = getWinner ((PenteGame) game);
-    System.out.println ("Found winner!");
+    PentePlayer winner = getWinner (game);
     modify (game) { setState (GameState.END)}
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendEndGame (game);
 end
