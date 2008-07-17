@@ -44,17 +44,15 @@
 	<mx:Script> 
         <![CDATA[
         
-         	import mx.controls.Alert;
-        	
         	private function startGame(event:Event):void {
         		if (registrationWindow.gameType == "CHECKERS"){
         			//checkersGameWindow.currentPlayer = registrationWindow.currentPlayer;
         			//checkersGameWindow.gameId = registrationWindow.gameId;
         			//vstack.selectedChild = checkersGameWindow;	
         		}else if (registrationWindow.gameType == "PENTE"){
-        			penteGameWindow.players = registrationWindow.players;
         			penteGameWindow.currentPlayer = registrationWindow.currentPlayer;
-        			penteGameWindow.game = registrationWindow.currentPlayer.game;
+        			penteGameWindow.rows = registrationWindow.currentPlayer.game.rows;
+        			penteGameWindow.columns = registrationWindow.currentPlayer.game.columns;
         			vstack.selectedChild = penteGameWindow;
         		}
         	}
@@ -63,8 +61,8 @@
     </mx:Script>
 	
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
-		<component:registrationWindow id="registrationWindow" complete="startGame(event)" />
+		<component:RegistrationWindow id="registrationWindow" complete="startGame(event)" />
 		<!--checkers:checkersGameWindow id="checkersGameWindow"/-->
-		<pente:penteGameWindow id="penteGameWindow"/>
+		<pente:PenteGameWindow id="penteGameWindow"/>
 	</mx:ViewStack>
 </mx:Application>
