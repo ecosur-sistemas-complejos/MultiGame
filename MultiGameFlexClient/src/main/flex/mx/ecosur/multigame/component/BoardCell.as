@@ -96,6 +96,7 @@ package mx.ecosur.multigame.component {
 				token.cell.row = _row;
 				token.cell.column = _column;
 				addChild(token);
+				invalidateDisplayList();
 			}
 			_token = token;
 		}
@@ -159,8 +160,8 @@ package mx.ecosur.multigame.component {
     		
     		//define size of token acording the the size of this
     		if (_token){
-    			_token.width = unscaledWidth - getStyle("padding");
-    			_token.height = unscaledHeight - getStyle("padding");
+    			_token.width = unscaledWidth - 2 * getStyle("padding");
+    			_token.height = unscaledHeight - 2 * getStyle("padding");
     			_token.x = unscaledWidth / 2;
     			_token.y = unscaledHeight / 2;
     		}

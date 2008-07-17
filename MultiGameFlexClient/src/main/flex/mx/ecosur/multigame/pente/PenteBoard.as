@@ -1,5 +1,7 @@
 package mx.ecosur.multigame.pente {
 	
+	import flash.events.Event;
+	
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.component.BoardCell;
 	import mx.ecosur.multigame.component.Token;
@@ -15,19 +17,22 @@ package mx.ecosur.multigame.pente {
 		
 		private var _nCols:int; //number of cells on X axis
 		private var _nRows:int; //number of cells of Y axis
-		private var _boardCellSize:Number; //size of cell containers. BoardCell are presumed to be square.
-		private var boardCells:Array; //two dimensional array of BoardCell
+		private var _boardCells:Array; //two dimensional array of BoardCell
 		
-		/* default cell style properties */
+		[Bindable]
+		public var tokenSize:Number; //size of tokens
+		
+		// Default cell style properties
 		private static const DEFAULT_CELL_BG_COLOR:uint = 0xffffff;
 		private static const DEFAULT_CELL_BG_ALPHA:Number = 1;
 		private static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
 		private static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
-		private static const DEFAULT_CELL_PADDING:Number = 5;
+		private static const DEFAULT_CELL_PADDING:Number = 2.5;
 		
-		/* dirty flags */
-		private var _cellsDirty:Boolean;
-		private var _doResize:Boolean;
+		// Flags
+		private var _cellsCreated:Boolean;
+		
+		// Listeners
 		private var _dragEnterHandler:Function;
 		private var _dragExitHandler:Function;
 		private var _dragDropHandler:Function;
@@ -43,13 +48,10 @@ package mx.ecosur.multigame.pente {
 		 * @param dragExitHandler
 		 * 
 		 */
-		public function PenteBoard(nCols:int, nRows:int, dragEnterHandler:Function, dragDropHandler:Function, dragExitHandler:Function){
+		public function PenteBoard(){
 			super();
-			_dragDropHandler = dragDropHandler;
-			_dragEnterHandler = dragEnterHandler;
-			_dragExitHandler = dragExitHandler;
-			_nRows = nRows;
-			_nCols = nCols;
+			_cellsCreated = false;
+			addEventListener(Event.RESIZE, function():void{invalidateSize()});
 		}
 		
 		/* Getters and setters */
@@ -58,25 +60,42 @@ package mx.ecosur.multigame.pente {
 			return _nRows;
 		}
 		
-		public function get nCols():int{
-			return _nCols;
-		}
-		
-		public function get boardCellSize():Number{
-			return _boardCellSize;
-		}
-		
-		public function set boardCellSize(boardCellSize:Number):void{
-			if (_boardCellSize != boardCellSize){
-				_boardCellSize = boardCellSize;
-				_doResize = true;
+		public function set nRows(nRows:int):void{
+			if (_nRows != nRows){
+				_nRows = nRows;
 				invalidateDisplayList();
 			}
 		}
 		
+		public function get nCols():int{
+			return _nCols;
+		}
+		
+		public function set nCols(nCols:int):void{
+			if (_nCols != nCols){
+				_nCols = nCols;
+				invalidateDisplayList();
+			}
+		}
+		
+		public function set dragEnterHandler(dragEnterHandler:Function):void{
+			_dragEnterHandler = dragEnterHandler;
+			invalidateProperties();
+		}
+		
+		public function set dragDropHandler(dragDropHandler:Function):void{
+			_dragDropHandler = dragDropHandler;
+			invalidateProperties();
+		}
+		
+		public function set dragExitHandler(dragExitHandler:Function):void{
+			_dragExitHandler = dragExitHandler;
+			invalidateProperties();
+		}
+		
 		public function getBoardCell(colNum:int, rowNum:int):BoardCell {
-			if (colNum < boardCells.length && rowNum < boardCells[colNum].length){
-				return BoardCell (boardCells[colNum][rowNum]);
+			if (colNum < _boardCells.length && rowNum < _boardCells[colNum].length){
+				return BoardCell (_boardCells[colNum][rowNum]);
 			}else{
 				return null;
 			}
@@ -90,7 +109,8 @@ package mx.ecosur.multigame.pente {
 		 * @param token the token to add to the board.
 		 */
 		public function addToken(token:Token):void{
-			getBoardCell(token.cell.column, token.cell.row).token = token;
+			var boardCell:BoardCell = getBoardCell(token.cell.column, token.cell.row); 
+			boardCell.token = token;
 		}
 				
 		/**
@@ -98,53 +118,98 @@ package mx.ecosur.multigame.pente {
 		 * effect of cleaning the board. 
 		 */
 		public function clearTokens():void{
+			if (_boardCells == null || _boardCells.length == 0){
+				return;
+			}
 			var boardCell:BoardCell;
 			for (var i:Number = 0; i < _nCols; i++){
 				for (var j:Number = 0; j < _nRows; j++){
-					boardCell = BoardCell(boardCells[i][j]);
+					boardCell = BoardCell(_boardCells[i][j]);
 					boardCell.token = null;
 				}
 			}
 		}
 		
-		
-		/* Overrides */
-		
 		override protected function createChildren():void {
 			
-			/* create all cells */
+			// Create all cells
 			var boardCell:BoardCell;
-			boardCells = new Array();
+			_boardCells = new Array();
 			for (var i:Number = 0; i < _nCols; i++){
-				boardCells[i] = new Array();
+				_boardCells[i] = new Array();
 				for (var j:Number = 0; j < _nRows; j++){
 					boardCell = new BoardCell(j, i, cellBgColor, cellBorderColor, cellBorderThickness);
-					boardCells[i][j] = boardCell;
+					_boardCells[i][j] = boardCell;
 					addChild(boardCell);
 					boardCell.setStyle("padding", cellPadding);
-					boardCell.addEventListener(DragEvent.DRAG_ENTER, _dragEnterHandler);
-					boardCell.addEventListener(DragEvent.DRAG_DROP, _dragDropHandler);
-					boardCell.addEventListener(DragEvent.DRAG_EXIT, _dragExitHandler);
 				}
 			}
-			_cellsDirty = true;
+			_cellsCreated = true;
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			
-			/* if size of component has changed then scale and reposition cells */ 
-			if (_doResize){
-				_doResize = false;
+			// Check that _boardCells have been created
+			if (!_cellsCreated){
+				return;
+			}
 				
-				/* loop through cells positioning and scaling them */
-				var boardCell:BoardCell;
-				for (var i:Number = 0; i < _nCols; i++){
-					for (var j:Number = 0; j < _nRows; j++){
-						boardCell = getBoardCell(i, j);
-						boardCell.width = _boardCellSize;
-						boardCell.height = _boardCellSize;
-						boardCell.x = _boardCellSize * i;
-						boardCell.y = _boardCellSize * j;
+			// Loop through cells positioning and scaling them
+			// This assumes that the cells are square
+			var boardCell:BoardCell;
+			var boardCellSize:Number = measuredWidth / _nCols;
+			var baseX:Number = (unscaledWidth - measuredWidth) / 2;
+			tokenSize = boardCellSize - 2 * cellPadding;
+			for (var i:Number = 0; i < _nCols; i++){
+				for (var j:Number = 0; j < _nRows; j++){
+					boardCell = getBoardCell(i, j);
+					boardCell.width = boardCellSize;
+					boardCell.height = boardCellSize;
+					boardCell.x = baseX + boardCellSize * i;
+					boardCell.y = boardCellSize * j;
+				}
+			}
+		}
+		
+		override protected function measure():void{
+			
+			// Define minimum size
+			measuredMinWidth = 300;
+			measuredMinHeight = 300;
+			
+			// Define preferred size
+			if (unscaledWidth / _nCols >= unscaledHeight / _nRows){
+				
+				// Board limited by height
+				measuredWidth = _nCols * unscaledHeight / _nRows;
+				measuredHeight = unscaledHeight;
+				  
+			} else { 
+				
+				// Board limited by width
+				measuredHeight = _nRows * unscaledWidth / _nCols;
+				measuredWidth = unscaledWidth;
+			}
+		}
+		
+		override protected function commitProperties():void{
+			
+			// Check that boardCells have been created
+			if (!_cellsCreated){
+				return;
+			}
+			
+			//reset handlers
+			for (var i:Number = 0; i < _nCols; i++){
+				for (var j:Number = 0; j < _nRows; j++){
+					if (_dragExitHandler != null){
+						getBoardCell(i, j).addEventListener(DragEvent.DRAG_EXIT, _dragExitHandler);
+					}
+					if (_dragEnterHandler != null){
+						getBoardCell(i, j).addEventListener(DragEvent.DRAG_ENTER, _dragEnterHandler);
+					}
+					if(_dragDropHandler != null){
+						getBoardCell(i, j).addEventListener(DragEvent.DRAG_DROP, _dragDropHandler);
 					}
 				}
 			}

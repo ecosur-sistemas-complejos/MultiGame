@@ -2,6 +2,7 @@ package mx.ecosur.multigame.component {
 	
 	import flash.display.Shape;
 	import flash.filters.BitmapFilterQuality;
+	import flash.filters.GlowFilter;
 	import flash.filters.GradientBevelFilter;
 	
 	import mx.core.IFlexDisplayObject;
@@ -17,11 +18,14 @@ package mx.ecosur.multigame.component {
 		
 		private var _cell:Cell;
 		private var _bg:Shape;
+		private var _selected:Boolean;
+		private var _deselectedFilters:Array;
+		private var _selectedFilters:Array;
 		
-		/* Constants */
-		public static const DEFAULT_ALPHA:Number = 0.8;
-		public static const DISACTIVATED_ALPHA:Number = 0.5;
-		public static const HIGHLIGHT_ALPHA:Number = 1;
+		//flags
+		private var _bgDirty:Boolean;
+		
+		// Constants
 		public static const BORDER_THICKNESS:Number = 1;
 		
 		/**
@@ -30,7 +34,10 @@ package mx.ecosur.multigame.component {
 		 */
 		public function Token(){
 			super();
-			alpha = DEFAULT_ALPHA;
+			_selected = false;
+			_bgDirty = false;
+			
+			
 		}
 		
 		/* Getters and setters */
@@ -40,7 +47,44 @@ package mx.ecosur.multigame.component {
 		}
 		
 		public function set cell(cell:Cell):void {
+			if (_cell == null || _cell.colorCode != cell.colorCode){
+				
+				//initialize filters
+				_deselectedFilters = new Array();
+				_selectedFilters = new Array();			
+				
+				var glow:GlowFilter = new GlowFilter();
+				glow.color = 0xffffff;
+				glow.alpha = 1;
+				glow.blurX = 5;
+				glow.blurY = 5;
+				glow.inner = false;
+				glow.quality = BitmapFilterQuality.MEDIUM;
+				_selectedFilters.push(glow);
+				
+				var gradientBevel:GradientBevelFilter = new GradientBevelFilter();
+				gradientBevel.distance = 8;
+				gradientBevel.angle = 225; // opposite of 45 degrees
+				gradientBevel.colors = [Color.findIntermediateColor(0xffffff, cell.colorCode, 0.5), cell.colorCode, Color.findIntermediateColor(0x000000, cell.colorCode, 0.5)];
+				gradientBevel.alphas = [1, 0, 1];
+				gradientBevel.ratios = [0, 128, 255];
+				gradientBevel.blurX = 8;
+				gradientBevel.blurY = 8;
+				gradientBevel.quality = BitmapFilterQuality.HIGH;
+				_deselectedFilters.push(gradientBevel);
+				_selectedFilters.push(gradientBevel);
+				
+				_bgDirty = true;
+				invalidateDisplayList();
+			}
 			_cell = cell;
+		}
+		
+		public function set selected(selected:Boolean):void{
+			if (_selected != selected){
+				_selected = selected;
+				invalidateDisplayList();
+			}
 		}
 		
 		/**
@@ -77,10 +121,13 @@ package mx.ecosur.multigame.component {
 		
 		override protected function updateDisplayList(unscaledWidth:Number,
             unscaledHeight:Number):void {
-
-            super.updateDisplayList(unscaledWidth, unscaledHeight);
+            	
+            // Do nothing if color not set
+            if (_cell == null || _cell.color == null){
+            	return;
+            }
     		
-    		/* Redraw background */
+    		// Redraw background
     		_bg.graphics.clear();
     		_bg.x = - unscaledWidth / 2;
     		_bg.y = - unscaledHeight / 2;
@@ -88,20 +135,14 @@ package mx.ecosur.multigame.component {
     		_bg.graphics.lineStyle(BORDER_THICKNESS, _cell.colorCode, 1);
     		_bg.graphics.drawCircle(unscaledWidth/2, unscaledHeight/2, unscaledWidth / 2);
     		_bg.graphics.endFill();
+    		_bgDirty = false;
     		
-    		/* Add gradient filter */
-    		var filters:Array = new Array();
-			var gradientBevel:GradientBevelFilter = new GradientBevelFilter();
-			gradientBevel.distance = 8;
-			gradientBevel.angle = 225; // opposite of 45 degrees
-			gradientBevel.colors = [Color.findIntermediateColor(0xffffff, _cell.colorCode, 0.5), _cell.colorCode, Color.findIntermediateColor(0x000000, _cell.colorCode, 0.5)];
-			gradientBevel.alphas = [1, 0, 1];
-			gradientBevel.ratios = [0, 128, 255];
-			gradientBevel.blurX = 8;
-			gradientBevel.blurY = 8;
-			gradientBevel.quality = BitmapFilterQuality.HIGH;
-			filters.push(gradientBevel);			
-			_bg.filters = filters;
+    		// Set filters acording to whether the token is selected or not
+			if (_selected){
+				_bg.filters = _selectedFilters;
+			}else{
+				_bg.filters = _deselectedFilters;
+			}
         }
         
 		override public function toString():String{

@@ -27,13 +27,13 @@ package mx.ecosur.multigame.helper {
 					return 0x000000;
 				break;
 				case Color.GREEN:
-					return 0x00ff00;
+					return 0x00bb00;
 				break;
 				case Color.BLUE:
-					return 0x0000ff;
+					return 0x0000bb;
 				break;
 				case Color.RED:
-					return 0xff0000;
+					return 0xbb0000;
 				break;
 			}
 			return undefined;

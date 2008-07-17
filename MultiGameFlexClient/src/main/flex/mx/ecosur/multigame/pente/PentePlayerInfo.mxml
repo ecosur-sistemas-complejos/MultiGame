@@ -14,6 +14,11 @@
         		var d:Date = new Date(gamePlayer.player.lastRegistration);
         		playerLastRegistration.text = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
         		playerWins.text = gamePlayer.player.wins.toString();
+        		_gamePlayer = gamePlayer;
+        	}
+        	
+        	public function get gamePlayer():GamePlayer{
+        		return _gamePlayer;
         	}
         	        
         ]]>

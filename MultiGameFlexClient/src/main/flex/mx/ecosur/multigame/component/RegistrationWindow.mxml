@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="txtName.setFocus()">
 
 	<mx:Metadata>
         [Event(name="complete")]
@@ -51,6 +51,7 @@
             	var call:Object = event.token;
             	if(call.operation == "register"){
             		currentPlayer = GamePlayer(event.result);
+            		//TODO: No need to get game is included in player is only necesary to force shared board to locate game
             		var callGame:Object = gameService.getGame(gameType);
             		callGame.operation = "getGame";
             	}else if (call.operation == "getGame"){
@@ -86,7 +87,7 @@
      
 	<mx:Panel title="New Game">
 		<mx:Form x="0" y="0" defaultButton="{registerBtn}">
-			<mx:FormItem label="Names" required="true">
+			<mx:FormItem label="Name" required="true">
 				<mx:TextInput id="txtName" />
 			</mx:FormItem>
 			<mx:FormItem label="Game" required="true">

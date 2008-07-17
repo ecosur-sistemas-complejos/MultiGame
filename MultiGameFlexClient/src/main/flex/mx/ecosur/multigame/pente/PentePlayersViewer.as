@@ -15,7 +15,6 @@ package mx.ecosur.multigame.pente {
 	public class PentePlayersViewer extends Accordion {
 		
 		private var _players:ArrayCollection; 
-		private var _currentPlayer:GamePlayer;
 		
 		/**
 		 * Default constructor 
@@ -24,22 +23,34 @@ package mx.ecosur.multigame.pente {
 			super();
 		}
 		
-		/* Getters and setters */
-		
-		public function get players():ArrayCollection{
-			return _players;
-		}
-		
+		/**
+		 * Sets players
+		 *  
+		 * @param players
+		 */
 		public function set players(players:ArrayCollection):void{
 			_players = players;
 			updatePlayers();
 		}
 		
-		//TODO: Avoid calling create players twice when players and currentPlayer are set
-		public function set currentPlayer(currentPlayer:GamePlayer):void{
-			//Alert.show("setting current player " + currentPlayer.color);
-			_currentPlayer = currentPlayer;
-			updatePlayers();
+		
+		/**
+		 * Returns the button for this player.
+		 * 
+		 * @param player
+		 */
+		public function getPlayerButton(player:GamePlayer):Button{
+			
+			var ppi:PentePlayerInfo;
+			var btn:Button;
+			for (var i:int = 0; i < getChildren().length; i++){
+				ppi = PentePlayerInfo(getChildAt(i))
+				if (ppi.gamePlayer.id == player.id){
+					btn = getHeaderAt(i);
+					return btn;
+				}
+			}
+			return null;
 		}
 		
 		/*
@@ -55,7 +66,7 @@ package mx.ecosur.multigame.pente {
 			
 			for (i = 0; i < _players.length; i++){
 				
-				/* Create the player information */
+				// Create the player information
 				gamePlayer = GamePlayer(_players[i]);
 				if (getChildren().length > i) {
 					ppi = PentePlayerInfo(getChildAt(i));
@@ -65,17 +76,19 @@ package mx.ecosur.multigame.pente {
 				}
 				ppi.gamePlayer = gamePlayer;
 				
-				/* Create button header */
+				// Create button header
 				btn = getHeaderAt(i);
 				btn.label = gamePlayer.player.name;
 				btn.setStyle("icon", Color.getCellIcon(gamePlayer.color));
 				btn.setStyle("paddingBottom", 5);
 				btn.setStyle("paddingTop", 5);
+				
+				// If player has turn highlight and select its info
 				if (gamePlayer.turn){
 					var fillColor:uint;
-					fillColor = Color.findIntermediateColor(Color.getColorCode(gamePlayer.color), 0x000000, 0.5);
+					fillColor = Color.findIntermediateColor(Color.getColorCode(gamePlayer.color), 0xffffff, 0.3);
 					btn.setStyle("fillColors", [fillColor, 0xffffff]);
-					btn.setStyle("fillAlphas", [1, 1]);
+					btn.setStyle("fillAlphas", [1, 1, 1]);
 					btn.setStyle("borderColor", fillColor);
 					selectedChild = ppi;
 				}else{
@@ -85,7 +98,7 @@ package mx.ecosur.multigame.pente {
 				}
 			}
 			
-			/* remove extra children that are no longer used */
+			// Remove extra children that are no longer used
 			while (i < getChildren().length){
 				removeChildAt(i);	
 			}

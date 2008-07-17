@@ -11,7 +11,7 @@
         <channel ref="my-polling-amf"/>
     </default-channels>
     
-    <destination id="multigame-chat">
+    <destination id="multigame-destination">
 		<properties>
 	    	<jms>
 	    		<destination-type>Topic</destination-type>

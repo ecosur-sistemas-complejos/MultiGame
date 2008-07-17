@@ -3,29 +3,28 @@
 
 	<mx:Script> 
         <![CDATA[
+        
+        	import mx.controls.Alert;
         	import mx.controls.Text;
         	
 			import mx.messaging.messages.AsyncMessage;
 			import mx.messaging.messages.IMessage;
-			import mx.messaging.events.MessageAckEvent;
 			import mx.messaging.events.MessageFaultEvent;
+			
 			import mx.ecosur.multigame.entity.GamePlayer;
 			import mx.ecosur.multigame.entity.ChatMessage;
-			import mx.ecosur.multigame.entity.Game;
-			import mx.ecosur.multigame.event.GameEvent;
-			import mx.controls.Alert;
+        	import mx.ecosur.multigame.event.GameEvent;
 			
-            public var gamePlayer:GamePlayer;
-            public var game:Game;
+            public var currentPlayer:GamePlayer;
 			
 			private function send():void {
 				var message:IMessage = new AsyncMessage();
 				var chatMessage:ChatMessage = new ChatMessage();
-				chatMessage.sender = gamePlayer.player;
+				chatMessage.sender = currentPlayer.player;
 				chatMessage.body = msg.text;
 				chatMessage.dateSent = new Date();
 				message.body = chatMessage;
-				message.headers.GAME_ID = game.id;
+				message.headers.GAME_ID = currentPlayer.game.id;
 				message.headers.GAME_EVENT = GameEvent.CHAT;
 				producer.send(message);
 				msg.text = "";
@@ -34,20 +33,15 @@
         	public function addMessage(chatMessage:ChatMessage):void {
 				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.name + ": " + chatMessage.body + "\n";
 			}
-
-			private function acknowledgeHandler(event:MessageAckEvent):void{
-    			//Alert.show("message acknowledged " + event.acknowledgeMessage);
-			}	
 			
 			private function faultHandler(event:MessageFaultEvent):void {
 				Alert.show("fault in message " + event.faultString);
 			}
-
         	        
         ]]>
     </mx:Script>
     
-    <mx:Producer id="producer" destination="multigame-chat" acknowledge="acknowledgeHandler(event)" fault="faultHandler(event)"/>
+    <mx:Producer id="producer" destination="multigame-destination" fault="faultHandler(event)"/>
 
 	<mx:TextArea id="log" width="100%" height="100%" backgroundColor="#cccccc" borderThickness="0" editable="false"/>
 	<mx:ControlBar verticalAlign="top">
