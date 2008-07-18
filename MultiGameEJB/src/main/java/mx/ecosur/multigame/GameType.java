@@ -26,4 +26,11 @@ public enum GameType {
 		else
 			return "getGamePlayer";
 	}
+	
+	public String getNamedMoveQuery () {
+		if (this.equals(GameType.PENTE))
+			return "getPenteMoves";
+		else
+			return "getMoves";
+	}
 }

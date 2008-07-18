@@ -94,4 +94,9 @@ public interface SharedBoardLocal {
 	 */
 	public void addMessage(ChatMessage chatMessage);
 	
+	/**
+	 * Gets all the moves made on this shared board 
+	 */
+	public List<Move> getMoves();
+	
 }

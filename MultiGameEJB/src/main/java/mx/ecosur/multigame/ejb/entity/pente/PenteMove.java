@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
 import mx.ecosur.multigame.Cell;
@@ -28,6 +30,9 @@ import mx.ecosur.multigame.pente.BeadString;
  */
 @Entity
 @DiscriminatorValue("PENTE")
+@NamedQueries( { 
+	@NamedQuery(name = "getPenteMoves", query = "select pm from PenteMove pm where pm.player.game=:game order by pm.id asc") 
+})
 public class PenteMove extends Move {
 	
 	HashSet<Cell> captures;

@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 import mx.ecosur.multigame.Cell;
@@ -21,6 +23,9 @@ import mx.ecosur.multigame.Cell;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DISCRIMINATOR", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("MOVE")
+@NamedQueries( { 
+	@NamedQuery(name = "getMoves", query = "select m from Move m where m.player.game=:game order by m.id asc") 
+})
 public class Move implements Serializable {
 
 	private int id;

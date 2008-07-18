@@ -334,5 +334,12 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	public List<GamePlayer> getPlayers() {
 		return game.getPlayers();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Move> getMoves() {
+		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());
+		query.setParameter("game", game);
+		return query.getResultList();
+	}
 
 }
