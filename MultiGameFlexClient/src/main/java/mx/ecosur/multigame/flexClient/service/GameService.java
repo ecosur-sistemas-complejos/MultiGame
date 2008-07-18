@@ -149,6 +149,12 @@ public class GameService {
 			throw new GameException(e);
 		}
 	}
+	
+	public List<Move> getMoves(){
+		SharedBoardRemote sharedBoard = getSharedBoard();
+		List<Move> moves = sharedBoard.getMoves();
+		return moves;
+	}
 
 	// TODO: This method is temporary for development purposes. It will be
 	// deleted

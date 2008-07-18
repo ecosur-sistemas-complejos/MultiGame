@@ -49,6 +49,7 @@ package mx.ecosur.multigame.pente{
 		private var _chatPanel:ChatPanel;
 		private var _playersViewer:PentePlayersViewer;
 		private var _tokenStore:TokenStore;
+		private var _moveViewer:PenteMoveViewer;
 		private var _gameStatus:GameStatus;
 		private var _animateLayer:UIComponent;
 		
@@ -76,12 +77,13 @@ package mx.ecosur.multigame.pente{
 		private static const GAME_SERVICE_DESTINATION_NAME:String = "gameService";
 		private static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
 		private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
+		private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
 		
 		/**
 		 * Default constructor. 
 		 * 
 		 */
-		public function PenteGameController(currentPlayer:GamePlayer, board:PenteBoard, chatPanel:ChatPanel, playersViewer:PentePlayersViewer, tokenStore:TokenStore, gameStatus:GameStatus, animateLayer:UIComponent){
+		public function PenteGameController(currentPlayer:GamePlayer, board:PenteBoard, chatPanel:ChatPanel, playersViewer:PentePlayersViewer, tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:PenteMoveViewer, animateLayer:UIComponent){
 			super();
 			
 			//set private references
@@ -91,6 +93,7 @@ package mx.ecosur.multigame.pente{
 			_tokenStore = tokenStore;
 			_gameStatus = gameStatus;
 			_playersViewer = playersViewer;
+			_moveViewer = moveViewer;
 			_animateLayer = animateLayer;
 			_moves = new Array();
 			_isMoving = false;	
@@ -121,11 +124,13 @@ package mx.ecosur.multigame.pente{
 			//initialize game status
 			_gameStatus.showMessage("Welcome to the game!", Color.getColorCode(currentPlayer.color));
 			
-			//get the game grid and players
+			//get the game grid, players and moves
 			var callGrid:Object = _gameService.getGameGrid();
 			callGrid.operation = GAME_SERVICE_GET_GRID_OP;
 			var callPlayers:Object = _gameService.getPlayers();
 			callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+			var callMoves:Object = _gameService.getMoves();
+			callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
 		}
 		
 		public function set isTurn(isTurn:Boolean):void{
@@ -197,6 +202,9 @@ package mx.ecosur.multigame.pente{
 				case GAME_SERVICE_GET_PLAYERS_OP:
 					updatePlayers(ArrayCollection(event.result));
 					break;
+				case GAME_SERVICE_GET_MOVES_OP:
+					_moveViewer.initFromMoves(ArrayCollection(event.result));
+					break;
 			}
 		}
 		
@@ -243,7 +251,7 @@ package mx.ecosur.multigame.pente{
 					end();
 					break;
 				case GameEvent.MOVE_COMPLETE:
-					var move:Move = Move(message.body);
+					var move:PenteMove = PenteMove(message.body);
 					addMove(move);
 					break;
 				case GameEvent.PLAYER_CHANGE:
@@ -261,17 +269,21 @@ package mx.ecosur.multigame.pente{
 		 * Adds a move to the internal list of moves. If the move is not present on the board then
 		 * it is animated.  
 		 */
-		private function addMove(move:Move):void{
+		private function addMove(move:PenteMove):void{
+			var doAnimate:Boolean = true;
 			if (_moves.length > 0){
 				var lastMove:Move = _moves[_moves.length - 1]
 				if (move.destination.row == lastMove.destination.row && move.destination.column == lastMove.destination.column){
-					/* move is already shown, this client must have done the move */
-					return;
-				} 
+					// Move is already shown, this client must have done the move
+					doAnimate = false;
+				}
 			}
 			_isBoardEmtpy = false;
-			animateMove(move);
-			_moves.push(move);
+			if (doAnimate){
+				animateMove(move);
+				_moves.push(move);
+			}
+			_moveViewer.addMove(move);
 		}
 		
 		/*

@@ -11,6 +11,10 @@ package mx.ecosur.multigame.pente.entity {
 		
 		private var _captures:ArrayCollection;
 		
+		private var _trias:ArrayCollection;
+		
+		private var _tesseras:ArrayCollection;
+		
 		public function PenteMove() {
 			super();
 		}
@@ -21,6 +25,22 @@ package mx.ecosur.multigame.pente.entity {
 		
 		public function get captures():ArrayCollection{
 			return _captures;
+		}
+		
+		public function set trias(trias:ArrayCollection):void{
+			_trias = trias;
+		}
+		
+		public function get trias():ArrayCollection{
+			return _trias;
+		}
+		
+		public function set tesseras(tesseras:ArrayCollection):void{
+			_tesseras = tesseras;
+		}
+		
+		public function get tesseras():ArrayCollection{
+			return _tesseras;
 		}
 		
 	}
