@@ -8,7 +8,7 @@ package mx.ecosur.multigame.component {
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.helper.Color;
+	import mx.ecosur.multigame.enum.Color;
 	
 	/**
 	 * Visual class representing a token on the board. Contains an internal 

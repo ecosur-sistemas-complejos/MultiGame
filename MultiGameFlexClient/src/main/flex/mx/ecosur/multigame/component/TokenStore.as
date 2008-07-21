@@ -6,7 +6,7 @@ package mx.ecosur.multigame.component {
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.entity.GamePlayer;
-	import mx.ecosur.multigame.helper.Color;
+	import mx.ecosur.multigame.enum.Color;
 	import mx.effects.AnimateProperty;
 	import mx.events.DragEvent;
 	import mx.events.EffectEvent;
@@ -72,6 +72,28 @@ package mx.ecosur.multigame.component {
 			}
 		}
 		
+		public function addToken():void{
+			var token:Token = new Token();
+			token.buttonMode = false;
+			token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
+			token.addEventListener(MouseEvent.MOUSE_OUT, unselectToken);
+			if (_startMoveHandler != null){
+					token.addEventListener(MouseEvent.MOUSE_DOWN, _startMoveHandler);
+				}
+			if (_endMoveHandler != null){
+				token.addEventListener(DragEvent.DRAG_COMPLETE, _endMoveHandler);			
+			}
+			addChild(token);
+			_nTokens ++;
+		}
+		
+		public function removeToken():void{
+			if(numChildren > 0){
+				removeChildAt(numChildren - 1);
+				_nTokens --;
+			}	
+		}
+		
 		private function selectToken(event:MouseEvent):void{
 			Token(event.target).selected = true;
 		}
@@ -110,14 +132,10 @@ package mx.ecosur.multigame.component {
 			
 			// Create initial tokens
 			var token:Token;
+			_nTokens = 0;
 			for (var i:int = 0; i < INITIAL_N_TOKENS; i++){
-				token = new Token();
-				token.buttonMode = false;
-				token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
-				token.addEventListener(MouseEvent.MOUSE_OUT, unselectToken);
-				addChild(token);
-			}	
-			_nTokens = INITIAL_N_TOKENS;
+				addToken();
+			}
 		}
 		
 		override protected function commitProperties():void{

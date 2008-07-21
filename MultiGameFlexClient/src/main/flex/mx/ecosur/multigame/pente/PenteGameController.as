@@ -9,24 +9,29 @@ package mx.ecosur.multigame.pente{
 	import mx.core.DragSource;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.component.BoardCell;
+	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.enum.CooperatiionQualifier;
+	import mx.ecosur.multigame.enum.ExceptionType;
+	import mx.ecosur.multigame.enum.GameEvent;
 	import mx.ecosur.multigame.component.ChatPanel;
-	import mx.ecosur.multigame.component.GameStatus;
-	import mx.ecosur.multigame.component.Token;
 	import mx.ecosur.multigame.component.TokenStore;
-	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.entity.ChatMessage;
-	import mx.ecosur.multigame.entity.GameGrid;
-	import mx.ecosur.multigame.entity.GamePlayer;
-	import mx.ecosur.multigame.entity.Move;
-	import mx.ecosur.multigame.event.GameEvent;
-	import mx.ecosur.multigame.exception.ExceptionType;
-	import mx.ecosur.multigame.helper.Color;
-	import mx.ecosur.multigame.pente.entity.PenteGame;
+	import mx.ecosur.multigame.component.GameStatus;
+	import mx.ecosur.multigame.component.BoardCell;
+	import mx.ecosur.multigame.pente.PenteBoard;
+	import mx.ecosur.multigame.pente.PenteMoveViewer;
+	import mx.ecosur.multigame.pente.PentePlayersViewer;
 	import mx.ecosur.multigame.pente.entity.PenteMove;
+	import mx.ecosur.multigame.entity.Move;
+	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.component.Token;
+	import mx.ecosur.multigame.entity.GamePlayer;
+	import mx.ecosur.multigame.entity.GameGrid;
+	import mx.ecosur.multigame.pente.entity.PenteGame;
+	import mx.ecosur.multigame.entity.ChatMessage;
 	import mx.effects.AnimateProperty;
 	import mx.events.CloseEvent;
 	import mx.events.DragEvent;
+	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
 	import mx.managers.DragManager;
 	import mx.messaging.Consumer;
@@ -37,6 +42,7 @@ package mx.ecosur.multigame.pente{
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
+	
 
 	/**
 	 * Represents a game of pente. Contains a pente board and cell store 
@@ -58,7 +64,8 @@ package mx.ecosur.multigame.pente{
 		private var _players:ArrayCollection;
 		private var _gameGrid:GameGrid;
 		private var _game:PenteGame;
-		private var _moves:Array;
+		private var _moves:ArrayCollection; //all moves made in the game
+		private var _selectedMoveInd:Number; //index of selected move in _moves
 		
 		// Server objects
 		private var _gameService:RemoteObject;
@@ -78,6 +85,7 @@ package mx.ecosur.multigame.pente{
 		private static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
 		private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
 		private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
+		private static const GAME_SERVICE_UPDATE_MOVE_OP:String = "updateMove";
 		
 		/**
 		 * Default constructor. 
@@ -95,7 +103,7 @@ package mx.ecosur.multigame.pente{
 			_playersViewer = playersViewer;
 			_moveViewer = moveViewer;
 			_animateLayer = animateLayer;
-			_moves = new Array();
+			_moves = new ArrayCollection();
 			_isMoving = false;	
 			
 			//initialize game service remote object
@@ -122,7 +130,10 @@ package mx.ecosur.multigame.pente{
 			_tokenStore.active = false;
 			
 			//initialize game status
-			_gameStatus.showMessage("Welcome to the game!", Color.getColorCode(currentPlayer.color));
+			_gameStatus.showMessage("Welcome to the game " + currentPlayer.player.name + "!\n\n You are " + Color.getColorDescription(currentPlayer.color), Color.getColorCode(currentPlayer.color));
+			
+			//initialize the move viewer
+			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
 			
 			//get the game grid, players and moves
 			var callGrid:Object = _gameService.getGameGrid();
@@ -203,7 +214,9 @@ package mx.ecosur.multigame.pente{
 					updatePlayers(ArrayCollection(event.result));
 					break;
 				case GAME_SERVICE_GET_MOVES_OP:
-					_moveViewer.initFromMoves(ArrayCollection(event.result));
+					_moves = ArrayCollection(event.result)
+					_moveViewer.initFromMoves(_moves);
+					_selectedMoveInd = _moves.length - 1;
 					break;
 			}
 		}
@@ -216,7 +229,8 @@ package mx.ecosur.multigame.pente{
 			if (errorMessage.extendedData != null){
 				if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
 					var fnc:Function = function (event:CloseEvent):void{
-						undoLastMove();
+						undoMove(PenteMove(_moves.source.pop()));
+						_selectedMoveInd = _moves.length - 1;
 					}
 					Alert.show("Sorry but this move is not valid", "Woops!", Alert.OK, null, fnc);
 				}
@@ -265,50 +279,87 @@ package mx.ecosur.multigame.pente{
 			Alert.show(event.faultString, "Error receiving message");
 		}
 		
+		private function gotoMove(event:DynamicEvent):void{
+
+			var move:PenteMove = PenteMove(event.move);
+			if(move.id < PenteMove(_moves[_selectedMoveInd]).id){
+				do{
+					undoMove(PenteMove(_moves[_selectedMoveInd]));
+					_selectedMoveInd --;					
+				}while(move.id < PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > 0);
+			}else if (move.id > PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length){
+				do{
+					doMove(PenteMove(_moves[_selectedMoveInd + 1]));
+					_selectedMoveInd ++;
+				}while(move.id > PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
+			}
+		}
+		
 		/*
 		 * Adds a move to the internal list of moves. If the move is not present on the board then
 		 * it is animated.  
 		 */
 		private function addMove(move:PenteMove):void{
-			var doAnimate:Boolean = true;
+			
+			//TODO: Manage this property better
+			_isBoardEmtpy = false;
+			
+			//get last move in game
+			var lastMove:PenteMove = null;
 			if (_moves.length > 0){
-				var lastMove:Move = _moves[_moves.length - 1]
-				if (move.destination.row == lastMove.destination.row && move.destination.column == lastMove.destination.column){
-					// Move is already shown, this client must have done the move
-					doAnimate = false;
+				lastMove = PenteMove(_moves[length - 1]);
+			}
+			
+			//if move is after the last move
+			if (lastMove == null || move.id > lastMove.id){
+				
+				//add to moves
+				_moves.source.push(move);
+				_moveViewer.addMove(move);
+				
+				//if current move is the last move then animate
+				if (_selectedMoveInd == _moves.length - 2){
+					_selectedMoveInd ++;
+					doMove(move);
 				}
 			}
-			_isBoardEmtpy = false;
-			if (doAnimate){
-				animateMove(move);
-				_moves.push(move);
-			}
-			_moveViewer.addMove(move);
 		}
 		
 		/*
 		 * Animates a move
 		 */
-		private function animateMove(move:Move):void{
+		private function doMove(move:Move):void{
 			
-			//get board cell destination for move
+			//define origin
+			var startPoint:Point;
+			var startSize:Number;
+			if(move.player.id == _currentPlayer.id && _isTurn){
+				startPoint = new Point(_tokenStore.width, _tokenStore.height);
+				startPoint = _tokenStore.localToGlobal(startPoint);
+				startPoint = _animateLayer.globalToLocal(startPoint);
+				startSize = _board.tokenSize;
+			}else{
+				var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+				startPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
+				startPoint = _playersViewer.localToGlobal(startPoint);
+				startPoint = _animateLayer.globalToLocal(startPoint);
+				startSize = Color.getCellIconSize();
+			}
+			
+			//define destination
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
-			var cellPadding:Number = boardCell.getStyle("padding");
-			var token:Token = new Token();
-			token.cell = move.destination;
-			token.width = _board.tokenSize;
-			token.height = _board.tokenSize;
-			_animateLayer.addChild(token);
-			
-			//get position of bottom right of store relative to the cell
-			var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
-			var startPoint:Point = new Point(playerBtn.x + token.width / 2, playerBtn.y + (playerBtn.height - token.height) / 2);
-			startPoint = _playersViewer.localToGlobal(startPoint);
-			startPoint = _animateLayer.globalToLocal(startPoint);
 			var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
+			var endSize:Number = _board.tokenSize;
 			endPoint = boardCell.localToGlobal(endPoint);
 			endPoint = _animateLayer.globalToLocal(endPoint);
 			
+			//create new token
+			var token:Token = new Token();
+			token.cell = move.destination;
+			token.width = endSize;
+			token.height = endSize;
+			_animateLayer.addChild(token);
+						
 			//define motion animation
 			var apX:AnimateProperty = new AnimateProperty(token);
 			apX.fromValue = startPoint.x;
@@ -320,19 +371,149 @@ package mx.ecosur.multigame.pente{
 			apY.toValue = endPoint.y;
 			apY.duration = 1000;
 			apY.property = "y";
-			apY.addEventListener(EffectEvent.EFFECT_END, endAnimateMove);
+			apY.addEventListener(EffectEvent.EFFECT_END, endDoMove);
+			
+			//define size animation
+			var apXScale:AnimateProperty = new AnimateProperty(token);
+			apXScale.property = "scaleX";
+			apXScale.fromValue = startSize / endSize;
+			apXScale.toValue = 1;
+			apXScale.duration = 1000;
+			var apYScale:AnimateProperty = new AnimateProperty(token);
+			apYScale.property = "scaleY";
+			apYScale.fromValue = startSize / endSize;
+			apYScale.toValue = 1;
+			apYScale.duration = 1000;
 			
 			//start effect
 			apX.play();
 			apY.play();
+			apXScale.play();
+			apYScale.play();
 		}
 		
-		private function endAnimateMove(event:EffectEvent):void{
+		private function endDoMove(event:EffectEvent):void{
 			
 			var token:Token = Token(AnimateProperty(event.currentTarget).target);
 			var boardCell:BoardCell = _board.getBoardCell(token.cell.column, token.cell.row);
 			_animateLayer.removeChild(token);
+			
+			//remove from token store if necessary
+			if(token.cell.color == _currentPlayer.color && _isTurn){
+				_tokenStore.removeToken();
+			}
+			
 			boardCell.token = token;
+			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
+			_moveViewer.selectedMove = move;
+			
+			if (move.player.id == getTeamMate().id){
+				qualifyMove(move);
+			}
+		}
+		
+		private function undoMove(move:Move):void{
+			
+			//define origin
+			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+			var startPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
+			var startSize:Number = _board.tokenSize;
+			startPoint = boardCell.localToGlobal(startPoint);
+			startPoint = _animateLayer.globalToLocal(startPoint);
+			
+			//define destination
+			var endPoint:Point;
+			var endSize:Number;
+			if(move.player.id == _currentPlayer.id && _isTurn){
+				endPoint = new Point(_tokenStore.width / 2, _tokenStore.height / 2);
+				endPoint = _tokenStore.localToGlobal(endPoint);
+				endPoint = _animateLayer.globalToLocal(endPoint);
+				endSize = _board.tokenSize;
+			}else{
+				var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+				endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
+				endPoint = _playersViewer.localToGlobal(endPoint);
+				endPoint = _animateLayer.globalToLocal(endPoint);
+				endSize = Color.getCellIconSize();
+			}
+			
+			//create new token
+			var token:Token = new Token();
+			token.cell = move.destination;
+			token.width = endSize;
+			token.height = endSize;
+			boardCell.token = null;
+			_animateLayer.addChild(token);
+
+			//define motion animation
+			var apX:AnimateProperty = new AnimateProperty(token);
+			apX.fromValue = startPoint.x;
+			apX.toValue = endPoint.x;
+			apX.duration = 1000;
+			apX.property = "x";
+			var apY:AnimateProperty = new AnimateProperty(token);
+			apY.fromValue = startPoint.y;
+			apY.toValue = endPoint.y;
+			apY.duration = 1000;
+			apY.property = "y";
+			apY.addEventListener(EffectEvent.EFFECT_END, endUndoMove);
+			
+			//define size animation
+			var apXScale:AnimateProperty = new AnimateProperty(token);
+			apXScale.property = "scaleX";
+			apXScale.fromValue = startSize / endSize;
+			apXScale.toValue = 1;
+			apXScale.duration = 1000;
+			var apYScale:AnimateProperty = new AnimateProperty(token);
+			apYScale.property = "scaleY";
+			apYScale.fromValue = startSize / endSize;
+			apYScale.toValue = 1;
+			apYScale.duration = 1000;
+			
+			//start effect
+			apX.play();
+			apY.play();
+			apXScale.play();
+			apYScale.play();
+		}
+		
+		private function endUndoMove(event:EffectEvent):void{
+			
+			var token:Token = Token(AnimateProperty(event.currentTarget).target);
+			_animateLayer.removeChild(token);
+			
+			//add to token store if necessary
+			if(token.cell.color == _currentPlayer.color && _isTurn){
+				_tokenStore.addToken();
+			}
+			_moveViewer.selectedMove = PenteMove(_moves[_selectedMoveInd]);
+		}
+		
+		private function qualifyMove(move:PenteMove):void{
+			
+			var fnc:Function = function(eventObj:CloseEvent):void{
+				
+				switch (eventObj.detail){
+					case Alert.YES:
+						move.qualifier = CooperatiionQualifier.COOPERATIVE;
+						break;
+					case Alert.NO:
+						move.qualifier = CooperatiionQualifier.SELFISH;
+						break;
+					case Alert.CANCEL:
+						move.qualifier = CooperatiionQualifier.NEUTRAL;
+						break;
+				}
+				var call:Object = _gameService.updateMove(move);
+				call.operation = GAME_SERVICE_UPDATE_MOVE_OP;
+			}
+			var txt:String = "Your team mate had moved.\n\nPlease qualify this move according to its level of cooperation?"
+			var title:String = "QUALIFY MOVE";
+			Alert.yesLabel = "COOPERATIVE";
+            Alert.noLabel = "SELFISH";
+            Alert.cancelLabel = "NEITHER";
+            Alert.buttonWidth = 120;
+			Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, null, fnc);
 		}
 		
 		private function getGrid():void{
@@ -419,7 +600,7 @@ package mx.ecosur.multigame.pente{
             	call.operation = "doMove";
 				
 				// do move in interface
-				_moves.push(move);
+				_moves.source.push(move);
 				boardCell.reset();
 				//_tokenStore.removeChild(token);
 				var newToken:Token = new Token();
@@ -478,135 +659,34 @@ package mx.ecosur.multigame.pente{
 			return false;	
 		}
 		
-		private function undoLastMove():void{
-			/*
-			// get move
-			var move:Move = _moves.pop();
-			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+		private function getTeamMate():GamePlayer{
 			
-			// get position of bottom right of store relative to the cell
-			var pt:Point = new Point((_tokenStore.x + _tokenStore.width), (_tokenStore.y + _tokenStore.height));
-			pt = localToGlobal(pt);
-			pt = boardCell.globalToLocal(pt);
-			
-			// define motion animation
-			var token:Token = boardCell.token;
-			var apX:AnimateProperty = new AnimateProperty(token);
-			apX.toValue = pt.x;
-			apX.duration = 1000;
-			apX.property = "x";
-			var apY:AnimateProperty = new AnimateProperty(token);
-			apY.toValue = pt.y;
-			apY.duration = 1000;
-			apY.property = "y";
-			
-			// define handler for effect end
-			var endEffect:Function = function(event:EffectEvent):void{
-				
-				// add token to store and remove token from board
-				addStoreToken();
-				boardCell.token = null;
-			
-				// force update of display list
-				invalidateDisplayList();
-			}
-			apX.addEventListener(EffectEvent.EFFECT_END, endEffect);
-			
-			// start effect
-			apX.play();
-			apY.play();
-			*/
-		}
-		/*
-		private function addStoreToken():void{
-			
-			var token:Token = new Token();
-			token.alpha = Token.DISACTIVATED_ALPHA;
-			token.buttonMode = false;
-			token.addEventListener(MouseEvent.MOUSE_OVER, highlightToken);
-			token.addEventListener(MouseEvent.MOUSE_OUT, restoreToken);
-			token.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
-			token.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
-			_tokenStore.addChild(token);	
-		}
-*/		
-		/* Overrides */ 
-		/*
-		override protected function createChildren():void {
-			
-			//create board 
-			_board = new PenteBoard(19, 19, dragEnterBoardCell, dragDropCell, dragExitCell);
-			addChild(_board);
-			
-			//create token store
-			_tokenStore = new Canvas();
-			_tokenStore.horizontalScrollPolicy = ScrollPolicy.OFF;
-			_tokenStore.verticalScrollPolicy = ScrollPolicy.OFF;
-			_tokenStore.setStyle("backgroundColor", 0x666666);
-			_tokenStore.setStyle("borderColor", 0xffffff);
-			_tokenStore.setStyle("borderThickness", 5);
-			_tokenStore.setStyle("borderStyle", "inset");
-			addChild(_tokenStore);
-			
-			//create tokens and add to store
-			for (var i:int = 0; i < N_TOKENS_IN_STORE; i++){
-				addStoreToken();		
-			}
-			_tokenStore.alpha = 0.6;
-		}
-		*/
-		/*
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
-			
-			//inforce minimum width and height: TODO - This allows other components to overlap - look for solution
-			//unscaledWidth = Math.max(unscaledWidth, 300);
-			//unscaledHeight = Math.max(unscaledHeight, 300);
-			
-			
-			//redefine cell size of board and position in center of game
-			var boardWidth:Number = unscaledWidth - TOKEN_STORE_MIN_WIDTH - 10;
-			var tokenStoreWidth:Number;
-			if (boardWidth / _board.nCols >= unscaledHeight / _board.nRows){
-				
-				//board limited by height, calculate maximum cell size
-				_board.boardCellSize = unscaledHeight / _board.nRows;
-				
-				//calculate cellStore width and position board
-				boardWidth = _board.boardCellSize * _board.nCols
-				tokenStoreWidth = Math.min(TOKEN_STORE_MAX_WIDTH, unscaledWidth - boardWidth - 10);
-				_board.x = tokenStoreWidth + (unscaledWidth - tokenStoreWidth - boardWidth) / 2;
-				
-			}else{
-				
-				//board limited by height, calculate maximum cell size
-				_board.boardCellSize = boardWidth / _board.nCols;
-				
-				//calculate cellStore width and position board
-				boardWidth = _board.boardCellSize * _board.nCols
-				tokenStoreWidth = TOKEN_STORE_MIN_WIDTH + 10;
-				_board.x = tokenStoreWidth;
+			//get team mates color
+			var color:String;
+			switch (_currentPlayer.color){
+				case Color.BLACK:
+					color = Color.RED;
+					break;
+				case Color.BLUE:
+					color = Color.GREEN;
+					break;
+				case Color.RED:
+					color = Color.BLACK;
+					break;
+				case Color.GREEN:
+					color = Color.BLUE;
+					break;
 			}
 			
-			//draw cell store
-			var token:Token; 
-			var tokenW:Number = _board.boardCellSize - _board.cellPadding;
-			var tokenH:Number =   _board.boardCellSize - _board.cellPadding;
-			var tokensPerRow:int = Math.floor((tokenStoreWidth - (tokenW * 0.4)) / (tokenW * 0.6));
-			var paddingLeft:Number = (tokenStoreWidth - (tokensPerRow * tokenW * 0.6) - (tokenW * 0.4)) / 2; 
-			_tokenStore.width = tokenStoreWidth;
-			_tokenStore.height = Math.ceil(_tokenStore.getChildren().length / tokensPerRow) * (tokenH * 0.6) + (tokenH * 0.4) + 10;
-			_tokenStore.setStyle("borderColor", Color.getColorCode(_currentPlayer.color));
-			for(var i:int = 0; i < _tokenStore.getChildren().length; i++){
-				
-				token = Token(_tokenStore.getChildAt(i));
-				token.width = tokenW;
-				token.height = tokenH;
-				token.x = paddingLeft + (i % tokensPerRow) * tokenW * 0.6 + tokenW / 2;
-				token.y = 5 + Math.floor(i / tokensPerRow) * tokenH * 0.6 + tokenH / 2;
-				token.cell = new Cell();
-				token.cell.color = _currentPlayer.color;
+			//get team mate
+			var player:GamePlayer;
+			for (var i:int = 0; i < _players.length; i++){
+				player = GamePlayer(_players[i])
+				if (player.color == color){
+					return player;
+				}
 			}
+			return null;
 		}
-		*/
 	}
 }

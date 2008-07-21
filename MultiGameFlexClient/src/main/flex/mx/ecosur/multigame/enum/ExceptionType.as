@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.exception {
+package mx.ecosur.multigame.enum {
 	
 	/**
 	 * Enumeration to represent the different types of server side

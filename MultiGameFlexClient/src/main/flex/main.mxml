@@ -6,6 +6,7 @@
 	backgroundGradientColors="[#222222, #333333]" backgroundColor="#333333">
 	
 	<mx:Style>
+		/*
 		CheckersBoard {
 			cellBgColor1: #444444;
         	cellBgColor2: #ffffff;
@@ -14,6 +15,7 @@
         	cellBorderThickness: 1;
         	cellPadding: 10;
 		}
+		*/
 		
 		.windowStyles{
 			color: #ffffff;

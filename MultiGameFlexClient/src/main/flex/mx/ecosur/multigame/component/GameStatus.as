@@ -7,7 +7,7 @@ package mx.ecosur.multigame.component {
 	import flash.text.TextFormat;
 	
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.helper.Color;
+	import mx.ecosur.multigame.enum.Color;
 	import mx.effects.AnimateProperty;
 
 	public class GameStatus extends UIComponent {

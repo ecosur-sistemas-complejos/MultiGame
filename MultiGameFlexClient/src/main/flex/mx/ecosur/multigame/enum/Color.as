@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.helper {
+package mx.ecosur.multigame.enum {
 	
 	/**
 	 * Enumeration of colors and related static helper classes.
@@ -39,6 +39,24 @@ package mx.ecosur.multigame.helper {
 			return undefined;
 		}
 		
+		public static function getColorDescription(color:String):String{
+			switch (color){
+				case Color.BLACK:
+					return "Black";
+				break;
+				case Color.GREEN:
+					return "Green";
+				break;
+				case Color.BLUE:
+					return "Blue";
+				break;
+				case Color.RED:
+					return "Red";
+				break;
+			}
+			return "";
+		}
+		
 		public static function getCellIcon(color:String):Class{
 			switch (color){
 				case Color.BLACK:
@@ -55,6 +73,11 @@ package mx.ecosur.multigame.helper {
 				break;
 			}
 			return null;
+		}
+		
+		public static function getCellIconSize():Number{
+			//TODO: Look for a better way to read the height of the assets dynamically
+			return 20;
 		}
 		
 		public static function findIntermediateColor(color1:uint, color2:uint, ratio:Number):uint{

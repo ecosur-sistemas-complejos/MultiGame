@@ -155,6 +155,11 @@ public class GameService {
 		List<Move> moves = sharedBoard.getMoves();
 		return moves;
 	}
+	
+	public Move updateMove(Move move){
+		SharedBoardRemote sharedBoard = getSharedBoard();
+		return sharedBoard.updateMove(move);
+	}
 
 	// TODO: This method is temporary for development purposes. It will be
 	// deleted

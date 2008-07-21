@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.event {
+package mx.ecosur.multigame.enum {
 	
 	/**
 	 * Enumeration that represents the different

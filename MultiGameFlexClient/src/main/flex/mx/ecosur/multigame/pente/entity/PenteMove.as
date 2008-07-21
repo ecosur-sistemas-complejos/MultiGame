@@ -15,6 +15,8 @@ package mx.ecosur.multigame.pente.entity {
 		
 		private var _tesseras:ArrayCollection;
 		
+		private var _qualifier:String;
+		
 		public function PenteMove() {
 			super();
 		}
@@ -43,5 +45,12 @@ package mx.ecosur.multigame.pente.entity {
 			return _tesseras;
 		}
 		
+		public function set qualifier(qualifier:String):void{
+			_qualifier = qualifier;
+		}
+		
+		public function get qualifier():String{
+			return _qualifier;
+		}
 	}
 }

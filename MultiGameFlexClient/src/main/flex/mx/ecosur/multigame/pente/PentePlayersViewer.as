@@ -3,9 +3,9 @@ package mx.ecosur.multigame.pente {
 	import mx.collections.ArrayCollection;
 	import mx.containers.Accordion;
 	import mx.controls.Button;
-	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.entity.GamePlayer;
-	import mx.ecosur.multigame.helper.Color;
+	import mx.ecosur.multigame.pente.PentePlayerInfo;
 	
 	/**
 	 * Visual component representing the players that are in the current
@@ -31,6 +31,17 @@ package mx.ecosur.multigame.pente {
 		public function set players(players:ArrayCollection):void{
 			_players = players;
 			updatePlayers();
+		}
+		
+		public function setTurn(player:GamePlayer):void{
+			var ppi:PentePlayerInfo;
+			for (var i:int = 0; i < getChildren().length; i++){
+				ppi = PentePlayerInfo(getChildAt(i))
+				if (ppi.gamePlayer.id == player.id){
+					selectPlayer(ppi);
+					return;
+				}
+			}
 		}
 		
 		
@@ -60,7 +71,6 @@ package mx.ecosur.multigame.pente {
 			
 			var ppi:PentePlayerInfo;
 			var btn:Button;
-			var cell:Cell;
 			var gamePlayer:GamePlayer;
 			var i:int;
 			
@@ -85,16 +95,7 @@ package mx.ecosur.multigame.pente {
 				
 				// If player has turn highlight and select its info
 				if (gamePlayer.turn){
-					var fillColor:uint;
-					fillColor = Color.findIntermediateColor(Color.getColorCode(gamePlayer.color), 0xffffff, 0.3);
-					btn.setStyle("fillColors", [fillColor, 0xffffff]);
-					btn.setStyle("fillAlphas", [1, 1, 1]);
-					btn.setStyle("borderColor", fillColor);
-					selectedChild = ppi;
-				}else{
-					btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
-					btn.setStyle("fillAlphas", [0.6, 0.4]);
-					btn.setStyle("borderColor", 0xAAB3B3);
+					selectPlayer(ppi);
 				}
 			}
 			
@@ -103,6 +104,26 @@ package mx.ecosur.multigame.pente {
 				removeChildAt(i);	
 			}
 		}
+		
+		private function selectPlayer(ppi:PentePlayerInfo):void{
+			
+			//deselect selected
+			var btn:Button = getHeaderAt(selectedIndex);
+			btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
+			btn.setStyle("fillAlphas", [0.6, 0.4]);
+			btn.setStyle("color", 0x0B333C);
+			btn.setStyle("borderColor", 0xAAB3B3);
+			
+			//select new
+			btn = getHeaderAt(getChildIndex(ppi));
+			btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
+			btn.setStyle("fillAlphas", [1, 1]);
+			btn.setStyle("color", 0xFFFFFF);
+			btn.setStyle("borderColor", 0xFF3300);
+			
+			selectedChild = ppi;
+		}
+		
 		
 	}
 		
