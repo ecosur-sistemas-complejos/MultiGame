@@ -17,7 +17,7 @@
             import mx.ecosur.multigame.entity.Player;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.Game;
-            import mx.ecosur.multigame.helper.Color;
+            import mx.ecosur.multigame.enum.Color;
             
             public var currentPlayer:GamePlayer;
             public var players:ArrayCollection;

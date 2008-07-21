@@ -13,7 +13,7 @@
 			
 			import mx.ecosur.multigame.entity.GamePlayer;
 			import mx.ecosur.multigame.entity.ChatMessage;
-        	import mx.ecosur.multigame.event.GameEvent;
+        	import mx.ecosur.multigame.enum.GameEvent;
 			
             public var currentPlayer:GamePlayer;
 			
