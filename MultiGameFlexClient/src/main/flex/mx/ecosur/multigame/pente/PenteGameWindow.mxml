@@ -8,6 +8,8 @@
     
     <mx:Script> 
         <![CDATA[
+        	import mx.controls.Alert;
+        	import mx.events.ResizeEvent;
             import mx.collections.ArrayCollection;
             
             import mx.ecosur.multigame.entity.Game;
@@ -39,9 +41,10 @@
             public function init():void{
                 _controller = new PenteGameController(_currentPlayer, board, chatPanel, playersViewer, tokenStore, gameStatus, moveViewer, animateLayer);
             }
-                 
+            
         ]]>
     </mx:Script>
+
     <mx:VBox id="leftBox" width="200" height="100%">
         <component:GameStatus id="gameStatus" width="100%" />   
         <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" width="100%"/>

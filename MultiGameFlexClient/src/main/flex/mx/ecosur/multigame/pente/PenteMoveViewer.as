@@ -151,7 +151,6 @@ package mx.ecosur.multigame.pente {
 		
 		override protected function measure():void{
 			measuredHeight = unscaledHeight;
-			measuredMinHeight = measuredHeight;
 		}
 		
 		override protected function createChildren():void{

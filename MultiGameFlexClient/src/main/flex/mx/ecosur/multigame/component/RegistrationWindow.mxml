@@ -95,7 +95,7 @@
       				<mx:ArrayCollection>
       					<mx:Object label="-- Select --" data=""/>
       					<mx:Object label="Checkers" data="CHECKERS"/>
-      					<mx:Object label="Che Gente" data="PENTE"/>
+      					<mx:Object label="Gente" data="PENTE"/>
     	  			</mx:ArrayCollection>                     
     			</mx:ComboBox>
 			</mx:FormItem>

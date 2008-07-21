@@ -330,6 +330,12 @@ package mx.ecosur.multigame.pente{
 		 */
 		private function doMove(move:Move):void{
 			
+			//check that destination is free
+			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+			if (boardCell.token != null){
+				return;
+			}
+			
 			//define origin
 			var startPoint:Point;
 			var startSize:Number;
@@ -347,7 +353,6 @@ package mx.ecosur.multigame.pente{
 			}
 			
 			//define destination
-			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
 			var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
 			var endSize:Number = _board.tokenSize;
 			endPoint = boardCell.localToGlobal(endPoint);
@@ -407,7 +412,7 @@ package mx.ecosur.multigame.pente{
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
-			if (move.player.id == getTeamMate().id){
+			if (move.player.id == getTeamMate().id && move.qualifier == null){
 				qualifyMove(move);
 			}
 		}
@@ -600,9 +605,8 @@ package mx.ecosur.multigame.pente{
             	call.operation = "doMove";
 				
 				// do move in interface
-				_moves.source.push(move);
 				boardCell.reset();
-				//_tokenStore.removeChild(token);
+				_tokenStore.removeToken();
 				var newToken:Token = new Token();
 				newToken.cell = destination;
 				_board.addToken(newToken);
