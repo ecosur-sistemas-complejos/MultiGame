@@ -99,5 +99,12 @@ public interface SharedBoardRemote {
 	 * Gets all the moves made on this shared board 
 	 */
 	public List<Move> getMoves();
-	
+
+	/**
+	 * Merges a detached move with its persistent entity
+	 * 
+	 * @param move the detached move
+	 * @return the persisted move
+	 */
+	public Move updateMove(Move move);
 }

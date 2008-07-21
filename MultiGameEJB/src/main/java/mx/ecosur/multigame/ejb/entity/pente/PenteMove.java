@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
@@ -35,9 +37,15 @@ import mx.ecosur.multigame.pente.BeadString;
 })
 public class PenteMove extends Move {
 	
-	HashSet<Cell> captures;
+	private HashSet<Cell> captures;
 	
-	HashSet<BeadString> trias, tesseras;
+	private HashSet<BeadString> trias, tesseras;
+	
+	public enum CooperationQualifier {
+		COOPERATIVE, SELFISH, NEUTRAL
+	}
+
+	private CooperationQualifier qualifier;
 	
 	public PenteMove () {
 		super ();
@@ -157,6 +165,26 @@ public class PenteMove extends Move {
 		
 		return colors.toArray(ret);
 		
+	}
+	
+	/**
+	 * Gets the qualifier
+	 * 
+	 * @return the qualifier
+	 */
+	@Enumerated(EnumType.STRING)
+	public CooperationQualifier getQualifier() {
+		return qualifier;
+	}
+
+	/**
+	 * Sets the cooperation qualifier
+	 * 
+	 * @param qualifier
+	 *            the cooperation qualifier
+	 */
+	public void setQualifier(CooperationQualifier qualifier) {
+		this.qualifier = qualifier;
 	}
 
 	/*

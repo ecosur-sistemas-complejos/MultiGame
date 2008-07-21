@@ -262,6 +262,9 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			game = em.find(game.getClass(), game.getId());
 		em.refresh(game);
 
+		//persist in order to define id
+		em.persist(move);
+		
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(game);
 		statefulSession.insert(move);
@@ -271,7 +274,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
 
-		em.persist(move);
+		
 
 		/* TODO: This could be moved out to the rules */
 		incrementTurn(move.getPlayer());
@@ -340,6 +343,11 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());
 		query.setParameter("game", game);
 		return query.getResultList();
+	}
+	
+	public Move updateMove(Move move){
+		em.merge(move);
+		return move;
 	}
 
 }
