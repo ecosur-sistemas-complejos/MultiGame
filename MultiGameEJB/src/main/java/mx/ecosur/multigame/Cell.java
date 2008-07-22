@@ -23,7 +23,7 @@ public class Cell implements Serializable, Cloneable {
 	private CellComparator comparator;
 
 	public Cell() {
-
+		this.comparator = new CellComparator();
 	}
 
 	/*

@@ -122,7 +122,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendEndGame(Game game) {
-		sendMessage(game.getId(), GameEvent.END, null);
+		sendMessage(game.getId(), GameEvent.END, game);
 	}
 
 }
