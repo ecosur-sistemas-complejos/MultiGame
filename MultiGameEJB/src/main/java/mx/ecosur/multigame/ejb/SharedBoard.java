@@ -266,7 +266,7 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		
 		em.refresh(game);
 
-		//persist in order to define id
+		/* persist in order to define id */
 		em.persist(move);
 		
 		statefulSession = ruleset.newStatefulSession();
@@ -277,6 +277,10 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 
 		statefulSession.setFocus("move");
 		statefulSession.fireAllRules();
+		
+		statefulSession.setFocus("evaluate");
+		statefulSession.fireAllRules();
+		
 		statefulSession.dispose();
 
 		
@@ -343,7 +347,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		return game.getPlayers();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<Move> getMoves() {
 		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());
 		query.setParameter("game", game);
