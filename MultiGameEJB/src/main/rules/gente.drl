@@ -150,12 +150,12 @@ then
     messageSender.sendStartGame(game);
 end
 
-#Black must move first, and that move can only be at the center of the board
+#Yellow must move first, and that move can only be at the center of the board
 rule "evaluate-first-move"
     agenda-group "verify"
 when
     game  : PenteGame (state == GameState.PLAY, $grid : grid)
-    move  : PenteMove (status == Status.UNVERIFIED, player.turn == true, player.color == Color.BLACK)
+    move  : PenteMove (status == Status.UNVERIFIED, player.turn == true, player.color == Color.YELLOW)
     eval ($grid.getCells().isEmpty())
     eval (isCenter (game, move))    
 then
@@ -204,7 +204,6 @@ then
     for (BeadString  t : trias) {
         player.addTria(t);
     }
-    modify (game) { updatePlayer (player) }
 end
 
 rule "find-the-tesseras"
@@ -222,7 +221,6 @@ then
     for (BeadString  t : tesseras) {
         player.addTessera (t);
     }
-    modify (game) { updatePlayer (player) }
 end
 
 /*

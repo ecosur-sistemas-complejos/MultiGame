@@ -257,17 +257,22 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	public void move(Move move) throws InvalidMoveException, RemoteException {
 		if (move.getStatus() != Move.Status.VERIFIED)
 			throw new InvalidMoveException("Unverified or Invalid move!");
-		Game game = move.getPlayer().getGame();
+		GamePlayer player = move.getPlayer ();
+		if (!em.contains(player))
+			player = em.find(player.getClass(), player.getId());
+		Game game = player.getGame();
 		if (!em.contains(game))
 			game = em.find(game.getClass(), game.getId());
+		
 		em.refresh(game);
 
 		//persist in order to define id
 		em.persist(move);
 		
 		statefulSession = ruleset.newStatefulSession();
-		statefulSession.insert(game);
 		statefulSession.insert(move);
+		statefulSession.insert(player);
+		statefulSession.insert(game);
 		statefulSession.insert(messageSender);
 
 		statefulSession.setFocus("move");
