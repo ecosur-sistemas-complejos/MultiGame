@@ -153,7 +153,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		List<Color> colors = new ArrayList<Color>();
 
 		if (type == GameType.CHECKERS) {
-			colors.add(Color.BLACK);
+			colors.add(Color.YELLOW);
 			colors.add(Color.RED);
 		} else if (type == GameType.PENTE) {
 			for (Color c : Color.values()) {

@@ -126,7 +126,7 @@ when
 then
     List<GamePlayer> players = game.getPlayers();
     for (GamePlayer p : players) {
-        if (p.getColor() == Color.BLACK)
+        if (p.getColor() == Color.YELLOW)
             p.setTurn(true);
         else
             p.setTurn(false);
@@ -140,7 +140,7 @@ rule "evaluate-first-move"
     agenda-group "verify"
 when
     game  : Game (state == GameState.PLAY, $grid : grid)
-    move  : Move (status == Status.UNVERIFIED, player.turn == true, player.color == Color.BLACK)
+    move  : Move (status == Status.UNVERIFIED, player.turn == true, player.color == Color.YELLOW)
     eval ($grid.getCells().isEmpty())
     eval (isCenter (game, move))    
 then

@@ -138,7 +138,7 @@ when
 then
     List<GamePlayer> players = game.getPlayers();
     for (GamePlayer p : players) {
-        if (p.getColor() == Color.BLACK)
+        if (p.getColor() == Color.YELLOW)
             p.setTurn(true);
         else
             p.setTurn(false);
@@ -196,6 +196,7 @@ rule "find-the-trias"
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (!isTessera (move))
     eval (isTria (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
@@ -203,6 +204,7 @@ then
     for (BeadString  t : trias) {
         player.addTria(t);
     }
+    modify (game) { updatePlayer (player) }
 end
 
 rule "find-the-tesseras"
@@ -212,6 +214,7 @@ rule "find-the-tesseras"
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (!isTria (move))
     eval (isTessera (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
@@ -219,6 +222,7 @@ then
     for (BeadString  t : tesseras) {
         player.addTessera (t);
     }
+    modify (game) { updatePlayer (player) }
 end
 
 /*

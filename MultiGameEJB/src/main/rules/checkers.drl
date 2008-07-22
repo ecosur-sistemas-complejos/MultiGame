@@ -41,7 +41,7 @@ function GameGrid populateBoard (Game game) {
                 if (( row + column ) % 2 == 0) {
                     Checker checker;
                     if (row < 3) {
-                        checker = new Checker (row, column, Color.BLACK);
+                        checker = new Checker (row, column, Color.YELLOW);
                         grid.updateCell (checker);
                     }
                     else if (row > (height - 4)) {
@@ -105,7 +105,7 @@ function boolean isValidDirection (GameGrid grid, Move move) {
     
     if (!character.isKinged()) { 
         /* North is Black, South is RED */
-        if (color == Color.BLACK) 
+        if (color == Color.YELLOW) 
             ret = (destY == currentY + 1) && (destX == currentX - 1 || 
                 destX == currentX + 1);
         else
@@ -113,7 +113,7 @@ function boolean isValidDirection (GameGrid grid, Move move) {
                 destX == currentX + 1);
     } else {
             /* North is Black, South is RED */
-        if (color == Color.BLACK) 
+        if (color == Color.YELLOW) 
             ret = (destY == currentY + 1) && (destX == currentX + 1);
         else
             ret =  (destY == currentY - 1) && (destX == currentX);
@@ -256,7 +256,7 @@ when
 then
     List<GamePlayer> players = game.getPlayers();
     for (GamePlayer p : players) {
-        if (p.getColor() == Color.BLACK)
+        if (p.getColor() == Color.YELLOW)
             p.setTurn(true);
         else
             p.setTurn(false);

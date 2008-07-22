@@ -117,7 +117,9 @@ public class PenteMove extends Move {
 			trias = new HashSet<BeadString> ();
 			Map<Vertice, BeadString> stringMap = getString (3);
 			for (Vertice v: stringMap.keySet()) {
-				trias.add(stringMap.get(v));
+				BeadString string = stringMap.get(v);
+				if (uncountedString (string))
+					trias.add(string);
 			}
 		}
 		
@@ -139,16 +141,26 @@ public class PenteMove extends Move {
 		if (tesseras == null) {
 			tesseras = new HashSet<BeadString> ();
 			Map<Vertice, BeadString> stringMap = getString (4, true);
-			for (Vertice v: stringMap.keySet()) {
-				tesseras.add(stringMap.get(v));
+			for (Vertice v : stringMap.keySet()) {
+				BeadString string = stringMap.get(v); 
+				if (uncountedString (string))
+					tesseras.add(string);
 			}
 		}
 		
 		return tesseras;
-	}	
+	}
 	
 	public void setTesseras (HashSet<BeadString> tesseras) {
 		this.tesseras = tesseras;
+	}
+	
+	private boolean uncountedString(BeadString string) {
+		boolean ret = false;
+		PentePlayer player = (PentePlayer) getPlayer();
+		if (!player.containsString(string))
+			ret = true;
+		return ret;
 	}
 
 	private Color[] getCandidateColors() {

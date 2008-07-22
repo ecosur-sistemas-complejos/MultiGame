@@ -1,14 +1,14 @@
 package mx.ecosur.multigame;
 
 public enum Color {
-	BLACK, BLUE, RED, GREEN, UNKNOWN;
+	YELLOW, BLUE, RED, GREEN, UNKNOWN;
 	
 	public Color getCompliment () {
 		Color ret;
 		
 		switch (this) {
 		case RED:
-			ret = BLACK;
+			ret = YELLOW;
 			break;
 		case GREEN:
 			ret = BLUE;
@@ -16,7 +16,7 @@ public enum Color {
 		case BLUE:
 			ret = GREEN;
 			break;
-		case BLACK:
+		case YELLOW:
 			ret = RED;
 			break;
 		default:

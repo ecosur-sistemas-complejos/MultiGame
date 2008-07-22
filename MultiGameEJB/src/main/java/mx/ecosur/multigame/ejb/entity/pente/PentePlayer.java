@@ -81,4 +81,19 @@ public class PentePlayer extends GamePlayer {
 		if (tessera.size() == 4)
 			tesseras.add(tessera);
 	}
+	
+	public boolean containsString (BeadString comparison) {
+		for (BeadString string : trias) {
+			if (string.equals(comparison))
+				return true;
+		}
+		
+		for (BeadString string : tesseras) {
+			if (string.equals(comparison))
+				return true;
+		}
+		
+		return false;
+		
+	}
 }

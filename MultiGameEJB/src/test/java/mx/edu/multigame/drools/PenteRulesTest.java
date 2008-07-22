@@ -79,7 +79,7 @@ public class PenteRulesTest extends RulesTestBase {
 		c = new Player ("charlie");
 		d = new Player ("denise");
 		
-		alice = new PentePlayer (game, a, Color.BLACK);
+		alice = new PentePlayer (game, a, Color.YELLOW);
 		bob = new PentePlayer (game, b, Color.BLUE);
 		charlie = new PentePlayer (game, c, Color.GREEN);
 		denise = new PentePlayer (game, d, Color.RED);

@@ -41,4 +41,15 @@ public class BeadString implements Serializable {
 		return beads.contains(cell);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		if (obj instanceof BeadString){
+			BeadString comparison = (BeadString) obj;
+			ret = beads.equals(comparison.beads);
+		} else
+			ret = super.equals(obj);
+		return ret;
+	}
+
 }
