@@ -4,8 +4,7 @@ package mx.ecosur.multigame.pente {
 	import mx.containers.Accordion;
 	import mx.controls.Button;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.entity.GamePlayer;
-	import mx.ecosur.multigame.pente.PentePlayerInfo;
+	import mx.ecosur.multigame.pente.entity.PentePlayer;
 	
 	/**
 	 * Visual component representing the players that are in the current
@@ -33,11 +32,11 @@ package mx.ecosur.multigame.pente {
 			updatePlayers();
 		}
 		
-		public function setTurn(player:GamePlayer):void{
+		public function setTurn(player:PentePlayer):void{
 			var ppi:PentePlayerInfo;
 			for (var i:int = 0; i < getChildren().length; i++){
 				ppi = PentePlayerInfo(getChildAt(i))
-				if (ppi.gamePlayer.id == player.id){
+				if (ppi.pentePlayer.id == player.id){
 					selectPlayer(ppi);
 					return;
 				}
@@ -50,13 +49,13 @@ package mx.ecosur.multigame.pente {
 		 * 
 		 * @param player
 		 */
-		public function getPlayerButton(player:GamePlayer):Button{
+		public function getPlayerButton(player:PentePlayer):Button{
 			
 			var ppi:PentePlayerInfo;
 			var btn:Button;
 			for (var i:int = 0; i < getChildren().length; i++){
 				ppi = PentePlayerInfo(getChildAt(i))
-				if (ppi.gamePlayer.id == player.id){
+				if (ppi.pentePlayer.id == player.id){
 					btn = getHeaderAt(i);
 					return btn;
 				}
@@ -71,30 +70,31 @@ package mx.ecosur.multigame.pente {
 			
 			var ppi:PentePlayerInfo;
 			var btn:Button;
-			var gamePlayer:GamePlayer;
+			var pentePlayer:PentePlayer;
 			var i:int;
 			
 			for (i = 0; i < _players.length; i++){
 				
 				// Create the player information
-				gamePlayer = GamePlayer(_players[i]);
+				pentePlayer = PentePlayer(_players[i]);
 				if (getChildren().length > i) {
 					ppi = PentePlayerInfo(getChildAt(i));
 				}else{
 					ppi = new PentePlayerInfo();
 					addChild(ppi);
 				}
-				ppi.gamePlayer = gamePlayer;
+				ppi.pentePlayer = pentePlayer;
 				
 				// Create button header
+				var label:String = pentePlayer.player.name + " (" + Color.getTeamName(pentePlayer.color) + ") (" + String(pentePlayer.points) + ")"; 
 				btn = getHeaderAt(i);
-				btn.label = gamePlayer.player.name;
-				btn.setStyle("icon", Color.getCellIcon(gamePlayer.color));
+				btn.label = label;
+				btn.setStyle("icon", Color.getCellIcon(pentePlayer.color));
 				btn.setStyle("paddingBottom", 5);
 				btn.setStyle("paddingTop", 5);
 				
 				// If player has turn highlight and select its info
-				if (gamePlayer.turn){
+				if (pentePlayer.turn){
 					selectPlayer(ppi);
 				}
 			}

@@ -6,28 +6,27 @@ package mx.ecosur.multigame.pente{
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.controls.Button;
+	import mx.core.Application;
 	import mx.core.DragSource;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
+	import mx.ecosur.multigame.component.BoardCell;
+	import mx.ecosur.multigame.component.ChatPanel;
+	import mx.ecosur.multigame.component.GameStatus;
+	import mx.ecosur.multigame.component.Token;
+	import mx.ecosur.multigame.component.TokenStore;
+	import mx.ecosur.multigame.entity.Cell;
+	import mx.ecosur.multigame.entity.ChatMessage;
+	import mx.ecosur.multigame.entity.GameGrid;
+	import mx.ecosur.multigame.entity.GamePlayer;
+	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.enum.CooperatiionQualifier;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
-	import mx.ecosur.multigame.component.ChatPanel;
-	import mx.ecosur.multigame.component.TokenStore;
-	import mx.ecosur.multigame.component.GameStatus;
-	import mx.ecosur.multigame.component.BoardCell;
-	import mx.ecosur.multigame.pente.PenteBoard;
-	import mx.ecosur.multigame.pente.PenteMoveViewer;
-	import mx.ecosur.multigame.pente.PentePlayersViewer;
-	import mx.ecosur.multigame.pente.entity.PenteMove;
-	import mx.ecosur.multigame.entity.Move;
-	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.component.Token;
-	import mx.ecosur.multigame.entity.GamePlayer;
-	import mx.ecosur.multigame.entity.GameGrid;
 	import mx.ecosur.multigame.pente.entity.PenteGame;
-	import mx.ecosur.multigame.entity.ChatMessage;
+	import mx.ecosur.multigame.pente.entity.PenteMove;
+	import mx.ecosur.multigame.pente.entity.PentePlayer;
 	import mx.effects.AnimateProperty;
 	import mx.events.CloseEvent;
 	import mx.events.DragEvent;
@@ -134,6 +133,7 @@ package mx.ecosur.multigame.pente{
 			
 			//initialize the move viewer
 			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
+			_moveViewer.board = _board;
 			
 			//get the game grid, players and moves
 			var callGrid:Object = _gameService.getGameGrid();
@@ -310,7 +310,8 @@ package mx.ecosur.multigame.pente{
 				lastMove = PenteMove(_moves[length - 1]);
 			}
 			
-			//if move is after the last move
+			//if move is after the last move then add moves
+			//else update the move since its info may have changed
 			if (lastMove == null || move.id > lastMove.id){
 				
 				//add to moves
@@ -322,17 +323,30 @@ package mx.ecosur.multigame.pente{
 					_selectedMoveInd ++;
 					doMove(move);
 				}
+			}else{
+				
+				// Search for move in reverse order because its most likely to be the last move
+				var oldMove:PenteMove;
+				for (var i:Number = _moves.length - 1; i >= 0; i--){
+					oldMove = PenteMove(_moves[i]);
+					if (oldMove.id == move.id){
+						_moves[i] = move;
+						_moveViewer.updateMove(move);
+						break;
+					}
+				}
 			}
 		}
 		
 		/*
 		 * Animates a move
 		 */
-		private function doMove(move:Move):void{
+		private function doMove(move:PenteMove):void{
 			
 			//check that destination is free
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
 			if (boardCell.token != null){
+				_moveViewer.selectedMove = move;
 				return;
 			}
 			
@@ -345,7 +359,7 @@ package mx.ecosur.multigame.pente{
 				startPoint = _animateLayer.globalToLocal(startPoint);
 				startSize = _board.tokenSize;
 			}else{
-				var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+				var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
 				startPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 				startPoint = _playersViewer.localToGlobal(startPoint);
 				startPoint = _animateLayer.globalToLocal(startPoint);
@@ -409,6 +423,7 @@ package mx.ecosur.multigame.pente{
 			}
 			
 			boardCell.token = token;
+			//token.blink(1);
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
@@ -417,7 +432,7 @@ package mx.ecosur.multigame.pente{
 			}
 		}
 		
-		private function undoMove(move:Move):void{
+		private function undoMove(move:PenteMove):void{
 			
 			//define origin
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
@@ -435,7 +450,7 @@ package mx.ecosur.multigame.pente{
 				endPoint = _animateLayer.globalToLocal(endPoint);
 				endSize = _board.tokenSize;
 			}else{
-				var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+				var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
 				endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 				endPoint = _playersViewer.localToGlobal(endPoint);
 				endPoint = _animateLayer.globalToLocal(endPoint);
@@ -511,14 +526,24 @@ package mx.ecosur.multigame.pente{
 				}
 				var call:Object = _gameService.updateMove(move);
 				call.operation = GAME_SERVICE_UPDATE_MOVE_OP;
+				_board.getBoardCell(move.destination.column, move.destination.row).reset();
 			}
-			var txt:String = "Your team mate had moved.\n\nPlease qualify this move according to its level of cooperation?"
+			
+			//select board cell
+			_board.getBoardCell(move.destination.column, move.destination.row).select(Color.getColorCode(move.player.color));
+			
+			//show qualify dialog
+			var txt:String = "Your team mate had made a move.\n\nPlease qualify this move according to its level of cooperation?\n\nNote that this window may be dragged to a different location if it is obscuring the game."
 			var title:String = "QUALIFY MOVE";
 			Alert.yesLabel = "COOPERATIVE";
             Alert.noLabel = "SELFISH";
-            Alert.cancelLabel = "NEITHER";
+            Alert.cancelLabel = "NEUTRAL";
             Alert.buttonWidth = 120;
-			Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, null, fnc);
+			var alert:Alert = Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _chatPanel, fnc, null, Alert.CANCEL);
+			alert.validateDisplayList(); //necessary otherwise alert will not move (i think that this is a bug in the Alert control)
+			var x:Number = (Application.application.width - alert.width) / 2;
+			var y:Number = Application.application.height - alert.height - 10;  			
+			alert.move(x, y);
 		}
 		
 		private function getGrid():void{
@@ -542,6 +567,8 @@ package mx.ecosur.multigame.pente{
 			}else{
 				_isBoardEmtpy = true;
 			}
+			_board.getBoardCell(8, 8).token.blink(10);
+			_board.getBoardCell(8, 9).token.blink();
 		} 
 		
 		private function initTurn():void{
@@ -668,14 +695,14 @@ package mx.ecosur.multigame.pente{
 			//get team mates color
 			var color:String;
 			switch (_currentPlayer.color){
-				case Color.BLACK:
+				case Color.YELLOW:
 					color = Color.RED;
 					break;
 				case Color.BLUE:
 					color = Color.GREEN;
 					break;
 				case Color.RED:
-					color = Color.BLACK;
+					color = Color.YELLOW;
 					break;
 				case Color.GREEN:
 					color = Color.BLUE;

@@ -9,6 +9,9 @@ package mx.ecosur.multigame.component {
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.enum.Color;
+	import mx.effects.Fade;
+	import mx.effects.Sequence;
+	import mx.events.EffectEvent;
 	
 	/**
 	 * Visual class representing a token on the board. Contains an internal 
@@ -21,7 +24,7 @@ package mx.ecosur.multigame.component {
 		private var _selected:Boolean;
 		private var _deselectedFilters:Array;
 		private var _selectedFilters:Array;
-		
+
 		//flags
 		private var _bgDirty:Boolean;
 		
@@ -36,8 +39,6 @@ package mx.ecosur.multigame.component {
 			super();
 			_selected = false;
 			_bgDirty = false;
-			
-			
 		}
 		
 		/* Getters and setters */
@@ -85,6 +86,36 @@ package mx.ecosur.multigame.component {
 				_selected = selected;
 				invalidateDisplayList();
 			}
+		}
+		
+		/**
+		 * Blinks the token to catch the users attention
+		 *  
+		 * @param repeat the number of blinks to execute. If this parameter is less 
+		 * than 1 or not specified the blink is continuous until stopBlink is called.
+		 * 
+		 */
+		public function blink(repeat:int = 0):void{
+			
+			var seq:Sequence = new Sequence();
+			var fadeOut:Fade = new Fade(this);
+			fadeOut.alphaFrom = 1;
+			fadeOut.alphaTo = 0.1;
+			fadeOut.duration = 1000;
+			var fadeIn:Fade = new Fade(this);
+			fadeIn.alphaFrom = 0.1
+			fadeIn.alphaTo = 1;
+			fadeIn.duration = 1000;
+			seq.addChild(fadeOut);
+			seq.addChild(fadeIn);
+			seq.repeatCount = repeat;
+			seq.repeatDelay = 200;
+			seq.play();
+			
+		}
+		
+		public function stopBlink():void{
+			
 		}
 		
 		/**
@@ -145,8 +176,8 @@ package mx.ecosur.multigame.component {
 			}
         }
         
-		override public function toString():String{
+		/*override public function toString():String{
 			return "cell = {" + cell + "}"; 
-		}
+		}*/
 	}
 }

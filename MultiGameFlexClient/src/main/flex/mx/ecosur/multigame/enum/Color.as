@@ -6,6 +6,7 @@ package mx.ecosur.multigame.enum {
 	public class Color {
 		
 		public static const BLACK:String = "BLACK";
+		public static const YELLOW:String = "YELLOW";
 		public static const RED:String = "RED";
 		public static const GREEN:String = "GREEN";
 		public static const BLUE:String = "BLUE";
@@ -16,6 +17,8 @@ package mx.ecosur.multigame.enum {
   		private static var iconRED:Class;
   		[Embed(source='/assets/icons.swf#cellIconBLACK')]
   		private static var iconBLACK:Class;
+  		[Embed(source='/assets/icons.swf#cellIconYELLOW')]
+  		private static var iconYELLOW:Class;
   		[Embed(source='/assets/icons.swf#cellIconBLUE')]
   		private static var iconBLUE:Class;
   		[Embed(source='/assets/icons.swf#cellIconGREEN')]
@@ -25,6 +28,9 @@ package mx.ecosur.multigame.enum {
 			switch (color){
 				case Color.BLACK:
 					return 0x000000;
+				break;
+				case Color.YELLOW:
+					return 0xffcc00;
 				break;
 				case Color.GREEN:
 					return 0x00bb00;
@@ -44,6 +50,9 @@ package mx.ecosur.multigame.enum {
 				case Color.BLACK:
 					return "Black";
 				break;
+				case Color.YELLOW:
+					return "Yellow";
+				break;
 				case Color.GREEN:
 					return "Green";
 				break;
@@ -62,6 +71,9 @@ package mx.ecosur.multigame.enum {
 				case Color.BLACK:
 					return iconBLACK;
 				break;
+				case Color.YELLOW:
+					return iconYELLOW;
+				break;
 				case Color.GREEN:
 					return iconGREEN;
 				break;
@@ -78,6 +90,15 @@ package mx.ecosur.multigame.enum {
 		public static function getCellIconSize():Number{
 			//TODO: Look for a better way to read the height of the assets dynamically
 			return 20;
+		}
+		
+		public static function getTeamName(color:String):String{
+			if (color == Color.YELLOW || color == Color.RED){
+				return "HOT";
+			}else if (color == Color.BLUE || color == Color.GREEN){
+				return "COLD";
+			}
+			return "";
 		}
 		
 		public static function findIntermediateColor(color1:uint, color2:uint, ratio:Number):uint{

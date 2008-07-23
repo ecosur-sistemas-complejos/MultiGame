@@ -6,16 +6,13 @@ package mx.ecosur.multigame.pente{
 	import mx.controls.Alert;
 	import mx.controls.Button;
 	import mx.core.UIComponent;
-	import mx.ecosur.multigame.pente.PenteMoveViewer;
-	import mx.ecosur.multigame.entity.Move;
-	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.enum.GameEvent;
-	import mx.ecosur.multigame.enum.ExceptionType;
-	import mx.ecosur.multigame.pente.entity.PenteMove;
-	import mx.ecosur.multigame.pente.entity.PenteGame;
-	import mx.ecosur.multigame.pente.entity.PentePlayer;
 	import mx.ecosur.multigame.component.BoardCell;
 	import mx.ecosur.multigame.component.Token;
+	import mx.ecosur.multigame.entity.Move;
+	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.pente.entity.PenteGame;
+	import mx.ecosur.multigame.pente.entity.PenteMove;
+	import mx.ecosur.multigame.pente.entity.PentePlayer;
 	import mx.effects.AnimateProperty;
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
@@ -73,6 +70,7 @@ package mx.ecosur.multigame.pente{
 			
 			//initialize the move viewer
 			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMoveHandler);
+			_moveViewer.board = _board;
 			
 			//get the game
 			var call:Object = _gameService.getGame("PENTE");
@@ -164,7 +162,7 @@ package mx.ecosur.multigame.pente{
 			//define origin
 			var startPoint:Point;
 			var startSize:Number;
-			var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+			var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
 			startPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 			startPoint = _playersViewer.localToGlobal(startPoint);
 			startPoint = _animateLayer.globalToLocal(startPoint);
@@ -224,7 +222,7 @@ package mx.ecosur.multigame.pente{
 			_animateLayer.removeChild(token);
 			boardCell.token = token;
 			_moveViewer.selectedMove = move;
-			_playersViewer.setTurn(move.player);
+			_playersViewer.setTurn(PentePlayer(move.player));
 		}
 		
 		private function undoMove(move:Move):void{
@@ -239,7 +237,7 @@ package mx.ecosur.multigame.pente{
 			//define destination
 			var endPoint:Point;
 			var endSize:Number;
-			var playerBtn:Button = _playersViewer.getPlayerButton(move.player);
+			var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
 			endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 			endPoint = _playersViewer.localToGlobal(endPoint);
 			endPoint = _animateLayer.globalToLocal(endPoint);
@@ -291,7 +289,7 @@ package mx.ecosur.multigame.pente{
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd]);
 			_animateLayer.removeChild(token);
 			_moveViewer.selectedMove = move;
-			_playersViewer.setTurn(move.player);
+			_playersViewer.setTurn(PentePlayer(move.player));
 		}
 	}
 }

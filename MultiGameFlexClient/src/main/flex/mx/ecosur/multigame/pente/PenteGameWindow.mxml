@@ -21,8 +21,6 @@
             private var _controller:PenteGameController;
             private var _currentPlayer:GamePlayer;
             
-            //TODO: When resize smaller _moveViewer does not decrease in size.
-            
             //TODO: Find efficient way to pass rows and columns to penteBoard as initial parameters
             [Bindable]
             public var rows:int;

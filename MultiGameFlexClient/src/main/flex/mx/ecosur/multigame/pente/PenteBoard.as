@@ -1,6 +1,7 @@
 package mx.ecosur.multigame.pente {
 	
 	import flash.events.Event;
+	import flash.text.TextField;
 	
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.component.BoardCell;
@@ -18,6 +19,7 @@ package mx.ecosur.multigame.pente {
 		private var _nCols:int; //number of cells on X axis
 		private var _nRows:int; //number of cells of Y axis
 		private var _boardCells:Array; //two dimensional array of BoardCell
+		private var _columnLabels:Array; //array of text field column labels
 		
 		[Bindable]
 		public var tokenSize:Number; //size of tokens
@@ -28,6 +30,7 @@ package mx.ecosur.multigame.pente {
 		private static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
 		private static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
 		private static const DEFAULT_CELL_PADDING:Number = 2.5;
+		private static const LABEL_SIZE:Number = 0;
 		
 		// Flags
 		private var _cellsCreated:Boolean;
@@ -101,6 +104,7 @@ package mx.ecosur.multigame.pente {
 			}
 		}
 		
+		/* Public functions */
 		
 		/**
 		 * Adds a Token to the board. The token should contain a Cell
@@ -130,6 +134,21 @@ package mx.ecosur.multigame.pente {
 			}
 		}
 		
+		/**
+		 * Returns a string representation of a location on the board
+		 *  
+		 * @param column the column number (first column is 0)
+		 * @param row the row numer (first row is 0)
+		 * @return a description of the location on the board
+		 * 
+		 */
+		public function getCellDescription(column:Number, row:Number):String{
+			return "row " + (nRows - row) + ", column " + (column + 1);
+		}
+		
+		
+		/* Component overrides */
+		
 		override protected function createChildren():void {
 			
 			// Create all cells
@@ -144,31 +163,30 @@ package mx.ecosur.multigame.pente {
 					boardCell.setStyle("padding", cellPadding);
 				}
 			}
-			_cellsCreated = true;
-		}
-		
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
 			
-			// Check that _boardCells have been created
-			if (!_cellsCreated){
-				return;
-			}
-				
-			// Loop through cells positioning and scaling them
-			// This assumes that the cells are square
-			var boardCell:BoardCell;
-			var boardCellSize:Number = measuredWidth / _nCols;
-			var baseX:Number = (unscaledWidth - measuredWidth) / 2;
-			tokenSize = boardCellSize - 2 * cellPadding;
-			for (var i:Number = 0; i < _nCols; i++){
-				for (var j:Number = 0; j < _nRows; j++){
-					boardCell = getBoardCell(i, j);
-					boardCell.width = boardCellSize;
-					boardCell.height = boardCellSize;
-					boardCell.x = baseX + boardCellSize * i;
-					boardCell.y = boardCellSize * j;
-				}
-			}
+			// Create text format for labels
+			/*
+			var txtFormat:TextFormat = new TextFormat();
+			txtFormat.font = "Verdana";
+			txtFormat.size = 10;
+			txtFormat.bold = true;
+			txtFormat.color = 0xFFFFFF;
+			*/
+			
+			// Create column labels
+			/*
+			var textField:TextField;
+			var colLabelLetters:Array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+			for (var i:Number = 0; i < nCols; i++){
+				textField = new TextField();
+				textField.text = colLabelLetters[i];
+				textField.defaultTextFormat = txtFormat;
+				_columnLabels[i] = textField;
+				addChild(textField);
+			}*/
+			
+			
+			_cellsCreated = true;
 		}
 		
 		override protected function measure():void{
@@ -189,6 +207,30 @@ package mx.ecosur.multigame.pente {
 				// Board limited by width
 				measuredHeight = _nRows * unscaledWidth / _nCols;
 				measuredWidth = unscaledWidth;
+			}
+		}
+		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
+			
+			// Check that _boardCells have been created
+			if (!_cellsCreated){
+				return;
+			}
+				
+			// Loop through cells positioning and scaling them
+			// This assumes that the cells are square
+			var boardCell:BoardCell;
+			var boardCellSize:Number = (measuredWidth - LABEL_SIZE) / _nCols;
+			var baseX:Number = (unscaledWidth - measuredWidth + LABEL_SIZE) / 2;
+			tokenSize = boardCellSize - 2 * cellPadding;
+			for (var i:Number = 0; i < _nCols; i++){
+				for (var j:Number = 0; j < _nRows; j++){
+					boardCell = getBoardCell(i, j);
+					boardCell.width = boardCellSize;
+					boardCell.height = boardCellSize;
+					boardCell.x = baseX + LABEL_SIZE + boardCellSize * i;
+					boardCell.y = boardCellSize * j;
+				}
 			}
 		}
 		

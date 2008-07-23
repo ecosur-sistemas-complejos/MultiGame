@@ -8,11 +8,10 @@ package mx.ecosur.multigame.pente {
 	import mx.containers.Panel;
 	import mx.controls.Button;
 	import mx.controls.Spacer;
-	import mx.ecosur.multigame.enum.Color;
-	import mx.events.DynamicEvent;
-	
-	import mx.ecosur.multigame.pente.entity.*;
 	import mx.ecosur.multigame.entity.*;
+	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.pente.entity.*;
+	import mx.events.DynamicEvent;
 	
 	/**
 	 * Visual component showing all the moves made in the game
@@ -23,6 +22,7 @@ package mx.ecosur.multigame.pente {
 		private var _moves:Accordion; 
 		private var _controlBar:ControlBar;
 		private var _selectedMove:PenteMoveInfo;
+		private var _board:PenteBoard;
 		
 		// Define navigation events that this component dispatches
 		public static const MOVE_EVENT_GOTO_MOVE:String = "gotoMove";
@@ -33,6 +33,10 @@ package mx.ecosur.multigame.pente {
 		 */
 		public function PenteMoveViewer(){
 			super();
+		}
+		
+		public function set board(board:PenteBoard):void{
+			_board = board;
 		}
 		
 		public function set selectedMove(move:PenteMove):void{
@@ -96,16 +100,31 @@ package mx.ecosur.multigame.pente {
 			
 			//create button header
 			var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(pmi));
-			btn.label = " to " + getCellDescription(move.destination);
+			btn.label = " to " + _board.getCellDescription(move.destination.column, move.destination.row);
 			btn.setStyle("icon", Color.getCellIcon(move.player.color));
 			btn.setStyle("paddingBottom", 5);
 			btn.setStyle("paddingTop", 5);
 		}
 		
-		private function getCellDescription(cell:Cell):String{
-			//TODO: using the board size in this way is very ugly!
-			return "row " + (19 - cell.row) + ", column " + (cell.column + 1);
+		/**
+		 * Searches for a move in the accordion with the same id as
+		 * that passed in and updates it.
+		 *  
+		 * @param move the move to update
+		 * 
+		 */
+		public function updateMove(move:PenteMove):void{
+			
+			var pmi:PenteMoveInfo;
+			for (var i:int = 0; i < _moves.numChildren; i++){
+				pmi = PenteMoveInfo(_moves.getChildAt(i));
+				if(pmi.penteMove.id == move.id){
+					pmi.penteMove = move;
+					break;
+				}
+			}
 		}
+
 		
 		private function goDirect(event:DynamicEvent):void{
 			var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);

@@ -17,7 +17,7 @@ package mx.ecosur.multigame.pente.entity {
 			super();
 		}
 		
-		public function get pints():int{
+		public function get points():int{
 			return _points;
 		}
 		
