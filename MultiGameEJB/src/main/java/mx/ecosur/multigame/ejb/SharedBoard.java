@@ -265,13 +265,16 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			game = em.find(game.getClass(), game.getId());
 		
 		em.refresh(game);
+		
+		/* Refresh the move with the managed game and player */
+		player.setGame(game);
+		move.setPlayer(player);
 
 		/* persist in order to define id */
 		em.persist(move);
 		
 		statefulSession = ruleset.newStatefulSession();
 		statefulSession.insert(move);
-		statefulSession.insert(player);
 		statefulSession.insert(game);
 		statefulSession.insert(messageSender);
 
