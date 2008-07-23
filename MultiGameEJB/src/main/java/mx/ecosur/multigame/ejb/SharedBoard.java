@@ -344,6 +344,11 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	}
 
 	public List<GamePlayer> getPlayers() {
+		if(!em.contains(game)){
+			em.find(game.getClass(), game.getId());
+		}else{
+			em.refresh(game);
+		}
 		return game.getPlayers();
 	}
 	
