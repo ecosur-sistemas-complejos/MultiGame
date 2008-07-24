@@ -84,12 +84,12 @@ public class PentePlayer extends GamePlayer {
 	
 	public boolean containsString (BeadString comparison) {
 		for (BeadString string : getTrias()) {
-			if (string.equals(comparison))
+			if (string.contains(comparison))
 				return true;
 		}
 		
 		for (BeadString string : getTesseras()) {
-			if (string.equals(comparison))
+			if (string.contains(comparison))
 				return true;
 		}
 		

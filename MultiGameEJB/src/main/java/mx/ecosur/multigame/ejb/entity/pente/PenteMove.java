@@ -37,13 +37,13 @@ import mx.ecosur.multigame.pente.BeadString;
 })
 public class PenteMove extends Move {
 	
-	private HashSet<Cell> captures;
-	
-	private HashSet<BeadString> trias, tesseras;
-	
 	public enum CooperationQualifier {
 		COOPERATIVE, SELFISH, NEUTRAL
 	}
+
+	private HashSet<Cell> captures;
+	
+	private HashSet<BeadString> trias, tesseras;
 
 	private CooperationQualifier qualifier;
 	
@@ -212,23 +212,24 @@ public class PenteMove extends Move {
 		Set<AnnotatedCell> ret = new HashSet<AnnotatedCell> ();
 		
 		/* If the annotated cell has no direction, search in all
-		 * directions to the requested depth (expensive!), otherwise
-		 * search the grid in the named direction.
+		 * adjacent directions to the requested depth, otherwise 
+		 * search the grid in the named direction to the requested
+		 * depth.
 		 */
-		
 		if (startingCell.getDirection() == Direction.UNKNOWN) {
-			for (Direction direction : Direction.values()) {
-				if (direction != Direction.UNKNOWN) {
-					AnnotatedCell start = new AnnotatedCell (startingCell.getCell(), 
-							direction);
-					ret.addAll(findCandidates (start, targetColors, depth));
-				}
+			Set<AnnotatedCell> adjacent = findAdjacentCells(targetColors);
+			/* Add the adjacent cells to the candidate list */
+			ret.addAll(adjacent);
+			
+			for (AnnotatedCell direction : adjacent) {
+				ret.addAll(findCandidates (direction, targetColors, depth));
 			}
 		} else {
-			for (int i = 1; i < depth; i++) {
+			for (int i = 0; i < depth; i++) {
 				for (Color targetColor : targetColors) {
+						/* Search the grid to the depth of current, + 1 */
 					Cell result = this.searchGrid(startingCell.getDirection(), 
-							startingCell.getCell(), targetColor, i);
+							startingCell.getCell(), targetColor, i + 1);
 					if (result != null && result.getColor() == targetColor) {
 						ret.add(new AnnotatedCell (result, 
 								startingCell.getDirection()));
@@ -241,7 +242,26 @@ public class PenteMove extends Move {
 		return ret;
 	}
 	
-	/**
+	/*
+	 * Check each cell next to the destination, if
+	 * a cell is found in that direction, add that 
+     * cell to the list.
+	 */
+	private Set<AnnotatedCell> findAdjacentCells(Color[] targetColors) {
+		Set<AnnotatedCell> adjacent = new HashSet<AnnotatedCell> ();
+		for (Color color : targetColors) {
+			for (Direction d : Direction.values()) {
+				Cell result = this.searchGrid (d,
+					getDestination(), color, 1);
+				if (result != null)
+					adjacent.add(new AnnotatedCell(result, d));
+			}
+		}
+		
+		return adjacent;
+	}
+
+	/*
 	 * Returns a Cell to be searched for within a grid, with a factor of 
 	 * change defined by "factor".  North is considered the "top" of the 
 	 * board, meaning the lowest row.  All other cardinal points are derived 
@@ -251,8 +271,6 @@ public class PenteMove extends Move {
 	 * @param factor
 	 * @return
 	 */
-	
-	
 	private Cell searchGrid(Direction direction, Cell cell, Color color, int factor) {
 		int row = 0, column = 0;
 		switch (direction) {
@@ -302,13 +320,11 @@ public class PenteMove extends Move {
 	}
 	
 	private Map<Vertice, BeadString> getString(int stringlength, boolean compliment) {
-		
-		/*TODO:  Change this to a VERTICE map */
 		HashMap<Vertice, BeadString> ret = new HashMap<Vertice, BeadString> ();
 		
 		AnnotatedCell start = new AnnotatedCell (getDestination());
-			/* We are only interested in cells of this color */
-		
+			
+		/* We are only interested in cells of this color */
 		Color[] colors;
 		if (compliment) {
 			colors = new Color [ 2 ];
@@ -318,6 +334,7 @@ public class PenteMove extends Move {
 			colors = new Color [ 1 ];
 			colors [ 0 ] = this.getDestination().getColor();			
 		}
+		
 		/* Perform a search to the depth of stringlength + 1, to pickup 
 		 * any non-valid configurations */
 		Set<AnnotatedCell> candidates = findCandidates(start, colors, stringlength + 1);
