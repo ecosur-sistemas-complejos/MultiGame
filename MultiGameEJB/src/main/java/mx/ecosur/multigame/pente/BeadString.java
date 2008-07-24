@@ -30,6 +30,10 @@ public class BeadString implements Serializable {
 		return beads;
 	}
 	
+	public void setBeads(Set<Cell> beads){
+		this.beads = (TreeSet<Cell>)beads;
+	}
+	
 	public void add (Cell cell) {
 		beads.add(cell);
 	}
