@@ -78,8 +78,8 @@ public class GameGrid implements Serializable {
 		buf.append ("Grid: [");
 		while (iter.hasNext()) {
 			Cell cell = iter.next();
-			buf.append("row: " + cell.getRow() + ", column: " + cell.getColumn() +
-					", color: " + cell.getColor());
+			buf.append("column: " + cell.getColumn() + ", row: " + 
+					cell.getRow() + ", color: " + cell.getColor());
 			if (iter.hasNext()) {
 				buf.append ("; ");
 			}

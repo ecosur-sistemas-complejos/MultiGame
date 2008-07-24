@@ -286,8 +286,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		
 		statefulSession.dispose();
 
-		
-
 		/* TODO: This could be moved out to the rules */
 		incrementTurn(move.getPlayer());
 	}

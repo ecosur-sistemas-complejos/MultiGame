@@ -5,6 +5,7 @@ package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -76,7 +77,7 @@ public class GamePlayer implements Serializable {
 		this.player = player;
 	}
 
-	@ManyToOne
+	@ManyToOne (cascade={CascadeType.ALL})
 	@JoinColumn(name="GAME_ID")
 	public Game getGame() {
 		return game;

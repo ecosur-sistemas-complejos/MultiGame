@@ -269,8 +269,8 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		game.setState(GameState.PLAY);
 		
-		Cell tessera = new Cell (4,5, alice.getColor());
-		PenteMove move = new PenteMove (alice, tessera);
+		Cell tria = new Cell (4,5, alice.getColor());
+		PenteMove move = new PenteMove (alice, tria);
 		
 		statefulSession.insert(game);
 		statefulSession.insert(move);
@@ -280,7 +280,7 @@ public class PenteRulesTest extends RulesTestBase {
 		statefulSession.fireAllRules();
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
-		assertEquals (tessera, game.getGrid().getLocation(tessera));
+		assertEquals (tria, game.getGrid().getLocation(tria));
 		
 		HashSet<BeadString> set = move.getTrias();
 		/* There should be 2 sets of three */
@@ -352,7 +352,7 @@ public class PenteRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testDiagnolTesseras () {
+	public void testDiagnolTessera () {
 		alice.setTurn(true);
 		Cell invalid = new Cell (8,8, alice.getColor());
 		Cell first = new Cell (9,9,alice.getColor());
@@ -384,7 +384,7 @@ public class PenteRulesTest extends RulesTestBase {
 	}
 
 	@Test
-	public void testDiagnolTrias () {
+	public void testDiagnolTria () {
 		alice.setTurn(true);
 
 		Cell first = new Cell (9,9,alice.getColor());
@@ -440,6 +440,74 @@ public class PenteRulesTest extends RulesTestBase {
 		HashSet<BeadString> trias = move.getTrias();
 		assertEquals (0, trias.size());		
 	}
+	
+	@Test
+	public void testMixedTessera () {
+		alice.setTurn(true);
+		Cell invalid = new Cell (8,8, alice.getColor());
+		Cell first = new Cell (8,9,alice.getColor().getCompliment());
+		Cell second = new Cell (8,11,alice.getColor());
+		
+		game.getGrid().updateCell(invalid);
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		
+		game.setState(GameState.PLAY);
+		
+		Cell tessera = new Cell (8,10, alice.getColor());
+		PenteMove move = new PenteMove (alice, tessera);
+		
+		statefulSession.insert(game);
+		statefulSession.insert(move);
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus ("move");
+		statefulSession.fireAllRules();
+		
+		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (tessera, game.getGrid().getLocation(tessera));
+		
+		HashSet<BeadString> trias = move.getTrias();
+		HashSet<BeadString> tesseras = move.getTesseras();
+		assertEquals (1, tesseras.size());
+		assertEquals (0, trias.size());		
+	}
+	
+	@Test
+	public void testJoinedTrias () {
+		alice.setTurn(true);
+
+		Cell first = new Cell (8,10,alice.getColor());
+		Cell second = new Cell (9,10,alice.getColor());
+		
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		
+		Cell third = new Cell (10,8,alice.getColor());
+		Cell fourth = new Cell (10,9,alice.getColor());
+		
+		game.getGrid().updateCell(third);
+		game.getGrid().updateCell(fourth);
+		
+		game.setState(GameState.PLAY);
+		
+		Cell tria = new Cell (10,10, alice.getColor());
+		PenteMove move = new PenteMove (alice, tria);
+		
+		statefulSession.insert(game);
+		statefulSession.insert(move);
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus ("move");
+		statefulSession.fireAllRules();
+		
+		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (tria, game.getGrid().getLocation(tria));
+		
+		HashSet<BeadString> trias = move.getTrias();
+		assertEquals (2, trias.size());
+	}
+	
 	
 	private class DebugEventListener implements WorkingMemoryEventListener {	
 		private Logger logger;

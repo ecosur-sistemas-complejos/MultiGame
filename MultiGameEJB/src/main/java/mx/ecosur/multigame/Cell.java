@@ -92,8 +92,11 @@ public class Cell implements Serializable, Cloneable {
 		
 		if (obj instanceof Cell) {
 			Cell comparison = (Cell) obj;
+			/* Use the compartor to check for equal placement and each Cell's
+			 * color to complete the test for equality.
+			 */
 			if (comparator.compare(this, comparison) == 0)
-				ret = true;
+				ret = (this.color.equals(comparison.color));
 		} else 
 			ret = super.equals(obj);
 		

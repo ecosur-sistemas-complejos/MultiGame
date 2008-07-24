@@ -57,6 +57,52 @@ public class BeadString implements Serializable {
 		
 		return ret;
 	}
+	
+	/**
+	 * Verifies that a given beadstring is contiguous.
+	 * @return
+	 */
+	
+	public boolean contiguous (Vertice v) {
+		boolean ret = true;
+		
+		int[] slope = new int [ 2 ];
+		
+		switch (v) {
+			case HORIZONTAL:
+				slope [ 0 ] = 1;
+				slope [ 1 ] = 0;
+				break;
+			case VERTICAL:
+				slope [ 0 ] = 0;
+				slope [ 1 ] = 1;
+				break;
+			case FORWARD:
+				slope [ 0 ] = -1;
+				slope [ 1 ] = 1;
+				break;
+			case REVERSE:
+				slope [ 0 ] = 1;
+				slope [ 1 ] = 1;
+				break;
+			}
+		
+		Cell lastCell = beads.first();
+		for (Cell cell : beads.tailSet(beads.first())) {
+			/* Skip the first cell */
+			if (cell.equals(lastCell))
+				continue;
+			if (cell.getColumn() == lastCell.getColumn() + slope [ 0 ] &&
+					cell.getRow() == lastCell.getRow () + slope [ 1 ]) {
+				lastCell = cell;
+			} else {
+				ret = false;
+				break;
+			}
+		}
+		
+		return ret;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -67,5 +113,16 @@ public class BeadString implements Serializable {
 		} else
 			ret = super.equals(obj);
 		return ret;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer ();
+		for (Cell cell : beads) {
+			buf.append(cell.toString());
+			buf.append (" ");
+		}
+		
+		return buf.toString();
 	}
 }

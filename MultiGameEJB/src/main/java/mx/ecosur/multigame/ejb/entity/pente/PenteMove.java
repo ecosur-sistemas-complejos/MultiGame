@@ -118,7 +118,7 @@ public class PenteMove extends Move {
 			Map<Vertice, BeadString> stringMap = getString (3);
 			for (Vertice v: stringMap.keySet()) {
 				BeadString string = stringMap.get(v);
-				if (uncountedString (string))
+				if (uncountedString (string) && string.contiguous(v))
 					trias.add(string);
 			}
 		}
@@ -143,7 +143,7 @@ public class PenteMove extends Move {
 			Map<Vertice, BeadString> stringMap = getString (4, true);
 			for (Vertice v : stringMap.keySet()) {
 				BeadString string = stringMap.get(v); 
-				if (uncountedString (string))
+				if (uncountedString (string) && string.contiguous(v))
 					tesseras.add(string);
 			}
 		}
@@ -225,7 +225,7 @@ public class PenteMove extends Move {
 				ret.addAll(findCandidates (direction, targetColors, depth));
 			}
 		} else {
-			for (int i = 0; i < depth; i++) {
+			for (int i = 0; i < depth - 1; i++) {
 				for (Color targetColor : targetColors) {
 						/* Search the grid to the depth of current, + 1 */
 					Cell result = this.searchGrid(startingCell.getDirection(), 
@@ -248,17 +248,18 @@ public class PenteMove extends Move {
      * cell to the list.
 	 */
 	private Set<AnnotatedCell> findAdjacentCells(Color[] targetColors) {
-		Set<AnnotatedCell> adjacent = new HashSet<AnnotatedCell> ();
-		for (Color color : targetColors) {
-			for (Direction d : Direction.values()) {
+		HashMap <AnnotatedCell,Direction> adjacent = new HashMap <AnnotatedCell,Direction> ();
+		for (Direction d : Direction.values()) {
+			for (Color color : targetColors) {
 				Cell result = this.searchGrid (d,
 					getDestination(), color, 1);
-				if (result != null)
-					adjacent.add(new AnnotatedCell(result, d));
+				AnnotatedCell annotatedResult = new AnnotatedCell (result,d);
+				if (result != null && !adjacent.containsValue(d))
+					adjacent.put (annotatedResult,d);
 			}
 		}
 		
-		return adjacent;
+		return adjacent.keySet();
 	}
 
 	/*
@@ -398,6 +399,21 @@ public class PenteMove extends Move {
 
 		public Cell getCell() {
 			return cell;
+		}
+
+		@Override
+		public String toString() {
+			return direction.toString() + ", " + cell.toString();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof AnnotatedCell) {
+				AnnotatedCell comparison = (AnnotatedCell) obj;
+				return (comparison.cell.equals(this.cell) && 
+						comparison.direction.equals(this.direction));
+			} else
+				return super.equals(obj);
 		}
 	}
 }
