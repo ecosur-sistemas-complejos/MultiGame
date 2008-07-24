@@ -38,7 +38,7 @@
     		<mx:GridItem>
     			<mx:Label text="Team" styleName="fieldLit"/>
     		</mx:GridItem>
-    		<mx:GridItem paddingRight="20">
+    		<mx:GridItem paddingRight="15">
     			<mx:Label id="playerTeam" styleName="field"/>
     		</mx:GridItem>
     		<mx:GridItem>

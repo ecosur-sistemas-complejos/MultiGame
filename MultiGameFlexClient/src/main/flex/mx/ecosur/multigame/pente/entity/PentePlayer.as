@@ -37,7 +37,7 @@ package mx.ecosur.multigame.pente.entity {
 			return _tesseras;
 		}
 		
-		public function set tesseras(tesserras:ArrayCollection):void {
+		public function set tesseras(tesseras:ArrayCollection):void {
 			_tesseras = tesseras;
 		}
 	}

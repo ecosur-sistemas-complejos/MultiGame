@@ -86,7 +86,7 @@ package mx.ecosur.multigame.pente {
 				ppi.pentePlayer = pentePlayer;
 				
 				// Create button header
-				var label:String = pentePlayer.player.name + " (" + Color.getTeamName(pentePlayer.color) + ") (" + String(pentePlayer.points) + ")"; 
+				var label:String = pentePlayer.player.name + " (" + Color.getTeamName(pentePlayer.color) + ")"; 
 				btn = getHeaderAt(i);
 				btn.label = label;
 				btn.setStyle("icon", Color.getCellIcon(pentePlayer.color));

@@ -71,7 +71,7 @@
             	//TODO:Tempory fix to remove players from a game
             	var i:int = event.fault.faultString.indexOf("game full"); 
             	if (i > -1){
-            		Alert.show(event.fault.faultString.substring(i + 1, event.fault.faultString.length), "Registration failed");
+            		Alert.show(event.fault.faultString.substring(i, event.fault.faultString.length), "Registration failed");
             		if (event.token.operation != "unregisterAll"){
             			var call:Object = gameService.unregisterAllPlayers(cbGame.selectedItem.data);
             			call.operation= "unregisterAll";
@@ -85,7 +85,7 @@
 	
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
      
-	<mx:Panel title="New Game">
+	<mx:Panel title="Join Game">
 		<mx:Form x="0" y="0" defaultButton="{registerBtn}">
 			<mx:FormItem label="Name" required="true">
 				<mx:TextInput id="txtName" />

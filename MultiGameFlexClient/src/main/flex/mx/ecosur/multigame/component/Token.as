@@ -11,7 +11,6 @@ package mx.ecosur.multigame.component {
 	import mx.ecosur.multigame.enum.Color;
 	import mx.effects.Fade;
 	import mx.effects.Sequence;
-	import mx.events.EffectEvent;
 	
 	/**
 	 * Visual class representing a token on the board. Contains an internal 
@@ -24,6 +23,7 @@ package mx.ecosur.multigame.component {
 		private var _selected:Boolean;
 		private var _deselectedFilters:Array;
 		private var _selectedFilters:Array;
+		private var _blinkAnim:Sequence;
 
 		//flags
 		private var _bgDirty:Boolean;
@@ -39,6 +39,20 @@ package mx.ecosur.multigame.component {
 			super();
 			_selected = false;
 			_bgDirty = false;
+			
+			// Create animation sequence
+			_blinkAnim = new Sequence();
+			var fadeOut:Fade = new Fade(this);
+			fadeOut.alphaFrom = 1;
+			fadeOut.alphaTo = 0.2;
+			fadeOut.duration = 500;
+			var fadeIn:Fade = new Fade(this);
+			fadeIn.alphaFrom = 0.2;
+			fadeIn.alphaTo = 1;
+			fadeIn.duration = 500;
+			_blinkAnim.addChild(fadeOut);
+			_blinkAnim.addChild(fadeIn);
+			_blinkAnim.repeatDelay = 300;
 		}
 		
 		/* Getters and setters */
@@ -96,26 +110,18 @@ package mx.ecosur.multigame.component {
 		 * 
 		 */
 		public function blink(repeat:int = 0):void{
-			
-			var seq:Sequence = new Sequence();
-			var fadeOut:Fade = new Fade(this);
-			fadeOut.alphaFrom = 1;
-			fadeOut.alphaTo = 0.1;
-			fadeOut.duration = 1000;
-			var fadeIn:Fade = new Fade(this);
-			fadeIn.alphaFrom = 0.1
-			fadeIn.alphaTo = 1;
-			fadeIn.duration = 1000;
-			seq.addChild(fadeOut);
-			seq.addChild(fadeIn);
-			seq.repeatCount = repeat;
-			seq.repeatDelay = 200;
-			seq.play();
-			
+			if(_blinkAnim.isPlaying){
+				_blinkAnim.stop();
+			}
+			_blinkAnim.repeatCount = repeat;
+			_blinkAnim.play();
 		}
 		
 		public function stopBlink():void{
-			
+			if(_blinkAnim.isPlaying){
+				_blinkAnim.stop();
+			}
+			this.alpha = 1;
 		}
 		
 		/**

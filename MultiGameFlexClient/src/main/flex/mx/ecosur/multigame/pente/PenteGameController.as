@@ -24,6 +24,7 @@ package mx.ecosur.multigame.pente{
 	import mx.ecosur.multigame.enum.CooperatiionQualifier;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
+	import mx.ecosur.multigame.pente.entity.BeadString;
 	import mx.ecosur.multigame.pente.entity.PenteGame;
 	import mx.ecosur.multigame.pente.entity.PenteMove;
 	import mx.ecosur.multigame.pente.entity.PentePlayer;
@@ -423,10 +424,36 @@ package mx.ecosur.multigame.pente{
 			}
 			
 			boardCell.token = token;
-			//token.blink(1);
+			boardCell.token.blink(1);
+			
+			// Update move viewer
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
+			// If the move contains trias or tesseras then blink them
+			var beadString:BeadString;
+			var cell:Cell;
+			if (move.trias != null && move.trias.length){
+				for (var i:Number = 0; i < move.trias.length; i++){
+					beadString = BeadString(move.trias[i]);
+					for (var j:Number = 0; j < beadString.beads.length; j++){
+						cell = Cell(beadString.beads[j]);
+						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+					}
+				}
+			}
+			if (move.tesseras != null && move.tesseras.length){
+				for (var k:Number = 0; k < move.tesseras.length; k++){
+					beadString = BeadString(move.tesseras[k]);
+					for (var l:Number = 0; l < beadString.beads.length; l++){
+						cell = Cell(beadString.beads[l]);
+						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+					}
+				}
+			}
+			
+			// If the current player in the partner of the player who just moved
+			// then force him/her to qualify the move.
 			if (move.player.id == getTeamMate().id && move.qualifier == null){
 				qualifyMove(move);
 			}
@@ -526,11 +553,13 @@ package mx.ecosur.multigame.pente{
 				}
 				var call:Object = _gameService.updateMove(move);
 				call.operation = GAME_SERVICE_UPDATE_MOVE_OP;
-				_board.getBoardCell(move.destination.column, move.destination.row).reset();
+				var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row); 
+				boardCell.reset();
 			}
 			
-			//select board cell
-			_board.getBoardCell(move.destination.column, move.destination.row).select(Color.getColorCode(move.player.color));
+			//select board cell and start blinking token
+			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+			boardCell.select(Color.getColorCode(move.player.color));
 			
 			//show qualify dialog
 			var txt:String = "Your team mate had made a move.\n\nPlease qualify this move according to its level of cooperation?\n\nNote that this window may be dragged to a different location if it is obscuring the game."
@@ -567,8 +596,6 @@ package mx.ecosur.multigame.pente{
 			}else{
 				_isBoardEmtpy = true;
 			}
-			_board.getBoardCell(8, 8).token.blink(10);
-			_board.getBoardCell(8, 9).token.blink();
 		} 
 		
 		private function initTurn():void{

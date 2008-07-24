@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.pente.dto {
+package mx.ecosur.multigame.pente.entity {
 	
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Player;

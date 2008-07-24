@@ -66,7 +66,7 @@
             <version>1.1</version>
             <executions>
                 <execution>
-                    <id>compile-flex</id>
+                    <id>compile-main</id>
                     <phase>compile</phase>
                     <goals>
                         <goal>exec</goal>
@@ -83,7 +83,26 @@
                         </arguments>
                     </configuration>
                 </execution>
-	        <execution>
+                <execution>
+                    <id>compile-replay</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>${flexSDK}/bin/mxmlc</executable>
+                        <workingDirectory>src/main/flex</workingDirectory>
+                        <arguments>
+                            <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
+                            <argument>-compiler.strict=true</argument>
+                            <argument>-compiler.context-root=${artifactId}</argument>
+                            <argument>-output=../webapp/PenteGameReplay.swf</argument>
+                            <argument>PenteGameReplay.mxml</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+                 
+	            <execution>
                     <id>deploy-war</id>
                     <phase>install</phase>
                     <goals>
