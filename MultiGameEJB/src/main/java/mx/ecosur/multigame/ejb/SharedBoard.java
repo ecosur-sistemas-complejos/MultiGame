@@ -285,6 +285,9 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		
 		statefulSession.dispose();
+		
+		/* Merge any changes in the Game object */
+		em.merge(game);
 
 		/* TODO: This could be moved out to the rules */
 		incrementTurn(move.getPlayer());
