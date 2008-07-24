@@ -117,9 +117,10 @@ public class PenteRulesTest extends RulesTestBase {
 		int row = game.getRows() / 2;
 		int col = game.getColumns() / 2;
 		Cell center = new Cell (row, col, alice.getColor());
+		game.setState(GameState.BEGIN);
+		alice.setGame(game);
 		PenteMove move = new PenteMove (alice, center);
 		
-		game.setState(GameState.BEGIN);
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
@@ -136,9 +137,9 @@ public class PenteRulesTest extends RulesTestBase {
 		int row = game.getRows() / 2;
 		int col = game.getColumns() / 2;
 		Cell center = new Cell (row, col, alice.getColor());
-		PenteMove move = new PenteMove (alice, center);
 		
 		game.setState(GameState.BEGIN);
+		PenteMove move = new PenteMove (alice, center);
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
 		statefulSession.fireAllRules();
@@ -148,6 +149,7 @@ public class PenteRulesTest extends RulesTestBase {
 		statefulSession.setFocus ("move");
 		statefulSession.fireAllRules();
 		
+	
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (center, game.getGrid().getLocation(center));
 		
@@ -182,12 +184,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell next = new Cell (10, 9, alice.getColor());
 		PenteMove subsequent = new PenteMove (alice, next);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(subsequent);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (subsequent);
 		
 		assertEquals (Move.Status.MOVED, subsequent.getStatus());
 		assertEquals (next, game.getGrid().getLocation(next));
@@ -207,12 +204,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (4,5, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -237,12 +229,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (4,5, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -272,12 +259,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tria = new Cell (4,5, alice.getColor());
 		PenteMove move = new PenteMove (alice, tria);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
@@ -285,10 +267,6 @@ public class PenteRulesTest extends RulesTestBase {
 		HashSet<BeadString> set = move.getTrias();
 		/* There should be 2 sets of three */
 		assertEquals (2, set.size());
-		
-		/* Score the session */
-		statefulSession.setFocus("evaluate");
-		statefulSession.fireAllRules();
 		
 		/* 2 sets of three equals 10 points */
 		assertEquals (10, alice.getPoints());
@@ -331,14 +309,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (5,7, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus("evaluate");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -367,12 +338,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (10,10, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -398,12 +364,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (10,10, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -427,12 +388,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (12,12, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -457,12 +413,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tessera = new Cell (8,10, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -494,12 +445,7 @@ public class PenteRulesTest extends RulesTestBase {
 		Cell tria = new Cell (10,10, alice.getColor());
 		PenteMove move = new PenteMove (alice, tria);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules (move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
@@ -509,7 +455,7 @@ public class PenteRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testMixedTria () {
+	public void testMixedTriaTessera () {
 		alice.setTurn(true);
 		Cell first = new Cell (10,8,alice.getColor().getCompliment());
 		Cell second = new Cell (10,9,alice.getColor().getCompliment());
@@ -520,16 +466,12 @@ public class PenteRulesTest extends RulesTestBase {
 		game.getGrid().updateCell(third);
 		
 		game.setState(GameState.PLAY);
+		alice.setGame(game);
 		
 		Cell tessera = new Cell (10,10, alice.getColor());
 		PenteMove move = new PenteMove (alice, tessera);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
+		fireRules(move);
 		
 		assertEquals (Move.Status.MOVED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
@@ -540,6 +482,61 @@ public class PenteRulesTest extends RulesTestBase {
 		HashSet<BeadString> tesseras = move.getTesseras();
 		assertEquals (1, tesseras.size());
 		
+	}
+	
+	public void testTwoUnrelatedTrias () {
+		alice.setTurn(true);
+
+		Cell first = new Cell (8,10,alice.getColor());
+		Cell second = new Cell (9,10,alice.getColor());
+		
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		game.setState(GameState.PLAY);
+		alice.setGame(game);
+		
+		Cell tria = new Cell (10,10, alice.getColor());
+		PenteMove move = new PenteMove (alice, tria);
+		
+		fireRules (move);
+		
+		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (tria, game.getGrid().getLocation(tria));
+		
+		HashSet<BeadString> trias = move.getTrias();
+		assertEquals (1, trias.size());
+		assertEquals (1, alice.getTrias().size());
+
+		first = new Cell (8,12,alice.getColor());
+		second = new Cell (9,12,alice.getColor());
+		
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		alice.setGame(game);
+		
+		tria = new Cell (10,12, alice.getColor());
+		move = new PenteMove (alice, tria);
+		
+		fireRules(move);
+		
+		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (tria, game.getGrid().getLocation(tria));
+		
+		trias = move.getTrias();
+		assertEquals (1, trias.size());
+		assertEquals (2, alice.getTrias().size());
+		
+	}
+
+	private void fireRules(PenteMove move) {
+		statefulSession.insert(game);
+		statefulSession.insert(move);
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus ("move");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus ("evaluate");
+		statefulSession.fireAllRules();
 	}
 	
 	

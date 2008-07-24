@@ -50,7 +50,7 @@ public class BeadString implements Serializable {
 		boolean ret = false;
 		int count = 0;
 		
-		for (Cell cell : string.getBeads()) {
+		for (Cell cell : beads) {
 			if (string.contains(cell)) 
 				count++;
 			if (count > 1) { 

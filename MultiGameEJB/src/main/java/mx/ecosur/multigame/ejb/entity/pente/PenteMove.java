@@ -253,9 +253,8 @@ public class PenteMove extends Move {
 			for (Color color : targetColors) {
 				Cell result = this.searchGrid (d,
 					getDestination(), color, 1);
-				AnnotatedCell annotatedResult = new AnnotatedCell (result,d);
-				if (result != null && !adjacent.containsValue(d))
-					adjacent.put (annotatedResult,d);
+				if (result != null && !adjacent.containsValue(d)) 
+					adjacent.put (new AnnotatedCell (result,d),d);
 			}
 		}
 		
