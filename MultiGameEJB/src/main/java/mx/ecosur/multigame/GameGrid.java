@@ -48,8 +48,10 @@ public class GameGrid implements Serializable {
 		
 		for (Cell c : sublist) {
 			int value = comparator.compare(location, c);
-			if (value == 0)
+			if (value == 0 && location.equals(c)) {
 				ret = c;
+				break;
+			}
 		}
 		
 		return ret;

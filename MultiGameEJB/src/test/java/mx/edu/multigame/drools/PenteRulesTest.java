@@ -508,6 +508,40 @@ public class PenteRulesTest extends RulesTestBase {
 		assertEquals (2, trias.size());
 	}
 	
+	@Test
+	public void testMixedTria () {
+		alice.setTurn(true);
+		Cell first = new Cell (10,8,alice.getColor().getCompliment());
+		Cell second = new Cell (10,9,alice.getColor().getCompliment());
+		Cell third = new Cell (10,11, alice.getColor().getCompliment());
+		
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		game.getGrid().updateCell(third);
+		
+		game.setState(GameState.PLAY);
+		
+		Cell tessera = new Cell (10,10, alice.getColor());
+		PenteMove move = new PenteMove (alice, tessera);
+		
+		statefulSession.insert(game);
+		statefulSession.insert(move);
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
+		statefulSession.setFocus ("move");
+		statefulSession.fireAllRules();
+		
+		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (tessera, game.getGrid().getLocation(tessera));
+		
+		HashSet<BeadString> trias = move.getTrias();
+		assertEquals (0, trias.size());
+		
+		HashSet<BeadString> tesseras = move.getTesseras();
+		assertEquals (1, tesseras.size());
+		
+	}
+	
 	
 	private class DebugEventListener implements WorkingMemoryEventListener {	
 		private Logger logger;
