@@ -3,9 +3,12 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -36,11 +39,18 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 @Entity
 public class PenteGame extends Game {
 	
+	private Set<PentePlayer> winners;
+	
+	@OneToMany (fetch=FetchType.EAGER)
 	public Set <PentePlayer> getWinners () {
-		return determineWinners();
+		return winners;
 	}
 	
-	private TreeSet<PentePlayer> determineWinners() {
+	public void setWinners(Set<PentePlayer> winners){
+		this.winners = winners;
+	}
+	
+	public void determineWinners() {
 		TreeSet<PentePlayer> ret = new TreeSet<PentePlayer> (new PlayerComparator());
 		List <GamePlayer> players = this.getPlayers();
 		for (GamePlayer p : players) {
@@ -49,7 +59,7 @@ public class PenteGame extends Game {
 			ret.add(player);
 		}
 		
-		return ret;
+		winners = ret;
 	}
 	
 	
