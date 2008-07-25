@@ -412,6 +412,8 @@ package mx.ecosur.multigame.pente{
 				_moveViewer.selectedMove = move;
 				if (_winners){
 					end();
+				}else{
+					checkBeadStrings(move);
 				}
 				return;
 			}
@@ -498,27 +500,7 @@ package mx.ecosur.multigame.pente{
 			// If winners are not present or the move must be qualified
 			if (!_winners || (move.player.id == getTeamMate().id && move.qualifier == null)){
 				
-				// If the move contains trias or tesseras then blink them
-				var beadString:BeadString;
-				var cell:Cell;
-				if (move.trias != null && move.trias.length){
-					for (var i:Number = 0; i < move.trias.length; i++){
-						beadString = BeadString(move.trias[i]);
-						for (var j:Number = 0; j < beadString.beads.length; j++){
-							cell = Cell(beadString.beads[j]);
-							_board.getBoardCell(cell.column, cell.row).token.blink(3);
-						}
-					}
-				}
-				if (move.tesseras != null && move.tesseras.length){
-					for (var k:Number = 0; k < move.tesseras.length; k++){
-						beadString = BeadString(move.tesseras[k]);
-						for (var l:Number = 0; l < beadString.beads.length; l++){
-							cell = Cell(beadString.beads[l]);
-							_board.getBoardCell(cell.column, cell.row).token.blink(3);
-						}
-					}
-				}
+				checkBeadStrings(move);
 				
 				// If the current player is the team mate of the player that moved then qualify the move
 				if (move.player.id == getTeamMate().id && move.qualifier == null){
@@ -606,6 +588,39 @@ package mx.ecosur.multigame.pente{
 				_tokenStore.addToken();
 			}
 			_moveViewer.selectedMove = PenteMove(_moves[_selectedMoveInd]);
+		}
+		
+		private function checkBeadStrings(move:PenteMove):void{
+
+			// If the move contains trias or tesseras then blink them
+			var beadString:BeadString;
+			var cell:Cell;
+			var hasScored:Boolean = false;
+			if (move.trias != null && move.trias.length){
+				hasScored = true;
+				for (var i:Number = 0; i < move.trias.length; i++){
+					beadString = BeadString(move.trias[i]);
+					for (var j:Number = 0; j < beadString.beads.length; j++){
+						cell = Cell(beadString.beads[j]);
+						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+					}
+				}
+			}
+			if (move.tesseras != null && move.tesseras.length){
+				hasScored = true;
+				for (var k:Number = 0; k < move.tesseras.length; k++){
+					beadString = BeadString(move.tesseras[k]);
+					for (var l:Number = 0; l < beadString.beads.length; l++){
+						cell = Cell(beadString.beads[l]);
+						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+					}
+				}
+			}
+			
+			if(hasScored){
+				_gameStatus.showMessage(move.player.player.name + " has just scored.", Color.getColorCode(move.player.color));
+			}
+
 		}
 		
 		private function qualifyMove(move:PenteMove):void{

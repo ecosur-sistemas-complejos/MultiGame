@@ -41,6 +41,28 @@
 		.field{
 			color: #000000;
 		}
+		
+		Alert {
+            titleStyleName: "alertTitle";
+            messageStyleName: "alertMessage";
+            buttonStyleName: "alertButton";
+        }
+
+        .alertTitle {
+            fontSize: 14;
+            fontWeight: bold;
+        }
+
+        .alertMessage {
+            fontSize: 12;
+        }
+        
+		.alertButton {
+            fontSize: 10;
+            color: #000000;
+        }
+
+
 	</mx:Style>
 	
 	<mx:Script> 
