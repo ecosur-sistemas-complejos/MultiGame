@@ -29,8 +29,7 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 			query="select g from PenteGame g where g.type=:type " +
 				"and g.state <>:state"),
 	@NamedQuery(name="getPenteGameById",
-			query="select g from PenteGame g where g.id=:id " +
-				"and g.state<>:state"),
+			query="select g from PenteGame g where g.id=:id ") ,
 	@NamedQuery(name="getPenteGamePlayer",
 			query="select pgp from PentePlayer pgp where pgp.player=:player " +
 					"and pgp.game=:game and pgp.color=:color")

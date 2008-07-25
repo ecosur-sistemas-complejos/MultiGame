@@ -36,8 +36,7 @@ import mx.ecosur.multigame.GameType;
 			query="select g from Game g where g.type=:type " +
 				"and g.state <>:state"),
 	@NamedQuery(name="getGameById",
-			query="select g from Game g where g.id=:id " +
-		"and g.state<>:state"),
+			query="select g from Game g where g.id=:id"),
 	@NamedQuery(name="getGameByTypeAndPlayer",
 			query="select g from Game as g, Player as player " +
 				"where player=:player and player MEMBER OF g.players " +

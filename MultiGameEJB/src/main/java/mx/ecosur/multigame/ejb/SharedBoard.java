@@ -91,7 +91,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 			throws RemoteException {
 		Query query = em.createNamedQuery(type.getNamedQueryById());
 		query.setParameter("id", gameId);
-		query.setParameter("state", GameState.END);
 		try {
 			Game game = (Game) query.getSingleResult();
 			this.setGame(game);
