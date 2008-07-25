@@ -51,7 +51,7 @@ public class PenteSharedBoardTest {
 			new Player ("charlie"),
 			new Player ("denise")};
 		
-		registrar.registerPlayer(registrants [ 0 ], Color.BLACK, GameType.PENTE);
+		registrar.registerPlayer(registrants [ 0 ], Color.YELLOW, GameType.PENTE);
 		registrar.registerPlayer(registrants [ 1 ], Color.BLUE, GameType.PENTE);
 		registrar.registerPlayer(registrants [ 2 ], Color.GREEN, GameType.PENTE);
 		registrar.registerPlayer(registrants [ 3 ], Color.RED, GameType.PENTE);
@@ -64,7 +64,7 @@ public class PenteSharedBoardTest {
 		int row = board.getGame().getRows()/2;
 		int column = board.getGame().getColumns()/2;
 		
-		center = new Cell (row, column, Color.BLACK);
+		center = new Cell (row, column, Color.YELLOW);
 		
 		/* Set the GamePlayers from the SharedBoard */
 		List<GamePlayer> players = board.getPlayers();
@@ -143,5 +143,166 @@ public class PenteSharedBoardTest {
 		} catch (InvalidMoveException e) {
 			assertTrue ("Invalid Move!".equals(e.getMessage()));
 		} 
+	}
+	
+	@Test
+	public void testFormTria () throws InvalidMoveException, RemoteException {
+		/* Round 1 */
+		
+		PenteMove move = new PenteMove (alice, center);
+		Move valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		Cell cell = new Cell (1, 1, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		charlie = (PentePlayer) board.incrementTurn(bob);
+		cell = new Cell (3,1, charlie.getColor());
+		move = new PenteMove (charlie, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		denise = (PentePlayer) board.incrementTurn(charlie);
+		cell = new Cell (5,1, denise.getColor());
+		move = new PenteMove (denise, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		/* Round 2 */
+		
+		alice = (PentePlayer) board.incrementTurn(denise);
+		cell = new Cell (7, 1, alice.getColor());
+		move = new PenteMove (alice, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		cell = new Cell (1, 2, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		charlie = (PentePlayer) board.incrementTurn(bob);
+		cell = new Cell (3,2, charlie.getColor());
+		move = new PenteMove (charlie, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		denise = (PentePlayer) board.incrementTurn(charlie);
+		cell = new Cell (5, 2, denise.getColor());
+		move = new PenteMove (denise, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		
+		/* Round 3 */
+		
+		alice = (PentePlayer) board.incrementTurn(denise);
+		cell = new Cell (7, 2, alice.getColor());
+		move = new PenteMove (alice, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		cell = new Cell (1, 3, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		move = (PenteMove) valid;
+		
+		assertEquals (1, move.getTrias().size());
+		
+		List<GamePlayer> players = board.getPlayers();
+		for (GamePlayer player : players) {
+			if (! (player.getId() == bob.getId()))
+				continue;
+			bob = (PentePlayer) player;
+			break;
+		}
+		
+		assertEquals (1, bob.getTrias().size());
+	}
+	
+	public void testCooperativeScoring () throws InvalidMoveException, RemoteException {
+		/* Round 1 */
+		
+		PenteMove move = new PenteMove (alice, center);
+		Move valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		Cell cell = new Cell (1, 1, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		charlie = (PentePlayer) board.incrementTurn(bob);
+		cell = new Cell (3,1, charlie.getColor());
+		move = new PenteMove (charlie, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		denise = (PentePlayer) board.incrementTurn(charlie);
+		cell = new Cell (5,1, denise.getColor());
+		move = new PenteMove (denise, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		/* Round 2 */
+		
+		alice = (PentePlayer) board.incrementTurn(denise);
+		cell = new Cell (7, 1, alice.getColor());
+		move = new PenteMove (alice, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		cell = new Cell (1, 2, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		charlie = (PentePlayer) board.incrementTurn(bob);
+		cell = new Cell (3,2, charlie.getColor());
+		move = new PenteMove (charlie, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		denise = (PentePlayer) board.incrementTurn(charlie);
+		cell = new Cell (5, 2, denise.getColor());
+		move = new PenteMove (denise, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		
+		
+		/* Round 3 */
+		
+		alice = (PentePlayer) board.incrementTurn(denise);
+		cell = new Cell (7, 2, alice.getColor());
+		move = new PenteMove (alice, cell);
+		valid = board.validateMove(move);
+		board.move(valid);
+		
+		bob = (PentePlayer) board.incrementTurn(alice);
+		cell = new Cell (1, 3, bob.getColor());
+		move = new PenteMove (bob, cell);
+		valid = board.validateMove (move);
+		board.move(valid);
+		move = (PenteMove) valid;
+		
+		assertEquals (1, move.getTrias().size());
+		
+		List<GamePlayer> players = board.getPlayers();
+		for (GamePlayer player : players) {
+			if (! (player.getId() == bob.getId()))
+				continue;
+			bob = (PentePlayer) player;
+			break;
+		}
+		
+		assertEquals (1, bob.getTrias().size());
 	}
 }

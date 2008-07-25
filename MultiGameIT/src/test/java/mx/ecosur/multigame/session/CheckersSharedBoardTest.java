@@ -57,12 +57,12 @@ public class CheckersSharedBoardTest {
 		Player a = registrar.locatePlayer("alice");
 		Player b = registrar.locatePlayer("bob");
 		
-		alice = registrar.registerPlayer(a, Color.BLACK, GameType.CHECKERS);
+		alice = registrar.registerPlayer(a, Color.YELLOW, GameType.CHECKERS);
 		bob = registrar.registerPlayer(b, Color.RED, GameType.CHECKERS);
 		
 		/* Initalize the jumpGrid */
 		jumpGrid = new GameGrid();
-		jumpGrid.updateCell (new Checker (0,0,Color.BLACK));
+		jumpGrid.updateCell (new Checker (0,0,Color.YELLOW));
 		for (int i = 0; i < jumps.length; i++) {
 			jumpGrid.updateCell(jumps [ i ]);
 		}

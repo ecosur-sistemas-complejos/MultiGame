@@ -3,7 +3,9 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.Game;
@@ -12,6 +14,7 @@ import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.pente.BeadString;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author awater
@@ -26,6 +29,8 @@ public class PentePlayer extends GamePlayer {
 	private HashSet<BeadString> trias;
 	
 	private HashSet <BeadString> tesseras;
+	
+	private PentePlayer partner;
 	
 	public PentePlayer () {
 		super ();
@@ -82,6 +87,25 @@ public class PentePlayer extends GamePlayer {
 			tesseras.add(tessera);
 	}
 	
+	@OneToOne (cascade={CascadeType.ALL})
+	public PentePlayer getPartner() {
+        if (partner == null) {
+            Color color = this.getColor().getCompliment();
+            List<GamePlayer> players = getGame().getPlayers();
+            for (GamePlayer p : players) {
+                if (p.getColor() != color)
+                    continue;
+                partner = (PentePlayer) p;
+                break;
+            }
+        }
+        return partner;
+    }
+
+    public void setPartner(PentePlayer partner) {
+        this.partner = partner;
+    }
+	
 	public boolean containsString (BeadString comparison) {
 		for (BeadString string : getTrias()) {
 			if (string.contains(comparison))
@@ -92,8 +116,6 @@ public class PentePlayer extends GamePlayer {
 			if (string.contains(comparison))
 				return true;
 		}
-		
 		return false;
-		
 	}
 }

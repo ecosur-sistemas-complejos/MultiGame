@@ -31,6 +31,7 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 
 import org.drools.FactException;
 import org.drools.RuleBase;
@@ -286,10 +287,21 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		
 		statefulSession.dispose();
 		
-		/* Merge any changes in the Game object */
-		em.merge(game);
+		switch (game.getType()) {
+	        case PENTE:
+	            PentePlayer pentePlayer = (PentePlayer) move.getPlayer();
+	            PentePlayer partner = pentePlayer.getPartner();
+	            if (!em.contains(partner)) {
+	                partner = em.find (partner.getClass(), partner.getId());
+	            }
+	            em.merge (pentePlayer);
+	            em.merge (partner);
+	            break;
+	        default:
+	            break;
+		}
 
-		/* TODO: This could be moved out to the rules */
+		/* TODO: move this to the rules */
 		incrementTurn(move.getPlayer());
 	}
 

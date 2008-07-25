@@ -3,7 +3,6 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;

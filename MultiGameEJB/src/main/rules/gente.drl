@@ -91,23 +91,6 @@ function int scorePlayer (PenteMove move) {
     return ret;
 }
 
-function PentePlayer getPartner (PentePlayer player) {
-    PentePlayer ret = null;
-
-    Color compliment = player.getColor().getCompliment();
-    Game game = player.getGame();
-    List<GamePlayer> players = game.getPlayers();
-    for (GamePlayer p : players) {
-        if (!p.getColor().equals(compliment)) 
-            continue;   
-         ret = (PentePlayer) p;
-         break;
-    }
-    
-    return ret;
-}
-
-
 /*
     Determines if the game has a winner.
 */
@@ -240,7 +223,7 @@ then
     int score = scorePlayer (move);
     PentePlayer player = (PentePlayer) move.getPlayer ();
     if (score == 5) {
-        PentePlayer teammate = getPartner (player);
+        PentePlayer teammate = player.getPartner();
         teammate.setPoints (score);
     }
     player.setPoints (score);
