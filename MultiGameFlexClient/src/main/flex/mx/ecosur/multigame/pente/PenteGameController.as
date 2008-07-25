@@ -177,7 +177,7 @@ package mx.ecosur.multigame.pente{
 					this.isTurn = _currentPlayer.turn;
 				}
 				if (gamePlayer.turn){
-					if (_isTurn){
+					if (gamePlayer.id == _currentPlayer.id){
 						_gameStatus.showMessage("Its your turn", Color.getColorCode(_currentPlayer.color));
 					}else{
 						_gameStatus.showMessage(gamePlayer.player.name + " to move", Color.getColorCode(gamePlayer.color));
@@ -212,16 +212,17 @@ package mx.ecosur.multigame.pente{
 			// Prepare message for winners
 			var msg:String = "";
 			var color:uint;
-			var pentePlayer:PentePlayer;
-			if (_winners.length == 1){
-				pentePlayer = PentePlayer(_winners[0]);
+			var pentePlayer:PentePlayer = PentePlayer(_winners[0]);
+			var _isSoloWin:Boolean = _winners.length == 1;
+			if (_isSoloWin){
 				msg = pentePlayer.player.name + " has won the game.";
 				color = Color.getColorCode(pentePlayer.color);
 			}else{
+				/*
 				for (var i:int = 0; i < _winners.length; i++){
 					msg += PentePlayer(_winners[0]).player.name + " and ";
-				}
-				msg = msg.substring(0, msg.length - 4) + " have won the game."
+				}*/
+				msg = "The " + Color.getTeamName(pentePlayer.color) + " team has won the game."
 				color = 0x000000;
 			}
 			_gameStatus.showMessage(msg, 0x00000);
@@ -231,14 +232,13 @@ package mx.ecosur.multigame.pente{
 			var beadString:BeadString;
 			var cell:Cell;
 			var boardCell:BoardCell;
-			pentePlayer = PentePlayer(_winners[0]);
-			if (_winners.length == 1){
+			if (_isSoloWin){
 				for (var j:int = 0; j < pentePlayer.trias.length; j++){
 					beadString = BeadString(pentePlayer.trias[j]);
 					for (var k:Number = 0; k < beadString.beads.length; k++){
 						cell = Cell(beadString.beads[k]);
 						boardCell = _board.getBoardCell(cell.column, cell.row); 
-						boardCell.token.blink();
+						boardCell.token.blink(10);
 						boardCell.select(cell.colorCode);
 					}
 				}
@@ -248,7 +248,7 @@ package mx.ecosur.multigame.pente{
 					for (var n:Number = 0; n < beadString.beads.length; n++){
 						cell = Cell(beadString.beads[n]);
 						boardCell = _board.getBoardCell(cell.column, cell.row); 
-						boardCell.token.blink();
+						boardCell.token.blink(10);
 						boardCell.select(cell.colorCode);
 					}
 				} 

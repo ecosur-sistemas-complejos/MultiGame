@@ -98,7 +98,20 @@ public class GameService {
 		}
 		return sharedBoard.getGame();
 	}
-
+	
+	
+	public Game getGame(String gameTypeStr, int gameId) {
+	
+		GameType gameType = GameType.valueOf(gameTypeStr);
+		SharedBoardRemote sharedBoard = getSharedBoard();
+		try {
+			sharedBoard.locateSharedBoard(gameType, gameId);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+			throw new GameException(e);
+		}
+		return sharedBoard.getGame();
+	}
 	public GameGrid getGameGrid() {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		FlexSession session = FlexContext.getFlexSession();

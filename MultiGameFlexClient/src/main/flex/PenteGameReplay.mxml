@@ -28,12 +28,14 @@
     
     <mx:Script> 
         <![CDATA[
+        	import mx.controls.Alert;
         	import mx.ecosur.multigame.pente.PenteGameReplayController;
             
             private var _controller:PenteGameReplayController;
              
             public function init():void{
-                _controller = new PenteGameReplayController(board, playersViewer, moveViewer, animateLayer);
+            	var gameId:int = Application.application.parameters.gameId;
+                _controller = new PenteGameReplayController(gameId, board, playersViewer, moveViewer, animateLayer);
             }
                  
         ]]>

@@ -52,7 +52,7 @@ package mx.ecosur.multigame.pente{
 		 * Default constructor. 
 		 * 
 		 */
-		public function PenteGameReplayController(board:PenteBoard, playersViewer:PentePlayersViewer, moveViewer:PenteMoveViewer, animateLayer:UIComponent){
+		public function PenteGameReplayController(gameId:int, board:PenteBoard, playersViewer:PentePlayersViewer, moveViewer:PenteMoveViewer, animateLayer:UIComponent){
 			super();
 			
 			//set private references
@@ -73,7 +73,7 @@ package mx.ecosur.multigame.pente{
 			_moveViewer.board = _board;
 			
 			//get the game
-			var call:Object = _gameService.getGame("PENTE");
+			var call:Object = _gameService.getGame("PENTE", gameId);
 			call.operation = GAME_SERVICE_GET_GAME_OP;
 		}
 		
