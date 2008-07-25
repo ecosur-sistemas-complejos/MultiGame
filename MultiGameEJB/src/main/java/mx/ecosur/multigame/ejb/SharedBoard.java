@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -295,14 +296,22 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	                partner = em.find (partner.getClass(), partner.getId());
 	                if (pentePlayer.getPoints() == 5) {
 	                	partner.setPoints(5);
+	                	pentePlayer.setPartner(partner);
+	                	game.updatePlayer(pentePlayer);
+	                	HashSet<PentePlayer> hacky = new HashSet<PentePlayer>();
+	                	hacky.add(pentePlayer);
+	                	hacky.add(partner);
+	                	((PenteGame) game).setWinners(hacky);
+	                	em.merge(game);
 	               	}
 	            }
+	            
 	            partner.setTesseras(pentePlayer.getTesseras());
 	            em.merge (pentePlayer);
 	            em.merge (partner);
 	            if (pentePlayer.getPoints () > 0) {
 	            	MessageSender messageSender = new MessageSender();
-	            	messageSender.sendEndGame (pentePlayer.getGame());
+	            	messageSender.sendEndGame (game);
 	            }
 	            break;
 	        default:
