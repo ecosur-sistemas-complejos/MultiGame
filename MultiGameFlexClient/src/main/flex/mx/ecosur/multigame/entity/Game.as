@@ -17,6 +17,8 @@ package mx.ecosur.multigame.entity {
 		
 		private var _columns:int;
 		
+		private var _state:String;
+		
 		public function Game() {
 			super();
 		}
@@ -43,6 +45,14 @@ package mx.ecosur.multigame.entity {
 		
 		public function set columns(columns:int):void{
 			_columns = columns;
+		}
+		
+		public function get state():String{
+			return _state;
+		}
+		
+		public function set state(state:String):void{
+			_state = state;
 		}
 		
 		public function toString():String{

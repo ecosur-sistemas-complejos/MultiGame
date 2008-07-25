@@ -16,6 +16,7 @@ package mx.ecosur.multigame.component {
 		private var _txtField:TextField;
 		private var _message:String;
 		private var _color:uint;
+		private var _active:Boolean;
 		
 		private const PADDING:Number = 10;
 		private const BORDER_THICKNESS:Number = 2;
@@ -25,9 +26,21 @@ package mx.ecosur.multigame.component {
 		public function GameStatus() {
 			super();
 			_message = null;
+			_active = true;
+		}
+		
+		public function get active():Boolean{
+			return active;
+		}
+		
+		public function set active(active:Boolean):void{
+			_active = active;
 		}
 		
 		public function showMessage(message:String, color:uint):void{
+			if (!_active){
+				return;
+			}
 			_message = message;
 			_txtField.text = _message;
 			_color = color;
@@ -37,6 +50,9 @@ package mx.ecosur.multigame.component {
 		}
 		
 		private function flashMessage():void{
+			if (!_active){
+				return;
+			}
 			var ap:AnimateProperty = new AnimateProperty(this);
 			ap.property = "alpha";
 			ap.fromValue = 0;

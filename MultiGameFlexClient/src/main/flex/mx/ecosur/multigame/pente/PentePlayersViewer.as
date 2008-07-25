@@ -14,6 +14,7 @@ package mx.ecosur.multigame.pente {
 	public class PentePlayersViewer extends Accordion {
 		
 		private var _players:ArrayCollection; 
+		private var _selectedPlayer:PentePlayerInfo;
 		
 		/**
 		 * Default constructor 
@@ -108,11 +109,13 @@ package mx.ecosur.multigame.pente {
 		private function selectPlayer(ppi:PentePlayerInfo):void{
 			
 			//deselect selected
-			var btn:Button = getHeaderAt(selectedIndex);
-			btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
-			btn.setStyle("fillAlphas", [0.6, 0.4]);
-			btn.setStyle("color", 0x0B333C);
-			btn.setStyle("borderColor", 0xAAB3B3);
+			if (_selectedPlayer){
+				var btn:Button = getHeaderAt(getChildIndex(_selectedPlayer));
+				btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
+				btn.setStyle("fillAlphas", [0.6, 0.4]);
+				btn.setStyle("color", 0x0B333C);
+				btn.setStyle("borderColor", 0xAAB3B3);
+			}
 			
 			//select new
 			btn = getHeaderAt(getChildIndex(ppi));
@@ -121,6 +124,7 @@ package mx.ecosur.multigame.pente {
 			btn.setStyle("color", 0xFFFFFF);
 			btn.setStyle("borderColor", 0xFF3300);
 			
+			_selectedPlayer = ppi;
 			selectedChild = ppi;
 		}
 		

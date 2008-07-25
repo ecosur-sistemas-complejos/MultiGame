@@ -66,6 +66,7 @@ package mx.ecosur.multigame.pente{
 		private var _game:PenteGame;
 		private var _moves:ArrayCollection; //all moves made in the game
 		private var _selectedMoveInd:Number; //index of selected move in _moves
+		private var _winners:ArrayCollection;
 		
 		// Server objects
 		private var _gameService:RemoteObject;
@@ -75,6 +76,8 @@ package mx.ecosur.multigame.pente{
 		private var _isMoving:Boolean;
 		private var _isTurn:Boolean;
 		private var _isBoardEmtpy:Boolean;
+		private var _executingMove:PenteMove; // Pointer to move that has been made by the client but not yet validated by the server.
+		private var _isEnded:Boolean;
 		
 		// constants
 		private static const TOKEN_STORE_MIN_WIDTH:int = 150;
@@ -86,6 +89,7 @@ package mx.ecosur.multigame.pente{
 		private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
 		private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
 		private static const GAME_SERVICE_UPDATE_MOVE_OP:String = "updateMove";
+		private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 		
 		/**
 		 * Default constructor. 
@@ -105,6 +109,7 @@ package mx.ecosur.multigame.pente{
 			_animateLayer = animateLayer;
 			_moves = new ArrayCollection();
 			_isMoving = false;	
+			_isEnded = false;
 			
 			//initialize game service remote object
 			_gameService = new RemoteObject();
@@ -197,8 +202,60 @@ package mx.ecosur.multigame.pente{
 		 */
 		public function end():void{
 			
-			//TODO: Do something here depending on the winner etc.
-			_gameStatus.showMessage("The game has finished.", 0x00000);	
+			if(_isEnded){
+				return;
+			}
+			
+			// Remove the token store
+			_tokenStore.active = false;
+
+			// Prepare message for winners
+			var msg:String = "";
+			var color:uint;
+			var pentePlayer:PentePlayer;
+			if (_winners.length == 1){
+				pentePlayer = PentePlayer(_winners[0]);
+				msg = pentePlayer.player.name + " has won the game.";
+				color = Color.getColorCode(pentePlayer.color);
+			}else{
+				for (var i:int = 0; i < _winners.length; i++){
+					msg += PentePlayer(_winners[0]).player.name + " and ";
+				}
+				msg = msg.substring(0, msg.length - 4) + " have won the game."
+				color = 0x000000;
+			}
+			_gameStatus.showMessage(msg, 0x00000);
+			_gameStatus.active = false;
+			
+			// Blink and select the winning board cells and tokens
+			var beadString:BeadString;
+			var cell:Cell;
+			var boardCell:BoardCell;
+			pentePlayer = PentePlayer(_winners[0]);
+			if (_winners.length == 1){
+				for (var j:int = 0; j < pentePlayer.trias.length; j++){
+					beadString = BeadString(pentePlayer.trias[j]);
+					for (var k:Number = 0; k < beadString.beads.length; k++){
+						cell = Cell(beadString.beads[k]);
+						boardCell = _board.getBoardCell(cell.column, cell.row); 
+						boardCell.token.blink();
+						boardCell.select(cell.colorCode);
+					}
+				}
+			}else{
+				for (var m:int = 0; m < pentePlayer.tesseras.length; m++){
+					beadString = BeadString(pentePlayer.tesseras[m]);
+					for (var n:Number = 0; n < beadString.beads.length; n++){
+						cell = Cell(beadString.beads[n]);
+						boardCell = _board.getBoardCell(cell.column, cell.row); 
+						boardCell.token.blink();
+						boardCell.select(cell.colorCode);
+					}
+				} 
+			}
+			
+			_isEnded = true;
+			
 		}
 		
 		/*
@@ -219,6 +276,9 @@ package mx.ecosur.multigame.pente{
 					_moveViewer.initFromMoves(_moves);
 					_selectedMoveInd = _moves.length - 1;
 					break;
+				case GAME_SERVICE_DO_MOVE_OP:
+					_executingMove = null;
+					break;
 			}
 		}
 		
@@ -230,8 +290,7 @@ package mx.ecosur.multigame.pente{
 			if (errorMessage.extendedData != null){
 				if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
 					var fnc:Function = function (event:CloseEvent):void{
-						undoMove(PenteMove(_moves.source.pop()));
-						_selectedMoveInd = _moves.length - 1;
+						undoMove(_executingMove);
 					}
 					Alert.show("Sorry but this move is not valid", "Woops!", Alert.OK, null, fnc);
 				}
@@ -263,7 +322,10 @@ package mx.ecosur.multigame.pente{
 					}
 					break;
 				case GameEvent.END:
-					end();
+					_winners = PenteGame(message.body).winners;
+					if (_isTurn){
+						end();
+					}
 					break;
 				case GameEvent.MOVE_COMPLETE:
 					var move:PenteMove = PenteMove(message.body);
@@ -348,6 +410,9 @@ package mx.ecosur.multigame.pente{
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
 			if (boardCell.token != null){
 				_moveViewer.selectedMove = move;
+				if (_winners){
+					end();
+				}
 				return;
 			}
 			
@@ -430,33 +495,39 @@ package mx.ecosur.multigame.pente{
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
-			// If the move contains trias or tesseras then blink them
-			var beadString:BeadString;
-			var cell:Cell;
-			if (move.trias != null && move.trias.length){
-				for (var i:Number = 0; i < move.trias.length; i++){
-					beadString = BeadString(move.trias[i]);
-					for (var j:Number = 0; j < beadString.beads.length; j++){
-						cell = Cell(beadString.beads[j]);
-						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+			// If winners are not present or the move must be qualified
+			if (!_winners || (move.player.id == getTeamMate().id && move.qualifier == null)){
+				
+				// If the move contains trias or tesseras then blink them
+				var beadString:BeadString;
+				var cell:Cell;
+				if (move.trias != null && move.trias.length){
+					for (var i:Number = 0; i < move.trias.length; i++){
+						beadString = BeadString(move.trias[i]);
+						for (var j:Number = 0; j < beadString.beads.length; j++){
+							cell = Cell(beadString.beads[j]);
+							_board.getBoardCell(cell.column, cell.row).token.blink(3);
+						}
 					}
 				}
-			}
-			if (move.tesseras != null && move.tesseras.length){
-				for (var k:Number = 0; k < move.tesseras.length; k++){
-					beadString = BeadString(move.tesseras[k]);
-					for (var l:Number = 0; l < beadString.beads.length; l++){
-						cell = Cell(beadString.beads[l]);
-						_board.getBoardCell(cell.column, cell.row).token.blink(3);
+				if (move.tesseras != null && move.tesseras.length){
+					for (var k:Number = 0; k < move.tesseras.length; k++){
+						beadString = BeadString(move.tesseras[k]);
+						for (var l:Number = 0; l < beadString.beads.length; l++){
+							cell = Cell(beadString.beads[l]);
+							_board.getBoardCell(cell.column, cell.row).token.blink(3);
+						}
 					}
 				}
+				
+				// If the current player is the team mate of the player that moved then qualify the move
+				if (move.player.id == getTeamMate().id && move.qualifier == null){
+					qualifyMove(move);	
+				}
+			}else{
+				end();
 			}
 			
-			// If the current player in the partner of the player who just moved
-			// then force him/her to qualify the move.
-			if (move.player.id == getTeamMate().id && move.qualifier == null){
-				qualifyMove(move);
-			}
 		}
 		
 		private function undoMove(move:PenteMove):void{
@@ -490,6 +561,7 @@ package mx.ecosur.multigame.pente{
 			token.width = endSize;
 			token.height = endSize;
 			boardCell.token = null;
+			boardCell.reset();
 			_animateLayer.addChild(token);
 
 			//define motion animation
@@ -553,8 +625,15 @@ package mx.ecosur.multigame.pente{
 				}
 				var call:Object = _gameService.updateMove(move);
 				call.operation = GAME_SERVICE_UPDATE_MOVE_OP;
-				var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row); 
-				boardCell.reset();
+				
+				// If no winners then reset board cell and continue with the game
+				// Else do the winning routine
+				if (!_winners){
+					var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row); 
+					boardCell.reset();
+				} else {
+					end();
+				}
 			}
 			
 			//select board cell and start blinking token
@@ -656,7 +735,8 @@ package mx.ecosur.multigame.pente{
 				move.destination = destination;
 				move.status = Move.UNVERIFIED;
             	var call:Object = _gameService.doMove(move);
-            	call.operation = "doMove";
+            	call.operation = GAME_SERVICE_DO_MOVE_OP;
+            	_executingMove = move; 
 				
 				// do move in interface
 				boardCell.reset();

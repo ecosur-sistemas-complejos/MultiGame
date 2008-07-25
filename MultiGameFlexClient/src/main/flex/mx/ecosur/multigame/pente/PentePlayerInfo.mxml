@@ -3,6 +3,7 @@
 	
 	<mx:Script> 
         <![CDATA[
+        	import mx.formatters.DateFormatter;
         	import mx.ecosur.multigame.pente.entity.PentePlayer;
         	import mx.ecosur.multigame.enum.Color;
         	import mx.controls.Alert;
@@ -12,7 +13,9 @@
         	public function set pentePlayer(pentePlayer:PentePlayer):void{
         		playerTeam.text = Color.getTeamName(pentePlayer.color);
         		var d:Date = new Date(pentePlayer.player.lastRegistration);
-        		playerLastRegistration.text = d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes();
+        		var df:DateFormatter = new DateFormatter();
+        		df.formatString = "DD/MM/YYYY H:NN";
+        		playerLastRegistration.text = df.format(d);
         		if (pentePlayer.trias != null){
         			playerTrias.text = pentePlayer.trias.length.toString();
         		} else {
@@ -38,7 +41,7 @@
     		<mx:GridItem>
     			<mx:Label text="Team" styleName="fieldLit"/>
     		</mx:GridItem>
-    		<mx:GridItem paddingRight="15">
+    		<mx:GridItem paddingRight="0">
     			<mx:Label id="playerTeam" styleName="field"/>
     		</mx:GridItem>
     		<mx:GridItem>
