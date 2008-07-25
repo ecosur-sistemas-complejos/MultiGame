@@ -294,16 +294,16 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	            PentePlayer partner = pentePlayer.getPartner();
 	            if (!em.contains(partner)) {
 	                partner = em.find (partner.getClass(), partner.getId());
-	                if (pentePlayer.getPoints() == 5) {
-	                	partner.setPoints(5);
-	                	pentePlayer.setPartner(partner);
-	                	game.updatePlayer(pentePlayer);
-	                	HashSet<PentePlayer> hacky = new HashSet<PentePlayer>();
-	                	hacky.add(pentePlayer);
-	                	hacky.add(partner);
-	                	((PenteGame) game).setWinners(hacky);
-	                	em.merge(game);
-	               	}
+	            }
+	            if (pentePlayer.getPoints() == 5) {
+	               	partner.setPoints(5);
+	               	pentePlayer.setPartner(partner);
+	               	game.updatePlayer(pentePlayer);
+	              	HashSet<PentePlayer> hacky = new HashSet<PentePlayer>();
+	               	hacky.add(pentePlayer);
+	               	hacky.add(partner);
+	               	((PenteGame) game).setWinners(hacky);
+	               	em.merge(game);
 	            }
 	            
 	            partner.setTesseras(pentePlayer.getTesseras());
