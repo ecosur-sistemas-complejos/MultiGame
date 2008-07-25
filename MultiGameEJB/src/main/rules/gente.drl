@@ -241,6 +241,4 @@ when
 then
     PentePlayer winner = getWinner (game);
     modify (game) { setState (GameState.END)}
-    MessageSender messageSender = new MessageSender();
-    messageSender.sendEndGame (game);
 end
