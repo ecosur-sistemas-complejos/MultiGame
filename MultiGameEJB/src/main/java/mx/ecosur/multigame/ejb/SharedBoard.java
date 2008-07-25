@@ -299,8 +299,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 	               	}
 	            }
 	            partner.setTesseras(pentePlayer.getTesseras());
-	            pentePlayer.setPartner(partner);
-	            pentePlayer.getGame().updatePlayer(pentePlayer);
 	            em.merge (pentePlayer);
 	            em.merge (partner);
 	            if (pentePlayer.getPoints () > 0) {
