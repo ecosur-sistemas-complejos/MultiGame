@@ -28,21 +28,19 @@ package mx.ecosur.multigame.pente{
 	import mx.ecosur.multigame.pente.entity.PenteGame;
 	import mx.ecosur.multigame.pente.entity.PenteMove;
 	import mx.ecosur.multigame.pente.entity.PentePlayer;
+	import mx.ecosur.multigame.util.MessageReceiver;
 	import mx.effects.AnimateProperty;
 	import mx.events.CloseEvent;
 	import mx.events.DragEvent;
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
 	import mx.managers.DragManager;
-	import mx.messaging.Consumer;
-	import mx.messaging.events.MessageEvent;
 	import mx.messaging.events.MessageFaultEvent;
 	import mx.messaging.messages.ErrorMessage;
 	import mx.messaging.messages.IMessage;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
-	
 
 	/**
 	 * Represents a game of pente. Contains a pente board and cell store 
@@ -50,7 +48,7 @@ package mx.ecosur.multigame.pente{
 	 */
 	public class PenteGameController {
 		
-		// Visual components
+		// visual components
 		private var _board:PenteBoard;
 		private var _chatPanel:ChatPanel;
 		private var _playersViewer:PentePlayersViewer;
@@ -59,7 +57,7 @@ package mx.ecosur.multigame.pente{
 		private var _gameStatus:GameStatus;
 		private var _animateLayer:UIComponent;
 		
-		// Data objects
+		// data objects
 		private var _currentPlayer:GamePlayer;
 		private var _players:ArrayCollection;
 		private var _gameGrid:GameGrid;
@@ -68,15 +66,14 @@ package mx.ecosur.multigame.pente{
 		private var _selectedMoveInd:Number; //index of selected move in _moves
 		private var _winners:ArrayCollection;
 		
-		// Server objects
+		// server objects
 		private var _gameService:RemoteObject;
-		private var _consumer:Consumer;
+		private var _msgReceiver:MessageReceiver;
 		
 		// flags
 		private var _isMoving:Boolean;
 		private var _isTurn:Boolean;
-		private var _isBoardEmtpy:Boolean;
-		private var _executingMove:PenteMove; // Pointer to move that has been made by the client but not yet validated by the server.
+		private var _executingMove:PenteMove; // Reference to move that has been made by the client but not yet validated by the server.
 		private var _isEnded:Boolean;
 		
 		// constants
@@ -92,13 +89,12 @@ package mx.ecosur.multigame.pente{
 		private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 		
 		/**
-		 * Default constructor. 
-		 * 
+		 * Constructor 
 		 */
 		public function PenteGameController(currentPlayer:GamePlayer, board:PenteBoard, chatPanel:ChatPanel, playersViewer:PentePlayersViewer, tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:PenteMoveViewer, animateLayer:UIComponent){
 			super();
 			
-			//set private references
+			// set private references
 			_currentPlayer = currentPlayer;
 			_board = board;
 			_chatPanel = chatPanel;
@@ -111,37 +107,34 @@ package mx.ecosur.multigame.pente{
 			_isMoving = false;	
 			_isEnded = false;
 			
-			//initialize game service remote object
+			// initialize game service remote object
 			_gameService = new RemoteObject();
 			_gameService.destination = GAME_SERVICE_DESTINATION_NAME;
 			_gameService.addEventListener(ResultEvent.RESULT, gameServiceResultHandler);
 			_gameService.addEventListener(FaultEvent.FAULT, gameServiceFaultHandler);
 			
-			//initialize consumer
-			_consumer = new Consumer();
-			_consumer.destination = MESSAGING_DESTINATION_NAME;
-			_consumer.addEventListener(MessageEvent.MESSAGE, consumerMessageHandler);
-			_consumer.addEventListener(MessageFaultEvent.FAULT, consumerFaultHandler);
-			_consumer.subscribe();
+			// initialize message receiver
+			_msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _currentPlayer.game.id);
+			_msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
 			
-			//initialize the board
+			// initialize the board
 			_board.dragEnterHandler = dragEnterBoardCell;
 			_board.dragDropHandler = dragDropCell;
 			_board.dragExitHandler = dragExitCell;	
 			
-			//initialize token store
+			// initialize token store
 			_tokenStore.startMoveHandler = startMove;
 			_tokenStore.endMoveHandler = endMove;
 			_tokenStore.active = false;
 			
-			//initialize game status
+			// initialize game status
 			_gameStatus.showMessage("Welcome to the game " + currentPlayer.player.name + "!\n\n You are " + Color.getColorDescription(currentPlayer.color), Color.getColorCode(currentPlayer.color));
 			
-			//initialize the move viewer
+			// initialize the move viewer
 			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
 			_moveViewer.board = _board;
 			
-			//get the game grid, players and moves
+			// get the game grid, players and moves
 			var callGrid:Object = _gameService.getGameGrid();
 			callGrid.operation = GAME_SERVICE_GET_GRID_OP;
 			var callPlayers:Object = _gameService.getPlayers();
@@ -192,24 +185,22 @@ package mx.ecosur.multigame.pente{
 		 * Called when game begins 
 		 */
 		private function begin():void{
-			
-			//TODO: Do something here, manage the update player event aswell as the game begins event.
 			_gameStatus.showMessage("All players have joined. The game will now begin.", 0x00000);	
 		}
 		
 		/*
 		 * Called when game ends 
 		 */
-		public function end():void{
+		private function end():void{
 			
 			if(_isEnded){
 				return;
 			}
 			
-			// Remove the token store
+			// remove the token store
 			_tokenStore.active = false;
 
-			// Prepare message for winners
+			// prepare message for winners
 			var msg:String = "";
 			var color:uint;
 			var pentePlayer:PentePlayer = PentePlayer(_winners[0]);
@@ -228,7 +219,7 @@ package mx.ecosur.multigame.pente{
 			_gameStatus.showMessage(msg, 0x00000);
 			_gameStatus.active = false;
 			
-			// Blink and select the winning board cells and tokens
+			// blink and select the winning board cells and tokens
 			var beadString:BeadString;
 			var cell:Cell;
 			var boardCell:BoardCell;
@@ -300,10 +291,11 @@ package mx.ecosur.multigame.pente{
 		}
 		
 		/*
-		 * Consumer message handler. All messages contain a game event
+		 * Process the different types of messages received by the MessageReciever,
+		 * reordered and dispatched. All messages contain a game event
 		 * header, based on this different actions are taken.
 		 */
-		private function consumerMessageHandler(event:MessageEvent):void {
+		private function processMessage(event:DynamicEvent):void {
 			var message:IMessage = event.message;
 			var gameId:Number = message.headers.GAME_ID;
 			var gameEvent:String = message.headers.GAME_EVENT;
@@ -337,14 +329,18 @@ package mx.ecosur.multigame.pente{
 					break;
 			}
 		}
-			
-		private function consumerFaultHandler(event:MessageFaultEvent):void {
-			Alert.show(event.faultString, "Error receiving message");
-		}
 		
+		/* Go directly to a given move in the move history of the game.
+		 * Animates tokens on or off the board to transform the current
+		 * board into a snapshot of the desired move.
+		 */
 		private function gotoMove(event:DynamicEvent):void{
 
 			var move:PenteMove = PenteMove(event.move);
+			
+			// if move is before the currently selected move then iterate
+			// back over the moves transforming the board
+			// else iterate forward
 			if(move.id < PenteMove(_moves[_selectedMoveInd]).id){
 				do{
 					undoMove(PenteMove(_moves[_selectedMoveInd]));
@@ -363,9 +359,6 @@ package mx.ecosur.multigame.pente{
 		 * it is animated.  
 		 */
 		private function addMove(move:PenteMove):void{
-			
-			//TODO: Manage this property better
-			_isBoardEmtpy = false;
 			
 			//get last move in game
 			var lastMove:PenteMove = null;
@@ -497,12 +490,12 @@ package mx.ecosur.multigame.pente{
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
-			// If winners are not present or the move must be qualified
+			// ifwinners are not present or the move must be qualified
 			if (!_winners || (move.player.id == getTeamMate().id && move.qualifier == null)){
 				
 				checkBeadStrings(move);
 				
-				// If the current player is the team mate of the player that moved then qualify the move
+				// ifthe current player is the team mate of the player that moved then qualify the move
 				if (move.player.id == getTeamMate().id && move.qualifier == null){
 					qualifyMove(move);	
 				}
@@ -592,7 +585,7 @@ package mx.ecosur.multigame.pente{
 		
 		private function checkBeadStrings(move:PenteMove):void{
 
-			// If the move contains trias or tesseras then blink them
+			// ifthe move contains trias or tesseras then blink them
 			var beadString:BeadString;
 			var cell:Cell;
 			var hasScored:Boolean = false;
@@ -641,8 +634,8 @@ package mx.ecosur.multigame.pente{
 				var call:Object = _gameService.updateMove(move);
 				call.operation = GAME_SERVICE_UPDATE_MOVE_OP;
 				
-				// If no winners then reset board cell and continue with the game
-				// Else do the winning routine
+				// if no winners then reset board cell and continue with the game
+				// else do the winning routine
 				if (!_winners){
 					var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row); 
 					boardCell.reset();
@@ -651,11 +644,11 @@ package mx.ecosur.multigame.pente{
 				}
 			}
 			
-			//select board cell and start blinking token
+			// select board cell and start blinking token
 			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
 			boardCell.select(Color.getColorCode(move.player.color));
 			
-			//show qualify dialog
+			// show qualify dialog
 			var txt:String = "Your team mate had made a move.\n\nPlease qualify this move according to its level of cooperation?\n\nNote that this window may be dragged to a different location if it is obscuring the game."
 			var title:String = "QUALIFY MOVE";
 			Alert.yesLabel = "COOPERATIVE";
@@ -680,15 +673,12 @@ package mx.ecosur.multigame.pente{
 			_gameGrid = gameGrid;
 			_board.clearTokens();
 			if (_gameGrid.cells && _gameGrid.cells.length > 0){
-				_isBoardEmtpy = false;
 				for (var i:Number = 0; i < _gameGrid.cells.length; i++){
 					cell = Cell(_gameGrid.cells[i]);
 					token = new Token();
 					token.cell = cell;
 					_board.addToken(token);
 				}
-			}else{
-				_isBoardEmtpy = true;
 			}
 		} 
 		
@@ -704,12 +694,12 @@ package mx.ecosur.multigame.pente{
 			
 			if (!_isMoving && _isTurn){
 			
-				//initialize drag source
+				// initialize drag source
 	            var token:Token = Token(evt.currentTarget);
 	            var ds:DragSource = new DragSource();
 	            ds.addData(token, "token");
 	            	            
-	            //create proxy image and start drag
+	            // create proxy image and start drag
 	            var dragImage:IFlexDisplayObject = token.createDragImage();
 	            DragManager.doDrag(token, ds, evt, dragImage);
             	_isMoving = true;
@@ -725,7 +715,7 @@ package mx.ecosur.multigame.pente{
 				var boardCell:BoardCell = BoardCell(evt.currentTarget);
 				boardCell.addEventListener(DragEvent.DRAG_EXIT, dragExitCell);
 				
-				//calculate if move is valid
+				// calculate if move is valid
 				if (validateMove(boardCell)){
 					boardCell.select(token.cell.colorCode);
 					DragManager.acceptDragDrop(boardCell);
@@ -800,7 +790,7 @@ package mx.ecosur.multigame.pente{
 		
 		private function validateMove(boardCell:BoardCell):Boolean{
 			
-			if(_isBoardEmtpy){
+			if(_moves.length == 0){
 				if(boardCell.row == Math.floor(_board.nRows / 2) && boardCell.column == Math.floor(_board.nCols / 2)){
 					return true;
 				}else{
@@ -814,7 +804,7 @@ package mx.ecosur.multigame.pente{
 		
 		private function getTeamMate():GamePlayer{
 			
-			//get team mates color
+			// get team mates color
 			var color:String;
 			switch (_currentPlayer.color){
 				case Color.YELLOW:
@@ -831,7 +821,7 @@ package mx.ecosur.multigame.pente{
 					break;
 			}
 			
-			//get team mate
+			// get team mate
 			var player:GamePlayer;
 			for (var i:int = 0; i < _players.length; i++){
 				player = GamePlayer(_players[i])
