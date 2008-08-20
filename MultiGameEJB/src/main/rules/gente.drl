@@ -2,6 +2,7 @@ package mx.ecosur.multigame.pente;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,7 +96,6 @@ function int scorePlayer (PenteMove move) {
     Determines if the game has a winner.
 */
 function boolean hasWinner (PenteGame game) {
-    game.determineWinners();
     return (game.getWinners().size() > 0);
 }
 
@@ -104,10 +104,9 @@ function boolean hasWinner (PenteGame game) {
     schemas, this function should return a PriorityQueue of Players 
     based upon positions on the board.
 */
-function PentePlayer getWinner (PenteGame game) {   
+function Set getWinners (PenteGame game) {   
     PenteGame pente = (PenteGame) game;
-    SortedSet<PentePlayer> winners = (SortedSet<PentePlayer>) pente.getWinners();
-    return winners.first();
+    return pente.getWinners();
 }
 
 
@@ -175,8 +174,7 @@ end
  
 rule "find-the-trias"
     agenda-group "evaluate"
-    salience 1
-    no-loop true
+    no-loop true 
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
@@ -188,11 +186,11 @@ then
     for (BeadString  t : trias) {
         player.addTria(t);
     }
+    modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
 end
 
 rule "find-the-tesseras"
     agenda-group "evaluate"
-    salience 1
     no-loop true
 when
     game  : PenteGame (state == GameState.PLAY)
@@ -201,33 +199,36 @@ when
     eval (isTessera (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
+    PentePlayer partner = (PentePlayer) player.getPartner();
     Set<BeadString> tesseras = move.getTesseras();
     for (BeadString  t : tesseras) {
         player.addTessera (t);
+        partner.addTessera (t);
     }
+    modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
 end
 
-/*
-    TODO:  We may not be serializing the teammate's score, as only
-    the move is serialized in this case.  This should be 
-    checked.
-*/ 
 rule "score"
     agenda-group "evaluate"
-    salience 2
     no-loop true
 when
     game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    move  : PenteMove (player.turn == true, status == Status.EVALUATED)
 then
     int score = scorePlayer (move);
     PentePlayer player = (PentePlayer) move.getPlayer ();
-    if (score == 5) {
-        PentePlayer teammate = player.getPartner();
-        teammate.setPoints (score);
+    if (score > 0) {
+        Set<PentePlayer> winners = new HashSet<PentePlayer>();
+        if (score == 5) {
+            PentePlayer teammate = player.getPartner();
+            teammate.setPoints (score);
+            winners.add(teammate);
+        }
+        player.setPoints (score);
+        winners.add(player);
+        modify (move) { setPlayer (player) }
+        modify (game) { setWinners (winners) }
     }
-    player.setPoints (score);
-    modify (move) { setPlayer (player) }
 end
 
 # Finds the winner 
@@ -236,9 +237,9 @@ rule "find-the-winner"
     no-loop true
 when
     game  : PenteGame (state == GameState.PLAY)
-    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    move  : PenteMove (player.turn == true, status == Status.EVALUATED)
     eval (hasWinner(game))
 then
-    PentePlayer winner = getWinner (game);
-    modify (game) { setState (GameState.END)}
+    Set<PentePlayer> winners = getWinners (game);
+    modify (game) { setState (GameState.END), setWinners (winners) }
 end

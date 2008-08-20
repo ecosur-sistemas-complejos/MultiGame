@@ -286,37 +286,6 @@ public class SharedBoard implements SharedBoardRemote, SharedBoardLocal {
 		statefulSession.fireAllRules();
 		
 		statefulSession.dispose();
-		
-		/* TODO:  Hack to explicitly manage shared state */
-		switch (game.getType()) {
-	        case PENTE:
-	            PentePlayer pentePlayer = (PentePlayer) move.getPlayer();
-	            PentePlayer partner = pentePlayer.getPartner();
-	            if (!em.contains(partner)) {
-	                partner = em.find (partner.getClass(), partner.getId());
-	            }
-	            if (pentePlayer.getPoints() == 5) {
-	               	partner.setPoints(5);
-	               	pentePlayer.setPartner(partner);
-	               	game.updatePlayer(pentePlayer);
-	              	HashSet<PentePlayer> hacky = new HashSet<PentePlayer>();
-	               	hacky.add(pentePlayer);
-	               	hacky.add(partner);
-	               	((PenteGame) game).setWinners(hacky);
-	               	em.merge(game);
-	            }
-	            
-	            partner.setTesseras(pentePlayer.getTesseras());
-	            em.merge (pentePlayer);
-	            em.merge (partner);
-	            if (pentePlayer.getPoints () > 0) {
-	            	MessageSender messageSender = new MessageSender();
-	            	messageSender.sendEndGame (game);
-	            }
-	            break;
-	        default:
-	            break;
-		}
 
 		/* TODO: move this to the rules */
 		incrementTurn(move.getPlayer());

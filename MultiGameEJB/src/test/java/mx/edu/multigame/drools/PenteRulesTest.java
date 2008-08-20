@@ -206,7 +206,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> set = move.getTrias();
@@ -261,7 +261,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
 		
 		HashSet<BeadString> set = move.getTrias();
@@ -311,7 +311,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> set = move.getTesseras();
@@ -320,6 +320,10 @@ public class PenteRulesTest extends RulesTestBase {
 		assertEquals (5, alice.getPoints());
 		assertEquals (3, alice.getTesseras().size ());
 		
+		/* Check Alice's partner */
+		PentePlayer partner = alice.getPartner();
+		assertEquals (5, partner.getPoints());
+		assertEquals  (3, partner.getTesseras().size());
 	}
 	
 	@Test
@@ -340,7 +344,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -366,7 +370,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -415,7 +419,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -447,7 +451,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -473,7 +477,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules(move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -500,7 +504,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
 		
 		HashSet<BeadString> trias = move.getTrias();
@@ -519,7 +523,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules(move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tria, game.getGrid().getLocation(tria));
 		
 		trias = move.getTrias();

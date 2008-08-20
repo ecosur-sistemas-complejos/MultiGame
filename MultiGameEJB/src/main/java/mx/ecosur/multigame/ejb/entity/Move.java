@@ -33,7 +33,7 @@ public class Move implements Serializable {
 	private Cell current, destination;
 
 	public enum Status {
-		INVALID, VERIFIED, UNVERIFIED, MOVED
+		INVALID, VERIFIED, UNVERIFIED, MOVED, EVALUATED
 	}
 
 	private Status status;

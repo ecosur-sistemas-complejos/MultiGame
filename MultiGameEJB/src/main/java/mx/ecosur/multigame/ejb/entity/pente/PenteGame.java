@@ -11,12 +11,10 @@ import javax.persistence.OneToMany;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
 
 
 
@@ -41,23 +39,13 @@ public class PenteGame extends Game {
 	
 	@OneToMany (fetch=FetchType.EAGER)
 	public Set <PentePlayer> getWinners () {
+		if (winners == null)
+			winners = new HashSet<PentePlayer>();
 		return winners;
 	}
 	
 	public void setWinners(Set<PentePlayer> winners){
 		this.winners = winners;
-	}
-	
-	public void determineWinners() {
-		TreeSet<PentePlayer> ret = new TreeSet<PentePlayer> (new PlayerComparator());
-		List <GamePlayer> players = this.getPlayers();
-		for (GamePlayer p : players) {
-			PentePlayer player = (PentePlayer) p;
-			if (player.getPoints() > 0)
-			ret.add(player);
-		}
-		
-		winners = ret;
 	}
 	
 	

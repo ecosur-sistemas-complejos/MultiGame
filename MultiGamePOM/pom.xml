@@ -48,7 +48,7 @@
 		<profile>
             <id>ui</id>
             <modules>
-                <module>../MultiGameJFC</module>
+                <module>../MultiGameFlexClient</module>
             </modules>
         </profile>
         <profile>
