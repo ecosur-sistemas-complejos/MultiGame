@@ -11,8 +11,8 @@ import javax.persistence.OneToMany;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import mx.ecosur.multigame.ejb.entity.Game;
 
@@ -40,12 +40,16 @@ public class PenteGame extends Game {
 	@OneToMany (fetch=FetchType.EAGER)
 	public Set <PentePlayer> getWinners () {
 		if (winners == null)
-			winners = new HashSet<PentePlayer>();
+			winners = new TreeSet<PentePlayer>(new PlayerComparator());
 		return winners;
 	}
 	
 	public void setWinners(Set<PentePlayer> winners){
 		this.winners = winners;
+	}
+	
+	/* Method included soleley for signature, issue with Glassfish Deployment */
+	public void determineWinners() {
 	}
 	
 	
