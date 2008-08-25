@@ -114,7 +114,6 @@ public class GameService {
 	}
 	public GameGrid getGameGrid() {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		FlexSession session = FlexContext.getFlexSession();
 		return sharedBoard.getGameGrid();
 	}
 

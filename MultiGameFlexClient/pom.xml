@@ -11,17 +11,17 @@
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-core</artifactId>
-       <version>3.0-patched-ecosur</version>
+       <version>3.0</version>
     </dependency>
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-common</artifactId>
-       <version>3.0-patched-ecosur</version>
+       <version>3.0</version>
     </dependency>
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-remoting</artifactId>
-       <version>3.0-patched-ecosur</version>
+       <version>3.0</version>
     </dependency>
     
     <!-- This dependency should be resolved by blazeds-core but patched version does not inherit dependencies because it has no pom -->
