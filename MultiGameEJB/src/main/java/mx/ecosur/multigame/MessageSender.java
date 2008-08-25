@@ -2,7 +2,6 @@ package mx.ecosur.multigame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,29 +24,11 @@ public class MessageSender {
 	private static Logger logger = Logger.getLogger(MessageSender.class
 			.getCanonicalName());
 
-	// TODO: Connection factory properties - should be moved out to .properties
-	// file
 	private static String CONNECTION_FACTORY_JNDI_NAME = "jms/TopicConnectionFactory";
 	private static String TOPIC_JNDI_NAME = "CHECKERS";
 
-	/* Message keys */
-	private static String KEY_GAME_ID = "GAME_ID";
-	private static String KEY_GAME_EVENT = "GAME_EVENT";
-	private static String KEY_MESSAGE_ID = "MESSAGE_ID";
-
 	private ConnectionFactory connectionFactory;
 	private Topic topic;
-	
-	/*
-	 * Message counter to allow clients to order and queue messages Keys
-	 * correspond to gameId's and the values the id of the last message sent to
-	 * that game where the ids of messages within a game start at 1 and are
-	 * incremented by 1 for each message enabling the clients to order messages
-	 * and check for missing deliveries.
-	 * 
-	 * A Hashtable is used since it is synchronized which should handle concurrency
-	 */
-	private static Hashtable<Integer,Integer> lastMessageIds = new Hashtable<Integer, Integer>();
 
 	/**
 	 * Default constructor initializes connection factory and topic
@@ -71,15 +52,6 @@ public class MessageSender {
 
 	}
 
-	private int getNextId(int gameId) {
-		int messageId = 1;
-		if (lastMessageIds.containsKey(gameId)){
-			messageId = lastMessageIds.get(gameId) + 1;
-		}
-		lastMessageIds.put(gameId, messageId);
-		return messageId;
-	}
-
 	private void sendMessage(int gameId, GameEvent gameEvent, Serializable body) {
 		try {
 			Connection connection = connectionFactory.createConnection();
@@ -87,9 +59,8 @@ public class MessageSender {
 					Session.AUTO_ACKNOWLEDGE);
 			MessageProducer producer = session.createProducer(topic);
 			ObjectMessage message = session.createObjectMessage();
-			message.setIntProperty(KEY_GAME_ID, gameId);
-			message.setStringProperty(KEY_GAME_EVENT, gameEvent.toString());
-			message.setIntProperty(KEY_MESSAGE_ID, getNextId(gameId));
+			message.setIntProperty("GAME_ID", gameId);
+			message.setStringProperty("GAME_EVENT", gameEvent.toString());
 			if (body != null) {
 				message.setObject(body);
 			}
@@ -119,7 +90,7 @@ public class MessageSender {
 	 * @param players
 	 */
 	public void sendPlayerChange(Game game) {
-		// must convert list to array list since list is not serialized
+		//must convert list to array list since list is not serialized
 		List<GamePlayer> players = game.getPlayers();
 		ArrayList<GamePlayer> playersSerial = new ArrayList<GamePlayer>(players);
 		sendMessage(game.getId(), GameEvent.PLAYER_CHANGE, playersSerial);
