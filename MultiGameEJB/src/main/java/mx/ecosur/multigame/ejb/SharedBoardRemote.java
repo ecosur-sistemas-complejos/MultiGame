@@ -1,110 +1,106 @@
 package mx.ecosur.multigame.ejb;
 
-
-import java.awt.Dimension;
 import java.rmi.RemoteException;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Remote;
 
 import mx.ecosur.multigame.GameGrid;
-import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 @Remote
 public interface SharedBoardRemote {
-	
+
 	/**
-	 * Locates a game of the specified type, and updates the 
-	 * current handle with that game's information.
-	 * @throws RemoteException 
-	 * @TODO Expand this later to search for a game with specific players 
+	 * Gets a game by its id
 	 * 
+	 * @param gameId
+	 *            the id of the game
+	 * @return
+	 */
+	public Game getGame(int gameId);
+
+	/**
+	 * Validates a specific move against a specific RuleBase. The move requires
+	 * a player and a game.id property to allow the game to be retrieved.
 	 * 
+	 * @param move
+	 * @return the move with its status updated
+	 * @throws InvalidMoveException
+	 * @throws RemoteException
 	 */
-	public void locateSharedBoard (GameType type) throws RemoteException;
-	
+	public Move validateMove(Move move) throws InvalidMoveException,
+			RemoteException;
+
 	/**
-	 * Locates a game with the specified id. 
+	 * Makes the specified move on the game grid. The move requires a player and
+	 * a game.id property to allow the game to be retrieved.
+	 * 
+	 * @param move
+	 * @throws InvalidMoveException
+	 * @throws RemoteException
 	 */
-	public void locateSharedBoard (GameType type, int gameId) throws RemoteException;
-	
+	public void move(Move move) throws InvalidMoveException, RemoteException;
+
 	/**
-	 * Validates a specific move against a specific RuleBase
+	 * Returns the a GameGrid object, populated with the current moves on the
+	 * Grid. GameGrid's are read-only representations of grid state at a point
+	 * in time.
+	 * 
+	 * @param gameId
+	 *            the id of the game
+	 * @return
 	 */
-	public Move validateMove (Move move) throws InvalidMoveException;
-	
+	public GameGrid getGameGrid(int gameId);
+
 	/**
-	 * Makes the specified move on the game grid
-	 * @throws RemoteException 
-	 */
-	public void move (Move move) throws InvalidMoveException, RemoteException;
-	
-	/**
-	 * Returns the a GameGrid object, populated with the current
-	 * moves on the Grid.  GameGrid's are read-only representations
-	 * of grid state at a point in time. 
-	 * @throws CloneNotSupportedException 
-	 */
-	public GameGrid getGameGrid ();
-	
-	/**
-	 * Returns the current state of the Game managed by this EJB
-	 */
-	public GameState getState ();
-	
-	/**
-	 * Returns the current Game managed by this EJB
-	 */
-	public Game getGame ();
-	
-	/**
-	 * Returns the type of game this shared board manages
-	 */
-	public GameType getGameType (); 
-	
-	/**
-	 * Returns the size of the shared board 
-	 */
-	public Dimension getSize ();
-	
-	/** 
 	 * Increments the turn for GamePlay
 	 * 
 	 * Returns the player whose turn is next.
 	 * 
-	 * @throws RemoteException 
+	 * @param player
+	 *            the player. This player should have its game.id property set.
+	 * @return The player who has the turn after the turn is incremented.
+	 * @throws RemoteException
 	 */
-	public GamePlayer incrementTurn (GamePlayer player) throws RemoteException;
-	
-	/**
-	 * Gets the Players playing on this shared board 
-	 */
-	public List<GamePlayer> getPlayers();
-	
-	/**
-	 * Adds a message to the current message stream 
-	 */
-	public void addMessage(ChatMessage chatMessage);	
-	
-	/**
-	 * Gets all the moves made on this shared board 
-	 */
-	public List<Move> getMoves();
+	public GamePlayer incrementTurn(GamePlayer player) throws RemoteException;
 
 	/**
-	 * Merges a detached move with its persistent entity
+	 * Gets the Players for a given game
 	 * 
-	 * @param move the detached move
-	 * @return the persisted move
+	 * @param gameId
+	 *            the id of the game
+	 * @return the players registered for this game
+	 */
+	public List<GamePlayer> getPlayers(int gameId);
+
+	/**
+	 * Gets all the moves for a given game.
+	 * 
+	 * @param gameId
+	 *            the id of the game
+	 * @return a list of all moves made in the game in the order that they were
+	 *         made
+	 */
+	public List<Move> getMoves(int gameId);
+
+	/**
+	 * Updates a move
+	 * 
+	 * @param move
+	 *            the move to update
+	 * @return the updated move
 	 */
 	public Move updateMove(Move move);
+
+	/**
+	 * Adds a chat message
+	 * 
+	 * @param chatMessage
+	 */
+	public void addMessage(ChatMessage chatMessage);
 }

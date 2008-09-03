@@ -46,13 +46,23 @@
 		</plugins>
 	</build>
 	<dependencies>
-	   <dependency>
-	        <groupId>mx.ecosur</groupId>
+       <dependency>
+            <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-ejb</artifactId>
             <version>0.0.1</version>
-            <type>ejb</type>
-	   </dependency>
-	   <dependency>
+            <type>ejb-client</type>
+	    </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>4.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>4.0.7</version>
+        </dependency>
+        <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>

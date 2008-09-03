@@ -1,8 +1,6 @@
 package mx.ecosur.multigame.flexClient.service;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +15,8 @@ import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.InvalidRegistrationException;
-import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
-import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -70,11 +66,11 @@ public class GameService {
 	}
 
 	public GamePlayer registerPlayer(Player player, Color preferedColor,
-			String gameTypeStr) throws InvalidRegistrationException {
-		RegistrarRemote registrar = getRegistrar();
-		GameType gameType = GameType.valueOf(gameTypeStr);
-		GamePlayer gamePlayer;
+			String gameTypeStr) {
+		GamePlayer gamePlayer = null;
 		try {
+			RegistrarRemote registrar = getRegistrar();
+			GameType gameType = GameType.valueOf(gameTypeStr);
 			gamePlayer = registrar.registerPlayer(player, preferedColor,
 					gameType);
 		} catch (RemoteException e) {
@@ -83,43 +79,49 @@ public class GameService {
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
+		}catch (RuntimeException e){
+			e.printStackTrace();
+		}catch (Exception e){
+			e.printStackTrace();
+		}catch(NoClassDefFoundError e){
+			e.printStackTrace();
 		}
 		return gamePlayer;
 	}
 
-	public Game getGame(String gameTypeStr) {
+	// public Game getGame(String gameTypeStr) {
+	// SharedBoardRemote sharedBoard = getSharedBoard();
+	// GameType gameType = GameType.valueOf(gameTypeStr);
+	// try {
+	// sharedBoard.locateSharedBoard(gameType);
+	// } catch (RemoteException e) {
+	// e.printStackTrace();
+	// throw new GameException(e);
+	// }
+	// return sharedBoard.getGame();
+	// }
+
+	// public Game getGame(String gameTypeStr, int gameId) {
+	//	
+	// GameType gameType = GameType.valueOf(gameTypeStr);
+	// SharedBoardRemote sharedBoard = getSharedBoard();
+	// try {
+	// sharedBoard.locateSharedBoard(gameType, gameId);
+	// } catch (RemoteException e) {
+	// e.printStackTrace();
+	// throw new GameException(e);
+	// }
+	// return sharedBoard.getGame();
+	// }
+
+	public GameGrid getGameGrid(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		GameType gameType = GameType.valueOf(gameTypeStr);
-		try {
-			sharedBoard.locateSharedBoard(gameType);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new GameException(e);
-		}
-		return sharedBoard.getGame();
-	}
-	
-	
-	public Game getGame(String gameTypeStr, int gameId) {
-	
-		GameType gameType = GameType.valueOf(gameTypeStr);
-		SharedBoardRemote sharedBoard = getSharedBoard();
-		try {
-			sharedBoard.locateSharedBoard(gameType, gameId);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new GameException(e);
-		}
-		return sharedBoard.getGame();
-	}
-	public GameGrid getGameGrid() {
-		SharedBoardRemote sharedBoard = getSharedBoard();
-		return sharedBoard.getGameGrid();
+		return sharedBoard.getGameGrid(gameId);
 	}
 
-	public List<GamePlayer> getPlayers() {
+	public List<GamePlayer> getPlayers(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<GamePlayer> players = sharedBoard.getPlayers();
+		List<GamePlayer> players = sharedBoard.getPlayers(gameId);
 		return players;
 	}
 
@@ -128,8 +130,8 @@ public class GameService {
 		HashMap<String, Boolean> validMoves = new HashMap<String, Boolean>();
 		Move move;
 		Cell destination;
-		int rows = sharedBoard.getGame().getRows();
-		int cols = sharedBoard.getGame().getColumns();
+		int rows = gamePlayer.getGame().getRows();
+		int cols = gamePlayer.getGame().getColumns();
 		String moveCode;
 		for (int r = 0; r < rows; r++) {
 			for (int c = 0; c < cols; c++) {
@@ -142,6 +144,9 @@ public class GameService {
 					logger.info("valid move " + moveCode + "\n" + move);
 				} catch (InvalidMoveException e) {
 					// do not add move to valid moved but continue executing
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					throw new GameException(e);
 				}
 			}
 		}
@@ -164,35 +169,35 @@ public class GameService {
 			throw new GameException(e);
 		}
 	}
-	
-	public List<Move> getMoves(){
+
+	public List<Move> getMoves(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<Move> moves = sharedBoard.getMoves();
+		List<Move> moves = sharedBoard.getMoves(gameId);
 		return moves;
 	}
-	
-	public Move updateMove(Move move){
+
+	public Move updateMove(Move move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		return sharedBoard.updateMove(move);
 	}
 
 	// TODO: This method is temporary for development purposes. It will be
 	// deleted
-	public void unregisterAllPlayers(String gameTypeStr)
-			throws InvalidRegistrationException {
-		RegistrarRemote registrar = getRegistrar();
-		SharedBoardRemote sharedBoard = getSharedBoard();
-		try {
-			if (sharedBoard.getGame() != null) {
-				for (GamePlayer gp : sharedBoard.getGame().getPlayers()) {
-					registrar.unregisterPlayer(gp);
-					logger.info("Unregistering player " + gp.getPlayer().getId()
-							+ " from game " + sharedBoard.getGame().getId());
-				}
-			}
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new GameException(e);
-		}
-	}
+	// public void unregisterAllPlayers(String gameTypeStr)
+	// throws InvalidRegistrationException {
+	// RegistrarRemote registrar = getRegistrar();
+	// SharedBoardRemote sharedBoard = getSharedBoard();
+	// try {
+	// if (sharedBoard.getGame() != null) {
+	// for (GamePlayer gp : sharedBoard.getGame().getPlayers()) {
+	// registrar.unregisterPlayer(gp);
+	// logger.info("Unregistering player " + gp.getPlayer().getId()
+	// + " from game " + sharedBoard.getGame().getId());
+	// }
+	// }
+	// } catch (RemoteException e) {
+	// e.printStackTrace();
+	// throw new GameException(e);
+	// }
+	// }
 }

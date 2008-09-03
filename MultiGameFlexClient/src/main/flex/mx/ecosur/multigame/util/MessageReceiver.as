@@ -72,13 +72,13 @@ package mx.ecosur.multigame.util {
 				msg = IMessage(_messages[0]);
 				if (_lastMsgId == 0 || msg.headers.MESSAGE_ID == _lastMsgId + 1){
 					_lastMsgId = msg.headers.MESSAGE_ID;
-					Alert.show("processing message with id " + _lastMsgId + "\n Game event = " + msg.headers.GAME_EVENT, "Processing message");
+					//Alert.show("processing message with id " + _lastMsgId + "\n Game event = " + msg.headers.GAME_EVENT, "Processing message");
 					var evt:DynamicEvent = new DynamicEvent(PROCESS_MESSAGE);
 					evt.message = msg;
 					dispatchEvent(evt);
 					_messages.splice(0, 1);
 				}else{
-					Alert.show("broken sequence waiting for message with id " + Number(_lastMsgId + 1) + "\n but receivd " + msg.headers.MESSAGE_ID, "Broken sequence");
+					//Alert.show("broken sequence waiting for message with id " + Number(_lastMsgId + 1) + "\n but receivd " + msg.headers.MESSAGE_ID, "Broken sequence");
 					break;
 				}
 			}

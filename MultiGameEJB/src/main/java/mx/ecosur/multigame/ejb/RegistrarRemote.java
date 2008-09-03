@@ -71,9 +71,17 @@ public interface RegistrarRemote {
 	public Player locatePlayer (String name) throws RemoteException;
 	
 	/**
-	 * Locates a game
-	 * @throws RemoteExeption
+	 * Attempt to locate an unfinished game of a given type and player. If no
+	 * such game is found a game that requires more players to begin is searched
+	 * for. If no game is found new game is created and returned.
+	 * 
+	 * @param player
+	 *            the player to register
+	 * @param type
+	 *            the type of game
+	 * @return the game.
+	 * @throws RemoteException
 	 */
-	public Game locateGame (GameType type) throws RemoteException;
+	public Game locateGame (Player player, GameType type) throws RemoteException;
 	
 }

@@ -51,17 +51,7 @@
             	var call:Object = event.token;
             	if(call.operation == "register"){
             		currentPlayer = GamePlayer(event.result);
-            		//TODO: No need to get game is included in player is only necesary to force shared board to locate game
-            		var callGame:Object = gameService.getGame(gameType);
-            		callGame.operation = "getGame";
-            	}else if (call.operation == "getGame"){
-            		//TODO: Get players once game controller is loaded
-            		game = Game(event.result);
-            		var callPlayers:Object = gameService.getPlayers();
-            		callPlayers.operation = "getPlayers";
-            	}else if (call.operation == "getPlayers"){
-            		players = ArrayCollection(event.result);
-            	    dispatchEvent(new Event("complete"));
+            		dispatchEvent(new Event("complete"));
             	}else if (call.operation == "unregisterAll"){
             		Alert.show("All unregistered");
             	}

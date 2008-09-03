@@ -45,9 +45,9 @@ public class SharedBoardHelper {
 		} 
 	}
 	
-	public int[] getCenter (GameType type) throws RemoteException {
-		board.locateSharedBoard(type);
-		Dimension dim = board.getSize();
+	public int[] getCenter (int gameId) throws RemoteException {
+		Game game = board.getGame(gameId);
+		Dimension dim = game.getSize();
 		int rows = (int) dim.getHeight()/2;
 		int columns = (int) dim.getWidth()/2;
 		int [] ret = { rows, columns };
@@ -75,7 +75,7 @@ public class SharedBoardHelper {
 	public void unRegisterPlayer (String type, String playerName) 
 	{
 		try {
-			Game game = registrar.locateGame(GameType.valueOf(type));
+			Game game = registrar.locateGame(playerMap.get(playerName).getPlayer(), GameType.valueOf(type));
 			List<GamePlayer> players = game.getPlayers();
 			GamePlayer player = playerMap.remove (playerName);
 			registrar.unregisterPlayer(player);

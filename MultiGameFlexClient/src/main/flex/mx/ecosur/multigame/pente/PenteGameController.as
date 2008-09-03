@@ -35,7 +35,6 @@ package mx.ecosur.multigame.pente{
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
 	import mx.managers.DragManager;
-	import mx.messaging.events.MessageFaultEvent;
 	import mx.messaging.messages.ErrorMessage;
 	import mx.messaging.messages.IMessage;
 	import mx.rpc.events.FaultEvent;
@@ -58,6 +57,7 @@ package mx.ecosur.multigame.pente{
 		private var _animateLayer:UIComponent;
 		
 		// data objects
+		private var _gameId:int;
 		private var _currentPlayer:GamePlayer;
 		private var _players:ArrayCollection;
 		private var _gameGrid:GameGrid;
@@ -95,6 +95,7 @@ package mx.ecosur.multigame.pente{
 			super();
 			
 			// set private references
+			_gameId = currentPlayer.game.id;
 			_currentPlayer = currentPlayer;
 			_board = board;
 			_chatPanel = chatPanel;
@@ -135,11 +136,11 @@ package mx.ecosur.multigame.pente{
 			_moveViewer.board = _board;
 			
 			// get the game grid, players and moves
-			var callGrid:Object = _gameService.getGameGrid();
+			var callGrid:Object = _gameService.getGameGrid(_gameId);
 			callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-			var callPlayers:Object = _gameService.getPlayers();
+			var callPlayers:Object = _gameService.getPlayers(_gameId);
 			callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
-			var callMoves:Object = _gameService.getMoves();
+			var callMoves:Object = _gameService.getMoves(_gameId);
 			callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
 		}
 		
@@ -310,7 +311,7 @@ package mx.ecosur.multigame.pente{
 					var chatMessage:ChatMessage = ChatMessage(message.body); 
 					_chatPanel.addMessage(chatMessage);
 					if(chatMessage.sender.id != _currentPlayer.player.id){
-						_gameStatus.showMessage(chatMessage.sender.name + " has sent you a message", 0x000000);
+						_gameStatus.showMessage(chatMessage.sender.player.name + " has sent you a message", 0x000000);
 					}
 					break;
 				case GameEvent.END:
@@ -663,7 +664,7 @@ package mx.ecosur.multigame.pente{
 		}
 		
 		private function getGrid():void{
-			var call:Object = _gameService.getGameGrid();
+			var call:Object = _gameService.getGameGrid(_gameId);
 			call.operation = "getGameGrid";
 		}
 		

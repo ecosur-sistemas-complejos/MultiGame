@@ -20,7 +20,7 @@
 			private function send():void {
 				var message:IMessage = new AsyncMessage();
 				var chatMessage:ChatMessage = new ChatMessage();
-				chatMessage.sender = currentPlayer.player;
+				chatMessage.sender = currentPlayer;
 				chatMessage.body = msg.text;
 				chatMessage.dateSent = new Date();
 				message.body = chatMessage;
@@ -31,7 +31,7 @@
 			}
         	
         	public function addMessage(chatMessage:ChatMessage):void {
-				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.name + ": " + chatMessage.body + "\n";
+				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.player.name + ": " + chatMessage.body + "\n";
 			}
 			
 			private function faultHandler(event:MessageFaultEvent):void {

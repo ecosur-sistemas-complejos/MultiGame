@@ -25,8 +25,8 @@ public class ChatMessage implements Serializable {
 	/**
 	 * The player that sent the message
 	 */
-	private Player sender;
-	
+	private GamePlayer sender;
+		
 	/**
 	 * The time and date that the message was sent
 	 */
@@ -46,11 +46,11 @@ public class ChatMessage implements Serializable {
 		this.id = id;
 	}
 
-	public Player getSender() {
+	public GamePlayer getSender() {
 		return sender;
 	}
 
-	public void setSender(Player sender) {
+	public void setSender(GamePlayer sender) {
 		this.sender = sender;
 	}
 

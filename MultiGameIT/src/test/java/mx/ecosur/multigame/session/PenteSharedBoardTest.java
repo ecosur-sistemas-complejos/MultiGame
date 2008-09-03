@@ -1,6 +1,9 @@
 package mx.ecosur.multigame.session;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -36,6 +39,8 @@ public class PenteSharedBoardTest {
 	
 	private SharedBoardRemote board;
 	
+	private int gameId;
+	
 	private PentePlayer alice, bob, charlie, denise;
 	
 	private Cell center;
@@ -54,7 +59,7 @@ public class PenteSharedBoardTest {
 			new Player ("charlie"),
 			new Player ("denise")};
 		
-		registrar.registerPlayer(registrants [ 0 ], Color.YELLOW, GameType.PENTE);
+		gameId = registrar.registerPlayer(registrants [ 0 ], Color.YELLOW, GameType.PENTE).getGame().getId();
 		registrar.registerPlayer(registrants [ 1 ], Color.BLUE, GameType.PENTE);
 		registrar.registerPlayer(registrants [ 2 ], Color.GREEN, GameType.PENTE);
 		registrar.registerPlayer(registrants [ 3 ], Color.RED, GameType.PENTE);
@@ -62,15 +67,15 @@ public class PenteSharedBoardTest {
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(
 				"mx.ecosur.multigame.ejb.SharedBoardRemote");
-		board.locateSharedBoard(GameType.PENTE);
+	
 		
-		int row = board.getGame().getRows()/2;
-		int column = board.getGame().getColumns()/2;
+		int row = board.getGame(gameId).getRows()/2;
+		int column = board.getGame(gameId).getColumns()/2;
 		
 		center = new Cell (row, column, Color.YELLOW);
 		
 		/* Set the GamePlayers from the SharedBoard */
-		List<GamePlayer> players = board.getPlayers();
+		List<GamePlayer> players = board.getPlayers(gameId);
 		for (GamePlayer p : players) {
 			for (Player r : registrants) {
 				if (p.getPlayer().getName().equals("alice"))
@@ -100,15 +105,16 @@ public class PenteSharedBoardTest {
 	 */
 	@Test
 	public void testGetGameGrid() throws RemoteException {
-		assertTrue (board.getGameGrid().getCells().size() == 0);
+		assertTrue (board.getGameGrid(gameId).getCells().size() == 0);
 	}
 	
 	/** 
 	 * Tests the first move logic.  This tests the positive condition.
 	 * @throws InvalidMoveException 
+	 * @throws RemoteException 
 	 */
 	@Test
-	public void testFirstMoveValidate () throws InvalidMoveException {
+	public void testFirstMoveValidate () throws InvalidMoveException, RemoteException {
 		PenteMove move = new PenteMove (alice, center);
 		Move ret = board.validateMove(move);
 		assertEquals (Move.Status.VERIFIED, ret.getStatus());
@@ -125,15 +131,16 @@ public class PenteSharedBoardTest {
 		Move validMove = board.validateMove(move);
 		board.move(validMove);
 		
-		GameGrid grid = board.getGameGrid();
+		GameGrid grid = board.getGameGrid(gameId);
 		assertNotNull (grid.getLocation(validMove.getDestination()));
 	}	
 
 	/**
 	 * Tests the first move logic.  This tests the negative condition.
+	 * @throws RemoteException 
 	 */
 	@Test
-	public void testBadFirstMove () {
+	public void testBadFirstMove () throws RemoteException {
 		int row = center.getRow() -1;
 		int col = center.getColumn() + 1;
 		
@@ -218,7 +225,7 @@ public class PenteSharedBoardTest {
 		
 		assertEquals (1, move.getTrias().size());
 		
-		List<GamePlayer> players = board.getPlayers();
+		List<GamePlayer> players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			if (! (player.getId() == bob.getId()))
 				continue;
@@ -297,7 +304,7 @@ public class PenteSharedBoardTest {
 		
 		assertEquals (1, move.getTrias().size());
 		
-		List<GamePlayer> players = board.getPlayers();
+		List<GamePlayer> players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			if (! (player.getId() == bob.getId()))
 				continue;
@@ -384,8 +391,8 @@ public class PenteSharedBoardTest {
 		board.move(valid);
 		
 		/* Game should be over, with Bob the winner */
-		assertEquals (GameState.END, board.getState()); 
-		PenteGame pente = (PenteGame) board.getGame();
+		PenteGame pente = (PenteGame) board.getGame(gameId);
+		assertEquals (GameState.END, pente.getState()); 
 		
 		Set <PentePlayer> winners = pente.getWinners();
 		
@@ -476,7 +483,7 @@ public class PenteSharedBoardTest {
 		/* Assert that Denise has completed a tria */
 		assertEquals (1, move.getTrias().size());
 		
-		List<GamePlayer> players = board.getPlayers();
+		List<GamePlayer> players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			if (! (player.getId() == denise.getId()))
 				continue;
@@ -503,7 +510,7 @@ public class PenteSharedBoardTest {
 		/* Assert that Bob has completed a tessera */
 		assertEquals (1, move.getTesseras().size());
 		
-		players = board.getPlayers();
+		players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			if (! (player.getId() == bob.getId()))
 				continue;
@@ -571,7 +578,7 @@ public class PenteSharedBoardTest {
 		
 		/* Confirm cooperative scoring */
 		
-		players = board.getPlayers();
+		players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			if (player.getId() == charlie.getId())
 				charlie = (PentePlayer) player;
@@ -589,8 +596,8 @@ public class PenteSharedBoardTest {
 		assertEquals (5, bob.getPoints());
 
 		/* Check the "find-the-winners" rule */
-		assertEquals (GameState.END, board.getState()); 
-		PenteGame pente = (PenteGame) board.getGame();
+		PenteGame pente = (PenteGame) board.getGame(gameId);
+		assertEquals (GameState.END, pente.getState()); 
 		
 		Set <PentePlayer> winners = pente.getWinners();
 		assertEquals (2, winners.size());

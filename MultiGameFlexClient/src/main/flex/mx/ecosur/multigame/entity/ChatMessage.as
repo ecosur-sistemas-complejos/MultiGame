@@ -1,6 +1,6 @@
 package mx.ecosur.multigame.entity {
 	
-	import mx.ecosur.multigame.entity.Player;
+	import mx.ecosur.multigame.entity.GamePlayer;
 	
 	/**
 	 * Represents the server side ChatMessage object
@@ -9,7 +9,7 @@ package mx.ecosur.multigame.entity {
 	public class ChatMessage{
 		
 		private var _id:int;
-		private var _sender:Player;
+		private var _sender:GamePlayer;
 		private var _dateSent:Date;
 		private var _body:String;
 		
@@ -33,11 +33,11 @@ package mx.ecosur.multigame.entity {
 			_body = body;
 		}
 		
-		public function get sender():Player{
+		public function get sender():GamePlayer{
 			return _sender;
 		}
 		
-		public function set sender(sender:Player):void{
+		public function set sender(sender:GamePlayer):void{
 			_sender = sender;
 		}
 		
