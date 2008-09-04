@@ -42,10 +42,6 @@ public class PenteGame extends Game {
 		this.winners = winners;
 	}
 
-	/* Method included soleley for signature, issue with Glassfish Deployment */
-	public void determineWinners() {
-	}
-
 	class PlayerComparator implements Serializable, Comparator<PentePlayer> {
 
 		public int compare(PentePlayer alice, PentePlayer bob) {
