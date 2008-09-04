@@ -32,10 +32,15 @@
         	
         	public function addMessage(chatMessage:ChatMessage):void {
 				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.player.name + ": " + chatMessage.body + "\n";
+				callLater(updateScroll);
 			}
 			
 			private function faultHandler(event:MessageFaultEvent):void {
 				Alert.show("fault in message " + event.faultString);
+			}
+			
+			private function updateScroll():void{
+				log.verticalScrollPosition = log.maxVerticalScrollPosition;	
 			}
         	        
         ]]>
@@ -43,9 +48,9 @@
     
     <mx:Producer id="producer" destination="multigame-destination" fault="faultHandler(event)"/>
 
-	<mx:TextArea id="log" width="100%" height="100%" backgroundColor="#cccccc" borderThickness="0" editable="false"/>
+	<mx:TextArea id="log" width="100%" height="100%" backgroundColor="#cccccc" borderThickness="0" editable="false" />
 	<mx:ControlBar verticalAlign="top">
-		 <mx:TextArea id="msg" width="100%" height="40" />
+		 <mx:TextArea id="msg" width="100%" height="40"/>
 		 <mx:Button label="Send" click="send()"/> 
 	</mx:ControlBar>
 </mx:Panel>

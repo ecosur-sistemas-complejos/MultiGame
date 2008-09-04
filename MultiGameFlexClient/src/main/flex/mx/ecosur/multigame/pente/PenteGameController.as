@@ -491,12 +491,12 @@ package mx.ecosur.multigame.pente{
 			var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
 			_moveViewer.selectedMove = move;
 			
-			// ifwinners are not present or the move must be qualified
+			// if winners are not present or the move must be qualified
 			if (!_winners || (move.player.id == getTeamMate().id && move.qualifier == null)){
 				
 				checkBeadStrings(move);
 				
-				// ifthe current player is the team mate of the player that moved then qualify the move
+				// if the current player is the team mate of the player that moved then qualify the move
 				if (move.player.id == getTeamMate().id && move.qualifier == null){
 					qualifyMove(move);	
 				}
