@@ -17,6 +17,7 @@ import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -79,40 +80,21 @@ public class GameService {
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
-		}catch (RuntimeException e){
+		} catch (RuntimeException e) {
 			e.printStackTrace();
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}catch(NoClassDefFoundError e){
+		} catch (NoClassDefFoundError e) {
 			e.printStackTrace();
 		}
 		return gamePlayer;
 	}
 
-	// public Game getGame(String gameTypeStr) {
-	// SharedBoardRemote sharedBoard = getSharedBoard();
-	// GameType gameType = GameType.valueOf(gameTypeStr);
-	// try {
-	// sharedBoard.locateSharedBoard(gameType);
-	// } catch (RemoteException e) {
-	// e.printStackTrace();
-	// throw new GameException(e);
-	// }
-	// return sharedBoard.getGame();
-	// }
+	public Game getGame(int gameId) {
 
-	// public Game getGame(String gameTypeStr, int gameId) {
-	//	
-	// GameType gameType = GameType.valueOf(gameTypeStr);
-	// SharedBoardRemote sharedBoard = getSharedBoard();
-	// try {
-	// sharedBoard.locateSharedBoard(gameType, gameId);
-	// } catch (RemoteException e) {
-	// e.printStackTrace();
-	// throw new GameException(e);
-	// }
-	// return sharedBoard.getGame();
-	// }
+		SharedBoardRemote sharedBoard = getSharedBoard();
+		return sharedBoard.getGame(gameId);
+	}
 
 	public GameGrid getGameGrid(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
@@ -180,24 +162,4 @@ public class GameService {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		return sharedBoard.updateMove(move);
 	}
-
-	// TODO: This method is temporary for development purposes. It will be
-	// deleted
-	// public void unregisterAllPlayers(String gameTypeStr)
-	// throws InvalidRegistrationException {
-	// RegistrarRemote registrar = getRegistrar();
-	// SharedBoardRemote sharedBoard = getSharedBoard();
-	// try {
-	// if (sharedBoard.getGame() != null) {
-	// for (GamePlayer gp : sharedBoard.getGame().getPlayers()) {
-	// registrar.unregisterPlayer(gp);
-	// logger.info("Unregistering player " + gp.getPlayer().getId()
-	// + " from game " + sharedBoard.getGame().getId());
-	// }
-	// }
-	// } catch (RemoteException e) {
-	// e.printStackTrace();
-	// throw new GameException(e);
-	// }
-	// }
 }

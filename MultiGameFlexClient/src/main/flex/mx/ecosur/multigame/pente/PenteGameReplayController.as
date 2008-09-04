@@ -34,6 +34,7 @@ package mx.ecosur.multigame.pente{
 		private var _animateLayer:UIComponent;
 		
 		// Data objects
+        private var _gameId:int;
 		private var _game:PenteGame;
 		private var _moves:ArrayCollection; //all moves made in the game
 		private var _selectedMoveInd:Number; //index of selected move in _moves
@@ -56,6 +57,7 @@ package mx.ecosur.multigame.pente{
 			super();
 			
 			//set private references
+            _gameId = gameId;
 			_board = board;
 			_playersViewer = playersViewer;
 			_moveViewer = moveViewer;
@@ -73,7 +75,7 @@ package mx.ecosur.multigame.pente{
 			_moveViewer.board = _board;
 			
 			//get the game
-			var call:Object = _gameService.getGame("PENTE", gameId);
+			var call:Object = _gameService.getGame(_gameId);
 			call.operation = GAME_SERVICE_GET_GAME_OP;
 		}
 		
@@ -87,13 +89,13 @@ package mx.ecosur.multigame.pente{
 			switch (call.operation){
 				case GAME_SERVICE_GET_GAME_OP:
 					_game = PenteGame(event.result);
-					var callPlayers:Object = _gameService.getPlayers();
+					var callPlayers:Object = _gameService.getPlayers(_gameId);
 					callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
 					break;
 				case GAME_SERVICE_GET_PLAYERS_OP:
 					var pentePlayer:PentePlayer = PentePlayer(ArrayCollection(event.result)[0]);
 					_playersViewer.players = ArrayCollection(event.result);
-					var callMoves:Object = _gameService.getMoves();
+					var callMoves:Object = _gameService.getMoves(_gameId);
 					callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
 					break;
 				case GAME_SERVICE_GET_MOVES_OP:
