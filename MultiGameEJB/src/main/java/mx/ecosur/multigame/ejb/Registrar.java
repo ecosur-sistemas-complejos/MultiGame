@@ -58,7 +58,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 */
 
 	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
-			GameType type) throws InvalidRegistrationException, RemoteException {
+			GameType type) throws InvalidRegistrationException {
 
 		/* Load the registrant reference */
 		if (!em.contains(registrant))
@@ -124,7 +124,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	}
 
 	private GamePlayer locateGamePlayer(Game game, Player player,
-			Color favoriteColor) throws RemoteException {
+			Color favoriteColor) {
 		GamePlayer ret;
 
 		try {
@@ -133,9 +133,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			query.setParameter("player", player);
 			ret = (GamePlayer) query.getSingleResult();
 		} catch (EntityNotFoundException e) {
-			throw new RemoteException("Unable to find that GamePlayer!");
+			throw new RuntimeException("Unable to find that GamePlayer!");
 		} catch (NonUniqueResultException e) {
-			throw new RemoteException("More than one GamePlayer with that "
+			throw new RuntimeException("More than one GamePlayer with that "
 					+ "name found!");
 		} catch (NoResultException e) {
 			switch (game.getType()) {
@@ -153,7 +153,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return ret;
 	}
 
-	public List<Color> getAvailableColors(Game game) throws RemoteException {
+	public List<Color> getAvailableColors(Game game) {
 		List<Color> colors = getColors(game.getType());
 		List<GamePlayer> players = game.getPlayers();
 		for (GamePlayer player : players) {
@@ -188,7 +188,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarRemote#locateGame(mx.ecosur.multigame.ejb.entity.Player, mx.ecosur.multigame.GameType)
 	 */
-	public Game locateGame(Player player, GameType type) throws RemoteException {
+	public Game locateGame(Player player, GameType type) {
 		Game game;
 		Query query;
 
@@ -201,7 +201,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			game = (Game) query.getSingleResult();
 
 		} catch (NoResultException e) {
-
+			
 			/*
 			 * User is not currently registered for any game. Search for any
 			 * game in waiting state
@@ -215,25 +215,31 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			} catch (NoResultException e2) {
 
 				/* No waiting game exists, create a new one and initialize it */
-				switch (type) {
-				case PENTE:
-					game = new PenteGame();
-					break;
-				default:
-					game = new Game();
-					break;
-				}
-				game.initialize(type);
-				em.persist(game);
+				game = createNewGame(type);
+			} catch (NonUniqueResultException e2) {
+				game = createNewGame (type);
 			}
-
 		}
 
 		return game;
 	}
 
-	public void unregisterPlayer(GamePlayer player)
-			throws InvalidRegistrationException, RemoteException {
+	private Game createNewGame(GameType type) {
+		Game game;
+		switch (type) {
+		case PENTE:
+			game = new PenteGame();
+			break;
+		default:
+			game = new Game();
+			break;
+		}
+		game.initialize(type);
+		em.persist(game);
+		return game;
+	}
+
+	public void unregisterPlayer(GamePlayer player) throws InvalidRegistrationException {
 
 		/* Remove the user from the Game */
 		Game game = player.getGame();
@@ -246,7 +252,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		game.setState(GameState.END);
 	}
 
-	public Player locatePlayer(String name) throws RemoteException {
+	public Player locatePlayer(String name) {
 		Query query = em.createNamedQuery("getPlayer");
 		query.setParameter("name", name);
 		Player player;
@@ -256,7 +262,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			player = new Player();
 			player.setName(name);
 		} catch (NonUniqueResultException e) {
-			throw new RemoteException(
+			throw new RuntimeException(
 					"More than one player of that name found!");
 		} catch (NoResultException e) {
 			player = createPlayer(name);
@@ -265,7 +271,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return player;
 	}
 
-	public Game locateGame(GameType type, int id) throws RemoteException {
+	public Game locateGame(GameType type, int id) {
 		Query query = em.createNamedQuery(type.getNamedQueryById());
 		query.setParameter("id", id);
 		Game game;
@@ -273,11 +279,11 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		try {
 			game = (Game) query.getSingleResult();
 		} catch (EntityNotFoundException e) {
-			throw new RemoteException("Unable to find game with specified id!");
+			throw new RuntimeException("Unable to find game with specified id!");
 		} catch (NonUniqueResultException e) {
-			throw new RemoteException("More than one Game found!");
+			throw new RuntimeException("More than one Game found!");
 		} catch (NoResultException e) {
-			throw new RemoteException("Unable to find game with specified id!");
+			throw new RuntimeException("Unable to find game with specified id!");
 		}
 
 		return game;

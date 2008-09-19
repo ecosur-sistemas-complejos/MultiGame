@@ -13,6 +13,10 @@ import flex.messaging.util.ResourceLoader;
 
 public class GameException extends MessageException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1656490171478522050L;
 	public static final String EXCEPTION_TYPE_KEY = "EXCEPTION_TYPE";
 
 	/**

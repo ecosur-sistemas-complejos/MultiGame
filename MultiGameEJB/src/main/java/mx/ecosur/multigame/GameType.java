@@ -2,7 +2,6 @@ package mx.ecosur.multigame;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.rmi.RemoteException;
 import java.util.logging.Logger;
 
 import org.drools.RuleBase;
@@ -14,8 +13,6 @@ public enum GameType {
 
 	CHECKERS, PENTE;
 
-	// private static Map<GameType, RuleBase> rulesets = (Map<GameType,
-	// RuleBase>) new HashMap<GameType, RuleBase>();
 	private RuleBase ruleBase;
 
 	private static Logger logger = Logger.getLogger(GameType.class
@@ -53,7 +50,7 @@ public enum GameType {
 	 * Gets the ruleBase for a given game type. If the ruleBase has not
 	 * previously been created for this game type it is created.
 	 */
-	public RuleBase getRuleBase() throws RemoteException {
+	public RuleBase getRuleBase() {
 
 		/* Check that rule set has not already been created */
 		if (ruleBase != null) {
@@ -99,74 +96,13 @@ public enum GameType {
 
 		} catch (DroolsParserException e) {
 			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
+			throw new RuntimeException (e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
 	}
-
-	/**
-	 * Gets the ruleset for a given game type from the static map of ruleset or
-	 * creates it if it is the first time that this ruleset is asked for
-	 */
-	// private RuleBase getRuleSet() throws RemoteException {
-	//
-	// /* Check that rule set has not already been created */
-	// if (rulesets.containsKey(this)) {
-	// return rulesets.get(this);
-	// }
-	//
-	// try {
-	//			
-	// logger.fine("Initializing rule set for type " + this);
-	//
-	// /* Initialize the rules based on the type of game */
-	// PackageBuilder builder = new PackageBuilder();
-	// InputStreamReader reader = null;
-	//
-	// switch (this) {
-	// case CHECKERS:
-	// reader = new InputStreamReader(this.getClass()
-	// .getResourceAsStream(
-	// "/mx/ecosur/multigame/checkers.drl"));
-	//
-	// builder.addPackageFromDrl(reader);
-	//
-	// break;
-	// case PENTE:
-	// reader = new InputStreamReader(this.getClass()
-	// .getResourceAsStream("/mx/ecosur/multigame/gente.drl"));
-	// builder.addPackageFromDrl(reader);
-	// break;
-	// default:
-	// break;
-	// }
-	//
-	// if (reader != null)
-	// reader.close();
-	//
-	// /* Create the ruleset and save in static map */
-	// RuleBase ruleset = RuleBaseFactory.newRuleBase();
-	// ruleset = RuleBaseFactory.newRuleBase();
-	// ruleset.addPackage(builder.getPackage());
-	// rulesets.put(this, ruleset);
-	//			
-	// logger.fine("Rule set for type " + this + " added to rulesets.");
-	// return ruleset;
-	//
-	// } catch (DroolsParserException e) {
-	// e.printStackTrace();
-	// throw new RemoteException(e.getMessage());
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// throw new RemoteException(e.getMessage());
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// throw new RemoteException(e.getMessage());
-	// }
-	// }
 }

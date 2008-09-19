@@ -1,6 +1,5 @@
 package mx.ecosur.multigame.ejb;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.TreeSet;
@@ -13,13 +12,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 
@@ -74,9 +73,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 			logger.fine("Game with id " + gameId + " initialized");
 
 		} catch (FactException e) {
-			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
-		} catch (IOException e) {
 			e.printStackTrace();
 			throw new RemoteException(e.getMessage());
 		} catch (Exception e) {
@@ -253,7 +249,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		Game game = getGame(gameId);
 		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());
 		query.setParameter("game", game);
-		return query.getResultList();
+		return (List<Move>) query.getResultList();
 	}
 
 	/* (non-Javadoc)
@@ -261,6 +257,13 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 */
 	public Move updateMove(Move move) {
 		logger.fine("Updating move with id: " + move.getId());
+		
+		/* Work around for bug in TopLink dealing with inherited object graphs */
+		if (!em.contains (move.getPlayer())) {
+			GamePlayer player = em.find(GamePlayer.class, move.getPlayer().getId());
+			move.setPlayer(player);
+		}
+		
 		em.merge(move);
 		return move;
 	}

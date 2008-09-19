@@ -10,6 +10,7 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import mx.ecosur.multigame.GameEvent;
+import mx.ecosur.multigame.ejb.RegistrarLocal;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 
@@ -21,6 +22,9 @@ public class GameChat implements MessageListener {
 	@EJB
 	private SharedBoardLocal sharedBoard;
 
+	@EJB
+	private RegistrarLocal registrar;
+
 	/**
 	 * Simple onMessage method appends the name of the Player that sent a
 	 * message, and the messages contents to the SharedBoard stream
@@ -29,9 +33,11 @@ public class GameChat implements MessageListener {
 
 		ObjectMessage msg = (ObjectMessage) message;
 		GameEvent gameEvent;
+		int gameId;
 		try {
+			// TODO: Add selector or filter to only treat CHAT messages
 			gameEvent = GameEvent.valueOf(msg.getStringProperty("GAME_EVENT"));
-			// TODO: Instead of this manual filter add selector or filter to only treat CHAT messages
+			gameId = msg.getIntProperty("GAME_ID");
 			if (gameEvent.equals(GameEvent.CHAT)) {
 				ChatMessage chatMessage = (ChatMessage) msg.getObject();
 				sharedBoard.addMessage(chatMessage);

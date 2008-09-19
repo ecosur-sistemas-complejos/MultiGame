@@ -15,6 +15,8 @@ import javax.persistence.TemporalType;
 @Entity
 public class ChatMessage implements Serializable {
 	
+	private static final long serialVersionUID = 444999377280040070L;
+
 	//TODO: Chat messages should be related to moves
 	
 	/**

@@ -6,13 +6,18 @@
 	<groupId>mx.ecosur</groupId>
 	<artifactId>multi-game-ear</artifactId>
 	<packaging>ear</packaging>
-	<version>0.0.1-SNAPSHOT</version>
 	<description></description>
+	<parent>
+        <artifactId>multi-game</artifactId>
+        <groupId>mx.ecosur</groupId>
+        <version>1.1-SNAPSHOT</version>
+        <relativePath>../MultiGamePOM</relativePath>
+    </parent>
 	<dependencies>
 		<dependency>
 			<groupId>mx.ecosur</groupId>
 			<artifactId>multi-game-ejb</artifactId>
-			<version>0.0.1</version>
+			<version>${version}</version>
 			<type>ejb</type>
 		</dependency>
 		<dependency>

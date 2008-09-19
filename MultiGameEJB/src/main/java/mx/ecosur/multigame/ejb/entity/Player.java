@@ -12,8 +12,6 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -22,6 +20,8 @@ import javax.persistence.NamedQuery;
 			query="select p from Player p where p.name=:name")})
 @Entity
 public class Player implements Serializable {
+
+	private static final long serialVersionUID = 5230114393058543176L;
 
 	/*
 	 * Primary key

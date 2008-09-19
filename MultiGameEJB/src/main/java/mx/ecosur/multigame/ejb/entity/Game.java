@@ -19,91 +19,93 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 
 /**
- * A Game stores stateful information about a running game. E.G., the grid's
+ * A Game stores stateful information about a running game. E.G., the grid's 
  * dimensions, the List of active Cells, and the Players involved.
- * 
+ *
  */
 
 @NamedQueries( {
-		@NamedQuery(name = "getGameByType", query = "select g from Game g where g.type=:type "
-				+ "and g.state =:state"),
-		@NamedQuery(name = "getGameById", query = "select g from Game g where g.id=:id"),
-		@NamedQuery(name = "getGameByTypeAndPlayer", query = "select gp.game from GamePlayer as gp "
-				+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state") })
+	@NamedQuery(name = "getGameByType", query = "select g from Game g where g.type=:type "
+			+ "and g.state =:state"),
+	@NamedQuery(name = "getGameById", query = "select g from Game g where g.id=:id"),
+	@NamedQuery(name = "getGameByTypeAndPlayer", query = "select gp.game from GamePlayer as gp "
+			+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state") })
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Game implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8785194013529881730L;
 
 	/**
 	 * Primary Key
 	 */
 	private int id;
-
+	
 	/**
 	 * Game's Type
 	 */
 	private GameType type;
-
+	
 	/**
-	 * The players involved in the game
-	 * 
+	 * The players involved in the game 
 	 * @TODO Make this a Set so there can be no duplicate players
 	 */
 	private List<GamePlayer> players;
-
-	private GameGrid grid;
-
+	
+	protected GameGrid grid;
+	
 	private GameState state;
-
+	
 	private long version;
-
+	
 	/* Dimensioning for storage */
 	private int rows, columns;
-
-	public Game() {
+	
+	public Game () {
 		super();
-		players = new ArrayList<GamePlayer>();
+		players = new ArrayList<GamePlayer> ();
 	}
-
-	public void initialize(GameType type) {
+	
+	public void initialize (GameType type) {
 		setType(type);
 		setGrid(new GameGrid());
 		setState(GameState.WAITING);
 		switch (type) {
-		case CHECKERS:
-			this.setRows(8);
-			this.setColumns(8);
-			break;
-		case PENTE:
-			this.setRows(19);
-			this.setColumns(19);
-			break;
-		default:
-			break;
+			case CHECKERS:
+				this.setRows (8);
+				this.setColumns (8);
+				break;
+			case PENTE:
+				this.setRows (19);
+				this.setColumns (19);
+				break;
+			default:
+				break;
 		}
 	}
-
+	
 	/** Bean methods **/
 
 	/**
 	 * @return the id
 	 */
-	@Id
-	@GeneratedValue
+	@Id @GeneratedValue
 	public int getId() {
 		return id;
 	}
 
 	/**
-	 * @param id
-	 *            the id to set
+	 * @param id the id to set
 	 */
 	public void setId(int id) {
 		this.id = id;
@@ -112,16 +114,15 @@ public class Game implements Serializable {
 	/**
 	 * @return the type
 	 */
-	@Enumerated(EnumType.STRING)
+	@Enumerated (EnumType.STRING)
 	public GameType getType() {
 		return type;
 	}
 
 	/**
-	 * @param type
-	 *            the type to set
+	 * @param type the type to set
 	 */
-
+	
 	public void setType(GameType type) {
 		this.type = type;
 	}
@@ -129,14 +130,14 @@ public class Game implements Serializable {
 	/**
 	 * @return the players
 	 */
-	@OneToMany(mappedBy = "game", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany (mappedBy="game", cascade={CascadeType.ALL},
+			fetch=FetchType.EAGER)
 	public List<GamePlayer> getPlayers() {
 		return players;
 	}
 
 	/**
-	 * @param players
-	 *            the players to set
+	 * @param players the players to set
 	 */
 	public void setPlayers(List<GamePlayer> players) {
 		this.players = players;
@@ -145,13 +146,13 @@ public class Game implements Serializable {
 	/**
 	 * @return the grid
 	 */
+	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
 	public GameGrid getGrid() {
 		return grid;
 	}
 
 	/**
-	 * @param grid
-	 *            the grid to set
+	 * @param grid the grid to set
 	 */
 	public void setGrid(GameGrid grid) {
 		this.grid = grid;
@@ -160,25 +161,23 @@ public class Game implements Serializable {
 	/**
 	 * @return the state
 	 */
-	@Enumerated(EnumType.STRING)
+	@Enumerated (EnumType.STRING)
 	public GameState getState() {
 		return state;
 	}
 
 	/**
-	 * @param state
-	 *            the state to set
+	 * @param state the state to set
 	 */
 	public void setState(GameState state) {
 		this.state = state;
 	}
-
+	
 	/**
-	 * The number of rows of the grid contained by this game.
-	 * 
+	 * The number of rows of the grid contained by this game. 
 	 * @return
 	 */
-	@Column(name = "nRows")
+	@Column (name="nRows")
 	public int getRows() {
 		return rows;
 	}
@@ -186,23 +185,22 @@ public class Game implements Serializable {
 	public void setRows(int rows) {
 		this.rows = rows;
 	}
-
+	
 	@Version
-	public long getVersion() {
+	public long getVersion () {
 		return version;
 	}
-
-	public void setVersion(long version) {
+	
+	public void setVersion (long version) {
 		this.version = version;
 	}
-
+	
 	/**
 	 * The number of columns in the grid contained by this game.
-	 * 
 	 * @return
 	 */
 
-	@Column(name = "nColumns")
+	@Column (name="nColumns")
 	public int getColumns() {
 		return columns;
 	}
@@ -210,48 +208,48 @@ public class Game implements Serializable {
 	public void setColumns(int columns) {
 		this.columns = columns;
 	}
-
+	
 	/** Non bean methods **/
 	public Dimension getSize() {
-		return new Dimension(rows, columns);
+		return new Dimension (rows, columns);
 	}
-
-	public void addPlayer(GamePlayer player) throws RemoteException {
+	
+	public void addPlayer (GamePlayer player) throws RemoteException {
 		if (players == null) {
-			players = new ArrayList<GamePlayer>();
+			players = new ArrayList<GamePlayer> ();
 		}
-
+		
 		int max = getMaxPlayers();
 		if (players.size() == max)
-			throw new RemoteException("Maximum Players reached!");
+			throw new RemoteException ("Maximum Players reached!");
 		players.add(player);
-
+		
 		/* If we've reached the max, then set the GameState to begin */
 		if (players.size() == max)
 			state = GameState.BEGIN;
 	}
-
-	public void updatePlayer(GamePlayer player) {
+	
+	public void updatePlayer (GamePlayer player) {
 		players.remove(player);
 		players.add(player);
 	}
-
+	
 	public void removePlayer(GamePlayer player) {
 		this.players.remove(player);
 	}
-
-	public int getMaxPlayers() {
+	
+	public int getMaxPlayers () {	
 		int ret = 0;
-
+		
 		switch (type) {
-		case CHECKERS:
-			ret = 2;
-			break;
-		case PENTE:
-			ret = 4;
-			break;
+			case CHECKERS:
+				ret = 2;
+				break;
+			case PENTE:
+				ret = 4;
+				break;
 		}
-
+		
 		return ret;
 	}
 }

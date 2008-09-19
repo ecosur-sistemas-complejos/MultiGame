@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mx.ecosur.multigame;
+package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -9,7 +9,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.persistence.Embedded;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import mx.ecosur.multigame.CellComparator;
 
 /**
  * The GameGrid class holds the current state of a specific game.  This class
@@ -21,9 +27,12 @@ import javax.persistence.Embedded;
  * @author awater
  *
  */
+@Entity
 public class GameGrid implements Serializable {
 
+	private static final long serialVersionUID = -2579204312184918693L;
 	TreeSet<Cell> cells;
+	private int id;
 	
 	public GameGrid () {
 		cells = new TreeSet<Cell>(new CellComparator());
@@ -34,6 +43,16 @@ public class GameGrid implements Serializable {
 	 */
 	public GameGrid(TreeSet<Cell> cells) {
 		this.cells = cells;
+	}
+	
+	@Id
+	@GeneratedValue
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	/* 
@@ -65,19 +84,20 @@ public class GameGrid implements Serializable {
 		cells.remove(cell);
 	}
 	
-	@Embedded
+	@OneToMany (cascade={CascadeType.ALL})
 	public Set<Cell> getCells () {
 		return cells;
 	}
 	
 	public void setCells(Set<Cell> cells){
-		this.cells = (TreeSet<Cell>) cells;
+		this.cells = new TreeSet<Cell> (new CellComparator());
+		this.cells.addAll(cells);
 	}
 	
 	public String toString () {
 		StringBuffer buf = new StringBuffer();
 		Iterator<Cell> iter = cells.iterator();
-		buf.append ("Grid: [");
+		buf.append ("GameGrid: [");
 		while (iter.hasNext()) {
 			Cell cell = iter.next();
 			buf.append("column: " + cell.getColumn() + ", row: " + 

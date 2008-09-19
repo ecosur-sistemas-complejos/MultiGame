@@ -6,7 +6,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents a server side cell object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.Cell")]
+	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Cell")]
 	public class Cell extends UIComponent{
 		
 		private var _row:int;

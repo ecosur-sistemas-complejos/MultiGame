@@ -3,8 +3,8 @@
  */
 package mx.ecosur.multigame.checkers;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.ejb.entity.Cell;
 
 /**
  * @author awater
@@ -12,6 +12,8 @@ import mx.ecosur.multigame.Color;
  */
 public class Checker extends Cell {
 	
+	private static final long serialVersionUID = 2158082513951828819L;
+
 	public Checker(){
 		super();
 	}

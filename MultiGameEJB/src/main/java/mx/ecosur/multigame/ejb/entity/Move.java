@@ -2,13 +2,11 @@ package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -17,19 +15,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
-import mx.ecosur.multigame.Cell;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "DISCRIMINATOR", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("MOVE")
+@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries( { 
 	@NamedQuery(name = "getMoves", query = "select m from Move m where m.player.game=:game order by m.id asc") 
 })
 public class Move implements Serializable {
 
+	private static final long serialVersionUID = 8017901476308051472L;
 	private int id;
-	private GamePlayer player;
+	protected GamePlayer player;
 	private Cell current, destination;
 
 	public enum Status {
@@ -67,7 +63,7 @@ public class Move implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "DESTINATION_CELL")
+	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
 	public Cell getDestination() {
 		return this.destination;
 	}
@@ -76,7 +72,7 @@ public class Move implements Serializable {
 		this.destination = destination;
 	}
 
-	@Column(name = "CURRENT_CELL")
+	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
 	public Cell getCurrent() {
 		return this.current;
 	}
@@ -85,7 +81,7 @@ public class Move implements Serializable {
 		this.current = current;
 	}
 
-	@OneToOne
+	@OneToOne  (cascade={CascadeType.ALL},fetch=FetchType.EAGER)
 	public GamePlayer getPlayer() {
 		return this.player;
 	}

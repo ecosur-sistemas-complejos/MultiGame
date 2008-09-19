@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 
@@ -21,7 +23,12 @@ import mx.ecosur.multigame.ejb.entity.Move;
 @DiscriminatorValue("CHECKERS")
 public class JumpMove extends Move {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -669208640863689013L;
 	ArrayList<Move> jumps;
+	private int id;
 	
 	public JumpMove () {
 		super ();
@@ -32,6 +39,16 @@ public class JumpMove extends Move {
 		super(player, current, destination);
 		jumps = new ArrayList<Move> ();
 		jumps.add(this);
+	}
+	
+	@Id
+	@GeneratedValue
+	public int getId() {
+		return this.id;
+	}
+	
+	public void setId (int id) {
+		this.id = id;
 	}
 	
 	public void addJump (Move move) {

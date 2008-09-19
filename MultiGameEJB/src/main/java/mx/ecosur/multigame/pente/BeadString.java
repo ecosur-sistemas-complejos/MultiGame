@@ -4,15 +4,12 @@
 package mx.ecosur.multigame.pente;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Vertice;
+import mx.ecosur.multigame.ejb.entity.Cell;
 
 /**
  * @author awater
@@ -20,18 +17,22 @@ import mx.ecosur.multigame.Vertice;
  */
 public class BeadString implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5360218565926616845L;
 	private TreeSet<Cell> beads;
 	
 	public BeadString () {
 		this.beads = new TreeSet<Cell>(new CellComparator());
 	}
-	
+
 	public Set<Cell> getBeads () {
 		return beads;
 	}
 	
-	public void setBeads(Set<Cell> beads){
-		this.beads = (TreeSet<Cell>)beads;
+	public void setBeads(Set<Cell> new_beads){
+		beads.addAll(new_beads);
 	}
 	
 	public void add (Cell cell) {
@@ -121,12 +122,12 @@ public class BeadString implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuffer buf = new StringBuffer ();
+		StringBuffer buf = new StringBuffer ("BeadString [");
 		for (Cell cell : beads) {
 			buf.append(cell.toString());
 			buf.append (" ");
 		}
-		
+		buf.append (" ]");
 		return buf.toString();
 	}
 }

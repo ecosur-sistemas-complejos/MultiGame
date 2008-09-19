@@ -6,6 +6,8 @@ package mx.ecosur.multigame;
 import java.io.Serializable;
 import java.util.Comparator;
 
+import mx.ecosur.multigame.ejb.entity.Cell;
+
 /**
  * Compares two cells for equality by row and column (colors are ignored).
  * 
@@ -13,6 +15,8 @@ import java.util.Comparator;
  *
  */
 public class CellComparator implements Comparator<Cell>, Serializable {
+
+	private static final long serialVersionUID = 1192095593909731426L;
 
 	public int compare(Cell cell1, Cell cell2) {
 		int ret = -1;

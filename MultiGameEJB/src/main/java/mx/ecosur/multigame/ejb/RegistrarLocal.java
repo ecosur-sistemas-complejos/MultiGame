@@ -40,7 +40,7 @@ public interface RegistrarLocal {
 	 * @throws RemoteException 
 	 */
 	public GamePlayer registerPlayer (Player player, Color color, GameType type) 
-		throws InvalidRegistrationException, RemoteException;
+		throws InvalidRegistrationException;
 	
 	/**
 	 * Unregisters a player from the system (when the Player quits playing 
@@ -51,7 +51,7 @@ public interface RegistrarLocal {
 	 * @throws RemoteException 
 	 */
 	public void unregisterPlayer (GamePlayer player) throws 
-		InvalidRegistrationException, RemoteException;
+		InvalidRegistrationException;
 	
 	/**
 	 * Method to find the available token colors based on the gametype 
@@ -68,7 +68,7 @@ public interface RegistrarLocal {
 	 * @throws RemoteException 
 	 * 
 	 */
-	public Player locatePlayer (String name) throws RemoteException;
+	public Player locatePlayer (String name);
 	
 	/**
 	 * Attempt to locate an unfinished game of a given type and player. If no
@@ -82,6 +82,6 @@ public interface RegistrarLocal {
 	 * @return the game.
 	 * @throws RemoteException
 	 */
-	public Game locateGame (Player player, GameType type) throws RemoteException;
+	public Game locateGame (Player player, GameType type);
 	
 }

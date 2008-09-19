@@ -12,15 +12,16 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.checkers.Checker;
+
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -43,8 +44,6 @@ public class CheckersSharedBoardTest {
 	private GamePlayer bob;
 
 	private int gameId;
-
-	private int id = 0;
 
 	private Checker[] jumps = { new Checker(1, 1, Color.RED),
 			new Checker(3, 1, Color.RED), new Checker(5, 1, Color.RED) };
@@ -218,8 +217,8 @@ public class CheckersSharedBoardTest {
 		move = board.validateMove(move);
 		board.move(move);
 
-//		assertTrue(board.getGameGrid(gameId).getLocation(move.getDestination()) != null);
-//		assertTrue(board.getGameGrid(gameId).getLocation(move.getCurrent()) == null);
+		assertTrue(board.getGameGrid(gameId).getLocation(move.getDestination()) != null);
+		assertTrue(board.getGameGrid(gameId).getLocation(move.getCurrent()) == null);
 	
 	}
 

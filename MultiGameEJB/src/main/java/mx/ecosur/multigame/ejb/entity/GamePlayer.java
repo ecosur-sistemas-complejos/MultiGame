@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -35,11 +36,16 @@ import mx.ecosur.multigame.Color;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GamePlayer implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1893870933080422147L;
+
 	private int id;
 	
 	private Player player;
 	
-	private Game game;
+	protected Game game;
 
 	private Color color;
 	
@@ -77,7 +83,7 @@ public class GamePlayer implements Serializable {
 		this.player = player;
 	}
 
-	@ManyToOne (cascade={CascadeType.ALL})
+	@ManyToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
 	@JoinColumn(name="GAME_ID")
 	public Game getGame() {
 		return game;

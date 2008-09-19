@@ -1,11 +1,13 @@
 package mx.ecosur.multigame.checkers;
 
-import java.io.Serializable;
-
 import mx.ecosur.multigame.Characteristic;
 
 public class CheckerCharacteristic implements Characteristic {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5815949939979111669L;
 	private boolean kinged;
 
 	public CheckerCharacteristic () {

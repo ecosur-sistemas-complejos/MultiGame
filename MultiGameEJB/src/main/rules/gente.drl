@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.MessageSender;
 
+import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;

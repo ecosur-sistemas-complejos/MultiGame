@@ -5,7 +5,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents a server side GameGrid object.
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.GameGrid")]
+	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.GameGrid")]
 	public class GameGrid {
 		
 		private var _cells:ArrayCollection;

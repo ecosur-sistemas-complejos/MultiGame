@@ -9,15 +9,15 @@ import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
@@ -74,9 +74,6 @@ public class GameService {
 			GameType gameType = GameType.valueOf(gameTypeStr);
 			gamePlayer = registrar.registerPlayer(player, preferedColor,
 					gameType);
-		} catch (RemoteException e) {
-			e.printStackTrace();
-			throw new GameException(e);
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);

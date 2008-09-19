@@ -10,38 +10,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import mx.ecosur.multigame.Cell;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.Vertice;
+import mx.ecosur.multigame.pente.BeadString;
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.pente.BeadString;
+
 
 /**
  * @author awater
  *
  */
 @Entity
-@DiscriminatorValue("PENTE")
 @NamedQueries( { 
 	@NamedQuery(name = "getPenteMoves", query = "select pm from PenteMove pm where pm.player.game=:game order by pm.id asc") 
 })
 public class PenteMove extends Move {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6635578671376146204L;
+
 	public enum CooperationQualifier {
 		COOPERATIVE, SELFISH, NEUTRAL
 	}
 
-	private HashSet<Cell> captures;
+	private Set<Cell> captures;
 	
 	private HashSet<BeadString> trias, tesseras;
 
@@ -49,10 +55,14 @@ public class PenteMove extends Move {
 	
 	public PenteMove () {
 		super ();
+		trias = new HashSet<BeadString> ();
+		tesseras = new HashSet<BeadString> ();
 	}
 
 	public PenteMove(PentePlayer player, Cell destination) {
 		super(player, destination);
+		trias = new HashSet<BeadString> ();
+		tesseras = new HashSet<BeadString> ();
 	}
 	
 	/*
@@ -113,8 +123,7 @@ public class PenteMove extends Move {
 	 * Gets the Trias that this move created.
 	 */
 	public HashSet<BeadString> getTrias () {
-		if (trias == null) {
-			trias = new HashSet<BeadString> ();
+		if (trias.size() == 0 && player != null) {
 			Map<Vertice, BeadString> stringMap = getString (3);
 			for (Vertice v: stringMap.keySet()) {
 				BeadString string = stringMap.get(v);
@@ -126,8 +135,8 @@ public class PenteMove extends Move {
 		return trias;
 	}
 	
-	public void setTrias (HashSet<BeadString> trias) {
-		this.trias = trias;
+	public void setTrias (HashSet<BeadString> new_trias) {
+		trias.addAll(new_trias);
 	}
 	
 	/**
@@ -138,8 +147,7 @@ public class PenteMove extends Move {
 	 * refactoring.
 	 */
 	public HashSet<BeadString> getTesseras () {
-		if (tesseras == null) {
-			tesseras = new HashSet<BeadString> ();
+		if (tesseras.size() == 0 && player != null) {
 			Map<Vertice, BeadString> stringMap = getString (4, true);
 			for (Vertice v : stringMap.keySet()) {
 				BeadString string = stringMap.get(v); 
@@ -151,14 +159,14 @@ public class PenteMove extends Move {
 		return tesseras;
 	}
 	
-	public void setTesseras (HashSet<BeadString> tesseras) {
-		this.tesseras = tesseras;
+	public void setTesseras (HashSet<BeadString> new_tesseras) {
+		tesseras.addAll(new_tesseras);
 	}
 	
 	private boolean uncountedString(BeadString string) {
 		boolean ret = false;
-		PentePlayer player = (PentePlayer) getPlayer();
-		if (!player.containsString(string))
+		PentePlayer pentePlayer = (PentePlayer) player;
+		if (!pentePlayer.containsString(string))
 			ret = true;
 		return ret;
 	}
@@ -166,11 +174,11 @@ public class PenteMove extends Move {
 	private Color[] getCandidateColors() {
 		Color [] ret;
 		
-		List<GamePlayer> players = getPlayer().getGame().getPlayers();
+		List<GamePlayer> players = player.getGame().getPlayers();
 		ArrayList<Color> colors = new ArrayList<Color>();
 		ret = new Color [ players.size() -1 ];
 		for (GamePlayer p : players) {
-			if (p.equals(this.getPlayer()))
+			if (p.equals(this.player))
 				continue;
 			colors.add(p.getColor());
 		}
@@ -312,7 +320,7 @@ public class PenteMove extends Move {
 		}
 
 		Cell searchCell = new Cell (column, row, color);
-		return this.getPlayer().getGame().getGrid().getLocation(searchCell);
+		return getPlayer().getGame().getGrid().getLocation(searchCell);
 	}
 	
 	private Map<Vertice, BeadString> getString (int stringlength) {

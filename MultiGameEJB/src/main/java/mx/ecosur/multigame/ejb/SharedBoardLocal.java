@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 

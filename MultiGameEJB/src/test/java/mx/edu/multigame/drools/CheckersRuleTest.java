@@ -2,10 +2,10 @@ package mx.edu.multigame.drools;
 
 import java.io.InputStreamReader;
 
-import mx.ecosur.multigame.GameGrid;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 
 import org.drools.FactHandle;
 import org.drools.RuleBase;
