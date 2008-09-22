@@ -1,0 +1,32 @@
+GLASSFISH CONFIGURATION
+
+This prototype requires the following configuration changes be made, before being
+built and deployed.
+
+1.  The property "glassfish" must be modified by the builder to point to the 
+top-level directory of glassfish-v2-ur1.  
+2.  The property "flexSDK" must be modified by the builder to point to the top-
+level directory for the FLEX3 SDK.
+
+
+The following configuration changes must be made on the Glassfish server to which
+the EAR file is being deployed:
+
+1.  A JMS connection factory must be created with the following details:
+    a) "Name" set to "jms/TopicConnectionFactory"
+    b) "Transaction Support" set to "NoTransaction"
+    c) All other fields may remain in default state.
+
+2.  A new JMS "destination resource" must be created with the following details:
+    a) "Name" set to "CHECKERS"
+    b) "Resource Type" set to "javax.jms.Topic"
+    c) All other fields may remain in default state.
+    
+    
+ **** IMPORTANT ****
+ 
+ Before deployment, the local Glassfish Derby database must be up and running:
+ 
+ %> asadmin start-database
+ 
+ 

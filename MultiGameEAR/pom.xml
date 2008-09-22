@@ -20,6 +20,12 @@
 			<version>${version}</version>
 			<type>ejb</type>
 		</dependency>
+		<!-- dependency>
+		      <groupId>mx.ecosur</groupId>
+              <artifactId>multi-game-flex-client</artifactId>
+              <version>${version}</version>
+              <type>war</type>
+		</dependency-->
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
@@ -68,6 +74,10 @@
 						<groupId>com.thoughtworks.xstream</groupId>
 						<artifactId>xstream</artifactId>
 					</jarModule>
+					<!-- webModule>
+					   <groupId>mx.ecosur</groupId>
+					   <artifactId>multi-game-flex-client</artifactId>
+					</webModule-->
 				</modules>
 			</configuration>
 		</plugin>
