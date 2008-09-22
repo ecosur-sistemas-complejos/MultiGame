@@ -1,6 +1,17 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * PenteMove extends Move to add some Pente specific methods for use by the 
+ * Pente/Gente rules.  
  * 
+ * @author awaterma@ecosur.mx
  */
+
 package mx.ecosur.multigame.ejb.entity.pente;
 
 import java.util.ArrayList;
@@ -13,10 +24,8 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import mx.ecosur.multigame.Color;
@@ -28,10 +37,7 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 
 
-/**
- * @author awater
- *
- */
+
 @Entity
 @NamedQueries( { 
 	@NamedQuery(name = "getPenteMoves", query = "select pm from PenteMove pm where pm.player.game=:game order by pm.id asc") 

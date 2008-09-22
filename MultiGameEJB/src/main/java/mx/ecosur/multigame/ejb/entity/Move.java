@@ -1,3 +1,19 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * A move is an object which contains a GamePlayer, a destination cell, and 
+ * optionally, an originating cell. Moves are processed by the SharedBoard
+ * and when successful, are integrated into a specific game's GameGrid.  
+ * Success and integration are determined by each game's rule set.
+ * 
+ * @author awaterma@ecosur.mx
+ */
+
 package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
@@ -14,7 +30,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
-
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

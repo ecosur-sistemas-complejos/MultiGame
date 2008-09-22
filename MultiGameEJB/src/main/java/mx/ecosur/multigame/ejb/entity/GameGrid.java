@@ -1,6 +1,21 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * The GameGrid class holds the current state of a specific game.  This class
+ * is intended to be a transitive object, in the sense that a specific 
+ * SharedBoardwill return a populated GameGrid to a specific caller. This 
+ * hides gamegrid specific information for runtime callers; allowing quick
+ * access to specific cells within a running game.
  * 
+ * @author awaterma@ecosur.mx
+ *
  */
+
 package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
@@ -17,16 +32,7 @@ import javax.persistence.OneToMany;
 
 import mx.ecosur.multigame.CellComparator;
 
-/**
- * The GameGrid class holds the current state of a specific game.  This class
- * is intended to be a transitive object, in the sense that a specific ShareGameBoard
- * will return a populated GameGrid to a specific caller. This hides gamegrid specific
- * information for runtime callers; allowing quick access to specific cells within a
- * running game.
- * 
- * @author awater
- *
- */
+
 @Entity
 public class GameGrid implements Serializable {
 

@@ -1,3 +1,17 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * Receives messages from the JMS queue, and adds ChatMessages into the 
+ * system through the SharedBoard. 
+ * 
+ * @author max@alwayssunny.com
+ */
+
 package mx.ecosur.multigame.ejb.jms;
 
 import java.util.logging.Logger;

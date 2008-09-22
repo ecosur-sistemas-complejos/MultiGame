@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * A cell represents a location on a gameboard. Cells have a color, specified 
+ * by means of the Color enum.
+ * 
+ * @author awaterma@ecosur.mx
  * 
  */
+
 package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
@@ -15,13 +27,6 @@ import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Characteristic;
 import mx.ecosur.multigame.Color;
 
-/**
- * A cell represents a location on a gameboard. Cells are colored, with the
- * coloration set as specified in the Color enum.
- * 
- * @author awater
- * 
- */
 @Entity
 public class Cell implements Serializable, Cloneable {
 

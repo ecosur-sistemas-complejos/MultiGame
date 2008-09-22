@@ -1,3 +1,19 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * Defines specific behavior of Checker objects, in a generically accessible 
+ * manner.  Checker cells are either regular Checkers, moving forward or 
+ * attacking by axis, or they have been "Kinged" and are able to move and attack
+ * in all directions.
+ * 
+ * @author awaterma@ecosur.mx
+ */
+
 package mx.ecosur.multigame.checkers;
 
 import mx.ecosur.multigame.Characteristic;

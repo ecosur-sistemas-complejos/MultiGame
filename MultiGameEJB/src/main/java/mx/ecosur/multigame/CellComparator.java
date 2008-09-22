@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * Compares two cells for equality by row and subsequently, column (colors of 
+ * cells are ignored).
  * 
+ * @author awaterma@ecosur.mx
+ *
  */
+
 package mx.ecosur.multigame;
 
 import java.io.Serializable;
@@ -8,12 +20,7 @@ import java.util.Comparator;
 
 import mx.ecosur.multigame.ejb.entity.Cell;
 
-/**
- * Compares two cells for equality by row and column (colors are ignored).
- * 
- * @author awater
- *
- */
+
 public class CellComparator implements Comparator<Cell>, Serializable {
 
 	private static final long serialVersionUID = 1192095593909731426L;

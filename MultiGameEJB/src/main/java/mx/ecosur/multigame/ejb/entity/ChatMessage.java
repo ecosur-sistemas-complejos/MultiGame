@@ -1,8 +1,18 @@
-package mx.ecosur.multigame.ejb.entity;
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
 
 /**
  * A chat message sent across the system.
+ * 
+ * @author max@alwaysunny.com
  */
+
+package mx.ecosur.multigame.ejb.entity;
+
 import java.io.Serializable;
 import java.util.Date;
 

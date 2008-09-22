@@ -1,5 +1,16 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * A JumpMove is a special type of move for use in Checkers games.  JumpMoves
+ * have an origin and a destination, along with a series of Move objects
+ * that hold each specific jump of the series.
  * 
+ *	@author awaterma@ecosur.mx 
  */
 package mx.ecosur.multigame.ejb.entity.checkers;
 
@@ -15,10 +26,6 @@ import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 
-/**
- * @author awater
- *
- */
 @Entity
 @DiscriminatorValue("CHECKERS")
 public class JumpMove extends Move {

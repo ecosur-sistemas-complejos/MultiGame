@@ -1,3 +1,10 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
  * 
  */
@@ -17,10 +24,9 @@ import mx.ecosur.multigame.ejb.entity.Player;
 
 /**
  * The RegistrarRemote interface is the remote interface for the
- * registrar statefull EJB, that manages gamestate and the registration
- * of new players into the gamespace.  
+ * registrar EJB.  
  * 
- * @author awater
+ * @author awaterma@ecosur.mx
  *
  */
 

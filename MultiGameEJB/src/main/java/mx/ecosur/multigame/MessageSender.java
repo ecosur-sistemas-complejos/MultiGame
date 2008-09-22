@@ -1,3 +1,17 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * Sends JMS messages on the behalf of a client.  For our prototype, this
+ * client is usually from within the rules definition (drl) file.
+ * 
+ * @author max@alwayssunny.com
+ */
+
 package mx.ecosur.multigame;
 
 import java.io.Serializable;

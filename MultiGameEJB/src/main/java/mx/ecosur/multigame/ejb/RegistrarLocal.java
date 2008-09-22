@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * The RegistrarLocal interface is the local interface for the
+ * registrar EJB.  
  * 
+ * @author awaterma@ecosur.mx
+ *
  */
+
 package mx.ecosur.multigame.ejb;
 
 import java.rmi.RemoteException;
@@ -15,14 +27,7 @@ import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 
-/**
- * The RegistrarRemote interface is the remote interface for the
- * registrar statefull EJB, that manages gamestate and the registration
- * of new players into the gamespace.  
- * 
- * @author awater
- *
- */
+
 
 @Local
 public interface RegistrarLocal {

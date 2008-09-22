@@ -1,3 +1,17 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * Basic enum used for determining the direction a set of tokens
+ * is aligned.
+ * 
+ * @author awaterma@ecosur.mx
+ */
+
 package mx.ecosur.multigame;
 
 public enum Direction {

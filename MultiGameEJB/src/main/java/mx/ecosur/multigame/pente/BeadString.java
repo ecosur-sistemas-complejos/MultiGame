@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * A BeadString contains a small set of tokens, called a "string" in Pente, and
+ * allows clients to perform some basic operations upon each string.  For use
+ * in the Pente/Gente rule sets.
  * 
+ *	@author awaterma@ecosur.mx 
  */
+
 package mx.ecosur.multigame.pente;
 
 import java.io.Serializable;
@@ -11,10 +23,6 @@ import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Vertice;
 import mx.ecosur.multigame.ejb.entity.Cell;
 
-/**
- * @author awater
- *
- */
 public class BeadString implements Serializable {
 	
 	/**

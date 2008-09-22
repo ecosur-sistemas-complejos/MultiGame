@@ -18,7 +18,9 @@
 			<name>Academic Free License ("AFL") v. 3.0</name>
 			<url>http://www.opensource.org/licenses/afl-3.0.php</url>
 			<distribution>repo</distribution>
-			<comments>An academic-friendly OSS license</comments>
+			<comments>
+			     Copyright (C) 2008, ECOSUR, Andrew Waterman and Max Pimm
+			</comments>
 		</license>
 	</licenses>
   <developers>

@@ -1,3 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * A Game stores stateful information about a running game. E.G., the grid's 
+ * dimensions, the list of active Cells, and the Players involved.
+ * 
+ * @author awaterma@ecosur.mx
+ *
+ */
+
 package mx.ecosur.multigame.ejb.entity;
 
 import java.awt.Dimension;
@@ -24,12 +39,6 @@ import javax.persistence.Version;
 
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
-
-/**
- * A Game stores stateful information about a running game. E.G., the grid's 
- * dimensions, the List of active Cells, and the Players involved.
- *
- */
 
 @NamedQueries( {
 	@NamedQuery(name = "getGameByType", query = "select g from Game g where g.type=:type "

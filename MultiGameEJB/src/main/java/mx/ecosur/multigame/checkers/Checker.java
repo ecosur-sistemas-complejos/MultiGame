@@ -1,15 +1,23 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * Definition of the Checker object.
+ * 
+ * @author awaterma@ecosur.mx
  * 
  */
+
 package mx.ecosur.multigame.checkers;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.Cell;
 
-/**
- * @author awater
- * 
- */
+
 public class Checker extends Cell {
 	
 	private static final long serialVersionUID = 2158082513951828819L;

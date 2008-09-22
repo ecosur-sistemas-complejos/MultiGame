@@ -1,11 +1,22 @@
-package mx.ecosur.multigame.ejb.entity;
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
 
 /**
  * The Player class represents a player registered with the system. 
  * This class simply maps into the persistent layer to give the system
  * a means to track users, how many games they have won, and how many
- * played.  
+ * played.
+ * 
+ * @author awaterma@ecosur.mx
  */
+
+package mx.ecosur.multigame.ejb.entity;
+
+
 
 import java.io.Serializable;
 

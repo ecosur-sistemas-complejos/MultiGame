@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * PenteGame extends the general Game object with some Pente (or Gente) specific
+ * methods and functionality.  PenteGame provides callers with the winners of 
+ * the game it manages to.
  * 
+ * @author awaterma@ecosur.mx
  */
+
 package mx.ecosur.multigame.ejb.entity.pente;
 
 import javax.persistence.Entity;
@@ -18,10 +30,7 @@ import mx.ecosur.multigame.ejb.entity.Game;
 
 
 
-/**
- * @author awater
- *
- */
+
 @NamedQueries( {
 	@NamedQuery(name = "getPenteGame", query = "select g from PenteGame g where g.type=:type "
 		+ "and g.state =:state"),
@@ -46,11 +55,6 @@ public class PenteGame extends Game {
 	public void setWinners(Set<PentePlayer> winners){
 		this.winners = winners;
 	}
-	
-	/* Method included soleley for signature, issue with Glassfish Deployment */
-	public void determineWinners() {
-	}
-	
 	
 	class PlayerComparator implements Serializable, Comparator <PentePlayer>{
 

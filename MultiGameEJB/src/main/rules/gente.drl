@@ -1,3 +1,10 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 package mx.ecosur.multigame.pente;
 
 import java.awt.Dimension;
@@ -26,7 +33,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 
 #These rules have been seperated from the main Pente rule set for 
 #use in the modified game of Pente, GENTE, invented by 
-#Dr. Luis Garcia Barrios at ECOSUR, in San Crist�bal de Las Casas,
+#Dr. Luis Garcia Barrios at ECOSUR, in San Cristobal de Las Casas,
 #Chiapas, Mexico.
 
 

@@ -1,6 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * A GamePlayer contains persistent information about a player playing a 
+ * specific game.  
  * 
+ * @author awaterma@ecosur.mx
+ *
  */
+
 package mx.ecosur.multigame.ejb.entity;
 
 import java.io.Serializable;
@@ -21,13 +33,7 @@ import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.Color;
 
-/**
- * A GamePlayer contains persistent information about a player playing a 
- * specific game.  
- * 
- * @author awater
- *
- */
+
 @NamedQueries ({
 	@NamedQuery(name="getGamePlayer",
 			query="select gp from GamePlayer gp where gp.player=:player " +

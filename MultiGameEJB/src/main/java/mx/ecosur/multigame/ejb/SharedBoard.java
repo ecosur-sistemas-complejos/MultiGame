@@ -1,3 +1,21 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * The SharedBoardEJB handles operations between players and the shared game
+ * board.  The SharedBoardEJB manges game specific events, such as validating a
+ * specific move on a game board, making a specific move, and modifying a 
+ * previous move.  Clients can also add chat messages to the message stream,
+ * increment players turns (soon to be phased into the game rules), and get
+ * a list of players for a specific game.
+ * 
+ * @author awaterma@ecosur.mx
+ */
+
 package mx.ecosur.multigame.ejb;
 
 import java.rmi.RemoteException;

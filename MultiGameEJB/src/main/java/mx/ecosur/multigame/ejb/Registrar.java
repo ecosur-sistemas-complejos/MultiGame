@@ -1,3 +1,18 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * Registration is the process of adding or finding users in the system and
+ * associating that user with a current or new game.  Token colors are 
+ * determined dynamically, by the available colors per game.
+ * 
+ * @author awaterma@ecosur.mx
+ */
+
 package mx.ecosur.multigame.ejb;
 
 import java.rmi.RemoteException;
@@ -56,7 +71,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @throws RemoteException
 	 * 
 	 */
-
 	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
 			GameType type) throws InvalidRegistrationException {
 

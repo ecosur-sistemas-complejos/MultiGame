@@ -1,5 +1,15 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 /**
+ * PentePlayer extends GamePlayer to provide several Pente specific methods
+ * for use by the Pente rule set.
  * 
+ * @author awaterma@ecosur.mx
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
@@ -15,11 +25,6 @@ import mx.ecosur.multigame.ejb.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
-
-/**
- * @author awater
- *
- */
 
 @Entity
 public class PentePlayer extends GamePlayer {
