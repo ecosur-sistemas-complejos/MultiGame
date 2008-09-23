@@ -81,20 +81,9 @@ function boolean isTessera (PenteMove move) {
 function int scorePlayer (PenteMove move) {
     int ret = 0;
     PentePlayer player = (PentePlayer) move.getPlayer();
-
-    /* First, see if the move has any trias or tesseras, and
-       add those to the player object */
-    for (BeadString string : move.getTrias()) {
-        player.addTria(string);
-    }
-    
-    for (BeadString string : move.getTesseras()) {
-        player.addTessera(string);
-    }
-
-    if (player.getTrias().size() == 2)
+    if (player.getTrias().size() >= 2)
         ret = 10;
-    else if (player.getTesseras().size() == 3) 
+    else if (player.getTesseras().size() >= 3) 
         ret = 5;
     return ret;
 }
@@ -211,6 +200,32 @@ then
     for (BeadString  t : tesseras) {
         player.addTessera (t);
         partner.addTessera (t);
+    }
+    modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
+end
+
+rule "find-mixed"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (isTria (move))
+    eval (isTessera (move))
+then
+    PentePlayer player = (PentePlayer) move.getPlayer();
+    PentePlayer partner = (PentePlayer) player.getPartner();
+    Set<BeadString> tesseras = move.getTesseras();
+    Set<BeadString> trias = move.getTrias();
+    Set<BeadString> unadded = new HashSet<BeadString>();
+    for (BeadString  tessera : tesseras) {
+        for (BeadString tria: trias) {
+            if (!tessera.contains(tria)) {
+                player.addTria(tria);
+                player.addTessera (tessera); 
+                partner.addTessera (tessera);
+            }
+        }
     }
     modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
 end
