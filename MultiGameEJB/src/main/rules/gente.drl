@@ -162,6 +162,9 @@ when
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell (move.getDestination());
+    #Calculate Trias and Tesseras before serialziing move over jms.
+    move.getTrias();
+    move.getTesseras();
     modify (move) { setStatus (Status.MOVED) }
     modify (game) { setGrid (modifiedGrid) }
     MessageSender messageSender = new MessageSender();
@@ -191,8 +194,8 @@ rule "find-the-tesseras"
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
-    eval (!isTria (move))
     eval (isTessera (move))
+    eval (!isTria (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
     PentePlayer partner = (PentePlayer) player.getPartner();
@@ -204,14 +207,14 @@ then
     modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
 end
 
-rule "find-mixed"
+rule "find-the-mixed"
     agenda-group "evaluate"
     no-loop true
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
-    eval (isTria (move))
     eval (isTessera (move))
+    eval (isTria (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
     PentePlayer partner = (PentePlayer) player.getPartner();

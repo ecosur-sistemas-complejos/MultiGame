@@ -35,7 +35,7 @@ public class BeadString implements Serializable {
 		this.beads = new TreeSet<Cell>(new CellComparator());
 	}
 
-	public Set<Cell> getBeads () {
+	public TreeSet<Cell> getBeads () {
 		return beads;
 	}
 	
@@ -53,6 +53,10 @@ public class BeadString implements Serializable {
 	
 	public boolean contains (Cell cell) {
 		return beads.contains(cell);
+	}
+	
+	public boolean isTerminator (Cell cell) {
+		return (beads.first() == cell || beads.last() == cell);
 	}
 	
 	public boolean contains (BeadString string) {
@@ -137,5 +141,17 @@ public class BeadString implements Serializable {
 		}
 		buf.append (" ]");
 		return buf.toString();
+	}
+
+	public BeadString trim(Cell destination, int stringlength) {
+		BeadString ret = new BeadString();
+		if (beads.first() == destination) {
+			ret.setBeads(beads.tailSet(destination));			
+		} else if (beads.last() == destination) {
+			ret.setBeads(beads.headSet(destination));
+		}
+		if (!ret.contains(destination))
+			ret.add(destination);
+		return ret;
 	}
 }

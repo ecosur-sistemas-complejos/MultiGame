@@ -503,39 +503,39 @@ public class PenteRulesTest extends RulesTestBase {
 		assertEquals (2, tesseras.size());
 	}
 
-//	@Test
-//	public void testInlineJoinedTesseras () {
-//		alice.setTurn(true);
-//
-//		Cell first = new Cell (7,10,alice.getColor());
-//		Cell second = new Cell (8,10,alice.getColor());
-//		Cell third = new Cell (9,10, alice.getColor());
-//		
-//		game.getGrid().updateCell(first);
-//		game.getGrid().updateCell(second);
-//		game.getGrid().updateCell(third);
-//		
-//		Cell fourth = new Cell (11,10,alice.getColor());
-//		Cell fifth = new Cell (12,10, alice.getColor());
-//		Cell sixth = new Cell (13,10, alice.getColor());
-//		
-//		game.getGrid().updateCell(fourth);
-//		game.getGrid().updateCell(fifth);
-//		game.getGrid().updateCell(sixth);
-//		
-//		game.setState(GameState.PLAY);
-//		
-//		Cell tess = new Cell (10,10, alice.getColor());
-//		PenteMove move = new PenteMove (alice, tess);
-//		
-//		fireRules (move);
-//		
-//		assertEquals (Move.Status.EVALUATED, move.getStatus());
-//		assertEquals (tess, game.getGrid().getLocation(tess));
-//		
-//		Set<BeadString> tesseras = move.getTesseras();
-//		assertEquals (2, tesseras.size());
-//	}
+	@Test
+	public void testInlineJoinedTesseras () {
+		alice.setTurn(true);
+
+		Cell first = new Cell (7,10,alice.getColor());
+		Cell second = new Cell (8,10,alice.getColor());
+		Cell third = new Cell (9,10, alice.getColor());
+		
+		game.getGrid().updateCell(first);
+		game.getGrid().updateCell(second);
+		game.getGrid().updateCell(third);
+		
+		Cell fourth = new Cell (11,10,alice.getColor());
+		Cell fifth = new Cell (12,10, alice.getColor());
+		Cell sixth = new Cell (13,10, alice.getColor());
+		
+		game.getGrid().updateCell(fourth);
+		game.getGrid().updateCell(fifth);
+		game.getGrid().updateCell(sixth);
+		
+		game.setState(GameState.PLAY);
+		
+		Cell tess = new Cell (10,10, alice.getColor());
+		PenteMove move = new PenteMove (alice, tess);
+		
+		fireRules (move);
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (tess, game.getGrid().getLocation(tess));
+		
+		Set<BeadString> tesseras = move.getTesseras();
+		assertEquals (2, tesseras.size());
+	}
 	
 	
 	@Test
@@ -596,6 +596,17 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		game.getGrid().updateCell(first);
 		game.getGrid().updateCell(second);
+		
+		/* Clean up turns for our tests */
+		List<GamePlayer> players = game.getPlayers();
+		for (GamePlayer player : players) {
+			if (player.getPlayer().getName().equals(alice.getPlayer().getName()))
+				player.setTurn(true);
+			else
+				player.setTurn(false);
+		}
+		
+		game.setPlayers(players);
 		alice.setGame(game);
 		
 		tria = new Cell (10,12, alice.getColor());

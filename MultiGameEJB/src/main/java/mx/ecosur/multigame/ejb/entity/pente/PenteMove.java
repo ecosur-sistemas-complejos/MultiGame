@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -130,11 +130,13 @@ public class PenteMove extends Move {
 	 */
 	public HashSet<BeadString> getTrias () {
 		if (trias.size() == 0 && player != null) {
-			Map<Vertice, BeadString> stringMap = getString (3);
+			HashMap<Vertice, HashSet<BeadString>> stringMap = getString (3);
 			for (Vertice v: stringMap.keySet()) {
-				BeadString string = stringMap.get(v);
-				if (uncountedString (string) && string.contiguous(v))
-					trias.add(string);
+				HashSet<BeadString> stringSet = stringMap.get(v);
+				for (BeadString string : stringSet) {
+					if (uncountedString (string) && string.contiguous(v))
+						trias.add(string);
+				}
 			}
 		}
 		
@@ -154,11 +156,13 @@ public class PenteMove extends Move {
 	 */
 	public HashSet<BeadString> getTesseras () {
 		if (tesseras.size() == 0 && player != null) {
-			Map<Vertice, BeadString> stringMap = getString (4, true);
+			HashMap<Vertice, HashSet<BeadString>> stringMap = getString (4, true);
 			for (Vertice v : stringMap.keySet()) {
-				BeadString string = stringMap.get(v); 
-				if (uncountedString (string) && string.contiguous(v))
-					tesseras.add(string);
+				HashSet<BeadString> stringSet = stringMap.get(v);
+				for (BeadString string : stringSet) {
+					if (uncountedString (string) && string.contiguous(v))
+						tesseras.add(string);
+				}
 			}
 		}
 		
@@ -169,8 +173,19 @@ public class PenteMove extends Move {
 		tesseras.addAll(new_tesseras);
 	}
 	
+	/* Tests as to whether the Player already contains a reference to the 
+	 * candidate string, or if any currently counted tesseras contain the
+	 * string itself (in the case of a tria). 
+	 */
 	private boolean uncountedString(BeadString string) {
 		boolean ret = false;
+		if (string.size() == 3) {
+			for (BeadString tessera : getTesseras()) {
+				if (tessera.contains(string))
+					return ret;
+			}
+		}
+		
 		PentePlayer pentePlayer = (PentePlayer) player;
 		if (!pentePlayer.containsString(string))
 			ret = true;
@@ -329,12 +344,12 @@ public class PenteMove extends Move {
 		return getPlayer().getGame().getGrid().getLocation(searchCell);
 	}
 	
-	private Map<Vertice, BeadString> getString (int stringlength) {
+	private HashMap<Vertice, HashSet<BeadString>> getString (int stringlength) {
 		return getString (stringlength, false);
 	}
 	
-	private Map<Vertice, BeadString> getString(int stringlength, boolean compliment) {
-		HashMap<Vertice, BeadString> ret = new HashMap<Vertice, BeadString> ();
+	private HashMap<Vertice, HashSet<BeadString>> getString(int stringlength, boolean compliment) {
+		HashMap<Vertice, HashSet<BeadString>> ret = new HashMap<Vertice, HashSet<BeadString>> ();
 		
 		AnnotatedCell start = new AnnotatedCell (getDestination());
 			
@@ -369,21 +384,80 @@ public class PenteMove extends Move {
 				directionalMap.put(candidate.getDirection().getVertice(), string);
 			}
 		}
-		
-		/* Pull each list of cells from the directional map, and ensure that
-		 * there are at least stringlength cells in that list. */
+	
 		for (Vertice v : directionalMap.keySet()) {
 			BeadString string = directionalMap.get(v);
-			if (string.size() == stringlength - 1) {
+			/* Ensure the destination cell is within the candidate string */
+			if (!string.contains(getDestination()))
 				string.add(getDestination());
-			} 
 			
-			if (string.contains(getDestination()) && string.size() >= stringlength) {
-				ret.put (v, string);
+			/* Process the two types of strings differently */
+			if (string.isTerminator(getDestination())) {
+				ret = processTerminalString(stringlength, ret, v, string);
+			} else {
+				ret = processMiddleString (stringlength, ret, v, string);
 			}
 		}
 		
 		return ret;
+	}
+
+	private HashMap<Vertice, HashSet<BeadString>> processTerminalString(
+			int stringlength, HashMap<Vertice, HashSet<BeadString>> ret, 
+			Vertice v, BeadString string) 
+	{
+		string = string.trim (getDestination(), stringlength);
+		if (string.size() == stringlength) {
+			addString (ret, v, string);
+		}
+		
+		return ret;
+	}
+	
+	private HashMap<Vertice, HashSet<BeadString>> processMiddleString (
+			int stringlength, HashMap<Vertice, HashSet<BeadString>> ret, 
+			Vertice v, BeadString string) 
+	{
+		/* Simple middle case */
+		if (string.size() == stringlength) {
+			addString (ret, v, string);
+		} else {
+			/* Joined Case */
+			TreeSet<Cell> cells = string.getBeads();
+			BeadString top = new BeadString ();
+			BeadString bottom = new BeadString ();
+			for (Cell cell : cells) {
+				if (cell.equals(getDestination()))
+					break;
+				top.add(cell);
+			}
+			bottom.setBeads(cells.tailSet(getDestination()));
+
+			/* ensure top and bottom have the destination cell */
+			top.add(getDestination());
+			bottom.add(getDestination());
+
+			/* Add the top string if it is the requested length */
+			if (top.size() == stringlength) {
+				addString (ret, v, top);
+			} 
+
+			/* Add the bottom string if it is the requested length */
+			if (bottom.size() == stringlength) {
+				addString (ret, v, bottom);
+			}
+		}
+		
+		return ret;
+	}
+	
+	private void addString (HashMap<Vertice,HashSet<BeadString>> map, Vertice v, 
+			BeadString string) {
+		HashSet <BeadString> set = map.get(v);
+		if (set == null)
+			set = new HashSet<BeadString>();
+		set.add (string);
+		map.put (v, set);
 	}
 	
 	private class AnnotatedCell {

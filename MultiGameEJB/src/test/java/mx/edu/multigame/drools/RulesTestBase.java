@@ -8,7 +8,7 @@
 /**
  * Base class for rules based tests.
  * 
- * @author awaterma@ecosur.mx
+ * @author max@alwayssunny.com
  */
 
 package mx.edu.multigame.drools;
@@ -38,6 +38,4 @@ public class RulesTestBase extends JMSTestCaseAdapter {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-	
-	
 }
