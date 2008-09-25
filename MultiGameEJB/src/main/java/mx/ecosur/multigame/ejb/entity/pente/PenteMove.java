@@ -431,7 +431,7 @@ public class PenteMove extends Move {
 					break;
 				top.add(cell);
 			}
-			bottom.setBeads(cells.tailSet(getDestination()));
+			bottom.setBeads(new TreeSet<Cell>(cells.tailSet(getDestination())));
 
 			/* ensure top and bottom have the destination cell */
 			top.add(getDestination());

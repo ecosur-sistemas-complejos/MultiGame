@@ -16,7 +16,6 @@
 package mx.ecosur.multigame.pente;
 
 import java.io.Serializable;
-import java.util.Set;
 import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
@@ -39,7 +38,7 @@ public class BeadString implements Serializable {
 		return beads;
 	}
 	
-	public void setBeads(Set<Cell> new_beads){
+	public void setBeads(TreeSet<Cell> new_beads){
 		beads.addAll(new_beads);
 	}
 	
@@ -146,9 +145,9 @@ public class BeadString implements Serializable {
 	public BeadString trim(Cell destination, int stringlength) {
 		BeadString ret = new BeadString();
 		if (beads.first() == destination) {
-			ret.setBeads(beads.tailSet(destination));			
+			ret.setBeads(new TreeSet<Cell> (beads.tailSet(destination)));			
 		} else if (beads.last() == destination) {
-			ret.setBeads(beads.headSet(destination));
+			ret.setBeads(new TreeSet<Cell>(beads.headSet(destination)));
 		}
 		if (!ret.contains(destination))
 			ret.add(destination);
