@@ -76,6 +76,44 @@
 			</activation>
         </profile>
     </profiles>
+    <!--  
+        These repositories have been staged on our server as a convenience.  We
+        have been using artifactory to manage dependencies, but in the spirit 
+        of passing on a usable build, we have exported all of our dependencies
+        into normal Maven format, and staged the caches on Apache.
+     -->
+    <repositories>
+    	<repository>
+    		<id>codehause-cache</id>
+    		<name>code-hause-cache</name>
+    		<url>http://200.23.34.80/m2/codehause-repo-cache</url>
+    	</repository>
+    	<repository>
+    		<id>internet2-cache</id>
+    		<name>internet2-cache</name>
+    		<url>http://200.23.34.80/m2/internet2-cache</url>
+    	</repository>
+    	<repository>
+    		<id>java.net-cache</id>
+    		<name>java.net-cache</name>
+    		<url>http://200.23.34.80/m2/java.net-cache</url>
+    	</repository>
+    	<repository>
+    		<id>jboss-cache</id>
+    		<name>jboss-cache</name>
+    		<url>http://200.23.34.80/m2/jboss-cache</url>
+    	</repository>
+    	<repository>
+    		<id>artifactory-libs-releases</id>
+    		<name>artifactory-libs-releases</name>
+    		<url>http://200.23.34.80/m2/libs-releases</url>
+    	</repository>
+    	<repository>
+    		<id>repo1-cache</id>
+    		<name>repo1-cache</name>
+    		<url>http://200.23.34.80/m2/repo1-cache</url>
+    	</repository>
+    </repositories>
     <reporting>
         <plugins>
             <plugin>
