@@ -3,10 +3,10 @@ GLASSFISH CONFIGURATION
 This prototype requires the following configuration changes be made, before being
 built and deployed.
 
-1.  The property "glassfish" must be modified by the builder to point to the 
-top-level directory of glassfish-v2-ur1.  
-2.  The property "flexSDK" must be modified by the builder to point to the top-
-level directory for the FLEX3 SDK.
+1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
+point to the top-level directory of glassfish-v2-ur1.  
+2.  The environmental property "FLEX_SDK" must be set by the builder to point to the top-
+level directory of the FLEX3 SDK.
 
 
 The following configuration changes must be made on the Glassfish server to which
