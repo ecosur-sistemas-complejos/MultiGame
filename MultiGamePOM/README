@@ -18,7 +18,8 @@ the EAR file is being deployed:
 1.  A JMS connection factory must be created with the following details:
     a) "Name" set to "jms/TopicConnectionFactory"
     b) "Transaction Support" set to "NoTransaction"
-    c) All other fields may remain in default state.
+    c) Remove the username and password properties from "Additional Properties" 
+    d) All other fields may remain in default state.
 
 2.  A new JMS "destination resource" must be created with the following details:
     a) "Name" set to "CHECKERS"
