@@ -126,8 +126,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#validateMove(mx.ecosur.multigame.ejb.entity.Move)
 	 */
-	public Move validateMove(Move move) throws InvalidMoveException,
-			RemoteException {
+	public Move validateMove(Move move) throws InvalidMoveException {
 		
 		logger.fine("Validating move " + move);
 
@@ -159,7 +158,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.ejb.entity.Move)
 	 */
-	public void move(Move move) throws InvalidMoveException, RemoteException {
+	public void move(Move move) throws InvalidMoveException {
 		
 		logger.fine("Preparing to execute move " + move);
 
@@ -216,13 +215,13 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#incrementTurn(mx.ecosur.multigame.ejb.entity.GamePlayer)
 	 */
-	public GamePlayer incrementTurn(GamePlayer player) throws RemoteException {
+	public GamePlayer incrementTurn(GamePlayer player) {
 		
 		logger.fine("Incrementing turn for player " + player.getId());
 
 		/* Check that player has turn */
 		if (!player.isTurn())
-			throw new RemoteException("Only the Player with the "
+			throw new RuntimeException ("Only the Player with the "
 					+ "turn can increment the turn!");
 
 		/* Get attached player and game */

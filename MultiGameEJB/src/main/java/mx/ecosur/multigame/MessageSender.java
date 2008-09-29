@@ -66,13 +66,16 @@ public class MessageSender {
 
 	}
 
-	private void sendMessage(int gameId, GameEvent gameEvent, Serializable body) {
+	private void sendMessage(GameType type, int gameId, GameEvent gameEvent, 
+			Serializable body) 
+	{
 		try {
 			Connection connection = connectionFactory.createConnection();
 			Session session = connection.createSession(false,
 					Session.AUTO_ACKNOWLEDGE);
 			MessageProducer producer = session.createProducer(topic);
 			ObjectMessage message = session.createObjectMessage();
+			message.setStringProperty("GAME_TYPE", type.name());
 			message.setIntProperty("GAME_ID", gameId);
 			message.setStringProperty("GAME_EVENT", gameEvent.toString());
 			if (body != null) {
@@ -93,7 +96,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendStartGame(Game game) {
-		sendMessage(game.getId(), GameEvent.BEGIN, null);
+		sendMessage(game.getType(), game.getId(), GameEvent.BEGIN, null);
 	}
 
 	/**
@@ -107,7 +110,7 @@ public class MessageSender {
 		//must convert list to array list since list is not serialized
 		List<GamePlayer> players = game.getPlayers();
 		ArrayList<GamePlayer> playersSerial = new ArrayList<GamePlayer>(players);
-		sendMessage(game.getId(), GameEvent.PLAYER_CHANGE, playersSerial);
+		sendMessage(game.getType(), game.getId(), GameEvent.PLAYER_CHANGE, playersSerial);
 	}
 
 	/**
@@ -116,8 +119,8 @@ public class MessageSender {
 	 * @param move
 	 */
 	public void sendMoveComplete(Move move) {
-		sendMessage(move.getPlayer().getGame().getId(),
-				GameEvent.MOVE_COMPLETE, move);
+		Game game = move.getPlayer().getGame();
+		sendMessage(game.getType(), game.getId(), GameEvent.MOVE_COMPLETE, move);
 	}
 
 	/**
@@ -126,7 +129,8 @@ public class MessageSender {
 	 * @param move
 	 */
 	public void sendQualifyMove(Move move) {
-		sendMessage(move.getPlayer().getGame().getId(), GameEvent.QUALIFY_MOVE,
+		Game game = move.getPlayer().getGame();
+		sendMessage(game.getType(), game.getId(), GameEvent.QUALIFY_MOVE,
 				move);
 	}
 
@@ -136,7 +140,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendEndGame(Game game) {
-		sendMessage(game.getId(), GameEvent.END, game);
+		sendMessage(game.getType(), game.getId(), GameEvent.END, game);
 	}
 
 }

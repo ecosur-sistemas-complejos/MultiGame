@@ -46,8 +46,7 @@ public interface SharedBoardLocal {
 	 * @throws InvalidMoveException
 	 * @throws RemoteException
 	 */
-	public Move validateMove(Move move) throws InvalidMoveException,
-			RemoteException;
+	public Move validateMove(Move move) throws InvalidMoveException;
 
 	/**
 	 * Makes the specified move on the game grid. The move requires a player and
@@ -57,7 +56,7 @@ public interface SharedBoardLocal {
 	 * @throws InvalidMoveException
 	 * @throws RemoteException
 	 */
-	public void move(Move move) throws InvalidMoveException, RemoteException;
+	public void move(Move move) throws InvalidMoveException;
 
 	/**
 	 * Returns the a GameGrid object, populated with the current moves on the
@@ -80,7 +79,7 @@ public interface SharedBoardLocal {
 	 * @return The player who has the turn after the turn is incremented.
 	 * @throws RemoteException
 	 */
-	public GamePlayer incrementTurn(GamePlayer player) throws RemoteException;
+	public GamePlayer incrementTurn(GamePlayer player);
 
 	/**
 	 * Gets the Players for a given game
