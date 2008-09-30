@@ -44,7 +44,7 @@ then
     modify (player) { setNextMove (centerMove) }
 end
 
-rule "next-move"
+rule "random-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
     player : StrategyPlayer (turn == true, color == Color.YELLOW)

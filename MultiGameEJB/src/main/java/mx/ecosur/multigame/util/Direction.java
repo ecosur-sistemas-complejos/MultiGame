@@ -12,7 +12,8 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame;
+package mx.ecosur.multigame.util;
+
 
 public enum Direction {
 	

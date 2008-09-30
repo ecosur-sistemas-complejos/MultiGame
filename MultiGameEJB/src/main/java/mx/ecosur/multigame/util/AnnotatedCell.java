@@ -13,7 +13,6 @@
 
 package mx.ecosur.multigame.util;
 
-import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.ejb.entity.Cell;
 
 public class AnnotatedCell {

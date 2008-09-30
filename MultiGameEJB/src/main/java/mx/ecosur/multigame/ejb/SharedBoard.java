@@ -31,7 +31,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
@@ -39,6 +38,7 @@ import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import org.drools.FactException;
 import org.drools.RuleBase;

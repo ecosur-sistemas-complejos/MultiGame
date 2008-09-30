@@ -19,8 +19,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.Direction;
-import mx.ecosur.multigame.Vertice;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.pente.BeadString;
@@ -96,6 +94,10 @@ public class Search {
 		
 		return adjacent.keySet();
 	}
+	
+	public Cell searchGrid (Direction direction, Cell cell, int factor) {
+		return searchGrid (direction, cell, Color.UNKNOWN, factor);
+	}
 
 	/*
 	 * Returns a Cell to be searched for within a grid, with a factor of 
@@ -161,7 +163,6 @@ public class Search {
 			int stringlength, boolean compliment) 
 	{
 		HashMap<Vertice, HashSet<BeadString>> ret = new HashMap<Vertice, HashSet<BeadString>> ();
-		
 		AnnotatedCell start = new AnnotatedCell (startingCell);
 			
 		/* We are only interested in cells of this color */

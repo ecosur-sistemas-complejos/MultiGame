@@ -19,8 +19,8 @@ import java.io.Serializable;
 import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.Vertice;
 import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.util.Vertice;
 
 public class BeadString implements Serializable {
 	

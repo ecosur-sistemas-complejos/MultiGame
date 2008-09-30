@@ -32,13 +32,13 @@ import javax.persistence.Query;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;

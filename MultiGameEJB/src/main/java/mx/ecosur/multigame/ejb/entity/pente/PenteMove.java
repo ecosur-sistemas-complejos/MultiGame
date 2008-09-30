@@ -28,11 +28,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.Direction;
-import mx.ecosur.multigame.Vertice;
 import mx.ecosur.multigame.pente.BeadString;
+import mx.ecosur.multigame.util.Direction;
 import mx.ecosur.multigame.util.Search;
 import mx.ecosur.multigame.util.AnnotatedCell;
+import mx.ecosur.multigame.util.Vertice;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;

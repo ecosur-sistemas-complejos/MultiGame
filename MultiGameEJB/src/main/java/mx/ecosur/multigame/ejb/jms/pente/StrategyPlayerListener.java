@@ -24,12 +24,12 @@ import javax.jms.MessageListener;
 
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.InvalidMoveException;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.exception.InvalidMoveException;
 
 public class StrategyPlayerListener implements MessageListener {
 	

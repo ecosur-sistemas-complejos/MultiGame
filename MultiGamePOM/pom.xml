@@ -7,7 +7,7 @@
     <artifactId>multi-game</artifactId>
     <packaging>pom</packaging>
     <name>Multi-Game </name>
-    <version>1.0-PROTOTYPE</version>
+    <version>1.1-SNAPSHOT</version>
 	<description>
 	This project is for demonstrating the applicability of a platform of
 	multiple rulesets against a variety of games, all played upon a grid.
@@ -52,6 +52,7 @@
         <test.skip>false</test.skip>
         <glassfish>${env.GLASSFISH_HOME}</glassfish>
         <flexSDK>${env.FLEX_SDK}</flexSDK>
+        <multigame-server>200.23.34.80</multigame-server>
     </properties>
     <organization>
     	<name>Ecosur</name>
@@ -86,32 +87,32 @@
     	<repository>
     		<id>codehause-cache</id>
     		<name>code-hause-cache</name>
-    		<url>http://200.23.34.80/m2/codehause-repo-cache</url>
+    		<url>http://${multigame-server}/m2/codehause-repo-cache</url>
     	</repository>
     	<repository>
     		<id>internet2-cache</id>
     		<name>internet2-cache</name>
-    		<url>http://200.23.34.80/m2/internet2-cache</url>
+    		<url>http://${multigame-server}/m2/internet2-cache</url>
     	</repository>
     	<repository>
     		<id>java.net-cache</id>
     		<name>java.net-cache</name>
-    		<url>http://200.23.34.80/m2/java.net-cache</url>
+    		<url>http://${multigame-server}/m2/java.net-cache</url>
     	</repository>
     	<repository>
     		<id>jboss-cache</id>
     		<name>jboss-cache</name>
-    		<url>http://200.23.34.80/m2/jboss-cache</url>
+    		<url>http://${multigame-server}/m2/jboss-cache</url>
     	</repository>
     	<repository>
     		<id>artifactory-libs-releases</id>
     		<name>artifactory-libs-releases</name>
-    		<url>http://200.23.34.80/m2/libs-releases</url>
+    		<url>http://${multigame-server}/m2/libs-releases</url>
     	</repository>
     	<repository>
     		<id>repo1-cache</id>
     		<name>repo1-cache</name>
-    		<url>http://200.23.34.80/m2/repo1-cache</url>
+    		<url>http://${multigame-server}/m2/repo1-cache</url>
     	</repository>
     </repositories>
     <reporting>

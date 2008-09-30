@@ -12,7 +12,7 @@
  *
  */
 
-package mx.ecosur.multigame;
+package mx.ecosur.multigame.exception;
 
 
 @SuppressWarnings("serial")

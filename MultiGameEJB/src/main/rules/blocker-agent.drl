@@ -32,6 +32,10 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 
+import java.util.HashSet;
+import java.util.Random;
+import java.util.TreeSet;
+
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
 when
@@ -42,4 +46,42 @@ then
     PenteMove centerMove = new PenteMove (player, new Cell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
     modify (player) { setNextMove (centerMove) }
+end
+
+rule "blocker-move"
+when
+    game   : PenteGame (state == GameState.PLAY, $grid : grid)
+    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    eval (!$grid.getCells().isEmpty())
+then
+    HashSet<Color> colors = new HashSet<Color>();
+    TreeSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
+    PenteMove nextMove = null;
+    if (scoringMoves.size() > 0) {
+        PenteMove move = scoringMoves.first();
+        Cell location = move.getDestination();
+        location.setColor (player.getColor());
+        nextMove = new PenteMove (player, location);
+    }
+    else {
+        # Use the random algorithm 
+        HashSet<Cell> adjacent = player.getUnboundAdjacentCells (colors);
+        if (adjacent.size() == 0) 
+            adjacent = player.getUnboundAdjacentCells (player.getOppositionColors());
+        Cell destination = null;
+        Random random = new Random ();
+        for (Cell cell : adjacent) {
+            if (random.nextBoolean()) { 
+                destination = cell; 
+                break;
+            }
+        }
+        if (destination == null)
+            for (Cell cell : adjacent) {
+                destination = cell;
+                break;
+             }
+        PenteMove move = new PenteMove (player, destination);  
+        }
+    modify (player) { setNextMove (nextMove) }
 end

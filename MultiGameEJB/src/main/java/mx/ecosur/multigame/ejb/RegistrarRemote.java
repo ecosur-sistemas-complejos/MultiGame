@@ -17,10 +17,10 @@ import javax.ejb.Remote;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 /**
  * The RegistrarRemote interface is the remote interface for the

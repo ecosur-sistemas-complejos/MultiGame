@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.MessageSender;
 
@@ -28,6 +27,8 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
+
+import mx.ecosur.multigame.util.Direction;
 
 #GENTE
 

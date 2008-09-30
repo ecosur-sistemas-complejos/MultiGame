@@ -10,16 +10,21 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
+import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.Direction;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.pente.PenteStrategy;
+import mx.ecosur.multigame.util.Direction;
 import mx.ecosur.multigame.util.Search;
 
 public class StrategyPlayer extends PentePlayer {
@@ -29,6 +34,13 @@ public class StrategyPlayer extends PentePlayer {
 	private PenteStrategy strategy;
 	
 	private PenteMove nextMove;
+	
+	public StrategyPlayer (Game game, Player player, Color color, 
+			PenteStrategy strategy) 
+	{
+		super (game, player, color);
+		this.strategy = strategy;
+	}
 
 	public PenteStrategy getStrategy() {
 		return strategy;
@@ -66,6 +78,11 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;	
 	}
 	
+	public HashSet<Cell> getUnboundAdjacentCells (Color color) {
+		HashSet<Color> colors = new HashSet<Color> ();
+		colors.add(color);
+		return this.getUnboundAdjacentCells(colors);
+	}
 	
 	/**
 	 * Returns a list of cells that are open and adjacent to cells of 
@@ -90,11 +107,11 @@ public class StrategyPlayer extends PentePlayer {
 		 * is returned, create a new cell and add it to the unbound list */
 		for (Cell candidate : candidates) {
 			for (Direction direction : Direction.values()) {
-				for (Color color : colors) {
-					Cell result = search.searchGrid(direction, candidate, color, 1);
-					if (result == null) {
-						ret.add(createDestination (direction, candidate, 1));
-					}
+				if (direction == Direction.UNKNOWN)
+					continue;
+				Cell result = search.searchGrid(direction, candidate, 1);
+				if (result == null) {
+					ret.add(createDestination (direction, candidate, 1));
 				}
 			}
 		}
@@ -109,11 +126,29 @@ public class StrategyPlayer extends PentePlayer {
 	 * @param colors
 	 * @return
 	 */
-	public HashSet<Cell> getScoringCells (HashSet<Color> colors) {
-		HashSet<Cell> ret = new HashSet<Cell>();
-		
+	public TreeSet<PenteMove> getScoringMoves (HashSet<Color> colors) {
+		TreeSet<PenteMove> ret = new TreeSet<PenteMove>(new PenteMoveComparator());
+			/* Get the unbound adjacents, and speculate on moves */
+		HashSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
+		for (Cell cell : unbound){
+			for (Color color : colors) {
+				cell.setColor(color);
+				PenteMove move = new PenteMove (this, cell);
+				if (move.getTesseras().size() >  0) {
+					ret.add(move);
+				} else if (move.getTrias().size() > 0) {
+					ret.add(move);
+				}
+			}
+		}
 		
 		return ret;
+	}
+	
+	public TreeSet<PenteMove> getScoringMoves (Color color) {
+		HashSet<Color> colors = new HashSet<Color> ();
+		colors.add(color);
+		return getScoringMoves (colors);
 	}
 	
 	public HashSet<Color> getOppositionColors () {
@@ -172,6 +207,24 @@ public class StrategyPlayer extends PentePlayer {
 				break;
 		}
 		
-		return new Cell (column, row, getColor());
+		return new Cell (column, row, Color.UNKNOWN);
+	}
+	
+	private class PenteMoveComparator implements Comparator<PenteMove>, Serializable {
+		
+		private static final long serialVersionUID = -2891925521302537934L;
+
+		public int compare (PenteMove move1, PenteMove move2) {
+			int ret = 0;
+			if (move1.getTesseras().size() > move2.getTesseras().size())
+				ret  = 1;
+			else if (move1.getTrias().size() > move2.getTrias().size())
+				ret = 1; 
+			else if (move2.getTesseras().size() > move1.getTesseras().size())
+				ret = -1;
+			else if (move2.getTrias().size () > move2.getTrias().size ())
+				ret = -1;
+			return ret;
+		}
 	}
 }
