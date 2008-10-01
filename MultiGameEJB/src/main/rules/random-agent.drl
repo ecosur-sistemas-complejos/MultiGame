@@ -47,29 +47,24 @@ end
 rule "random-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    player : StrategyPlayer (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    HashSet<Color> colors = new HashSet<Color>();
-    colors.add(player.getColor());
-    colors.add(player.getPartner().getColor());
-    HashSet<Cell> adjacent = player.getUnboundAdjacentCells (colors);
-    if (adjacent.size() == 0) 
-        adjacent = player.getUnboundAdjacentCells (player.getOppositionColors());
-    Cell destination = null;
+    HashSet<PenteMove> possible = player.getAvailableMoves();
+    if (possible.size() == 0) 
+        possible = player.getAvailableMoves (player.getOppositionColors());
+    PenteMove destination = null;
     Random random = new Random ();
-    for (Cell cell : adjacent) {
+    for (PenteMove move : possible) {
         if (random.nextBoolean()) { 
-            destination = cell; 
+            destination = move; 
             break;
         }
     }
-    if (destination == null) {
-        for (Cell cell : adjacent) {
-            destination = cell;
+    if (destination == null)
+        for (PenteMove move : possible) {
+            destination = move;
             break;
          }
-    }
-    PenteMove move = new PenteMove (player, destination);
-    modify (player) { setNextMove (move) }
+    modify (player) { setNextMove (destination) }
 end

@@ -78,12 +78,6 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;	
 	}
 	
-	public HashSet<Cell> getUnboundAdjacentCells (Color color) {
-		HashSet<Color> colors = new HashSet<Color> ();
-		colors.add(color);
-		return this.getUnboundAdjacentCells(colors);
-	}
-	
 	/**
 	 * Returns a list of cells that are open and adjacent to cells of 
 	 * the colors, "colors".
@@ -91,7 +85,7 @@ public class StrategyPlayer extends PentePlayer {
 	 * @param colors
 	 * @return
 	 */
-	public HashSet<Cell> getUnboundAdjacentCells (HashSet<Color> colors) {
+	private HashSet<Cell> getUnboundAdjacentCells (HashSet<Color> colors) {
 		HashSet<Cell> ret = new HashSet<Cell> ();
 		HashSet<Cell> candidates = new HashSet<Cell> ();
 		Search search = new Search (game.getGrid());
@@ -126,8 +120,8 @@ public class StrategyPlayer extends PentePlayer {
 	 * @param colors
 	 * @return
 	 */
-	public TreeSet<PenteMove> getScoringMoves (HashSet<Color> colors) {
-		TreeSet<PenteMove> ret = new TreeSet<PenteMove>(new PenteMoveComparator());
+	public HashSet<PenteMove> getScoringMoves (HashSet<Color> colors) {
+		HashSet<PenteMove> ret = new HashSet<PenteMove>();
 			/* Get the unbound adjacents, and speculate on moves */
 		HashSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
 		for (Cell cell : unbound){
@@ -145,17 +139,40 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;
 	}
 	
-	public TreeSet<PenteMove> getScoringMoves (Color color) {
+	public HashSet<PenteMove> getScoringMoves (Color color) {
 		HashSet<Color> colors = new HashSet<Color> ();
 		colors.add(color);
 		return getScoringMoves (colors);
+	}
+	
+	public HashSet<PenteMove> getAvailableMoves () {
+		return this.getAvailableMoves (this.getColor());
+	}
+	
+	public HashSet<PenteMove> getAvailableMoves (HashSet<Color> colors) {
+		HashSet<PenteMove> ret = new HashSet<PenteMove>();
+		HashSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
+		for (Cell cell : unbound){
+			for (Color color : colors) {
+				cell.setColor(color);
+				ret.add(new PenteMove (this, cell));
+			}
+		}
+		
+		return ret;
+	}
+	
+	public HashSet<PenteMove> getAvailableMoves (Color color) {
+		HashSet<Color> colors = new HashSet<Color> ();
+		colors.add(color);
+		return getAvailableMoves (colors);
 	}
 	
 	public HashSet<Color> getOppositionColors () {
 		HashSet <Color> ret = new HashSet<Color> ();
 		HashSet<Color> teamColors = new HashSet<Color>();
 		teamColors.add(getColor());
-		teamColors.add (this.getPartner().getColor());
+		teamColors.add (getColor().getCompliment());
 		for (Color color : Color.values()) {
 			if (!teamColors.contains(color))
 				ret.add(color);
@@ -208,23 +225,5 @@ public class StrategyPlayer extends PentePlayer {
 		}
 		
 		return new Cell (column, row, Color.UNKNOWN);
-	}
-	
-	private class PenteMoveComparator implements Comparator<PenteMove>, Serializable {
-		
-		private static final long serialVersionUID = -2891925521302537934L;
-
-		public int compare (PenteMove move1, PenteMove move2) {
-			int ret = 0;
-			if (move1.getTesseras().size() > move2.getTesseras().size())
-				ret  = 1;
-			else if (move1.getTrias().size() > move2.getTrias().size())
-				ret = 1; 
-			else if (move2.getTesseras().size() > move1.getTesseras().size())
-				ret = -1;
-			else if (move2.getTrias().size () > move2.getTrias().size ())
-				ret = -1;
-			return ret;
-		}
 	}
 }

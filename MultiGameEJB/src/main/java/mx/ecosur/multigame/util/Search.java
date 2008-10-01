@@ -87,7 +87,7 @@ public class Search {
 		for (Direction d : Direction.values()) {
 			for (Color color : targetColors) {
 				Cell result = this.searchGrid (d, destination, color, 1);
-				if (result != null && !adjacent.containsValue(d)) 
+				if (result != null && !adjacent.containsValue(d) && result.getColor().equals(color)) 
 					adjacent.put (new AnnotatedCell (result,d),d);
 			}
 		}

@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
@@ -35,10 +34,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectRetractedEvent;
-import org.drools.event.ObjectUpdatedEvent;
-import org.drools.event.WorkingMemoryEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -632,26 +627,5 @@ public class PenteRulesTest extends RulesTestBase {
 		statefulSession.fireAllRules();
 		statefulSession.setFocus ("evaluate");
 		statefulSession.fireAllRules();
-	}
-	
-	
-	private class DebugEventListener implements WorkingMemoryEventListener {	
-		private Logger logger;
-		
-		public DebugEventListener () {
-			logger = Logger.getLogger(PenteRulesTest.class.getCanonicalName());
-		}
-
-		public void objectInserted(ObjectInsertedEvent event) {
-			//logger.info(event.getObject().toString());
-		}
-
-		public void objectRetracted(ObjectRetractedEvent event) {
-			//logger.info(event.getOldObject().toString());
-		}
-
-		public void objectUpdated(ObjectUpdatedEvent event) {
-			logger.info (event.getObject().toString());
-		}
 	}
 }

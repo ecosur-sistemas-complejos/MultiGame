@@ -73,7 +73,7 @@ public class GameGrid implements Serializable {
 		
 		for (Cell c : sublist) {
 			int value = comparator.compare(location, c);
-			if (value == 0 && location.equals(c)) {
+			if (value == 0) {
 				ret = c;
 				break;
 			}

@@ -51,37 +51,39 @@ end
 rule "blocker-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    player : StrategyPlayer (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();
-    TreeSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
+    HashSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
+    System.out.println("ScoringMoves: " + scoringMoves);
     PenteMove nextMove = null;
     if (scoringMoves.size() > 0) {
-        PenteMove move = scoringMoves.first();
-        Cell location = move.getDestination();
-        location.setColor (player.getColor());
-        nextMove = new PenteMove (player, location);
+        for (PenteMove move : scoringMoves) {
+            Cell destination = move.getDestination();
+            destination.setColor(player.getColor());
+            nextMove = new PenteMove (player, destination);
+            break;
+        }
     }
     else {
         # Use the random algorithm 
-        HashSet<Cell> adjacent = player.getUnboundAdjacentCells (colors);
-        if (adjacent.size() == 0) 
-            adjacent = player.getUnboundAdjacentCells (player.getOppositionColors());
-        Cell destination = null;
+        HashSet<PenteMove> possible = player.getAvailableMoves();
+        if (possible.size() == 0) 
+            possible = player.getAvailableMoves (player.getOppositionColors());
+        PenteMove destination = null;
         Random random = new Random ();
-        for (Cell cell : adjacent) {
+        for (PenteMove move : possible) {
             if (random.nextBoolean()) { 
-                destination = cell; 
+                destination = move; 
                 break;
             }
         }
         if (destination == null)
-            for (Cell cell : adjacent) {
-                destination = cell;
+            for (PenteMove move : possible) {
+                destination = move;
                 break;
              }
-        PenteMove move = new PenteMove (player, destination);  
         }
     modify (player) { setNextMove (nextMove) }
 end
