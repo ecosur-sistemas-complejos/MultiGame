@@ -24,7 +24,7 @@ import javax.jms.MessageListener;
 
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.SharedBoardLocal;
+import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
@@ -34,7 +34,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 public class StrategyPlayerListener implements MessageListener {
 	
 	@EJB
-	private SharedBoardLocal sharedBoard;
+	private SharedBoardRemote sharedBoard;
 
 	private static Logger logger = Logger.getLogger(
 			StrategyPlayerListener.class.getCanonicalName());

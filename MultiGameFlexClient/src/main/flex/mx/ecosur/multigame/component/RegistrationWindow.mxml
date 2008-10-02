@@ -80,10 +80,19 @@
 			<mx:FormItem label="Name" required="true">
 				<mx:TextInput id="txtName" />
 			</mx:FormItem>
+			<mx:FormItem label="AI" required="true">
+			    <mx:ComboBox id="robots" selectedIndex="0">
+			    	<mx:ArrayCollection>
+			    		<mx:Object label="None" data="0"/>
+			    		<mx:Object label="1 player" data="1"/>
+	                    <mx:Object label="2 players" data="2"/>
+	                    <mx:Object label="3 players" data="3"/> 		    			
+			    	</mx:ArrayCollection>
+			    </mx:ComboBox>
+			</mx:FormItem>
 			<mx:FormItem label="Game" required="true">
-				<mx:ComboBox id="cbGame" selectedIndex="2">
+				<mx:ComboBox id="cbGame" selectedIndex="1">
       				<mx:ArrayCollection>
-      					<mx:Object label="-- Select --" data=""/>
       					<!--mx:Object label="Checkers" data="CHECKERS"/-->
       					<mx:Object label="Gente" data="PENTE"/>
     	  			</mx:ArrayCollection>                     
