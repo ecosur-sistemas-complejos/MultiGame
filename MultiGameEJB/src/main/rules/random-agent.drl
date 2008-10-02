@@ -30,6 +30,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Random;
 
 #Yellow must move first, and that move can only be at the center of the board
@@ -50,7 +51,7 @@ when
     player : StrategyPlayer (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    HashSet<PenteMove> possible = player.getAvailableMoves();
+    TreeSet<PenteMove> possible = player.getAvailableMoves();
     if (possible.size() == 0) 
         possible = player.getAvailableMoves (player.getOppositionColors());
     PenteMove destination = null;

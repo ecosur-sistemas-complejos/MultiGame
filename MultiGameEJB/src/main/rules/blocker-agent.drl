@@ -33,6 +33,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Random;
 import java.util.TreeSet;
 
@@ -55,8 +56,7 @@ when
     eval (!$grid.getCells().isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();
-    HashSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
-    System.out.println("ScoringMoves: " + scoringMoves);
+    TreeSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
     PenteMove nextMove = null;
     if (scoringMoves.size() > 0) {
         for (PenteMove move : scoringMoves) {
@@ -68,7 +68,7 @@ then
     }
     else {
         # Use the random algorithm 
-        HashSet<PenteMove> possible = player.getAvailableMoves();
+        TreeSet<PenteMove> possible = player.getAvailableMoves();
         if (possible.size() == 0) 
             possible = player.getAvailableMoves (player.getOppositionColors());
         PenteMove destination = null;

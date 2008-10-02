@@ -10,23 +10,27 @@
  */
 package mx.ecosur.multigame.ejb.entity.pente;
 
-import java.io.Serializable;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.TreeSet;
+
+import javax.persistence.Entity;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 
+import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.pente.BeadString;
+import mx.ecosur.multigame.pente.PenteMoveComparator;
 import mx.ecosur.multigame.pente.PenteStrategy;
 import mx.ecosur.multigame.util.Direction;
 import mx.ecosur.multigame.util.Search;
 
+@Entity
 public class StrategyPlayer extends PentePlayer {
 	
 	private static final long serialVersionUID = 6999849272112074624L;
@@ -34,6 +38,10 @@ public class StrategyPlayer extends PentePlayer {
 	private PenteStrategy strategy;
 	
 	private PenteMove nextMove;
+	
+	public StrategyPlayer () {
+		super();
+	}
 	
 	public StrategyPlayer (Game game, Player player, Color color, 
 			PenteStrategy strategy) 
@@ -85,9 +93,9 @@ public class StrategyPlayer extends PentePlayer {
 	 * @param colors
 	 * @return
 	 */
-	private HashSet<Cell> getUnboundAdjacentCells (HashSet<Color> colors) {
-		HashSet<Cell> ret = new HashSet<Cell> ();
-		HashSet<Cell> candidates = new HashSet<Cell> ();
+	private TreeSet<Cell> getUnboundAdjacentCells (HashSet<Color> colors) {
+		TreeSet<Cell> ret = new TreeSet<Cell> (new CellComparator());
+		TreeSet<Cell> candidates = new TreeSet<Cell> (new CellComparator());
 		Search search = new Search (game.getGrid());
 		
 		/* Get all Cells of with the targeted Colors */
@@ -113,6 +121,12 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;
 	}
 	
+	public TreeSet<PenteMove> getScoringMoves (Color color) {
+		HashSet<Color> colors = new HashSet<Color> ();
+		colors.add(color);
+		return getScoringMoves (colors);
+	}
+	
 	/**
 	 * Returns a list of cells that would result in a Tria or Tessera for the 
 	 * colors, "colors".
@@ -120,17 +134,20 @@ public class StrategyPlayer extends PentePlayer {
 	 * @param colors
 	 * @return
 	 */
-	public HashSet<PenteMove> getScoringMoves (HashSet<Color> colors) {
-		HashSet<PenteMove> ret = new HashSet<PenteMove>();
+	public TreeSet<PenteMove> getScoringMoves (HashSet<Color> colors) {
+		TreeSet<PenteMove> ret = new TreeSet<PenteMove>(new PenteMoveComparator());
 			/* Get the unbound adjacents, and speculate on moves */
-		HashSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
+		TreeSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
 		for (Cell cell : unbound){
 			for (Color color : colors) {
 				cell.setColor(color);
 				PenteMove move = new PenteMove (this, cell);
-				if (move.getTesseras().size() >  0) {
+				/* Load trias and tesseras */
+				HashSet<BeadString> tesseras = move.getTesseras();
+				HashSet<BeadString> trias= move.getTrias();
+				if (tesseras.size() >  0) {
 					ret.add(move);
-				} else if (move.getTrias().size() > 0) {
+				} else if (trias.size() > 0) {
 					ret.add(move);
 				}
 			}
@@ -139,19 +156,13 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;
 	}
 	
-	public HashSet<PenteMove> getScoringMoves (Color color) {
-		HashSet<Color> colors = new HashSet<Color> ();
-		colors.add(color);
-		return getScoringMoves (colors);
-	}
-	
-	public HashSet<PenteMove> getAvailableMoves () {
+	public TreeSet<PenteMove> getAvailableMoves () {
 		return this.getAvailableMoves (this.getColor());
 	}
 	
-	public HashSet<PenteMove> getAvailableMoves (HashSet<Color> colors) {
-		HashSet<PenteMove> ret = new HashSet<PenteMove>();
-		HashSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
+	public TreeSet<PenteMove> getAvailableMoves (HashSet<Color> colors) {
+		TreeSet<PenteMove> ret = new TreeSet<PenteMove>(new PenteMoveComparator());
+		TreeSet<Cell> unbound = this.getUnboundAdjacentCells(colors);
 		for (Cell cell : unbound){
 			for (Color color : colors) {
 				cell.setColor(color);
@@ -162,7 +173,7 @@ public class StrategyPlayer extends PentePlayer {
 		return ret;
 	}
 	
-	public HashSet<PenteMove> getAvailableMoves (Color color) {
+	public TreeSet<PenteMove> getAvailableMoves (Color color) {
 		HashSet<Color> colors = new HashSet<Color> ();
 		colors.add(color);
 		return getAvailableMoves (colors);

@@ -13,6 +13,7 @@
 
 package mx.ecosur.multigame.util;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,9 @@ import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.pente.BeadString;
 
-public class Search {
+public class Search implements Serializable {
+	
+	private static final long serialVersionUID = -4388187588225945478L;
 	
 	private GameGrid grid;
 

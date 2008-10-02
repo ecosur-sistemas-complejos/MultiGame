@@ -54,7 +54,7 @@ then
     HashSet<Color> colors = new HashSet<Color>();
     colors.add(player.getColor());
     colors.add(player.getPartner().getColor());
-    HashSet<PenteMove> scoringMoves = player.getScoringMoves(colors);
+    TreeSet<PenteMove> scoringMoves = player.getScoringMoves(colors);
     PenteMove nextMove = null;
     if (scoringMoves.size() > 0)
         for (PenteMove move : scoringMoves) {
@@ -63,7 +63,7 @@ then
         }
     else {
         # Use the random algorithm 
-        HashSet<PenteMove> possible = player.getAvailableMoves();
+        TreeSet<PenteMove> possible = player.getAvailableMoves();
         if (possible.size() == 0) 
             possible = player.getAvailableMoves (player.getOppositionColors());
         PenteMove destination = null;

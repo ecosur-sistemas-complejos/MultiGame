@@ -127,7 +127,7 @@ public class AgentLogicTest extends RulesTestBase {
 	@Test
 	/* Simple test to check the Available move logic in StrategyPlayer */
 	public void testAvailableMoves () {
-		HashSet<PenteMove> unbound = alice.getAvailableMoves();
+		TreeSet<PenteMove> unbound = alice.getAvailableMoves();
 		assertEquals (11, unbound.size());
 	}
 	
@@ -141,14 +141,12 @@ public class AgentLogicTest extends RulesTestBase {
 		validDestinations.add(new Cell (13,7, Color.YELLOW));
 		validDestinations.add(new Cell (11,10,Color.RED));
 		validDestinations.add(new Cell (11,7, Color.RED));
-		validDestinations.add(new Cell (13,7, Color.RED));
-		validDestinations.add(new Cell (6,13, Color.BLUE));
-		validDestinations.add(new Cell (10,9, Color.BLUE));
 		validDestinations.add(new Cell (9,11, Color.BLUE));
-		validDestinations.add(new Cell (10,9, Color.GREEN));
+		validDestinations.add(new Cell (9,8, Color.BLUE));
+		validDestinations.add(new Cell (10,9, Color.BLUE));
 		validDestinations.add(new Cell (6,13, Color.GREEN));
 		
-		HashSet<PenteMove> scoringMoves = alice.getScoringMoves(Color.YELLOW);
+		TreeSet<PenteMove> scoringMoves = alice.getScoringMoves(Color.YELLOW);
 		assertEquals (2, scoringMoves.size());
 		for (PenteMove move : scoringMoves) {
 			Cell destination = move.getDestination();
@@ -175,7 +173,7 @@ public class AgentLogicTest extends RulesTestBase {
 		}
 		
 		scoringMoves = alice.getScoringMoves(Color.GREEN);
-		assertEquals (2, scoringMoves.size());
+		assertEquals (1, scoringMoves.size());
 		for (PenteMove move : scoringMoves) {
 			Cell destination = move.getDestination();
 			SortedSet<Cell> tail = validDestinations.tailSet(destination);
@@ -185,7 +183,7 @@ public class AgentLogicTest extends RulesTestBase {
 		
 		
 		scoringMoves = alice.getScoringMoves(alice.getOppositionColors());
-		assertEquals (5, scoringMoves.size());
+		assertEquals (4, scoringMoves.size());
 		for (PenteMove move : scoringMoves) {
 			Cell destination = move.getDestination();
 			SortedSet<Cell> tail = validDestinations.tailSet(destination);
@@ -213,7 +211,7 @@ public class AgentLogicTest extends RulesTestBase {
 		/* Ensure that the last move blocks a score by blue or green */
 		Cell destination = next.getDestination();
 		if (destination.getColumn() == 11) {
-			if (destination.getRow() != 10 || destination.getRow () != 7)
+			if (destination.getRow() != 10 && destination.getRow () != 7)
 				fail("Destination [" + destination + "] does not block any available " +
 				"enemy moves!");
 		} else if (destination.getColumn() == 9) {

@@ -7,7 +7,6 @@
 
 package mx.ecosur.multigame.flexClient.service;
 
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,6 @@ import javax.naming.NamingException;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.InvalidMoveException;
-import mx.ecosur.multigame.InvalidRegistrationException;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Cell;
@@ -28,6 +25,8 @@ import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
@@ -130,9 +129,6 @@ public class GameService {
 					logger.info("valid move " + moveCode + "\n" + move);
 				} catch (InvalidMoveException e) {
 					// do not add move to valid moved but continue executing
-				} catch (RemoteException e) {
-					e.printStackTrace();
-					throw new GameException(e);
 				}
 			}
 		}
@@ -148,9 +144,6 @@ public class GameService {
 			Move validatedMove = sharedBoard.validateMove(move);
 			sharedBoard.move(validatedMove);
 		} catch (InvalidMoveException e) {
-			e.printStackTrace();
-			throw new GameException(e);
-		} catch (RemoteException e) {
 			e.printStackTrace();
 			throw new GameException(e);
 		}

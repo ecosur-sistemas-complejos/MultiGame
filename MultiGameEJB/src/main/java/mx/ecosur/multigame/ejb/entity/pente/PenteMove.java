@@ -45,9 +45,6 @@ import mx.ecosur.multigame.ejb.entity.Move;
 })
 public class PenteMove extends Move {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6635578671376146204L;
 
 	public enum CooperationQualifier {
@@ -150,7 +147,7 @@ public class PenteMove extends Move {
 	}
 	
 	public void setTrias (HashSet<BeadString> new_trias) {
-		trias.addAll(new_trias);
+		trias = new_trias;
 	}
 	
 	/**
@@ -180,7 +177,7 @@ public class PenteMove extends Move {
 	}
 	
 	public void setTesseras (HashSet<BeadString> new_tesseras) {
-		tesseras.addAll(new_tesseras);
+		tesseras = new_tesseras;
 	}
 	
 	/* Tests as to whether the Player already contains a reference to the 
@@ -237,4 +234,21 @@ public class PenteMove extends Move {
 	public void setQualifier(CooperationQualifier qualifier) {
 		this.qualifier = qualifier;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		
+		if (obj instanceof PenteMove) {
+			PenteMove comparator = (PenteMove) obj;
+			if (comparator.player == this.player 
+					&& comparator.getDestination() == this.getDestination() 
+					&& comparator.getCurrent() == this.getCurrent())
+				ret = true;
+		}
+		
+		return ret;
+	}
+	
+	
 }

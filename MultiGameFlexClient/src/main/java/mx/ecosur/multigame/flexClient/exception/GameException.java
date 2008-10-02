@@ -15,7 +15,8 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mx.ecosur.multigame.InvalidMoveException;
+import mx.ecosur.multigame.exception.InvalidMoveException;
+
 import flex.messaging.MessageException;
 import flex.messaging.util.ResourceLoader;
 

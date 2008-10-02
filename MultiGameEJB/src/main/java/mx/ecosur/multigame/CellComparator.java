@@ -45,7 +45,6 @@ public class CellComparator implements Comparator<Cell>, Serializable {
 			else if (cell1.getColumn() == cell2.getColumn()) 
 				ret = 0;
 		}
-			
 		
 		return ret;
 	}

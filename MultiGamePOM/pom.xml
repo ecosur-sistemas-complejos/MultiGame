@@ -50,9 +50,9 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <glassfish>${env.GLASSFISH_HOME}</glassfish>
-        <flexSDK>${env.FLEX_SDK}</flexSDK>
-        <multigame-server>200.23.34.80</multigame-server>
+        <glassfish>/Users/awater/util/glassfish-install/glassfish</glassfish>
+        <flexSDK>/Users/awater/util/flex3/flex_sdk_3</flexSDK>
+        <multigame-server>10.1.5.5</multigame-server>
     </properties>
     <organization>
     	<name>Ecosur</name>
