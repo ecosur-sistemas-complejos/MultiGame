@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
+import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -31,6 +32,7 @@ import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
+@MessageDriven(mappedName = "CHECKERS")
 public class StrategyPlayerListener implements MessageListener {
 	
 	@EJB

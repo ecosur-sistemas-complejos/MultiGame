@@ -17,7 +17,6 @@ package mx.ecosur.multigame.ejb.entity;
 
 import java.awt.Dimension;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -223,14 +222,14 @@ public class Game implements Serializable {
 		return new Dimension (rows, columns);
 	}
 	
-	public void addPlayer (GamePlayer player) throws RemoteException {
+	public void addPlayer (GamePlayer player) {
 		if (players == null) {
 			players = new ArrayList<GamePlayer> ();
 		}
 		
 		int max = getMaxPlayers();
 		if (players.size() == max)
-			throw new RemoteException ("Maximum Players reached!");
+			throw new RuntimeException ("Maximum Players reached!");
 		players.add(player);
 		
 		/* If we've reached the max, then set the GameState to begin */

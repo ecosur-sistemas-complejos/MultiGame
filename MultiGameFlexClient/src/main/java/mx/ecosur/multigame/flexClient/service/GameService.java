@@ -28,6 +28,7 @@ import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
+import mx.ecosur.multigame.pente.PenteStrategy;
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
 
@@ -91,6 +92,51 @@ public class GameService {
 			e.printStackTrace();
 		}
 		return gamePlayer;
+	}
+	
+	/*
+	 * Registers a given player and the number of selected AI robots. 
+	 */
+	public GamePlayer registerPlayerAndRobots (Player player, Color preferredColor, 
+			String gameTypeStr, int numberOfRobots) 
+	{
+		GamePlayer ret = null;
+		try {
+			GameType gameType = GameType.valueOf(gameTypeStr);
+			if (gameType.equals(GameType.PENTE)) {
+				RegistrarRemote registrar = getRegistrar();
+				Game game = registrar.createNewGame( GameType.PENTE);
+				ret = registrar.registerPlayer(game, player, preferredColor);
+				for (int i = 0; i < numberOfRobots; i++) {
+					/* Simple switch for populating Game AI */
+					switch (i) {
+						case 0:
+							Player p = new Player ("RandomRobot");
+							registrar.registerRobot(game, 
+									p, preferredColor, PenteStrategy.RANDOM);
+							break;
+						case 1:
+							p = new Player ("SimpleRobot");
+							registrar.registerRobot(game, p, 
+									preferredColor, PenteStrategy.SIMPLE);
+							break;
+						case 2:
+							p = new Player ("BlockerRobot");
+							registrar.registerRobot(game, p, 
+									preferredColor, PenteStrategy.BLOCKER);
+							break;	
+					}
+				}
+			} else 
+				ret = registerPlayer (player, preferredColor, gameTypeStr);
+			
+		} catch (InvalidRegistrationException e) {
+			e.printStackTrace();
+			throw new GameException (e);
+	 	}
+		
+		return ret;
+		
 	}
 
 	public Game getGame(int gameId) {

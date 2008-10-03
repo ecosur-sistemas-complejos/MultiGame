@@ -7,6 +7,7 @@
 
 	<mx:Script> 
         <![CDATA[
+        	import mx.ecosur.multigame.pente.entity.StrategyPlayer;
         	import mx.ecosur.multigame.pente.entity.PentePlayer;
         	import mx.collections.ArrayCollection;
         	import mx.rpc.events.FaultEvent;
@@ -18,6 +19,7 @@
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.Game;
             import mx.ecosur.multigame.enum.Color;
+            import mx.ecosur.multigame.enum.PenteStrategy;
             
             public var currentPlayer:GamePlayer;
             public var players:ArrayCollection;
@@ -33,18 +35,29 @@
             		txtName.setFocus();
             		return;	
             	}
-            	if (cbGame.selectedIndex == 0){
-            		Alert.show("Please select the type of game to play", "Data incomplete");
-            		cbGame.setFocus();
-            		return;	
-            	}
             	
-            	//register player
-            	var player:Player = new Player();
-            	player.name = txtName.text;
-            	gameType = cbGame.selectedItem.data;
-            	var call:Object = gameService.registerPlayer(player, Color.UNKNOWN, gameType);
-            	call.operation = "register";
+            	var player:Player = null;
+            	var call:Object = null;
+            	
+            	/* Regsiter the player and number of Requested Robots */
+            	if (robots.selectedIndex != 0) {
+                    player = new Player();
+                    player.name = txtName.text;
+                    gameType = cbGame.selectedItem.data;
+            	               	    
+            	    /* Register the player */
+            	    call = gameService.registerPlayerAndRobots (player, 
+            	       Color.UNKNOWN, gameType, Number(robots.selectedItem.data));
+            
+            	} else {
+	            	/* Simple player registration */
+	            	player = new Player();
+	            	player.name = txtName.text;
+	            	gameType = cbGame.selectedItem.data;
+	            	call = gameService.registerPlayer(player, Color.UNKNOWN, gameType);
+	            }
+	            
+	            call.operation = "register";
             }
             
             private function resultHandler(event:ResultEvent):void{
@@ -52,7 +65,7 @@
             	if(call.operation == "register"){
             		currentPlayer = GamePlayer(event.result);
             		dispatchEvent(new Event("complete"));
-            	}else if (call.operation == "unregisterAll"){
+                } else if (call.operation == "unregisterAll"){
             		Alert.show("All unregistered");
             	}
             }   
@@ -80,16 +93,6 @@
 			<mx:FormItem label="Name" required="true">
 				<mx:TextInput id="txtName" />
 			</mx:FormItem>
-			<mx:FormItem label="AI" required="true">
-			    <mx:ComboBox id="robots" selectedIndex="0">
-			    	<mx:ArrayCollection>
-			    		<mx:Object label="None" data="0"/>
-			    		<mx:Object label="1 player" data="1"/>
-	                    <mx:Object label="2 players" data="2"/>
-	                    <mx:Object label="3 players" data="3"/> 		    			
-			    	</mx:ArrayCollection>
-			    </mx:ComboBox>
-			</mx:FormItem>
 			<mx:FormItem label="Game" required="true">
 				<mx:ComboBox id="cbGame" selectedIndex="1">
       				<mx:ArrayCollection>
@@ -98,6 +101,16 @@
     	  			</mx:ArrayCollection>                     
     			</mx:ComboBox>
 			</mx:FormItem>
+			<mx:FormItem label="AI Players">
+                <mx:ComboBox id="robots" selectedIndex="0">
+                    <mx:ArrayCollection>
+                        <mx:Object label="None" data="0"/>
+                        <mx:Object label="1 player" data="1"/>
+                        <mx:Object label="2 players" data="2"/>
+                        <mx:Object label="3 players" data="3"/>                         
+                    </mx:ArrayCollection>
+                </mx:ComboBox>
+            </mx:FormItem>
 			<mx:FormItem paddingTop="20">
 				<mx:Button id="registerBtn" label="Play" click="doRegister(event)" />
 			</mx:FormItem>

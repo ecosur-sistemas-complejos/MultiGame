@@ -38,7 +38,9 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
+import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.pente.PenteStrategy;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -59,27 +61,22 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		super();
 		messageSender = new MessageSender();
 	}
-
+	
 	/**
-	 * Registers a player into the System. Player registration consists of
-	 * maintaining a stateful hash of all active games in the system, and
-	 * player's registered with those games (for the handing out of available
-	 * colors). The GAME entity bean is loaded by this method, and as player's
-	 * join, the Games are updated with registered players.
+	 * Registers a player with a specific game.
 	 * 
-	 * @throws RemoteException
-	 * @throws RemoteException
-	 * 
+	 * @see mx.ecosur.multigame.ejb.RegistrarRemote#registerPlayer(mx.ecosur.multigame.ejb.entity.Game, mx.ecosur.multigame.ejb.entity.Player, mx.ecosur.multigame.Color)
 	 */
-	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
-			GameType type) throws InvalidRegistrationException {
-
-		/* Load the registrant reference */
-		if (!em.contains(registrant))
-			registrant = locatePlayer(registrant.getName());
+	public GamePlayer registerPlayer(Game game, Player registrant, Color favoriteColor)
+			throws InvalidRegistrationException 
+	{
+		if (!em.contains(game))
+			game = em.find(Game.class, game.getId());
 		
-		/* Load the Game */
-		Game game = locateGame(registrant, type);
+		/* Refresh a detached game */
+		em.refresh(game);
+		
+		registrant = locatePlayer(registrant.getName());
 
 		/*
 		 * Update the player with the current time for registration
@@ -114,12 +111,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			}
 
 			/* Add the new player to the game */
-			try {
-				game.addPlayer(player);
-				messageSender.sendPlayerChange(game);
-			} catch (RemoteException e) {
-				throw new InvalidRegistrationException(e.getMessage());
-			}
+			game.addPlayer(player);
+			messageSender.sendPlayerChange(game);
 
 			/* If is the last player to join the game then initialize the game */
 			if (availColors.size() == 1) {
@@ -135,6 +128,97 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		}
 
 		return player;
+		
+	}
+	
+	
+	/**
+	 * Registers a robot with she specified Game object.
+	 * 
+	 * TODO:  Make this generic.
+	 * @throws InvalidRegistrationException 
+	 */
+	
+	public StrategyPlayer registerRobot (Game game, Player registrant, 
+			Color favoriteColor, PenteStrategy strategy) throws InvalidRegistrationException 
+	{
+		if (!em.contains(game))
+			game = em.find(Game.class, game.getId());
+		
+		/* Refresh a detached game */
+		em.refresh(game);
+		
+		registrant = locatePlayer(registrant.getName());
+		
+		StrategyPlayer player = new StrategyPlayer (game, registrant, favoriteColor, 
+				strategy);
+		
+		if (!game.getPlayers().contains(player)) {
+
+			/*
+			 * Get list of available colors left for this game and look for the
+			 * players color
+			 */
+			List<Color> availColors = getAvailableColors(game);
+			boolean colorAvailable = availColors.contains(player.getColor());
+
+			if (!colorAvailable) {
+				/*
+				 * Pick a color from the list of available colors for the game
+				 * type
+				 */
+
+				if (availColors.size() == 0) {
+					throw new InvalidRegistrationException(
+							"No colors available, game full!");
+				} else {
+					Color color = availColors.get(0);
+					player.setColor(color);
+				}
+			}
+
+			/* Add the new player to the game */
+			game.addPlayer(player);
+			messageSender.sendPlayerChange(game);
+
+			/* If is the last player to join the game then initialize the game */
+			if (availColors.size() == 1) {
+
+				RuleBase ruleBase = game.getType().getRuleBase();
+				StatefulSession statefulSession = ruleBase
+						.newStatefulSession(false);
+				statefulSession.insert(game);
+				statefulSession.setFocus("initialize");
+				statefulSession.fireAllRules();
+				statefulSession.dispose();
+			}
+		}
+
+		return player;
+		
+	}
+
+	/**
+	 * Registers a player into the System. Player registration consists of
+	 * maintaining a stateful hash of all active games in the system, and
+	 * player's registered with those games (for the handing out of available
+	 * colors). The GAME entity bean is loaded by this method, and as player's
+	 * join, the Games are updated with registered players.
+	 * 
+	 * @throws RemoteException
+	 * @throws RemoteException
+	 * 
+	 */
+	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
+			GameType type) throws InvalidRegistrationException {
+
+		/* Load the registrant reference */
+		if (!em.contains(registrant))
+			registrant = locatePlayer(registrant.getName());
+		
+		/* Load the Game */
+		Game game = locateGame(registrant, type);
+		return registerPlayer (game, registrant, favoriteColor);
 	}
 
 	private GamePlayer locateGamePlayer(Game game, Player player,
@@ -238,7 +322,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return game;
 	}
 
-	private Game createNewGame(GameType type) {
+	public Game createNewGame(GameType type) {
 		Game game;
 		switch (type) {
 		case PENTE:

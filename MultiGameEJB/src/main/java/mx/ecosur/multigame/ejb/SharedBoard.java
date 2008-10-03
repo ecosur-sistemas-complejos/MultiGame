@@ -18,7 +18,6 @@
 
 package mx.ecosur.multigame.ejb;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -53,7 +52,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 	private static Logger logger = Logger.getLogger(SharedBoard.class
 			.getCanonicalName());
-
+	
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
 	 */
@@ -64,7 +63,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardLocal#initialize(int)
 	 */
-	public void initialize(int gameId) throws RemoteException {
+	public void initialize(int gameId) {
 
 		/*
 		 * TODO: Since this is called multiple times it would be better to have
@@ -92,10 +91,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 		} catch (FactException e) {
 			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RemoteException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 

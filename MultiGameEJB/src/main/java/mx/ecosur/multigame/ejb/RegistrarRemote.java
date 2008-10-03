@@ -20,7 +20,9 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.pente.PenteStrategy;
 
 /**
  * The RegistrarRemote interface is the remote interface for the
@@ -47,6 +49,30 @@ public interface RegistrarRemote {
 	 */
 	public GamePlayer registerPlayer (Player player, Color color, GameType type) 
 		throws InvalidRegistrationException;
+	
+	/**
+	 * Registers a player with the specified Game object.  Allows greater control
+	 * over player registration with specific games.
+	 * 
+	 * @param gqme
+	 * @param player
+	 * @param color
+	 * @return
+	 * @throws InvalidRegistrationException
+	 */
+	
+	public GamePlayer registerPlayer (Game gqme, Player player, Color color) 
+		throws InvalidRegistrationException; 
+	
+	/**
+	 * Registers a robot with she specified Game object.
+	 * 
+	 * TODO:  Make this generic.
+	 * @throws InvalidRegistrationException 
+	 */
+	
+	public StrategyPlayer registerRobot (Game game, Player player, Color color,
+			PenteStrategy strategy) throws InvalidRegistrationException;
 	
 	/**
 	 * Unregisters a player from the system (when the Player quits playing 
@@ -88,5 +114,13 @@ public interface RegistrarRemote {
 	 * @throws RemoteException
 	 */
 	public Game locateGame (Player player, GameType type);
+	
+	/**
+	 * Creates a new game of the type, gameType.
+	 * 
+	 * @param gameType
+	 * 			the type of game to create
+	 */
+	public Game createNewGame (GameType type);
 	
 }
