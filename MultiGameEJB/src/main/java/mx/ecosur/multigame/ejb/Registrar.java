@@ -73,9 +73,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		if (!em.contains(game))
 			game = em.find(Game.class, game.getId());
 		
-		/* Refresh a detached game */
-		em.refresh(game);
-		
 		registrant = locatePlayer(registrant.getName());
 
 		/*
@@ -112,6 +109,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 			/* Add the new player to the game */
 			game.addPlayer(player);
+			em.persist(player);
 			messageSender.sendPlayerChange(game);
 
 			/* If is the last player to join the game then initialize the game */
@@ -144,9 +142,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	{
 		if (!em.contains(game))
 			game = em.find(Game.class, game.getId());
-		
-		/* Refresh a detached game */
-		em.refresh(game);
 		
 		registrant = locatePlayer(registrant.getName());
 		
@@ -218,6 +213,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		
 		/* Load the Game */
 		Game game = locateGame(registrant, type);
+		em.persist(game);
 		return registerPlayer (game, registrant, favoriteColor);
 	}
 

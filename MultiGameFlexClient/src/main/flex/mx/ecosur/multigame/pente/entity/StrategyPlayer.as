@@ -17,21 +17,30 @@ package mx.ecosur.multigame.pente.entity {
      * Represents a server side StrategyPlayer object
      */
     [RemoteClass (alias="mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer")]
-    public class StrategyPlayer extends PentePlayer{
+    public class StrategyPlayer extends PentePlayer {
     	
-    	private var _strategy:PenteStrategy;
+    	private var _strategy:String;
+    	
+    	private var _nextMove:PenteMove;
     	
     	public function StrategyPlayer(){
             super();
         }
         
-        public function get strategy():PenteStrategy{
+        public function get strategy():String{
             return _strategy;
         }
         
-        public function set strategy(strategy:PenteStrategy):void {
+        public function set strategy(string:PenteStrategy):void {
             _strategy = strategy
         }
-    	
+        
+        public function get nextMove():PenteMove:void {
+        	return _nextMove;
+        }
+        
+        public function set nextMove(nextMove:PenteMove) {
+        	_nextMove = nextMove;
+        }
     }   
 }

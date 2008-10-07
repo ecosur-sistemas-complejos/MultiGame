@@ -51,9 +51,9 @@ when
     player : StrategyPlayer (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    TreeSet<PenteMove> possible = player.getAvailableMoves();
+    TreeSet<PenteMove> possible = player.determineAvailableMoves();
     if (possible.size() == 0) 
-        possible = player.getAvailableMoves (player.getOppositionColors());
+        possible = player.determineAvailableMoves (player.oppositionColors());
     PenteMove destination = null;
     Random random = new Random ();
     for (PenteMove move : possible) {

@@ -56,7 +56,7 @@ when
     eval (!$grid.getCells().isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();
-    TreeSet<PenteMove> scoringMoves = player.getScoringMoves(player.getOppositionColors());
+    TreeSet<PenteMove> scoringMoves = player.determineScoringMoves(player.oppositionColors());
     PenteMove nextMove = null;
     if (scoringMoves.size() > 0) {
         for (PenteMove move : scoringMoves) {
@@ -68,9 +68,9 @@ then
     }
     else {
         # Use the random algorithm 
-        TreeSet<PenteMove> possible = player.getAvailableMoves();
+        TreeSet<PenteMove> possible = player.determineAvailableMoves();
         if (possible.size() == 0) 
-            possible = player.getAvailableMoves (player.getOppositionColors());
+            possible = player.determineAvailableMoves (player.oppositionColors());
         PenteMove destination = null;
         Random random = new Random ();
         for (PenteMove move : possible) {

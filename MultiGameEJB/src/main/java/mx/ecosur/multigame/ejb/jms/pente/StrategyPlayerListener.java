@@ -45,7 +45,8 @@ public class StrategyPlayerListener implements MessageListener {
 
 	public void onMessage(Message msg) {
 		try {
-			if (msg.getStringProperty("GAME_TYPE").equals (GameType.PENTE)) {
+			String gameType = msg.getStringProperty("GAME_TYPE"); 
+			if (gameType != null && gameType.equals (GameType.PENTE)) {
 				int gameId = msg.getIntProperty("GAME_ID");
 				GameEvent gameEvent = GameEvent.valueOf(msg.getStringProperty(
 				"GAME_EVENT"));
@@ -93,7 +94,7 @@ public class StrategyPlayerListener implements MessageListener {
 			if (p instanceof StrategyPlayer) {
 				StrategyPlayer player = (StrategyPlayer) p;
 				if (player.isTurn()) {
-					PenteMove qualifier = player.getMove();
+					PenteMove qualifier = player.determineNextMove();
 					Move move = sharedBoard.validateMove(qualifier);
 					sharedBoard.move(move);
 				}

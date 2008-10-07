@@ -85,7 +85,6 @@ public enum GameType {
 								"/mx/ecosur/multigame/checkers.drl"));
 
 				builder.addPackageFromDrl(reader);
-
 				break;
 			case PENTE:
 				reader = new InputStreamReader(this.getClass()
