@@ -31,7 +31,7 @@ package mx.ecosur.multigame.pente.entity {
             return _strategy;
         }
         
-        public function set strategy(string:PenteStrategy):void {
+        public function set strategy(strategy:String):void {
             _strategy = strategy
         }
         
