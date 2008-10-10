@@ -43,10 +43,12 @@ public class StrategyPlayerListener implements MessageListener {
 
 	private static final long serialVersionUID = -312450142866686545L;
 
-	public void onMessage(Message msg) {
+	public void onMessage(Message msg) {		
 		try {
-			String gameType = msg.getStringProperty("GAME_TYPE"); 
-			if (gameType != null && gameType.equals (GameType.PENTE)) {
+			if (msg.getStringProperty("GAME_TYPE") != null && 
+					GameType.valueOf(msg.getStringProperty("GAME_TYPE")).equals (
+							GameType.PENTE)) 
+			{
 				int gameId = msg.getIntProperty("GAME_ID");
 				GameEvent gameEvent = GameEvent.valueOf(msg.getStringProperty(
 				"GAME_EVENT"));
@@ -57,9 +59,12 @@ public class StrategyPlayerListener implements MessageListener {
 					case PLAYER_CHANGE:
 						handleEvent (gameId);
 						break;
+					case MOVE_COMPLETE:
+						handleEvent (gameId);
+						break;
 					default:
-						throw new RuntimeException ("JMSPlayer encounted unhandled" +
-								"game event type! (" + gameEvent.toString() + ")");
+						// do nothing
+						break;
 				}
 			}
 		} catch (JMSException e) {
@@ -71,7 +76,7 @@ public class StrategyPlayerListener implements MessageListener {
 		}
 	}
 	
-	public void logStart (int gameId) {
+	private void logStart (int gameId) {
 		List <GamePlayer> players = sharedBoard.getPlayers(gameId);
 		for (GamePlayer p : players) {
 			if (p instanceof StrategyPlayer) {
@@ -96,10 +101,10 @@ public class StrategyPlayerListener implements MessageListener {
 				if (player.isTurn()) {
 					PenteMove qualifier = player.determineNextMove();
 					Move move = sharedBoard.validateMove(qualifier);
+					logger.info("Robot making move: " + move);
 					sharedBoard.move(move);
 				}
 			}	
 		}
 	}
-
 }

@@ -41,7 +41,7 @@ when
 then
     PenteMove centerMove = new PenteMove (player, new Cell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
-    modify (player) { setNextMove (centerMove) }
+    modify (player) { suggestNextMove (centerMove) }
 end
 
 
@@ -80,5 +80,5 @@ then
                 break;
              }
         }
-    modify (player) { setNextMove (nextMove) }
+    modify (player) { suggestNextMove (nextMove) }
 end

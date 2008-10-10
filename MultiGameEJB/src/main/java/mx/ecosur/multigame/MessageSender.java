@@ -16,7 +16,6 @@ package mx.ecosur.multigame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jms.Connection;
@@ -26,6 +25,7 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.Topic;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -64,6 +64,21 @@ public class MessageSender {
 			e.printStackTrace();
 		}
 
+	}
+	
+	public MessageSender (Context context) {
+		try {
+			connectionFactory = (ConnectionFactory) context
+					.lookup(CONNECTION_FACTORY_JNDI_NAME);
+			topic = (Topic) context.lookup(TOPIC_JNDI_NAME);
+		} catch (NamingException e) {
+			logger
+					.severe("Not able to get JMS connection and topic from connection factory "
+							+ CONNECTION_FACTORY_JNDI_NAME
+							+ " and topic "
+							+ TOPIC_JNDI_NAME);
+			e.printStackTrace();
+		}
 	}
 
 	private void sendMessage(GameType type, int gameId, GameEvent gameEvent, 
@@ -107,10 +122,8 @@ public class MessageSender {
 	 * @param players
 	 */
 	public void sendPlayerChange(Game game) {
-		//must convert list to array list since list is not serialized
-		List<GamePlayer> players = game.getPlayers();
-		ArrayList<GamePlayer> playersSerial = new ArrayList<GamePlayer>(players);
-		sendMessage(game.getType(), game.getId(), GameEvent.PLAYER_CHANGE, playersSerial);
+		ArrayList<GamePlayer> players = new ArrayList<GamePlayer> (game.getPlayers());
+		sendMessage(game.getType(), game.getId(), GameEvent.PLAYER_CHANGE, players);
 	}
 
 	/**

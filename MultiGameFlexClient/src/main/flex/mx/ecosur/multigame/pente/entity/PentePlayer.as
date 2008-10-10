@@ -23,6 +23,7 @@ package mx.ecosur.multigame.pente.entity {
 		private var _points:int;
 		private var _trias:ArrayCollection;
 		private var _tesseras:ArrayCollection;
+		private var _partner:PentePlayer;
 		
 		public function PentePlayer(){
 			super();
@@ -50,6 +51,14 @@ package mx.ecosur.multigame.pente.entity {
 		
 		public function set tesseras(tesseras:ArrayCollection):void {
 			_tesseras = tesseras;
+		}
+		
+		public function get partner():PentePlayer{
+			return _partner;
+		}
+		
+		public function set partner(partner:PentePlayer):void {
+			_partner = partner;
 		}
 	}
 }

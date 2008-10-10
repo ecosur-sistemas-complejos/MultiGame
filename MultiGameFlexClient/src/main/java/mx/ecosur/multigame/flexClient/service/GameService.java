@@ -7,6 +7,7 @@
 
 package mx.ecosur.multigame.flexClient.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
+import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;

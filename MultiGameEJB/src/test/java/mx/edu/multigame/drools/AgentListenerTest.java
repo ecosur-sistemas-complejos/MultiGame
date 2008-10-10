@@ -13,40 +13,45 @@
 
 package mx.edu.multigame.drools;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
 import mx.ecosur.multigame.MessageSender;
-import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.jms.pente.StrategyPlayerListener;
+import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import org.mockejb.MDBDescriptor;
 import org.mockejb.MockContainer;
-
-import com.mockrunner.mock.ejb.EJBMockObjectFactory;
 
 
 public class AgentListenerTest extends AgentTestBase {
 	
 	
 	private MockContainer mockContainer;
+	
+    private Context context;    
+
 	    
     @Override
     public void setUp() throws Exception {
     	super.setUp();
-    	
-    	EJBMockObjectFactory factory = createEJBMockObjectFactory();
-    	mockContainer = factory.getMockContainer();
+ 
+    	context = new InitialContext();
+    	mockContainer = new MockContainer (context);
  
         MDBDescriptor jmsPlayerListenerMDBDescriptor = 
-            new MDBDescriptor( "jms/TopicConnectionFactory", "CHECKERS", new StrategyPlayerListener ());
+            new MDBDescriptor( "jms/TopicConnectionFactory", 
+            		"CHECKERS", new StrategyPlayerListener ());
 	    jmsPlayerListenerMDBDescriptor.setIsTopic(true);
 	    
 	    /* Deploy the MDB */
 	    mockContainer.deploy(jmsPlayerListenerMDBDescriptor);
     }
     
-    public void testPlayerListener () {
-    	MessageSender messageSender = new MessageSender();
+    public void testPlayerListener () throws InvalidMoveException {
+    	MessageSender sender = new MessageSender (context);
     	int existing = game.getGrid().getCells().size();
-    	messageSender.sendPlayerChange(game);
-    	//assertEquals ("Alice did not move!", existing + 1, game.getGrid().getCells().size());
+    	sender.sendPlayerChange(game);
+    	//assertEquals (existing + 1, game.getGrid().getCells().size());
     }
 }

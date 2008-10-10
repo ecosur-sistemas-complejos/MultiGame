@@ -62,7 +62,7 @@ public class StrategyPlayer extends PentePlayer {
 		return nextMove;
 	}
 
-	public void setNextMove(PenteMove nextMove) {
+	public void suggestNextMove (PenteMove nextMove) {
 		this.nextMove = nextMove;
 	}
 
