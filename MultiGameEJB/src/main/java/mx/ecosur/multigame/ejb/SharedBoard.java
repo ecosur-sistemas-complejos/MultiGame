@@ -171,40 +171,22 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		GamePlayer player = move.getPlayer();
 		if (!em.contains(player))
 			player = em.find(player.getClass(), player.getId());
-		/*
-		 * TODO: I think that this could be cleaned up, if you have an attached
-		 * player then player.getGame should always give an attached game if i
-		 * understand jpa correctly?
-		 */
-		Game game = player.getGame();
-		if (!em.contains(game))
-			game = em.find(game.getClass(), game.getId());
-		em.refresh(game);
 
 		/* Refresh the move with the managed game and player */
-		player.setGame(game);
 		move.setPlayer(player);
 
 		/* persist in order to define id */
 		em.persist(move);
 
 		/* Execute the move in the rules */
-		RuleBase ruleBase = game.getType().getRuleBase();
+		RuleBase ruleBase = player.getGame().getType().getRuleBase();
 		StatefulSession statefulSession = ruleBase.newStatefulSession(false);
 		statefulSession.insert(move);
-		statefulSession.insert(game);
-		/*
-		 * TODO: Message sender can be instantiated from the rules there is no
-		 * reason to insert it
-		 */
-		statefulSession.insert(new MessageSender());
-
+		statefulSession.insert(player.getGame());
 		statefulSession.setFocus("move");
 		statefulSession.fireAllRules();
-
 		statefulSession.setFocus("evaluate");
 		statefulSession.fireAllRules();
-
 		statefulSession.dispose();
 
 		/* TODO: move this to the rules */
@@ -242,11 +224,16 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		}
 
 		nextPlayer.setTurn(true);
+		
+		/* Push changes into the DB */
+		em.flush();
+		
+		/* Send the player change message */
 		MessageSender messageSender = new MessageSender();
-		messageSender.sendPlayerChange(game);
-
+		messageSender.sendPlayerChange(player.getGame());
+		
+		/* Return the nextPlayer */
 		return nextPlayer;
-
 	}
 
 	/* (non-Javadoc)

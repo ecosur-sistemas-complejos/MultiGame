@@ -39,6 +39,7 @@ package mx.ecosur.multigame.pente{
 	import mx.ecosur.multigame.pente.entity.PenteGame;
 	import mx.ecosur.multigame.pente.entity.PenteMove;
 	import mx.ecosur.multigame.pente.entity.PentePlayer;
+	import mx.ecosur.multigame.pente.entity.StrategyPlayer;
 	import mx.ecosur.multigame.util.MessageReceiver;
 	import mx.effects.AnimateProperty;
 	import mx.events.CloseEvent;
@@ -173,6 +174,9 @@ package mx.ecosur.multigame.pente{
 		 * @param players the new list of players
 		 */
 		public function updatePlayers(players:ArrayCollection):void{
+			/* Force compilation of StrategyPlayer in .swf file - ugly code */
+			var strategyPlayer:StrategyPlayer;
+			
 			var gamePlayer:GamePlayer;
 			for (var i:int = 0; i < players.length; i++){
 				gamePlayer = GamePlayer(players[i]); 

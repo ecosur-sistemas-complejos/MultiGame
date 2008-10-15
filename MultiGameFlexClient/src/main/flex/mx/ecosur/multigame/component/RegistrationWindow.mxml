@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="txtName.setFocus()">
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="email.setFocus()">
 
 	<mx:Metadata>
         [Event(name="complete")]
@@ -7,8 +7,7 @@
 
 	<mx:Script> 
         <![CDATA[
-        	import mx.ecosur.multigame.pente.entity.StrategyPlayer;
-        	import mx.ecosur.multigame.pente.entity.PentePlayer;
+
         	import mx.collections.ArrayCollection;
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
@@ -25,39 +24,51 @@
             public var players:ArrayCollection;
             public var gameType:String;
             public var game:Game;
-            public var pentePlayer:PentePlayer;
     
             private function doRegister(eventObj:MouseEvent):void {
             	
             	//validate form
-            	if (StringUtil.trim(txtName.text).length == 0){
+            	if (StringUtil.trim(email.text).length == 0){
             		Alert.show("Please insert your name", "Data incomplete");
-            		txtName.setFocus();
+            		email.setFocus();
             		return;	
+            	}
+            	
+            	if (StringUtil.trim(password.text).length == 0){
+                    Alert.show("Please type your password", "Data incomplete");
+                    password.setFocus();
+                    return;             		
             	}
             	
             	var player:Player = null;
             	var call:Object = null;
             	
-            	/* Regsiter the player and number of Requested Robots */
-            	if (robots.selectedIndex != 0) {
+                /* Only one game type exists */
+                gameType = "PENTE";
+            	
+            	if (robots.selectedIndex!=0) {
                     player = new Player();
-                    player.name = txtName.text;
-                    gameType = cbGame.selectedItem.data;
-            	               	    
-            	    /* Register the player */
-            	    call = gameService.registerPlayerAndRobots (player, 
+                    player.name = email.text;
+                    player.password= password.text;
+            	   
+            	    call = gameService.registerPlayerAndRobots (player,
             	       Color.UNKNOWN, gameType, Number(robots.selectedItem.data));
-            
+            	       	
             	} else {
 	            	/* Simple player registration */
 	            	player = new Player();
-	            	player.name = txtName.text;
-	            	gameType = cbGame.selectedItem.data;
+	            	player.name = email.text;
+	            	player.password= password.text;
+	            	
 	            	call = gameService.registerPlayer(player, Color.UNKNOWN, gameType);
 	            }
 	            
 	            call.operation = "register";
+	            
+            }
+            
+            private function doCreateUser (eventObj:MouseEvent):void {
+            	
             }
             
             private function resultHandler(event:ResultEvent):void{
@@ -76,7 +87,7 @@
             	if (i > -1){
             		Alert.show(event.fault.faultString.substring(i, event.fault.faultString.length), "Registration failed");
             		if (event.token.operation != "unregisterAll"){
-            			var call:Object = gameService.unregisterAllPlayers(cbGame.selectedItem.data);
+            			var call:Object = gameService.unregisterAllPlayers("PENTE");
             			call.operation= "unregisterAll";
             		}
             	}else{
@@ -89,18 +100,13 @@
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
      
 	<mx:Panel title="Join Game">
-		<mx:Form x="0" y="0" defaultButton="{registerBtn}">
-			<mx:FormItem label="Name" required="true">
-				<mx:TextInput id="txtName" />
+		<mx:Form x="0" y="0" defaultButton="{playBtn}">
+			<mx:FormItem label="Email" required="true">
+				<mx:TextInput id="email" />
 			</mx:FormItem>
-			<mx:FormItem label="Game" required="true">
-				<mx:ComboBox id="cbGame" selectedIndex="1">
-      				<mx:ArrayCollection>
-      					<!--mx:Object label="Checkers" data="CHECKERS"/-->
-      					<mx:Object label="Gente" data="PENTE"/>
-    	  			</mx:ArrayCollection>                     
-    			</mx:ComboBox>
-			</mx:FormItem>
+			<mx:FormItem label="Password" required="true">
+                <mx:TextInput displayAsPassword="true" id="password" />
+            </mx:FormItem>
 			<mx:FormItem label="AI Players">
                 <mx:ComboBox id="robots" selectedIndex="0">
                     <mx:ArrayCollection>
@@ -112,7 +118,10 @@
                 </mx:ComboBox>
             </mx:FormItem>
 			<mx:FormItem paddingTop="20">
-				<mx:Button id="registerBtn" label="Play" click="doRegister(event)" />
+				<mx:HBox width="80%">
+					<mx:Button id="playBtn" label="Login" click="doRegister(event)" />
+					<mx:Button id="registerBtn" label="Register" click="doCreateUser(event)"/>
+				</mx:HBox>
 			</mx:FormItem>
     	</mx:Form>
     </mx:Panel>

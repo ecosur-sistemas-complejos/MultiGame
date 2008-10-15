@@ -43,6 +43,11 @@ public class Player implements Serializable {
 	 * The player's name
 	 */
 	private String name;
+	
+	/* 
+	 * The player's password
+	 */
+	private String password;
 
 	/*
 	 * The number of games this player has played
@@ -58,6 +63,12 @@ public class Player implements Serializable {
 	 * Last time this player logged in to play
 	 */
 	private long lastRegistration;
+	
+	private PlayerType type;
+	
+	public enum PlayerType {
+		ADMINISTRATOR, PLAYER
+	}
 
 	public Player() {
 		super();
@@ -143,6 +154,22 @@ public class Player implements Serializable {
 	 */
 	public void setLastRegistration(long lastRegistration) {
 		this.lastRegistration = lastRegistration;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public PlayerType getType() {
+		return type;
+	}
+
+	public void setType(PlayerType type) {
+		this.type = type;
 	}
 
 	public String toString() {

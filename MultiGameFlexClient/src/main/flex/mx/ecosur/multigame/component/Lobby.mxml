@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="798" height="506">
+    <mx:Vbox>
+        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />
+    </mx:Vbox>
+	<mx:VBox x="640" y="0" height="506" width="158">
+	   <mx:Accordion />
+	</mx:VBox>
+</mx:Canvas>

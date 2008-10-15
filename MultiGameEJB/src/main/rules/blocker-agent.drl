@@ -36,12 +36,14 @@ import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Random;
 import java.util.TreeSet;
+import java.util.logging.Logger;
+import java.util.UUID;
 
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    player : StrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
     eval ($grid.getCells().isEmpty())
 then
     PenteMove centerMove = new PenteMove (player, new Cell (
@@ -50,6 +52,7 @@ then
 end
 
 rule "blocker-move"
+    no-loop true
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
     player : StrategyPlayer (turn == true, nextMove == null)
@@ -58,6 +61,7 @@ then
     HashSet<Color> colors = new HashSet<Color>();
     TreeSet<PenteMove> scoringMoves = player.determineScoringMoves(player.oppositionColors());
     PenteMove nextMove = null;
+    
     if (scoringMoves.size() > 0) {
         for (PenteMove move : scoringMoves) {
             Cell destination = move.getDestination();
@@ -67,23 +71,22 @@ then
         }
     }
     else {
-        # Use the random algorithm 
+        # Use the random algorithm
         TreeSet<PenteMove> possible = player.determineAvailableMoves();
         if (possible.size() == 0) 
             possible = player.determineAvailableMoves (player.oppositionColors());
-        PenteMove destination = null;
         Random random = new Random ();
         for (PenteMove move : possible) {
             if (random.nextBoolean()) { 
-                destination = move; 
+                nextMove = move; 
                 break;
             }
         }
-        if (destination == null)
+        if (nextMove == null)
             for (PenteMove move : possible) {
-                destination = move;
+                nextMove = move;
                 break;
              }
-        }
+    }
     modify (player) { suggestNextMove (nextMove) }
 end

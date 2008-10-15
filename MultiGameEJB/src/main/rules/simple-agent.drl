@@ -36,7 +36,7 @@ import java.util.TreeSet;
 rule "first-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    player : StrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
     eval ($grid.getCells().isEmpty())
 then
     PenteMove centerMove = new PenteMove (player, new Cell (
@@ -46,6 +46,7 @@ end
 
 
 rule "simple-move"
+    no-loop true
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
     player : StrategyPlayer (turn == true, nextMove == null)
@@ -56,29 +57,30 @@ then
     colors.add(player.getPartner().getColor());
     TreeSet<PenteMove> scoringMoves = player.determineScoringMoves(colors);
     PenteMove nextMove = null;
-    if (scoringMoves.size() > 0)
+    if (scoringMoves.size() > 0) {
         for (PenteMove move : scoringMoves) {
             nextMove = move;
             break;
         }
-    else {
+    } else {
         # Use the random algorithm 
         TreeSet<PenteMove> possible = player.determineAvailableMoves();
         if (possible.size() == 0) 
             possible = player.determineAvailableMoves (player.oppositionColors());
-        PenteMove destination = null;
         Random random = new Random ();
         for (PenteMove move : possible) {
             if (random.nextBoolean()) { 
-                destination = move; 
+                nextMove = move; 
                 break;
-            }
+            } 
         }
-        if (destination == null)
+        
+        if (nextMove == null) {
             for (PenteMove move : possible) {
-                destination = move;
+                nextMove = move;
                 break;
              }
         }
+    }
     modify (player) { suggestNextMove (nextMove) }
 end

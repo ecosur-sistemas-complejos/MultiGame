@@ -16,12 +16,12 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
-import mx.ecosur.multigame.ejb.jms.pente.StrategyPlayerListener;
 import mx.ecosur.multigame.pente.BeadString;
 
 import org.drools.RuleBase;
@@ -31,7 +31,13 @@ import org.junit.Test;
 
 public class AgentLogicTest extends AgentTestBase {
 	
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = true;
+	
+		/* For Debugging Drools */
+    public static void main(String args[]) {
+        org.junit.runner.JUnitCore.main("testBlockerMoveOnStartingBoard");
+    }
+
 	
 	
 	@Test
@@ -113,6 +119,15 @@ public class AgentLogicTest extends AgentTestBase {
 				next.getDestination()));
 	}
 	
+	public void testRandomMoveOnEmptyBoard () {
+		/* Reset the Grid */
+		game.setGrid(new GameGrid());
+		game.setState(GameState.PLAY);
+		
+		/* Run the same code in test SimpleMove but on a simpler board */
+		testRandomNextMove ();
+	}
+	
 	@Test
 	public void testBlockerNextMove () {
 		bob.setTurn(true);
@@ -151,6 +166,24 @@ public class AgentLogicTest extends AgentTestBase {
 		scoring.addAll(next.getTesseras());
 		scoring.addAll(next.getTrias());
 		assertEquals (1, scoring.size());
+	}
+	
+	public void testSimpleMoveOnStartingBoard () {
+		/* Reset the Grid */
+		GameGrid grid = game.getGrid();
+		HashSet<Cell> cells = new HashSet<Cell> ();
+		cells.add(new Cell(10,10, Color.YELLOW));
+		cells.add(new Cell(9,9, Color.BLUE));
+		grid.setCells(cells);
+		game.setGrid(grid);
+		game.setState(GameState.PLAY);
+		
+		charlie.setTurn(true);
+		PenteMove next = fireRules (charlie);
+		assertNotNull (next);
+		/* Validate that the next move is possible */
+		fireRules (next);
+		assertEquals (Move.Status.MOVED, next.getStatus());		
 	}
 	
 	

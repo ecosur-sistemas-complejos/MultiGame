@@ -1,0 +1,51 @@
+/**
+    Default styles for the Multi-Game-Flex-Client
+    
+    @author awaterma@ecosur.mx
+    @author max@alwayssunny.com
+**/
+
+       .windowStyles{
+            color: #ffffff;
+        }
+        
+        .panel{
+            paddingTop: 10;
+            paddingBottom: 10;
+            paddingLeft: 10;
+            paddingRight: 10;
+            borderThicknessBottom: 5;
+            borderThicknessTop: 5;
+            borderThicknessLeft: 5;
+            borderThicknessRight: 5;
+            backgroundColor: #cccccc;
+        }
+        
+        .fieldLit{
+            color: #000000;
+            font-weight: bold;
+        }
+        
+        .field{
+            color: #000000;
+        }
+        
+        Alert {
+            titleStyleName: "alertTitle";
+            messageStyleName: "alertMessage";
+            buttonStyleName: "alertButton";
+        }
+
+        .alertTitle {
+            fontSize: 14;
+            fontWeight: bold;
+        }
+
+        .alertMessage {
+            fontSize: 12;
+        }
+        
+        .alertButton {
+            fontSize: 10;
+            color: #000000;
+        }

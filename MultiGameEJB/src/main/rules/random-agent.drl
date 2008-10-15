@@ -37,7 +37,7 @@ import java.util.Random;
 rule "first-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW)
+    player : StrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
     eval ($grid.getCells().isEmpty())
 then
     PenteMove centerMove = new PenteMove (player, new Cell (
@@ -46,6 +46,7 @@ then
 end
 
 rule "random-move"
+    no-loop true
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
     player : StrategyPlayer (turn == true, nextMove == null)
@@ -55,7 +56,7 @@ then
     if (possible.size() == 0) 
         possible = player.determineAvailableMoves (player.oppositionColors());
     PenteMove destination = null;
-    Random random = new Random ();
+    Random random = new Random (System.currentTimeMillis());
     for (PenteMove move : possible) {
         if (random.nextBoolean()) { 
             destination = move; 

@@ -22,6 +22,7 @@ import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameType;
@@ -43,7 +44,7 @@ public class StrategyPlayerListener implements MessageListener {
 
 	private static final long serialVersionUID = -312450142866686545L;
 
-	public void onMessage(Message msg) {		
+	public void onMessage(Message msg) {			
 		try {
 			if (msg.getStringProperty("GAME_TYPE") != null && 
 					GameType.valueOf(msg.getStringProperty("GAME_TYPE")).equals (
@@ -52,18 +53,18 @@ public class StrategyPlayerListener implements MessageListener {
 				int gameId = msg.getIntProperty("GAME_ID");
 				GameEvent gameEvent = GameEvent.valueOf(msg.getStringProperty(
 				"GAME_EVENT"));
+				
+				/* The listener should only be activated when the Game Begins,
+				 * or a Move has been completed.
+				 */
 				switch (gameEvent) {
 					case BEGIN:
 						logStart(gameId);
-						// Fall through
-					case PLAYER_CHANGE:
-						handleEvent (gameId);
 						break;
-					case MOVE_COMPLETE:
-						handleEvent (gameId);
+					case PLAYER_CHANGE:
+						handleEvent ((ObjectMessage) msg);
 						break;
 					default:
-						// do nothing
 						break;
 				}
 			}
@@ -89,18 +90,27 @@ public class StrategyPlayerListener implements MessageListener {
 	/**
 	 * 
 	 * 
-	 * @param gameId 
+	 * @param msg 
 	 * @throws InvalidMoveException 
+	 * @throws JMSException 
 	 * 
 	 */
-	private void handleEvent (int gameId) throws InvalidMoveException {
-		List <GamePlayer> players = sharedBoard.getPlayers(gameId);
+	@SuppressWarnings("unchecked")
+	private void handleEvent (ObjectMessage message) throws InvalidMoveException, 
+		JMSException 
+	{
+		List<GamePlayer> players = (List<GamePlayer>) message.getObject();
 		for (GamePlayer p : players) {
 			if (p instanceof StrategyPlayer) {
 				StrategyPlayer player = (StrategyPlayer) p;
 				if (player.isTurn()) {
 					PenteMove qualifier = player.determineNextMove();
 					Move move = sharedBoard.validateMove(qualifier);
+					try {
+						Thread.sleep (2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					logger.info("Robot making move: " + move);
 					sharedBoard.move(move);
 				}

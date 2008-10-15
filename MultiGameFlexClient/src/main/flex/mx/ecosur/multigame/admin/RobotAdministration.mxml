@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" currentState="GENTE" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
+	<mx:ArrayCollection id="agentList">
+		<mx:Object label="Random" data="random"/>
+		<mx:Object label="Blocker" data="blaocker"/>
+		<mx:Object label="Simple" data="simple"/>                       
+	</mx:ArrayCollection>
+	<mx:states>
+		<mx:State name="GENTE">
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:FormItem label="Player 1">
+					<mx:ComboBox dataProvider="{agentList}"/>
+				</mx:FormItem>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:FormItem label="Player 2">
+					<mx:ComboBox dataProvider="{agentList}"/>
+				</mx:FormItem>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:FormItem label="Player 3">
+					<mx:ComboBox dataProvider="{agentList}"/>
+				</mx:FormItem>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:FormItem label="Player 4">
+					<mx:ComboBox dataProvider="{agentList}"/>
+				</mx:FormItem>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:FormItem label="Iterations">
+					<mx:TextInput name="iterations" text="10000"/>
+				</mx:FormItem>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:HBox width="100%" name="buttonBox" id="buttonBox">
+					<mx:Button label="Run" click="this.currentState='execution'"/>
+				</mx:HBox>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State basedOn="GENTE" id="execution" name="execution">
+			<mx:AddChild relativeTo="{buttonBox}" position="lastChild">
+				<mx:Button label="Pause"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{buttonBox}" position="lastChild">
+				<mx:Button label="Cancel"/>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+				<mx:ProgressBar label="Executing series ...."/>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+	<mx:Panel title="Simulator" id="panel1">
+		<mx:Form id="robotAdmin">
+			<mx:FormItem label="Game">
+				<mx:ComboBox id="game">
+                    <mx:ArrayCollection>
+                        <mx:Object label="GENTE" data="GENTE"/>                   
+                    </mx:ArrayCollection>
+				</mx:ComboBox>
+			</mx:FormItem>
+			<mx:FormItem id="form">
+			</mx:FormItem>
+		</mx:Form>
+	</mx:Panel>
+</mx:Box>

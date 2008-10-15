@@ -19,9 +19,11 @@ package mx.ecosur.multigame.entity {
 		
 		private var _id:int;
 		private var _name:String;
+		private var _password:String;
 		private var _gamecount:int;
 		private var _wins:int;
 		private var _lastRegistration:Number;
+		private var _type:String;
 		
 		public function Player(){
 			super();
@@ -42,6 +44,14 @@ package mx.ecosur.multigame.entity {
 		public function set name(name:String):void {
 			_name = name;
 		}
+		
+		public function get password():String{
+            return _password;
+        }
+        
+        public function set password(name:String):void {
+            _password = password;
+        }
 		
 		public function get gamecount():int{
 			return _gamecount;
@@ -66,6 +76,14 @@ package mx.ecosur.multigame.entity {
 		public function set lastRegistration(lastRegistration:Number):void {
 			_lastRegistration = lastRegistration;
 		}
+		
+		public function get type():String{
+            return _type;
+        }
+        
+        public function set type(type:String):void {
+            _type = type;
+        }
 		
 		public function toString():String{
 			return "id = " + id + ", name = " + name + ", gamecount = " + gamecount + ", lastRegistration = " + lastRegistration + ", wins = " + wins;
