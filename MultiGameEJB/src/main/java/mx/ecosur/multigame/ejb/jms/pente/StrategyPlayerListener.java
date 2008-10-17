@@ -104,13 +104,11 @@ public class StrategyPlayerListener implements MessageListener {
 			if (p instanceof StrategyPlayer) {
 				StrategyPlayer player = (StrategyPlayer) p;
 				if (player.isTurn()) {
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {}
 					PenteMove qualifier = player.determineNextMove();
 					Move move = sharedBoard.validateMove(qualifier);
-					try {
-						Thread.sleep (2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 					logger.info("Robot making move: " + move);
 					sharedBoard.move(move);
 				}

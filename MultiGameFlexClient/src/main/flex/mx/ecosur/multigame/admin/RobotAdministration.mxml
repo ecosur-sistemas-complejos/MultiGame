@@ -2,7 +2,7 @@
 <mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" currentState="GENTE" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" >
 	<mx:ArrayCollection id="agentList">
 		<mx:Object label="Random" data="random"/>
-		<mx:Object label="Blocker" data="blaocker"/>
+		<mx:Object label="Blocker" data="blocker"/>
 		<mx:Object label="Simple" data="simple"/>                       
 	</mx:ArrayCollection>
 	<mx:states>

@@ -23,6 +23,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.pente.BeadString;
 import mx.ecosur.multigame.pente.PenteMoveComparator;
@@ -59,11 +60,17 @@ public class StrategyPlayer extends PentePlayer {
 	}
 
 	public PenteMove getNextMove() {
+		if (nextMove != null) {
+			nextMove.setTrias(null);
+			nextMove.setTesseras(null);
+			nextMove.setStatus(Move.Status.UNVERIFIED);
+		}
 		return nextMove;
 	}
 
-	public void suggestNextMove (PenteMove nextMove) {
-		this.nextMove = nextMove;
+	public void suggestNextMove (PenteMove next) {
+		/* Clone the move */
+		nextMove = next;
 	}
 
 	/**

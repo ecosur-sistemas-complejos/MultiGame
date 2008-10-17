@@ -194,7 +194,8 @@ public class PenteMove extends Move {
 		}
 		
 		PentePlayer pentePlayer = (PentePlayer) player;
-		if (!pentePlayer.containsString(string))
+		PentePlayer partner = (PentePlayer) pentePlayer.getPartner();
+		if (!pentePlayer.containsString(string) && !partner.containsString(string))
 			ret = true;
 		return ret;
 	}

@@ -1,5 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="email.setFocus()">
+<mx:Box xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="email.setFocus()" currentState="register">
+    <mx:ArrayCollection id="agentList">
+        <mx:Object label="Random" data="RANDOM"/>
+        <mx:Object label="Blocker" data="BLOCKER"/>
+        <mx:Object label="Simple" data="SIMPLE"/>                       
+    </mx:ArrayCollection>
+    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
+	<mx:states>
+	    <mx:State name="register">
+	       <mx:AddChild>
+			    <mx:Panel title="Join Game">
+			        <mx:Form x="0" y="0" defaultButton="{playBtn}" id="form">
+			            <mx:FormItem label="Email" required="true">
+			                <mx:TextInput id="email" />
+			            </mx:FormItem>
+			            <mx:FormItem label="Play Computer?">
+			                <mx:CheckBox id="robots" selected="false" click="switchState(event)" />
+			            </mx:FormItem>
+			        </mx:Form>
+			        <mx:Form>
+			            <mx:FormItem>
+			                <mx:HBox width="80%">
+			                    <mx:Button id="playBtn" label="Login" click="doRegister(event)" />
+			                </mx:HBox>
+			            </mx:FormItem>
+			        </mx:Form>
+			    </mx:Panel>
+	       </mx:AddChild>
+	    </mx:State>
+		<mx:State name="ai" basedOn="register">
+			<mx:AddChild relativeTo="{form}" position="lastChild">
+	                <mx:FormItem label="Player 1">
+	                    <mx:ComboBox id="player1" dataProvider="{agentList}"/>
+	                </mx:FormItem>
+	            </mx:AddChild>
+	            <mx:AddChild relativeTo="{form}" position="lastChild">
+	                <mx:FormItem label="Player 2">
+	                    <mx:ComboBox id="player2" dataProvider="{agentList}"/>
+	                </mx:FormItem>
+	            </mx:AddChild>
+	            <mx:AddChild relativeTo="{form}" position="lastChild">
+	                <mx:FormItem label="Player 3">
+	                    <mx:ComboBox id="player3" dataProvider="{agentList}"/>
+	                </mx:FormItem>
+	            </mx:AddChild>
+	            <mx:AddChild relativeTo="{form}" position="lastChild">
+	                <mx:FormItem label="Player 4">
+	                    <mx:ComboBox id="player4" dataProvider="{agentList}"/>
+	                </mx:FormItem>
+	            </mx:AddChild>
+		</mx:State>
+	</mx:states>
 
 	<mx:Metadata>
         [Event(name="complete")]
@@ -34,32 +85,28 @@
             		return;	
             	}
             	
-            	if (StringUtil.trim(password.text).length == 0){
-                    Alert.show("Please type your password", "Data incomplete");
-                    password.setFocus();
-                    return;             		
-            	}
-            	
             	var player:Player = null;
             	var call:Object = null;
             	
                 /* Only one game type exists */
                 gameType = "PENTE";
             	
-            	if (robots.selectedIndex!=0) {
+            	if (this.currentState=='ai') {
                     player = new Player();
                     player.name = email.text;
-                    player.password= password.text;
-            	   
-            	    call = gameService.registerPlayerAndRobots (player,
-            	       Color.UNKNOWN, gameType, Number(robots.selectedItem.data));
+                    
+                    var strategies:Array = [ player1.selectedItem.data, 
+                        player2.selectedItem.data, player3.selectedItem.data, 
+                        player4.selectedItem.data ];
+                   
+            	    call = gameService.registerPlayerAndAI (player,
+            	       Color.UNKNOWN, gameType, strategies);
             	       	
-            	} else {
+            	} else {            		
 	            	/* Simple player registration */
-	            	player = new Player();
-	            	player.name = email.text;
-	            	player.password= password.text;
 	            	
+	            	player = new Player();
+	            	player.name = email.text;	            	
 	            	call = gameService.registerPlayer(player, Color.UNKNOWN, gameType);
 	            }
 	            
@@ -94,36 +141,14 @@
             		Alert.show(event.fault.faultString, "Error");
             	}
             }
+            
+            private function switchState(event:Event):void {
+            	if (robots.selected) {
+            		this.currentState="ai";
+            	} else {
+            		this.currentState="register";
+            	}
+            }
         ]]>
     </mx:Script>
-	
-    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-     
-	<mx:Panel title="Join Game">
-		<mx:Form x="0" y="0" defaultButton="{playBtn}">
-			<mx:FormItem label="Email" required="true">
-				<mx:TextInput id="email" />
-			</mx:FormItem>
-			<mx:FormItem label="Password" required="true">
-                <mx:TextInput displayAsPassword="true" id="password" />
-            </mx:FormItem>
-			<mx:FormItem label="AI Players">
-                <mx:ComboBox id="robots" selectedIndex="0">
-                    <mx:ArrayCollection>
-                        <mx:Object label="None" data="0"/>
-                        <mx:Object label="1 player" data="1"/>
-                        <mx:Object label="2 players" data="2"/>
-                        <mx:Object label="3 players" data="3"/>                         
-                    </mx:ArrayCollection>
-                </mx:ComboBox>
-            </mx:FormItem>
-			<mx:FormItem paddingTop="20">
-				<mx:HBox width="80%">
-					<mx:Button id="playBtn" label="Login" click="doRegister(event)" />
-					<mx:Button id="registerBtn" label="Register" click="doCreateUser(event)"/>
-				</mx:HBox>
-			</mx:FormItem>
-    	</mx:Form>
-    </mx:Panel>
-    
 </mx:Box>

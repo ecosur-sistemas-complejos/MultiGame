@@ -142,7 +142,7 @@ package mx.ecosur.multigame.pente{
 			
 			// initialize game status
 			_gameStatus.showMessage("Welcome to the game " + currentPlayer.player.name + "!\n\n You are " + Color.getColorDescription(currentPlayer.color), Color.getColorCode(currentPlayer.color));
-			
+	
 			// initialize the move viewer
 			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
 			_moveViewer.board = _board;
@@ -315,8 +315,6 @@ package mx.ecosur.multigame.pente{
 			var message:IMessage = event.message;
 			var gameId:Number = message.headers.GAME_ID;
 			var gameEvent:String = message.headers.GAME_EVENT;
-				
-			//Alert.show("game event received " + gameEvent);
 		
 			switch (gameEvent){
 				case GameEvent.BEGIN:
