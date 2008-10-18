@@ -44,11 +44,6 @@
 	                    <mx:ComboBox id="player3" dataProvider="{agentList}"/>
 	                </mx:FormItem>
 	            </mx:AddChild>
-	            <mx:AddChild relativeTo="{form}" position="lastChild">
-	                <mx:FormItem label="Player 4">
-	                    <mx:ComboBox id="player4" dataProvider="{agentList}"/>
-	                </mx:FormItem>
-	            </mx:AddChild>
 		</mx:State>
 	</mx:states>
 
@@ -96,8 +91,7 @@
                     player.name = email.text;
                     
                     var strategies:Array = [ player1.selectedItem.data, 
-                        player2.selectedItem.data, player3.selectedItem.data, 
-                        player4.selectedItem.data ];
+                        player2.selectedItem.data, player3.selectedItem.data ];
                    
             	    call = gameService.registerPlayerAndAI (player,
             	       Color.UNKNOWN, gameType, strategies);
