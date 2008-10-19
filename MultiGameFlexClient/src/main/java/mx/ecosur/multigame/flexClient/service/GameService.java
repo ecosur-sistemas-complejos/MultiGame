@@ -112,7 +112,7 @@ public class GameService {
 				ret = registrar.registerPlayer(game, player, preferredColor);
 				for (int i = 0; i < strategies.length; i++) {
 					PenteStrategy strategy = PenteStrategy.valueOf(strategies [ i ]);
-					Player robot = new Player (strategy.name() + "-" + i + 1);
+					Player robot = new Player (strategy.name() + "-" + (i + 1));
 					registrar.registerRobot(game, robot, Color.UNKNOWN, strategy);
 				}
 			} else 

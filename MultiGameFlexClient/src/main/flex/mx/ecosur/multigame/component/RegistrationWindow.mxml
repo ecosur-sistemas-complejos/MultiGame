@@ -5,23 +5,30 @@
         <mx:Object label="Blocker" data="BLOCKER"/>
         <mx:Object label="Simple" data="SIMPLE"/>                       
     </mx:ArrayCollection>
+    <mx:ArrayCollection id="gameList">
+    	<mx:Object label="GENTE" data="gente"/>
+    </mx:ArrayCollection>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 	<mx:states>
 	    <mx:State name="register">
 	       <mx:AddChild>
 			    <mx:Panel title="Join Game">
 			        <mx:Form x="0" y="0" defaultButton="{playBtn}" id="form">
-			            <mx:FormItem label="Email" required="true">
+			            <mx:FormItem label="Name:" required="true">
 			                <mx:TextInput id="email" />
 			            </mx:FormItem>
-			            <mx:FormItem label="Play Computer?">
-			                <mx:CheckBox id="robots" selected="false" click="switchState(event)" />
+			            <mx:FormItem label="Game:">
+	                    	<mx:ComboBox id="gametype" dataProvider="{gameList}"/>
+			            </mx:FormItem>
+			            <mx:FormItem label="Players:">
+			            	<mx:RadioButton label="Human" selected="true" click="switchState(event)"/>
+			                <mx:RadioButton label="AI" id="robots" selected="false" click="switchState(event)" />
 			            </mx:FormItem>
 			        </mx:Form>
 			        <mx:Form>
 			            <mx:FormItem>
 			                <mx:HBox width="80%">
-			                    <mx:Button id="playBtn" label="Login" click="doRegister(event)" />
+			                    <mx:Button id="playBtn" label="Play" click="doRegister(event)" />
 			                </mx:HBox>
 			            </mx:FormItem>
 			        </mx:Form>
