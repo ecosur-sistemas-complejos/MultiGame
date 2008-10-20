@@ -85,13 +85,17 @@ public class StrategyPlayer extends PentePlayer {
 		statefulSession.insert(new MessageSender());
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
-		/* Rules should have created the next Move into this player */
+		/* Rules should have created the next Move into this player, if 
+		 * one available */
 		PenteMove ret = getNextMove ();
-		Cell destination = ret.getDestination();
-		destination.setColor(getColor());
-		ret.setDestination(destination);
-		/* Clear the next move for upcoming calls */
-		nextMove = null;
+		if (ret != null) {
+			Cell destination = ret.getDestination();
+			destination.setColor(getColor());
+			ret.setDestination(destination);
+			/* Clear the next move for upcoming calls */
+			nextMove = null;
+		}
+		
 		return ret;	
 	}
 	
