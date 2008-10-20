@@ -318,7 +318,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return game;
 	}
 
-	public Game createNewGame(GameType type) {
+	private Game createNewGame(GameType type) {
 		Game game;
 		switch (type) {
 		case PENTE:

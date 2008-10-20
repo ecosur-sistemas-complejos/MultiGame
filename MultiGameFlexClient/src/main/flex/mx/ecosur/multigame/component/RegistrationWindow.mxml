@@ -3,7 +3,8 @@
     <mx:ArrayCollection id="agentList">
         <mx:Object label="Random" data="RANDOM"/>
         <mx:Object label="Blocker" data="BLOCKER"/>
-        <mx:Object label="Simple" data="SIMPLE"/>                       
+        <mx:Object label="Simple" data="SIMPLE"/>
+    	<mx:Object label="Human" data="HUMAN"/>                       
     </mx:ArrayCollection>
     <mx:ArrayCollection id="gameList">
     	<mx:Object label="GENTE" data="gente"/>
@@ -20,9 +21,9 @@
 			            <mx:FormItem label="Game:">
 	                    	<mx:ComboBox id="gametype" dataProvider="{gameList}"/>
 			            </mx:FormItem>
-			            <mx:FormItem label="Players:">
-			            	<mx:RadioButton label="Human" selected="true" click="switchState(event)"/>
-			                <mx:RadioButton label="AI" id="robots" selected="false" click="switchState(event)" />
+			            <mx:FormItem label="Setup:">
+			            	<mx:RadioButton label="Default" selected="true" click="switchState(event)"/>
+			                <mx:RadioButton label="Custom" id="robots" selected="false" click="switchState(event)" />
 			            </mx:FormItem>
 			        </mx:Form>
 			        <mx:Form>
@@ -37,11 +38,6 @@
 	    </mx:State>
 		<mx:State name="ai" basedOn="register">
 			<mx:AddChild relativeTo="{form}" position="lastChild">
-	                <mx:FormItem label="Player 1">
-	                    <mx:ComboBox id="player1" dataProvider="{agentList}"/>
-	                </mx:FormItem>
-	            </mx:AddChild>
-	            <mx:AddChild relativeTo="{form}" position="lastChild">
 	                <mx:FormItem label="Player 2">
 	                    <mx:ComboBox id="player2" dataProvider="{agentList}"/>
 	                </mx:FormItem>
@@ -49,6 +45,11 @@
 	            <mx:AddChild relativeTo="{form}" position="lastChild">
 	                <mx:FormItem label="Player 3">
 	                    <mx:ComboBox id="player3" dataProvider="{agentList}"/>
+	                </mx:FormItem>
+	            </mx:AddChild>
+	            <mx:AddChild relativeTo="{form}" position="lastChild">
+	                <mx:FormItem label="Player 4">
+	                    <mx:ComboBox id="player4" dataProvider="{agentList}"/>
 	                </mx:FormItem>
 	            </mx:AddChild>
 		</mx:State>
@@ -97,8 +98,8 @@
                     player = new Player();
                     player.name = email.text;
                     
-                    var strategies:Array = [ player1.selectedItem.data, 
-                        player2.selectedItem.data, player3.selectedItem.data ];
+                    var strategies:Array = [ player2.selectedItem.data, 
+                        player3.selectedItem.data, player4.selectedItem.data ];
                    
             	    call = gameService.registerPlayerAndAI (player,
             	       Color.UNKNOWN, gameType, strategies);

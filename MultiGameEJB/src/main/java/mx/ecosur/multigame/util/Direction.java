@@ -14,6 +14,10 @@
 
 package mx.ecosur.multigame.util;
 
+import java.util.TreeSet;
+
+import mx.ecosur.multigame.ejb.entity.Cell;
+
 
 public enum Direction {
 	

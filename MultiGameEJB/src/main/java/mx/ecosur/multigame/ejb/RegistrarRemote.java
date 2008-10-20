@@ -61,7 +61,7 @@ public interface RegistrarRemote {
 	 * @throws InvalidRegistrationException
 	 */
 	
-	public GamePlayer registerPlayer (Game gqme, Player player, Color color) 
+	public GamePlayer registerPlayer (Game game, Player player, Color color) 
 		throws InvalidRegistrationException; 
 	
 	/**
@@ -114,13 +114,5 @@ public interface RegistrarRemote {
 	 * @throws RemoteException
 	 */
 	public Game locateGame (Player player, GameType type);
-	
-	/**
-	 * Creates a new game of the type, gameType.
-	 * 
-	 * @param gameType
-	 * 			the type of game to create
-	 */
-	public Game createNewGame (GameType type);
 	
 }

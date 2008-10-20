@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -51,7 +52,7 @@ public class PenteMove extends Move {
 		COOPERATIVE, SELFISH, NEUTRAL
 	}
 
-	private Set<Cell> captures;
+	private HashSet<BeadString> captures;
 	
 	private HashSet<BeadString> trias, tesseras;
 
@@ -71,57 +72,38 @@ public class PenteMove extends Move {
 	 * Returns a set of captured pieces, computed once. 
 	 */
 	@Transient
-	public Set<Cell> getCaptures () {
+	public Set<BeadString> getCaptures () {
 		if (searchUtil == null)
 			searchUtil = new Search(getPlayer().getGame().getGrid());
 		if (captures == null) {
-			captures = new HashSet<Cell>();
+			captures = new HashSet<BeadString>();
 			
-			/* Find 2 levels of cells in all directions, from this move */
+			/* Looking for all other colors  */
 			Color [] candidateColors = getCandidateColors ();
-			for (Color c : candidateColors) {
-				Color [] searchColors = { c };
-				Set<AnnotatedCell> candidates = searchUtil.findCandidates (
-					new AnnotatedCell (getDestination()), getDestination(), 
-						searchColors, 2);
-			
-				/* Directional Hash of cells */
-				HashMap <Direction,ArrayList<Cell>> directionalMap = 
-					new HashMap<Direction,ArrayList<Cell>>();
-		
-				/* Sort the candidates */
-				for (AnnotatedCell candidate : candidates) {
-					if (directionalMap.containsKey(candidate.getDirection())) {
-						ArrayList<Cell> lst = directionalMap.get(candidate.getDirection());
-						lst.add(candidate.getCell());
-						directionalMap.put (candidate.getDirection(), lst);
-					} else {
-						ArrayList<Cell> lst = new ArrayList<Cell> ();
-						lst.add(candidate.getCell());
-						directionalMap.put(candidate.getDirection(), lst);
-					}
-				}
-			
-				/* For each Direction, check and see if the last cell in the list
-				 * is bounded by a cell of this color 
-				 */
-				Set<Direction> keys = directionalMap.keySet();
-				for (Direction direction : keys) {
-					ArrayList<Cell> trapped = directionalMap.get(direction);
-					if (trapped.size() != 2) 
-						continue;
-					Cell cell = trapped.get(1);
-					Cell result = searchUtil.searchGrid (direction, cell, 
-							getDestination().getColor(), 1);
-					if (result != null) {
-						captures.addAll (trapped);
+			for (int i = 0; i < candidateColors.length; i++) {
+				Cell fakeStarter = new Cell (getDestination().getColumn(),
+					getDestination().getRow(), candidateColors [ i ]);
+				HashMap<Vertice, HashSet<BeadString>> possible = searchUtil.getString(
+						fakeStarter, 3);
+				for (Vertice v : possible.keySet()) {
+					HashSet<BeadString> strings = possible.get(v);
+					for (BeadString string : strings) {
+						/* Discover the direction this string is on */
+						Direction direction = string.getDirection();
+						Cell cell = string.getBeads().first().equals(
+								fakeStarter) ? string.getBeads().last() : string.getBeads().first();
+						Cell terminus = searchUtil.searchGrid(direction, cell, 1);
+						if (terminus != null && terminus.getColor().equals(
+								player.getColor())) {
+							if (string.remove(fakeStarter))
+								captures.add(string);
+						}
 					}
 				}
 			}
 		}
 		
 		return captures;
-		
 	}
 	
 	/**

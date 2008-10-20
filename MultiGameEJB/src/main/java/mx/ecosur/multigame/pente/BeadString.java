@@ -20,6 +20,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.util.Direction;
 import mx.ecosur.multigame.util.Vertice;
 
 public class BeadString implements Serializable {
@@ -44,6 +45,10 @@ public class BeadString implements Serializable {
 	
 	public void add (Cell cell) {
 		beads.add(cell);
+	}
+	
+	public boolean remove (Cell cell) {
+		return beads.remove(cell);
 	}
 	
 	public int size () {
@@ -75,7 +80,37 @@ public class BeadString implements Serializable {
 	}
 	
 	/**
-	 * Verifies that a given beadstring is contiguous.
+	 * Returns the Direction to which these beads point.
+	 * @return
+	 */
+	public Direction getDirection () {
+		Direction ret = Direction.UNKNOWN;
+		
+		/* Calculate the slope */
+		int x = beads.first().getColumn() - beads.last().getColumn();
+		int y = beads.first().getRow() - beads.last().getRow();
+		
+		/** TODO: Determine NE,SE,NW,SW directions */
+		if (x == 0 && y == 0) {
+			if (beads.first().getRow() > beads.last().getRow())
+				ret = Direction.NORTH;
+			else
+				ret = Direction.SOUTH;
+		} else {
+			float slope = x / y;
+			if (slope == 0) {
+				if (beads.first().getColumn() > beads.last().getColumn()) 
+					ret = Direction.EAST;
+				else
+					ret = Direction.WEST;
+			} 
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Verifies that a given beadstring is contiguous on a given Vertice.
 	 * @return
 	 */
 	
