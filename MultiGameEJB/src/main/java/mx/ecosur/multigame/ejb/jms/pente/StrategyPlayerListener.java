@@ -106,7 +106,7 @@ public class StrategyPlayerListener implements MessageListener {
 				if (player.isTurn()) {
 					/* Simple 50ms sleep */
 					try {
-						Thread.sleep(50);
+						Thread.sleep(250);
 					} catch (InterruptedException e) {}
 					PenteMove qualifier = player.determineNextMove();
 					Move move = sharedBoard.validateMove(qualifier);
