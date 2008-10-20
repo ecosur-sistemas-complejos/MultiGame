@@ -16,6 +16,8 @@ package mx.ecosur.multigame;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.jms.Connection;
@@ -29,6 +31,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
@@ -43,6 +46,7 @@ public class MessageSender {
 
 	private ConnectionFactory connectionFactory;
 	private Topic topic;
+	private static Map<Integer, Long> msgIdCount = new HashMap<Integer, Long>();
 
 	/**
 	 * Default constructor initializes connection factory and topic
@@ -93,6 +97,7 @@ public class MessageSender {
 			message.setStringProperty("GAME_TYPE", type.name());
 			message.setIntProperty("GAME_ID", gameId);
 			message.setStringProperty("GAME_EVENT", gameEvent.toString());
+			message.setLongProperty("MESSAGE_ID", getNextMessageId(gameId));
 			if (body != null) {
 				message.setObject(body);
 			}
@@ -103,6 +108,15 @@ public class MessageSender {
 			logger.severe("Not able to send message");
 			e.printStackTrace();
 		}
+	}
+	
+	private long getNextMessageId(int gameId){
+		if (msgIdCount.containsKey(gameId)){
+			msgIdCount.put(gameId, msgIdCount.get(gameId) + 1);
+		} else {
+			msgIdCount.put(gameId, (long) 1);
+		}
+		return msgIdCount.get(gameId);
 	}
 
 	/**

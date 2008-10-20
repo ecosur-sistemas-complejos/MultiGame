@@ -15,8 +15,7 @@ package mx.ecosur.multigame.component {
 	import flash.filters.BitmapFilterQuality;
 	import flash.filters.GlowFilter;
 	
-	import mx.ecosur.multigame.component.Token;
-	
+	import mx.controls.Image;
 	import mx.core.UIComponent;
 	
 	[Style(name="padding", type="Number", format="Length")]
@@ -30,6 +29,7 @@ package mx.ecosur.multigame.component {
 		private var _token:Token;
 		private var _row:int;
 		private var _column:int;
+		private var _bgImage:Image;
 		
 		/* colors */
 		private var _bgColor:uint;
@@ -120,6 +120,15 @@ package mx.ecosur.multigame.component {
 			return _column;
 		}		
 		
+		public function set bgImage(bgImage:Image):void{
+			_bgImage = bgImage;
+			addChild(_bgImage);
+		}
+		
+		public function get bgImage():Image{
+			return _bgImage
+		}
+		
 		/**
 		 * Visualy selects the board cell.
 		 *  
@@ -168,6 +177,14 @@ package mx.ecosur.multigame.component {
     		_bg.graphics.drawRect(0, 0, unscaledWidth, unscaledHeight);
     		_bg.graphics.endFill();
     		_bg.filters = _bgFilters;
+    		
+    		//center and resize background image if present
+    		if(_bgImage){
+    			_bgImage.x = unscaledWidth / 2;
+    			_bgImage.y = unscaledHeight / 2;
+    			_bgImage.width = unscaledWidth - 2 * getStyle("padding");
+    			_bgImage.height = unscaledHeight - 2 * getStyle("padding");
+    		}
     		
     		//define size of token acording the the size of this
     		if (_token){

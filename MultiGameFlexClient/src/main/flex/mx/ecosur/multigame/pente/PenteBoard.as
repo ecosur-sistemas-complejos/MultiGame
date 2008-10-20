@@ -12,8 +12,8 @@
 package mx.ecosur.multigame.pente {
 	
 	import flash.events.Event;
-	import flash.text.TextField;
 	
+	import mx.controls.Image;
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.component.BoardCell;
 	import mx.ecosur.multigame.component.Token;
@@ -34,6 +34,9 @@ package mx.ecosur.multigame.pente {
 		
 		[Bindable]
 		public var tokenSize:Number; //size of tokens
+		
+		[Embed(source='/assets/icons.swf#centerSquare')]
+  		private static var centerBgSource:Class;
 		
 		// Default cell style properties
 		private static const DEFAULT_CELL_BG_COLOR:uint = 0xffffff;
@@ -174,6 +177,12 @@ package mx.ecosur.multigame.pente {
 					boardCell.setStyle("padding", cellPadding);
 				}
 			}
+			
+			//add center square to center cell
+			var centerCell:BoardCell = _boardCells[Math.floor(_nCols / 2)][Math.floor(_nRows / 2)];
+			var img:Image = new Image();
+			img.source = centerBgSource;
+			centerCell.bgImage = img;
 			
 			// Create text format for labels
 			/*

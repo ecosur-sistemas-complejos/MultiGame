@@ -11,8 +11,11 @@
 
 package mx.ecosur.multigame.util {
 	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
+	import mx.ecosur.multigame.enum.GameEvent;
 	import mx.events.DynamicEvent;
 	import mx.messaging.Consumer;
 	import mx.messaging.events.MessageEvent;
@@ -31,6 +34,10 @@ package mx.ecosur.multigame.util {
 		private var _messages:Array; //internal array of messages that have not been processed
 		private var _consumer:Consumer; //flex message consumer component
 		private var _lastMsgId:int; //id of the last message processed. Used as a message counter to ensure that messages are processed in the correct order.
+		private var _lastMoveCompleted:Date; //the time the last move complete message was received.
+		private var _processMessagesTimer:Timer; //delays the dispatching of messages to force waits inbetween moves
+		
+		private static var MINIMUM_MOVE_TIME:Number = 5000; //minimum number of miliseconds to wait between dispatching move complete messages
 		
 		public static const PROCESS_MESSAGE:String = "processMessage";
 		[Event (name = PROCESS_MESSAGE, type="mx.events.DynamicEvent")]
@@ -49,7 +56,6 @@ package mx.ecosur.multigame.util {
 			//initialize empty array of messages
 			_messages = new Array();
 			
-			//TODO:Filter messages by game id
 			//initialize consumer
 			_consumer = new Consumer();
 			_consumer.destination = destination;
@@ -57,6 +63,10 @@ package mx.ecosur.multigame.util {
 			_consumer.addEventListener(MessageEvent.MESSAGE, handleMessage);
 			_consumer.addEventListener(MessageFaultEvent.FAULT, handleFault);
 			_consumer.subscribe();
+			
+			//initialize the time
+			_processMessagesTimer = new Timer(1000, 1);
+			_processMessagesTimer.addEventListener(TimerEvent.TIMER, handleTimer);
 		}
 		
 		/*
@@ -74,16 +84,33 @@ package mx.ecosur.multigame.util {
 		/*
 		 * Reorders messages in the queue and dispatches the messages as events
 		 * starting with the lowest id until either no messages are left in the
-		 * queue or a gap is found in the id's of the messages in the queue
+		 * queue or a gap is found in the id's of the messages in the queue.
+		 *
+		 * Note that CHAT messages have no id and are always processed.
 		 */
 		private function processQueue():void{
 			_messages.sort(compare);
 			var msg:IMessage;
+			var now:Date = new Date();
 			while(_messages.length > 0){
 				msg = IMessage(_messages[0]);
-				if (_lastMsgId == 0 || msg.headers.MESSAGE_ID == _lastMsgId + 1){
-					_lastMsgId = msg.headers.MESSAGE_ID;
-					//Alert.show("processing message with id " + _lastMsgId + "\n Game event = " + msg.headers.GAME_EVENT, "Processing message");
+				if (msg.headers.GAME_EVENT == GameEvent.CHAT || _lastMsgId == 0 || msg.headers.MESSAGE_ID == _lastMsgId + 1){
+					if (msg.headers.GAME_EVENT == GameEvent.MOVE_COMPLETE){
+						if (_lastMoveCompleted != null && (now.getTime() - _lastMoveCompleted.getTime()) < MINIMUM_MOVE_TIME){
+							
+							//if timer not already running then start
+							if(!_processMessagesTimer.running){
+								_processMessagesTimer.reset();
+								_processMessagesTimer.start();
+							}
+							break;
+						}
+						_lastMoveCompleted = now;
+					}
+					if(msg.headers.MESSAGE_ID != 0){
+						_lastMsgId = msg.headers.MESSAGE_ID;
+					}
+					//trace("processing message with id " + msg.headers.MESSAGE_ID + "\n Game event = " + msg.headers.GAME_EVENT, "Processing message");
 					var evt:DynamicEvent = new DynamicEvent(PROCESS_MESSAGE);
 					evt.message = msg;
 					dispatchEvent(evt);
@@ -93,6 +120,11 @@ package mx.ecosur.multigame.util {
 					break;
 				}
 			}
+		}
+		
+		private function handleTimer(event:TimerEvent):void{
+			_processMessagesTimer.stop();			
+			processQueue();
 		}
 		
 		private function compare(messageA:IMessage, messageB:IMessage):int{

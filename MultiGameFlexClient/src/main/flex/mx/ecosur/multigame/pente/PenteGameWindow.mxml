@@ -1,37 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-    xmlns:pente="mx.ecosur.multigame.pente.*" 
-    xmlns:component="mx.ecosur.multigame.component.*"
-    backgroundGradientColors="[#222222, #333333]" backgroundColor="#333333">
+<mx:VBox 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:component="mx.ecosur.multigame.component.*" 
+	xmlns:pente="mx.ecosur.multigame.pente.*" 
+	width="100%" height="100%" creationComplete="init()">
     
     <mx:Metadata>
         [Event(name="complete")]
     </mx:Metadata>
     
-    <mx:Style source="~/style.css"/>
-    
-    <mx:XMLList id="menuXML">
-        <menuitem label="Game">
-        	<menuitem label="Resign"/>
-        </menuitem>
-        <menuitem label="Help">
-            <menuitem label="How to Play"/>
-        </menuitem>
-    </mx:XMLList>
-
-    <mx:ApplicationControlBar id="controlBar"  
-        dock="true">
-        <mx:MenuBar height="100%" 
-            dataProvider="{menuXML}" 
-            labelField="@label" 
-            showRoot="true"
-            />
-    </mx:ApplicationControlBar>
-
-    <mx:HBox  
-        width="100%" height="100%" 
-        paddingBottom="10" paddingTop="10" paddingLeft="10" paddingRight="10"
-        creationComplete="init()">
     <mx:Script> 
         <![CDATA[
         	import mx.controls.Alert;
@@ -84,20 +61,39 @@
             
         ]]>
     </mx:Script>
-    <mx:VBox id="leftBox" width="200" height="100%">
-        <component:GameStatus id="gameStatus" width="100%" />   
-        <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" width="100%"/>
-        <pente:PenteMoveViewer id="moveViewer" title="Move History" width="100%" height="100%"/>
-    </mx:VBox>
-    <mx:VBox id="centerBox" width="100%" height="100%">
-        <pente:PenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
-    </mx:VBox>
-    <mx:VBox id="rightBox" height="100%" width="300">
-        <mx:Panel title="Players" width="100%">
-            <pente:PentePlayersViewer id="playersViewer" width="100%" />
-        </mx:Panel>
-        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />
-    </mx:VBox>
-    <mx:UIComponent id="animateLayer" />
-</mx:HBox>
-</mx:Application>
+    
+    <mx:XMLList id="menuXML">
+        <menuitem label="Game">
+        	<menuitem label="New Game"/>
+        </menuitem>
+        <menuitem label="Help">
+            <menuitem label="How to Play"/>
+        </menuitem>
+    </mx:XMLList>
+
+    <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
+        <mx:MenuBar height="100%" 
+            dataProvider="{menuXML}" 
+            labelField="@label" 
+            showRoot="true"
+            />
+    </mx:ApplicationControlBar>
+    
+    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
+		<mx:VBox id="leftBox" width="200" height="100%">
+	        <component:GameStatus id="gameStatus" width="100%" />   
+	        <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" width="100%"/>
+	        <pente:PenteMoveViewer id="moveViewer" title="Move History" width="100%" height="100%"/>
+	    </mx:VBox>
+	    <mx:VBox id="centerBox" width="100%" height="100%">
+	        <pente:PenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
+	    </mx:VBox>
+	    <mx:VBox id="rightBox" height="100%" width="300">
+	        <mx:Panel title="Players" width="100%">
+	            <pente:PentePlayersViewer id="playersViewer" width="100%" />
+	        </mx:Panel>
+	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />
+	    </mx:VBox>
+	    <mx:UIComponent id="animateLayer" />
+	</mx:HBox>
+</mx:VBox>

@@ -17,9 +17,11 @@ import javax.naming.NamingException;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
