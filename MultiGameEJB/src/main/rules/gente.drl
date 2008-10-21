@@ -214,8 +214,8 @@ rule "find-the-mixed"
 when
     game  : PenteGame (state == GameState.PLAY)
     move  : PenteMove (player.turn == true, status == Status.MOVED)
-    eval (isTessera (move))
     eval (isTria (move))
+    eval (isTessera (move))
 then
     PentePlayer player = (PentePlayer) move.getPlayer();
     PentePlayer partner = (PentePlayer) player.getPartner();
@@ -224,11 +224,9 @@ then
     Set<BeadString> unadded = new HashSet<BeadString>();
     for (BeadString  tessera : tesseras) {
         for (BeadString tria: trias) {
-            if (!tessera.contains(tria)) {
                 player.addTria(tria);
                 player.addTessera (tessera); 
                 partner.addTessera (tessera);
-            }
         }
     }
     modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
