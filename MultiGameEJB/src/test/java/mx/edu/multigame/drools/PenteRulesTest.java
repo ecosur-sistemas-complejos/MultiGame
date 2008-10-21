@@ -355,8 +355,12 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		Set<BeadString> trias = move.getTrias();
 		Set<BeadString> tesseras = move.getTesseras();
+		
+		/* Tests the case that a tria and a tessera happen on the
+		 * same Vertice in the same move.
+		 */
 		assertEquals (1, tesseras.size());
-		assertEquals (0, trias.size());
+		assertEquals (1, trias.size());
 	}
 
 	@Test
