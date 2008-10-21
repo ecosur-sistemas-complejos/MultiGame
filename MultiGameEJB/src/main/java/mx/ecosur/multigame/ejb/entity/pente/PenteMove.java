@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -31,6 +32,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.pente.BeadString;
 import mx.ecosur.multigame.util.Direction;
 import mx.ecosur.multigame.util.Search;
+import mx.ecosur.multigame.util.AnnotatedCell;
 import mx.ecosur.multigame.util.Vertice;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
@@ -71,9 +73,9 @@ public class PenteMove extends Move {
 	 */
 	@Transient
 	public Set<BeadString> getCaptures () {
+		if (searchUtil == null)
+			searchUtil = new Search(getPlayer().getGame().getGrid());
 		if (captures == null) {
-			if (searchUtil == null)
-				searchUtil = new Search(getPlayer().getGame().getGrid());
 			captures = new HashSet<BeadString>();
 			
 			/* Looking for all other colors  */
@@ -160,13 +162,21 @@ public class PenteMove extends Move {
 		tesseras = new_tesseras;
 	}
 	
-	/* Tests as to whether the Player or his Partner, already contains a reference 
-	 * to the candidate string. 
+	/* Tests as to whether the Player already contains a reference to the 
+	 * candidate string, or if any currently counted tesseras contain the
+	 * string itself (in the case of a tria). 
 	 */
 	private boolean uncountedString(BeadString string) {
-		boolean ret = false;		
+		boolean ret = false;
+		if (string.size() == 3) {
+			for (BeadString tessera : getTesseras()) {
+				if (tessera.contains(string))
+					return ret;
+			}
+		}
+		
 		PentePlayer pentePlayer = (PentePlayer) player;
-		PentePlayer partner = pentePlayer.getPartner();
+		PentePlayer partner = (PentePlayer) pentePlayer.getPartner();
 		if (!pentePlayer.containsString(string) && !partner.containsString(string))
 			ret = true;
 		return ret;
@@ -178,9 +188,8 @@ public class PenteMove extends Move {
 		List<GamePlayer> players = player.getGame().getPlayers();
 		ArrayList<Color> colors = new ArrayList<Color>();
 		ret = new Color [ players.size() -1 ];
-		PentePlayer pp = (PentePlayer) player;
 		for (GamePlayer p : players) {
-			if (p.equals(this.player) || p.equals(pp.getPartner()))
+			if (p.equals(this.player))
 				continue;
 			colors.add(p.getColor());
 		}
