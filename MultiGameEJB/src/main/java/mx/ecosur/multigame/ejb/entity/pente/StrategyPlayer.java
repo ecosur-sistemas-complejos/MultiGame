@@ -79,7 +79,7 @@ public class StrategyPlayer extends PentePlayer {
 	 */
 	public PenteMove determineNextMove () {
 		RuleBase ruleBase = strategy.getRuleBase();
-		StatefulSession statefulSession = ruleBase.newStatefulSession(false);
+		StatefulSession statefulSession = ruleBase.newStatefulSession();
 		statefulSession.insert(this);
 		statefulSession.insert(this.game);
 		statefulSession.insert(new MessageSender());

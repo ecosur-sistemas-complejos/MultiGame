@@ -50,8 +50,8 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <glassfish>/Users/awater/util/glassfish</glassfish>
-        <flexSDK>/Users/awater/util/flex_sdk_3</flexSDK>
+        <glassfish>/Users/awater/util/glassfish-install/glassfish</glassfish>
+        <flexSDK>/Users/awater/util/flex3/flex_sdk_3</flexSDK>
         <multigame-server>multigame.ecosur.mx</multigame-server>
     </properties>
     <organization>
@@ -60,15 +60,15 @@
     </organization>
     <profiles>
 		<profile>
-            <id>ui</id>
+            <id>ejb</id>
             <modules>
-                <module>../MultiGameFlexClient</module>
+                <module>../MultiGameEJB</module>
             </modules>
         </profile>
         <profile>
             <id>server</id>
             <modules>
-                <module>../MultiGameEJB</module>
+                <module>../MultiGameFlexClient</module>
                 <module>../MultiGameEAR</module>
                 <module>../MultiGameIT</module>
             </modules>
@@ -84,6 +84,26 @@
         into normal Maven format, and staged the caches on Apache.
      -->
     <repositories>
+		<repository>
+			<id>repository.jboss.org</id>
+			<url>http://repository.jboss.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>snapshots.jboss.org</id>
+			<url>http://snapshots.jboss.org/maven2</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
     	<repository>
     		<id>codehause-cache</id>
     		<name>code-hause-cache</name>

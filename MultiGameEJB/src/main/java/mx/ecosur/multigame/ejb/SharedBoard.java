@@ -81,7 +81,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 			 * the initialization agenda group, and fire the rules
 			 */
 			RuleBase ruleBase = game.getType().getRuleBase();
-			StatefulSession statefulSession = ruleBase.newStatefulSession(false);
+			StatefulSession statefulSession = ruleBase.newStatefulSession();
 			statefulSession.insert(game);
 			statefulSession.setFocus("initialize");
 			statefulSession.fireAllRules();
@@ -139,7 +139,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 		/* Validate the move against the rules */
 		RuleBase ruleBase = game.getType().getRuleBase();
-		StatefulSession statefulSession = ruleBase.newStatefulSession(false);
+		StatefulSession statefulSession = ruleBase.newStatefulSession();
 		statefulSession.insert(game);
 		statefulSession.insert(move);
 		statefulSession.setFocus("verify");
@@ -180,7 +180,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 		/* Execute the move in the rules */
 		RuleBase ruleBase = player.getGame().getType().getRuleBase();
-		StatefulSession statefulSession = ruleBase.newStatefulSession(false);
+		StatefulSession statefulSession = ruleBase.newStatefulSession();
 		statefulSession.insert(move);
 		statefulSession.insert(player.getGame());
 		statefulSession.setFocus("move");

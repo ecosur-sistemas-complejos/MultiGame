@@ -59,7 +59,7 @@ public class CheckersRuleTest extends RulesTestBase {
 		ruleset = RuleBaseFactory.newRuleBase();
 		ruleset.addPackage(builder.getPackage());
 
-		session = ruleset.newStatefulSession(false);
+		session = ruleset.newStatefulSession();
 		rulesListener = new RulesTestEventListener();
 		session.addEventListener(rulesListener);
 

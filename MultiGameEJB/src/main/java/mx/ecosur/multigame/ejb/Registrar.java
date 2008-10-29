@@ -117,7 +117,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 				RuleBase ruleBase = game.getType().getRuleBase();
 				StatefulSession statefulSession = ruleBase
-						.newStatefulSession(false);
+						.newStatefulSession();
 				statefulSession.insert(game);
 				statefulSession.setFocus("initialize");
 				statefulSession.fireAllRules();
@@ -181,7 +181,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 				RuleBase ruleBase = game.getType().getRuleBase();
 				StatefulSession statefulSession = ruleBase
-						.newStatefulSession(false);
+						.newStatefulSession();
 				statefulSession.insert(game);
 				statefulSession.setFocus("initialize");
 				statefulSession.fireAllRules();
