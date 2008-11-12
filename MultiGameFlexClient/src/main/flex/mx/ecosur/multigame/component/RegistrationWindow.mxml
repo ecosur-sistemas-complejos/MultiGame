@@ -13,7 +13,7 @@
 	<mx:states>
 	    <mx:State name="register">
 	       <mx:AddChild>
-			    <mx:Panel title="Join Game gg">
+			    <mx:Panel title="Join Game">
 			        <mx:Form x="0" y="0" defaultButton="{playBtn}" id="form">
 			            <mx:FormItem label="Name:" required="true">
 			                <mx:TextInput id="email" />

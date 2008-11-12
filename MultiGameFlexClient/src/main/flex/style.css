@@ -4,12 +4,11 @@
     @author awaterma@ecosur.mx
     @author max@alwayssunny.com
 **/
-
        .windowStyles{
             color: #ffffff;
         }
         
-        .panel{
+        Panel{
             paddingTop: 10;
             paddingBottom: 10;
             paddingLeft: 10;
@@ -18,7 +17,21 @@
             borderThicknessTop: 5;
             borderThicknessLeft: 5;
             borderThicknessRight: 5;
-            backgroundColor: #cccccc;
+            borderColor: #666666;
+            paddingLeft: 0;
+            paddingRight: 0;
+            paddingTop: 0;
+            paddingBottom: 0;
+            borderAlpha: 0.9;
+        }
+        
+        TextArea{
+        	backgroundColor: #ffffff;
+        	borderThickness: 0;
+        }
+        
+        MenuBar{
+        	color: #000000;
         }
         
         .fieldLit{

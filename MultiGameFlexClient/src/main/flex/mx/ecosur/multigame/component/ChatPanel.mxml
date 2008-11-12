@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="panel" title="Chat">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="Chat">
 
 	<mx:Script> 
         <![CDATA[
+        	import mx.utils.StringUtil;
         
         	import mx.controls.Alert;
         	import mx.controls.Text;
@@ -18,6 +19,9 @@
             public var currentPlayer:GamePlayer;
 			
 			private function send():void {
+				if(StringUtil.trim(msg.text).length == 0){
+					return;
+				}
 				var message:IMessage = new AsyncMessage();
 				var chatMessage:ChatMessage = new ChatMessage();
 				chatMessage.sender = currentPlayer;
@@ -48,9 +52,9 @@
     
     <mx:Producer id="producer" destination="multigame-destination" fault="faultHandler(event)"/>
 
-	<mx:TextArea id="log" width="100%" height="100%" backgroundColor="#cccccc" borderThickness="0" editable="false" />
-	<mx:ControlBar verticalAlign="top">
-		 <mx:TextArea id="msg" width="100%" height="40"/>
-		 <mx:Button label="Send" click="send()"/> 
+	<mx:TextArea id="log" width="100%" height="100%" paddingLeft="0" borderThickness="0" editable="false" />
+	<mx:ControlBar verticalAlign="top" paddingLeft="5" paddingRight="5">
+		 <mx:TextArea id="msg" width="100%" height="40" />
+		 <mx:Button id="sendBtn" label="Send" click="send()" color="#ffffff"/> 
 	</mx:ControlBar>
 </mx:Panel>

@@ -11,6 +11,9 @@
     
     <mx:Script> 
         <![CDATA[
+        	import mx.core.Application;
+        	import mx.managers.PopUpManager;
+        	import mx.ecosur.multigame.component.HelpPanel;
         	import mx.controls.Alert;
         	import mx.events.ResizeEvent;
             import mx.events.MenuEvent; 
@@ -25,6 +28,7 @@
             
             private var _controller:PenteGameController;
             private var _currentPlayer:GamePlayer;
+            private var _helpPanel:HelpPanel;
             
             //TODO: Find efficient way to pass rows and columns to penteBoard as initial parameters
             [Bindable]
@@ -48,15 +52,22 @@
             /* Only events that effect this container are handled, all others
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
-            private function handleMenuClick(evt:MenuEvent):void { 
+            private function handleMenuItemClick(evt:MenuEvent):void { 
                 if (evt.label == 'How to Play') {
-                	/* We should load an XML file containing help information, and then
-                	   display this help file in a simple alert Window */
-                	var helpText:String = "When it's your turn, simply drag a token from the left-hand-side to an unoccupied position on the main central board.";
-                	var alert:Alert = Alert.show(helpText,"How To Play", Alert.OK,this);  
+                	_helpPanel = new HelpPanel();
+                	_helpPanel.load("help-gente.html");
+                	_helpPanel.width = Math.min(width - 100, 600);
+                	_helpPanel.height = height - 20;
+                	_helpPanel.addEventListener("close", closeHelp);
+                	PopUpManager.addPopUp(_helpPanel, this, true);
+                	PopUpManager.centerPopUp(_helpPanel);
                 } else if (evt.label=='Resign') {
                     this.dispatchEvent(new Event("complete"));
                 }
+            }
+            
+            private function closeHelp(event:Event):void{
+            	PopUpManager.removePopUp(_helpPanel);
             }
             
         ]]>
@@ -76,7 +87,7 @@
             dataProvider="{menuXML}" 
             labelField="@label" 
             showRoot="true"
-            />
+            itemClick="handleMenuItemClick(event)"/>
     </mx:ApplicationControlBar>
     
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
