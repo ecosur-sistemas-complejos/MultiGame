@@ -5,24 +5,69 @@
 </head>
 <body>
 	<h1>Instructions</h1><br />
-	<h2>Section 1</h2><br />
-	<p>Blah Blah Blah Blah <a href="http://www.google.com">you can include links</a> Blah Blah Blah Blah <b>You can make text bold</b> Blah Blah <u>underline text</u> Blah Blah Blah <i>make it italic</i> Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah</p><br />
-
-	<h2>Section 2</h2><br />
-	<p>You can also make lists</p><br />
+	<h2>What is Gente?</h2><br />
+	<p>Gente is a derivative of the game PENTE, invented in 1978 by Gary 
+	   Gabrel. [<a href='http://en.wikipedia.org/wiki/Pente'>Wikipedia Entry</a>].  
+	   Like Gabrel's Pente, Gente uses a simple, grid based board with players
+	   using different colored round pieces as they move across the board.
+	</p>
+	<br/>
+	<p>
+	   Unlike Pente, Gente is a game played by 4 players, on two teams.  In this
+	   implementation we call those two teams "hot" and "cold."  In Gente, team-members 
+	   have the ability to "co-operate" or to "defect."
+	</p>
+	<br/>
+	<h2>Rules of Gente</h2><br />
 	<ol>
-		<li>List item 1</li>
-		<li>List item 2</li>
-		<li>List item 3</li>
-
-		<li>List item 4</li>
+		<li>Uses a 19 x 19 Go Board</li>
+		<li>4 Players divided into 2 teams</li>
+		<li>10 points awarded per game</li>
+		<li>Yellow must go first, and move to the center square</li>
+		<li>Players are not allowed to capture the opposing team's tokens</li>
+		<li>2 pairs of three of one color, that player awarded all 10 points</li>
+		<li>3 pairs of four of team colors, both players awarded 5 points</li> 
 	</ol>
-	<br />
-	<h2>Section 3</h2><br />
-	<p>You can include images</p><br />
-	<p><img src="http://www.ecosur.mx/Images/contacto-1.png" />And make the text float around them if you want. And make the text float around them if you want. And make the text float around them if you want. And make the text float around them if you want. And make the text float around them if you want.<br /></p>
-	<h2>Section 4</h2><br />
-
-	<p>Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah</p><br />
+	<br/>
+	<h2>Strategy</h2><br/>
+	<p>
+	   A "tria" (three stones in a row of the same color) and a "tessera" 
+	   (four stones in a row of team colors) may be mixed; so an ideal strategy 
+	   is to strive first for a mixed tria/tessera and continue playing.  
+	</p><br/>
+	<p>
+	   In our research, we have identified the following three successful strategies,
+	   two of which have been implemented in AI (available from the "custom"
+	   screen during logon):
+	</p>
+	<br/>
+	<ol>
+	   <li>Blocker</li>
+	   <li>Simple</li>
+	   <li>Mixed</li>
+	</ol>
+	<br/>
+	<p>
+	   The "Blocker" strategy is used to block winning moves of
+	   the opposing team.  For example, if a player on the opposing team has 
+	   only one end open on a two-stone formation of his own color, than a
+	   "blocker" strategy would be to place your token down in that empty spot,
+	   thereby disallowing the opposing team-member from scoring.
+	</p>
+	<br/>
+	<p>
+	   The "Simple" strategy is to pursue scoring moves for your own color
+	   or your own team as they become available on the board.  Players look for
+	   the next move they can make to become closer to the type of win they desire
+	   (solitary or team-based).
+	</p><br/>
+	<p>
+	   The "Mixed" strategy, which has not been implemented in AI for the game,
+	   is to combine both "Blocker" and "Simple", with the player either seeking
+	   to block his opponents, if he/she feels threatened, or by seeking to score
+	   either on a solitary or team-based manner.
+	</p>
+	<br/>
+	<h1>Have fun!</h1>
 </body>
 </html>
