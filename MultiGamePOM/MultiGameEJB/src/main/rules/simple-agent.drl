@@ -1,0 +1,86 @@
+/*
+* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* 
+* Licensed under the Academic Free License v. 3.0. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/*
+ * This rule package creates a strategic, "Simple" player.
+ *
+ * A simple player is a player that seeks to make any possible winning moves
+ * available in the game.  The simple strategy is to see if there are any
+ * scoring moves for his team avaiable, and if so, to try and take the best
+ * possible scoring move from that list.  If no scoring moves are available,
+ * the simple agent just chooses the first adjacent move to cells of his color,
+ * and if no such cell is found, the next adjacent move to the opposition.
+ * 
+ * @author awaterma@ecosur.mx
+*/
+
+package mx.ecosur.multigame.pente.strategy;
+
+import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.GameState;
+import mx.ecosur.multigame.ejb.entity.Cell;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
+import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
+import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
+import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+
+import java.util.HashSet;
+import java.util.Random;
+import java.util.TreeSet;
+
+#Yellow must move first, and that move can only be at the center of the board
+rule "first-move"
+when
+    game   : PenteGame (state == GameState.PLAY, $grid : grid)
+    player : StrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
+    eval ($grid.getCells().isEmpty())
+then
+    PenteMove centerMove = new PenteMove (player, new Cell (
+        game.getRows() / 2, game.getColumns () / 2, player.getColor()));
+    modify (player) { suggestNextMove (centerMove) }
+end
+
+
+rule "simple-move"
+    no-loop true
+when
+    game   : PenteGame (state == GameState.PLAY, $grid : grid)
+    player : StrategyPlayer (turn == true, nextMove == null)
+    eval (!$grid.getCells().isEmpty())
+then
+    HashSet<Color> colors = new HashSet<Color>();
+    colors.add(player.getColor());
+    colors.add(player.getPartner().getColor());
+    TreeSet<PenteMove> scoringMoves = player.determineScoringMoves(colors);
+    PenteMove nextMove = null;
+    if (scoringMoves.size() > 0) {
+        for (PenteMove move : scoringMoves) {
+            nextMove = move;
+            break;
+        }
+    } else {
+        # Use the random algorithm 
+        TreeSet<PenteMove> possible = player.determineAvailableMoves();
+        if (possible.size() == 0) 
+            possible = player.determineAvailableMoves (player.oppositionColors());
+        Random random = new Random ();
+        for (PenteMove move : possible) {
+            if (random.nextBoolean()) { 
+                nextMove = move; 
+                break;
+            } 
+        }
+        
+        if (nextMove == null) {
+            for (PenteMove move : possible) {
+                nextMove = move;
+                break;
+             }
+        }
+    }
+    modify (player) { suggestNextMove (nextMove) }
+end

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:pente="mx.ecosur.multigame.pente.*"
+	xmlns:component="mx.ecosur.multigame.component.*"
+	layout="absolute" 
+	backgroundGradientColors="[#222222, #333333]" backgroundColor="#333333">
+	
+	<mx:Style source="~/style.css"/>
+	
+	<mx:Script> 
+        <![CDATA[
+        	private function startGame(event:Event):void {
+        		if (registrationWindow.gameType == "PENTE"){
+        			penteGameWindow.currentPlayer = registrationWindow.currentPlayer;
+        			penteGameWindow.rows = registrationWindow.currentPlayer.game.rows;
+        			penteGameWindow.columns = registrationWindow.currentPlayer.game.columns;
+        			vstack.selectedChild = penteGameWindow;
+        		}
+        	}
+        	
+        	/* Loads the GameLobby Chat screen */
+        	private function loadLobby (event:Event):void {
+        		
+        	}
+        	
+        	/* Resigns all players from the completed game (if not ended), 
+        	and directs the user to the lobby */
+        	private function gameComplete (event:Event):void {
+        		
+        		/* redirect to the lobby */ 
+        		loadLobby(event);
+        	}
+        	
+        	private function routeUser (event:Event):void {
+        		startGame(event);
+        	}
+        
+        ]]>
+    </mx:Script>
+	
+    <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
+		<component:RegistrationWindow id="registrationWindow" complete="routeUser(event)" />
+		<!--checkers:checkersGameWindow id="checkersGameWindow"/-->
+		<pente:PenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
+	</mx:ViewStack>
+</mx:Application>
