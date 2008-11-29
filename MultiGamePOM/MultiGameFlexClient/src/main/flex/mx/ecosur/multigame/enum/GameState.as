@@ -20,6 +20,21 @@ package mx.ecosur.multigame.enum {
 		public static const BEGIN:String = "BEGIN";
 		public static const PLAY:String = "PLAY";
 		public static const END:String = "END";
-		
+	
+		public static function getDescription(state:String):String{
+			switch (state){
+				case WAITING:
+					return "Waiting for more players";
+				break;
+				case BEGIN:
+				case PLAY:
+					return "In progress";
+				break;
+				case END:
+					return "Finished";
+				break;
+			}
+			return "";
+		}
 	}
 }

@@ -18,6 +18,7 @@ package mx.ecosur.multigame.ejb.entity;
 import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,17 +35,25 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 
+/**
+ * @author maxmil
+ *
+ */
 @NamedQueries( {
 	@NamedQuery(name = "getGameByType", query = "select g from Game g where g.type=:type "
 			+ "and g.state =:state"),
 	@NamedQuery(name = "getGameById", query = "select g from Game g where g.id=:id"),
 	@NamedQuery(name = "getGameByTypeAndPlayer", query = "select gp.game from GamePlayer as gp "
-			+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state") })
+			+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state"),
+	@NamedQuery(name = "getGamesByPlayer", query = "select gp.game from GamePlayer as gp "
+				+ "where gp.player=:player and gp.game.state <> :state")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Game implements Serializable {
@@ -63,6 +72,11 @@ public class Game implements Serializable {
 	 * Game's Type
 	 */
 	private GameType type;
+	
+	/**
+	 * The date the game was created
+	 */
+	private Date created;
 	
 	/**
 	 * The players involved in the game 
@@ -88,6 +102,7 @@ public class Game implements Serializable {
 		setType(type);
 		setGrid(new GameGrid());
 		setState(GameState.WAITING);
+		setCreated(new Date());
 		switch (type) {
 			case CHECKERS:
 				this.setRows (8);
@@ -215,6 +230,23 @@ public class Game implements Serializable {
 
 	public void setColumns(int columns) {
 		this.columns = columns;
+	}
+	
+	/**
+	 * @return the creation date of this game
+	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	public Date getCreated() {
+		return created;
+	}
+
+	/**
+	 * Setter for the creation date of this game
+	 * 
+	 * @param created
+	 */
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 	
 	/** Non bean methods **/

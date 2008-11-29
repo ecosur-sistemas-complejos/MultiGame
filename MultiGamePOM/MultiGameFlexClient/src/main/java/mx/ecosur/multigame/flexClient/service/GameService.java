@@ -72,15 +72,15 @@ public class GameService {
 		}
 		return registrar;
 	}
-
-	public GamePlayer registerPlayer(Player player, Color preferedColor,
+	
+	public GamePlayer startNewGame(Player player, Color preferedColor,
 			String gameTypeStr) {
 		GamePlayer gamePlayer = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
-			gamePlayer = registrar.registerPlayer(player, preferedColor,
-					gameType);
+			Game game = registrar.createGame(gameType);
+			gamePlayer = registrar.registerPlayer(game, player, preferedColor);
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -95,26 +95,27 @@ public class GameService {
 	}
 	
 	/*
-	 * Registers a given player and the number of selected AI robots. 
+	 * Starts a new game with a given player and the number of selected AI robots. 
 	 */
-	public GamePlayer registerPlayerAndAI (Player player, Color preferredColor, 
+	public GamePlayer startNewGameWithAI (Player player, Color preferredColor, 
 			String gameTypeStr, String [] strategies)
 	{
 		GamePlayer ret = null;
 		try {
+			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
 			if (gameType.equals(GameType.PENTE)) {
-				RegistrarRemote registrar = getRegistrar();
-				ret = registrar.registerPlayer(player, preferredColor, gameType);
+				Game game = registrar.createGame(gameType);
+				ret = registrar.registerPlayer(game, player, preferredColor);
 				for (int i = 0; i < strategies.length; i++) {
 					if (strategies [ i ].equals("HUMAN"))
 						continue;
 					PenteStrategy strategy = PenteStrategy.valueOf(strategies [ i ]);
 					Player robot = new Player (strategy.name() + "-" + (i + 1));
-					registrar.registerRobot(ret.getGame(), robot, Color.UNKNOWN, strategy);
+					registrar.registerRobot(game, robot, Color.UNKNOWN, strategy);
 				}
 			} else 
-				ret = registerPlayer (player, preferredColor, gameTypeStr);
+				ret = startNewGame(player, preferredColor, gameTypeStr);
 			
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
@@ -123,7 +124,18 @@ public class GameService {
 		
 		return ret;
 		
-	}	
+	}
+	
+	public Player login(String name){
+		RegistrarRemote registrar = getRegistrar();
+		return registrar.login(name);
+	}
+	
+	
+	public List<Game> getUnfinishedGames(Player player){
+		RegistrarRemote registrar = getRegistrar();
+		return registrar.getUnfinishedGames(player);
+	}
 
 	public Game getGame(int gameId) {
 

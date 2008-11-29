@@ -11,8 +11,7 @@
 
 package mx.ecosur.multigame.entity {
 	
-	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.entity.GamePlayer;
+	import mx.collections.ArrayCollection;
 
 	/**
 	 * Represents a server side Game object. 
@@ -24,9 +23,15 @@ package mx.ecosur.multigame.entity {
 		
 		private var _id:int;
 		
+		private var _type:String;
+		
 		private var _rows:int;
 		
 		private var _columns:int;
+		
+		private var _players:ArrayCollection;
+		
+		private var _created:Date;
 		
 		private var _state:String;
 		
@@ -41,6 +46,14 @@ package mx.ecosur.multigame.entity {
 		public function set id(id:int):void{
 			_id = id;
 		}	
+		
+		public function get type():String{
+			return _type;
+		}
+		
+		public function set type(type:String):void{
+			_type = type;
+		}
 		
 		public function get rows():int{
 			return _rows;
@@ -58,6 +71,22 @@ package mx.ecosur.multigame.entity {
 			_columns = columns;
 		}
 		
+		public function get players():ArrayCollection{
+			return _players;
+		}
+		
+		public function set players(players:ArrayCollection):void{
+			_players = players;
+		}
+		
+		public function get created():Date{
+			return _created;
+		}
+		
+		public function set created(created:Date):void{
+			_created = created;
+		}
+		
 		public function get state():String{
 			return _state;
 		}
@@ -67,7 +96,7 @@ package mx.ecosur.multigame.entity {
 		}
 		
 		public function toString():String{
-			return "id = " + _id + ", rows = " + _rows + ", columns = " +  _columns;
+			return "id = " + _id + ", type = " + type + ", rows = " + _rows + ", columns = " +  _columns + ", players = " + _players + ", created = " + _created + ", state = " + _state;
 		}
 		
 	}

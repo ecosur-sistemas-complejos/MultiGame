@@ -202,7 +202,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * 
 	 * @throws RemoteException
 	 * @throws RemoteException
+	 * @deprecated
 	 * 
+	 */
+	//TODO: delete.
+	/*
+	 * With new system for joining games by invitation the game is always specified when joining a game 
 	 */
 	public GamePlayer registerPlayer(Player registrant, Color favoriteColor,
 			GameType type) throws InvalidRegistrationException {
@@ -401,5 +406,34 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 */
 	public Game createGame(GameType type) {
 		return this.createNewGame(type);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#login(java.lang.String)
+	 */
+	public Player login(String name) {
+		Query query = em.createNamedQuery("getPlayer");
+		query.setParameter("name", name);
+		Player player;
+		try {
+			player = (Player) query.getSingleResult();
+		} catch (NoResultException e) {
+			player = createPlayer(name);
+		} catch (NonUniqueResultException e) {
+			throw new RuntimeException(
+					"More than one player of that name found!");
+		}
+		return player;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.ejb.entity.Player)
+	 */
+	public List<Game> getUnfinishedGames(Player player) {
+		Query query = em.createNamedQuery("getGamesByPlayer");
+		query.setParameter("player", player);
+		query.setParameter("state", GameState.END);
+		return query.getResultList();
 	}
 }
