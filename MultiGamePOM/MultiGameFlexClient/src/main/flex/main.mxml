@@ -2,7 +2,6 @@
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
 	xmlns:pente="mx.ecosur.multigame.pente.*"
 	xmlns:component="mx.ecosur.multigame.component.*"
-	xmlns:admin="mx.ecosur.multigame.admin.*"
 	layout="absolute" 
 	backgroundGradientColors="[#222222, #333333]" backgroundColor="#333333">
 	
@@ -15,7 +14,6 @@
         			penteGameWindow.currentPlayer = registrationWindow.currentPlayer;
         			penteGameWindow.rows = registrationWindow.currentPlayer.game.rows;
         			penteGameWindow.columns = registrationWindow.currentPlayer.game.columns;
-        		
         			vstack.selectedChild = penteGameWindow;
         		}
         	}
@@ -23,14 +21,6 @@
         	/* Loads the GameLobby Chat screen */
         	private function loadLobby (event:Event):void {
         		
-        	}
-        	
-        	/* Loads the Administration Window */
-        	private function loadAdministration(event:Event):void {
-        		  /* Currently this simply points to the RobotAdmin page,
-        		  as time progresses, this should point to another managed
-        		  view stack of Administration pages */
-        		vstack.selectedChild = robotAdministration;
         	}
         	
         	/* Resigns all players from the completed game (if not ended), 
@@ -42,14 +32,7 @@
         	}
         	
         	private function routeUser (event:Event):void {
-        		/* Ugly use of ADMIN name to switch window types, used for testing */
-        		if (registrationWindow.currentPlayer.player.name=='ADMIN' || 
-        		    registrationWindow.currentPlayer.player.type == "ADMINISTRATOR") 
-        		{
-        	       loadAdministration(event);		
-        		} else {
-        			startGame(event);
-        		}
+        		startGame(event);
         	}
         
         ]]>
@@ -59,6 +42,5 @@
 		<component:RegistrationWindow id="registrationWindow" complete="routeUser(event)" />
 		<!--checkers:checkersGameWindow id="checkersGameWindow"/-->
 		<pente:PenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
-		<admin:RobotAdministration id="robotAdministration"/>
 	</mx:ViewStack>
 </mx:Application>

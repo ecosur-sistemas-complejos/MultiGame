@@ -395,4 +395,11 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.persist(player);
 		return player;
 	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#createGame(mx.ecosur.multigame.GameType)
+	 */
+	public Game createGame(GameType type) {
+		return this.createNewGame(type);
+	}
 }

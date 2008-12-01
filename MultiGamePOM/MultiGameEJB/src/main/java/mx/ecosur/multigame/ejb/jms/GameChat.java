@@ -24,7 +24,6 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import mx.ecosur.multigame.GameEvent;
-import mx.ecosur.multigame.ejb.RegistrarLocal;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 
@@ -35,9 +34,6 @@ public class GameChat implements MessageListener {
 			.getCanonicalName());
 	@EJB
 	private SharedBoardLocal sharedBoard;
-
-	@EJB
-	private RegistrarLocal registrar;
 
 	/**
 	 * Simple onMessage method appends the name of the Player that sent a

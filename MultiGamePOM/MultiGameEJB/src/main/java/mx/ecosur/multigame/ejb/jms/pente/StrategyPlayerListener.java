@@ -25,6 +25,7 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
 import mx.ecosur.multigame.GameEvent;
+import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
@@ -71,10 +72,7 @@ public class StrategyPlayerListener implements MessageListener {
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidMoveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 	
 	private void logStart (int gameId) {
@@ -96,22 +94,29 @@ public class StrategyPlayerListener implements MessageListener {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private void handleEvent (ObjectMessage message) throws InvalidMoveException, 
-		JMSException 
+	private void handleEvent (ObjectMessage message) throws JMSException 
 	{
 		List<GamePlayer> players = (List<GamePlayer>) message.getObject();
 		for (GamePlayer p : players) {
 			if (p instanceof StrategyPlayer) {
 				StrategyPlayer player = (StrategyPlayer) p;
-				if (player.isTurn()) {
+				if (player.isTurn() && 
+						player.getGame().getState() != GameState.END) {
 					/* Simple 50ms sleep */
 					try {
 						Thread.sleep(250);
 					} catch (InterruptedException e) {}
 					PenteMove qualifier = player.determineNextMove();
-					Move move = sharedBoard.validateMove(qualifier);
-					logger.info("Robot making move: " + move);
-					sharedBoard.move(move);
+					Move move;
+					try {
+						move = sharedBoard.validateMove(qualifier);
+						logger.info("Robot making move: " + move);
+						sharedBoard.move(move);						
+					} catch (InvalidMoveException e) {
+						/* Log the invalid move */
+						e.printStackTrace();
+						this.logger.info("Caught invalid Move!");
+					}
 				}
 			}	
 		}

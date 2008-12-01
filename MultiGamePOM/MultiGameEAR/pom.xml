@@ -11,7 +11,6 @@
         <artifactId>multi-game</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>1.1-SNAPSHOT</version>
-        <relativePath>../MultiGamePOM</relativePath>
     </parent>
 	<dependencies>
 		<dependency>
@@ -26,6 +25,12 @@
               <version>${version}</version>
               <type>war</type>
 		</dependency>
+        <dependency>
+              <groupId>mx.ecosur</groupId>
+              <artifactId>multi-game-ai</artifactId>
+              <version>${version}</version>
+              <type>war</type>
+        </dependency>		
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
@@ -76,10 +81,14 @@
 						<groupId>com.thoughtworks.xstream</groupId>
 						<artifactId>xstream</artifactId>
 					</jarModule>
-					<!-- webModule>
+					<webModule>
 					   <groupId>mx.ecosur</groupId>
 					   <artifactId>multi-game-flex-client</artifactId>
-					</webModule-->
+					</webModule>
+					<webModule>
+					   <groupId>${groupId}</groupId>
+					   <artifactId>multi-game-ai</artifactId>
+					</webModule>
 				</modules>
 			</configuration>
 		</plugin>

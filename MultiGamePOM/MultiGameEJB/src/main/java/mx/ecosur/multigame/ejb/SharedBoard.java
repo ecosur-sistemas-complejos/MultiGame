@@ -130,6 +130,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		logger.fine("Validating move " + move);
 
 		/* Obtain attached instance of game and associate with player */
+		if (move.getPlayer() == null)
+			throw new InvalidMoveException ("No Player attached to move!");
 		Game game = move.getPlayer().getGame();
 		if (!em.contains(game))
 			game = getGame(game.getId());
