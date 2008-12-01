@@ -60,7 +60,7 @@
     </organization>
 	<modules>
 		<module>MultiGameEJB</module>
-		<module>MultiGameAI</module>
+		<module>MultigameExperiment</module>
 		<module>MultiGameFlexClient</module>
 		<module>MultiGameEAR</module>
 		<module>MultiGameIT</module>

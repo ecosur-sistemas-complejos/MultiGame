@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<trinidad-config xmlns="http://myfaces.apache.org/trinidad/config">
-  <debug-output>false</debug-output>
-  <skin-family>
-    simple
-  </skin-family>
-</trinidad-config>
