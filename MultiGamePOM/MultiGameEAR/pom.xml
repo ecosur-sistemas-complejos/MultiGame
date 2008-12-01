@@ -27,7 +27,7 @@
 		</dependency>
         <dependency>
               <groupId>mx.ecosur</groupId>
-              <artifactId>multi-game-ai</artifactId>
+              <artifactId>multi-game-experiment</artifactId>
               <version>${version}</version>
               <type>war</type>
         </dependency>		
@@ -87,7 +87,7 @@
 					</webModule>
 					<webModule>
 					   <groupId>${groupId}</groupId>
-					   <artifactId>multi-game-ai</artifactId>
+					   <artifactId>multi-game-experiment</artifactId>
 					</webModule>
 				</modules>
 			</configuration>
