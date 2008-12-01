@@ -408,7 +408,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return this.createNewGame(type);
 	}
 
-
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#login(java.lang.String)
 	 */
@@ -436,4 +435,5 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		query.setParameter("state", GameState.END);
 		return query.getResultList();
 	}
+
 }

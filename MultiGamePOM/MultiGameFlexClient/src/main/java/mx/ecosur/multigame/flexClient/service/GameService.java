@@ -123,7 +123,6 @@ public class GameService {
 	 	}
 		
 		return ret;
-		
 	}
 	
 	public Player login(String name){
