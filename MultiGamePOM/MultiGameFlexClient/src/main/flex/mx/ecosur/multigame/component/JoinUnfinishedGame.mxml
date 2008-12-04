@@ -27,7 +27,11 @@
             public var player:Player;
             private var _games:ArrayCollection;
             
-            private function init(event:Event):void{
+            public function init(event:Event):void{
+            	gameService.getUnfinishedGames(player);
+            }
+            
+            public function reload(event:Event):void {
             	gameService.getUnfinishedGames(player);
             }
             

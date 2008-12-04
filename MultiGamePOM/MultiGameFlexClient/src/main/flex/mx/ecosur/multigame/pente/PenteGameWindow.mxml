@@ -44,6 +44,10 @@
             public function get currentPlayer():GamePlayer{
                 return _currentPlayer;
             }
+            
+            public function reload(event:Event):void {
+            	// do nothing
+            }
              
             public function init():void{
                 _controller = new PenteGameController(_currentPlayer, board, chatPanel, playersViewer, tokenStore, gameStatus, moveViewer, animateLayer);
@@ -61,7 +65,7 @@
                 	_helpPanel.addEventListener("close", closeHelp);
                 	PopUpManager.addPopUp(_helpPanel, this, true);
                 	PopUpManager.centerPopUp(_helpPanel);
-                } else if (evt.label=='Resign') {
+                } else if (evt.label=='Lobby') {
                     this.dispatchEvent(new Event("complete"));
                 }
             }
@@ -75,7 +79,7 @@
     
     <mx:XMLList id="menuXML">
         <menuitem label="Game">
-        	<menuitem label="New Game"/>
+        	<menuitem label="Lobby"/>
         </menuitem>
         <menuitem label="Help">
             <menuitem label="How to Play"/>

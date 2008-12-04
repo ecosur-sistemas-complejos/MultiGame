@@ -4,6 +4,11 @@
     @author awaterma@ecosur.mx
     @author max@alwayssunny.com
 **/
+        Application {
+        	backgroundGradientColors: #222222, #333333;
+        	backgroundColor: #333333;
+        }
+
        .windowStyles{
             color: #ffffff;
         }
