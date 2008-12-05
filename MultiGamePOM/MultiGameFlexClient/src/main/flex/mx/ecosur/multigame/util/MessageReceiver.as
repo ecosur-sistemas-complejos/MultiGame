@@ -69,6 +69,11 @@ package mx.ecosur.multigame.util {
 			_processMessagesTimer.addEventListener(TimerEvent.TIMER, handleTimer);
 		}
 		
+		public function destroy():void{
+			_consumer.unsubscribe();
+			_processMessagesTimer.stop();
+		}
+		
 		/*
 		 * Adds the message to the queue and tries to process the queue
 		 */

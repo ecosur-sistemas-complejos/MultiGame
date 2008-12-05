@@ -845,5 +845,9 @@ package mx.ecosur.multigame.pente{
 			}
 			return null;
 		}
+		
+		public function destroy():void{
+			_msgReceiver.destroy();
+		}
 	}
 }
