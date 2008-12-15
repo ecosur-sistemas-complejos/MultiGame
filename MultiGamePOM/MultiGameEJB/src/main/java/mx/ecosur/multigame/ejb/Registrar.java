@@ -194,15 +194,11 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	}
 
 	/**
-	 * Registers a player into the System. Player registration consists of
-	 * maintaining a stateful hash of all active games in the system, and
-	 * player's registered with those games (for the handing out of available
-	 * colors). The GAME entity bean is loaded by this method, and as player's
-	 * join, the Games are updated with registered players.
+	 * Registers a player into the System, and affiliates that player with the
+	 * first available game that is waiting for more players.
 	 * 
 	 * @throws RemoteException
 	 * @throws RemoteException
-	 * @deprecated
 	 * 
 	 */
 	//TODO: delete.
@@ -217,9 +213,28 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 			registrant = locatePlayer(registrant.getName());
 		
 		/* Load the Game */
-		Game game = locateGame(registrant, type);
+		Game game = locateGame(type);
 		em.persist(game);
 		return registerPlayer (game, registrant, favoriteColor);
+	}
+
+	/**
+	 * Locates a game of the specified type waiting for more users.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	private Game locateGame(GameType type) {
+		Query query = em.createNamedQuery(type.getNamedQuery());
+		query.setParameter("type", type);
+		query.setParameter("state", GameState.WAITING);
+		List<Game> games = query.getResultList();
+		Game ret = null;
+		if (games.size() == 0)
+			ret = createNewGame(type);
+		else
+			ret = games.get(0);
+		return ret;
 	}
 
 	private GamePlayer locateGamePlayer(Game game, Player player,

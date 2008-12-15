@@ -79,8 +79,8 @@ public class GameService {
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
-			Game game = registrar.createGame(gameType);
-			gamePlayer = registrar.registerPlayer(game, player, preferedColor);
+			gamePlayer = registrar.registerPlayer(player, preferedColor, 
+					GameType.valueOf(GameType.class, gameTypeStr));
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);

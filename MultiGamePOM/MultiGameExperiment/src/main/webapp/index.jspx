@@ -32,18 +32,15 @@
                             <tr:commandButton id="start" text="Start"
                                 action="#{runner.execute}" 
                                 partialSubmit="true"
-                                partialTriggers="start"
-                                actionListener="#{runner.swapStatus}"/>
+                                partialTriggers="start"/>
                             <tr:resetButton text="Reset"/>
                             <tr:commandButton text="Cancel"
                                 partialTriggers="start"
                                 partialSubmit="true"
-                                disabled="true"
-                                actionListener="#{runner.swapStatus}"
                                 action="#{runner.cancel}"/>
                         </tr:panelHorizontalLayout>
                         <tr:spacer height="30"/>
-                        <tr:poll id="pollid" interval="1500"/>
+                        <tr:poll id="pollid" interval="50"/>
                         <tr:progressIndicator id="execution" action="guide"
                             value="#{runner.executions}" partialTriggers="pollid"/>
                     </tr:form>                    

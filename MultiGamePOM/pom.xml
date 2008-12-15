@@ -50,8 +50,6 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <!--glassfish>/Users/awater/util/glassfish-install/glassfish</glassfish-->
-        <!--flexSDK>/Users/awater/util/flex3/flex_sdk_3</flexSDK-->
         <glassfish>${env.GLASSFISH_HOME}</glassfish>
         <flexSDK>${env.FLEX_SDK}</flexSDK>
         <multigame-server>multigame.ecosur.mx</multigame-server>
@@ -60,13 +58,29 @@
     	<name>Ecosur</name>
     	<url>http://www.ecosur.mx</url>
     </organization>
-	<modules>
-		<module>MultiGameEJB</module>
-		<module>MultiGameAI</module>
-		<module>MultiGameFlexClient</module>
-		<module>MultiGameEAR</module>
-		<module>MultiGameIT</module>
-	</modules>
+    <profiles>
+        <profile>
+            <id>internal</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+		        <module>MultiGameEJB</module>
+		        <module>MultiGameExperiment</module>
+		        <module>MultiGameFlexClient</module>
+		        <module>MultiGameEAR</module>
+		        <module>MultiGameIT</module>
+		    </modules>
+        </profile>
+        <profile>
+            <id>external</id>
+            <modules>
+                <module>MultiGameEJB</module>
+                <module>MultiGameFlexClient</module>
+                <module>MultiGameEAR</module>
+            </modules>
+        </profile>
+    </profiles>
     <!--  
         These repositories have been staged on our server as a convenience.  We
         have been using artifactory to manage dependencies, but in the spirit 

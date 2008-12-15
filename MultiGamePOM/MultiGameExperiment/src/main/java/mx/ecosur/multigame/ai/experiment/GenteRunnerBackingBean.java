@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* Copyright (C) 2008 ECOSUR, Andrew Waterman
 *
 * Licensed under the Academic Free License v. 3.2.
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -111,10 +111,9 @@ public class GenteRunnerBackingBean implements Serializable {
 					game = (PenteGame) sharedBoard.getGame(gameId);
 					Thread.sleep (100);
 				}
-				
+				this.executions.updateCurrent();
 				if (!executing)
 					break;
-				this.executions.updateCurrent();
 			}
 		} catch (InvalidRegistrationException e) {
 			// TODO Auto-generated catch block
@@ -129,12 +128,6 @@ public class GenteRunnerBackingBean implements Serializable {
 	public void cancel () {
 		executing = false;
 	}
-	
-	public void swapStatus (ActionEvent event) {
-		CoreCommandButton button = (CoreCommandButton) event.getComponent();
-		button.setDisabled(! button.isDisabled());
-	}
-
 	
 	private PenteGame createGame () throws InvalidRegistrationException {
 		PenteGame game = (PenteGame) registrar.createGame(GameType.PENTE);

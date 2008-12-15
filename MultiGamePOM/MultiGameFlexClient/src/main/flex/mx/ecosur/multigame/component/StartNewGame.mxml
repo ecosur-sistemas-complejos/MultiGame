@@ -61,8 +61,8 @@
     <mx:ArrayCollection id="agentList">
         <mx:Object label="Simple" data="SIMPLE"/>
         <mx:Object label="Blocker" data="BLOCKER"/>
-        <mx:Object label="Random" data="RANDOM"/>
-    	<mx:Object label="Human" data="HUMAN"/>                       
+        <mx:Object label="Random" data="RANDOM"/>   
+        <mx:Object label="Human" data="HUMAN"/>                  
     </mx:ArrayCollection>
     
     <mx:ArrayCollection id="gameList">
@@ -77,8 +77,8 @@
         </mx:FormItem>
         <mx:FormItem label="Setup">
         	<mx:HBox>
-        		<mx:RadioButton label="Default" selected="true" click="showAIPlayers(false)"/>
-            	<mx:RadioButton label="Custom" id="robots" selected="false" click="showAIPlayers(true)" />	
+        		<mx:RadioButton label="Human" selected="true" click="showAIPlayers(false)"/>
+            	<mx:RadioButton label="Robot" id="robots" selected="false" click="showAIPlayers(true)" />	
         	</mx:HBox>
         </mx:FormItem>
         <mx:HBox id="aiPlayers" visible="false" height="0">
