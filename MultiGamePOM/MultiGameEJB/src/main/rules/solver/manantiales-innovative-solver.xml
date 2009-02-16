@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/mx/ecosur/multigame/solver/manantiales-innovative-score-calculator.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+    <finish>
+        <maximumSecondsSpend>600</maximumSecondsSpend>
+        <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> 
+    </finish>
+    <selector>
+        <selector>
+            <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.SilvepastoralMoveFactory</moveFactoryClass>
+        </selector>
+        <selector>
+            <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.IntensiveMoveFactory</moveFactoryClass>
+        </selector>
+        <selector>
+            <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.ModerateMoveFactory</moveFactoryClass>
+        </selector>
+    </selector>
+    <accepter>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </accepter>
+    <forager>
+        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+    </forager>
+</localSearchSolver>

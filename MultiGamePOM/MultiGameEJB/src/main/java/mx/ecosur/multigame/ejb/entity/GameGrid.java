@@ -34,7 +34,7 @@ import mx.ecosur.multigame.CellComparator;
 
 
 @Entity
-public class GameGrid implements Serializable {
+public class GameGrid implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -2579204312184918693L;
 	TreeSet<Cell> cells;
@@ -118,5 +118,15 @@ public class GameGrid implements Serializable {
 		
 		return buf.toString();
 	}
-	
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		GameGrid ret = new GameGrid();
+		for (Cell cell : cells) {
+			Cell cloneCell = cell.clone();
+			ret.updateCell(cloneCell);
+		}
+		
+		return ret;
+	}
 }

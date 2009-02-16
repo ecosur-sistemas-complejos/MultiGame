@@ -1,0 +1,25 @@
+#created on: Feb 4, 2009
+package mx.ecosur.multigame.manantiales
+
+import mx.ecosur.multigame.GameState;
+import mx.ecosur.multigame.MessageSender;
+
+import mx.ecosur.multigame.ejb.entity.Game;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
+import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
+
+#Sets the players in the game so that Black has the first turn
+#Sets up the empty game grid and sets thate game into the PLAY state
+rule "setup"
+    agenda-group "initialize"
+when
+    game : ManantialesGame (state == GameState.BEGIN);
+then
+    # Setup a new game grid for the game
+    GameGrid grid = new GameGrid ();
+    modify (game) { setColumns (5), setRows (9), setGrid (grid), setState (GameState.PLAY) } 
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendPlayerChange(game);
+    messageSender.sendStartGame(game);
+end

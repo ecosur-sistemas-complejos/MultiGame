@@ -24,7 +24,7 @@ import org.drools.compiler.PackageBuilder;
 
 public enum GameType {
 
-	CHECKERS, PENTE;
+	CHECKERS, PENTE, MANANTIALES;
 
 	private RuleBase ruleBase;
 
@@ -34,6 +34,8 @@ public enum GameType {
 	public String getNamedQuery() {
 		if (this.equals(GameType.PENTE))
 			return "getPenteGame";
+		else if (this.equals(GameType.MANANTIALES))
+			return "getManantialesGame";
 		else
 			return "getGameByType";
 	}
@@ -41,6 +43,8 @@ public enum GameType {
 	public String getNamedQueryById() {
 		if (this.equals(GameType.PENTE))
 			return "getPenteGameById";
+		else if (this.equals(GameType.MANANTIALES))
+			return "getManantialesGameById";
 		else
 			return "getGameById";
 	}
@@ -48,6 +52,8 @@ public enum GameType {
 	public String getNamedQueryByTypeAndPlayer(){
 		if (this.equals(GameType.PENTE))
 			return "getPenteGameByTypeAndPlayer";
+		else if (this.equals(GameType.MANANTIALES))
+			return "getManantialesGameByTypeAndPlayer";
 		else
 			return "getGameByTypeAndPlayer";
 	}
@@ -91,6 +97,8 @@ public enum GameType {
 						.getResourceAsStream("/mx/ecosur/multigame/gente.drl"));
 				builder.addPackageFromDrl(reader);
 				break;
+			case MANANTIALES:
+				throw new RuntimeException ("No rules defined!");
 			default:
 				break;
 			}

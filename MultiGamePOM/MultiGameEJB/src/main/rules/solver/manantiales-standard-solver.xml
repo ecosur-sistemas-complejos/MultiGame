@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/mx/ecosur/multigame/solver/manantiales-standard-score-calculator.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+    </scoreCalculator>
+    <selector>
+        <selector>
+            <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.SwapMoveFactory</moveFactoryClass>
+        </selector>      
+    </selector>
+    <accepter>
+        <completeMoveTabuSize>10</completeMoveTabuSize> 
+    </accepter>
+    <forager>
+        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+    </forager>
+        <finish>
+        <maximumMinutesSpend>4</maximumMinutesSpend>
+    </finish>
+</localSearchSolver>

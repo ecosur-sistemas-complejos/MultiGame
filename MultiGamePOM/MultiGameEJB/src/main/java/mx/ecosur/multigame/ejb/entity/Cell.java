@@ -21,10 +21,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.Characteristic;
 import mx.ecosur.multigame.Color;
 
 @Entity
@@ -38,8 +36,6 @@ public class Cell implements Serializable, Cloneable {
 	private int row, column;
 
 	private Color color;
-
-	private Characteristic characteristic;
 
 	private CellComparator comparator;
 
@@ -57,7 +53,6 @@ public class Cell implements Serializable, Cloneable {
 		this.column = x;
 		this.row = y;
 		this.color = color;
-		this.characteristic = null;
 		this.comparator = new CellComparator();
 	}
 	
@@ -97,26 +92,15 @@ public class Cell implements Serializable, Cloneable {
 		this.color = color;
 	}
 
-	@Transient
-	public Characteristic getCharacteristic() {
-		return characteristic;
-	}
-
-	public void setCharacteristic(Characteristic characteristic) {
-		this.characteristic = characteristic;
-	}
-
 	public Cell clone() throws CloneNotSupportedException {
 		Cell clone = new Cell(this.column, this.row, Color
 				.valueOf(color.name()));
-		if (this.characteristic != null)
-			clone.characteristic = characteristic.clone();
 		return clone;
 	}
 
 	public String toString() {
-		return "(Column, Row) Column = " + column + ", Row = " + row + ", Color = " + color
-				+ ", Characteristic = " + characteristic;
+		return "(Column, Row) Column = " + column + ", Row = " + row + 
+			", Color = " + color;
 	}
 
 	/* (non-Javadoc)

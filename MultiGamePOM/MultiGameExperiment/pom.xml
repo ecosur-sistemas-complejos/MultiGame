@@ -11,41 +11,23 @@
 		<groupId>mx.ecosur</groupId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
-	<description>AI Solver for Multigame</description>
-    <build>
-       <resources>
-        <resource>
-            <directory>src/main/resources</directory>
-        </resource>
-    </resources>
-    </build>    
+	<description>Multi-Agent Implementation for Gente</description>  
 	<dependencies>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <!--  My Faces and Trinidad -->
-        <dependency>
-            <groupId>org.apache.myfaces.core</groupId>
-            <artifactId>myfaces-impl</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.myfaces.trinidad</groupId>
-            <artifactId>trinidad-impl</artifactId>
-            <version>1.2.10</version>
-        </dependency>	
+	    <dependency>
+	       <groupId>com.adobe.blazeds</groupId>
+	       <artifactId>blazeds-core</artifactId>
+	       <version>3.0</version>
+	    </dependency>
+	    <dependency>
+	       <groupId>com.adobe.blazeds</groupId>
+	       <artifactId>blazeds-common</artifactId>
+	       <version>3.0</version>
+	    </dependency>
+	    <dependency>
+	       <groupId>com.adobe.blazeds</groupId>
+	       <artifactId>blazeds-remoting</artifactId>
+	       <version>3.0</version>
+	    </dependency>		
 	    <dependency>
             <groupId>${groupId}</groupId>
             <version>${version}</version>
@@ -58,5 +40,34 @@
             <version>4.0</version>
         </dependency>
 	</dependencies>
+	<build>
+	<plugins>
+        <plugin>
+            <!-- Use the EXEC plugin to build the flex application and deploy war on server -->
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+                <execution>
+                    <id>compile-main</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                    <configuration>
+                        <executable>${flexSDK}/bin/mxmlc</executable>
+                        <workingDirectory>src/main/flex</workingDirectory>
+                        <arguments>
+                            <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
+                            <argument>-compiler.strict=true</argument>
+                            <argument>-compiler.context-root=${artifactId}</argument>
+                            <argument>-output=../webapp/main.swf</argument>
+                            <argument>main.mxml</argument>
+                        </arguments>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+	</build>
 </project>
-

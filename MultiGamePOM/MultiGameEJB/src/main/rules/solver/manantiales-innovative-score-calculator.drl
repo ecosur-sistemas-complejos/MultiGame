@@ -1,0 +1,10 @@
+ #created on: Feb 4, 2009
+package mx.ecosur.multigame.manantiales
+
+# Not implemented
+rule ""
+    when
+        #
+    then
+        #
+end

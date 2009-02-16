@@ -29,12 +29,14 @@
 	<dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-      <version>4.0.7</version>
+<!--      <version>4.0.7</version>-->
+      <version>5.0.0.M4</version>      
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <version>4.0.7</version>
+<!--      <version>4.0.7</version>-->
+      <version>5.0.0.M4</version>      
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
@@ -57,13 +59,6 @@
   <build>
     <finalName>${artifactId}</finalName>
     <plugins>
-        <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <source>1.5</source>
-                <target>1.5</target>
-            </configuration>
-        </plugin>
         <plugin>
             <!-- Use the EXEC plugin to build the flex application and deploy war on server -->
             <groupId>org.codehaus.mojo</groupId>
