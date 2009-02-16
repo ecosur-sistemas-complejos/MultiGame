@@ -12,6 +12,7 @@ package mx.ecosur.multigame.solver.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
@@ -59,7 +60,8 @@ public class ColumnSwapMove implements Move {
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory wm) {
-		return (token.getColumn() != toColumn);
+		return (token.getColumn() != toColumn &&
+				!token.equals(swapToken));
 	}
 
 	/* (non-Javadoc)
@@ -67,6 +69,35 @@ public class ColumnSwapMove implements Move {
 	 */
 	@Override
 	public String toString() {
-		return this.token + " => " + "(" + toColumn + ", " + token.getRow() + ")";
+		return "swap " + this.token + " => " + swapToken;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		if (obj instanceof ColumnSwapMove) {
+			ColumnSwapMove comparison = (ColumnSwapMove) obj;
+				/* Moves are equal if it is the same change */
+			if (comparison.toColumn == this.toColumn && comparison.token.equals(this.token))
+				ret = true;
+		} else {
+			ret = super.equals(obj);
+		}
+		
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder() 
+        .append(token) 
+        .append(swapToken) 
+        .toHashCode(); 
 	}
 }

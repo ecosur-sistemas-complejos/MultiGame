@@ -13,7 +13,10 @@ package mx.ecosur.multigame.solver.manantiales;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.manantiales.TokenType;
@@ -48,9 +51,8 @@ public class SolutionConfigurer {
 			Color color = Color.valueOf(tok.getChild("color").getText());
 			TokenType type = TokenType.valueOf(tok.getChild("type").getText());
 			Token token = new Token (col, row, color, type);
-			solution.addToken(token);
+			solution.replaceToken(token);
 		}
-		
 		return solution;
 	}
 }

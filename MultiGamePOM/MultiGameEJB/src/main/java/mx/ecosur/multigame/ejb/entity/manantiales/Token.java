@@ -10,6 +10,8 @@
  */
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.manantiales.BorderType;
@@ -25,6 +27,10 @@ public class Token extends Cell {
 	}
 	
 	private TokenType type;
+	
+	public String getIdentifier() {
+		return getColumn() + ":" + getRow();
+	}
 
 	public TokenType getType() {
 		return type;
@@ -104,5 +110,29 @@ public class Token extends Cell {
 	public String toString() {
 		return "[" + super.getColor().toString() + "] " + type.toString() +
 			"(" + getColumn() + "," + getRow() + ")";
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		
+		
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder() 
+        .append(getColumn()) 
+        .append(getRow())
+        .append(getType())
+        .append(getColor())
+        .toHashCode(); 
 	}
 }

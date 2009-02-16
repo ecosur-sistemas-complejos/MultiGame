@@ -11,9 +11,10 @@
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
@@ -41,7 +42,7 @@ public class ManantialesGame extends Game implements Cloneable {
 	public void initialize(GameType type) {
 		super.initialize(type);
 		/* Set the initial board up with all undeveloped territory */
-		Set<Cell> tokens = new HashSet<Cell>();
+		SortedSet<Cell> tokens = new TreeSet<Cell>(new CellComparator());
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
 				Color color = null;
@@ -140,8 +141,8 @@ public class ManantialesGame extends Game implements Cloneable {
 		return ret;
 	}
 	
-	public Set<Token> getTokens () {
-		Set<Token> ret = new HashSet<Token>();
+	public SortedSet<Token> getTokens () {
+		SortedSet<Token> ret = new TreeSet<Token>(new CellComparator());
 		for (Cell cell : grid.getCells()) {
 			ret.add((Token) cell);
 		}

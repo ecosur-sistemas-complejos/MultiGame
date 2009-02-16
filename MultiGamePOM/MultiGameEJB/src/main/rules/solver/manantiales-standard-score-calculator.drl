@@ -6,198 +6,207 @@ import java.util.ArrayList;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 
-import org.drools.solver.core.score.constraint.ConstraintType;
-import org.drools.solver.core.score.constraint.IntConstraintOccurrence;
-import org.drools.solver.core.score.calculator.DynamicHardAndSoftConstraintScoreCalculator;
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
 
-global DynamicHardAndSoftConstraintScoreCalculator scoreCalculator;
+global SimpleScoreCalculator scoreCalculator;
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
 rule
     "northern border deforested"
     when
-        $list :ArrayList ( size > 2) from collect (
-                    Token (border == BorderType.NORTH, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $tok1 : Token ($id : identifier, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+        $tok3 : Token (identifier != $id, identifier != $id2, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
     then
+        System.out.println ("northern border deforested");
         insertLogical (
-        
-        
-        new IntConstraintOccurrence(
-          "northern border deforested", 
-            ConstraintType.NEGATIVE_HARD, 1, $list));
+            new UnweightedConstraintOccurrence("northern border deforested", 
+                $tok1, $tok2, $tok3));
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
 rule
     "eastern border deforested"
     when
-        $list :ArrayList ( size > 2) from collect (
-                    Token (border == BorderType.EAST, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $tok1 : Token ($id : identifier, border == BorderType.EAST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.EAST,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
+        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.EAST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
     then
-        insertLogical (new IntConstraintOccurrence(
-          "eastern border deforested", 
-            ConstraintType.NEGATIVE_HARD, 1, $list));
+        System.out.println("eastern border deforested");
+        insertLogical (
+            new UnweightedConstraintOccurrence("eastern border deforested", 
+                $tok1, $tok2, $tok3)) ;
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
 rule
     "southern border deforested"
     when
-        $list :ArrayList ( size > 2) from collect (
-                    Token (border == BorderType.SOUTH, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $tok1 : Token ($id : identifier, border == BorderType.SOUTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.SOUTH,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.SOUTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
     then
-        insertLogical (new IntConstraintOccurrence(
-          "southern border deforested", 
-            ConstraintType.NEGATIVE_HARD, 1, $list));
+        System.out.println("southern border deforested");
+        insertLogical (
+            new UnweightedConstraintOccurrence("southern border deforested", 
+                $tok1, $tok2, $tok3));
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
 rule
     "western border deforested"
     when
-        $list :ArrayList ( size > 2) from collect (
-                    Token (border == BorderType.WEST, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $tok1 : Token ($id : identifier, border == BorderType.WEST, 
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.WEST,
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.WEST, 
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
     then
-        insertLogical (new IntConstraintOccurrence(
-          "western border deforested", 
-            ConstraintType.NEGATIVE_HARD, 1, $list));
+        System.out.println("western border deforested");
+        insertLogical (
+            new UnweightedConstraintOccurrence("western border deforested", 
+                $tok1, $tok2, $tok3));
 end
 
 # Enforces the constraint (by column) that intensives cannot be contiguous
 rule "Column Contiguous Intensive"
 	when
-		$tok1 : Token ($row : row, type == TokenType.INTENSIVE_PASTURE)
-		$tok2 : Token ($row2 : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok1 : Token ($id : identifier, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok2 : Token (identifier != $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
 		eval (Math.abs($row - $row2) == 1)
 	then 
-		insertLogical (new IntConstraintOccurrence(
-		  "Column contiguous intensive", 
-		      ConstraintType.NEGATIVE_HARD, 1, $tok1, $tok2));
+	   System.out.println ("column contiguous intensive");
+		insertLogical (
+		  new UnweightedConstraintOccurrence(
+		  "Column contiguous intensive", $tok1, $tok2));
 end
 
 # Enforces the constraint (by row) that intensives cannot be contiguous
 rule "Row Contiguous Intensive"
     when
-        $tok1 : Token ($col : column, $row : row, 
-            type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token ($col2 : column, row == $row, 
-            type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : Token ($id : identifier, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Token (identifier != $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs ($col - $col2) == 1) 
     then 
-        insertLogical (new IntConstraintOccurrence(
-          "Row contiguous intensive", 
-            ConstraintType.NEGATIVE_HARD, 1, $tok1, $tok2));
+        System.out.println ("row contiguous intensive");
+        insertLogical (new UnweightedConstraintOccurrence(
+          "Row contiguous intensive", $tok1, $tok2));
 end
 
 # Enforces the constraint (by diagnal) that intensives cannot be contiguous
 rule "Diagnal Contiguous Intensive"
     when
-        $tok1 : Token ($col : column, $row : row, 
-            type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token ($col2 : column, $row2 : row, 
-            type == TokenType.INTENSIVE_PASTURE)  
+        $tok1 : Token ($id : identifier, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Token (identifier != $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
         eval (Math.abs($col - $col2) == 1 && Math.abs($row - $row2) == 1)
     then
-        insertLogical (new IntConstraintOccurrence(
-          "Diagnol contiguous intensive", 
-            ConstraintType.NEGATIVE_HARD, 1, $tok1, $tok2)); 
+        System.out.println("diagnal contiguous intensive");
+        insertLogical (new UnweightedConstraintOccurrence(
+          "Diagnol contiguous intensive", $tok1, $tok2)); 
 end
 
 #Enforces Manantiales constraint (only 2 developments around the manantiales
 #may deforest the land).
 rule "manantiales"
     when
-        $list : ArrayList ( size > 2) from collect (
-            Token (manantial == true, type in (
-                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $tok1 : Token ($id : identifier, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Token (identifier != $id, $id2 : identifier, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
+        $tok3 : Token (identifier != $id,identifier != $id2, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
-        insertLogical (new IntConstraintOccurrence(
-          "Column contiguous intensive", 
-            ConstraintType.NEGATIVE_HARD, 1, $list));
+        System.out.println("manantiales deforested");
+        insertLogical (new UnweightedConstraintOccurrence(
+          "Column contiguous intensive", $tok1, $tok2, $tok3));
 end
 
 #Enforces the constaint that no more than 32 sites can be deforested
 rule "Too many deforested sites"
     when
-        $list : ArrayList (size > 32) from collect (
-            Token (type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        $list : Number () from accumulate (
+            Token ($id : identifier, type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            count ($id)) 
+        eval ($list.intValue() > 32)
     then
-        insertLogical (new IntConstraintOccurrence (
-            "Too many deforested sites", ConstraintType.NEGATIVE_HARD, 1, $list));
+        System.out.println ("too much deforestation");
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Too many deforested sites", $list));
 end  
 
-#Enforces territorial constraints
+#Enforce territorial constraints
 rule "all territories are worth at least 24 points"
     when
-        $blueTotal : Number() from accumulate(
+        $total : Number() from accumulate(
             Token (color == Color.BLUE, $score : score),
-            sum($score));
-        $greenTotal : Number() from accumulate(
+            sum($score));           
+        eval ($total.intValue() < 24)    
+    then
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Not enough points", $total)); 
+end
+
+rule "green territory worth at least 24 points"
+    when
+        $total : Number() from accumulate(
             Token (color == Color.GREEN, $score : score),
-            sum($score));
-        $redTotal : Number() from accumulate(
+            sum($score));          
+        eval ($total.intValue() < 24)    
+    then
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Not enough points", $total)); 
+end
+
+rule "red territory worth at least 24 points"
+    when
+        $total : Number() from accumulate(
             Token (color == Color.RED, $score : score),
-            sum($score));
-        $yellowTotal : Number() from accumulate(
+            sum($score));     
+        eval ($total.intValue() < 24)    
+    then
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Not enough points", $total)); 
+end
+
+rule "yellow territory worth at least 24 points"
+    when
+        $total : Number() from accumulate(
             Token (color == Color.YELLOW, $score : score),
             sum($score));               
-        eval ($blueTotal.intValue() > 23)
-        eval ($greenTotal.intValue() > 23)
-        eval ($redTotal.intValue() > 23)
-        eval ($yellowTotal.intValue() > 23)    
+        eval ($total.intValue() < 24)    
     then
-        insertLogical (new IntConstraintOccurrence (
-            "Not enough points", ConstraintType.NEGATIVE_HARD, 5, $blueTotal,
-                $greenTotal, $redTotal, $yellowTotal)); 
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Not enough points", $total)); 
 end
 
 rule "No unclaimed territory"
     when
         $tok : Token (type == TokenType.UNDEVELOPED)
     then
-        insertLogical (new IntConstraintOccurrence (
-            "Uclaimed territory", ConstraintType.NEGATIVE_HARD, 1, $tok));
+        System.out.println ("Unclaimed territory");
+        insertLogical (new UnweightedConstraintOccurrence(
+            "Unclaimed territory", $tok));
 end       
 
-#Soft constraints
-
-#Inserts a soft constraint violation for the number of premiums less than 6
-rule "Not enough premiums"
-    when
-        $intensives : ArrayList () from collect (
-            Token (type == TokenType.INTENSIVE_PASTURE))
-        $forested : ArrayList () from collect (
-            Token (type == TokenType.MANAGED_FOREST))
-        eval ($intensives.size() + $forested.size() < 5)
-    then
-        for (int i = $intensives.size() + $forested.size(); i < 6; i++) {
-            insertLogical (new IntConstraintOccurrence (
-                "Not enough premiums", ConstraintType.NEGATIVE_SOFT, 5, $intensives,
-                    $forested));
-        } 
-end
-
 #Constraint calculator update
-rule "softConstraintsBroken"
-        salience -2 // Finish the other rules first 
-    when
-        $total : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
-            sum($weight));
-    then
-        scoreCalculator.setSoftConstraintsBroken($total.intValue());
-end
-
 rule "hardConstraintsBroken"
-        salience -1 // Finish the other rules first 
     when
-        $total : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
-            sum($weight));
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
     then
-        scoreCalculator.setHardConstraintsBroken($total.intValue());
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
 end

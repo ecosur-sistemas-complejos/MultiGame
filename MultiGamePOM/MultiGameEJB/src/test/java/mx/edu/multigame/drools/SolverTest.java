@@ -14,10 +14,12 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.solver.manantiales.ManantialesSolution;
 import mx.ecosur.multigame.solver.manantiales.SolutionConfigurer;
 
@@ -55,9 +57,11 @@ public class SolverTest {
 				.getResourceAsStream(configPath)));
 		ManantialesGame game = new ManantialesGame();
 		game.initialize(GameType.MANANTIALES);
-		startingSolution = new ManantialesSolution(game.getTokens());
+		startingSolution = new ManantialesSolution((SortedSet<Token>) 
+				game.getTokens());
 	}
 	
+	@Test
 	public void testSolver () throws JDOMException, IOException {
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
@@ -67,15 +71,16 @@ public class SolverTest {
 		solver.setStartingSolution(startingSolution);
 		ManantialesSolution solution = (ManantialesSolution) startingSolution;
 		logger.info ("Invoking solver, this should take a few minutes...");
-		logger.info ("Starting distribution: " + solution.getDistribution());
+		logger.info ("Starting distribution:\n " + solution.getDistribution());
+		logger.info (solution.toString());
 		solver.solve();
 		solution = (ManantialesSolution) solver.getBestSolution();
 		logger.info ("Solution found!  Best score = " + solver.getBestScore() + 
 				" in " + solver.getTimeMillisSpend() + " ms");
-		logger.info ("Final distribution " + solution.getDistribution());
+		logger.info (solution.toString());
+		logger.info ("Final distribution:\n " + solution.getDistribution());
 	}
 	
-	@Test
 	public void testSolverWithUndevelopedSolution () throws JDOMException, IOException {
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);

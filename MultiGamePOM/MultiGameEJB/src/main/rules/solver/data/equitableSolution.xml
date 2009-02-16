@@ -266,6 +266,12 @@
         <color>RED</color>
         <type>INTENSIVE_PASTURE</type>
      </token>
+     <token>
+        <column>2</column>
+        <row>4</row>
+        <color>RED</color>
+        <type>INTENSIVE_PASTURE</type>
+     </token>
         <!--  4 M -->
      <token>
         <column>0</column>
@@ -292,12 +298,6 @@
         <type>MODERATE_PASTURE</type>
      </token>
         <!--  4 F -->
-     <token>
-     <column>2</column>
-        <row>4</row>
-        <color>RED</color>
-        <type>MANAGED_FOREST</type>
-     </token>
      <token>
         <column>3</column>
         <row>4</row>

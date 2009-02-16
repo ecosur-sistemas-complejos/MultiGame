@@ -2,7 +2,7 @@
 <localSearchSolver>
     <scoreDrl>/mx/ecosur/multigame/solver/manantiales-standard-score-calculator.drl</scoreDrl>
     <scoreCalculator>
-        <scoreCalculatorType>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS</scoreCalculatorType>
+        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
     </scoreCalculator>
     <selector>
         <selector>
@@ -10,12 +10,15 @@
         </selector>      
     </selector>
     <accepter>
-        <completeMoveTabuSize>10</completeMoveTabuSize> 
+        <completeMoveTabuSize>1000</completeMoveTabuSize> 
     </accepter>
     <forager>
-        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
         <finish>
-        <maximumMinutesSpend>4</maximumMinutesSpend>
+         <finishCompositionStyle>OR</finishCompositionStyle> 
+         <feasableScore>-0.0</feasableScore>
+         <maximumMinutesSpend>2</maximumMinutesSpend> 
+         <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> 
     </finish>
 </localSearchSolver>

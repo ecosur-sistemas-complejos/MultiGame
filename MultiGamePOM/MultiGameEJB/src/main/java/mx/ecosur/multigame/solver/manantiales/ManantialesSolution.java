@@ -11,13 +11,13 @@
 package mx.ecosur.multigame.solver.manantiales;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
 
@@ -31,10 +31,16 @@ import org.drools.solver.core.solution.Solution;
 
 public class ManantialesSolution implements Solution {
 	
-	private Set<Token> tokens;
+	private SortedSet<Token> tokens;
 	
-	public ManantialesSolution (Set<Token> tokens) {
+	public ManantialesSolution (SortedSet<Token> tokens) {
 		this.tokens = tokens;
+	}
+	
+	public boolean replaceToken (Token token) {
+		boolean ret = tokens.remove(token);
+		tokens.add(token);
+		return ret;
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +50,7 @@ public class ManantialesSolution implements Solution {
 		Solution ret = null;
 		
 		try {
-			Set<Token> clones = new TreeSet<Token>(new CellComparator());
+			SortedSet<Token> clones = new TreeSet<Token>(new CellComparator());
 			for (Token tok : tokens) {
 				clones.add(tok.clone());
 			}
@@ -63,11 +69,6 @@ public class ManantialesSolution implements Solution {
 	@SuppressWarnings("unchecked")
 	public Collection<? extends Object> getFacts() {
 		return tokens;
-	}
-	
-	public void addToken (Token token) {
-		tokens.remove(token);
-		tokens.add(token);
 	}
 	
 	public String getDistribution () {
@@ -103,5 +104,58 @@ public class ManantialesSolution implements Solution {
 		}
 		
 		return i + " I, " + m + " M, " + f + "F, " + s + " S.";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer ("\n");
+		SortedSet<Token> subset;
+		
+		for (int row = 0; row < 9; row++) {
+			boolean leadingTab = false;
+			subset = null;
+			if (row == 4) {
+				subset = tokens.subSet(new Token (0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Token (9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
+			} else if (row % 2 == 0) {
+				subset = tokens.subSet(new Token (0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Token (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));				
+			} else {
+				leadingTab = true;
+				subset = tokens.subSet(new Token (1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Token (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
+			}
+			
+			if (leadingTab)
+				buf.append("  ");
+			for (Token tok: subset) {
+				if (tok.getColumn() == 4)
+					buf.append("  ");
+				else if (tok.getColumn() > 4 && row %2 == 0)
+					buf.append(" ");
+				switch (tok.getType()) {
+				case INTENSIVE_PASTURE:
+					buf.append ("I");
+					break;
+				case MODERATE_PASTURE:
+					buf.append ("M");
+					break;
+				case MANAGED_FOREST:
+					buf.append ("F");
+					break;
+				case UNDEVELOPED:
+					buf.append ("U");
+				}
+				if (row == 4)
+					buf.append(" ");
+				else if (tok.getColumn() != 3)
+					buf.append ("  ");
+			}
+			buf.append ("\n");	
+		}
+		return buf.toString();
 	}
 }
