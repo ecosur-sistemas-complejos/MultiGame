@@ -31,16 +31,31 @@ import org.drools.solver.core.solution.Solution;
 
 public class ManantialesSolution implements Solution {
 	
-	private SortedSet<Token> tokens;
-	
-	public ManantialesSolution (SortedSet<Token> tokens) {
-		this.tokens = tokens;
+	public enum Threshold {
+		SIMPLE, INNOVATIVE;
+		
+		public int value () {
+			int ret = 0;
+			switch (this) {
+			case SIMPLE:
+				ret = 24;
+				break;
+			case INNOVATIVE:
+				ret = 28;
+				break;
+			}
+			
+			return ret;
+		}
 	}
 	
-	public boolean replaceToken (Token token) {
-		boolean ret = tokens.remove(token);
-		tokens.add(token);
-		return ret;
+	private SortedSet<Token> tokens;
+	private Threshold umbra;
+	
+	
+	public ManantialesSolution (Threshold umbra, SortedSet<Token> tokens) {
+		this.umbra = umbra;
+		this.tokens = tokens;
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +70,7 @@ public class ManantialesSolution implements Solution {
 				clones.add(tok.clone());
 			}
 			
-			ret = new ManantialesSolution(clones);
+			ret = new ManantialesSolution(umbra, clones);
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -104,6 +119,21 @@ public class ManantialesSolution implements Solution {
 		}
 		
 		return i + " I, " + m + " M, " + f + "F, " + s + " S.";
+	}
+	
+	
+	public boolean replaceToken (Token token) {
+		boolean ret = tokens.remove(token);
+		tokens.add(token);
+		return ret;
+	}
+	
+	public Threshold getThreshold() {
+		return umbra;
+	}
+	
+	public void setThreshold(Threshold threshold) {
+		umbra = threshold;
 	}
 
 	/* (non-Javadoc)

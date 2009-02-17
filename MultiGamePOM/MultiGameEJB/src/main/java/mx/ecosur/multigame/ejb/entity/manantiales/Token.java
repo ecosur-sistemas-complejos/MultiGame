@@ -19,6 +19,18 @@ import mx.ecosur.multigame.manantiales.TokenType;
 
 public class Token extends Cell {
 	
+	private static int counter = 1;
+	
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.entity.Cell#getId()
+	 */
+	@Override
+	public int getId() {
+		if (id == 0)
+			id = counter++;
+		return id;
+	}
+
 	private static final long serialVersionUID = -8048552960014554186L;
 
 	public Token (int column, int row, Color color, TokenType type) {
@@ -27,10 +39,6 @@ public class Token extends Cell {
 	}
 	
 	private TokenType type;
-	
-	public String getIdentifier() {
-		return getColumn() + ":" + getRow();
-	}
 
 	public TokenType getType() {
 		return type;
@@ -118,7 +126,14 @@ public class Token extends Cell {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
-		
+		if (obj instanceof Token) {
+			Token comp = (Token) obj;
+			ret = (comp.type.equals(this.type) &&
+					comp.getRow() == getRow() &&
+					comp.getColumn() == getColumn() &&
+					comp.getColor() == getColor());
+		} else 
+			ret = super.equals(obj);
 		
 		return ret;
 	}

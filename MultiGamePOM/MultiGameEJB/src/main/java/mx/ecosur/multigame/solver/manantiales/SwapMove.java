@@ -17,51 +17,53 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
 
-public class ColumnSwapMove implements Move {
+public class SwapMove implements Move {
 	
-	Token token, swapToken;
-	int toColumn;
+	private Token token, swapToken;
 	
-	public ColumnSwapMove (Token token, Token swapToken, int toColumn) {
+	public SwapMove (Token token, Token swapToken) {
 		this.token = token;
 		this.swapToken = swapToken;
-		this.toColumn = toColumn;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#createUndoMove(org.drools.WorkingMemory)
 	 */
 	public Move createUndoMove(WorkingMemory workingMemory) {
-		return new ColumnSwapMove (swapToken, token, token.getColumn());
+		return new SwapMove (swapToken, token);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#doMove(org.drools.WorkingMemory)
 	 */
 	public void doMove(WorkingMemory wm) {
+		int tokenColumn, tokenRow;
+		int swapColumn, swapRow;
+		
+		tokenColumn = token.getColumn();
+		tokenRow = token.getRow();
+		
+		swapColumn = swapToken.getColumn();
+		swapRow = swapToken.getRow();
+		
 		FactHandle tokenHandle = wm.getFactHandle(token);
 		FactHandle swapHandle = wm.getFactHandle(swapToken);
 		
-		Token newToken = new Token (toColumn, token.getRow(), token.getColor(),
-				token.getType());
-		Token swappedToken = new Token (token.getColumn(), token.getRow(), token.getColor(),
-				swapToken.getType());
-		
-		/* Update WorkingMemory in one block */
-		synchronized (wm) {
-			wm.modifyRetract(tokenHandle);
-			wm.modifyInsert(tokenHandle, newToken);
-			wm.modifyRetract (swapHandle);
-			wm.modifyInsert (swapHandle, swappedToken);
-		}		
+		wm.modifyRetract(tokenHandle);
+		token.setColumn(swapColumn);
+		token.setRow (swapRow);
+		wm.modifyInsert(tokenHandle, token);
+		wm.modifyRetract (swapHandle);
+		swapToken.setColumn (tokenColumn);
+		swapToken.setRow(tokenRow);
+		wm.modifyInsert (swapHandle, token);	
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory wm) {
-		return (token.getColumn() != toColumn &&
-				!token.equals(swapToken));
+		return (!token.equals(swapToken));
 	}
 
 	/* (non-Javadoc)
@@ -78,10 +80,10 @@ public class ColumnSwapMove implements Move {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
-		if (obj instanceof ColumnSwapMove) {
-			ColumnSwapMove comparison = (ColumnSwapMove) obj;
+		if (obj instanceof SwapMove) {
+			SwapMove comparison = (SwapMove) obj;
 				/* Moves are equal if it is the same change */
-			if (comparison.toColumn == this.toColumn && comparison.token.equals(this.token))
+			if (comparison.token.equals(this.token))
 				ret = true;
 		} else {
 			ret = super.equals(obj);

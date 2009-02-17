@@ -13,10 +13,7 @@ package mx.ecosur.multigame.solver.manantiales;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.manantiales.TokenType;
@@ -44,6 +41,9 @@ public class SolutionConfigurer {
 	public ManantialesSolution configure (Document document) {
 		/* Configure the game */
 		Element solutionElement = document.getRootElement();
+		/* Get the threshold */
+		solution.setThreshold (ManantialesSolution.Threshold.valueOf (
+				solutionElement.getAttributeValue("type")));
 		List <Element> settors = solutionElement.getChildren();
 		for (Element tok : settors) {
 			int col = Integer.parseInt(tok.getChild("column").getText());

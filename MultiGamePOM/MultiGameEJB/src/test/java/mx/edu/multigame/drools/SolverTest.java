@@ -57,7 +57,8 @@ public class SolverTest {
 				.getResourceAsStream(configPath)));
 		ManantialesGame game = new ManantialesGame();
 		game.initialize(GameType.MANANTIALES);
-		startingSolution = new ManantialesSolution((SortedSet<Token>) 
+		startingSolution = new ManantialesSolution(
+				ManantialesSolution.Threshold.SIMPLE, (SortedSet<Token>) 
 				game.getTokens());
 	}
 	

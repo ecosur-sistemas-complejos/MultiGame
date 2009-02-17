@@ -17,7 +17,7 @@
     @author awaterma@ecosur.mx 
     
  -->
- <solution>
+ <solution type="SIMPLE">
     <!-- Player 1 (blue) -->
     <!--  4 I, 4 M, 4 F -->
 	 <token>
@@ -280,33 +280,27 @@
         <type>MODERATE_PASTURE</type>
      </token>
      <token>
-        <column>1</column>
-        <row>5</row>
+        <column>2</column>
+        <row>4</row>
         <color>RED</color>
         <type>MODERATE_PASTURE</type>
      </token>
      <token>
         <column>3</column>
-        <row>7</row>
+        <row>4</row>
         <color>RED</color>
         <type>MODERATE_PASTURE</type>
      </token>
         <!--  4 F -->
      <token>
-     <column>2</column>
-        <row>4</row>
-        <color>RED</color>
-        <type>MANAGED_FOREST</type>
-     </token>
-     <token>
-        <column>3</column>
-        <row>4</row>
-        <color>RED</color>
-        <type>MANAGED_FOREST</type>
-     </token>
-     <token>
-        <column>3</column>
+        <column>1</column>
         <row>5</row>
+        <color>RED</color>
+        <type>MANAGED_FOREST</type>
+     </token>
+     <token>
+        <column>3</column>
+        <row>7</row>
         <color>RED</color>
         <type>MANAGED_FOREST</type>
      </token>
@@ -319,6 +313,12 @@
      <token>
         <column>1</column>
         <row>7</row>
+        <color>RED</color>
+        <type>INTENSIVE_PASTURE</type>
+     </token>
+          <token>
+        <column>3</column>
+        <row>5</row>
         <color>RED</color>
         <type>MANAGED_FOREST</type>
      </token>

@@ -17,7 +17,7 @@
     @author awaterma@ecosur.mx 
     
  -->
- <solution>
+ <solution type="SIMPLE">
     <!-- Player 1 (blue) -->
     <!--  4 I, 4 M, 4 F -->
 	 <token>

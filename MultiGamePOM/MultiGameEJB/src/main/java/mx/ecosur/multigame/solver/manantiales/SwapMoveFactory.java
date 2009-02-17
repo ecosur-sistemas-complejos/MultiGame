@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.manantiales.BorderType;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.move.Move;
@@ -63,51 +64,67 @@ public class SwapMoveFactory extends CachedMoveFactory {
 				}
 			}
 			territoryMap.put (token.getColor(), territory);
-		}	
+		}
+		
+		ManantialesSolution sol = (ManantialesSolution) solution;
 			
 		/* Setup suggestions based on all possible values per token per territory */
-		for (Color color : Color.values()) {
-			if (color.equals(Color.UNKNOWN))
-				continue;
+		for (Color color : territoryMap.keySet()) {
 			TreeSet<Token> territory = territoryMap.get(color);
+			
+			/* Score the territory */
+			int score = 0;
 			for (Token tok : territory) {
-					/* Moves are split into column and row moves */
-					/* All moves in the column are added */
-				for (int row = 0; row < 9; row++) {
-					CellComparator comp = (CellComparator) territory.comparator();
-					Token loc = new Token (tok.getColumn(), row, Color.UNKNOWN,
-							TokenType.UNDEVELOPED);
-					Set<Token> tail = territory.tailSet(loc);
-					Token test = null;
-					for (Token search : tail) {
-						if (comp.compare(loc, search) == 0) {
-							test = search;
-							break;
-						}
-					}
-					
-					if (test != null)
-						ret.add(new RowSwapMove (tok, test, row));
+				switch (tok.getType()) {
+				case SILVOPASTORAL:
+					score += 4;
+					break;
+				case INTENSIVE_PASTURE:
+					score += 3;
+					break;
+				case MODERATE_PASTURE:
+					score += 2;
+					break;
+				case MANAGED_FOREST:
+					score += 1;
+					break;
+				}
+			}
+			
+			if (score < sol.getThreshold().value())
+				throw new RuntimeException ("Insufficient value in territory to offer swap moves!");
+		
+			for (Token tok : territory) {
+				/* All tokens can be swapped with another token in the 
+				 * territory 
+				 */
+				for (Token swap : territory) {
+					if (tok.equals(swap))
+						continue;
+					ret.add(new SwapMove (tok, swap));
 				}
 				
-				for (int column = 0; column < 9; column++) {
-					CellComparator comp = (CellComparator) territory.comparator();
-					Token loc = new Token (column, tok.getRow(), Color.UNKNOWN,
-							TokenType.UNDEVELOPED);
-					Set<Token> tail = territory.tailSet(loc);
-					Token test = null;
-					for (Token search : tail) {
-						if (comp.compare(loc, search) == 0) {
-							test = search;
-							break;
-						}
-					}					
-					
-					if (test != null) 
-						ret.add(new RowSwapMove (tok, test, column));
+				/* Special case for Border tokens.
+				 * 
+				 *  We want to be able to swap all tokens 
+				 *  on the border, including tokens from
+				 *  different colored territories. 
+				 * 
+				 * */
+				for (Color c : tok.getBorder().getColors()) {
+					if (c.equals(color))
+						continue;
+					TreeSet<Token> borderTerritory = territoryMap.get(c);
+					for (Token borderToken : borderTerritory) {
+						if (borderToken.getBorder().equals(tok.getBorder())) {
+							ret.add(new SwapMove (tok, borderToken));
+						} else 
+							continue;
+					}
 				}
+				
 			}		
-		}		
+		}
 		return ret;
 	}
 }

@@ -15,14 +15,13 @@ global SimpleScoreCalculator scoreCalculator;
 rule
     "northern border deforested"
     when
-        $tok1 : Token ($id : identifier, border == BorderType.NORTH, 
+        $tok1 : Token ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.NORTH, 
+        $tok2 : Token (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
-        $tok3 : Token (identifier != $id, identifier != $id2, border == BorderType.NORTH, 
+        $tok3 : Token (id > $id2, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
     then
-        System.out.println ("northern border deforested");
         insertLogical (
             new UnweightedConstraintOccurrence("northern border deforested", 
                 $tok1, $tok2, $tok3));
@@ -32,14 +31,13 @@ end
 rule
     "eastern border deforested"
     when
-        $tok1 : Token ($id : identifier, border == BorderType.EAST, 
+        $tok1 : Token ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.EAST,
+        $tok2 : Token (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
-        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.EAST, 
+        $tok3 : Token (id > $id2, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
     then
-        System.out.println("eastern border deforested");
         insertLogical (
             new UnweightedConstraintOccurrence("eastern border deforested", 
                 $tok1, $tok2, $tok3)) ;
@@ -49,14 +47,13 @@ end
 rule
     "southern border deforested"
     when
-        $tok1 : Token ($id : identifier, border == BorderType.SOUTH, 
+        $tok1 : Token ($id : id, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.SOUTH,
+        $tok2 : Token (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.SOUTH, 
+        $tok3 : Token (id > $id2, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
     then
-        System.out.println("southern border deforested");
         insertLogical (
             new UnweightedConstraintOccurrence("southern border deforested", 
                 $tok1, $tok2, $tok3));
@@ -66,14 +63,13 @@ end
 rule
     "western border deforested"
     when
-        $tok1 : Token ($id : identifier, border == BorderType.WEST, 
+        $tok1 : Token ($id : id, border == BorderType.WEST, 
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (identifier != $id, $id2 : identifier, border == BorderType.WEST,
+        $tok2 : Token (id > $id, $id2 : id, border == BorderType.WEST,
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (identifier != $id,identifier != $id2, border == BorderType.WEST, 
+        $tok3 : Token (id > $id2, border == BorderType.WEST, 
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
     then
-        System.out.println("western border deforested");
         insertLogical (
             new UnweightedConstraintOccurrence("western border deforested", 
                 $tok1, $tok2, $tok3));
@@ -82,11 +78,10 @@ end
 # Enforces the constraint (by column) that intensives cannot be contiguous
 rule "Column Contiguous Intensive"
 	when
-		$tok1 : Token ($id : identifier, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-		$tok2 : Token (identifier != $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok1 : Token ($id : id, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok2 : Token (id > $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
 		eval (Math.abs($row - $row2) == 1)
 	then 
-	   System.out.println ("column contiguous intensive");
 		insertLogical (
 		  new UnweightedConstraintOccurrence(
 		  "Column contiguous intensive", $tok1, $tok2));
@@ -95,11 +90,10 @@ end
 # Enforces the constraint (by row) that intensives cannot be contiguous
 rule "Row Contiguous Intensive"
     when
-        $tok1 : Token ($id : identifier, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (identifier != $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : Token ($id : id, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Token (id > $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs ($col - $col2) == 1) 
     then 
-        System.out.println ("row contiguous intensive");
         insertLogical (new UnweightedConstraintOccurrence(
           "Row contiguous intensive", $tok1, $tok2));
 end
@@ -107,11 +101,10 @@ end
 # Enforces the constraint (by diagnal) that intensives cannot be contiguous
 rule "Diagnal Contiguous Intensive"
     when
-        $tok1 : Token ($id : identifier, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (identifier != $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
+        $tok1 : Token ($id : id, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Token (id > $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
         eval (Math.abs($col - $col2) == 1 && Math.abs($row - $row2) == 1)
     then
-        System.out.println("diagnal contiguous intensive");
         insertLogical (new UnweightedConstraintOccurrence(
           "Diagnol contiguous intensive", $tok1, $tok2)); 
 end
@@ -120,14 +113,13 @@ end
 #may deforest the land).
 rule "manantiales"
     when
-        $tok1 : Token ($id : identifier, manantial == true, type in (
+        $tok1 : Token ($id : id, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (identifier != $id, $id2 : identifier, manantial == true, type in (
+        $tok2 : Token (id > $id, $id2 : id, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
-        $tok3 : Token (identifier != $id,identifier != $id2, manantial == true, type in (
+        $tok3 : Token (id > $id2, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
-        System.out.println("manantiales deforested");
         insertLogical (new UnweightedConstraintOccurrence(
           "Column contiguous intensive", $tok1, $tok2, $tok3));
 end
@@ -136,12 +128,11 @@ end
 rule "Too many deforested sites"
     when
         $list : Number () from accumulate (
-            Token ($id : identifier, type in (
+            Token ($id : id, type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
             count ($id)) 
         eval ($list.intValue() > 32)
     then
-        System.out.println ("too much deforestation");
         insertLogical (new UnweightedConstraintOccurrence(
             "Too many deforested sites", $list));
 end  

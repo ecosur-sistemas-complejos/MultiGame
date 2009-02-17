@@ -10,15 +10,25 @@
         </selector>      
     </selector>
     <accepter>
-        <completeMoveTabuSize>1000</completeMoveTabuSize> 
+        <!-- Tabu Local Search -->
+        <completeMoveTabuSize>1000</completeMoveTabuSize>
+        <completeUndoMoveTabuSize>1000</completeUndoMoveTabuSize>
+        <!--  Use the great deluge heuristic to search -->
+<!--        <accepterType>GREAT_DELUGE</accepterType>-->
+<!--        <greatDelugeWaterRisingRate>0.23</greatDelugeWaterRisingRate>-->
+<!--        <greatDelugeWaterLevelUpperBoundRate>10</greatDelugeWaterLevelUpperBoundRate>-->
     </accepter>
     <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
+        <!--  Tabu search  -->
+            <foragerType>MAX_SCORE_OF_ALL</foragerType>
+<!--        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->
+        <!--  Great Deluge search -->
+<!--        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType> -->
     </forager>
-        <finish>
-         <finishCompositionStyle>OR</finishCompositionStyle> 
-         <feasableScore>-0.0</feasableScore>
-         <maximumMinutesSpend>2</maximumMinutesSpend> 
-         <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> 
-    </finish>
+	<finish>
+	    <finishCompositionStyle>OR</finishCompositionStyle> 
+	    <feasableScore>0.0</feasableScore>
+	    <maximumMinutesSpend>2</maximumMinutesSpend> 
+	    <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> 
+	</finish>
 </localSearchSolver>

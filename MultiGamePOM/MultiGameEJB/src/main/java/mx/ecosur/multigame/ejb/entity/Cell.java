@@ -39,7 +39,7 @@ public class Cell implements Serializable, Cloneable {
 
 	private CellComparator comparator;
 
-	private int id;
+	protected int id;
 
 	public Cell() {
 		this.comparator = new CellComparator();

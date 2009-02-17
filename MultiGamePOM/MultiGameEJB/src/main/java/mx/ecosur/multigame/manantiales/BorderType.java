@@ -10,8 +10,39 @@
  */
 package mx.ecosur.multigame.manantiales;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import mx.ecosur.multigame.Color;
+
 public enum BorderType {
 	
-	NORTH, EAST, SOUTH, WEST, NONE
+	NORTH, EAST, SOUTH, WEST, NONE;
 	
+	/* Returns the colors */ 
+	public List<Color> getColors () {
+		List<Color> colors = new ArrayList<Color>();
+		switch (this) {
+			case NORTH:
+				colors.add(Color.BLUE);
+				colors.add(Color.GREEN);
+				break;
+			case EAST:
+				colors.add(Color.GREEN);
+				colors.add(Color.YELLOW);
+				break;
+			case SOUTH:
+				colors.add(Color.YELLOW);
+				colors.add(Color.RED);
+				break;
+			case WEST:
+				colors.add(Color.RED);
+				colors.add(Color.BLUE);
+				break;
+			default:
+				break;
+		}
+		
+		return colors;
+	}
 }
