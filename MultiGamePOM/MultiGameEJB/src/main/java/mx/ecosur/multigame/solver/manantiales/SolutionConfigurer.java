@@ -17,6 +17,7 @@ import java.util.List;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.manantiales.TokenType;
+import mx.ecosur.multigame.solver.manantiales.ManantialesSolution.Threshold;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -38,6 +39,7 @@ public class SolutionConfigurer {
 		 return builder.build(reader);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ManantialesSolution configure (Document document) {
 		/* Configure the game */
 		Element solutionElement = document.getRootElement();
@@ -46,13 +48,61 @@ public class SolutionConfigurer {
 				solutionElement.getAttributeValue("type")));
 		List <Element> settors = solutionElement.getChildren();
 		for (Element tok : settors) {
-			int col = Integer.parseInt(tok.getChild("column").getText());
-			int row = Integer.parseInt(tok.getChild("row").getText());
-			Color color = Color.valueOf(tok.getChild("color").getText());
-			TokenType type = TokenType.valueOf(tok.getChild("type").getText());
-			Token token = new Token (col, row, color, type);
-			solution.replaceToken(token);
+			if (tok.getName().equals("token")) {
+				int col = Integer.parseInt(tok.getChild("column").getText());
+				int row = Integer.parseInt(tok.getChild("row").getText());
+				Color color = Color.valueOf(tok.getChild("color").getText());
+				TokenType type = TokenType.valueOf(tok.getChild("type").getText());
+				Token token = new Token (col, row, color, type);
+				solution.replaceToken(token);
+			} else if (tok.getName().equals("distribution")) {
+				Color color = Color.valueOf(tok.getChild("color").getText());
+				int forest = Integer.parseInt(tok.getChild("forest").getText());
+				int moderate = Integer.parseInt(tok.getChild("moderate").getText());
+				int intensive = Integer.parseInt(tok.getChild("intensive").getText());
+				int silvo = 0;
+				if (solution.getThreshold().equals(ManantialesSolution.Threshold.INNOVATIVE))
+					silvo = Integer.parseInt(tok.getChild("silvopastoral").getText());
+				Distribution dist = new Distribution(color, forest, moderate,
+						intensive, silvo);
+				solution.setDistribution(dist);
+				populateDistribution(solution , dist);
+			}
 		}
+		
 		return solution;
+	}
+
+	/**
+	 * @param solution2
+	 * @param dist
+	 */
+	private void populateDistribution(ManantialesSolution solution,
+			Distribution dist) 
+	{
+		int forest = dist.getForest(), moderate = dist.getModerate(),
+			intensive = dist.getIntensive(), silvo = dist.getSilvopastoral();
+		for (Token tok : solution.getTokens()) {
+			if (tok.getColor().equals(dist.getColor())) {
+				if (forest > 0) {
+					tok.setType(TokenType.MANAGED_FOREST);
+					forest--;
+				} else if (moderate > 0) {
+					tok.setType (TokenType.MODERATE_PASTURE);
+					moderate--;
+				} else if (intensive > 0) {
+					tok.setType(TokenType.INTENSIVE_PASTURE);
+					intensive--;
+				} else if (solution.getThreshold().equals(Threshold.INNOVATIVE) &&
+						silvo > 0) 
+				{
+					tok.setType (TokenType.SILVOPASTORAL);
+					silvo--;
+				}
+			}
+		}
+			
+		if (forest !=0 || moderate !=0 || intensive !=0 || silvo != 0)
+			throw new RuntimeException ("Unable to populate distribution!");
 	}
 }

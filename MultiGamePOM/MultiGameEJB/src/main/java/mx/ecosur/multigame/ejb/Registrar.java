@@ -224,6 +224,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @param type
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private Game locateGame(GameType type) {
 		Query query = em.createNamedQuery(type.getNamedQuery());
 		query.setParameter("type", type);
@@ -444,6 +445,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.ejb.entity.Player)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Game> getUnfinishedGames(Player player) {
 		Query query = em.createNamedQuery("getGamesByPlayer");
 		query.setParameter("player", player);

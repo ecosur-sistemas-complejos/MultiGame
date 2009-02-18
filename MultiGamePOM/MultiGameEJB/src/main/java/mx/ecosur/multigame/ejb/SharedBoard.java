@@ -249,6 +249,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#getMoves(int)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Move> getMoves(int gameId) {
 		logger.fine("Getting moves for game with id: " + gameId);
 		Game game = getGame(gameId);

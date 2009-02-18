@@ -45,6 +45,8 @@ public class ManantialesGame extends Game implements Cloneable {
 		SortedSet<Cell> tokens = new TreeSet<Cell>(new CellComparator());
 		for (int col = 0; col < 9; col++) {
 			for (int row = 0; row < 9; row++) {
+				if (row == 4 && col ==4)
+					continue;
 				Color color = null;
 					/* All tokens across row 4 are set (except for the manantial) */
 				if (row == 4 && col!=4) {
@@ -52,7 +54,7 @@ public class ManantialesGame extends Game implements Cloneable {
 						color = Color.RED;
 					} else
 						color = Color.GREEN;
-					tokens.add(new Token(col,row,color, TokenType.UNDEVELOPED));
+					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
 					/* Cells are split by even/even and odd/odd (skip manantial) */
 				} else if ( (row !=4 && col!=4) && ( 
 						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
@@ -66,6 +68,12 @@ public class ManantialesGame extends Game implements Cloneable {
 					else if (row > 4 && col > 3)
 						color = Color.YELLOW;
 					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
+				} else if (col == 4) {
+					if (row < 5 ) 
+						color = Color.BLUE;
+					else if (row > 4)
+						color = Color.YELLOW;
+					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
 				} else
 					continue;
 			}

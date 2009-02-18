@@ -10,33 +10,31 @@
  */
 package mx.ecosur.multigame.solver.manantiales;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled;
 import org.drools.solver.core.move.Move;
 
-public class TokenMove implements Move, TabuPropertyEnabled {
+public class MutateTypeMove implements Move {
 	
 	protected Token token;
-	protected Token toToken;
+	protected TokenType toType;
 	
-	public TokenMove (Token token, Token toToken) {
+	public MutateTypeMove (Token token, TokenType toType) {
 		this.token = token;
-		this.toToken = toToken;
+		this.toType = toType;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#createUndoMove(org.drools.WorkingMemory)
 	 */
 	public Move createUndoMove(WorkingMemory wm) {
-		return new TokenMove (toToken, token);
+		Token mutated = new Token (token.getColumn(), token.getRow(), token.getColor(),
+				toType);
+		return new MutateTypeMove (mutated, token.getType());
 	}
 
 	/* (non-Javadoc)
@@ -47,22 +45,15 @@ public class TokenMove implements Move, TabuPropertyEnabled {
 		
 		/* Update WorkingMemory */
 		wm.modifyRetract(tokenHandle);
-		wm.modifyInsert(tokenHandle, toToken);
+		token.setType(toType);
+		wm.modifyInsert(tokenHandle, token);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory wm) {		
-		boolean ret = true;
-		if (token.getColor().equals(toToken.getColor())) {
-			if (token.getType().equals(toToken.getType())) {
-				ret = token.getColumn() != toToken.getColumn() && 
-					token.getRow() != toToken.getRow();
-			} 
-		} else if (token.getColor() != toToken.getColor())
-			ret = toToken.getType().equals(TokenType.UNDEVELOPED);
-		return ret;
+		return ! (token.getType().equals(toType));
 	}
 
 	/* (non-Javadoc)
@@ -70,14 +61,9 @@ public class TokenMove implements Move, TabuPropertyEnabled {
 	 */
 	@Override
 	public String toString() {
-		return token + "=>" + toToken;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.drools.solver.core.localsearch.decider.accepter.tabu.TabuPropertyEnabled#getTabuProperties()
-	 */
-	public Collection<? extends Object> getTabuProperties() {
-		return Collections.singletonList(token);
+		Token mutated = new Token (token.getColumn(), token.getRow(), 
+				token.getColor(), toType);
+		return token + "=>" + mutated;
 	}
 
 	/* (non-Javadoc)
@@ -86,10 +72,10 @@ public class TokenMove implements Move, TabuPropertyEnabled {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
-		if (obj instanceof TokenMove) {
-			TokenMove comparison = (TokenMove) obj;
+		if (obj instanceof MutateTypeMove) {
+			MutateTypeMove comparison = (MutateTypeMove) obj;
 				/* Moves are equal if it is the same change */
-			if (comparison.toToken.equals(this.toToken))
+			if (comparison.toType.equals(this.toType))
 				ret = true;
 		} else {
 			ret = super.equals(obj);
@@ -105,7 +91,7 @@ public class TokenMove implements Move, TabuPropertyEnabled {
 	public int hashCode() {
 		return new HashCodeBuilder() 
         .append(token) 
-        .append(toToken) 
+        .append(toType) 
         .toHashCode(); 
 	}
 }

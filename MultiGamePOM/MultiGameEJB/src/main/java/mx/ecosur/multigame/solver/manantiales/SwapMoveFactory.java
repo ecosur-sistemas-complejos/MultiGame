@@ -20,8 +20,6 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
-import mx.ecosur.multigame.manantiales.BorderType;
-import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.CachedMoveFactory;

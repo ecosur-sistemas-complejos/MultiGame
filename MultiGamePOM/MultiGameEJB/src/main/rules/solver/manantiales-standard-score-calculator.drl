@@ -186,7 +186,6 @@ rule "No unclaimed territory"
     when
         $tok : Token (type == TokenType.UNDEVELOPED)
     then
-        System.out.println ("Unclaimed territory");
         insertLogical (new UnweightedConstraintOccurrence(
             "Unclaimed territory", $tok));
 end       

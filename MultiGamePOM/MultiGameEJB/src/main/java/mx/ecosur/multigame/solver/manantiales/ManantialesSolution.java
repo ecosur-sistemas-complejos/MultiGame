@@ -11,6 +11,7 @@
 package mx.ecosur.multigame.solver.manantiales;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -51,7 +52,7 @@ public class ManantialesSolution implements Solution {
 	
 	private SortedSet<Token> tokens;
 	private Threshold umbra;
-	
+	private HashMap<Color, Distribution> distributionMap;
 	
 	public ManantialesSolution (Threshold umbra, SortedSet<Token> tokens) {
 		this.umbra = umbra;
@@ -78,52 +79,74 @@ public class ManantialesSolution implements Solution {
 		return ret;
 	}
 
+	/**
+	 * @return the distribution
+	 */
+	public Distribution getDistribution(Color color) {
+		if (distributionMap == null) 
+			populateDistributions();
+		return distributionMap.get(color);
+	}
+
+	/**
+	 * 
+	 */
+	private void populateDistributions() {
+		for (Color color : Color.values()) {
+			int forest = 0, moderate = 0, intensive = 0, silvopastoral = 0;
+			
+			if (color.equals(Color.UNKNOWN))
+				continue;
+			for (Token tok: tokens) {
+				if (tok.getColor().equals(color)) {
+					switch (tok.getType()) {
+					case MANAGED_FOREST:
+						forest++;
+						break;
+					case MODERATE_PASTURE:
+						moderate++;
+						break;
+					case INTENSIVE_PASTURE:
+						intensive++;
+						break;
+					case SILVOPASTORAL:
+						silvopastoral++;
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			
+			Distribution dist = new Distribution (color, forest, moderate,
+					intensive, silvopastoral);
+			setDistribution(dist);
+		}
+	}
+
+	/**
+	 * @param distribution the distribution to set
+	 */
+	public void setDistribution(Distribution distribution) {
+		if (distributionMap == null) {
+			distributionMap = new HashMap<Color, Distribution>();
+		}
+		
+		distributionMap.put(distribution.color, distribution);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.solution.Solution#getFacts()
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<? extends Object> getFacts() {
 		return tokens;
 	}
 	
-	public String getDistribution () {
-		StringBuffer buf = new StringBuffer();
-		for (Color c : Color.values()) {
-			if (c.equals(Color.UNKNOWN))
-				continue;
-			buf.append (getDistribution(c) +"\n");
-		}
-		
-		return buf.toString();
-	}
-	
-	public String getDistribution(Color color) {
-		int i = 0, m = 0, f = 0, s = 0;
-		for (Token tok : tokens) {
-			if (tok.getColor().equals(color)) {
-				switch (tok.getType()) {
-				case INTENSIVE_PASTURE:
-					i++;
-					break;
-				case MODERATE_PASTURE:
-					m++;
-					break;
-				case MANAGED_FOREST:
-					f++;
-					break;
-				case SILVOPASTORAL:
-					s++;
-					break;	
-				}
-			}
-		}
-		
-		return i + " I, " + m + " M, " + f + "F, " + s + " S.";
-	}
-	
 	
 	public boolean replaceToken (Token token) {
-		boolean ret = tokens.remove(token);
+		boolean ret = false;
+		if (tokens.contains(token))
+			ret = tokens.remove(token);
 		tokens.add(token);
 		return ret;
 	}
@@ -134,6 +157,13 @@ public class ManantialesSolution implements Solution {
 	
 	public void setThreshold(Threshold threshold) {
 		umbra = threshold;
+	}
+
+	/**
+	 * @return the tokens
+	 */
+	public SortedSet<Token> getTokens() {
+		return tokens;
 	}
 
 	/* (non-Javadoc)
