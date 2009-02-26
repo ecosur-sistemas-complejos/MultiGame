@@ -112,6 +112,9 @@ public class Game implements Serializable {
 				this.setRows (19);
 				this.setColumns (19);
 				break;
+			case MANANTIALES:
+				this.setRows(9);
+				this.setColumns(9);
 			default:
 				break;
 		}

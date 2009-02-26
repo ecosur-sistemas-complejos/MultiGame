@@ -21,7 +21,6 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
-import mx.ecosur.multigame.manantiales.TokenType;
 
 /**
  * The ManantialesGame represents the Game of Manantiales, played with 4 
@@ -34,53 +33,6 @@ import mx.ecosur.multigame.manantiales.TokenType;
 public class ManantialesGame extends Game implements Cloneable {
 	
 	private static final long serialVersionUID = -2117368168251380686L;
-	
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#initialize(mx.ecosur.multigame.GameType)
-	 */
-	@Override
-	public void initialize(GameType type) {
-		super.initialize(type);
-		/* Set the initial board up with all undeveloped territory */
-		SortedSet<Cell> tokens = new TreeSet<Cell>(new CellComparator());
-		for (int col = 0; col < 9; col++) {
-			for (int row = 0; row < 9; row++) {
-				if (row == 4 && col ==4)
-					continue;
-				Color color = null;
-					/* All tokens across row 4 are set (except for the manantial) */
-				if (row == 4 && col!=4) {
-					if (col < 5) {
-						color = Color.RED;
-					} else
-						color = Color.GREEN;
-					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
-					/* Cells are split by even/even and odd/odd (skip manantial) */
-				} else if ( (row !=4 && col!=4) && ( 
-						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
-				{
-					if (row < 4 && col < 5) 
-						color = Color.BLUE;
-					else if (row < 4 && col > 4)
-						color = Color.GREEN;
-					else if (row > 4 && col < 4)
-						color = Color.RED;
-					else if (row > 4 && col > 3)
-						color = Color.YELLOW;
-					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
-				} else if (col == 4) {
-					if (row < 5 ) 
-						color = Color.BLUE;
-					else if (row > 4)
-						color = Color.YELLOW;
-					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
-				} else
-					continue;
-			}
-		}
-		
-		grid.setCells(tokens);
-	}
 	
 	/**
 	 * Evaluates the score of a particular player (denoted by Color).

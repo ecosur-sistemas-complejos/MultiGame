@@ -17,7 +17,10 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.manantiales.BorderType;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
@@ -55,9 +58,87 @@ public class ManantialesSolution implements Solution {
 	private HashMap<Color, Distribution> distributionMap;
 	
 	public ManantialesSolution (Threshold umbra, SortedSet<Token> tokens) {
-		this.umbra = umbra;
-		this.tokens = tokens;
+		this (umbra);
+		for (Token tok : tokens) {
+			replaceToken(tok);
+		}
 	}
+	
+	public ManantialesSolution (Threshold umbra) {
+		this.umbra = umbra;
+		tokens = new TreeSet<Token> (new CellComparator());
+		initialize();
+	}	
+	
+//	public void initialize() {
+//		/* Set the initial board up 
+//		/* Only core territory is colored, borders are set to UNKNOWN */
+//		for (int col = 0; col < 9; col++) {
+//			for (int row = 0; row < 9; row++) {
+//				if (row == 4 && col ==4)
+//					continue;
+//				Color color = Color.UNKNOWN;
+//					/* All tokens across row 4 are set (except for the manantial) */
+//				if (row == 4 && col!=4) {
+//					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
+//					/* Cells are split by even/even and odd/odd (skip manantial) */
+//				} else if ( (row !=4 && col!=4) && ( 
+//						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
+//				{
+//					if (row < 4 && col < 5) 
+//						color = Color.BLUE;
+//					else if (row < 4 && col > 4)
+//						color = Color.GREEN;
+//					else if (row > 4 && col < 4)
+//						color = Color.RED;
+//					else if (row > 4 && col > 3)
+//						color = Color.YELLOW;
+//					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
+//				} else if (col == 4) {
+//					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
+//				} else
+//					continue;
+//			}
+//		}
+//	}
+	
+	public void initialize() {
+		for (int col = 0; col < 9; col++) {
+			for (int row = 0; row < 9; row++) {
+				if (row == 4 && col ==4)
+					continue;
+				Color color = null;
+					/* All tokens across row 4 are set (except for the manantial) */
+				if (row == 4 && col!=4) {
+					if (col < 5) {
+						color = Color.RED;
+					} else
+						color = Color.GREEN;
+					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
+					/* Cells are split by even/even and odd/odd (skip manantial) */
+				} else if ( (row !=4 && col!=4) && ( 
+						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
+				{
+					if (row < 4 && col < 5) 
+						color = Color.BLUE;
+					else if (row < 4 && col > 4)
+						color = Color.GREEN;
+					else if (row > 4 && col < 4)
+						color = Color.RED;
+					else if (row > 4 && col > 3)
+						color = Color.YELLOW;
+					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
+				} else if (col == 4) {
+					if (row < 5 ) 
+						color = Color.BLUE;
+					else if (row > 4)
+						color = Color.YELLOW;
+					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
+				} else
+					continue;
+			}
+		}
+	}	
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.solution.Solution#cloneSolution()
@@ -120,14 +201,41 @@ public class ManantialesSolution implements Solution {
 			
 			Distribution dist = new Distribution (color, forest, moderate,
 					intensive, silvopastoral);
-			setDistribution(dist);
+			addDistribution(dist);
 		}
+	}
+	
+	public SortedSet<Token> getBorders (Color color) {
+		SortedSet<Token> ret = new TreeSet<Token>(new CellComparator());
+		/* Add in all uncolored tokens */
+		for (Token tok : tokens) {
+			switch (tok.getBorder()) {
+			case NORTH:
+				if (color.equals (Color.BLUE) || color.equals(Color.GREEN))
+					ret.add(tok);
+				break;
+			case EAST:
+				if (color.equals (Color.GREEN) || color.equals(Color.YELLOW))
+					ret.add(tok);
+				break;
+			case SOUTH:
+				if (color.equals (Color.YELLOW) || color.equals(Color.RED))
+					ret.add(tok);
+				break;
+			case WEST:
+				if (color.equals(Color.RED) || color.equals(Color.BLUE))
+					ret.add(tok);
+				break;
+			}
+		}
+			
+			return ret;
 	}
 
 	/**
 	 * @param distribution the distribution to set
 	 */
-	public void setDistribution(Distribution distribution) {
+	public void addDistribution(Distribution distribution) {
 		if (distributionMap == null) {
 			distributionMap = new HashMap<Color, Distribution>();
 		}
@@ -198,16 +306,16 @@ public class ManantialesSolution implements Solution {
 					buf.append(" ");
 				switch (tok.getType()) {
 				case INTENSIVE_PASTURE:
-					buf.append ("I");
+					buf.append ("I[" + tok.getColor() +"]");
 					break;
 				case MODERATE_PASTURE:
-					buf.append ("M");
+					buf.append ("M[" + tok.getColor() + "]");
 					break;
 				case MANAGED_FOREST:
-					buf.append ("F");
+					buf.append ("F[" + tok.getColor() + "]");
 					break;
 				case UNDEVELOPED:
-					buf.append ("U");
+					buf.append ("U[" + tok.getColor() + "]");
 				}
 				if (row == 4)
 					buf.append(" ");

@@ -12,7 +12,6 @@ package mx.ecosur.multigame.solver.manantiales;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import mx.ecosur.multigame.Color;

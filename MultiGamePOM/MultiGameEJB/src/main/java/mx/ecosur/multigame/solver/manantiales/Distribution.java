@@ -18,6 +18,18 @@ public class Distribution {
 	
 	int forest, moderate, intensive, silvopastoral;
 	
+	public Distribution (Distribution dist) {
+		this.color = dist.getColor();
+		this.forest = dist.getForest();
+		this.moderate = dist.getModerate();
+		this.intensive = dist.getIntensive();
+		this.silvopastoral = dist.getSilvopastoral();
+	}
+	
+	public Distribution (Color color, int forest, int moderate, int intensive) {
+		this (color, forest, moderate, intensive, 0);
+	}
+	
 	public Distribution (Color color, int forest, int moderate, int intensive,
 		int silvopastoral) 
 	{
@@ -33,6 +45,10 @@ public class Distribution {
 	 */
 	public Color getColor() {
 		return color;
+	}
+	
+	public void setColor (Color color) {
+		this.color = color;
 	}
 
 	/**
@@ -61,5 +77,27 @@ public class Distribution {
 	 */
 	public int getSilvopastoral() {
 		return silvopastoral;
+	}
+	
+	public int getScore () {
+		return forest + moderate * 2 + intensive * 3 + silvopastoral * 4;
+	}
+	
+	public int getCount () {
+		return forest + moderate + intensive + silvopastoral;
+	}
+	
+	public boolean viableScore (int lowerBound, int upperBound) {
+		return (getScore () > lowerBound && getScore () < upperBound);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return " F: " + this.getForest() + ", M: " + 
+			this.getModerate() + ", I: " + this.getIntensive() + ", S: " + 
+			this.getSilvopastoral() + " == " + this.getScore() + "\n";
 	}
 }

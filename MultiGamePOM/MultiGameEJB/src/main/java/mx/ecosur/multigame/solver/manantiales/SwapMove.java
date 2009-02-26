@@ -11,15 +11,19 @@
 package mx.ecosur.multigame.solver.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
 
+/*
+ * Swaps two tokens of the same color.  
+ */
 public class SwapMove implements Move {
 	
-	private Token token, swapToken;
+	protected Token token, swapToken;
 	
 	public SwapMove (Token token, Token swapToken) {
 		this.token = token;
@@ -63,7 +67,8 @@ public class SwapMove implements Move {
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory wm) {
-		return (!token.equals(swapToken));
+		return (!token.equals(swapToken)  && 
+				!swapToken.getType().equals(TokenType.UNDEVELOPED));
 	}
 
 	/* (non-Javadoc)

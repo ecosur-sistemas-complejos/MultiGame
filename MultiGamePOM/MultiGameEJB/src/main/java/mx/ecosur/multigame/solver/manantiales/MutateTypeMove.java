@@ -32,9 +32,7 @@ public class MutateTypeMove implements Move {
 	 * @see org.drools.solver.core.move.Move#createUndoMove(org.drools.WorkingMemory)
 	 */
 	public Move createUndoMove(WorkingMemory wm) {
-		Token mutated = new Token (token.getColumn(), token.getRow(), token.getColor(),
-				toType);
-		return new MutateTypeMove (mutated, token.getType());
+		return new MutateTypeMove (token, token.getType());
 	}
 
 	/* (non-Javadoc)
@@ -52,8 +50,8 @@ public class MutateTypeMove implements Move {
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
-	public boolean isMoveDoable(WorkingMemory wm) {		
-		return ! (token.getType().equals(toType));
+	public boolean isMoveDoable(WorkingMemory wm) {
+		return !(token.getType().equals(toType));
 	}
 
 	/* (non-Javadoc)
@@ -63,7 +61,7 @@ public class MutateTypeMove implements Move {
 	public String toString() {
 		Token mutated = new Token (token.getColumn(), token.getRow(), 
 				token.getColor(), toType);
-		return token + "=>" + mutated;
+		return "(mutate" + token + "=>" + mutated + ")";
 	}
 
 	/* (non-Javadoc)

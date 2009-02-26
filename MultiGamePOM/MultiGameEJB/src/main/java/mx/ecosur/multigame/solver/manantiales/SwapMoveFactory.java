@@ -22,7 +22,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 
 import org.drools.solver.core.move.Move;
-import org.drools.solver.core.move.factory.CachedMoveFactory;
+import org.drools.solver.core.move.factory.AbstractMoveFactory;
 import org.drools.solver.core.solution.Solution;
 
 /**
@@ -36,14 +36,13 @@ import org.drools.solver.core.solution.Solution;
  * This limits search to only token types of a given board configuration.  
  */
 
-public class SwapMoveFactory extends CachedMoveFactory {
+public class SwapMoveFactory extends AbstractMoveFactory {
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.factory.CachedMoveFactory#createCachedMoveList(org.drools.solver.core.solution.Solution)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
-	public List<Move> createCachedMoveList(Solution solution) {
+	public List<Move> createMoveList(Solution solution) {
 		List<Move> ret = new ArrayList<Move>();
 		
 		/* Walk each piece and suggest all possible moves within that territory */
@@ -63,8 +62,6 @@ public class SwapMoveFactory extends CachedMoveFactory {
 			}
 			territoryMap.put (token.getColor(), territory);
 		}
-		
-		ManantialesSolution sol = (ManantialesSolution) solution;
 			
 		/* Setup suggestions based on all possible values per token per territory */
 		for (Color color : territoryMap.keySet()) {
@@ -88,9 +85,6 @@ public class SwapMoveFactory extends CachedMoveFactory {
 					break;
 				}
 			}
-			
-			if (score < sol.getThreshold().value())
-				throw new RuntimeException ("Insufficient value in territory to offer swap moves!");
 		
 			for (Token tok : territory) {
 				/* All tokens can be swapped with another token in the 
@@ -113,16 +107,19 @@ public class SwapMoveFactory extends CachedMoveFactory {
 					if (c.equals(color))
 						continue;
 					TreeSet<Token> borderTerritory = territoryMap.get(c);
-					for (Token borderToken : borderTerritory) {
-						if (borderToken.getBorder().equals(tok.getBorder())) {
-							ret.add(new SwapMove (tok, borderToken));
-						} else 
-							continue;
+					/* Null check for uncolored tokens */
+					if (borderTerritory != null) {
+						for (Token borderToken : borderTerritory) {
+							if (borderToken.getBorder().equals(tok.getBorder())) {
+								ret.add(new SwapMove (tok, borderToken));
+							} else 
+								continue;
+						}
 					}
 				}
-				
 			}		
 		}
+
 		return ret;
 	}
 }

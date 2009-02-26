@@ -12,7 +12,7 @@
 package mx.ecosur.multigame;
 
 public enum Color {
-	YELLOW, BLUE, RED, GREEN, UNKNOWN;
+	BLUE, GREEN, YELLOW, RED, UNKNOWN;
 
 	public Color getCompliment() {
 		Color ret;
@@ -34,6 +34,31 @@ public enum Color {
 			ret = UNKNOWN;
 		}
 
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString() {
+		String ret = "";
+		switch (this) {
+			case RED:
+				ret = "R";
+				break;
+			case GREEN:
+				ret = "G";
+				break;
+			case BLUE:
+				ret = "B";
+				break;
+			case YELLOW:
+				ret = "Y";
+				break;
+			default:
+				ret = "U";
+		}
 		return ret;
 	}
 }

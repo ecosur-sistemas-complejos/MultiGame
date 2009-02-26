@@ -4,32 +4,32 @@
     <!--  363 -->
     <distribution>
         <color>BLUE</color>
-        <forest>3</forest>
-        <moderate>6</moderate>
-        <intensive>3</intensive>
-    </distribution>
-    <!--  GREEN -->
-    <!--  606 -->
-    <distribution>
-        <color>GREEN</color>
         <forest>6</forest>
         <moderate>0</moderate>
         <intensive>6</intensive>
+    </distribution>
+    <!--  GREEN -->
+    <!-- 444 -->
+    <distribution>
+        <color>GREEN</color>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
     </distribution>
     <!-- YELLOW -->
     <!-- 444  -->
     <distribution>
         <color>YELLOW</color>
-        <forest>4</forest>
-        <moderate>4</moderate>
-        <intensive>4</intensive>
+        <forest>6</forest>
+        <moderate>0</moderate>
+        <intensive>6</intensive>
     </distribution>
     <!--  RED -->
     <!--  254 -->
     <distribution>
         <color>RED</color>
-        <forest>2</forest>
-        <moderate>5</moderate>
-        <intensive>4</intensive>
+        <forest>0</forest>
+        <moderate>12</moderate>
+        <intensive>0</intensive>
     </distribution>    
  </solution>

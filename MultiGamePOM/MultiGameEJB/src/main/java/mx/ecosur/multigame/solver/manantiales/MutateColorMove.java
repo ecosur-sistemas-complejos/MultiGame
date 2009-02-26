@@ -14,6 +14,7 @@ import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.solver.core.move.Move;
 
@@ -37,16 +38,20 @@ public class MutateColorMove implements Move {
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#doMove(org.drools.WorkingMemory)
 	 */
-	public void doMove(WorkingMemory workingMemory) {
-		// TODO Auto-generated method stub
-
+	public void doMove(WorkingMemory wm) {
+		FactHandle tokenHandle = wm.getFactHandle(token);
+		
+		/* Update WorkingMemory */
+		wm.modifyRetract(tokenHandle);
+		token.setColor(toColor);
+		wm.modifyInsert(tokenHandle, token);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
-	public boolean isMoveDoable(WorkingMemory workingMemory) {
-		return ! (token.getColor().equals(toColor));
+	public boolean isMoveDoable(WorkingMemory wm) {
+		return !(token.getColor().equals(toColor));
 	}
 	
 	/* (non-Javadoc)
@@ -56,7 +61,7 @@ public class MutateColorMove implements Move {
 	public String toString() {
 		Token mutated = new Token (token.getColumn(), token.getRow(), 
 				toColor, token.getType());
-		return token + "=>" + mutated;
+		return "(mutate " + token + "=>" + mutated + ")";
 	}
 
 	/* (non-Javadoc)

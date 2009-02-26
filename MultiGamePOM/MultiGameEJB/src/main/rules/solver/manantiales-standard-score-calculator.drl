@@ -138,7 +138,7 @@ rule "Too many deforested sites"
 end  
 
 #Enforce territorial constraints
-rule "all territories are worth at least 24 points"
+rule "blue territory worth at least 24 points"
     when
         $total : Number() from accumulate(
             Token (color == Color.BLUE, $score : score),
@@ -182,13 +182,14 @@ rule "yellow territory worth at least 24 points"
             "Not enough points", $total)); 
 end
 
-rule "No unclaimed territory"
-    when
-        $tok : Token (type == TokenType.UNDEVELOPED)
-    then
-        insertLogical (new UnweightedConstraintOccurrence(
-            "Unclaimed territory", $tok));
-end       
+#rule "No unclaimed territory"
+#    when
+#        $tok : Token (type == TokenType.UNDEVELOPED)
+#    then
+#        insertLogical (new UnweightedConstraintOccurrence(
+#            "Unclaimed territory", $tok));
+#end  
+
 
 #Constraint calculator update
 rule "hardConstraintsBroken"

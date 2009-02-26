@@ -65,11 +65,22 @@ public class SolutionConfigurer {
 					silvo = Integer.parseInt(tok.getChild("silvopastoral").getText());
 				Distribution dist = new Distribution(color, forest, moderate,
 						intensive, silvo);
-				solution.setDistribution(dist);
+				solution.addDistribution(dist);
 				populateDistribution(solution , dist);
 			}
 		}
 		
+		return solution;
+	}
+	
+	public ManantialesSolution configure (Matrix matrix) {
+		if (matrix.getCount() > 48)
+			throw new RuntimeException ("Only 48 locations available to be " +
+					"colonized!");
+		for (Distribution distribution : matrix.getDistributions()) {
+			solution.addDistribution(distribution);
+			populateDistribution(solution, distribution);
+		}
 		return solution;
 	}
 
@@ -80,8 +91,13 @@ public class SolutionConfigurer {
 	private void populateDistribution(ManantialesSolution solution,
 			Distribution dist) 
 	{
+		if (dist.getCount() > 16) 
+			throw new RuntimeException ("Distributions are from 8 - 16!");
+		
 		int forest = dist.getForest(), moderate = dist.getModerate(),
 			intensive = dist.getIntensive(), silvo = dist.getSilvopastoral();
+
+		/* Populate Core territory first */
 		for (Token tok : solution.getTokens()) {
 			if (tok.getColor().equals(dist.getColor())) {
 				if (forest > 0) {
@@ -101,8 +117,26 @@ public class SolutionConfigurer {
 				}
 			}
 		}
-			
-		if (forest !=0 || moderate !=0 || intensive !=0 || silvo != 0)
-			throw new RuntimeException ("Unable to populate distribution!");
+		
+		if (forest > 0 || moderate > 0 || intensive > 0 || silvo > 0) {
+			for (Token tok : solution.getBorders(dist.getColor())) {
+				tok.setColor(dist.getColor());
+				if (forest > 0) {
+					tok.setType(TokenType.MANAGED_FOREST);
+					forest--;
+				} else if (moderate > 0) {
+					tok.setType (TokenType.MODERATE_PASTURE);
+					moderate--;
+				} else if (intensive > 0) {
+					tok.setType(TokenType.INTENSIVE_PASTURE);
+					intensive--;
+				} else if (solution.getThreshold().equals(Threshold.INNOVATIVE) &&
+						silvo > 0) 
+				{
+					tok.setType (TokenType.SILVOPASTORAL);
+					silvo--;
+				}
+			}
+		}
 	}
 }

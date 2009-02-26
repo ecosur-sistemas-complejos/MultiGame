@@ -43,6 +43,9 @@ public enum BorderType {
 				break;
 		}
 		
+		/* Unknown colored tokens are always compliments on the border  */
+		colors.add(Color.UNKNOWN);
+		
 		return colors;
 	}
 }
