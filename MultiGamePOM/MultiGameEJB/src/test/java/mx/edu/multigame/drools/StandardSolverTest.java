@@ -14,9 +14,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -27,7 +25,6 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.solver.manantiales.Distribution;
-import mx.ecosur.multigame.solver.manantiales.LuisMatrixGenerator;
 import mx.ecosur.multigame.solver.manantiales.ManantialesSolution;
 import mx.ecosur.multigame.solver.manantiales.Matrix;
 import mx.ecosur.multigame.solver.manantiales.MatrixGenerator;
@@ -85,16 +82,12 @@ public class StandardSolverTest {
 		Solver solver = configurer.buildSolver();
 		solver.setStartingSolution(startingSolution);
 		ManantialesSolution solution = (ManantialesSolution) startingSolution;
-		logger.info ("Invoking solver, this should take a few minutes...");
-		logger.info ("Starting Distribution:");
+		logger.info ("Invoking solver, this should take a few seconds...");
 		logger.info (getDistributions(solution));
 		logger.info (solution.toString());
 		solver.solve();
 		solution = (ManantialesSolution) solver.getBestSolution();
-		logger.info ("Solution found!  Best score = " + solver.getBestScore() + 
-				" in " + solver.getTimeMillisSpend() + " ms");
 		logger.info (solution.toString());
-		logger.info ("Final distribution:");
 		logger.info (getDistributions(solution));
 		assertEquals (0.0, solver.getBestScore());
 	}
@@ -103,22 +96,17 @@ public class StandardSolverTest {
 	public void testDistribution () throws JDOMException, IOException {
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
-		Document doc = solcon.load(nonSymmetricPath);
+		Document doc = solcon.load(symmetricPath);
 		startingSolution = solcon.configure(doc);
 		Solver solver =configurer.buildSolver();
 		solver.setStartingSolution(startingSolution);
 		ManantialesSolution solution = (ManantialesSolution) startingSolution;
-		logger.info ("Invoking solver, this should take a few minutes...");
-		logger.info ("Starting distribution:");
+		logger.info ("Invoking solver, this should take a few seconds...");
 		logger.info (getDistributions(solution));
 		logger.info (solution.toString());
 		solver.solve();		
 		solution = (ManantialesSolution) solver.getBestSolution();
-		logger.info ("Best score = " + solver.getBestScore() + " in " + 
-				solver.getTimeMillisSpend() + " ms");
 		logger.info (solution.toString());
-		logger.info ("Final distribution:");
-		logger.info (getDistributions(solution));
 		assertEquals (0.0, solver.getBestScore());
 	}
 	
@@ -152,7 +140,6 @@ public class StandardSolverTest {
 		assertEquals (0.0, solver.getBestScore());
 	}
 	
-	@Test
 	public void testMatrixValidator () {
 		MatrixGenerator generator = new MatrixGenerator ();
 		Matrix matrix = new Matrix (new Distribution (Color.BLUE, 6,0,6),
@@ -167,7 +154,7 @@ public class StandardSolverTest {
 	 * 	Tests all possible distributions with at least 12 tokens and a score
 	 *  greater than 24.
 	 */
-	@Test
+	
 	public void testMatrices () {
 		Solver solver =configurer.buildSolver();
 		SolutionConfigurer solcon = new SolutionConfigurer(

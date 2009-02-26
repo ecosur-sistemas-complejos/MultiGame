@@ -30,10 +30,10 @@
         <!--  Great Deluge search -->
 <!--        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType> -->
     </forager>
-	<finish>
-	    <finishCompositionStyle>OR</finishCompositionStyle> 
-	    <feasableScore>0.0</feasableScore>
-	    <maximumMinutesSpend>10</maximumMinutesSpend> 
-<!--	    <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> -->
-	</finish>
+    <finish>
+        <finishCompositionStyle>OR</finishCompositionStyle> 
+        <feasableScore>0.0</feasableScore>
+        <maximumMinutesSpend>10</maximumMinutesSpend> 
+<!--        <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> -->
+    </finish>
 </localSearchSolver>

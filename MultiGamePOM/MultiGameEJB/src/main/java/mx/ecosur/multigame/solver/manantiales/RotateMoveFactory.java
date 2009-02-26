@@ -34,6 +34,7 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.factory.MoveFactory#createMoveList(org.drools.solver.core.solution.Solution)
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Move> createMoveList(Solution solution) {
 		List<Move> ret = new ArrayList<Move>();
 		
@@ -67,6 +68,9 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 		return ret;
 	}
 	
+	/*
+	 * @TODO Refactor this fill method to remove redundant code.
+	 */
 	private List<Move> fill (BorderType border, Set<Token> tokens) {
 		List<Move> ret = new ArrayList<Move>();
 		switch (border) {
