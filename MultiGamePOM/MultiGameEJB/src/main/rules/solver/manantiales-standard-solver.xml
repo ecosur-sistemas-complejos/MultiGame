@@ -7,33 +7,22 @@
     <selector>
         <selector>
             <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.RotateMoveFactory</moveFactoryClass>
-             <relativeSelection>0.75</relativeSelection>
+             <relativeSelection>0.99</relativeSelection>
         </selector>
         <selector>
             <moveFactoryClass>mx.ecosur.multigame.solver.manantiales.SwapMoveFactory</moveFactoryClass>
-            <relativeSelection>0.25</relativeSelection>
+            <relativeSelection>0.99</relativeSelection>
         </selector>        
     </selector>
     <accepter>
-        <!-- Tabu Local Search -->
-<!--        <completeMoveTabuSize>1000</completeMoveTabuSize>-->
-<!--        <completeUndoMoveTabuSize>1000</completeUndoMoveTabuSize>-->
-        <!--  Use the great deluge heuristic to search -->
-        <accepterType>GREAT_DELUGE</accepterType>
-<!--        <greatDelugeWaterRisingRate>0.23</greatDelugeWaterRisingRate>-->
-<!--        <greatDelugeWaterLevelUpperBoundRate>10</greatDelugeWaterLevelUpperBoundRate>-->
+         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
     </accepter>
     <forager>
-        <!--  Tabu search  -->
-<!--            <foragerType>MAX_SCORE_OF_ALL</foragerType>-->
-        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>
-        <!--  Great Deluge search -->
-<!--        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType> -->
+        <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
     <finish>
         <finishCompositionStyle>OR</finishCompositionStyle> 
         <feasableScore>0.0</feasableScore>
-        <maximumMinutesSpend>10</maximumMinutesSpend> 
-<!--        <maximumUnimprovedStepCount>100</maximumUnimprovedStepCount> -->
+        <maximumMinutesSpend>5</maximumMinutesSpend> 
     </finish>
 </localSearchSolver>

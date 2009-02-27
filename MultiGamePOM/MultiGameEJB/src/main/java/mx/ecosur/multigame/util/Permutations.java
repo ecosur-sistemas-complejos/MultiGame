@@ -1,8 +1,7 @@
 /***
  * LICENSE:
- * 	"The source code is free for you to use in whatever way you wish."
- *  [http://www.merriampark.com/perm.htm]
- * 
+ * 	 "The source code is free for you to use in whatever way you wish."
+ *   Michael Gilleland, 2009, [http://www.merriampark.com/perm.htm]
  * 
  */
 
@@ -10,7 +9,8 @@ package mx.ecosur.multigame.util;
 
 /*
  * Systematically generate permutations. 
- * 
+ * Somewhat customized from Gilleland's implementation.
+ *
  */
 import java.math.BigInteger;
 

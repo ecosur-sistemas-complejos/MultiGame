@@ -182,14 +182,6 @@ rule "yellow territory worth at least 24 points"
             "Not enough points", $total)); 
 end
 
-#rule "No unclaimed territory"
-#    when
-#        $tok : Token (type == TokenType.UNDEVELOPED)
-#    then
-#        insertLogical (new UnweightedConstraintOccurrence(
-#            "Unclaimed territory", $tok));
-#end  
-
 
 #Constraint calculator update
 rule "hardConstraintsBroken"

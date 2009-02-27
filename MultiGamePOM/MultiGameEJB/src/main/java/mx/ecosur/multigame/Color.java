@@ -12,7 +12,7 @@
 package mx.ecosur.multigame;
 
 public enum Color {
-	BLUE, GREEN, YELLOW, RED, UNKNOWN;
+	YELLOW, BLUE, RED, GREEN, UNKNOWN;
 
 	public Color getCompliment() {
 		Color ret;
@@ -59,6 +59,11 @@ public enum Color {
 			default:
 				ret = "U";
 		}
+		return ret;
+	}
+	
+	public static Color[] playable() {
+		Color[] ret = { BLUE, GREEN, YELLOW, RED };
 		return ret;
 	}
 }

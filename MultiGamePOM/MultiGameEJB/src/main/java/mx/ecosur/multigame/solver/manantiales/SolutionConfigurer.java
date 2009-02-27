@@ -40,7 +40,8 @@ public class SolutionConfigurer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public ManantialesSolution configure (Document document) {
+	public ManantialesSolution configure (Document document) throws UnconfigurableException {
+		solution.initialize();
 		/* Configure the game */
 		Element solutionElement = document.getRootElement();
 		/* Get the threshold */
@@ -73,7 +74,8 @@ public class SolutionConfigurer {
 		return solution;
 	}
 	
-	public ManantialesSolution configure (Matrix matrix) {
+	public ManantialesSolution configure (Matrix matrix) throws UnconfigurableException {
+		solution.initialize();
 		if (matrix.getCount() > 48)
 			throw new RuntimeException ("Only 48 locations available to be " +
 					"colonized!");
@@ -87,9 +89,10 @@ public class SolutionConfigurer {
 	/**
 	 * @param solution2
 	 * @param dist
+	 * @throws UnconfigurableException 
 	 */
 	private void populateDistribution(ManantialesSolution solution,
-			Distribution dist) 
+			Distribution dist) throws UnconfigurableException 
 	{
 		if (dist.getCount() > 16) 
 			throw new RuntimeException ("Distributions are from 8 - 16!");
@@ -119,7 +122,7 @@ public class SolutionConfigurer {
 		}
 		
 		if (forest > 0 || moderate > 0 || intensive > 0 || silvo > 0) {
-			for (Token tok : solution.getBorders(dist.getColor())) {
+			for (Token tok : solution.getUndevelopedBorders(dist.getColor())) {
 				tok.setColor(dist.getColor());
 				if (forest > 0) {
 					tok.setType(TokenType.MANAGED_FOREST);
@@ -138,5 +141,10 @@ public class SolutionConfigurer {
 				}
 			}
 		}
+		
+		if (forest > 0 || moderate > 0 || intensive > 0 || silvo > 0)
+			throw new UnconfigurableException (
+					"Unable to configure distribution! Not enough space for" +
+					"distribution: [" + dist + "]");
 	}
 }

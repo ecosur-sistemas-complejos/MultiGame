@@ -17,10 +17,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.manantiales.Token;
-import mx.ecosur.multigame.manantiales.BorderType;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
@@ -205,27 +202,29 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	public SortedSet<Token> getBorders (Color color) {
+	public SortedSet<Token> getUndevelopedBorders (Color color) {
 		SortedSet<Token> ret = new TreeSet<Token>(new CellComparator());
 		/* Add in all uncolored tokens */
 		for (Token tok : tokens) {
-			switch (tok.getBorder()) {
-			case NORTH:
-				if (color.equals (Color.BLUE) || color.equals(Color.GREEN))
-					ret.add(tok);
-				break;
-			case EAST:
-				if (color.equals (Color.GREEN) || color.equals(Color.YELLOW))
-					ret.add(tok);
-				break;
-			case SOUTH:
-				if (color.equals (Color.YELLOW) || color.equals(Color.RED))
-					ret.add(tok);
-				break;
-			case WEST:
-				if (color.equals(Color.RED) || color.equals(Color.BLUE))
-					ret.add(tok);
-				break;
+			if (tok.getType().equals(TokenType.UNDEVELOPED)) {
+				switch (tok.getBorder()) {
+				case NORTH:
+					if (color.equals(Color.BLUE) || color.equals(Color.GREEN))
+						ret.add(tok);
+					break;
+				case EAST:
+					if (color.equals(Color.GREEN) || color.equals(Color.YELLOW))
+						ret.add(tok);
+					break;
+				case SOUTH:
+					if (color.equals(Color.YELLOW) || color.equals(Color.RED))
+						ret.add(tok);
+					break;
+				case WEST:
+					if (color.equals(Color.RED) || color.equals(Color.BLUE))
+						ret.add(tok);
+					break;
+				}
 			}
 		}
 			
