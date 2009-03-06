@@ -53,7 +53,11 @@ import mx.ecosur.multigame.GameType;
 	@NamedQuery(name = "getGameByTypeAndPlayer", query = "select gp.game from GamePlayer as gp "
 			+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state"),
 	@NamedQuery(name = "getGamesByPlayer", query = "select gp.game from GamePlayer as gp "
-				+ "where gp.player=:player and gp.game.state <> :state")})
+				+ "where gp.player=:player and gp.game.state <> :state"),
+	@NamedQuery(name = "getGamesByNotPlayer", 
+			query = "select g from Game as g where g.state = :state and not exists " +
+					"(select gp from GamePlayer as gp where " +
+					"gp.player = :player and gp.game.id = g.id)")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Game implements Serializable {
@@ -80,7 +84,6 @@ public class Game implements Serializable {
 	
 	/**
 	 * The players involved in the game 
-	 * @TODO Make this a Set so there can be no duplicate players
 	 */
 	private List<GamePlayer> players;
 	

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solution type="SIMPLE">
     <!--  BLUE -->
-    <!--  363 -->
     <distribution>
         <color>BLUE</color>
-        <forest>6</forest>
-        <moderate>0</moderate>
-        <intensive>6</intensive>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
     </distribution>
     <!--  GREEN -->
-    <!-- 444 -->
     <distribution>
         <color>GREEN</color>
         <forest>4</forest>
@@ -17,19 +15,17 @@
         <intensive>4</intensive>
     </distribution>
     <!-- YELLOW -->
-    <!-- 444  -->
     <distribution>
         <color>YELLOW</color>
-        <forest>6</forest>
-        <moderate>0</moderate>
-        <intensive>6</intensive>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
     </distribution>
     <!--  RED -->
-    <!--  254 -->
     <distribution>
         <color>RED</color>
-        <forest>0</forest>
-        <moderate>12</moderate>
-        <intensive>0</intensive>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
     </distribution>    
  </solution>

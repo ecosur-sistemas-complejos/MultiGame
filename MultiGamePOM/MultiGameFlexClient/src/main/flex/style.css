@@ -30,15 +30,6 @@
             borderAlpha: 0.9;
         }
         
-        TextArea{
-        	backgroundColor: #ffffff;
-        	borderThickness: 0;
-        }
-        
-        MenuBar{
-        	color: #000000;
-        }
-        
         .fieldLit{
             color: #000000;
             font-weight: bold;

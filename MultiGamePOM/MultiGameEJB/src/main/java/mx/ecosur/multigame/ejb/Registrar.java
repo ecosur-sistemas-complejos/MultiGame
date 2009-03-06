@@ -450,7 +450,17 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		Query query = em.createNamedQuery("getGamesByPlayer");
 		query.setParameter("player", player);
 		query.setParameter("state", GameState.END);
-		return query.getResultList();
+		List<Game> ret = query.getResultList();
+		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.ejb.entity.Player)
+	 */
+	public List<Game> getPendingGames(Player player) {
+		Query query = em.createNamedQuery("getGamesByNotPlayer");
+		query.setParameter("player", player);
+		query.setParameter("state", GameState.WAITING);
+		return query.getResultList();
+	}
 }

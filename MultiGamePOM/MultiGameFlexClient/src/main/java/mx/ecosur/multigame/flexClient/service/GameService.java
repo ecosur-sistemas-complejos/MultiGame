@@ -78,9 +78,8 @@ public class GameService {
 		GamePlayer gamePlayer = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();
-			GameType gameType = GameType.valueOf(gameTypeStr);
-			gamePlayer = registrar.registerPlayer(player, preferedColor, 
-					GameType.valueOf(GameType.class, gameTypeStr));
+			Game game = registrar.createGame(GameType.valueOf(gameTypeStr));
+			gamePlayer = registrar.registerPlayer(game, player, preferedColor);
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -92,6 +91,21 @@ public class GameService {
 			e.printStackTrace();
 		}
 		return gamePlayer;
+	}
+	
+	public GamePlayer joinPendingGame (Game game, Player player, 
+			Color preferredColor) 
+	{
+		GamePlayer ret = null;
+		RegistrarRemote registrar = getRegistrar();
+		try {
+			ret = registrar.registerPlayer(game, player, preferredColor);
+		} catch (InvalidRegistrationException e) {
+			e.printStackTrace();
+			throw new GameException (e);
+		}
+		
+		return ret;
 	}
 	
 	/*
@@ -134,6 +148,11 @@ public class GameService {
 	public List<Game> getUnfinishedGames(Player player){
 		RegistrarRemote registrar = getRegistrar();
 		return registrar.getUnfinishedGames(player);
+	}
+	
+	public List<Game> getPendingGames(Player player){
+		RegistrarRemote registrar = getRegistrar();
+		return registrar.getPendingGames(player);
 	}
 
 	public Game getGame(int gameId) {

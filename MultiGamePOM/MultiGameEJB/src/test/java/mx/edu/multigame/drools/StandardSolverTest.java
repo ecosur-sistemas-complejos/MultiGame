@@ -60,7 +60,7 @@ public class StandardSolverTest {
 	private static String asymmetricPath = 
 		"/mx/ecosur/multigame/solver/data/distribution.xml";
 	private static String csvPath = 
-		"/mx/ecosur/multigame/solver/data/matrices.csv";
+		"/mx/ecosur/multigame/solver/data/matrices.data";
 	
 	private XmlSolverConfigurer configurer;
 	private Solution startingSolution;
@@ -77,6 +77,7 @@ public class StandardSolverTest {
 				game.getTokens());
 	}
 	
+	@Test
 	public void testSolver () throws JDOMException, IOException, 
 		UnconfigurableException 
 	{
@@ -119,6 +120,7 @@ public class StandardSolverTest {
 		assertEquals (0.0, solver.getBestScore());
 	}
 	
+	@Test
 	public void testMatrixValidator () {
 		MatrixGenerator generator = new MatrixGenerator ();
 		Matrix matrix = new Matrix (new Distribution (Color.BLUE, 6,0,6),
@@ -135,7 +137,6 @@ public class StandardSolverTest {
 	 * @throws UnconfigurableException 
 	 */
 	public void testGeneratedMatrices () throws UnconfigurableException {
-		Solver solver =configurer.buildSolver();
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
 		MatrixGenerator generator = new MatrixGenerator();
@@ -148,19 +149,25 @@ public class StandardSolverTest {
 		logger.info("Testing " + matrices.size() + " distributions for validity.\n");
 		Map <Matrix, Double> goodMatrices = new HashMap<Matrix, Double>();
 		Map <Matrix, Double> badMatrices = new HashMap<Matrix, Double>();
+		StringBuffer log = new StringBuffer();
 		for (Matrix matrix : matrices) {
+			log.delete(0, log.length());
+			Solver solver =configurer.buildSolver();
 			startingSolution = solcon.configure(matrix);
 			try {
 				solver.setStartingSolution(startingSolution);
 				ManantialesSolution solution = (ManantialesSolution) startingSolution;
-				logger.info ("Starting matrix:\n" + matrix.toString());
-				logger.info (matrix.toString());
+				log.append("Starting matrix:\n" + matrix.toString());
+				log.append (matrix.toString());
+				logger.info (log.toString());
 				solver.solve();		
 				solution = (ManantialesSolution) solver.getBestSolution();
-				logger.info ("Final distribution:\n" + getDistributions(solution));
-				logger.info (solution.toString());
-				logger.info ("Best score = " + solver.getBestScore() + " in " + 
+				log = log.delete(0, log.length());
+				log.append("Final distribution:\n" + getDistributions(solution));
+				log.append(solution.toString());
+				log.append("Best score = " + solver.getBestScore() + " in " + 
 						solver.getTimeMillisSpend() + " ms");
+				logger.info (log.toString());
 				if (solver.getBestScore() != 0.0) {
 					badMatrices.put(matrix, new Double (solver.getBestScore()));
 				} else 
@@ -181,7 +188,6 @@ public class StandardSolverTest {
 		}
 	}
 	
-	@Test
 	public void testCSVMatrices () throws IOException {
 		BufferedReader reader = new BufferedReader (new InputStreamReader(this.getClass()
 				.getResourceAsStream(csvPath)));

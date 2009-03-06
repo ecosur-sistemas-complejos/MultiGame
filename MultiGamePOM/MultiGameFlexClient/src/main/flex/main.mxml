@@ -28,7 +28,7 @@
         		vstack.selectedChild = lobby;
         	}
         	
-        	private function lobbyDone(event:GamePlayerEvent):void{
+        	private function lobbyDone(event:GamePlayerEvent):void{       		
         		
         		//create new pente game window
         		_penteGameWindow = new PenteGameWindow();
@@ -47,7 +47,7 @@
 	
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
     	<component:Login id="login" complete="loginDone(event)" />
-    	<component:Lobby id="lobby" registered="lobbyDone(event)" gameChosen="lobbyDone(event)" />
+    	<component:Lobby id="lobby" registered="lobbyDone(event)" gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
 		<pente:PenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
 	</mx:ViewStack>
 </mx:Application>

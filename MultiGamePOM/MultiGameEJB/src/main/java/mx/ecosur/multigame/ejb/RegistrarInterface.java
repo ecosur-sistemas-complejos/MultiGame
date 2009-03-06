@@ -134,5 +134,14 @@ public interface RegistrarInterface {
 	 * @return
 	 */
  	public abstract List<Game> getUnfinishedGames(Player player);
-
+ 	
+ 	/**
+ 	 * Gets all pending games that the specific player has not
+ 	 * joined.
+ 	 * 
+ 	 * @param player
+ 	 * 			the player
+ 	 * @return
+ 	 */
+ 	public abstract List<Game> getPendingGames(Player player);
 }
