@@ -107,10 +107,6 @@ public class Game implements Serializable {
 		setState(GameState.WAITING);
 		setCreated(new Date());
 		switch (type) {
-			case CHECKERS:
-				this.setRows (8);
-				this.setColumns (8);
-				break;
 			case PENTE:
 				this.setRows (19);
 				this.setColumns (19);
@@ -288,10 +284,10 @@ public class Game implements Serializable {
 		int ret = 0;
 		
 		switch (type) {
-			case CHECKERS:
-				ret = 2;
-				break;
 			case PENTE:
+				ret = 4;
+				break;
+			case MANANTIALES:
 				ret = 4;
 				break;
 		}

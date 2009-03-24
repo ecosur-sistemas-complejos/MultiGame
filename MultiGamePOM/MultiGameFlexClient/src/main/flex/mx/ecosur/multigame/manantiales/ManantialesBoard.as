@@ -1,0 +1,246 @@
+/*
+* Copyright (C) 2009 ECOSUR, Andrew Waterman
+* 
+* Licensed under the Academic Free License v. 3.2. 
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+/**
+ * @author awaterma@ecosur.mx
+*/
+
+package mx.ecosur.multigame.manantiales
+{	
+	import flash.display.Shape;
+	import flash.geom.Point;
+	
+	import mx.ecosur.multigame.component.AbstractGameBoard;
+	import mx.ecosur.multigame.entity.GamePlayer;
+	import mx.ecosur.multigame.enum.Color;
+    
+    /**	
+    * A ManantialesBoard is similar to the PenteBoard implementation,
+    * but cells are spaced in a much different manner, and not all
+    * iumns and rows are filled in with actionable BoardCells.  
+    * 
+    * Generating a board like:
+    * 
+    * 
+    *  M[B]  I[B]       M[B]   I[G]   M[G]  
+    *    M[B]  M[B]     I[B]  M[G]  M[G]  
+    *  I[B]  I[B]       F[G]   I[G]   I[G]  
+    *    F[B]  F[B]     F[G]  M[G]  F[G]  
+    *  F[B] F[B] M[R] M[R]  F[Y]  F[Y]  I[G]  F[G] 
+    *    F[R]  F[R]     F[R]  M[Y]  M[Y]  
+    *  I[R]  I[R]       M[R]   I[Y]   I[Y]  
+    *    I[R]  F[R]     I[Y]  F[Y]  M[Y]  
+    *   M[R]  I[R]      F[Y]   I[Y]   M[Y]  
+    * 
+    * This represents a 9x9 grid, but with spacing staggered
+    * except for the center column and row.
+    * 
+    * The center position of the board is always empty, acting
+    * as the location of the Manantial or Spring for individuals
+    * living in the Ejido.
+    */ 
+	public class ManantialesBoard extends AbstractGameBoard {
+		protected var _bg:Shape;
+		protected var _currentPlayer:GamePlayer;
+		
+		public function ManantialesBoard () {
+			super();
+			
+			this._nCols = 9;
+			this._nRows = 9;
+		}
+		
+		public function set currentPlayer (currentPlayer:GamePlayer):void {
+			this._currentPlayer = currentPlayer;
+		}
+				
+		/* Component overrides */
+        override protected function createChildren():void {
+        	_bg = new Shape();
+        	addChild(_bg);
+        	
+            _boardCells = new Array();
+            var counter:int = 0;
+            var boardCell:RoundCell;
+            
+            for (var i:int = 0; i < 9; i++) {
+            	_boardCells[i] = new Array();
+	            for (var j:int = 0; j < 9; j++) {          		            	
+    	            boardCell = null;
+    	            
+    	            if (i == 4) {
+    	            	this.setStyle("cellBgColor", 0xA0A0A0); 
+    	            } else if (j == 4) {
+    	            	this.setStyle("cellBgColor", 0xA0A0A0);
+    	            } else if (i < 4 && j < 4) {
+                    	this.setStyle("cellBgColor", Color.getColorCode(Color.BLUE));
+                    } else if (i < 4 && j > 4) {
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
+                    } else if (i > 4 && j < 4) {
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.GREEN));
+                    } else if (i > 4 && j > 4) {
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
+                    }
+    	            
+    	            if (i == 4 && j == 4) {
+    	            	continue;
+    	            }
+    	            else if ( i % 2 == 0 && j % 2 == 0) {
+	            		boardCell = new RoundCell(j,i, cellBgColor, 
+                            cellBorderColor, cellBorderThickness);  
+	            	} else if ( i % 2 != 0 && j % 2 != 0 ) {
+	                	boardCell = new RoundCell(j, i, cellBgColor, 
+                            cellBorderColor, cellBorderThickness);                         
+	                } else if (i == 4 || j == 4) {
+                        boardCell = new RoundCell(j,i, cellBgColor, 
+                            cellBorderColor, cellBorderThickness);  		                	
+	                }
+	                
+	              	if (boardCell != null) {
+	              		addChild(boardCell);
+                        _boardCells[i][j] = boardCell;
+                        boardCell.setStyle("padding", cellPadding);
+                        boardCell.alpha = 0.70;
+                    }
+                    
+                    counter = counter + 1;
+                    
+	            }
+            }
+            
+            _cellsCreated = true; 
+        }
+        
+        override protected function updateDisplayList(unscaledWidth:Number, 
+            unscaledHeight:Number):void
+       {
+            _bg.graphics.clear();
+            _bg.graphics.beginFill(0xFFFFFF);
+            _bg.graphics.lineStyle(1, 0xffffff, 3);
+            _bg.graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 15, 15);
+            _bg.graphics.endFill();       	    
+       	
+            
+            // Check that _boardCells have been created
+            if (!_cellsCreated){
+                return;
+            }
+            
+            var boardCell:RoundCell;
+            var cellSize:Number; 
+            var factor:int;
+            var positioningFactor:int;
+            
+            var xPos:Number;
+            var yPos:Number;
+            
+            factor = 2;
+            positioningFactor = 16;
+            
+            this.measure();
+            cellSize =  (this.measuredWidth/_nCols)/factor;
+            tokenSize = (cellSize * 1.5) + (2 * cellPadding);
+            
+            for (var col:Number = 0; col < _nCols; col++){
+                for (var row:Number = 0; row < _nRows; row++){
+                	   /* Pull cell sprite, and size based on current conditions */
+                    boardCell = RoundCell(getBoardCell(col, row));
+                    if (boardCell != null) {
+                        boardCell.width = cellSize * 1.5;
+                        boardCell.height = cellSize * 1.5;
+                        
+                        /* starting value for displacement */
+                        xPos = cellSize * factor;
+                        yPos = cellSize * factor;
+                        
+                        /* Hand adjustments for the staggered cells */
+                        if (col == 1 || col == 3) {
+                        	if( row == 1 || row == 3) {
+                        		xPos = (cellSize - cellSize/positioningFactor) * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) * factor;   
+                        		
+                        	} else if (row == 5 || row == 7) {
+                                xPos = (cellSize - cellSize/positioningFactor) * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) * factor;                         		
+                        	}
+                        } else if (col == 2) {
+                        	if (row == 2) {
+                                xPos = (cellSize - cellSize/positioningFactor) * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) * factor; 	
+                        	} else if (row == 6) {
+                                xPos = (cellSize - cellSize/positioningFactor) * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) * factor;                         		
+                        	}
+                        } else if (col == 5 || col == 7) {
+                        	if (row == 1 || row == 3) {
+                                xPos = (cellSize + cellSize/positioningFactor) * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) * factor;   
+                        	} if (row == 5 || row == 7) {
+                                xPos = (cellSize + cellSize/positioningFactor) * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) * factor;                           		
+                        	}
+                        	
+                        } else if (col == 6) {
+                        	if (row == 2) {
+                                xPos = (cellSize + cellSize/positioningFactor) * 2;
+                                yPos = (cellSize - cellSize/positioningFactor) * 2;    
+                            } else if (row == 6) {
+                                xPos = (cellSize + cellSize/positioningFactor) * 2;
+                                yPos = (cellSize + cellSize/positioningFactor) * 2;                                
+                            }
+                        } else if (col == 8) {
+                        	xPos = xPos + (cellSize/positioningFactor);
+                        }
+                        
+                        if (row == 8) {
+                        	yPos = yPos + (cellSize/positioningFactor);
+                        }
+                                                
+                        boardCell.x = xPos * col; 
+                        boardCell.y = yPos * row;
+                                                                  
+                    }
+                }
+            }
+                        
+//            var currentPos:Point = new Point(this.scaleX, 
+//                this.scaleX);
+//            this.rotation = boardRotation;            
+//            var destPos:Point = findDestination(currentPos);
+//            this.move(destPos.x, destPos.y);
+        }
+        
+       protected function get boardRotation():int {
+            var ret:int = 0;
+        
+            if (_currentPlayer.color == Color.GREEN) {
+                ret = 90 * 3; // *  (Math.PI / 180);
+            } else if (_currentPlayer.color == Color.YELLOW) {
+                ret = 90 * 2; //  * (Math.PI / 180);
+            } else if (_currentPlayer.color == Color.RED) {
+                ret = 90 * 1; // * (Math.PI / 180);
+            }
+        
+            return ret;
+        }
+        
+        protected function findDestination (point:Point):Point {
+            var ret:Point = point;
+            
+            if (_currentPlayer.color == Color.GREEN) {
+                ret.y = ret.y + this.width;
+            } else if (_currentPlayer.color == Color.YELLOW) {
+                ret.x = ret.x + this.width;
+                ret.y = ret.y + this.width;
+            } else if (_currentPlayer.color == Color.RED) {
+                ret.x = ret.x + this.width;
+            }           
+            
+            return ret;
+        }    		
+	}
+}

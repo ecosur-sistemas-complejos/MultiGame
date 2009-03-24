@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
 	xmlns:pente="mx.ecosur.multigame.pente.*"
+	xmlns:manantiales="mx.ecosur.multigame.manantiales.*"
 	xmlns:component="mx.ecosur.multigame.component.*"
 	layout="absolute">
 	
@@ -8,19 +9,23 @@
 	
 	<mx:Script> 
         <![CDATA[
+            import mx.ecosur.multigame.entity.Game;
         	import mx.ecosur.multigame.entity.GamePlayer;
         	import mx.ecosur.multigame.event.GamePlayerEvent;
         	import mx.ecosur.multigame.event.PlayerEvent;
         	import mx.ecosur.multigame.entity.Player;
         	import mx.controls.Alert;
         	import mx.ecosur.multigame.pente.PenteGameWindow;
+        	import mx.ecosur.multigame.manantiales.ManantialesWindow;
         	
         	private var _penteGameWindow:PenteGameWindow;
+        	
+        	private var _manantialesWindow:ManantialesWindow;
         	
         	private function gameComplete (event:Event):void {
         		lobby.reload(event);
         		vstack.selectedChild = lobby;
-        		vstack.removeChild(_penteGameWindow);
+        		lobby.setFocus();
         	}
         	
         	private function loginDone(event:PlayerEvent):void{
@@ -29,19 +34,26 @@
         	}
         	
         	private function lobbyDone(event:GamePlayerEvent):void{       		
-        		
-        		//create new pente game window
-        		_penteGameWindow = new PenteGameWindow();
-        		_penteGameWindow.currentPlayer = event.gamePlayer;
-        		_penteGameWindow.rows = event.gamePlayer.game.rows;
-        		_penteGameWindow.columns = event.gamePlayer.game.columns;
-        		_penteGameWindow.addEventListener("complete", gameComplete);
-        		
-        		//select new window
-        		vstack.addChild(_penteGameWindow);
-        		vstack.selectedChild = _penteGameWindow;
+        		var game:Game = event.gamePlayer.game;
+        		if (game.type == "PENTE") {
+	        		//create new pente game window
+	        		_penteGameWindow = new PenteGameWindow();
+	        		_penteGameWindow.currentPlayer = event.gamePlayer;
+	        		_penteGameWindow.rows = event.gamePlayer.game.rows;
+	        		_penteGameWindow.columns = event.gamePlayer.game.columns;
+	        		_penteGameWindow.addEventListener("complete", gameComplete);
+
+	        		vstack.addChild(_penteGameWindow);
+	        		vstack.selectedChild = _penteGameWindow;
+	        	} else if (game.type == "MANANTIALES") {
+                    _manantialesWindow = new ManantialesWindow();
+                    _manantialesWindow.currentPlayer = event.gamePlayer;                
+                    _manantialesWindow.addEventListener("complete", gameComplete);
+
+                    vstack.addChild(_manantialesWindow);
+                    vstack.selectedChild = _manantialesWindow; 		
+	        	}
         	}
-        
         ]]>
     </mx:Script>
 	
@@ -49,5 +61,6 @@
     	<component:Login id="login" complete="loginDone(event)" />
     	<component:Lobby id="lobby" registered="lobbyDone(event)" gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
 		<pente:PenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
+		<manantiales:ManantialesWindow id="manantialesGameWindow" complete="gameComplete(event)" />
 	</mx:ViewStack>
 </mx:Application>

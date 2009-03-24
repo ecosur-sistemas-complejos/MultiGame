@@ -6,17 +6,17 @@
 */
 
 /**
- * @author max@alwayssunny.com
+ *  @author max@alwayssunny.com
+ *  @author awaterma@ecosur.mx
 */
 
-package mx.ecosur.multigame.pente {
+package mx.ecosur.multigame.component {
     
     import flash.events.Event;
+
+    import flash.utils.getQualifiedClassName;
     
-    import mx.controls.Image;
     import mx.core.UIComponent;
-    import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.component.Token;
     import mx.events.DragEvent;
     
     [Style(name="cellBgColor", type="uint", format="Color")]
@@ -25,51 +25,42 @@ package mx.ecosur.multigame.pente {
     [Style(name="cellBorderThickness", type="int", format="Length")]
     [Style(name="cellPadding", type="int", format="Length")]
     
-    public class PenteBoard extends UIComponent {
+    public class AbstractGameBoard extends UIComponent {
         
-        private var _nCols:int; //number of cells on X axis
-        private var _nRows:int; //number of cells of Y axis
-        private var _boardCells:Array; //two dimensional array of BoardCell
-        private var _columnLabels:Array; //array of text field column labels
+        protected var _nCols:int; //number of cells on X axis
+        protected var _nRows:int; //number of cells of Y axis
+        protected var _boardCells:Array; //two dimensional array of BoardCell
+        protected var _columnLabels:Array; //array of text field column labels
         
         [Bindable]
         public var tokenSize:Number; //size of tokens
         
-        [Embed(source='/assets/icons.swf#centerSquare')]
-        private static var centerBgSource:Class;
-        
         // Default cell style properties
-        private static const DEFAULT_CELL_BG_COLOR:uint = 0xffffff;
-        private static const DEFAULT_CELL_BG_ALPHA:Number = 1;
-        private static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
-        private static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
-        private static const DEFAULT_CELL_PADDING:Number = 2.5;
-        private static const LABEL_SIZE:Number = 0;
+        protected static const DEFAULT_CELL_BG_COLOR:uint = 0xffffff;
+        protected static const DEFAULT_CELL_BG_ALPHA:Number = 1;
+        protected static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
+        protected static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
+        protected static const DEFAULT_CELL_PADDING:Number = 2.5;
+        protected static const LABEL_SIZE:Number = 0;
         
         // Flags
-        private var _cellsCreated:Boolean;
+        protected var _cellsCreated:Boolean;
         
         // Listeners
-        private var _dragEnterHandler:Function;
-        private var _dragExitHandler:Function;
-        private var _dragDropHandler:Function;
+        protected var _dragEnterHandler:Function;
+        protected var _dragExitHandler:Function;
+        protected var _dragDropHandler:Function;
         
-        
-        /**
-         * Contructor
-         *  
-         * @param nCols the number of columns
-         * @param nRows the number of rows
-         * @param dragEnterHandler
-         * @param dragDropHandler
-         * @param dragExitHandler
-         * 
-         */
-        public function PenteBoard(){
-            super();
+        public function AbstractGameBoard() {
+			super();
+			
+			if(getQualifiedClassName(this) == "mx.ecosur.multigame.component::AbstractGameBoard") {
+                throw new Error("Unable to instantiate an Abstract Class!");
+            }
+                        
             _cellsCreated = false;
             addEventListener(Event.RESIZE, function():void{invalidateSize()});
-        }
+		}
         
         /* Getters and setters */
         
@@ -143,7 +134,8 @@ package mx.ecosur.multigame.pente {
             for (var i:Number = 0; i < _nCols; i++){
                 for (var j:Number = 0; j < _nRows; j++){
                     boardCell = BoardCell(_boardCells[i][j]);
-                    boardCell.token = null;
+					if (boardCell != null)
+	                    boardCell.token = null;
                 }
             }
         }
@@ -158,55 +150,6 @@ package mx.ecosur.multigame.pente {
          */
         public function getCellDescription(column:Number, row:Number):String{
             return "row " + (nRows - row) + ", column " + (column + 1);
-        }
-        
-        
-        /* Component overrides */
-        
-        override protected function createChildren():void {
-            
-            // Create all cells
-            var boardCell:BoardCell;
-            _boardCells = new Array();
-            for (var i:Number = 0; i < _nCols; i++){
-                _boardCells[i] = new Array();
-                for (var j:Number = 0; j < _nRows; j++){
-                    boardCell = new BoardCell(j, i, cellBgColor, cellBorderColor, cellBorderThickness);
-                    _boardCells[i][j] = boardCell;
-                    addChild(boardCell);
-                    boardCell.setStyle("padding", cellPadding);
-                }
-            }
-            
-            //add center square to center cell
-            var centerCell:BoardCell = _boardCells[Math.floor(_nCols / 2)][Math.floor(_nRows / 2)];
-            var img:Image = new Image();
-            img.source = centerBgSource;
-            centerCell.bgImage = img;
-            
-            // Create text format for labels
-            /*
-            var txtFormat:TextFormat = new TextFormat();
-            txtFormat.font = "Verdana";
-            txtFormat.size = 10;
-            txtFormat.bold = true;
-            txtFormat.color = 0xFFFFFF;
-            */
-            
-            // Create column labels
-            /*
-            var textField:TextField;
-            var colLabelLetters:Array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-            for (var i:Number = 0; i < nCols; i++){
-                textField = new TextField();
-                textField.text = colLabelLetters[i];
-                textField.defaultTextFormat = txtFormat;
-                _columnLabels[i] = textField;
-                addChild(textField);
-            }*/
-            
-            
-            _cellsCreated = true;
         }
         
         override protected function measure():void{
@@ -230,30 +173,6 @@ package mx.ecosur.multigame.pente {
             }
         }
         
-        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
-            
-            // Check that _boardCells have been created
-            if (!_cellsCreated){
-                return;
-            }
-                
-            // Loop through cells positioning and scaling them
-            // This assumes that the cells are square
-            var boardCell:BoardCell;
-            var boardCellSize:Number = (measuredWidth - LABEL_SIZE) / _nCols;
-            var baseX:Number = (unscaledWidth - measuredWidth + LABEL_SIZE) / 2;
-            tokenSize = boardCellSize - 2 * cellPadding;
-            for (var i:Number = 0; i < _nCols; i++){
-                for (var j:Number = 0; j < _nRows; j++){
-                    boardCell = getBoardCell(i, j);
-                    boardCell.width = boardCellSize;
-                    boardCell.height = boardCellSize;
-                    boardCell.x = baseX + LABEL_SIZE + boardCellSize * i;
-                    boardCell.y = boardCellSize * j;
-                }
-            }
-        }
-        
         override protected function commitProperties():void{
             
             // Check that boardCells have been created
@@ -264,19 +183,19 @@ package mx.ecosur.multigame.pente {
             //reset handlers
             for (var i:Number = 0; i < _nCols; i++){
                 for (var j:Number = 0; j < _nRows; j++){
-                    if (_dragExitHandler != null){
-                        getBoardCell(i, j).addEventListener(DragEvent.DRAG_EXIT, _dragExitHandler);
+                	var boardCell:BoardCell = getBoardCell(i,j);
+                    if (_dragExitHandler != null && boardCell != null){
+                        boardCell.addEventListener(DragEvent.DRAG_EXIT, _dragExitHandler);
                     }
-                    if (_dragEnterHandler != null){
-                        getBoardCell(i, j).addEventListener(DragEvent.DRAG_ENTER, _dragEnterHandler);
+                    if (_dragEnterHandler != null && boardCell != null){
+                        boardCell.addEventListener(DragEvent.DRAG_ENTER, _dragEnterHandler);
                     }
-                    if(_dragDropHandler != null){
-                        getBoardCell(i, j).addEventListener(DragEvent.DRAG_DROP, _dragDropHandler);
+                    if(_dragDropHandler != null && boardCell != null){
+                        boardCell.addEventListener(DragEvent.DRAG_DROP, _dragDropHandler);
                     }
                 }
             }
         }
-        
         
         /* Style management */  
 

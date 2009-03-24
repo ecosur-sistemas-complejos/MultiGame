@@ -21,13 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.logging.Logger;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
 import mx.ecosur.multigame.solver.manantiales.Distribution;
 import mx.ecosur.multigame.solver.manantiales.ManantialesSolution;
 import mx.ecosur.multigame.solver.manantiales.Matrix;
@@ -60,7 +56,7 @@ public class StandardSolverTest {
 	private static String asymmetricPath = 
 		"/mx/ecosur/multigame/solver/data/distribution.xml";
 	private static String csvPath = 
-		"/mx/ecosur/multigame/solver/data/matrices.data";
+		"/mx/ecosur/multigame/solver/data/matrices.csv";
 	
 	private XmlSolverConfigurer configurer;
 	private Solution startingSolution;
@@ -70,11 +66,8 @@ public class StandardSolverTest {
 		configurer = new XmlSolverConfigurer();
 		configurer.configure(new InputStreamReader(this.getClass()
 				.getResourceAsStream(configPath)));
-		ManantialesGame game = new ManantialesGame();
-		game.initialize(GameType.MANANTIALES);
 		startingSolution = new ManantialesSolution(
-				ManantialesSolution.Threshold.SIMPLE, (SortedSet<Token>) 
-				game.getTokens());
+				ManantialesSolution.Threshold.SIMPLE);
 	}
 	
 	@Test

@@ -1,17 +1,6 @@
-/*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
-* 
-* Licensed under the Academic Free License v. 3.2. 
-* http://www.opensource.org/licenses/afl-3.0.php
-*/
-
-/**
- * @author max@alwayssunny.com
-*/
-
-package mx.ecosur.multigame.pente {
-    
-    import flash.events.MouseEvent;
+package mx.ecosur.multigame.component
+{
+	import flash.events.MouseEvent;
     
     import mx.collections.ArrayCollection;
     import mx.containers.Accordion;
@@ -21,19 +10,15 @@ package mx.ecosur.multigame.pente {
     import mx.controls.Spacer;
     import mx.ecosur.multigame.entity.*;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.pente.entity.*;
     import mx.events.DynamicEvent;
-    
-    /**
-     * Visual component showing all the moves made in the game
-     * and allowing navegation to different points in the game.
-     */
-    public class PenteMoveViewer extends Panel {
-        
+	
+
+	public class MoveViewer extends Panel
+	{
         private var _moves:Accordion; 
         private var _controlBar:ControlBar;
-        private var _selectedMove:PenteMoveInfo;
-        private var _board:PenteBoard;
+        private var _selectedMove:MoveInfo;
+        private var _board:AbstractGameBoard;
         
         // Define navigation events that this component dispatches
         public static const MOVE_EVENT_GOTO_MOVE:String = "gotoMove";
@@ -42,19 +27,19 @@ package mx.ecosur.multigame.pente {
         /**
          * Default constructor 
          */
-        public function PenteMoveViewer(){
+        public function MoveViewer(){
             super();
         }
         
-        public function set board(board:PenteBoard):void{
+        public function set board(board:AbstractGameBoard):void{
             _board = board;
         }
         
-        public function set selectedMove(move:PenteMove):void{
-            var pmi:PenteMoveInfo;
+        public function set selectedMove(move:Move):void{
+            var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
-                pmi = PenteMoveInfo(_moves.getChildAt(i))
-                if (move.id == pmi.penteMove.id){
+                mi = MoveInfo(_moves.getChildAt(i))
+                if (move.id == mi.gameMove.id){
                     
                     //deselect currently selected button
                     var btn:Button;
@@ -67,13 +52,13 @@ package mx.ecosur.multigame.pente {
                     }
                     
                     //select new button
-                    btn = _moves.getHeaderAt(_moves.getChildIndex(pmi));
+                    btn = _moves.getHeaderAt(_moves.getChildIndex(mi));
                     btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
                     btn.setStyle("fillAlphas", [1, 1]);
                     btn.setStyle("color", 0xFFFFFF);
                     btn.setStyle("borderColor", 0xFF3300);
                     
-                    _selectedMove = pmi;
+                    _selectedMove = mi;
                     _moves.selectedChild = _selectedMove;
                     return;
                 }
@@ -89,10 +74,10 @@ package mx.ecosur.multigame.pente {
             
             _moves.removeAllChildren();
             for (var i:int = 0; i < moves.length; i++){
-                addMove(PenteMove(moves[i]));                   
+                addMove(Move(moves[i]));                   
             }
             if(moves.length > 0){
-                this.selectedMove = PenteMove(moves[moves.length - 1]); 
+                this.selectedMove = Move(moves[moves.length - 1]); 
             }
         }
         
@@ -101,16 +86,16 @@ package mx.ecosur.multigame.pente {
          *  
          * @param move the move to add.
          */
-        public function addMove(move:PenteMove):void{
+        public function addMove(move:Move):void{
             
             //create and add the move information
-            var pmi:PenteMoveInfo = new PenteMoveInfo();
-            pmi.addEventListener(PenteMoveInfo.GOTO_MOVE_EVENT, goDirect);
-            _moves.addChild(pmi);
-            pmi.penteMove = move;
+            var mi:MoveInfo = new MoveInfo();
+            mi.addEventListener(MoveInfo.GOTO_MOVE_EVENT, goDirect);
+            _moves.addChild(mi);
+            mi.gameMove = move;
             
             //create button header
-            var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(pmi));
+            var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(mi));
             btn.label = " to " + _board.getCellDescription(move.destination.column, move.destination.row);
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);
@@ -124,13 +109,13 @@ package mx.ecosur.multigame.pente {
          * @param move the move to update
          * 
          */
-        public function updateMove(move:PenteMove):void{
+        public function updateMove(move:Move):void{
             
-            var pmi:PenteMoveInfo;
+            var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
-                pmi = PenteMoveInfo(_moves.getChildAt(i));
-                if(pmi.penteMove.id == move.id){
-                    pmi.penteMove = move;
+                mi = MoveInfo(_moves.getChildAt(i));
+                if(mi.gameMove.id == move.id){
+                    mi.gameMove = move;
                     break;
                 }
             }
@@ -139,7 +124,7 @@ package mx.ecosur.multigame.pente {
         
         private function goDirect(event:DynamicEvent):void{
             var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);
-            moveEvent.move = PenteMoveInfo(event.target).penteMove;
+            moveEvent.move = MoveInfo(event.target).gameMove;
             dispatchEvent(moveEvent);
         }
         
@@ -155,7 +140,7 @@ package mx.ecosur.multigame.pente {
             if (ind == 0){
                 return;
             }
-            var move:PenteMove = PenteMoveInfo(_moves.getChildAt(ind - 1)).penteMove;
+            var move:Move = MoveInfo(_moves.getChildAt(ind - 1)).gameMove;
             var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);
             moveEvent.move = move;
             dispatchEvent(moveEvent);
@@ -173,7 +158,7 @@ package mx.ecosur.multigame.pente {
             if (ind >= _moves.numChildren - 1){
                 return;
             }
-            var move:PenteMove = PenteMoveInfo(_moves.getChildAt(ind + 1)).penteMove;
+            var move:Move = MoveInfo(_moves.getChildAt(ind + 1)).gameMove;
             var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);
             moveEvent.move = move;
             dispatchEvent(moveEvent);
@@ -207,7 +192,6 @@ package mx.ecosur.multigame.pente {
             addChild(_controlBar)
             
         } 
-        
-    }
-        
+		
+	}
 }

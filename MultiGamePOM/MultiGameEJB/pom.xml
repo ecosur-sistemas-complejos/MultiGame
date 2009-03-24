@@ -20,6 +20,10 @@
 			     <directory>src/main/rules/solver</directory>
 			     <targetPath>/mx/ecosur/multigame/solver</targetPath>
 			</resource>
+            <resource>
+                 <directory>src/main/rules/agent</directory>
+                 <targetPath>/mx/ecosur/multigame/agent</targetPath>
+            </resource>
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>

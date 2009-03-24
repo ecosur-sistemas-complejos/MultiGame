@@ -24,17 +24,17 @@ package mx.ecosur.multigame.component {
 
 	public class TokenStore extends UIComponent {
 		
-		private static const INITIAL_N_TOKENS:int = 50;
+		protected static const INITIAL_N_TOKENS:int = 50;
 		
-		private var _bg:Shape;
-		private var _tokenSize:Number;
-		private var _nTokens:Number;
-		private var _currentPlayer:GamePlayer
-		private var _active:Boolean;
-		private var _tokensPerRow:Number;
+		protected var _bg:Shape;
+		protected var _tokenSize:Number;
+		protected var _nTokens:Number;
+		protected var _currentPlayer:GamePlayer
+		protected var _active:Boolean;
+		protected var _tokensPerRow:Number;
 		
-		private var _startMoveHandler:Function;
-		private var _endMoveHandler:Function;
+		protected var _startMoveHandler:Function;
+		protected var _endMoveHandler:Function;
 		
 		public static const START_MOVE_EVENT:String = "startMove";
 		public static const END_MOVE_EVENT:String = "endMove";
@@ -105,15 +105,16 @@ package mx.ecosur.multigame.component {
 			}	
 		}
 		
-		private function selectToken(event:MouseEvent):void{
+		
+		protected function selectToken(event:MouseEvent):void{
 			Token(event.target).selected = true;
 		}
 		
-		private function unselectToken(event:MouseEvent):void{
+		protected function unselectToken(event:MouseEvent):void{
 			Token(event.target).selected = false;
 		}
 
-		private function activate():void{
+		protected function activate():void{
 			visible = true;
 			var ap:AnimateProperty = new AnimateProperty(this);
 			ap.property = "x";
@@ -124,7 +125,7 @@ package mx.ecosur.multigame.component {
 			invalidateSize();
 		}
 		
-		private function desactivate():void{
+		protected function desactivate():void{
 			var ap:AnimateProperty = new AnimateProperty(this);
 			ap.property = "x";
 			ap.fromValue = x;
@@ -154,13 +155,13 @@ package mx.ecosur.multigame.component {
 			//redefine handlers
 			var token:Token;
 			for (var i:Number = 0; i < _nTokens; i++){
-				token = Token(getChildAt(i + 1));
-				if (_startMoveHandler != null){
-					token.addEventListener(MouseEvent.MOUSE_DOWN, _startMoveHandler);
-				}
-				if (_endMoveHandler != null){
-					token.addEventListener(DragEvent.DRAG_COMPLETE, _endMoveHandler);			
-				}
+				token = Token(getChildAt(i+ 1));
+			    if (_startMoveHandler != null){
+				   token.addEventListener(MouseEvent.MOUSE_DOWN, _startMoveHandler);
+			    }
+			    if (_endMoveHandler != null){
+				   token.addEventListener(DragEvent.DRAG_COMPLETE, _endMoveHandler);			
+			    }
 			}
 		}
 		
@@ -203,9 +204,10 @@ package mx.ecosur.multigame.component {
 			
 			//draw tokens
 			var cell:Cell = new Cell();
+			var obj:Object;
 			cell.color = _currentPlayer.color;
 			for(var i:int = 0; i < _nTokens; i++){
-				token = Token(getChildAt(i + 1));
+				token = Token( getChildAt(i+ 1));
 				token.width = _tokenSize;
 				token.height = _tokenSize;
 				token.x = baseX + PADDING + (i % _tokensPerRow) * _tokenSize * (1 - OVERLAP) + _tokenSize / 2;

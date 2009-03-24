@@ -24,7 +24,7 @@ import org.drools.compiler.PackageBuilder;
 
 public enum GameType {
 
-	CHECKERS, PENTE, MANANTIALES;
+	PENTE, MANANTIALES;
 
 	private RuleBase ruleBase;
 
@@ -85,22 +85,18 @@ public enum GameType {
 			InputStreamReader reader = null;
 
 			switch (this) {
-			case CHECKERS:
-				reader = new InputStreamReader(this.getClass()
-						.getResourceAsStream(
-								"/mx/ecosur/multigame/checkers.drl"));
-
-				builder.addPackageFromDrl(reader);
-				break;
-			case PENTE:
-				reader = new InputStreamReader(this.getClass()
-						.getResourceAsStream("/mx/ecosur/multigame/gente.drl"));
-				builder.addPackageFromDrl(reader);
-				break;
-			case MANANTIALES:
-				throw new RuntimeException ("No rules defined!");
-			default:
-				break;
+				case PENTE:
+					reader = new InputStreamReader(this.getClass()
+							.getResourceAsStream("/mx/ecosur/multigame/gente.drl"));
+					builder.addPackageFromDrl(reader);
+					break;
+				case MANANTIALES:
+					reader = new InputStreamReader(this.getClass()
+							.getResourceAsStream("/mx/ecosur/multigame/manantiales.drl"));
+					builder.addPackageFromDrl(reader);
+					break;					
+				default:
+					break;
 			}
 
 			if (reader != null)

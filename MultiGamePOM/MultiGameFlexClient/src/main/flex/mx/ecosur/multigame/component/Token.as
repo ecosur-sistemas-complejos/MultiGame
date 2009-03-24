@@ -29,15 +29,15 @@ package mx.ecosur.multigame.component {
 	 */
 	public class Token extends UIComponent{
 		
-		private var _cell:Cell;
-		private var _bg:Shape;
-		private var _selected:Boolean;
-		private var _deselectedFilters:Array;
-		private var _selectedFilters:Array;
-		private var _blinkAnim:Sequence;
+		protected var _cell:Cell;
+		protected var _bg:Shape;
+		protected var _selected:Boolean;
+		protected var _deselectedFilters:Array;
+		protected var _selectedFilters:Array;
+		protected var _blinkAnim:Sequence;
 
 		//flags
-		private var _bgDirty:Boolean;
+		protected var _bgDirty:Boolean;
 		
 		// Constants
 		public static const BORDER_THICKNESS:Number = 1;
@@ -184,7 +184,7 @@ package mx.ecosur.multigame.component {
     		_bg.graphics.drawCircle(unscaledWidth/2, unscaledHeight/2, unscaledWidth / 2);
     		_bg.graphics.endFill();
     		_bgDirty = false;
-    		
+		
     		// Set filters acording to whether the token is selected or not
 			if (_selected){
 				_bg.filters = _selectedFilters;

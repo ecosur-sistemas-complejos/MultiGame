@@ -25,31 +25,31 @@ package mx.ecosur.multigame.component {
 	 */
 	public class BoardCell extends UIComponent {
 		
-		private var _bg:Shape;
-		private var _token:Token;
-		private var _row:int;
-		private var _column:int;
-		private var _bgImage:Image;
+		protected var _bg:Shape;
+		protected var _token:Token;
+		protected var _row:int;
+		protected var _column:int;
+		protected var _bgImage:Image;
 		
 		/* colors */
-		private var _bgColor:uint;
-		private var _borderColor:uint;
-		private var _borderThickness:Number;
+		protected var _bgColor:uint;
+		protected var _borderColor:uint;
+		protected var _borderThickness:Number;
 		
 		/* default colors */
-		private var _defaultBgColor:uint;
-		private var _defaultBorderColor:uint;
-		private var _defaultBorderThickness:Number;
+		protected var _defaultBgColor:uint;
+		protected var _defaultBorderColor:uint;
+		protected var _defaultBorderThickness:Number;
 		
 		/* selected move colors */
-		private var _selectedBgColor:uint;
-		private var _selectedBorderColor:uint;
-		private var _selectedBorderThickness:Number;
+		protected var _selectedBgColor:uint;
+		protected var _selectedBorderColor:uint;
+		protected var _selectedBorderThickness:Number;
 		
 		/* filters for background */
-		private var _bgFilters:Array;
-		private var _bgDefaultFilters:Array;
-		private var _bgSelectedFilters:Array;
+		protected var _bgFilters:Array;
+		protected var _bgDefaultFilters:Array;
+		protected var _bgSelectedFilters:Array;
 		
 		/**
 		 * Constructor

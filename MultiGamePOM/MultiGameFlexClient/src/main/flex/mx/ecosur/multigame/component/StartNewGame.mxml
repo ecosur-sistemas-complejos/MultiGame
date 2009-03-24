@@ -67,6 +67,7 @@
     
     <mx:ArrayCollection id="gameList">
     	<mx:Object label="GENTE" data="PENTE"/>
+    	<mx:Object label="MANANTIALES" data="MANANTIALES"/>
     </mx:ArrayCollection>
     
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />

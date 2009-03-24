@@ -285,15 +285,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		List<Color> colors = new ArrayList<Color>();
 
-		if (type == GameType.CHECKERS) {
-			colors.add(Color.YELLOW);
-			colors.add(Color.RED);
-		} else if (type == GameType.PENTE) {
-			for (Color c : Color.values()) {
-				if (c.equals(Color.UNKNOWN))
-					continue;
-				colors.add(c);
-			}
+		for (Color c : Color.values()) {
+			if (c.equals(Color.UNKNOWN))
+				continue;
+			colors.add(c);
 		}
 
 		return colors;
@@ -342,12 +337,15 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	private Game createNewGame(GameType type) {
 		Game game;
 		switch (type) {
-		case PENTE:
-			game = new PenteGame();
-			break;
-		default:
-			game = new Game();
-			break;
+			case PENTE:
+				game = new PenteGame();
+				break;
+			case MANANTIALES:
+				game = new Game ();
+				break;
+			default:
+				game = new Game();
+				break;
 		}
 		game.initialize(type);
 		em.persist(game);

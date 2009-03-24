@@ -70,6 +70,7 @@
                 	PopUpManager.addPopUp(_helpPanel, this, true);
                 	PopUpManager.centerPopUp(_helpPanel);
                 } else if (evt.label=='Lobby') {
+                	this.destroy();
                     this.dispatchEvent(new Event("complete"));
                 }
             }
@@ -101,7 +102,8 @@
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
 		<mx:VBox id="leftBox" width="200" height="100%">
 	        <component:GameStatus id="gameStatus" width="100%" />   
-	        <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" width="100%"/>
+	        <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" 
+	        	tokenSize="{board.tokenSize}" width="100%"/>
 	        <pente:PenteMoveViewer id="moveViewer" title="Move History" width="100%" height="100%"/>
 	    </mx:VBox>
 	    <mx:VBox id="centerBox" width="100%" height="100%">

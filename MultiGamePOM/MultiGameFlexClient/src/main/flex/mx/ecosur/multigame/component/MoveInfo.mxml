@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+    
+    <mx:Script> 
+        <![CDATA[
+            import mx.events.DynamicEvent;
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.entity.Move;
+            
+            public static const GOTO_MOVE_EVENT:String = "gotoMove";
+            
+            [Event (name = GOTO_MOVE_EVENT, type = "mx.events.DynamicEvent")]
+            
+            private var _gameMove:Move;
+            
+            public function set gameMove(gameMove:Move):void{
+                _gameMove = gameMove;
+            }
+            
+            public function get gameMove():Move{
+                return _gameMove;
+            }
+            
+            private function gotoGameMove():void{
+                var moveEvent:DynamicEvent = new DynamicEvent(GOTO_MOVE_EVENT);
+                moveEvent.move = _gameMove;
+                dispatchEvent(moveEvent);
+            }
+                    
+        ]]>
+    </mx:Script>
+    
+    <mx:VBox>
+        <mx:Box paddingBottom="5" width="100%" horizontalAlign="center">
+            <mx:Button label="Go" click="gotoGameMove()"/>  
+        </mx:Box>
+    </mx:VBox>
+</mx:Canvas>

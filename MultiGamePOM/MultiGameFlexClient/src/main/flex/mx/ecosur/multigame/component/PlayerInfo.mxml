@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+	   
+    <mx:Script> 
+        <![CDATA[
+            import mx.formatters.DateFormatter;
+            import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.enum.Color;
+            import mx.controls.Alert;
+            
+            private var _gamePlayer:GamePlayer;
+            
+            public function set gamePlayer(gamePlayer:GamePlayer):void{
+                var d:Date = new Date(gamePlayer.player.lastRegistration);
+                var df:DateFormatter = new DateFormatter();
+                df.formatString = "DD/MM/YYYY H:NN";
+                playerLastRegistration.text = df.format(d);
+                _gamePlayer = gamePlayer;
+            }
+            
+            public function get gamePlayer():GamePlayer{
+                return _gamePlayer;
+            }
+                    
+        ]]>
+    </mx:Script>
+    
+    <mx:Grid>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Registered" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="playerLastRegistration" styleName="field"/>
+            </mx:GridItem>
+        </mx:GridRow>
+    </mx:Grid>
+</mx:Canvas>

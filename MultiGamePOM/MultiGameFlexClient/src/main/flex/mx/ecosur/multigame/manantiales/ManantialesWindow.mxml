@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+    xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:component="mx.ecosur.multigame.component.*" 
+    xmlns:manantiales="mx.ecosur.multigame.manantiales.*" 
+    width="100%" height="100%" creationComplete="init()" remove="destroy()">
+    
+    <mx:Metadata>
+        [Event(name="complete")]
+    </mx:Metadata>
+    
+    <mx:Script> 
+        <![CDATA[
+            import mx.core.Application;
+            
+            import mx.managers.PopUpManager;
+            
+            import mx.controls.Alert;
+            
+            import mx.events.ResizeEvent;
+            import mx.events.MenuEvent; 
+            
+            import mx.collections.ArrayCollection;
+            
+            import flash.net.URLLoader;
+            
+            import mx.ecosur.multigame.enum.Color;
+
+            import mx.ecosur.multigame.component.HelpPanel;            
+            import mx.ecosur.multigame.component.MoveViewer;
+            import mx.ecosur.multigame.component.PlayersViewer;
+            
+            import mx.ecosur.multigame.manantiales.enum.TokenType;
+
+            import mx.ecosur.multigame.entity.Game;
+            import mx.ecosur.multigame.entity.Move;
+            import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.entity.ChatMessage;
+            
+            import mx.ecosur.multigame.manantiales.ManantialesBoard;
+            
+            private var _controller:ManantialesGameController;
+            private var _currentPlayer:GamePlayer;
+            private var _helpPanel:HelpPanel; 
+        
+            public function init():void{
+                _controller = new ManantialesGameController(_currentPlayer, 
+                    board, chatPanel, playersViewer, forestStore, intensiveStore,
+                    moderateStore, viveroStore, silvoStore, gameStatus, 
+                    moveViewer, animateLayer);
+            }
+            
+            public function destroy():void{
+            	_controller.destroy();
+            }
+            
+            public function set currentPlayer(currentPlayer:GamePlayer):void{
+                _currentPlayer = currentPlayer;
+            }
+            
+            [Bindable]
+            public function get currentPlayer():GamePlayer{
+                return _currentPlayer;
+            }
+            
+            /* Only events that effect this container are handled, all others
+               relevent to application lifecycle should be listend to by 
+               Parent containers (event-bubbling) */
+            private function handleMenuItemClick(evt:MenuEvent):void { 
+                if (evt.label == 'How to Play') {
+                    _helpPanel = new HelpPanel();
+                    _helpPanel.load("help-manantales.html");
+                    _helpPanel.width = Math.min(width - 100, 600);
+                    _helpPanel.height = height - 20;
+                    _helpPanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_helpPanel, this, true);
+                    PopUpManager.centerPopUp(_helpPanel);
+                } else if (evt.label=='Lobby') {
+                    this.dispatchEvent(new Event("complete"));
+                }
+            }
+            
+            private function closeHelp(event:Event):void{
+                PopUpManager.removePopUp(_helpPanel);
+            }            
+         ]]>       
+    </mx:Script> 
+
+    <mx:XMLList id="menuXML">
+        <menuitem label="Game">
+            <menuitem label="Lobby"/>
+        </menuitem>
+        <menuitem label="Help">
+            <menuitem label="How to Play"/>
+        </menuitem>
+    </mx:XMLList>
+
+    <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
+        <mx:MenuBar height="100%" 
+            dataProvider="{menuXML}" 
+            labelField="@label" 
+            showRoot="true"
+            itemClick="handleMenuItemClick(event)"/>
+    </mx:ApplicationControlBar>    
+    
+       
+    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" 
+    	paddingLeft="10" paddingRight="10">
+        <mx:VBox id="leftBox" width="200" height="100%">
+            <component:GameStatus id="gameStatus" width="100%" />   
+            <manantiales:ForestTokenStore id="forestStore" 
+            	currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+            	width="100%"/>
+            <manantiales:IntensiveTokenStore id="intensiveStore" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+                width="100%"/>
+            <manantiales:ModerateTokenStore id="moderateStore" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+                width="100%"/>
+            <manantiales:ViveroTokenStore id="viveroStore" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+                width="100%"/>
+            <manantiales:SilvopastoralTokenStore id="silvoStore" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+                width="100%"/>                                                               	
+            <component:MoveViewer id="moveViewer" title="Move History" height="100%" width="100%"/>
+        </mx:VBox>
+        <mx:VBox id="centerBox" width="100%" height="100%">
+            <manantiales:ManantialesBoard id="board" width="100%" height="100%"
+            	currentPlayer="{currentPlayer}"/>
+        </mx:VBox>
+        <mx:VBox id="rightBox" height="100%" width="300">
+            <mx:Panel title="Players" width="100%">
+                <component:PlayersViewer id="playersViewer" width="100%"/>
+            </mx:Panel>        
+           <component:ChatPanel id="chatPanel" width="100%" height="100%" 
+                currentPlayer="{currentPlayer}" />  
+        </mx:VBox>
+        <mx:UIComponent id="animateLayer" />
+    </mx:HBox>
+</mx:VBox>
