@@ -1,5 +1,6 @@
 package mx.ecosur.multigame.manantiales
 {
+	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.ecosur.multigame.enum.Color;
 	
 	public class ViveroToken extends ManantialesToken
@@ -7,7 +8,9 @@ package mx.ecosur.multigame.manantiales
 		public function ViveroToken()
 		{
 			super();
-			_tooltip = "Vivero/Nursery";
+			_tooltip = "Silvopastoral Establishment";
+			_label = "E";
+			_type = TokenType.VIVERO;
 		}
 		
         public override function get colorCode():uint {

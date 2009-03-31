@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.ejb.entity.manantiales;
+package mx.ecosur.multigame.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 

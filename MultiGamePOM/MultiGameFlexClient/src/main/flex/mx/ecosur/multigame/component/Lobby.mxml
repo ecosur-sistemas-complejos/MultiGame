@@ -15,6 +15,7 @@
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
             import flash.events.MouseEvent;
+            import flash.utils.Timer;
             import mx.controls.Alert;
             import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
@@ -22,9 +23,17 @@
             
             [Bindable]
             public var player:Player;
+            public var timer:Timer;
     
             private function init(event:Event):void {
             	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
+            	timer = new Timer(3500);
+            	timer.addEventListener(TimerEvent.TIMER, timeout);
+            	timer.start();
+            }
+            
+            public function timeout (event:Event):void {
+            	pendingList.reload(event);
             }
             
             public function reload(event:Event):void {

@@ -7,7 +7,7 @@
 
 /**
  * Registration is the process of adding or finding users in the system and
- * associating that user with a current or new game.  Token colors are 
+ * associating that user with a current or new game.  Ficha colors are 
  * determined dynamically, by the available colors per game.
  * 
  * @author awaterma@ecosur.mx

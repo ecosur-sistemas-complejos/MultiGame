@@ -27,7 +27,6 @@ package mx.ecosur.multigame.manantiales
             }
             addChild(token);
             _nTokens ++;
-        } 
-		
+        }                		
 	}
 }

@@ -8,7 +8,7 @@ package mx.ecosur.multigame.manantiales
 import java.util.ArrayList;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
@@ -19,11 +19,11 @@ global SimpleScoreCalculator scoreCalculator;
 rule
     "northern border deforested"
     when
-        $tok1 : Token ($id : id, border == BorderType.NORTH, 
+        $tok1 : Ficha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.NORTH, 
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
-        $tok3 : Token (id > $id2, border == BorderType.NORTH, 
+        $tok3 : Ficha (id > $id2, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
     then
         insertLogical (
@@ -35,11 +35,11 @@ end
 rule
     "eastern border deforested"
     when
-        $tok1 : Token ($id : id, border == BorderType.EAST, 
+        $tok1 : Ficha ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.EAST,
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
-        $tok3 : Token (id > $id2, border == BorderType.EAST, 
+        $tok3 : Ficha (id > $id2, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
     then
         insertLogical (
@@ -51,11 +51,11 @@ end
 rule
     "southern border deforested"
     when
-        $tok1 : Token ($id : id, border == BorderType.SOUTH, 
+        $tok1 : Ficha ($id : id, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.SOUTH,
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (id > $id2, border == BorderType.SOUTH, 
+        $tok3 : Ficha (id > $id2, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
     then
         insertLogical (
@@ -67,11 +67,11 @@ end
 rule
     "western border deforested"
     when
-        $tok1 : Token ($id : id, border == BorderType.WEST, 
+        $tok1 : Ficha ($id : id, border == BorderType.WEST, 
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.WEST,
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (id > $id2, border == BorderType.WEST, 
+        $tok3 : Ficha (id > $id2, border == BorderType.WEST, 
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
     then
         insertLogical (
@@ -84,8 +84,8 @@ end
 # due to the number schema in the grid.
 rule "column contiguous intensive"
 	when
-		$tok1 : Token ($id : id, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-		$tok2 : Token (id > $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok1 : Ficha ($id : id, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+		$tok2 : Ficha (id > $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
 		eval (Math.abs($row - $row2) == 2)
 	then 
 		insertLogical (
@@ -98,8 +98,8 @@ end
 # due to the number schema in the grid.
 rule "row contiguous intensive"
     when
-        $tok1 : Token ($id : id, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (id > $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : Ficha ($id : id, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Ficha (id > $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs ($col - $col2) == 2) 
     then 
         insertLogical (new UnweightedConstraintOccurrence(
@@ -109,8 +109,8 @@ end
 # Enforces the constraint (by diagnal) that intensives cannot be contiguous
 rule "diagnal contiguous intensive"
     when
-        $tok1 : Token ($id : id, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (id > $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
+        $tok1 : Ficha ($id : id, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+        $tok2 : Ficha (id > $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
         eval (Math.abs($col - $col2) == 1 && Math.abs($row - $row2) == 1)
     then
         insertLogical (new UnweightedConstraintOccurrence(
@@ -121,11 +121,11 @@ end
 #may deforest the land).
 rule "manantiales"
     when
-        $tok1 : Token ($id : id, manantial == true, type in (
+        $tok1 : Ficha ($id : id, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, manantial == true, type in (
+        $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
-        $tok3 : Token (id > $id2, manantial == true, type in (
+        $tok3 : Ficha (id > $id2, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
         insertLogical (new UnweightedConstraintOccurrence(
@@ -136,7 +136,7 @@ end
 rule "too many deforested sites"
     when
         $list : Number () from accumulate (
-            Token ($id : id, type in (
+            Ficha ($id : id, type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
             count ($id)) 
         eval ($list.intValue() > 32)
@@ -149,7 +149,7 @@ end
 rule "blue territory worth at least 24 points"
     when
         $total : Number() from accumulate(
-            Token (color == Color.BLUE, $score : score),
+            Ficha (color == Color.BLUE, $score : score),
             sum($score));           
         eval ($total.intValue() < 24)    
     then
@@ -160,7 +160,7 @@ end
 rule "green territory worth at least 24 points"
     when
         $total : Number() from accumulate(
-            Token (color == Color.GREEN, $score : score),
+            Ficha (color == Color.GREEN, $score : score),
             sum($score));          
         eval ($total.intValue() < 24)    
     then
@@ -171,7 +171,7 @@ end
 rule "red territory worth at least 24 points"
     when
         $total : Number() from accumulate(
-            Token (color == Color.RED, $score : score),
+            Ficha (color == Color.RED, $score : score),
             sum($score));     
         eval ($total.intValue() < 24)    
     then
@@ -182,7 +182,7 @@ end
 rule "yellow territory worth at least 24 points"
     when
         $total : Number() from accumulate(
-            Token (color == Color.YELLOW, $score : score),
+            Ficha (color == Color.YELLOW, $score : score),
             sum($score));               
         eval ($total.intValue() < 24)    
     then

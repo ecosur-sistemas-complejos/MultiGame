@@ -1,6 +1,8 @@
 package mx.ecosur.multigame.manantiales
 {   	
 	import mx.ecosur.multigame.component.Token;
+	
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.ecosur.multigame.enum.Color;
 
 	public class SilvopastoralToken extends ManantialesToken
@@ -8,7 +10,9 @@ package mx.ecosur.multigame.manantiales
 		public function SilvopastoralToken()
 		{
 			super();
-			_tooltip = "Silvepastoral";
+			_tooltip = "Silvepastoral Active";
+			_label = "S";
+			_type = TokenType.SILVOPASTORAL;
 		}
 		
         public override function get colorCode():uint {

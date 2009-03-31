@@ -489,6 +489,12 @@ package mx.ecosur.multigame.pente{
             apYScale.play();
         }
         
+        public function quitGame (gamePlayer:GamePlayer):void {
+            var call:Object = _gameService.quitGame(gamePlayer);
+            call.operation = "quitGame";
+            _isEnded = true;
+        }        
+        
         private function endDoMove(event:EffectEvent):void{
             
             var token:Token = Token(AnimateProperty(event.currentTarget).target);

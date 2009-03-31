@@ -17,7 +17,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
@@ -50,20 +50,20 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	private SortedSet<Token> tokens;
+	private SortedSet<Ficha> tokens;
 	private Threshold umbra;
 	private HashMap<Color, Distribution> distributionMap;
 	
-	public ManantialesSolution (Threshold umbra, SortedSet<Token> tokens) {
+	public ManantialesSolution (Threshold umbra, SortedSet<Ficha> tokens) {
 		this (umbra);
-		for (Token tok : tokens) {
+		for (Ficha tok : tokens) {
 			replaceToken(tok);
 		}
 	}
 	
 	public ManantialesSolution (Threshold umbra) {
 		this.umbra = umbra;
-		tokens = new TreeSet<Token> (new CellComparator());
+		tokens = new TreeSet<Ficha> (new CellComparator());
 		initialize();
 	}	
 	
@@ -77,7 +77,7 @@ public class ManantialesSolution implements Solution {
 //				Color color = Color.UNKNOWN;
 //					/* All tokens across row 4 are set (except for the manantial) */
 //				if (row == 4 && col!=4) {
-//					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
+//					tokens.add(new Ficha(col,row, color, TokenType.UNDEVELOPED));
 //					/* Cells are split by even/even and odd/odd (skip manantial) */
 //				} else if ( (row !=4 && col!=4) && ( 
 //						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
@@ -90,9 +90,9 @@ public class ManantialesSolution implements Solution {
 //						color = Color.RED;
 //					else if (row > 4 && col > 3)
 //						color = Color.YELLOW;
-//					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
+//					tokens.add(new Ficha (col,row, color, TokenType.UNDEVELOPED));
 //				} else if (col == 4) {
-//					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
+//					tokens.add (new Ficha (col, row, color, TokenType.UNDEVELOPED));
 //				} else
 //					continue;
 //			}
@@ -111,7 +111,7 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					} else
 						color = Color.GREEN;
-					tokens.add(new Token(col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new Ficha(col,row, color, TokenType.UNDEVELOPED));
 					/* Cells are split by even/even and odd/odd (skip manantial) */
 				} else if ( (row !=4 && col!=4) && ( 
 						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
@@ -124,13 +124,13 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					else if (row > 4 && col > 3)
 						color = Color.YELLOW;
-					tokens.add(new Token (col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new Ficha (col,row, color, TokenType.UNDEVELOPED));
 				} else if (col == 4) {
 					if (row < 5 ) 
 						color = Color.BLUE;
 					else if (row > 4)
 						color = Color.YELLOW;
-					tokens.add (new Token (col, row, color, TokenType.UNDEVELOPED));
+					tokens.add (new Ficha (col, row, color, TokenType.UNDEVELOPED));
 				} else
 					continue;
 			}
@@ -144,8 +144,8 @@ public class ManantialesSolution implements Solution {
 		Solution ret = null;
 		
 		try {
-			SortedSet<Token> clones = new TreeSet<Token>(new CellComparator());
-			for (Token tok : tokens) {
+			SortedSet<Ficha> clones = new TreeSet<Ficha>(new CellComparator());
+			for (Ficha tok : tokens) {
 				clones.add(tok.clone());
 			}
 			
@@ -175,7 +175,7 @@ public class ManantialesSolution implements Solution {
 			
 			if (color.equals(Color.UNKNOWN))
 				continue;
-			for (Token tok: tokens) {
+			for (Ficha tok: tokens) {
 				if (tok.getColor().equals(color)) {
 					switch (tok.getType()) {
 					case MANAGED_FOREST:
@@ -202,10 +202,10 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	public SortedSet<Token> getUndevelopedBorders (Color color) {
-		SortedSet<Token> ret = new TreeSet<Token>(new CellComparator());
+	public SortedSet<Ficha> getUndevelopedBorders (Color color) {
+		SortedSet<Ficha> ret = new TreeSet<Ficha>(new CellComparator());
 		/* Add in all uncolored tokens */
-		for (Token tok : tokens) {
+		for (Ficha tok : tokens) {
 			if (tok.getType().equals(TokenType.UNDEVELOPED)) {
 				switch (tok.getBorder()) {
 				case NORTH:
@@ -250,7 +250,7 @@ public class ManantialesSolution implements Solution {
 	}
 	
 	
-	public boolean replaceToken (Token token) {
+	public boolean replaceToken (Ficha token) {
 		boolean ret = false;
 		if (tokens.contains(token))
 			ret = tokens.remove(token);
@@ -269,7 +269,7 @@ public class ManantialesSolution implements Solution {
 	/**
 	 * @return the tokens
 	 */
-	public SortedSet<Token> getTokens() {
+	public SortedSet<Ficha> getTokens() {
 		return tokens;
 	}
 
@@ -279,26 +279,26 @@ public class ManantialesSolution implements Solution {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer ("\n");
-		SortedSet<Token> subset;
+		SortedSet<Ficha> subset;
 		
 		for (int row = 0; row < 9; row++) {
 			boolean leadingTab = false;
 			subset = null;
 			if (row == 4) {
-				subset = tokens.subSet(new Token (0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new Token (9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new Ficha (0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Ficha (9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			} else if (row % 2 == 0) {
-				subset = tokens.subSet(new Token (0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new Token (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));				
+				subset = tokens.subSet(new Ficha (0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Ficha (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));				
 			} else {
 				leadingTab = true;
-				subset = tokens.subSet(new Token (1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new Token (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new Ficha (1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new Ficha (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			}
 			
 			if (leadingTab)
 				buf.append("  ");
-			for (Token tok: subset) {
+			for (Ficha tok: subset) {
 				if (tok.getColumn() == 4)
 					buf.append("  ");
 				else if (tok.getColumn() > 4 && row %2 == 0)

@@ -20,11 +20,11 @@ package mx.ecosur.multigame.entity {
 	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Cell")]
 	public class Cell extends UIComponent{
 		
-		private var _row:int;
-		private var _column:int;
-		private var _color:String;
-		private var _colorCode:uint;
-		private var _player:Player;
+		protected var _row:int;
+		protected var _column:int;
+		protected var _color:String;
+		protected var _colorCode:uint;
+		protected var _player:Player;
 		
 		public function Cell(){
 			super();

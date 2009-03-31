@@ -1,3 +1,4 @@
+
 #created on: Feb 4, 2009
 package mx.ecosur.multigame.manantiales
 
@@ -13,9 +14,11 @@ import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
-import mx.ecosur.multigame.ejb.entity.manantiales.HardConstraint;
-import mx.ecosur.multigame.ejb.entity.manantiales.CheckConstraint;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
+
+import mx.ecosur.multigame.manantiales.HardConstraint;
+import mx.ecosur.multigame.manantiales.CheckConstraint;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ import java.util.List;
     Determines if the destination of the requested move is
     empty on the grid.
 */
-function boolean isEmpty (GameGrid grid, Move move) {
+function boolean isEmpty (GameGrid grid, ManantialesMove move) {
     Cell destination = move.getDestination();
     Cell current = grid.getLocation (destination);
     boolean ret = (current == null);
@@ -52,161 +55,28 @@ then
     messageSender.sendStartGame(game);
 end
 
-#Enforces the arroyo constraint (only 2 developments that deforest on the border)
-rule
-    "northern border deforested"
+rule "evaluate-move"
     agenda-group "verify"
-    when
-        $tok1 : Token ($id : id, border == BorderType.NORTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.NORTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
-        $move : Token (id > $id2, border == BorderType.NORTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
-    then
-        insertLogical (
-            new CheckConstraint ("northern border deforested", 
-                $tok1, $tok2, $move));
-end
+when
+    game  : Game (state == GameState.PLAY, $grid : grid)
+    move  : ManantialesMove (status == Status.UNVERIFIED, player.turn == true)
+    eval (isEmpty (game.getGrid(), move))   
+then
+    modify (move) { setStatus (Status.VERIFIED) }
+end   
 
-#Enforces the arroyo constraint (only 2 developments that deforest on the border)
-rule
-    "eastern border deforested"
-    agenda-group "verify"    
-    when
-        $tok1 : Token ($id : id, border == BorderType.EAST, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.EAST,
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
-        $tok3 : Token (id > $id2, border == BorderType.EAST, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
-    then
-        insertLogical (
-            new CheckConstraint("eastern border deforested", 
-                $tok1, $tok2, $tok3)) ;
-end
-
-#Enforces the arroyo constraint (only 2 developments that deforest on the border)
-rule
-    "southern border deforested"
-    agenda-group "verify"    
-    when
-        $tok1 : Token ($id : id, border == BorderType.SOUTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.SOUTH,
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (id > $id2, border == BorderType.SOUTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
-    then
-        insertLogical (
-            new CheckConstraint ("southern border deforested", 
-                $tok1, $tok2, $tok3));
-end
-
-#Enforces the arroyo constraint (only 2 developments that deforest on the border)
-rule
-    "western border deforested"
-    agenda-group "verify"    
-    when
-        $tok1 : Token ($id : id, border == BorderType.WEST, 
-        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, border == BorderType.WEST,
-        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok3 : Token (id > $id2, border == BorderType.WEST, 
-        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
-    then
-        insertLogical (
-            new CheckConstraint ("western border deforested", 
-                $tok1, $tok2, $tok3));
-end
-
-# Enforces the constraint (by column) that intensives cannot be contiguous
-# (Check to see if the absolut value of the difference between locations is "2",
-# due to the number schema in the grid.
-rule "column contiguous intensive"
-    agenda-group "verify"
-    when
-        $tok1 : Token ($id : id, $column : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (id > $id, column == $column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)
-        eval (Math.abs($row - $row2) == 2)
-    then 
-        insertLogical (
-          new HardConstraint (
-          "Column contiguous intensive", $tok1, $tok2));
-end
-
-# Enforces the constraint (by row) that intensives cannot be contiguous
-# (Check to see if the absolut value of the difference between locations is "2",
-# due to the number schema in the grid.
-rule "row contiguous intensive"
-    agenda-group "verify"
-    when
-        $tok1 : Token ($id : id, $row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (id > $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
-        eval (Math.abs ($col - $col2) == 2) 
-    then 
-        insertLogical (new HardConstraint (
-          "Row contiguous intensive", $tok1, $tok2));
-end
-
-# Enforces the constraint (by diagnal) that intensives cannot be contiguous
-rule "diagnal contiguous intensive"
-    agenda-group "verify"
-    when
-        $tok1 : Token ($id : id, $col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $tok2 : Token (id > $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
-        eval (Math.abs($col - $col2) == 1 && Math.abs($row - $row2) == 1)
-    then
-        insertLogical (new HardConstraint (
-          "Diagnol contiguous intensive", $tok1, $tok2)); 
-end
-
-#Enforces Manantiales constraint (only 2 developments around the manantiales
-#may deforest the land).
-rule "manantiales"
-    agenda-group "verify"
-    when
-        $tok1 : Token ($id : id, manantial == true, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Token (id > $id, $id2 : id, manantial == true, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
-        $tok3 : Token (id > $id2, manantial == true, type in (
-                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
-    then
-        insertLogical (new CheckConstraint (
-          "Column contiguous intensive", $tok1, $tok2, $tok3));
-end
-
-#Enforces the constaint that no more than 32 sites can be deforested
-rule "too many deforested sites"
-    agenda-group "verify"
-    when
-        $list : Number () from accumulate (
-            Token ($id : id, type in (
-                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-            count ($id)) 
-        eval ($list.intValue() > 32)
-    then
-        insertLogical (new CheckConstraint (
-            "Too many deforested sites", $list));
-end  
-
-rule "hardConstraintsBroken"
-    when
-        $occurrenceCount : Number() from accumulate(
-            $hardConstraints : HardConstraint(),
-            count($hardConstraints)
-        );
-    then
-        #
-end
-
-rule "checkConstraintsBroken"
-    when
-        $occurrenceCount : Number() from accumulate(
-            $checkConstraints : CheckConstraint(),
-            count($checkConstraints)
-        );
-    then
-        #
+# Executes a simple move
+rule "execute-move"
+    agenda-group "move"
+when 
+    game  : Game (state == GameState.PLAY)
+    move  : ManantialesMove (player.turn == true, status == Status.VERIFIED)  
+then
+    #Modify gamegrid 
+    GameGrid modifiedGrid = game.getGrid();   
+    modifiedGrid.updateCell (move.getDestination());
+    modify (move) { setStatus (Status.MOVED) }
+    modify (game) { setGrid (modifiedGrid) }
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendMoveComplete(move);
 end

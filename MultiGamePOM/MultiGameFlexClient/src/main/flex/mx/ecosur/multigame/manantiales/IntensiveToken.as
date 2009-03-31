@@ -1,13 +1,16 @@
 package mx.ecosur.multigame.manantiales
 {
 	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
 	public class IntensiveToken extends ManantialesToken
 	{				
 		public function IntensiveToken()
 		{
 			super();
-			_tooltip = "Intensive Pasture";
+			_tooltip = "Intensive Grazing";
+			_label = "I";
+			_type = TokenType.INTENSIVE;
 		}
 		
         public override function get colorCode():uint {

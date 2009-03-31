@@ -108,6 +108,20 @@ public class GameService {
 		return ret;
 	}
 	
+	public boolean quitGame (GamePlayer player) {
+		boolean ret = false;
+		try {
+			RegistrarRemote registrar = getRegistrar();
+			registrar.unregisterPlayer(player);
+			ret = true;
+		} catch (InvalidRegistrationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ret;
+	}
+	
 	/*
 	 * Starts a new game with a given player and the number of selected AI robots. 
 	 */

@@ -18,9 +18,8 @@
         	import mx.ecosur.multigame.pente.PenteGameWindow;
         	import mx.ecosur.multigame.manantiales.ManantialesWindow;
         	
-        	private var _penteGameWindow:PenteGameWindow;
-        	
-        	private var _manantialesWindow:ManantialesWindow;
+        	private var _penteGameWindow:PenteGameWindow, 
+        	   _manantialesWindow:ManantialesWindow;
         	
         	private function gameComplete (event:Event):void {
         		lobby.reload(event);

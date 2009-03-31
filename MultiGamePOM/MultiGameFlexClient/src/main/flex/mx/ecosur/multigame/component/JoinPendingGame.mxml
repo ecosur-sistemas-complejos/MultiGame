@@ -61,12 +61,19 @@
             }
             
             private function updateDataGrid():void{
-                var game:Game;
+                var game:Game, selected:Game;
                 var gamePlayer:GamePlayer;
                 var dataProvider:ArrayCollection = new ArrayCollection();
-                var dataItem:Object;
+                var dataItem:Object, selectedItem:Object;
                 var df:DateFormatter = new DateFormatter();
                 df.formatString = "DD/MM/YYYY H:NN";
+                
+                /* Get the currently selected game */
+                if (gamesDataGrid.selectedIndex > -1) {
+                	if (_games.length > gamesDataGrid.selectedIndex)
+                        selected = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
+                }                    
+                
                 for (var i:Number = 0; i < _games.length; i++){
                     game = Game(_games.getItemAt(i));
                     dataItem = new Object();
@@ -82,8 +89,13 @@
                     }
                     dataItem.status = GameState.getDescription(game.state);
                     dataProvider.addItem(dataItem);
+                    if (selected != null && selected.id == game.id  && game.state == GameState.WAITING)
+                        selectedItem = dataItem;
                 }
                 gamesDataGrid.dataProvider = dataProvider;
+                if (selectedItem != null) {
+                        gamesDataGrid.selectedItem = selectedItem;
+                    }
             }
             
             private function joinPending():void{

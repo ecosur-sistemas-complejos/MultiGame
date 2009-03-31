@@ -19,7 +19,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.manantiales.BorderType;
 
 import org.drools.solver.core.move.Move;
@@ -28,8 +28,8 @@ import org.drools.solver.core.solution.Solution;
 
 public class RotateMoveFactory extends AbstractMoveFactory {
 	
-	Map<BorderType, TreeSet<Token>> borderMap;
-	Set <Token> facts;
+	Map<BorderType, TreeSet<Ficha>> borderMap;
+	Set <Ficha> facts;
 	
 	/* (non-Javadoc)
 	 * @see org.drools.solver.core.move.factory.MoveFactory#createMoveList(org.drools.solver.core.solution.Solution)
@@ -39,16 +39,16 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 		List<Move> ret = new ArrayList<Move>();
 		
 		/* Walk each piece and suggest all possible rotations on the borders */
-		facts = (Set<Token>) solution.getFacts();
-		borderMap = new HashMap<BorderType,TreeSet<Token>> ();
+		facts = (Set<Ficha>) solution.getFacts();
+		borderMap = new HashMap<BorderType,TreeSet<Ficha>> ();
 		
 		/* Segregate border facts by location */
-		for (Token token : facts) {
+		for (Ficha token : facts) {
 			/* Get all Tokens of this color from the set */
 			if (borderMap.containsKey(token.getBorder()))
 				continue;
-			TreeSet<Token> border = new TreeSet<Token>(new CellComparator());
-			for (Token internalTok : facts) {
+			TreeSet<Ficha> border = new TreeSet<Ficha>(new CellComparator());
+			for (Ficha internalTok : facts) {
 				if (internalTok.getBorder().equals(token.getBorder()) 
 						&& !internalTok.getBorder().equals(BorderType.NONE)) 
 				{
@@ -71,29 +71,29 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 	/*
 	 * @TODO Refactor this fill method to remove redundant code.
 	 */
-	private List<Move> fill (BorderType border, Set<Token> tokens) {
+	private List<Move> fill (BorderType border, Set<Ficha> tokens) {
 		List<Move> ret = new ArrayList<Move>();
 		switch (border) {
 			case NORTH:
-				for (Token token : tokens) {
+				for (Ficha token : tokens) {
 					if (token.getColor().equals(Color.BLUE)) {
-						Set<Token> seconds = borderMap.get(BorderType.WEST);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.SOUTH);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.EAST);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.WEST);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.SOUTH);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.EAST);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token,second,third,fourth));
 								}
 							}
 						}
 					} else if (token.getColor().equals(Color.GREEN)) {
-						Set<Token> seconds = borderMap.get(BorderType.EAST);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.SOUTH);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.WEST);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.EAST);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.SOUTH);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.WEST);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token,second,third,fourth));
 								}
 							}
@@ -102,25 +102,25 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 				}
 				break;
 			case EAST:
-				for (Token token : tokens) {
+				for (Ficha token : tokens) {
 					if (token.getColor().equals(Color.GREEN)) {
-						Set<Token> seconds = borderMap.get(BorderType.NORTH);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.WEST);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.SOUTH);
-									for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.NORTH);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.WEST);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.SOUTH);
+									for (Ficha fourth : fourths) {
 										ret.add(new RotateMove(token,second,third,fourth));
 									}
 								}
 							}
 						} else if (token.getColor().equals(Color.YELLOW)) {
-							Set<Token> seconds = borderMap.get(BorderType.SOUTH);
-							for (Token second : seconds) {
-								Set<Token> thirds = borderMap.get(BorderType.WEST);
-								for (Token third : thirds) {
-									Set<Token> fourths = borderMap.get(BorderType.NORTH);
-									for(Token fourth : fourths) {
+							Set<Ficha> seconds = borderMap.get(BorderType.SOUTH);
+							for (Ficha second : seconds) {
+								Set<Ficha> thirds = borderMap.get(BorderType.WEST);
+								for (Ficha third : thirds) {
+									Set<Ficha> fourths = borderMap.get(BorderType.NORTH);
+									for(Ficha fourth : fourths) {
 										ret.add(new RotateMove(token,second,third,fourth));
 									}
 								}
@@ -129,25 +129,25 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 					}
 				break;
 			case SOUTH:
-				for (Token token : tokens) {
+				for (Ficha token : tokens) {
 					if (token.getColor().equals(Color.RED)) {
-						Set<Token> seconds = borderMap.get(BorderType.WEST);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.NORTH);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.EAST);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.WEST);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.NORTH);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.EAST);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token,second,third,fourth));
 								}
 							}
 						}
 					} else if (token.getColor().equals(Color.YELLOW)) {
-						Set<Token> seconds = borderMap.get(BorderType.EAST);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.NORTH);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.WEST);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.EAST);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.NORTH);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.WEST);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token, second, third, fourth));
 								}
 							}
@@ -156,25 +156,25 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 				}
 				break;
 			case WEST:
-				for (Token token : tokens) {
+				for (Ficha token : tokens) {
 					if (token.getColor().equals(Color.RED)) {
-						Set<Token> seconds = borderMap.get(BorderType.SOUTH);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.EAST);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.NORTH);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.SOUTH);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.EAST);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.NORTH);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token,second,third,fourth));
 								}
 							}
 						}
 					} else if (token.getColor().equals(Color.BLUE)) {
-						Set<Token> seconds = borderMap.get(BorderType.NORTH);
-						for (Token second : seconds) {
-							Set<Token> thirds = borderMap.get(BorderType.EAST);
-							for (Token third : thirds) {
-								Set<Token> fourths = borderMap.get(BorderType.SOUTH);
-								for (Token fourth : fourths) {
+						Set<Ficha> seconds = borderMap.get(BorderType.NORTH);
+						for (Ficha second : seconds) {
+							Set<Ficha> thirds = borderMap.get(BorderType.EAST);
+							for (Ficha third : thirds) {
+								Set<Ficha> fourths = borderMap.get(BorderType.SOUTH);
+								for (Ficha fourth : fourths) {
 									ret.add(new RotateMove(token,second,third,fourth));
 								}
 							}

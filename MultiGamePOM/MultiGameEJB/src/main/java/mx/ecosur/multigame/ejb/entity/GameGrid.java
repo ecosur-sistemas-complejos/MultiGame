@@ -68,14 +68,16 @@ public class GameGrid implements Serializable, Cloneable {
 	 */
 	public Cell getLocation (Cell location) {
 		Cell ret = null;
-		CellComparator comparator = (CellComparator) cells.comparator();
-		SortedSet<Cell> sublist = cells.tailSet(location);
+		if (location != null) {
+			CellComparator comparator = (CellComparator) cells.comparator();
+			SortedSet<Cell> sublist = cells.tailSet(location);
 		
-		for (Cell c : sublist) {
-			int value = comparator.compare(location, c);
-			if (value == 0) {
-				ret = c;
-				break;
+			for (Cell c : sublist) {
+				int value = comparator.compare(location, c);
+				if (value == 0) {
+					ret = c;
+					break;
+				}
 			}
 		}
 		

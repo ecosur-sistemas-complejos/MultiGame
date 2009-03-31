@@ -19,7 +19,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.AbstractMoveFactory;
@@ -46,16 +46,16 @@ public class SwapMoveFactory extends AbstractMoveFactory {
 		List<Move> ret = new ArrayList<Move>();
 		
 		/* Walk each piece and suggest all possible moves within that territory */
-		Set <Token> facts = (Set<Token>) solution.getFacts();
-		Map<Color, TreeSet<Token>> territoryMap = new HashMap<Color,TreeSet<Token>> ();
+		Set <Ficha> facts = (Set<Ficha>) solution.getFacts();
+		Map<Color, TreeSet<Ficha>> territoryMap = new HashMap<Color,TreeSet<Ficha>> ();
 		
 		/* Segregate facts into territories */
-		for (Token token : facts) {
+		for (Ficha token : facts) {
 			/* Get all Tokens of this color from the set */
 			if (territoryMap.containsKey(token.getColor()))
 				continue;
-			TreeSet<Token> territory = new TreeSet<Token>(new CellComparator());
-			for (Token internalTok : facts) {
+			TreeSet<Ficha> territory = new TreeSet<Ficha>(new CellComparator());
+			for (Ficha internalTok : facts) {
 				if (internalTok.getColor().equals(token.getColor())) {
 					territory.add (internalTok);
 				}
@@ -65,11 +65,11 @@ public class SwapMoveFactory extends AbstractMoveFactory {
 			
 		/* Setup suggestions based on all possible values per token per territory */
 		for (Color color : territoryMap.keySet()) {
-			TreeSet<Token> territory = territoryMap.get(color);
+			TreeSet<Ficha> territory = territoryMap.get(color);
 			
 			/* Score the territory */
 			int score = 0;
-			for (Token tok : territory) {
+			for (Ficha tok : territory) {
 				switch (tok.getType()) {
 				case SILVOPASTORAL:
 					score += 4;
@@ -86,11 +86,11 @@ public class SwapMoveFactory extends AbstractMoveFactory {
 				}
 			}
 		
-			for (Token tok : territory) {
+			for (Ficha tok : territory) {
 				/* All tokens can be swapped with another token in the 
 				 * territory 
 				 */
-				for (Token swap : territory) {
+				for (Ficha swap : territory) {
 					if (tok.equals(swap))
 						continue;
 					ret.add(new SwapMove (tok, swap));
@@ -106,10 +106,10 @@ public class SwapMoveFactory extends AbstractMoveFactory {
 				for (Color c : tok.getBorder().getColors()) {
 					if (c.equals(color))
 						continue;
-					TreeSet<Token> borderTerritory = territoryMap.get(c);
+					TreeSet<Ficha> borderTerritory = territoryMap.get(c);
 					/* Null check for uncolored tokens */
 					if (borderTerritory != null) {
-						for (Token borderToken : borderTerritory) {
+						for (Ficha borderToken : borderTerritory) {
 							if (borderToken.getBorder().equals(tok.getBorder())) {
 								ret.add(new SwapMove (tok, borderToken));
 							} else 

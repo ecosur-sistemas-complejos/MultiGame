@@ -1,8 +1,17 @@
 package mx.ecosur.multigame.manantiales
 {
+    import flash.text.TextField;
+    import flash.text.TextFormat;
+    
     import mx.controls.Image;
+    import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.Token;
+    import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;   
+    import mx.ecosur.multigame.manantiales.enum.TokenType; 
+    
+      
 
 	public class ManantialesToken extends Token
 	{	
@@ -11,10 +20,36 @@ package mx.ecosur.multigame.manantiales
         protected var _colorCode:uint;
         protected var _bgImage:Image;
         protected var _territoryColor:Color;
+        protected var _txt:TextField; 
+        protected var _ficha:Ficha;  
+        protected var _type:String;
 		
 		public function ManantialesToken()
 		{
 			super();
+		}
+		
+		public function get ficha ():Ficha {
+			return _ficha; 
+		}
+		
+		public function set ficha(ficha:Ficha):void {
+			_ficha = ficha;
+			cell = ficha;
+		}
+		
+		override public function set cell (cell:Cell):void{
+		  if (_type != null) {
+		      _ficha = new Ficha();
+		      _ficha.row = cell.row;
+		      _ficha.column = cell.column;
+		      _ficha.color = cell.color;
+		      _ficha.player = cell.player;
+		      _ficha.type = _type;	
+		  }	
+		  					  
+		  super.cell = cell;
+		  
 		}
 		
 		public function get territoryColor():Color {
@@ -25,10 +60,19 @@ package mx.ecosur.multigame.manantiales
 			return _cell.colorCode;
 		}		
 		
-        override protected function createChildren():void{
+        override protected function createChildren():void{       	        	
         	super.createChildren();
-        	if (_bgImage != null)
-        	   addChild(_bgImage);  
+        	        	   
+        	if (_label != null) {
+                _txt = new TextField();
+                _txt.text = _label;        		
+                var txtFormat:TextFormat = new TextFormat();
+                txtFormat.font = "Verdana";
+                txtFormat.size = 10;
+                txtFormat.bold = true;
+                _txt.defaultTextFormat = txtFormat;               
+        		addChild(_txt);
+        	}
             
             if (_tooltip != null)
                 this.toolTip = _tooltip;
@@ -57,8 +101,44 @@ package mx.ecosur.multigame.manantiales
                 _bg.filters = _selectedFilters;
             }else{
                 _bg.filters = _deselectedFilters;
+            }           
+        } 
+        /**
+         * Creates a display object that is visually the same as the Token
+         * to be used as a drag image.
+         *  
+         * @return the drag image
+         */
+        override public function createDragImage():IFlexDisplayObject{
+            var token:ManantialesToken;
+            switch (_type) {
+                case TokenType.FOREST:
+                   token = new ForestToken();
+                   token.ficha = ficha;
+                   break;
+                case TokenType.MODERATE:
+                   token = new ModerateToken();
+                   token.ficha = ficha;
+                   break;
+                case TokenType.INTENSIVE:
+                   token = new IntensiveToken();
+                   token.ficha = ficha;
+                   break;
+                case TokenType.VIVERO:
+                   token = new ViveroToken();
+                   token.ficha = ficha;
+                   break;
+                case TokenType.SILVOPASTORAL:
+                   token = new SilvopastoralToken();
+                   token.ficha = ficha;
+                   break;
+                default:
+                    break;            	
             }
-            
-        }
+            token.width = width;
+            token.height = height;
+            return IFlexDisplayObject(token);
+        }        
+                      
 	}
 }

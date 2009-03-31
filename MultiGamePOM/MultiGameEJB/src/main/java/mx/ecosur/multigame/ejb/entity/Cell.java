@@ -33,7 +33,7 @@ public class Cell implements Serializable, Cloneable {
 	 */
 	private static final long serialVersionUID = -7917786935353131901L;
 
-	private int row, column;
+	protected int row, column;
 
 	private Color color;
 

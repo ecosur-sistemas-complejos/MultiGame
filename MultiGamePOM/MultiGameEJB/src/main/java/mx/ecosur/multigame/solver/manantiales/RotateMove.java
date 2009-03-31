@@ -11,7 +11,7 @@
 package mx.ecosur.multigame.solver.manantiales;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.manantiales.BorderType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -25,14 +25,14 @@ import org.drools.solver.core.move.Move;
  */
 public class RotateMove implements Move {
 	
-	private Token primary, second, third, fourth;
+	private Ficha primary, second, third, fourth;
 	private Direction direction;
 	
 	enum Direction {
 		CLOCKWISE, COUNTERCLOCKWISE, UNKNOWN;
 	}
 	
-	public RotateMove (Token primary, Token second, Token third, Token fourth) {
+	public RotateMove (Ficha primary, Ficha second, Ficha third, Ficha fourth) {
 		this.primary = primary;
 		this.second = second;
 		this.third = third;
@@ -43,7 +43,7 @@ public class RotateMove implements Move {
 	/**
 	 * @return
 	 */
-	private Direction determineDirection(Token origin, Token destination) {
+	private Direction determineDirection(Ficha origin, Ficha destination) {
 		Direction ret = Direction.UNKNOWN;
 		switch (origin.getColor()) {
 			case BLUE:
@@ -150,7 +150,7 @@ public class RotateMove implements Move {
 		return ret;
 	}
 	
-	private boolean isAcrossTerritory(Token origin, Token destination) {
+	private boolean isAcrossTerritory(Ficha origin, Ficha destination) {
 		boolean ret = false;
 		
 		switch (origin.getColor()) {

@@ -44,7 +44,9 @@ package mx.ecosur.multigame.manantiales
     * living in the Ejido.
     */ 
 	public class ManantialesBoard extends AbstractGameBoard {
-		protected var _bg:Shape;
+		
+		protected var _bg:Shape, _hl:Shape, _vl:Shape,
+		  _manantial:Shape, _spring:Shape;
 		protected var _currentPlayer:GamePlayer;
 		
 		public function ManantialesBoard () {
@@ -62,6 +64,18 @@ package mx.ecosur.multigame.manantiales
         override protected function createChildren():void {
         	_bg = new Shape();
         	addChild(_bg);
+        	
+            _manantial = new Shape();
+            addChild(_manantial);
+            
+            _spring = new Shape();
+            addChild(_spring);        	
+        	
+        	_hl = new Shape();
+        	addChild(_hl);
+        	
+        	_vl = new Shape();
+        	addChild(_vl);      
         	
             _boardCells = new Array();
             var counter:int = 0;
@@ -117,14 +131,7 @@ package mx.ecosur.multigame.manantiales
         
         override protected function updateDisplayList(unscaledWidth:Number, 
             unscaledHeight:Number):void
-       {
-            _bg.graphics.clear();
-            _bg.graphics.beginFill(0xFFFFFF);
-            _bg.graphics.lineStyle(1, 0xffffff, 3);
-            _bg.graphics.drawRoundRect(0, 0, unscaledWidth, unscaledHeight, 15, 15);
-            _bg.graphics.endFill();       	    
-       	
-            
+       {         	           	            
             // Check that _boardCells have been created
             if (!_cellsCreated){
                 return;
@@ -132,11 +139,10 @@ package mx.ecosur.multigame.manantiales
             
             var boardCell:RoundCell;
             var cellSize:Number; 
-            var factor:int;
-            var positioningFactor:int;
+            var factor:int, positioningFactor:int;
             
-            var xPos:Number;
-            var yPos:Number;
+            var xPos:Number, yPos:Number, centerY:Number, centerX:Number;
+            var endY:Number, endX:Number;
             
             factor = 2;
             positioningFactor = 16;
@@ -160,44 +166,68 @@ package mx.ecosur.multigame.manantiales
                         /* Hand adjustments for the staggered cells */
                         if (col == 1 || col == 3) {
                         	if( row == 1 || row == 3) {
-                        		xPos = (cellSize - cellSize/positioningFactor) * factor;
-                                yPos = (cellSize - cellSize/positioningFactor) * factor;   
+                        		xPos = (cellSize - cellSize/positioningFactor) 
+                        		    * factor;
+                                yPos  = (cellSize - cellSize/positioningFactor) 
+                                    * factor;   
                         		
                         	} else if (row == 5 || row == 7) {
-                                xPos = (cellSize - cellSize/positioningFactor) * factor;
-                                yPos = (cellSize + cellSize/positioningFactor) * factor;                         		
+                                xPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;                         		
                         	}
                         } else if (col == 2) {
                         	if (row == 2) {
-                                xPos = (cellSize - cellSize/positioningFactor) * factor;
-                                yPos = (cellSize - cellSize/positioningFactor) * factor; 	
+                                xPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor; 	
                         	} else if (row == 6) {
-                                xPos = (cellSize - cellSize/positioningFactor) * factor;
-                                yPos = (cellSize + cellSize/positioningFactor) * factor;                         		
+                                xPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;                         		
                         	}
                         } else if (col == 5 || col == 7) {
                         	if (row == 1 || row == 3) {
-                                xPos = (cellSize + cellSize/positioningFactor) * factor;
-                                yPos = (cellSize - cellSize/positioningFactor) * factor;   
+                                xPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor;   
                         	} if (row == 5 || row == 7) {
-                                xPos = (cellSize + cellSize/positioningFactor) * factor;
-                                yPos = (cellSize + cellSize/positioningFactor) * factor;                           		
+                                xPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;                           		
                         	}
                         	
                         } else if (col == 6) {
                         	if (row == 2) {
-                                xPos = (cellSize + cellSize/positioningFactor) * 2;
-                                yPos = (cellSize - cellSize/positioningFactor) * 2;    
+                                xPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize - cellSize/positioningFactor) 
+                                    * factor;    
                             } else if (row == 6) {
-                                xPos = (cellSize + cellSize/positioningFactor) * 2;
-                                yPos = (cellSize + cellSize/positioningFactor) * 2;                                
+                                xPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;
+                                yPos = (cellSize + cellSize/positioningFactor) 
+                                    * factor;                                
                             }
                         } else if (col == 8) {
                         	xPos = xPos + (cellSize/positioningFactor);
+                        	endX = xPos * col + (cellSize + cellSize/2);
                         }
                         
                         if (row == 8) {
                         	yPos = yPos + (cellSize/positioningFactor);
+                        	endY = yPos * row + (cellSize + cellSize/2);
+                        }
+                        
+                        if (row == 4) {
+                            centerY = (yPos * row) + boardCell.height/3;                            
+                        } else if (col == 4) {
+                        	centerX = (xPos * col) + boardCell.width/3;
                         }
                                                 
                         boardCell.x = xPos * col; 
@@ -206,12 +236,52 @@ package mx.ecosur.multigame.manantiales
                     }
                 }
             }
+            
+            /* Board background */
+            _bg.graphics.clear();
+            _bg.graphics.beginFill(0xFFFFFF);
+            _bg.graphics.lineStyle(1, 0xffffff, 3);
+            _bg.graphics.drawRoundRect(0, 0, endX, endY, 15, 15);
+            _bg.graphics.endFill();  
+            
+            var size:Number = cellSize * 4;
+            var linecompensation:Number = boardCell.height/ 3;
+            
+//                /* Inlay the Manantial */
+//            _manantial.graphics.clear();
+//            _manantial.graphics.beginFill(0xE4961A);
+//            _manantial.graphics.lineStyle(1, 0xE4961A, 0.65);
+//            _manantial.graphics.drawRect(centerX - size/2 + linecompensation/2,
+//                centerY - size/2 + linecompensation/2, size, size);
+//            _manantial.graphics.endFill();    
+            
+            _spring.graphics.clear();
+            _spring.graphics.beginFill(0x2e83bc);
+            _spring.graphics.lineStyle(1, 0x2e83bc);
+            _spring.graphics.drawCircle(centerX + linecompensation/2,
+                centerY + linecompensation/2, size/4);
+            _spring.graphics.endFill();
+                                      
                         
-//            var currentPos:Point = new Point(this.scaleX, 
-//                this.scaleX);
-//            this.rotation = boardRotation;            
-//            var destPos:Point = findDestination(currentPos);
-//            this.move(destPos.x, destPos.y);
+                /* Inlay the water feature */
+            _hl.graphics.clear();
+            _hl.graphics.beginFill(0x2E83BC);
+            _hl.graphics.lineStyle(2, 0x2E83BC, 0.65);
+            _hl.graphics.drawRect(0, centerY, endX, boardCell.height/3);
+            _hl.graphics.endFill();  
+            
+            _vl.graphics.clear();
+            _vl.graphics.beginFill(0x2E83BC);
+            _vl.graphics.lineStyle(2, 0x2E83BC, 0.65);
+            _vl.graphics.drawRect(centerX, 0, boardCell.width/3, endY);
+            _vl.graphics.endFill();  
+
+            /* Flip the board to the player's perspective */          
+            var currentPos:Point = new Point(this.scaleX, 
+                this.scaleX);
+            this.rotation = boardRotation;            
+            var destPos:Point = findDestination(currentPos);
+            this.move(destPos.x, destPos.y);
         }
         
        protected function get boardRotation():int {

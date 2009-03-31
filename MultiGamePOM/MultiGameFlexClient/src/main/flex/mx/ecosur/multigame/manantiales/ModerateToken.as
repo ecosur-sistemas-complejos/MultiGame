@@ -1,13 +1,16 @@
 package mx.ecosur.multigame.manantiales
 {
 	import mx.ecosur.multigame.enum.Color;
+	   import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
 	public class ModerateToken extends ManantialesToken
 	{
 		public function ModerateToken()
 		{
 			super();
-			_tooltip = "Moderate Pasture";
+			_tooltip = "Moderate Grazing";
+			_label = "M";
+			_type = TokenType.MODERATE;
 		}
 		
         public override function get colorCode():uint {

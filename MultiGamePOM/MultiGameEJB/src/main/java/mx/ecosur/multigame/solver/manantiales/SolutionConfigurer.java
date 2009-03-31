@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.manantiales.TokenType;
 import mx.ecosur.multigame.solver.manantiales.ManantialesSolution.Threshold;
 
@@ -54,7 +54,7 @@ public class SolutionConfigurer {
 				int row = Integer.parseInt(tok.getChild("row").getText());
 				Color color = Color.valueOf(tok.getChild("color").getText());
 				TokenType type = TokenType.valueOf(tok.getChild("type").getText());
-				Token token = new Token (col, row, color, type);
+				Ficha token = new Ficha (col, row, color, type);
 				solution.replaceToken(token);
 			} else if (tok.getName().equals("distribution")) {
 				Color color = Color.valueOf(tok.getChild("color").getText());
@@ -101,7 +101,7 @@ public class SolutionConfigurer {
 			intensive = dist.getIntensive(), silvo = dist.getSilvopastoral();
 
 		/* Populate Core territory first */
-		for (Token tok : solution.getTokens()) {
+		for (Ficha tok : solution.getTokens()) {
 			if (tok.getColor().equals(dist.getColor())) {
 				if (forest > 0) {
 					tok.setType(TokenType.MANAGED_FOREST);
@@ -122,7 +122,7 @@ public class SolutionConfigurer {
 		}
 		
 		if (forest > 0 || moderate > 0 || intensive > 0 || silvo > 0) {
-			for (Token tok : solution.getUndevelopedBorders(dist.getColor())) {
+			for (Ficha tok : solution.getUndevelopedBorders(dist.getColor())) {
 				tok.setColor(dist.getColor());
 				if (forest > 0) {
 					tok.setType(TokenType.MANAGED_FOREST);

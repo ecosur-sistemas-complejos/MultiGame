@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.component
+package mx.ecosur.multigame.manantiales
 {
 	import flash.events.MouseEvent;
     
@@ -8,8 +8,13 @@ package mx.ecosur.multigame.component
     import mx.containers.Panel;
     import mx.controls.Button;
     import mx.controls.Spacer;
-    import mx.ecosur.multigame.entity.*;
+    
+    import mx.ecosur.multigame.component.AbstractGameBoard;
     import mx.ecosur.multigame.enum.Color;
+    
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    
     import mx.events.DynamicEvent;
 	
 
@@ -35,34 +40,34 @@ package mx.ecosur.multigame.component
             _board = board;
         }
         
-        public function set selectedMove(move:Move):void{
+        public function set selectedMove(move:ManantialesMove):void{
             var mi:MoveInfo;
-            for (var i:int = 0; i < _moves.numChildren; i++){
-                mi = MoveInfo(_moves.getChildAt(i))
-                if (move.id == mi.gameMove.id){
-                    
-                    //deselect currently selected button
-                    var btn:Button;
-                    if(_selectedMove){
-                        btn = _moves.getHeaderAt(_moves.getChildIndex(_selectedMove));
-                        btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
-                        btn.setStyle("fillAlphas", [0.6, 0.4]);
-                        btn.setStyle("color", 0x0B333C);
-                        btn.setStyle("borderColor", 0xAAB3B3);
-                    }
-                    
-                    //select new button
-                    btn = _moves.getHeaderAt(_moves.getChildIndex(mi));
-                    btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
-                    btn.setStyle("fillAlphas", [1, 1]);
-                    btn.setStyle("color", 0xFFFFFF);
-                    btn.setStyle("borderColor", 0xFF3300);
-                    
-                    _selectedMove = mi;
-                    _moves.selectedChild = _selectedMove;
-                    return;
-                }
-            }
+//            for (var i:int = 0; i < _moves.numChildren; i++){
+//                mi = MoveInfo(_moves.getChildAt(i))
+//                if (move != null && move.id == mi.gameMove.id){                	
+//                    
+//                    //deselect currently selected button
+//                    var btn:Button;
+//                    if(_selectedMove){
+//                        btn = _moves.getHeaderAt(_moves.getChildIndex(_selectedMove));
+//                        btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
+//                        btn.setStyle("fillAlphas", [0.6, 0.4]);
+//                        btn.setStyle("color", 0x0B333C);
+//                        btn.setStyle("borderColor", 0xAAB3B3);
+//                    }
+//                    
+//                    //select new button
+//                    btn = _moves.getHeaderAt(_moves.getChildIndex(mi));
+//                    btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
+//                    btn.setStyle("fillAlphas", [1, 1]);
+//                    btn.setStyle("color", 0xFFFFFF);
+//                    btn.setStyle("borderColor", 0xFF3300);
+//                    
+//                    _selectedMove = mi;
+//                    _moves.selectedChild = _selectedMove;
+//                    return;
+//                }
+//            }
         }
         
         /**
@@ -74,10 +79,10 @@ package mx.ecosur.multigame.component
             
             _moves.removeAllChildren();
             for (var i:int = 0; i < moves.length; i++){
-                addMove(Move(moves[i]));                   
+                addMove(ManantialesMove(moves[i]));                   
             }
             if(moves.length > 0){
-                this.selectedMove = Move(moves[moves.length - 1]); 
+                this.selectedMove = ManantialesMove(moves[moves.length - 1]); 
             }
         }
         
@@ -86,7 +91,7 @@ package mx.ecosur.multigame.component
          *  
          * @param move the move to add.
          */
-        public function addMove(move:Move):void{
+        public function addMove(move:ManantialesMove):void{
             
             //create and add the move information
             var mi:MoveInfo = new MoveInfo();
@@ -109,7 +114,7 @@ package mx.ecosur.multigame.component
          * @param move the move to update
          * 
          */
-        public function updateMove(move:Move):void{
+        public function updateMove(move:ManantialesMove):void{
             
             var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
@@ -140,7 +145,7 @@ package mx.ecosur.multigame.component
             if (ind == 0){
                 return;
             }
-            var move:Move = MoveInfo(_moves.getChildAt(ind - 1)).gameMove;
+            var move:ManantialesMove = MoveInfo(_moves.getChildAt(ind - 1)).gameMove;
             var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);
             moveEvent.move = move;
             dispatchEvent(moveEvent);
@@ -158,7 +163,7 @@ package mx.ecosur.multigame.component
             if (ind >= _moves.numChildren - 1){
                 return;
             }
-            var move:Move = MoveInfo(_moves.getChildAt(ind + 1)).gameMove;
+            var move:ManantialesMove = MoveInfo(_moves.getChildAt(ind + 1)).gameMove;
             var moveEvent:DynamicEvent = new DynamicEvent(MOVE_EVENT_GOTO_MOVE);
             moveEvent.move = move;
             dispatchEvent(moveEvent);

@@ -36,7 +36,7 @@ public enum TokenType {
 				ret = 4;
 				break;
 			default:
-				throw new RuntimeException ("Unknown Token! No value assigned!");
+				throw new RuntimeException ("Unknown Ficha! No value assigned!");
 		}
 		return ret;
 	}

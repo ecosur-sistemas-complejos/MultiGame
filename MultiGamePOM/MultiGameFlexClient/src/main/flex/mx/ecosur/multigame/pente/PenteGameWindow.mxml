@@ -72,6 +72,9 @@
                 } else if (evt.label=='Lobby') {
                 	this.destroy();
                     this.dispatchEvent(new Event("complete"));
+                } else if (evt.label == 'Quit') {
+                    quitGame();
+                    this.dispatchEvent(new Event("complete"));
                 }
             }
             
@@ -79,12 +82,17 @@
             	PopUpManager.removePopUp(_helpPanel);
             }
             
+            private function quitGame():void {
+                _controller.quitGame(currentPlayer);                     
+            }            
+            
         ]]>
     </mx:Script>
     
     <mx:XMLList id="menuXML">
         <menuitem label="Game">
         	<menuitem label="Lobby"/>
+            <menuitem label="Quit"/>        	
         </menuitem>
         <menuitem label="Help">
             <menuitem label="How to Play"/>

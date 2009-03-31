@@ -10,6 +10,11 @@
  */
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Transient;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.Color;
@@ -17,29 +22,23 @@ import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.manantiales.BorderType;
 import mx.ecosur.multigame.manantiales.TokenType;
 
-public class Token extends Cell {
-	
-	private static int counter = 1;
-	
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Cell#getId()
-	 */
-	@Override
-	public int getId() {
-		if (id == 0)
-			id = counter++;
-		return id;
-	}
+@Entity
+public class Ficha extends Cell {
 
 	private static final long serialVersionUID = -8048552960014554186L;
+	
+	public Ficha () {
+		super(); 
+	}
 
-	public Token (int column, int row, Color color, TokenType type) {
+	public Ficha (int column, int row, Color color, TokenType type) {
 		super(column, row, color);
 		this.type = type;
 	}
 	
 	private TokenType type;
 
+	@Enumerated (EnumType.STRING)
 	public TokenType getType() {
 		return type;
 	}
@@ -65,6 +64,7 @@ public class Token extends Cell {
 	/**
 	 * @return the border
 	 */
+	@Transient
 	public BorderType getBorder() {
 		return checkBorder();
 	}
@@ -106,19 +106,19 @@ public class Token extends Cell {
 		return ret;
 	}
 
-	public Token clone() throws CloneNotSupportedException {
-		Token ret = new Token(this.getColumn(),this.getRow(),this.getColor(),this.getType());
+	public Ficha clone() throws CloneNotSupportedException {
+		Ficha ret = new Ficha(this.getColumn(),this.getRow(),this.getColor(),this.getType());
 		return ret;
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.entity.Cell#toString()
 	 */
-	@Override
-	public String toString() {
-		return "[" + super.getColor().toString() + "] " + type.toString() +
-			"(" + getColumn() + "," + getRow() + ")";
-	}
+//	@Override
+//	public String toString() {
+//		return "[" + super.getColor() + "] " + type.toString() +
+//			"(" + getColumn() + "," + getRow() + ")";
+//	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -126,8 +126,8 @@ public class Token extends Cell {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
-		if (obj instanceof Token) {
-			Token comp = (Token) obj;
+		if (obj instanceof Ficha) {
+			Ficha comp = (Ficha) obj;
 			ret = (comp.type.equals(this.type) &&
 					comp.getRow() == getRow() &&
 					comp.getColumn() == getColumn() &&

@@ -7,9 +7,9 @@ package mx.ecosur.multigame.manantiales.enum
 			super();
 		}
 		
-		public static const INTENSIVE:String = "INTENSIVE";
-		public static const MODERATE:String = "MODERATE";
-		public static const FOREST:String = "FOREST";
+		public static const INTENSIVE:String = "INTENSIVE_PASTURE";
+		public static const MODERATE:String = "MODERATE_PASTURE";
+		public static const FOREST:String = "MANAGED_FOREST";
 		public static const VIVERO:String = "VIVERO";
 		public static const SILVOPASTORAL:String = "SILVOPASTORAL";
 

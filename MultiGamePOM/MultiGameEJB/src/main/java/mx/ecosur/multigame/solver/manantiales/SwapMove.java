@@ -10,7 +10,7 @@
  */
 package mx.ecosur.multigame.solver.manantiales;
 
-import mx.ecosur.multigame.ejb.entity.manantiales.Token;
+import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -23,9 +23,9 @@ import org.drools.solver.core.move.Move;
  */
 public class SwapMove implements Move {
 	
-	protected Token token, swapToken;
+	protected Ficha token, swapToken;
 	
-	public SwapMove (Token token, Token swapToken) {
+	public SwapMove (Ficha token, Ficha swapToken) {
 		this.token = token;
 		this.swapToken = swapToken;
 	}

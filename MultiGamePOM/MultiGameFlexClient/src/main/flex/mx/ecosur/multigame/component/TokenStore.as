@@ -38,7 +38,7 @@ package mx.ecosur.multigame.component {
 		
 		public static const START_MOVE_EVENT:String = "startMove";
 		public static const END_MOVE_EVENT:String = "endMove";
-		public static const OVERLAP:Number = 0.3;
+		public static const OVERLAP:Number = 0.7;
 		public static const PADDING:Number = 5;
 		public static const CORNER_SIZE:Number = 15;
 		
@@ -107,11 +107,15 @@ package mx.ecosur.multigame.component {
 		
 		
 		protected function selectToken(event:MouseEvent):void{
-			Token(event.target).selected = true;
+			if (event.target is Token) {
+			 Token(event.target).selected = true;
+			}
 		}
 		
 		protected function unselectToken(event:MouseEvent):void{
-			Token(event.target).selected = false;
+			if (event.target is Token) {
+			 Token(event.target).selected = false;
+			}
 		}
 
 		protected function activate():void{
