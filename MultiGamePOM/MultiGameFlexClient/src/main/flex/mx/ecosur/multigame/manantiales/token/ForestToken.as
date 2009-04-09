@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.manantiales
+package mx.ecosur.multigame.manantiales.token
 {
 	import mx.controls.Image;
 	import mx.ecosur.multigame.enum.Color;

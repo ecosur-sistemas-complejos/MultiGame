@@ -14,10 +14,13 @@ import javax.persistence.Entity;
 
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.manantiales.TokenType;
 
 @SuppressWarnings("serial")
 @Entity
 public class ManantialesMove extends Move {
+	
+	private TokenType type;
 	
 	public ManantialesMove () {
 		super();
@@ -25,5 +28,16 @@ public class ManantialesMove extends Move {
 	
 	public ManantialesMove (GamePlayer player, Ficha destination) {
 		super (player, destination);
+		type = destination.getType();
+	}
+
+	public TokenType getType () {
+		if (type == null)
+			type = ( (Ficha) getDestination()).getType();
+		return type;
+	}
+	
+	public void setType (TokenType type) {
+		this.type = type;
 	}
 }

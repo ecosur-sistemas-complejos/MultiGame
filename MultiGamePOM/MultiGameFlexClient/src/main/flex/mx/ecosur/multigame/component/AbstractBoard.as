@@ -25,7 +25,7 @@ package mx.ecosur.multigame.component {
     [Style(name="cellBorderThickness", type="int", format="Length")]
     [Style(name="cellPadding", type="int", format="Length")]
     
-    public class AbstractGameBoard extends UIComponent {
+    public class AbstractBoard extends UIComponent {
         
         protected var _nCols:int; //number of cells on X axis
         protected var _nRows:int; //number of cells of Y axis
@@ -51,7 +51,7 @@ package mx.ecosur.multigame.component {
         protected var _dragExitHandler:Function;
         protected var _dragDropHandler:Function;
         
-        public function AbstractGameBoard() {
+        public function AbstractBoard() {
 			super();
 			
 			if(getQualifiedClassName(this) == "mx.ecosur.multigame.component::AbstractGameBoard") {

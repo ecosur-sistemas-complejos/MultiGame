@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.manantiales
+package mx.ecosur.multigame.manantiales.token
 {
 	import flash.display.Shape;
 	import flash.events.MouseEvent;

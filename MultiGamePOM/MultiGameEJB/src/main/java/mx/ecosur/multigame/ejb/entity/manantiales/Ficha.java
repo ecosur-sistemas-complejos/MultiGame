@@ -26,6 +26,7 @@ import mx.ecosur.multigame.manantiales.TokenType;
 public class Ficha extends Cell {
 
 	private static final long serialVersionUID = -8048552960014554186L;
+	private TokenType type;
 	
 	public Ficha () {
 		super(); 
@@ -35,8 +36,6 @@ public class Ficha extends Cell {
 		super(column, row, color);
 		this.type = type;
 	}
-	
-	private TokenType type;
 
 	@Enumerated (EnumType.STRING)
 	public TokenType getType() {
@@ -58,7 +57,10 @@ public class Ficha extends Cell {
 	 * @return theScore
 	 */
 	public int score () {
-		return type.value();
+		int ret = 0;
+		if (type != null)
+			ret = type.value();
+		return ret;
 	}
 
 	/**
@@ -106,11 +108,6 @@ public class Ficha extends Cell {
 		return ret;
 	}
 
-	public Ficha clone() throws CloneNotSupportedException {
-		Ficha ret = new Ficha(this.getColumn(),this.getRow(),this.getColor(),this.getType());
-		return ret;
-	}
-
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.entity.Cell#toString()
 	 */
@@ -150,4 +147,12 @@ public class Ficha extends Cell {
         .append(getColor())
         .toHashCode(); 
 	}
+	
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.entity.Cell#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[Ficha, type = " + type + ", " + super.toString();		
+	}	
 }

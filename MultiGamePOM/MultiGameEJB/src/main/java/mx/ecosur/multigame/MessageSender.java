@@ -159,6 +159,18 @@ public class MessageSender {
 		sendMessage(game.getType(), game.getId(), GameEvent.QUALIFY_MOVE,
 				move);
 	}
+	
+	/**
+	 * Sends the GameEvent.CHECK_CONDITION message with the move that generates
+	 * the check condition.
+	 * 
+	 * @param move
+	 */
+	public void sendCheckCondition (Move move) {
+		Game game = move.getPlayer().getGame();
+		sendMessage(game.getType(), game.getId(), GameEvent.CHECK_CONDITION,
+				move);		
+	}
 
 	/**
 	 * Sends GameEvent.END message with no data

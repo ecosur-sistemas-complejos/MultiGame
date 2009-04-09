@@ -3,6 +3,7 @@
     xmlns:mx="http://www.adobe.com/2006/mxml" 
     xmlns:component="mx.ecosur.multigame.component.*" 
     xmlns:manantiales="mx.ecosur.multigame.manantiales.*" 
+    xmlns:token="mx.ecosur.multigame.manantiales.token.*"
     width="100%" height="100%" creationComplete="init()" remove="destroy()">
     
     <mx:Metadata>
@@ -12,31 +13,21 @@
     <mx:Script> 
         <![CDATA[
             import mx.core.Application;
-            
             import mx.managers.PopUpManager;
-            
+            import mx.managers.CursorManager;
             import mx.controls.Alert;
-            
             import mx.events.ResizeEvent;
             import mx.events.MenuEvent; 
-            
             import mx.collections.ArrayCollection;
-            
             import flash.net.URLLoader;
-            
             import mx.ecosur.multigame.enum.Color;
-
-            import mx.ecosur.multigame.component.HelpPanel;            
-            import mx.ecosur.multigame.component.PlayersViewer;
-            
+            import mx.ecosur.multigame.component.HelpPanel;       
             import mx.ecosur.multigame.manantiales.enum.TokenType;
             import mx.ecosur.multigame.manantiales.MoveViewer;
-
             import mx.ecosur.multigame.entity.Game;
             import mx.ecosur.multigame.entity.Move;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.ChatMessage;
-            
             import mx.ecosur.multigame.manantiales.ManantialesBoard;
             
             private var _controller:ManantialesGameController;
@@ -44,11 +35,8 @@
             private var _helpPanel:HelpPanel; 
         
             public function init():void{
-//                _controller = new ManantialesGameController(_currentPlayer, 
-//                    board, chatPanel, playersViewer, forestStore, intensiveStore,
-//                    moderateStore, viveroStore, silvoStore, gameStatus, 
-//                    moveViewer, animateLayer);
                 _controller = new ManantialesGameController(this);
+                CursorManager.removeBusyCursor();
             }
             
             
@@ -119,29 +107,29 @@
         <mx:VBox id="leftBox" width="200" height="100%">
             <component:GameStatus id="gameStatus" width="100%" />
             <manantiales:MoveViewer id="moveViewer" title="Move History" 
-                height="100%" width="100%"/>                
+                height="100%" width="100%"/>       
             <mx:Panel title="Managed Forest" width="100%" id="mfp">
-                <manantiales:ForestTokenStore id="forestStore" 
+                <token:ForestTokenStore id="forestStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>
             </mx:Panel>  
             <mx:Panel title="Intensive Grazing" width="100%" id="igp">
-               <manantiales:IntensiveTokenStore id="intensiveStore" 
+               <token:IntensiveTokenStore id="intensiveStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>
             </mx:Panel>
             <mx:Panel title="Moderate Grazing" width="100%" id="mgp">
-               <manantiales:ModerateTokenStore id="moderateStore" 
+               <token:ModerateTokenStore id="moderateStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>
             </mx:Panel>
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
-               <manantiales:ViveroTokenStore id="viveroStore" 
+               <token:ViveroTokenStore id="viveroStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>
             </mx:Panel>
             <mx:Panel title="Silvopastoral Active" width="100%" id="sap">
-               <manantiales:SilvopastoralTokenStore id="silvoStore" 
+               <token:SilvopastoralTokenStore id="silvoStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>   
             </mx:Panel>
@@ -151,8 +139,9 @@
                     currentPlayer="{currentPlayer}"/>            	    	
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
-            <mx:Panel title="Players" width="100%">
-                <component:PlayersViewer id="playersViewer" width="100%"/>
+            <mx:Panel title="Score" width="100%">
+                <manantiales:PlayersViewer id="playersViewer" 
+                	  currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>        
            <component:ChatPanel id="chatPanel" width="100%" height="100%" 
                 currentPlayer="{currentPlayer}" />  

@@ -9,7 +9,7 @@ package mx.ecosur.multigame.manantiales
     import mx.controls.Button;
     import mx.controls.Spacer;
     
-    import mx.ecosur.multigame.component.AbstractGameBoard;
+    import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.enum.Color;
     
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
@@ -23,7 +23,7 @@ package mx.ecosur.multigame.manantiales
         private var _moves:Accordion; 
         private var _controlBar:ControlBar;
         private var _selectedMove:MoveInfo;
-        private var _board:AbstractGameBoard;
+        private var _board:AbstractBoard;
         
         // Define navigation events that this component dispatches
         public static const MOVE_EVENT_GOTO_MOVE:String = "gotoMove";
@@ -36,7 +36,7 @@ package mx.ecosur.multigame.manantiales
             super();
         }
         
-        public function set board(board:AbstractGameBoard):void{
+        public function set board(board:AbstractBoard):void{
             _board = board;
         }
         

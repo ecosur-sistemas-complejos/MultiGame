@@ -58,3 +58,13 @@
             fontSize: 10;
             color: #000000;
         }
+        
+        @font-face {
+            src: local("Verdana");
+            fontFamily: myVerdana; 
+            advancedAntiAliasing: true;
+        }
+        
+        .manantialesToken {
+            fontSize: 10;
+        }

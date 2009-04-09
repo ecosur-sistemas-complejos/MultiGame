@@ -1,18 +1,19 @@
-package mx.ecosur.multigame.manantiales
+package mx.ecosur.multigame.manantiales.token
 {
+	
     import flash.events.MouseEvent;
     
     import mx.events.DragEvent;	
 	
-	public class ViveroTokenStore extends ManantialesTokenStore
+	public class SilvopastoralTokenStore extends ManantialesTokenStore
 	{
-		public function ViveroTokenStore()
+		public function SilvopastoralTokenStore()
 		{
 			super();
 		}
 		
         public override function addToken():void{
-            var token:ViveroToken = new ViveroToken();
+            var token:SilvopastoralToken = new SilvopastoralToken();
             token.buttonMode = false;
             token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
             token.addEventListener(MouseEvent.MOUSE_OUT, unselectToken);

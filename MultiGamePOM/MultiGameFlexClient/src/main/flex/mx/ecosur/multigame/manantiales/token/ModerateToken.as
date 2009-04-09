@@ -1,39 +1,39 @@
-package mx.ecosur.multigame.manantiales
+package mx.ecosur.multigame.manantiales.token
 {
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.manantiales.enum.TokenType;
+	   import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
-	public class IntensiveToken extends ManantialesToken
-	{				
-		public function IntensiveToken()
+	public class ModerateToken extends ManantialesToken
+	{
+		public function ModerateToken()
 		{
 			super();
-			_tooltip = "Intensive Grazing";
-			_label = "I";
-			_type = TokenType.INTENSIVE;
+			_tooltip = "Moderate Grazing";
+			_label = "M";
+			_type = TokenType.MODERATE;
 		}
 		
         public override function get colorCode():uint {
             var ret:uint = _cell.colorCode;
-            
+           
             switch (_cell.color) {
                 case Color.BLUE:
-                    ret = 0x000082;
+                    ret = 0xBFBFFE;
                     break;
                 case Color.GREEN:
-                    ret = 0x008200;
+                    ret = 0xBFFEBF;
                     break;
                 case Color.RED:
-                    ret = 0x820000;
+                    ret = 0xFEBFBF;
                     break;
                 case Color.YELLOW:
-                    ret = 0xB28F00;
+                    ret = 0xFEF2BF;
                     break;
                 default:
                     break;  
             }
             
             return ret;
-        }	
+        }
 	}
 }

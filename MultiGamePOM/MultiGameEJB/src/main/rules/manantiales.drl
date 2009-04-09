@@ -9,31 +9,63 @@ import mx.ecosur.multigame.Color;
 
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 
-import mx.ecosur.multigame.manantiales.HardConstraint;
 import mx.ecosur.multigame.manantiales.CheckConstraint;
+import mx.ecosur.multigame.manantiales.TokenType;
 
 import java.util.List;
 
-/*
-    Determines if the destination of the requested move is
-    empty on the grid.
-*/
-function boolean isEmpty (GameGrid grid, ManantialesMove move) {
-    Cell destination = move.getDestination();
-    Cell current = grid.getLocation (destination);
-    boolean ret = (current == null);
+function boolean isValid (GameGrid grid, ManantialesMove move) {
+    Ficha destination = (Ficha) move.getDestination();
+    Ficha current = (Ficha) grid.getLocation (destination);
+    boolean ret = (current == null || !(current.getType() == TokenType.INTENSIVE_PASTURE));
     if (!ret)
         move.setStatus (Status.INVALID);
     return ret;
 }
+
+function int score (ManantialesPlayer player, ManantialesMove move) {
+    int ret = 0;
+    switch (move.getType()) {
+        case MANAGED_FOREST:
+            ret = 1;
+            player.setForested(player.getForested() +  1);
+            break;
+        case MODERATE_PASTURE:
+            ret = 2;
+            player.setModerate(player.getModerate() + 1);
+            break;
+        case INTENSIVE_PASTURE:
+            ret = 3;
+            player.setIntensive(player.getIntensive() + 1);
+            break;
+        case VIVERO:
+            player.setVivero(player.getVivero() + 1);
+            break;
+        case SILVOPASTORAL:
+            player.setSilvo(player.getSilvo() + 1);
+            ret = 4;
+            break;    
+        default:
+            break;
+    }
+    
+    return ret;
+}
+
+function boolean isWinner (GamePlayer gamePlayer) {
+    ManantialesPlayer player = (ManantialesPlayer) gamePlayer;
+    return player.getScore() >= 32; 
+}
+
 
 #Sets the players in the game so that Black has the first turn
 rule "setup"
@@ -60,10 +92,132 @@ rule "evaluate-move"
 when
     game  : Game (state == GameState.PLAY, $grid : grid)
     move  : ManantialesMove (status == Status.UNVERIFIED, player.turn == true)
-    eval (isEmpty (game.getGrid(), move))   
+    eval (isValid(game.getGrid(),move))
 then
-    modify (move) { setStatus (Status.VERIFIED) }
+    modify (move) { setStatus (Status.VERIFIED) }    
 end   
+
+rule "row contiguous intensive"
+    agenda-group "verify"
+    no-loop true
+    when
+        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $move : ManantialesMove (status != Status.INVALID, destination.row == $row, 
+            type == TokenType.INTENSIVE_PASTURE)
+        eval (Math.abs ($col - $move.getDestination().getColumn()) <= 2) 
+    then 
+        modify ($move) { setStatus (Status.INVALID) }
+end
+
+rule "column contiguous intensive"
+    agenda-group "verify"
+    no-loop true
+    when
+        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $move : ManantialesMove (status != Status.INVALID, destination.column == $col, 
+            type == TokenType.INTENSIVE_PASTURE)
+        eval (Math.abs ($row - $move.getDestination().getRow()) <= 2) 
+    then 
+        modify ($move) { setStatus (Status.INVALID) }
+end    
+
+# Enforces the constraint (by diagnal) that intensives cannot be contiguous
+rule "diagnal contiguous intensive"
+    agenda-group "verify"
+    no-loop true
+    when
+        $tok1 : Ficha ($col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+        $move : ManantialesMove (status != Status.INVALID, $destination : destination, 
+            type == TokenType.INTENSIVE_PASTURE)
+        eval (Math.abs($row - $destination.getRow()) == 1)
+        eval (Math.abs($col - $destination.getColumn()) == 1) 
+    then
+        modify ($move) { setStatus (Status.INVALID) }
+end 
+
+#Enforces the arroyo constraint (only 2 developments that deforest on the border)
+rule
+    "northern border deforested"
+    agenda-group "verify"
+    when
+        $tok1 : Ficha ($id : id, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+        $tok3 : Ficha (id > $id2, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
+    then
+        insertLogical (
+            new CheckConstraint("northern border deforested", 
+                $tok1, $tok2, $tok3));
+end
+
+#Enforces the arroyo constraint (only 2 developments that deforest on the border)
+rule
+    "eastern border deforested"
+    agenda-group "verify"    
+    when
+        $tok1 : Ficha ($id : id, border == BorderType.EAST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
+        $tok3 : Ficha (id > $id2, border == BorderType.EAST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
+    then
+        insertLogical (
+            new CheckConstraint("eastern border deforested", 
+                $tok1, $tok2, $tok3)) ;
+end
+
+#Enforces the arroyo constraint (only 2 developments that deforest on the border)
+rule
+    "southern border deforested"
+    agenda-group "verify"    
+    when
+        $tok1 : Ficha ($id : id, border == BorderType.SOUTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok3 : Ficha (id > $id2, border == BorderType.SOUTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
+    then
+        insertLogical (
+            new CheckConstraint("southern border deforested", 
+                $tok1, $tok2, $tok3));
+end
+
+#Enforces the arroyo constraint (only 2 developments that deforest on the border)
+rule
+    "western border deforested"
+    agenda-group "verify"    
+    when
+        $tok1 : Ficha ($id : id, border == BorderType.WEST, 
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok3 : Ficha (id > $id2, border == BorderType.WEST, 
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
+    then
+        insertLogical (
+            new CheckConstraint("western border deforested", 
+                $tok1, $tok2, $tok3));
+end
+
+#Enforces Manantiales constraint (only 2 developments around the manantiales
+#may deforest the land).
+rule "manantiales"
+    agenda-group "verify"
+    when
+        $tok1 : Ficha ($id : id, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
+        $tok3 : Ficha (id > $id2, manantial == true, type in (
+                    TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
+    then
+        insertLogical (new CheckConstraint(
+          "Column contiguous intensive", $tok1, $tok2, $tok3));
+end
 
 # Executes a simple move
 rule "execute-move"
@@ -75,8 +229,71 @@ then
     #Modify gamegrid 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell (move.getDestination());
-    modify (move) { setStatus (Status.MOVED) }
     modify (game) { setGrid (modifiedGrid) }
+    modify (move) { setStatus (Status.MOVED) }
+    # insert the move's destination into working memory
+    insert (move.getDestination());
     MessageSender messageSender = new MessageSender();
-    messageSender.sendMoveComplete(move);
+    messageSender.sendMoveComplete (move);
+end
+
+#Enforces the constaint that no more than 32 sites can be deforested
+rule "too many deforested sites"
+    agenda-group "evaluate"
+    when
+        $list : Number () from accumulate (
+            Ficha ($id : id, type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            count ($id)) 
+        eval ($list.intValue() > 32)
+    then
+        insertLogical (new CheckConstraint(
+            "Too many deforested sites", $list));
+end
+
+rule "score"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : Game (state == GameState.PLAY)
+    move  : ManantialesMove (player.turn == true, status == Status.MOVED)
+then
+    ManantialesPlayer player = (ManantialesPlayer) move.getPlayer();
+    int value = score (player, move);
+    player.setScore(player.getScore() + value);
+    modify (move) { setPlayer (player), setStatus (Status.EVALUATED) };
+end   
+
+# TODO: re-write so this sends a list of all violated check-constraints across
+# the wire.
+rule "check-constraints"
+    agenda-group "evaluate"
+    no-loop true
+    when
+        $move : ManantialesMove (player.turn == true, status == Status.EVALUATED)
+        $occurrenceCount : Number() from accumulate(
+            $checkConstraints : CheckConstraint (),
+            count($checkConstraints)
+        );
+        eval ($occurrenceCount.intValue() > 0)
+    then
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckCondition($move);
+end
+
+# Determines if there is a winner 
+# TODO:  need to query game, or move for winning score number (based on type
+# of game.
+rule "determine-winner"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : Game (state == GameState.PLAY)
+    move  : ManantialesMove ($player : player, player.turn == true, 
+        status == Status.EVALUATED)
+    eval (isWinner ($player))
+then
+    modify (game) { setState (GameState.END) }
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendEndGame (game);
 end

@@ -36,6 +36,7 @@ import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
@@ -254,12 +255,15 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 					+ "name found!");
 		} catch (NoResultException e) {
 			switch (game.getType()) {
-			case PENTE:
-				ret = new PentePlayer(game, player, favoriteColor);
-				break;
-			default:
-				ret = new GamePlayer(game, player, favoriteColor);
-				break;
+				case PENTE:
+					ret = new PentePlayer(game, player, favoriteColor);
+					break;
+				case MANANTIALES:
+					ret = new ManantialesPlayer (game, player, favoriteColor);
+					break;
+				default:
+					ret = new GamePlayer(game, player, favoriteColor);
+					break;
 			}
 
 			em.persist(ret);

@@ -27,7 +27,7 @@
     
             private function init(event:Event):void {
             	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
-            	timer = new Timer(3500);
+            	timer = new Timer(500);
             	timer.addEventListener(TimerEvent.TIMER, timeout);
             	timer.start();
             }

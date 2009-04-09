@@ -9,6 +9,8 @@
 	
 	<mx:Script> 
         <![CDATA[
+            import mx.managers.CursorManager;
+        
             import mx.ecosur.multigame.entity.Game;
         	import mx.ecosur.multigame.entity.GamePlayer;
         	import mx.ecosur.multigame.event.GamePlayerEvent;
@@ -32,7 +34,8 @@
         		vstack.selectedChild = lobby;
         	}
         	
-        	private function lobbyDone(event:GamePlayerEvent):void{       		
+        	private function lobbyDone(event:GamePlayerEvent):void{   
+        		setBusy ();	
         		var game:Game = event.gamePlayer.game;
         		if (game.type == "PENTE") {
 	        		//create new pente game window
@@ -50,8 +53,12 @@
                     _manantialesWindow.addEventListener("complete", gameComplete);
 
                     vstack.addChild(_manantialesWindow);
-                    vstack.selectedChild = _manantialesWindow; 		
+                    vstack.selectedChild = _manantialesWindow;	
 	        	}
+        	}
+        	
+        	private function setBusy():void {
+        		CursorManager.setBusyCursor();        
         	}
         ]]>
     </mx:Script>

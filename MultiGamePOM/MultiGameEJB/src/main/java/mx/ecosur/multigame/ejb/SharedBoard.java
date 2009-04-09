@@ -19,7 +19,6 @@
 package mx.ecosur.multigame.ejb;
 
 import java.util.List;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -29,7 +28,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
@@ -103,23 +101,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 * 
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#getGameGrid(int)
 	 */
-	public GameGrid getGameGrid(int gameId) {
-		
-		logger.fine("Getting game grid for game with id " + gameId);
-		
+	public GameGrid getGameGrid(int gameId) {		
+		logger.fine("Getting game grid for game with id " + gameId);	
 		Game game = getGame(gameId);
-		TreeSet<Cell> ret = new TreeSet<Cell>(new CellComparator());
-		try {
-			for (Cell c : game.getGrid().getCells()) {
-				Cell cell = c.clone();
-				ret.add(cell);
-			}
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException("Unexpected CloneException from "
-					+ "cell cloning operation!");
-		}
-
-		return new GameGrid(ret);
+		return game.getGrid();
 	}
 
 	/* (non-Javadoc)
@@ -144,6 +129,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		StatefulSession statefulSession = ruleBase.newStatefulSession();
 		statefulSession.insert(game);
 		statefulSession.insert(move);
+		for (Cell cell : game.getGrid().getCells()) {
+			statefulSession.insert(cell);
+		}		
 		statefulSession.setFocus("verify");
 		statefulSession.fireAllRules();
 

@@ -12,6 +12,7 @@
     <mx:Script> 
         <![CDATA[
         	import mx.core.Application;
+        	import mx.managers.CursorManager;
         	import mx.managers.PopUpManager;
         	import mx.ecosur.multigame.component.HelpPanel;
         	import mx.controls.Alert;
@@ -38,6 +39,7 @@
             
             public function set currentPlayer(currentPlayer:GamePlayer):void{
                 _currentPlayer = currentPlayer;
+                CursorManager.removeBusyCursor();
             }
             
             [Bindable]
@@ -118,7 +120,7 @@
 	        <pente:PenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
 	    </mx:VBox>
 	    <mx:VBox id="rightBox" height="100%" width="300">
-	        <mx:Panel title="Players" width="100%">
+	        <mx:Panel title="Score" width="100%">
 	            <pente:PentePlayersViewer id="playersViewer" width="100%" />
 	        </mx:Panel>
 	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />

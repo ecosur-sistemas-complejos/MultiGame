@@ -54,7 +54,7 @@ public class SolutionConfigurer {
 				int row = Integer.parseInt(tok.getChild("row").getText());
 				Color color = Color.valueOf(tok.getChild("color").getText());
 				TokenType type = TokenType.valueOf(tok.getChild("type").getText());
-				Ficha token = new Ficha (col, row, color, type);
+				SolverFicha token = new SolverFicha (col, row, color, type);
 				solution.replaceToken(token);
 			} else if (tok.getName().equals("distribution")) {
 				Color color = Color.valueOf(tok.getChild("color").getText());

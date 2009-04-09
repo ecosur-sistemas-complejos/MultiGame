@@ -1,18 +1,16 @@
-package mx.ecosur.multigame.manantiales
-{   	
-	import mx.ecosur.multigame.component.Token;
-	
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+package mx.ecosur.multigame.manantiales.token
+{
 	import mx.ecosur.multigame.enum.Color;
-
-	public class SilvopastoralToken extends ManantialesToken
-	{
-		public function SilvopastoralToken()
+	import mx.ecosur.multigame.manantiales.enum.TokenType;
+	
+	public class IntensiveToken extends ManantialesToken
+	{				
+		public function IntensiveToken()
 		{
 			super();
-			_tooltip = "Silvepastoral Active";
-			_label = "S";
-			_type = TokenType.SILVOPASTORAL;
+			_tooltip = "Intensive Grazing";
+			_label = "I";
+			_type = TokenType.INTENSIVE;
 		}
 		
         public override function get colorCode():uint {
@@ -20,16 +18,16 @@ package mx.ecosur.multigame.manantiales
             
             switch (_cell.color) {
                 case Color.BLUE:
-                    ret = 0x828BEC;
+                    ret = 0x000082;
                     break;
                 case Color.GREEN:
-                    ret = 0x82EC9D;
+                    ret = 0x008200;
                     break;
                 case Color.RED:
-                    ret = 0xEC9482;
+                    ret = 0x820000;
                     break;
                 case Color.YELLOW:
-                    ret = 0xEBF268;
+                    ret = 0xB28F00;
                     break;
                 default:
                     break;  

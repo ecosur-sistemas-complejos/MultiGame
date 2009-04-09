@@ -14,7 +14,7 @@ package mx.ecosur.multigame.manantiales
 	import flash.display.Shape;
 	import flash.geom.Point;
 	
-	import mx.ecosur.multigame.component.AbstractGameBoard;
+	import mx.ecosur.multigame.component.AbstractBoard;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	import mx.ecosur.multigame.enum.Color;
     
@@ -43,7 +43,7 @@ package mx.ecosur.multigame.manantiales
     * as the location of the Manantial or Spring for individuals
     * living in the Ejido.
     */ 
-	public class ManantialesBoard extends AbstractGameBoard {
+	public class ManantialesBoard extends AbstractBoard {
 		
 		protected var _bg:Shape, _hl:Shape, _vl:Shape,
 		  _manantial:Shape, _spring:Shape;
@@ -145,7 +145,7 @@ package mx.ecosur.multigame.manantiales
             var endY:Number, endX:Number;
             
             factor = 2;
-            positioningFactor = 16;
+            positioningFactor = 14.5;
             
             this.measure();
             cellSize =  (this.measuredWidth/_nCols)/factor;
