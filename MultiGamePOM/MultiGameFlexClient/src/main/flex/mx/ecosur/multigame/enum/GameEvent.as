@@ -23,6 +23,7 @@ package mx.ecosur.multigame.enum {
 		public static const QUALIFY_MOVE:String = "QUALIFY_MOVE";
 		public static const CHAT:String = "CHAT";
 		public static const PLAYER_CHANGE:String = "PLAYER_CHANGE";
+		public static const CHECK_CONSTRAINT:String = "CHECK_CONSTRAINT";
 
 	}
 }

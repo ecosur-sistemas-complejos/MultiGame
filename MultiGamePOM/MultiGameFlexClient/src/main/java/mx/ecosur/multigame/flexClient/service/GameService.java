@@ -186,39 +186,10 @@ public class GameService {
 		return players;
 	}
 
-	public Map<String, Boolean> getValidMoves(GamePlayer gamePlayer, Cell cell) {
-		SharedBoardRemote sharedBoard = getSharedBoard();
-		HashMap<String, Boolean> validMoves = new HashMap<String, Boolean>();
-		Move move;
-		Cell destination;
-		int rows = gamePlayer.getGame().getRows();
-		int cols = gamePlayer.getGame().getColumns();
-		String moveCode;
-		for (int r = 0; r < rows; r++) {
-			for (int c = 0; c < cols; c++) {
-				destination = new Cell(c, r, cell.getColor());
-				move = new Move(gamePlayer, cell, destination);
-				try {
-					sharedBoard.validateMove(move);
-					moveCode = Integer.toString(c) + "#" + Integer.toString(r);
-					validMoves.put(moveCode, true);
-					logger.info("valid move " + moveCode + "\n" + move);
-				} catch (InvalidMoveException e) {
-					// do not add move to valid moved but continue executing
-				}
-			}
-		}
-		if (validMoves.size() == 0) {
-			logger.info("No valid moves for cell " + cell);
-		}
-		return validMoves;
-	}
-
 	public void doMove(Move move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		try {
-			Move validatedMove = sharedBoard.validateMove(move);
-			sharedBoard.move(validatedMove);
+			sharedBoard.move(move);
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 			throw new GameException(e);

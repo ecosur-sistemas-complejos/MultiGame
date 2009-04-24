@@ -22,7 +22,6 @@ import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
-import mx.ecosur.multigame.pente.BeadString;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -153,8 +152,7 @@ public class AgentLogicTest extends AgentTestBase {
 		assertNotNull (next);
 		/* Validate that the next move is possible */
 		fireRules (next);
-		assertTrue (next.getStatus() == Move.Status.EVALUATED || 
-				next.getStatus() == Move.Status.MOVED);		
+		assertTrue (next.getStatus() == Move.Status.EVALUATED);		
 	}
 	
 	public void testSimpleMoveOnStartingBoard () {
@@ -172,7 +170,7 @@ public class AgentLogicTest extends AgentTestBase {
 		assertNotNull (next);
 		/* Validate that the next move is possible */
 		fireRules (next);
-		assertEquals (Move.Status.MOVED, next.getStatus());		
+		assertEquals (Move.Status.EVALUATED, next.getStatus());		
 	}
 	
 	

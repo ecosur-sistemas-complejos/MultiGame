@@ -192,7 +192,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (subsequent);
 		
-		assertEquals (Move.Status.MOVED, subsequent.getStatus());
+		assertEquals (Move.Status.EVALUATED, subsequent.getStatus());
 		assertEquals (next, game.getGrid().getLocation(next));
 	}
 	
@@ -404,7 +404,7 @@ public class PenteRulesTest extends RulesTestBase {
 		
 		fireRules (move);
 		
-		assertEquals (Move.Status.MOVED, move.getStatus());
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (tessera, game.getGrid().getLocation(tessera));
 		
 		Set<BeadString> trias = move.getTrias();

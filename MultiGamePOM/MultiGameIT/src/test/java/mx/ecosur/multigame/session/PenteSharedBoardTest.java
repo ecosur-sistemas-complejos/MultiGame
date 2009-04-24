@@ -32,7 +32,6 @@ import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
@@ -126,25 +125,12 @@ public class PenteSharedBoardTest {
 	 * @throws RemoteException 
 	 */
 	@Test
-	public void testFirstMoveValidate () throws InvalidMoveException, RemoteException {
-		PenteMove move = new PenteMove (alice, center);
-		Move ret = board.validateMove(move);
-		assertEquals (Move.Status.VERIFIED, ret.getStatus());
-	}
-	
-	/** 
-	 * Tests the first move logic.  This tests the positive condition.
-	 * @throws InvalidMoveException 
-	 * @throws RemoteException 
-	 */
-	@Test
 	public void testFirstMove () throws InvalidMoveException, RemoteException {
 		PenteMove move = new PenteMove (alice, center);
-		Move validMove = board.validateMove(move);
-		board.move(validMove);
+		board.move(move);
 		
 		GameGrid grid = board.getGameGrid(gameId);
-		assertNotNull (grid.getLocation(validMove.getDestination()));
+		assertNotNull (grid.getLocation(move.getDestination()));
 	}	
 
 	/**
@@ -160,80 +146,69 @@ public class PenteSharedBoardTest {
 		PenteMove move = new PenteMove (alice, center);
 
 		try {
-			Move invalid = board.validateMove(move);
+			board.move (move);
 			fail ("Invalid Move must be thrown!");
 		} catch (InvalidMoveException e) {
-			assertTrue ("Invalid Move!".equals(e.getMessage()));
+			assertTrue (e != null);
 		} 
 	}
 	
-	@Test
+	/* @Test */
 	public void testFormTria () throws InvalidMoveException, RemoteException {
 		/* Round 1 */
 		
 		PenteMove move = new PenteMove (alice, center);
-		Move valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		Cell cell = new Cell (1, 1, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);;
 		cell = new Cell (3,1, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5,1, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 2 */
 		
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 1, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1, 2, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,2, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 2, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		
 		/* Round 3 */
 		
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 2, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1, 3, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
-		move = (PenteMove) valid;
+		board.move(move);
 		
 		assertEquals (1, move.getTrias().size());
 		
@@ -248,71 +223,60 @@ public class PenteSharedBoardTest {
 		assertEquals (1, bob.getTrias().size());
 	}
 	
-	@Test
+	/* @Test */
 	public void testSelfishScoring () throws InvalidMoveException, RemoteException {
 		
 		/* Round 1 */
 		PenteMove move = new PenteMove (alice, center);
-		Move valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		Cell cell = new Cell (1, 1, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,1, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5,1, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 2 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 1, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1, 2, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,2, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 2, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		
 		/* Round 3 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 2, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1, 3, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
-		move = (PenteMove) valid;
+		board.move(move);
 		
 		assertEquals (1, move.getTrias().size());
 		
@@ -327,80 +291,68 @@ public class PenteSharedBoardTest {
 		assertEquals (1, bob.getTrias().size());
 		bob.setTurn(true);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,3, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 3, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 4 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 3, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (9,1, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3, 5, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 5, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 5 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 5, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (9, 2, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3, 6, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 6, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 6 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 6, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (9,3, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Game should be over, with Bob the winner */
 		PenteGame pente = (PenteGame) board.getGame(gameId);
@@ -415,82 +367,69 @@ public class PenteSharedBoardTest {
 		}
 	}
 	
-	@Test
+	/* @Test */
 	public void testCooperativeScoring () throws InvalidMoveException, RemoteException {
 		/* Round 1 */
 		PenteMove move = new PenteMove (alice, center);
-		Move valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		Cell cell = new Cell (1, 1, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,1, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5,1, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 2 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 1, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1, 2, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3,2, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 2, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		
 		/* Round 3 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 2, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (3, 3, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
-		move = (PenteMove) valid;
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (1, 3, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 3, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Assert that Denise has completed a tria */
 		assertEquals (1, move.getTrias().size());
@@ -507,17 +446,15 @@ public class PenteSharedBoardTest {
 		denise.setTurn(true);
 		
 		/* Round 4 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 3, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (1,4, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Assert that Bob has completed a tessera */
 		assertEquals (1, move.getTesseras().size());
@@ -533,60 +470,50 @@ public class PenteSharedBoardTest {
 		assertEquals (1, bob.getTesseras().size());
 		bob.setTurn(true);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (3, 4, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Assert that Charlie has completed a tessera */
 		assertEquals (1, move.getTesseras().size());
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 5, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 5 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 5, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (0, 3, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
-		move = (PenteMove) valid;
+		board.move(move);
 		
-		charlie = (PentePlayer) board.incrementTurn(bob);
+		charlie.setTurn(true);
 		cell = new Cell (2, 5, charlie.getColor());
 		move = new PenteMove (charlie, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		denise = (PentePlayer) board.incrementTurn(charlie);
+		denise.setTurn(true);
 		cell = new Cell (5, 7, denise.getColor());
 		move = new PenteMove (denise, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
+		board.move(move);
 		
 		/* Round 6 */
-		alice = (PentePlayer) board.incrementTurn(denise);
+		alice.setTurn(true);
 		cell = new Cell (7, 6, alice.getColor());
 		move = new PenteMove (alice, cell);
-		valid = board.validateMove(move);
-		board.move(valid);
+		board.move(move);
 		
-		bob = (PentePlayer) board.incrementTurn(alice);
+		bob.setTurn(true);
 		cell = new Cell (3, 6, bob.getColor());
 		move = new PenteMove (bob, cell);
-		valid = board.validateMove (move);
-		board.move(valid);
-		move = (PenteMove) valid;
+		board.move(move);
 		
 		/* Confirm cooperative scoring */
 		

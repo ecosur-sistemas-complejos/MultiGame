@@ -34,6 +34,7 @@ import javax.naming.NamingException;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.exception.CheckConstraint;
 
 public class MessageSender {
 
@@ -166,10 +167,10 @@ public class MessageSender {
 	 * 
 	 * @param move
 	 */
-	public void sendCheckCondition (Move move) {
+	public void sendCheckConstraint (Move move, CheckConstraint condition) {
 		Game game = move.getPlayer().getGame();
-		sendMessage(game.getType(), game.getId(), GameEvent.CHECK_CONDITION,
-				move);		
+		sendMessage(game.getType(), game.getId(), GameEvent.CHECK_CONSTRAINT,
+				condition);		
 	}
 
 	/**

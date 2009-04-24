@@ -672,7 +672,9 @@ package mx.ecosur.multigame.pente{
             boardCell.select(Color.getColorCode(move.player.color));
             
             // show qualify dialog
-            var txt:String = "Your team mate had made a move.\n\nPlease qualify this move according to its level of cooperation?\n\nNote that this window may be dragged to a different location if it is obscuring the game."
+            var txt:String = "Your teammate has made a move.\n\nCould you " + 
+            		"please qualify it according to the level of " + 
+            		"cooperation?"; 
             var title:String = "QUALIFY MOVE";
             Alert.yesLabel = "COOPERATIVE";
             Alert.noLabel = "SELFISH";

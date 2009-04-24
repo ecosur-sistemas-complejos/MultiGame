@@ -127,7 +127,7 @@ package mx.ecosur.multigame.manantiales
                 }                                 
                 
                 // If player has turn highlight and select its info
-                if (manPlayer.turn && manPlayer.id == currentPlayer.id) {
+                if (manPlayer.turn) {
                     selectPlayer(pi);
                 }
             }

@@ -22,6 +22,7 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.exception.CheckConstraint;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
@@ -383,6 +384,10 @@ package mx.ecosur.multigame.manantiales
                 case GameEvent.PLAYER_CHANGE:
                     var players:ArrayCollection = ArrayCollection(message.body);
                     updatePlayers(players);
+                    break;
+                case GameEvent.CHECK_CONSTRAINT:
+                    var checkConstraint:CheckConstraint = CheckConstraint(message.body);
+                    handleCheckConstraint (checkConstraint);
                     break;
             }
         }        
@@ -889,7 +894,11 @@ package mx.ecosur.multigame.manantiales
             }
             
             _moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd]);
-        }  
+        } 
+        
+        private function handleCheckConstraint (checkConstraint:CheckConstraint):void {
+        	Alert.show(checkConstraint.reason);
+        } 
               
         
         public function destroy():void{

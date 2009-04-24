@@ -106,6 +106,23 @@ function Set getWinners (PenteGame game) {
     return pente.getWinners();
 }
 
+function GamePlayer incrementTurn (PenteMove move) {
+    GamePlayer player = move.getPlayer();    
+    player.setTurn(false);
+
+    /* Find next player */
+    List<GamePlayer> players = player.getGame().getPlayers();
+    int playerNumber = players.indexOf(player);
+    GamePlayer nextPlayer = null;
+    if (playerNumber == players.size() - 1) {
+        nextPlayer = players.get(0);
+    } else {
+        nextPlayer = players.get(playerNumber + 1);
+    }
+    
+    nextPlayer.setTurn (true);
+    return nextPlayer;
+}
 
 #Rules for the game of PENTE
 
@@ -232,6 +249,17 @@ then
     modify (move) { setPlayer (player), setStatus (Status.EVALUATED) }
 end
 
+rule "evaluate-nonscoring-move"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.MOVED)
+    eval (!isTria (move)) and eval (!isTessera (move))
+then
+    modify (move) { setStatus (Status.EVALUATED) }
+end 
+
 rule "score"
     agenda-group "evaluate"
     no-loop true
@@ -268,4 +296,17 @@ then
     modify (game) { setState (GameState.END), setWinners (winners) }
     MessageSender messageSender = new MessageSender();
 	messageSender.sendEndGame (game);
+end
+
+rule "increment-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -1
+when
+    game  : PenteGame (state == GameState.PLAY)
+    move  : PenteMove (player.turn == true, status == Status.EVALUATED)
+then
+    GamePlayer player = incrementTurn (move);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendPlayerChange(player.getGame());
 end

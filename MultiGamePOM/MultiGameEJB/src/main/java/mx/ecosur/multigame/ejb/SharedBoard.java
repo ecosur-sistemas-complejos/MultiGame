@@ -19,6 +19,7 @@
 package mx.ecosur.multigame.ejb;
 
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -28,8 +29,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import mx.ecosur.multigame.MessageSender;
-import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
@@ -108,54 +107,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#validateMove(mx.ecosur.multigame.ejb.entity.Move)
-	 */
-	public Move validateMove(Move move) throws InvalidMoveException {
-		
-		logger.fine("Validating move " + move);
-
-		/* Obtain attached instance of game and associate with player */
-		if (move.getPlayer() == null)
-			throw new InvalidMoveException ("No Player attached to move!");
-		Game game = move.getPlayer().getGame();
-		if (!em.contains(game))
-			game = getGame(game.getId());
-		else
-			em.refresh(game);
-		move.getPlayer().setGame(game);
-
-		/* Validate the move against the rules */
-		RuleBase ruleBase = game.getType().getRuleBase();
-		StatefulSession statefulSession = ruleBase.newStatefulSession();
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		for (Cell cell : game.getGrid().getCells()) {
-			statefulSession.insert(cell);
-		}		
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-
-		if (move.getStatus() == Move.Status.INVALID){
-			logger.fine("Move not valid : " + move);
-			throw new InvalidMoveException("Invalid Move!");
-		}
-		statefulSession.dispose();
-
-		return move;
-	}
-
-	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.ejb.entity.Move)
 	 */
-	public void move(Move move) throws InvalidMoveException {
-		
+	public Move move(Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
-
-		/* Check that move has been validated */
-		if (move.getStatus() != Move.Status.VERIFIED){
-			logger.fine("Move not valid : " + move);
-			throw new InvalidMoveException("Unverified or Invalid move!");
-		}
 
 		/* Obtain attached instance of game and player */
 		GamePlayer player = move.getPlayer();
@@ -167,63 +122,32 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 		/* persist in order to define id */
 		em.persist(move);
+		
+		Game game = player.getGame();
 
 		/* Execute the move in the rules */
-		RuleBase ruleBase = player.getGame().getType().getRuleBase();
+		RuleBase ruleBase = game.getType().getRuleBase();
 		StatefulSession statefulSession = ruleBase.newStatefulSession();
+		
+		/* Insert all known information into working memory */
 		statefulSession.insert(move);
-		statefulSession.insert(player.getGame());
+		statefulSession.insert(game);
+		Set facts = game.getFacts();
+		for (Object fact : facts) 
+			statefulSession.insert(fact);		
+		
+		/* Run through the active lifecycle */
+		statefulSession.setFocus("verify");
+		statefulSession.fireAllRules();
 		statefulSession.setFocus("move");
 		statefulSession.fireAllRules();
 		statefulSession.setFocus("evaluate");
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
-
-		/* TODO: move this to the rules */
-		incrementTurn(move.getPlayer());
-	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#incrementTurn(mx.ecosur.multigame.ejb.entity.GamePlayer)
-	 */
-	public GamePlayer incrementTurn(GamePlayer player) {
 		
-		logger.fine("Incrementing turn for player " + player.getId());
-
-		/* Check that player has turn */
-		if (!player.isTurn())
-			throw new RuntimeException ("Only the Player with the "
-					+ "turn can increment the turn!");
-
-		/* Get attached player and game */
-		if (!em.contains(player))
-			player = em.find(GamePlayer.class, player.getId());
-		Game game = player.getGame();
-
-		/* Remove turn from player */
-		player.setTurn(false);
-
-		/* Find next player */
-		List<GamePlayer> players = game.getPlayers();
-		int playerNumber = players.indexOf(player);
-		GamePlayer nextPlayer = null;
-		if (playerNumber == players.size() - 1) {
-			nextPlayer = players.get(0);
-		} else {
-			nextPlayer = players.get(playerNumber + 1);
-		}
-
-		nextPlayer.setTurn(true);
-		
-		/* Push changes into the DB */
-		em.flush();
-		
-		/* Send the player change message */
-		MessageSender messageSender = new MessageSender();
-		messageSender.sendPlayerChange(player.getGame());
-		
-		/* Return the nextPlayer */
-		return nextPlayer;
+		if (move.getStatus().equals(Move.Status.INVALID))
+			throw new InvalidMoveException ("INVALID Move.");	
+		return move;
 	}
 
 	/* (non-Javadoc)

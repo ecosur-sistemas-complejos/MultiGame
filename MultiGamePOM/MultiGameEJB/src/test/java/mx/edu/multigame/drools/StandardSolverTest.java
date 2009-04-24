@@ -81,14 +81,8 @@ public class StandardSolverTest {
 		Solver solver = configurer.buildSolver();
 		solver.setStartingSolution(startingSolution);
 		ManantialesSolution solution = (ManantialesSolution) startingSolution;
-		logger.info ("Invoking solver, this should take a few seconds...");
-		logger.info (getDistributions(solution));
-		logger.info (solution.toString());
 		solver.solve();
 		solution = (ManantialesSolution) solver.getBestSolution();
-		logger.info (solution.toString());
-		logger.info (getDistributions(solution));
-		logger.info ("Solved in: " + solver.getTimeMillisSpend() + " ms.");
 		assertEquals (0.0, solver.getBestScore());
 	}
 	
