@@ -61,10 +61,13 @@
         
         @font-face {
             src: local("Verdana");
-            fontFamily: myVerdana; 
+            fontFamily: verdanaEmbed; 
             advancedAntiAliasing: true;
         }
         
         .manantialesToken {
-            fontSize: 10;
+            fontSize: 40;
+            fontFamily: verdanaEmbed;
+            textAlign: center;
+            color: #ffffff;
         }

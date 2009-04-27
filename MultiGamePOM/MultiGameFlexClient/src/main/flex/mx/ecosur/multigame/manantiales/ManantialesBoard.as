@@ -277,10 +277,8 @@ package mx.ecosur.multigame.manantiales
             _vl.graphics.endFill();  
 
             /* Flip the board to the player's perspective */          
-            var currentPos:Point = new Point(this.scaleX, 
-                this.scaleX);
             this.rotation = boardRotation;            
-            var destPos:Point = findDestination(currentPos);
+            var destPos:Point = findDestination();
             this.move(destPos.x, destPos.y);
         }
         
@@ -298,16 +296,16 @@ package mx.ecosur.multigame.manantiales
             return ret;
         }
         
-        protected function findDestination (point:Point):Point {
-            var ret:Point = point;
+        protected function findDestination ():Point {
+            var ret:Point = new Point();
             
             if (_currentPlayer.color == Color.GREEN) {
-                ret.y = ret.y + this.width;
+                ret.y = y + _bg.width;
             } else if (_currentPlayer.color == Color.YELLOW) {
-                ret.x = ret.x + this.width;
-                ret.y = ret.y + this.width;
+                ret.x = x + _bg.height;
+                ret.y = y + _bg.width;
             } else if (_currentPlayer.color == Color.RED) {
-                ret.x = ret.x + this.width;
+                ret.x = x + _bg.height;
             }           
             
             return ret;

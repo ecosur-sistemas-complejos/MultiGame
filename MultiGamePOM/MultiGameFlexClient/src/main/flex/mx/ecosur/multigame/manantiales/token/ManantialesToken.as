@@ -1,17 +1,13 @@
 package mx.ecosur.multigame.manantiales.token
-{
-    import flash.text.TextField;
-    import flash.text.TextFormat;
-    
+{   
     import mx.controls.Image;
+    import mx.controls.Label;
     import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.manantiales.entity.Ficha;   
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.enum.TokenType; 
-    
-      
 
 	public class ManantialesToken extends Token
 	{	
@@ -20,7 +16,7 @@ package mx.ecosur.multigame.manantiales.token
         protected var _colorCode:uint;
         protected var _bgImage:Image;
         protected var _territoryColor:Color;
-        protected var _txt:TextField; 
+        protected var _txt:Label; 
         protected var _ficha:Ficha;  
         protected var _type:String;
 		
@@ -60,18 +56,18 @@ package mx.ecosur.multigame.manantiales.token
 			return _cell.colorCode;
 		}		
 		
+		public function get txt():Label {
+			return _txt;
+		}
+		
         override protected function createChildren():void{       	        	
         	super.createChildren();
         	        	   
         	if (_label != null) {
-                _txt = new TextField();
-                _txt.text = _label;        		
-                var txtFormat:TextFormat = new TextFormat();
-                txtFormat.font = "Verdana";
-                txtFormat.size = 10;
-                txtFormat.bold = true;
-                _txt.defaultTextFormat = txtFormat;               
-        		addChild(_txt);
+        		_txt = new Label();
+        		_txt.text = _label;
+        		_txt.styleName = "manantialesToken";
+        		addChild(_labelObj);
         	}
             
             if (_tooltip != null)
@@ -95,6 +91,11 @@ package mx.ecosur.multigame.manantiales.token
             _bg.graphics.drawCircle(unscaledWidth/2, unscaledHeight/2, unscaledWidth / 2);
             _bg.graphics.endFill();
             _bgDirty = false;
+            
+            // Position label
+            _txt.setActualSize(unscaledWidth, _txt.getExplicitOrMeasuredHeight());
+            _txt.x = - unscaledWidth / 2;
+            _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2; 
         
             // Set filters acording to whether the token is selected or not
             if (_selected){
