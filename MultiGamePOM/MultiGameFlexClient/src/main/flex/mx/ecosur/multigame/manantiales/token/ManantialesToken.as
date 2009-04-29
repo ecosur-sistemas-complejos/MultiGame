@@ -67,7 +67,7 @@ package mx.ecosur.multigame.manantiales.token
         		_txt = new Label();
         		_txt.text = _label;
         		_txt.styleName = "manantialesToken";
-        		addChild(_labelObj);
+        		addChild(_txt);
         	}
             
             if (_tooltip != null)

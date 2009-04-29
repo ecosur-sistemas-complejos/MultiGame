@@ -21,6 +21,7 @@
             import mx.ecosur.multigame.entity.Player;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.Game;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.enum.Color;
             import mx.ecosur.multigame.enum.PenteStrategy;
             
@@ -41,7 +42,8 @@
             }   
                         
             private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, "Error getting unfinished games");
+            	Alert.show(event.fault.faultString, 
+            	   "Error getting unfinished games");
             }
             
             private function updateDataGrid():void{

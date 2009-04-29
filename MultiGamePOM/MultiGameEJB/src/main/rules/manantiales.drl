@@ -16,9 +16,11 @@ import mx.ecosur.multigame.ejb.entity.Move.*;
 import mx.ecosur.multigame.exception.CheckConstraint;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
+
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 
+import mx.ecosur.multigame.manantiales.Mode;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 import java.util.HashSet;
@@ -64,9 +66,9 @@ function int score (ManantialesPlayer player, ManantialesMove move) {
     return forested + moderate + intensive + silvo;
 }
 
-function boolean isWinner (GamePlayer gamePlayer) {
+function boolean isWinner (Mode mode, GamePlayer gamePlayer) {
     ManantialesPlayer player = (ManantialesPlayer) gamePlayer;
-    return player.getScore() >= 32; 
+    return player.getScore() >= mode.getWinningScore();
 }
 
 function boolean isBorder (Cell cell) {
@@ -91,6 +93,22 @@ function GamePlayer incrementTurn (Move move) {
     return nextPlayer;
 }
 
+# Sets the mode of the game, based upon its current state.
+# TODO: Add in different available game modes (UI has not been
+# implemented for PUZZLE modes nor RELOADED yet)le 
+function Mode incrementMode (Mode mode) {
+    switch (mode) {
+        case CLASSIC:
+            mode = Mode.SILVOPASTORAL;
+            break;
+        case SILVOPASTORAL:
+            mode = Mode.RELOADED;
+            break;             
+    }
+    
+    return mode;
+}
+
 #Sets the players in the game so that Black has the first turn
 rule "setup"
     agenda-group "initialize"
@@ -106,6 +124,7 @@ then
             p.setTurn(false);
     }
     GameGrid grid = new GameGrid ();
+    #incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) } 
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
@@ -121,6 +140,16 @@ when
 then
     modify ($move) { setStatus (Status.VERIFIED) }    
 end  
+
+rule "silvopastoral must replace vivero" 
+    agenda-group "verify"
+when
+    $game : Game (state == GameState.PLAY, $grid : grid)
+    $move : ManantialesMove (status != Status.INVALID,
+        type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
+then
+    modify ($move) { setStatus (Status.INVALID) }
+end
 
 rule "row contiguous intensive"
     agenda-group "verify"
@@ -192,6 +221,7 @@ end
 rule
     "northern border deforested"
     agenda-group "verify"
+    no-loop true
     when
         $tok1 : Ficha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
@@ -201,9 +231,10 @@ rule
             destination.border == BorderType.NORTH, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                            
     then
-        insertLogical (
-            new CheckConstraint("northern border deforested", $move.getPlayer(),
-                $tok1, $tok2, $move));
+        CheckConstraint constraint = new CheckConstraint(
+            "northern border deforested", $move.getPlayer(), $tok1, $tok2, $move);
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -220,9 +251,10 @@ rule
             destination.border == BorderType.EAST, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))       
     then
-        insertLogical (
-            new CheckConstraint("eastern border deforested", $move.getPlayer(),
-                $tok1, $tok2, $move)) ;
+        CheckConstraint constraint = new CheckConstraint("eastern border deforested", $move.getPlayer(),
+                $tok1, $tok2, $move);
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);                
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -380,19 +412,19 @@ end
 # Determines if there is a winner 
 # TODO:  need to query game, or move for winning score number (based on type
 # of game.
-rule "determine-winner"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : Game (state == GameState.PLAY)
-    $move  : ManantialesMove ($player : player, player.turn == true, 
-        status == Status.EVALUATED)
-    eval (isWinner ($player))
-then
-    modify ($game) { setState (GameState.END) };
-    MessageSender messageSender = new MessageSender();
-    messageSender.sendEndGame ($game);
-end
+#rule "determine-winner"
+#    agenda-group "evaluate"
+#    no-loop true
+#when
+#    $game  : ManantialesGame (state == GameState.PLAY)
+#    $move  : ManantialesMove ($player : player, player.turn == true, 
+#        status == Status.EVALUATED)
+#    #eval (isWinner ($game.getMode(), $player))
+#then
+#    modify ($game) { setState (GameState.END) };
+#    MessageSender messageSender = new MessageSender();
+#    messageSender.sendEndGame ($game);
+#end
 
 rule "increment-turn"
     agenda-group "evaluate"

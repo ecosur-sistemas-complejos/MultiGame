@@ -26,6 +26,7 @@ import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.manantiales.TokenType;
@@ -75,7 +76,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 
 		super.setUp();
 		
-		game = new Game();
+		game = new ManantialesGame();
 		game.initialize(GameType.MANANTIALES);
 		statefulSession = Ruleset.newStatefulSession();
 		if (DEBUG)
@@ -95,6 +96,10 @@ public class ManantialesRulesTest extends RulesTestBase {
 		game.addPlayer(bob);
 		game.addPlayer(charlie);
 		game.addPlayer(denise);
+		
+		statefulSession.insert(game);
+		statefulSession.setFocus("initialize");
+		statefulSession.fireAllRules();
 	}
 	
 	@After
@@ -105,7 +110,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testInitialize () {
+		game = new ManantialesGame();
+		game.initialize(GameType.MANANTIALES);
 		game.setState(GameState.BEGIN);
+		
+		game.addPlayer(alice);
+		game.addPlayer(bob);
+		game.addPlayer(charlie);
+		game.addPlayer(denise);		
 		
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");

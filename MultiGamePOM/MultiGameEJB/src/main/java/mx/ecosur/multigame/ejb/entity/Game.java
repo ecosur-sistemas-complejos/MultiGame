@@ -121,8 +121,6 @@ public class Game implements Serializable {
 		}
 	}
 	
-	/** Bean methods **/
-
 	/**
 	 * @return the id
 	 */

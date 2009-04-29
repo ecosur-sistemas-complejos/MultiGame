@@ -20,6 +20,7 @@ public class CheckConstraint implements Serializable {
 	String reason;
 	GamePlayer initiator;
 	Object [] violators;
+	private int activeTurns;
 	
 	public CheckConstraint () {
 		super();
@@ -89,5 +90,19 @@ public class CheckConstraint implements Serializable {
 		}
 		
 		return ret;
+	}
+	
+	public int getActiveTurns () {
+		return this.activeTurns;
+	}
+	
+	public void setActiveTurns (int turns) {
+		this.activeTurns = turns;
+	}
+	
+	public void incrementActiveTurns () throws ExpiredException {
+		activeTurns++;
+		if (activeTurns == 4)
+			throw new ExpiredException ();
 	}
 }

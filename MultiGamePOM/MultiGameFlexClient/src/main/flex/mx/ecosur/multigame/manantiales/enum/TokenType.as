@@ -1,12 +1,7 @@
 package mx.ecosur.multigame.manantiales.enum
 {
 	public class TokenType
-	{
-		public function TokenType()
-		{
-			super();
-		}
-		
+	{	
 		public static const INTENSIVE:String = "INTENSIVE_PASTURE";
 		public static const MODERATE:String = "MODERATE_PASTURE";
 		public static const FOREST:String = "MANAGED_FOREST";

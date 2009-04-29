@@ -1,45 +1,47 @@
 package mx.ecosur.multigame.manantiales
-{	
-    import flash.events.MouseEvent;
-    import flash.geom.Point;
-    
-    import mx.collections.ArrayCollection;
-    import mx.containers.Panel;
-    import mx.controls.Alert;
-    import mx.controls.Button;
-    import mx.core.DragSource;
-    import mx.core.IFlexDisplayObject;
-    import mx.core.UIComponent;
-    import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.component.ChatPanel;
-    import mx.ecosur.multigame.component.GameStatus;
-    import mx.ecosur.multigame.component.Token;
-    import mx.ecosur.multigame.entity.ChatMessage;
-    import mx.ecosur.multigame.entity.Game;
-    import mx.ecosur.multigame.entity.GameGrid;
-    import mx.ecosur.multigame.entity.GamePlayer;
-    import mx.ecosur.multigame.entity.Move;
-    import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.enum.ExceptionType;
-    import mx.ecosur.multigame.enum.GameEvent;
-    import mx.ecosur.multigame.exception.CheckConstraint;
-    import mx.ecosur.multigame.manantiales.entity.Ficha;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
-    import mx.ecosur.multigame.manantiales.token.*;
-    import mx.ecosur.multigame.util.MessageReceiver;
-    import mx.effects.AnimateProperty;
-    import mx.events.CloseEvent;
-    import mx.events.DragEvent;
-    import mx.events.DynamicEvent;
-    import mx.events.EffectEvent;
-    import mx.managers.DragManager;
-    import mx.messaging.messages.ErrorMessage;
-    import mx.messaging.messages.IMessage;
-    import mx.rpc.events.FaultEvent;
-    import mx.rpc.events.ResultEvent;
-    import mx.rpc.remoting.RemoteObject;
+{
+	import com.log2e.utils.SpinningPreloader;
+	
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
+	
+	import mx.collections.ArrayCollection;
+	import mx.containers.Panel;
+	import mx.controls.Alert;
+	import mx.controls.Button;
+	import mx.core.DragSource;
+	import mx.core.IFlexDisplayObject;
+	import mx.core.UIComponent;
+	import mx.ecosur.multigame.component.BoardCell;
+	import mx.ecosur.multigame.component.ChatPanel;
+	import mx.ecosur.multigame.component.GameStatus;
+	import mx.ecosur.multigame.component.Token;
+	import mx.ecosur.multigame.entity.ChatMessage;
+	import mx.ecosur.multigame.entity.Game;
+	import mx.ecosur.multigame.entity.GameGrid;
+	import mx.ecosur.multigame.entity.GamePlayer;
+	import mx.ecosur.multigame.entity.Move;
+	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.enum.ExceptionType;
+	import mx.ecosur.multigame.enum.GameEvent;
+	import mx.ecosur.multigame.exception.CheckConstraint;
+	import mx.ecosur.multigame.manantiales.entity.Ficha;
+	import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+	import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+	import mx.ecosur.multigame.manantiales.enum.TokenType;
+	import mx.ecosur.multigame.manantiales.token.*;
+	import mx.ecosur.multigame.util.MessageReceiver;
+	import mx.effects.AnimateProperty;
+	import mx.events.CloseEvent;
+	import mx.events.DragEvent;
+	import mx.events.DynamicEvent;
+	import mx.events.EffectEvent;
+	import mx.managers.DragManager;
+	import mx.messaging.messages.ErrorMessage;
+	import mx.messaging.messages.IMessage;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.remoting.RemoteObject;
 	
 	public class ManantialesGameController
 	{	
@@ -67,6 +69,7 @@ package mx.ecosur.multigame.manantiales
         private var _moveViewer:MoveViewer;        
         private var _selectedMoveInd:Number; 
         private var _gameGrid:GameGrid;
+        private var _centerIndicator:SpinningPreloader;
         
         // server objects
         private var _gameService:RemoteObject;
@@ -869,7 +872,7 @@ package mx.ecosur.multigame.manantiales
             apYScale.play();
         }
         
-        private function endUndoMove(event:EffectEvent):void{
+        private function endUndoMove(event:EffectEvent):void {
             
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
             _animateLayer.removeChild(token);
@@ -897,7 +900,12 @@ package mx.ecosur.multigame.manantiales
         } 
         
         private function handleCheckConstraint (checkConstraint:CheckConstraint):void {
-        	Alert.show(checkConstraint.reason);
+        	if (_centerIndicator == null) {
+        	   Alert.show(checkConstraint.reason);
+        	   _centerIndicator = new SpinningPreloader (this._board, 
+        	       this._board.center.x, this._board.center.y, 150, 24, 20, 5);
+        	   _centerIndicator.start();
+        	}
         } 
               
         

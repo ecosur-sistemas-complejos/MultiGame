@@ -14,15 +14,15 @@
 		<resources>
 			<resource>
 				<directory>src/main/rules</directory>
-				<targetPath>/mx/ecosur/multigame</targetPath>
+				<targetPath>mx/ecosur/multigame</targetPath>
 			</resource>
 			<resource>
 			     <directory>src/main/rules/solver</directory>
-			     <targetPath>/mx/ecosur/multigame/solver</targetPath>
+			     <targetPath>mx/ecosur/multigame/solver</targetPath>
 			</resource>
             <resource>
                  <directory>src/main/rules/agent</directory>
-                 <targetPath>/mx/ecosur/multigame/agent</targetPath>
+                 <targetPath>mx/ecosur/multigame/agent</targetPath>
             </resource>
 			<resource>
 				<directory>src/main/resources</directory>

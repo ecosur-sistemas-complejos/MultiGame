@@ -36,6 +36,7 @@ import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;

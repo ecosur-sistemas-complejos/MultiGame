@@ -48,12 +48,17 @@ package mx.ecosur.multigame.manantiales
 		protected var _bg:Shape, _hl:Shape, _vl:Shape,
 		  _manantial:Shape, _spring:Shape;
 		protected var _currentPlayer:GamePlayer;
+		protected var _centerX:int, _centerY:int;
 		
 		public function ManantialesBoard () {
 			super();
 			
 			this._nCols = 9;
 			this._nRows = 9;
+		}
+		
+		public function get center ():Point {
+			return new Point (_centerX, _centerY);
 		}
 		
 		public function set currentPlayer (currentPlayer:GamePlayer):void {
@@ -247,13 +252,13 @@ package mx.ecosur.multigame.manantiales
             var size:Number = cellSize * 4;
             var linecompensation:Number = boardCell.height/ 3;
             
-//                /* Inlay the Manantial */
-//            _manantial.graphics.clear();
-//            _manantial.graphics.beginFill(0xE4961A);
-//            _manantial.graphics.lineStyle(1, 0xE4961A, 0.65);
-//            _manantial.graphics.drawRect(centerX - size/2 + linecompensation/2,
-//                centerY - size/2 + linecompensation/2, size, size);
-//            _manantial.graphics.endFill();    
+                /* Inlay the Manantial */
+            _manantial.graphics.clear();
+            _manantial.graphics.beginFill(0xE4961A);
+            _manantial.graphics.lineStyle(1, 0xE4961A, 0.65);
+            _manantial.graphics.drawRect(centerX - size/2 + linecompensation/2,
+                centerY - size/2 + linecompensation/2, size, size);
+            _manantial.graphics.endFill();    
             
             _spring.graphics.clear();
             _spring.graphics.beginFill(0x2e83bc);
@@ -280,6 +285,8 @@ package mx.ecosur.multigame.manantiales
             this.rotation = boardRotation;            
             var destPos:Point = findDestination();
             this.move(destPos.x, destPos.y);
+            _centerX = centerX;
+            _centerY = centerY;
         }
         
        protected function get boardRotation():int {
