@@ -12,7 +12,7 @@
 package mx.ecosur.multigame;
 
 public enum Color {
-	YELLOW, BLUE, RED, GREEN, UNKNOWN;
+	YELLOW, BLUE, RED, GREEN, BLACK, UNKNOWN;
 
 	public Color getCompliment() {
 		Color ret;

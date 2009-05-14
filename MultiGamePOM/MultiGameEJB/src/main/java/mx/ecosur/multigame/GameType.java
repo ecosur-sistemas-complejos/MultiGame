@@ -15,6 +15,7 @@ package mx.ecosur.multigame;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.drools.RuleBase;
@@ -63,6 +64,27 @@ public enum GameType {
 			return "getPenteMoves";
 		else
 			return "getMoves";
+	}
+	
+	public ArrayList<Color> getColors () {
+		ArrayList<Color> ret = new ArrayList<Color>();
+		
+		if (this.equals(MANANTIALES)) {
+			ret.add(Color.YELLOW);
+			ret.add(Color.BLUE);
+			ret.add(Color.RED);
+			ret.add(Color.BLACK);			
+		} else if (this.equals(PENTE)) {
+			for (Color c : Color.values()) {
+				if (c.equals(Color.UNKNOWN))
+					continue;
+				if (c.equals (Color.BLACK))
+					continue;
+				ret.add(c);
+			}
+		}
+		
+		return ret;
 	}
 
 	/**

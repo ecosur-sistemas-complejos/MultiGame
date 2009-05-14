@@ -17,6 +17,7 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.component.AbstractBoard;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	import mx.ecosur.multigame.enum.Color;
+	import mx.states.State;
     
     /**	
     * A ManantialesBoard is similar to the PenteBoard implementation,
@@ -49,6 +50,7 @@ package mx.ecosur.multigame.manantiales
 		  _manantial:Shape, _spring:Shape;
 		protected var _currentPlayer:GamePlayer;
 		protected var _centerX:int, _centerY:int;
+		protected var classicMode:State, silvoMode:State;
 		
 		public function ManantialesBoard () {
 			super();
@@ -100,7 +102,7 @@ package mx.ecosur.multigame.manantiales
                     } else if (i < 4 && j > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
                     } else if (i > 4 && j < 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.GREEN));
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.BLACK));
                     } else if (i > 4 && j > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
                     }
@@ -292,12 +294,12 @@ package mx.ecosur.multigame.manantiales
        protected function get boardRotation():int {
             var ret:int = 0;
         
-            if (_currentPlayer.color == Color.GREEN) {
-                ret = 90 * 3; // *  (Math.PI / 180);
+            if (_currentPlayer.color == Color.BLACK) {
+                ret = 90 * 3; 
             } else if (_currentPlayer.color == Color.YELLOW) {
-                ret = 90 * 2; //  * (Math.PI / 180);
+                ret = 90 * 2; 
             } else if (_currentPlayer.color == Color.RED) {
-                ret = 90 * 1; // * (Math.PI / 180);
+                ret = 90 * 1; 
             }
         
             return ret;
@@ -306,7 +308,7 @@ package mx.ecosur.multigame.manantiales
         protected function findDestination ():Point {
             var ret:Point = new Point();
             
-            if (_currentPlayer.color == Color.GREEN) {
+            if (_currentPlayer.color == Color.BLACK) {
                 ret.y = y + _bg.width;
             } else if (_currentPlayer.color == Color.YELLOW) {
                 ret.x = x + _bg.height;

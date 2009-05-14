@@ -14,8 +14,7 @@ package mx.ecosur.multigame.manantiales.token
 		}
 				
         public function get colorCode():uint {
-            //return 0x808080;
-            return 0x000000;
+            return 0x00bb00;
         }                	
 		
         override protected function updateDisplayList(unscaledWidth:Number,

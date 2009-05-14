@@ -105,8 +105,10 @@ package mx.ecosur.multigame.manantiales
             _forestStore = gameWindow.forestStore;
             _intensiveStore = gameWindow.intensiveStore;
             _moderateStore = gameWindow.moderateStore;
+            
             _viveroStore = gameWindow.viveroStore;
             _silvoStore = gameWindow.silvoStore;
+            
             _gameStatus = gameWindow.gameStatus;
             _animateLayer = gameWindow.animateLayer;
             _playersViewer = gameWindow.playersViewer;
@@ -217,7 +219,7 @@ package mx.ecosur.multigame.manantiales
 		        		     if (boardCell.column < 5 && boardCell.row < 5)
 		        		         ret = true;
 		        		     break;
-	                    case Color.GREEN:
+	                    case Color.BLACK:
 	                         if (boardCell.column > 3 && boardCell.row < 5)
 	                             ret = true;
 	                         break;
@@ -440,8 +442,10 @@ package mx.ecosur.multigame.manantiales
             _forestStore.active = false;
             _moderateStore.active = false;
             _intensiveStore.active = false;
-            _viveroStore.active = false;
-            _silvoStore.active = false;            
+            if (_viveroStore != null)
+                _viveroStore.active = false;
+            if (_silvoStore != null)
+                _silvoStore.active = false;            
             _isEnded = true;
             
         }
@@ -526,8 +530,10 @@ package mx.ecosur.multigame.manantiales
             _forestStore.active = true;
             _moderateStore.active = true;
             _intensiveStore.active = true;
-            _viveroStore.active = true;
-            _silvoStore.active = true;  
+            if (_viveroStore != null)
+                _viveroStore.active = true;
+            if (_silvoStore != null)    
+                _silvoStore.active = true;  
         }
         
         private function endTurn():void{

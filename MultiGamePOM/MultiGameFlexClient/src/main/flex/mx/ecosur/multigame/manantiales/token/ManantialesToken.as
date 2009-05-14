@@ -93,9 +93,11 @@ package mx.ecosur.multigame.manantiales.token
             _bgDirty = false;
             
             // Position label
-            _txt.setActualSize(unscaledWidth, _txt.getExplicitOrMeasuredHeight());
-            _txt.x = - unscaledWidth / 2;
-            _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2; 
+            if (_txt != null) {
+                _txt.setActualSize(unscaledWidth, _txt.getExplicitOrMeasuredHeight());
+                _txt.x = - unscaledWidth / 2;
+                _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2;
+            } 
         
             // Set filters acording to whether the token is selected or not
             if (_selected){

@@ -47,6 +47,7 @@
             }
             
             private function updateDataGrid():void{
+            	var empty:ManantialesGame;
             	var game:Game;
             	var gamePlayer:GamePlayer;
             	var dataProvider:ArrayCollection = new ArrayCollection();

@@ -274,26 +274,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	}
 
 	public List<Color> getAvailableColors(Game game) {
-		List<Color> colors = getColors(game.getType());
+		List<Color> colors = game.getType().getColors();
 		List<GamePlayer> players = game.getPlayers();
 		for (GamePlayer player : players) {
 			colors.remove(player.getColor());
-		}
-
-		return colors;
-	}
-
-	/*
-	 * Returns the list of colors typically available for a specific GameType.
-	 */
-	private List<Color> getColors(GameType type) {
-
-		List<Color> colors = new ArrayList<Color>();
-
-		for (Color c : Color.values()) {
-			if (c.equals(Color.UNKNOWN))
-				continue;
-			colors.add(c);
 		}
 
 		return colors;
@@ -346,7 +330,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 				game = new PenteGame();
 				break;
 			case MANANTIALES:
-				game = new Game ();
+				game = new ManantialesGame ();
 				break;
 			default:
 				game = new Game();

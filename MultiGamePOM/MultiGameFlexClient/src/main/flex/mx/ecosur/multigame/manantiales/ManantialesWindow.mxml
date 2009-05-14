@@ -100,8 +100,10 @@
             showRoot="true"
             itemClick="handleMenuItemClick(event)"/>
     </mx:ApplicationControlBar>    
-    
-       
+    <mx:states>
+    	<mx:State name="SILVOPASTORAL">
+    	</mx:State>
+    </mx:states>
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" 
     	paddingLeft="10" paddingRight="10">
         <mx:VBox id="leftBox" width="200" height="100%">
@@ -126,13 +128,13 @@
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
                <token:ViveroTokenStore id="viveroStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
-                width="100%"/>
-            </mx:Panel>
+                width="100%"/>                
+            </mx:Panel>       
             <mx:Panel title="Silvopastoral Active" width="100%" id="sap">
                <token:SilvopastoralTokenStore id="silvoStore" 
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                 width="100%"/>   
-            </mx:Panel>
+            </mx:Panel>                 
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"

@@ -38,7 +38,7 @@ package mx.ecosur.multigame.enum {
 		public static function getColorCode(color:String):uint{
 			switch (color){
 				case Color.BLACK:
-					return 0x000000;
+					return 0x333333;
 				break;
 				case Color.YELLOW:
 					return 0xffcc00;
