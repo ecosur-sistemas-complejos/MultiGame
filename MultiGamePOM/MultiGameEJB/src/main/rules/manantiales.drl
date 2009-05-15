@@ -17,6 +17,7 @@ import mx.ecosur.multigame.exception.CheckConstraint;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 
@@ -97,15 +98,18 @@ function GamePlayer incrementTurn (Move move) {
 # TODO: Add in different available game modes (UI has not been
 # implemented for PUZZLE modes nor RELOADED yet)le 
 function Mode incrementMode (Mode mode) {
-    switch (mode) {
-        case CLASSIC:
-            mode = Mode.SILVOPASTORAL;
-            break;
-        case SILVOPASTORAL:
-            mode = Mode.RELOADED;
-            break;             
+    if (mode == null) {
+        mode = Mode.CLASSIC;
+    } else {
+	    switch (mode) {
+	        case CLASSIC:
+	            mode = Mode.SILVOPASTORAL;
+	            break;
+	        case SILVOPASTORAL:
+	            mode = Mode.RELOADED;
+	            break;             
+	    }
     }
-    
     return mode;
 }
 
@@ -114,7 +118,7 @@ rule "setup"
     agenda-group "initialize"
     no-loop true
 when
-    $game : Game (state == GameState.BEGIN);
+    $game : ManantialesGame (state == GameState.BEGIN);
 then
     List<GamePlayer> players = $game.getPlayers();
     for (GamePlayer p : players) {
@@ -124,8 +128,9 @@ then
             p.setTurn(false);
     }
     GameGrid grid = new GameGrid ();
-    #incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) } 
+    Mode mode = incrementMode($game.getMode());
+    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
+        setMode (mode) } 
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
