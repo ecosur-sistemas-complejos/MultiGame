@@ -25,7 +25,7 @@ package mx.ecosur.multigame.manantiales
             } else if (column < 4 && row > 4) {
                 ret = Color.RED;
             } else if (column > 4 && row < 4) {
-                ret = Color.GREEN;
+                ret = Color.BLACK;
             } else if (column > 4 && row > 4) {
                 ret = Color.YELLOW;
             }			

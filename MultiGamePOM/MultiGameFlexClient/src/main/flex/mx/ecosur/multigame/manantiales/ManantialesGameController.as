@@ -147,7 +147,6 @@ package mx.ecosur.multigame.manantiales
             _store.endMoveHandler = endMove;
             _store.visible=true;
             _store.active=true;
-            trace (_store);
         }
         
         public function dragEnterBoardCell(evt:DragEvent):void{
@@ -374,11 +373,10 @@ package mx.ecosur.multigame.manantiales
                     updatePlayers(ArrayCollection(event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
-                    if (_gameWindow.currentState == "WAITING") {
-                        _moves = ArrayCollection(event.result)
-                        _gameWindow.moveViewer.initFromMoves(_moves);
-                        _selectedMoveInd = _moves.length - 1;
-                    }
+                    _moves = ArrayCollection(event.result)
+                    _gameWindow.moveViewer.board = _gameWindow.board;
+                    _gameWindow.moveViewer.initFromMoves(_moves);
+                    _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
                     _executingMove = null;
@@ -424,12 +422,12 @@ package mx.ecosur.multigame.manantiales
             var ficha:Ficha;
             var token:ManantialesToken;
             
-            /* Switch board state to "waiting" in order to set token stores,
-            we reset to current state at end of method */
-            _gameWindow.currentState = "WAITING";
-            
             _gameGrid = gameGrid;
             _gameWindow.board.clearTokens();
+            
+            /* Switch modalities */
+            var currentMode:String = _gameWindow.currentState;
+            _gameWindow.currentState = _game.mode; 
             
             /* Setup undeveloped tokens first */
             for (var col:int = 0; col < this._gameWindow.board.nCols; col++) {
@@ -484,15 +482,17 @@ package mx.ecosur.multigame.manantiales
                 }
             }
             
-            // Reset board state to game mode */
-            _gameWindow.currentState = _game.mode;
+            /* Reset mode (state) */
+            _gameWindow.currentState = currentMode;
         } 
         
         private function initTurn():void{ 
         	if (_game.mode != null)       	
         	   _gameWindow.currentState= _game.mode;
             
-            if (_gameWindow.currentState != "WAITING") {        	
+            if (_gameWindow.currentState == "CLASSIC" || 
+                _gameWindow.currentState == "SILVOPASTORAL") 
+           {        	
                 // setup token store panels for hiding 
                 _tokenStorePanels.addItem(_gameWindow.mfp);
                 _tokenStorePanels.addItem(_gameWindow.mgp);
@@ -514,7 +514,8 @@ package mx.ecosur.multigame.manantiales
         }
         
         private function endTurn():void{
-        	_gameWindow.currentState = "WAITING";                      
+        	   /* Return to base State */
+        	_gameWindow.currentState = "";             
         }
         
         public function set isTurn(isTurn:Boolean):void{
@@ -568,8 +569,8 @@ package mx.ecosur.multigame.manantiales
         }
         
         private function addMove(move:ManantialesMove):void{
-        	// switch window state (mode) 
-        	_gameWindow.currentState = "WAITING";
+        	
+        	_gameWindow.currentState = "";
             
             //get last move in game
             var lastMove:ManantialesMove = null;

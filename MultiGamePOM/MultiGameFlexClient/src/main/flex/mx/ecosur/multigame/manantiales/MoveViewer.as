@@ -76,7 +76,6 @@ package mx.ecosur.multigame.manantiales
          * @param moves the moves to initialize the accordian with.
          */
         public function initFromMoves(moves:ArrayCollection):void{
-            
             _moves.removeAllChildren();
             for (var i:int = 0; i < moves.length; i++){
                 addMove(ManantialesMove(moves[i]));                   
