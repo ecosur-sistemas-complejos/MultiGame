@@ -49,6 +49,7 @@ public class GameChat implements MessageListener {
 			if (gameEvent.equals(GameEvent.CHAT)) {
 				ChatMessage chatMessage = (ChatMessage) msg.getObject();
 				sharedBoard.addMessage(chatMessage);
+				msg.acknowledge();
 			}
 		} catch (JMSException e) {
 			logger.warning("Not able to save game message: " + e.getMessage());

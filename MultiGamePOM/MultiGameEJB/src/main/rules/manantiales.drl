@@ -104,10 +104,7 @@ function Mode incrementMode (Mode mode) {
 	    switch (mode) {
 	        case CLASSIC:
 	            mode = Mode.SILVOPASTORAL;
-	            break;
-	        case SILVOPASTORAL:
-	            mode = Mode.RELOADED;
-	            break;             
+	            break;	             
 	    }
     }
     return mode;
@@ -417,19 +414,36 @@ end
 # Determines if there is a winner 
 # TODO:  need to query game, or move for winning score number (based on type
 # of game.
-#rule "determine-winner"
-#    agenda-group "evaluate"
-#    no-loop true
-#when
-#    $game  : ManantialesGame (state == GameState.PLAY)
-#    $move  : ManantialesMove ($player : player, player.turn == true, 
-#        status == Status.EVALUATED)
-#    #eval (isWinner ($game.getMode(), $player))
-#then
-#    modify ($game) { setState (GameState.END) };
-#    MessageSender messageSender = new MessageSender();
-#    messageSender.sendEndGame ($game);
-#end
+rule "stage-won"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game  : ManantialesGame (state == GameState.PLAY, mode != Mode.SILVOPASTORAL)
+    $move  : ManantialesMove ($player : player, player.turn == true, 
+        status == Status.EVALUATED)
+    eval (isWinner ($game.getMode(), $player))
+then
+    modify ($game) { setState (GameState.BEGIN) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendEndGame ($game);
+end
+
+# Determines if there is a winner 
+# TODO:  need to query game, or move for winning score number (based on type
+# of game.
+rule "game-won"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game  : ManantialesGame (state == GameState.PLAY, mode == Mode.SILVOPASTORAL)
+    $move  : ManantialesMove ($player : player, player.turn == true, 
+        status == Status.EVALUATED)
+    eval (isWinner ($game.getMode(), $player))
+then
+    modify ($game) { setState (GameState.END) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendEndGame ($game);
+end
 
 rule "increment-turn"
     agenda-group "evaluate"

@@ -68,6 +68,7 @@ public class StrategyPlayerListener implements MessageListener {
 						break;
 				}
 			}
+			
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,11 +109,12 @@ public class StrategyPlayerListener implements MessageListener {
 					PenteMove move = player.determineNextMove();					
 					try {
 						logger.info("Robot making move: " + move);
-						sharedBoard.move(move);						
+						sharedBoard.move(move);				
+						message.acknowledge();
 					} catch (InvalidMoveException e) {
 						/* Log the invalid move */
 						e.printStackTrace();
-						this.logger.info("Caught invalid Move!");
+						logger.info("Caught invalid Move!");
 					}
 				}
 			}	

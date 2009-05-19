@@ -398,6 +398,9 @@ package mx.ecosur.multigame.manantiales
          * Called when game ends 
          */
         private function end():void{
+        	
+        	_gameWindow.gameStatus.showMessage("You have won the game!",
+        	   0x000000);
             
             if(_isEnded){
                 return;
@@ -411,8 +414,7 @@ package mx.ecosur.multigame.manantiales
                 _gameWindow.viveroStore.active = false;
             if (_gameWindow.silvoStore != null)
                 _gameWindow.silvoStore.active = false;            
-            _isEnded = true;
-            
+            _isEnded = true;            
         }
         
         private function getGrid():void{
@@ -910,12 +912,7 @@ package mx.ecosur.multigame.manantiales
         } 
         
         private function handleCheckConstraint (checkConstraint:CheckConstraint):void {
-        	if (_centerIndicator == null) {
-        	   Alert.show(checkConstraint.reason);
-        	   _centerIndicator = new SpinningPreloader (this._gameWindow.board, 
-        	       this._gameWindow.board.center.x, this._gameWindow.board.center.y, 150, 24, 20, 5);
-        	   _centerIndicator.start();
-        	}
+        	Alert.show(checkConstraint.reason);
         } 
               
         
