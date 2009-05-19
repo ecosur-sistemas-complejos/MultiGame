@@ -34,6 +34,7 @@ package mx.ecosur.multigame.manantiales
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
 	import mx.managers.DragManager;
+	import mx.managers.PopUpManager;
 	import mx.messaging.messages.ErrorMessage;
 	import mx.messaging.messages.IMessage;
 	import mx.rpc.events.FaultEvent;
@@ -46,6 +47,7 @@ package mx.ecosur.multigame.manantiales
 	    // visual components
 	    private var _gameWindow:ManantialesWindow
         private var _tokenStorePanels:ArrayCollection;
+        private var _annCondGen:AnnualConditionsGenerator;
                 
         // data objects
         private var _gameId:int;
@@ -510,7 +512,20 @@ package mx.ecosur.multigame.manantiales
             	 // initialize the move viewer
 	            _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
 	            _gameWindow.moveViewer.board = _gameWindow.board;
-            }        	
+            } 
+            
+            // open annual conditions generator
+            _annCondGen = new AnnualConditionsGenerator();
+            _annCondGen.addEventListener("result", handleAnnCondResult);
+            PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
+            PopUpManager.centerPopUp(_annCondGen);       	
+        }
+        
+        private function handleAnnCondResult(event:DynamicEvent):void{
+        	PopUpManager.removePopUp(_annCondGen);
+        	if(!event.isGoodYear){
+        		//TODO: send a move with bad year to server to skip players turn
+        	}
         }
         
         private function endTurn():void{
