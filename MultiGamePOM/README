@@ -1,6 +1,6 @@
 GETTING STARTED
 
-Our Multigame prototype requires you to have installed the following products:
+This README requires you to have installed the following products:
 
 1.  Sun's opensource Application Server, GLASSFISH.  
     * available from:  https://glassfish.dev.java.net/public/downloadsindex.html
@@ -18,7 +18,8 @@ the EAR file is being deployed:
 1.  A JMS connection factory must be created with the following details:
     a) "Name" set to "jms/TopicConnectionFactory"
     b) "Transaction Support" set to "NoTransaction"
-    c) All other fields may remain in default state.
+    c) Remove the username and password properties from "Additional Properties" 
+    d) All other fields may remain in default state.
 
 2.  A new JMS "destination resource" must be created with the following details:
     a) "Name" set to "CHECKERS"
@@ -28,7 +29,7 @@ the EAR file is being deployed:
  
  MAVEN CONFIGURATION
  
- This prototype requires the following environmental changes be made, before being
+This prototype requires the following environmental changes be made, before being
 built and deployed.
 
 1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
