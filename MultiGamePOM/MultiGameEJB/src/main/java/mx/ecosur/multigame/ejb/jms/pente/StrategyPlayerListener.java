@@ -29,12 +29,11 @@ import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
-@MessageDriven(mappedName = "CHECKERS")
+@MessageDriven(mappedName = "MultiGame")
 public class StrategyPlayerListener implements MessageListener {
 	
 	@EJB

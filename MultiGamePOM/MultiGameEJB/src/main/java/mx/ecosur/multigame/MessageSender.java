@@ -42,7 +42,7 @@ public class MessageSender {
 			.getCanonicalName());
 
 	private static String CONNECTION_FACTORY_JNDI_NAME = "jms/TopicConnectionFactory";
-	private static String TOPIC_JNDI_NAME = "CHECKERS";
+	private static String TOPIC_JNDI_NAME = "MultiGame";
 
 	private ConnectionFactory connectionFactory;
 	private Topic topic;

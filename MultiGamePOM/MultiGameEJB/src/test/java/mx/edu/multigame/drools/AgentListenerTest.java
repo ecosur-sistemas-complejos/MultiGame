@@ -41,7 +41,7 @@ public class AgentListenerTest extends AgentTestBase {
  
         MDBDescriptor jmsPlayerListenerMDBDescriptor = 
             new MDBDescriptor( "jms/TopicConnectionFactory", 
-            		"CHECKERS", new StrategyPlayerListener ());
+            		"MultiGame", new StrategyPlayerListener ());
 	    jmsPlayerListenerMDBDescriptor.setIsTopic(true);
 	    
 	    /* Deploy the MDB */
@@ -50,8 +50,6 @@ public class AgentListenerTest extends AgentTestBase {
     
     public void testPlayerListener () throws InvalidMoveException {
     	MessageSender sender = new MessageSender (context);
-    	int existing = game.getGrid().getCells().size();
     	sender.sendPlayerChange(game);
-    	//assertEquals (existing + 1, game.getGrid().getCells().size());
     }
 }

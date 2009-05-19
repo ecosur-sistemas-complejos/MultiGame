@@ -27,7 +27,7 @@ import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 
-@MessageDriven(mappedName = "CHECKERS")
+@MessageDriven(mappedName = "MultiGame")
 public class GameChat implements MessageListener {
 
 	private static Logger logger = Logger.getLogger(GameChat.class
@@ -43,11 +43,9 @@ public class GameChat implements MessageListener {
 
 		ObjectMessage msg = (ObjectMessage) message;
 		GameEvent gameEvent;
-		int gameId;
 		try {
 			// TODO: Add selector or filter to only treat CHAT messages
 			gameEvent = GameEvent.valueOf(msg.getStringProperty("GAME_EVENT"));
-			gameId = msg.getIntProperty("GAME_ID");
 			if (gameEvent.equals(GameEvent.CHAT)) {
 				ChatMessage chatMessage = (ChatMessage) msg.getObject();
 				sharedBoard.addMessage(chatMessage);

@@ -31,8 +31,8 @@ public class RulesTestBase extends JMSTestCaseAdapter {
 		ejbModule.bindToContext("jms/TopicConnectionFactory",
 				getJMSMockObjectFactory().getMockTopicConnectionFactory());
 		//TODO: Externalize and change jndi name of topic
-		mockTopic = getDestinationManager().createTopic("CHECKERS");
-		ejbModule.bindToContext("CHECKERS", mockTopic);
+		mockTopic = getDestinationManager().createTopic("MultiGame");
+		ejbModule.bindToContext("MultiGame", mockTopic);
 	}
 
 	protected void tearDown() throws Exception {

@@ -22,7 +22,7 @@ the EAR file is being deployed:
     d) All other fields may remain in default state.
 
 2.  A new JMS "destination resource" must be created with the following details:
-    a) "Name" set to "CHECKERS"
+    a) "Name" set to "MultiGame"
     b) "Resource Type" set to "javax.jms.Topic"
     c) All other fields may remain in default state.
  
