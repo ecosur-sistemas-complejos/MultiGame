@@ -29,11 +29,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import org.drools.FactException;
@@ -134,8 +136,16 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		statefulSession.insert(game);
 		Set facts = game.getFacts();
 		for (Object fact : facts) 
-			statefulSession.insert(fact);		
+			statefulSession.insert(fact);
 		
+		lifecycle(statefulSession);
+		
+		if (move.getStatus().equals(Move.Status.INVALID))
+			throw new InvalidMoveException ("INVALID Move.");	
+		return move;
+	}
+
+	private void lifecycle(StatefulSession statefulSession) {
 		/* Run through the active lifecycle */
 		statefulSession.setFocus("verify");
 		statefulSession.fireAllRules();
@@ -144,10 +154,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		statefulSession.setFocus("evaluate");
 		statefulSession.fireAllRules();
 		statefulSession.dispose();
-		
-		if (move.getStatus().equals(Move.Status.INVALID))
-			throw new InvalidMoveException ("INVALID Move.");	
-		return move;
 	}
 
 	/* (non-Javadoc)
@@ -196,5 +202,4 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 		em.persist(chatMessage);
 	}
-
 }

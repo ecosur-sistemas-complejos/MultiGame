@@ -29,9 +29,12 @@ import java.util.List;
 
 
 function boolean isValid (GameGrid grid, ManantialesMove move) {
-    Ficha destination = (Ficha) move.getDestination();
-    Ficha current = (Ficha) grid.getLocation (destination);
-    boolean ret = (current == null || !(current.getType() == TokenType.INTENSIVE_PASTURE));
+    boolean ret = move.getDestination() != null;
+    if (ret) {
+	    Ficha destination = (Ficha) move.getDestination();
+	    Ficha current = (Ficha) grid.getLocation (destination);
+	    ret = ret && (current == null || !(current.getType() == TokenType.INTENSIVE_PASTURE));
+	}
     if (!ret)
         move.setStatus (Status.INVALID);
     return ret;
@@ -131,13 +134,13 @@ then
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
-end
+end  
 
 rule "evaluate-move"
     agenda-group "verify"
 when
     $game  : Game (state == GameState.PLAY, $grid : grid)
-    $move  : ManantialesMove (status == Status.UNVERIFIED, player.turn == true)
+    $move  : ManantialesMove (badYear == false, status == Status.UNVERIFIED, player.turn == true)
     eval (isValid($game.getGrid(), $move))
 then
     modify ($move) { setStatus (Status.VERIFIED) }    
@@ -147,7 +150,7 @@ rule "silvopastoral must replace vivero"
     agenda-group "verify"
 when
     $game : Game (state == GameState.PLAY, $grid : grid)
-    $move : ManantialesMove (status != Status.INVALID,
+    $move : ManantialesMove (badYear == false, status != Status.INVALID, status != Status.VERIFIED,
         type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
 then
     modify ($move) { setStatus (Status.INVALID) }
@@ -158,7 +161,7 @@ rule "row contiguous intensive"
     no-loop true
     when
         $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (status != Status.INVALID, destination.row == $row, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, destination.row == $row, 
             type == TokenType.INTENSIVE_PASTURE)
         eval (!isBorder($tok1)) or eval (!isBorder($move.getDestination()))           
         eval (Math.abs ($col - $move.getDestination().getColumn()) <= 2) 
@@ -171,7 +174,7 @@ rule "column contiguous intensive"
     no-loop true
     when
         $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (status != Status.INVALID, destination.column == $col, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, destination.column == $col, 
             type == TokenType.INTENSIVE_PASTURE)
         eval (!isBorder($tok1)) or eval (!isBorder($move.getDestination()))
         eval (Math.abs ($row - $move.getDestination().getRow()) <= 2) 
@@ -184,7 +187,7 @@ rule "border row contiguous intensive"
     no-loop true
     when
         $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (status != Status.INVALID, destination.row == $row, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, destination.row == $row, 
             type == TokenType.INTENSIVE_PASTURE)
         eval (isBorder($move.getDestination())) and eval (isBorder($tok1))            
         eval (Math.abs ($col - $move.getDestination().getColumn()) == 1) 
@@ -197,7 +200,7 @@ rule "border column contiguous intensive"
     no-loop true
     when
         $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (status != Status.INVALID, destination.column == $col, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, destination.column == $col, 
             type == TokenType.INTENSIVE_PASTURE)
         eval (isBorder($move.getDestination())) and eval (isBorder($tok1))
         eval (Math.abs ($row - $move.getDestination().getRow()) == 1) 
@@ -211,7 +214,7 @@ rule "diagonal contiguous intensive"
     no-loop true
     when
         $tok1 : Ficha ($col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (status != Status.INVALID, $destination : destination, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, $destination : destination, 
             type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs($row - $destination.getRow()) == 1)
         eval (Math.abs($col - $destination.getColumn()) == 1) 
@@ -229,7 +232,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
-        $move : ManantialesMove (status != Status.INVALID, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.NORTH, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                            
     then
@@ -249,7 +252,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
-        $move : ManantialesMove (status != Status.INVALID, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.EAST, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))       
     then
@@ -269,7 +272,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $move : ManantialesMove (status != Status.INVALID, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.SOUTH, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))     
     then
@@ -288,7 +291,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $move : ManantialesMove (status != Status.INVALID, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.WEST, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                              
     then
@@ -307,7 +310,7 @@ rule "manantiales"
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
-        $move : ManantialesMove (status != Status.INVALID, 
+        $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
@@ -336,8 +339,9 @@ rule "too many deforested sites"
     agenda-group "evaluate"
     no-loop true
     when
-        $move : ManantialesMove (player.turn == true, destination.type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $move : ManantialesMove (player.turn == true, destination != null, 
+            destination.type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $list : Number () from accumulate (
             Ficha ($id : id, type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
@@ -451,9 +455,23 @@ rule "increment-turn"
     salience -1
 when
     game  : Game (state == GameState.PLAY)
-    move  : Move (player.turn == true, status == Status.EVALUATED)
+    move  : ManantialesMove (player.turn == true, status == Status.EVALUATED,
+        badYear == false)
 then
     GamePlayer player = incrementTurn (move);
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange(player.getGame());
 end
+
+rule "skip-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -1
+when
+    $game   : Game (state == GameState.PLAY)
+    $move   : ManantialesMove (player.turn == true, badYear == true)
+then
+    GamePlayer player = incrementTurn ($move);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendPlayerChange(player.getGame());
+end  

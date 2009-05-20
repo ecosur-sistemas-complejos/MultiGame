@@ -31,8 +31,8 @@ public interface SharedBoardInterface {
 	public Game getGame(int gameId);
 
 	/**
-	 * Makes the specified move on the game grid. The move requires a player and
-	 * a game.id property to allow the game to be retrieved.
+	 * Makes the specified move on the game grid and invokes the set of game
+	 * rule's affiliated with the Move's game.  
 	 * 
 	 * @param move
 	 * @throws InvalidMoveException

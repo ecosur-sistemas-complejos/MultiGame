@@ -8,10 +8,13 @@ package mx.ecosur.multigame.manantiales.entity
 	{
 		private var _score:int, _forested:int, _moderate:int, _intensive:int,
 		  _vivero:int, _silvo:int;
+		  
+		private var _badYear:Boolean;
 		
 		public function ManantialesPlayer()
 		{
 			super();
+			_badYear = false;
 		}		
 	
 		public function get score():int {

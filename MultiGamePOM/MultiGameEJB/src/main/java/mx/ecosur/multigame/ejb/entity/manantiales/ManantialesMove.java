@@ -22,6 +22,8 @@ public class ManantialesMove extends Move {
 	
 	private TokenType type, replacementType;
 	
+	private boolean badYear; 
+	
 	public ManantialesMove () {
 		super();
 	}
@@ -37,8 +39,10 @@ public class ManantialesMove extends Move {
 	}
 
 	public TokenType getType () {
-		if (type == null)
-			type = ( (Ficha) getDestination()).getType();
+		if (type == null && destination != null)
+			type = ( (Ficha) destination).getType();
+		else if (type == null && destination == null)
+			type = TokenType.UNKNOWN;
 		return type;
 	}
 	
@@ -47,10 +51,22 @@ public class ManantialesMove extends Move {
 	}
 
 	public TokenType getReplacementType() {
+		if (replacementType == null && current != null)
+			replacementType = ( (Ficha) current).getType();
+		else if (replacementType == null)
+			replacementType = TokenType.UNKNOWN;
 		return replacementType;
 	}
 
 	public void setReplacementType(TokenType replacementType) {
 		this.replacementType = replacementType;
+	}
+	
+	public boolean isBadYear () {
+		return badYear;
+	}
+	
+	public void setBadYear (boolean year) {
+		badYear = year;
 	}
 }

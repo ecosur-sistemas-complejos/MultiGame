@@ -370,6 +370,23 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}	
 	
+	@Test
+	public void testBadYear () {
+		alice.setTurn (true);
+		game.setState(GameState.PLAY);
+		
+		SolverFicha play = new SolverFicha (-1, -1, alice.getColor(), 
+				TokenType.UNKNOWN);
+		
+		ManantialesMove move = new ManantialesMove ();
+		move.setPlayer(alice);
+		move.setBadYear(true);
+		//move.setDestination(play);
+		fireRules (game, move);
+		
+		assertEquals (Move.Status.UNVERIFIED, move.getStatus());		
+	}
+	
 	private void fireRules(Game game, ManantialesMove move) {
 		statefulSession.insert(game);
 		statefulSession.insert(move);

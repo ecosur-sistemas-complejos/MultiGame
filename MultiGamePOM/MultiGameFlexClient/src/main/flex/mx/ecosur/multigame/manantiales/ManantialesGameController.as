@@ -51,7 +51,7 @@ package mx.ecosur.multigame.manantiales
                 
         // data objects
         private var _gameId:int;
-        private var _currentPlayer:GamePlayer;
+        private var _currentPlayer:ManantialesPlayer;
         private var _players:ArrayCollection;
         private var _game:ManantialesGame;
         private var _tokens:ArrayCollection;
@@ -82,13 +82,14 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_UPDATE_MOVE_OP:String = "updateMove";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+        private static const GAME_SERVICE_EVALUATE_FACTS_OP:String = "evaluateFacts";
         
         public function ManantialesGameController (gameWindow:ManantialesWindow) 
         {
         	
         	// set private references
         	_gameWindow = gameWindow;
-        	_currentPlayer = gameWindow.currentPlayer;
+        	_currentPlayer = ManantialesPlayer (gameWindow.currentPlayer);
             _gameId = _currentPlayer.game.id;
             _game = ManantialesGame(_currentPlayer.game);
             
@@ -526,7 +527,11 @@ package mx.ecosur.multigame.manantiales
         private function handleAnnCondResult(event:DynamicEvent):void{
         	PopUpManager.removePopUp(_annCondGen);
         	if(!event.isGoodYear){
-        		//TODO: send a move with bad year to server to skip players turn
+        		var move:ManantialesMove = new ManantialesMove ();
+        		move.badYear = true;
+        		move.player = _currentPlayer;        		
+        		var call:Object = _gameService.doMove(move);
+        		call.operation = GAME_SERVICE_DO_MOVE_OP;
         	}
         }
         
@@ -813,7 +818,6 @@ package mx.ecosur.multigame.manantiales
             //define destination
             var endPoint:Point;
             var endSize:Number;
-                /* HACK:  forestStore is used as the reference. */  
             if(move.player.id == _currentPlayer.id && _isTurn) {
             	var tok:Ficha = Ficha(move.destination);
             	switch (tok.type) {

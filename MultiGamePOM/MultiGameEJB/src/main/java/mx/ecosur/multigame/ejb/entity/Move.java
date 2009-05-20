@@ -41,7 +41,8 @@ public class Move implements Serializable {
 	private static final long serialVersionUID = 8017901476308051472L;
 	private int id;
 	protected GamePlayer player;
-	private Cell current, destination;
+	protected Cell current;
+	protected Cell destination;
 
 	public enum Status {
 		INVALID, VERIFIED, UNVERIFIED, MOVED, EVALUATED

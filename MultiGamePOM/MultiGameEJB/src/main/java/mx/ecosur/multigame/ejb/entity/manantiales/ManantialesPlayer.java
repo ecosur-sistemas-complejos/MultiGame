@@ -24,15 +24,19 @@ public class ManantialesPlayer extends GamePlayer {
 	
 	private int points, forested, moderate, intensive, vivero, silvo;
 	
+	private boolean badYear;
+	
 	public ManantialesPlayer () {
 		super();
+		badYear = false;
 	}
 	
 	public ManantialesPlayer (Game game, Player player, Color favoriteColor) {
 		super (game, player, favoriteColor);
-		points = 0;	
+		points = 0;
+		badYear = false;	
 	}
-	
+
 	public int getScore() {
 		return points;
 	}
