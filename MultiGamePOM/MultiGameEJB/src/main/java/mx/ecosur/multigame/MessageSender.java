@@ -85,7 +85,7 @@ public class MessageSender {
 		}
 	}
 
-	private void sendMessage(GameType type, int gameId, GameEvent gameEvent, 
+	public void sendMessage(GameType type, int gameId, GameEvent gameEvent, 
 			Serializable body) 
 	{
 		try {
@@ -172,9 +172,16 @@ public class MessageSender {
 		sendMessage(game.getType(), game.getId(), GameEvent.CHECK_CONSTRAINT,
 				condition);		
 	}
+	
+	/** 
+	 * Sends the GameEvent.STATE_CHANGE message with the game object.
+	 */
+	public void sendStateChange (Game game) {
+		sendMessage(game.getType(), game.getId(), GameEvent.STATE_CHANGE, game);
+	}
 
 	/**
-	 * Sends GameEvent.END message with no data
+	 * Sends GameEvent.END message with the game object.
 	 * 
 	 * @param game
 	 */

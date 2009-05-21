@@ -14,6 +14,7 @@ import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Move.*;
 
 import mx.ecosur.multigame.exception.CheckConstraint;
+import mx.ecosur.multigame.exception.ExpiredException;
 
 import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 
@@ -228,6 +229,7 @@ rule
     agenda-group "verify"
     no-loop true
     when
+        $game : ManantialesGame (state == GameState.PLAY)
         $tok1 : Ficha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
@@ -237,7 +239,12 @@ rule
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                            
     then
         CheckConstraint constraint = new CheckConstraint(
-            "northern border deforested", $move.getPlayer(), $tok1, $tok2, $move);
+            "northern border deforested", $move, $tok1, $tok2);
+        # We should simply modify the Game object here, but this provokes an 
+        # infinite loop. so we have to work around with the move object.
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
         MessageSender messageSender = new MessageSender ();
         messageSender.sendCheckConstraint ($move, constraint);
 end
@@ -248,6 +255,7 @@ rule
     agenda-group "verify"    
     no-loop true
     when
+        $game : ManantialesGame (state == GameState.PLAY)
         $tok1 : Ficha ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
@@ -256,8 +264,12 @@ rule
             destination.border == BorderType.EAST, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))       
     then
-        CheckConstraint constraint = new CheckConstraint("eastern border deforested", $move.getPlayer(),
-                $tok1, $tok2, $move);
+        CheckConstraint constraint = new CheckConstraint(
+            "eastern border deforested", $move, $tok1, $tok2);
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }               
         MessageSender messageSender = new MessageSender ();
         messageSender.sendCheckConstraint ($move, constraint);                
 end
@@ -268,6 +280,7 @@ rule
     agenda-group "verify"
     no-loop true    
     when
+        $game : ManantialesGame (state == GameState.PLAY)
         $tok1 : Ficha ($id : id, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
@@ -276,9 +289,14 @@ rule
             destination.border == BorderType.SOUTH, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))     
     then
-        insertLogical (
-            new CheckConstraint("southern border deforested", $move.getPlayer(), 
-                $tok1, $tok2, $move));
+        CheckConstraint constraint = new CheckConstraint(
+            "southern border deforested", $move, $tok1, $tok2);
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }                 
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);                       
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -287,6 +305,7 @@ rule
     agenda-group "verify"
     no-loop true    
     when
+        $game : ManantialesGame (state == GameState.PLAY)
         $tok1 : Ficha ($id : id, border == BorderType.WEST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
@@ -295,9 +314,14 @@ rule
             destination.border == BorderType.WEST, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                              
     then
-        insertLogical (
-            new CheckConstraint("western border deforested", $move.getPlayer(), 
-                $tok1, $tok2, $move));
+        CheckConstraint constraint = new CheckConstraint(
+            "western border deforested", $move, $tok1, $tok2);
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }             
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);                       
 end
 
 #Enforces Manantiales constraint (only 2 developments around the manantiales
@@ -306,6 +330,7 @@ rule "manantiales"
     agenda-group "verify"
     no-loop true
     when
+        $game : ManantialesGame (state == GameState.PLAY)
         $tok1 : Ficha ($id : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
@@ -314,13 +339,45 @@ rule "manantiales"
             destination.manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
-        insertLogical (new CheckConstraint("Manantiales Dry", 
-            $move.getPlayer(),$tok1, $tok2, $move));
+        CheckConstraint constraint = new CheckConstraint("Manantiales Dry", 
+            $move,$tok1, $tok2);
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }          
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);                   
+end
+
+#Enforces the constaint that no more than 32 sites can be deforested
+rule "too many deforested sites"
+    agenda-group "evaluate"
+    no-loop true
+    when
+        $game : ManantialesGame (state == GameState.PLAY)
+        $move : ManantialesMove (player.turn == true, destination != null, 
+            destination.type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $list : Number () from accumulate (
+            Ficha ($id : id, type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            count ($id)) 
+        eval ($list.intValue() > 31)
+    then
+        CheckConstraint constraint = new CheckConstraint("Too many deforested sites", 
+            $move, $list);
+        $game.addCheckConstraint(constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }                 
+        MessageSender messageSender = new MessageSender ();
+        messageSender.sendCheckConstraint ($move, constraint);                   
 end
 
 # Executes a simple move
 rule "execute-move"
     agenda-group "move"
+    no-loop true
 when 
     $game  : Game (state == GameState.PLAY)
     $move  : ManantialesMove (player.turn == true, status == Status.VERIFIED)  
@@ -332,24 +389,6 @@ then
     modify ($move) { setStatus (Status.MOVED) }
     MessageSender messageSender = new MessageSender();
     messageSender.sendMoveComplete ($move);
-end
-
-#Enforces the constaint that no more than 32 sites can be deforested
-rule "too many deforested sites"
-    agenda-group "evaluate"
-    no-loop true
-    when
-        $move : ManantialesMove (player.turn == true, destination != null, 
-            destination.type in (
-                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $list : Number () from accumulate (
-            Ficha ($id : id, type in (
-                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-            count ($id)) 
-        eval ($list.intValue() > 31)
-    then
-        insertLogical (new CheckConstraint("Too many deforested sites", 
-            $move.getPlayer(), $list));
 end
 
 rule "remove-replaced-token-from-player"
@@ -392,28 +431,39 @@ then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
     player.setScore(score (player, $move));
     modify ($move) { setPlayer (player), setStatus (Status.EVALUATED) };
+end
+
+rule "expired-check-constraint"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $move  : ManantialesMove (status == Status.EVALUATED)
+    $game  : ManantialesGame (state == GameState.PLAY, 
+        $checkConstraints : checkConstraints)           
+then
+    // do nothing
 end   
 
 # TODO: re-write so this sends a list of all violated check-constraints across
 # the wire.
-rule "check-constraints"
-    agenda-group "evaluate"
-    no-loop true
-    when
-        $move : ManantialesMove ()
-        $occurrences : HashSet () 
-            from accumulate ($checkConstraint : CheckConstraint (),
-                    init ( HashSet set = new HashSet();),
-                    action (set.add ($checkConstraint);),
-                    reverse (set.remove ($checkConstraint);),
-                    result (set))
-    then
-        MessageSender messageSender = new MessageSender ();
-        for (Object obj : $occurrences) {
-            CheckConstraint constraint = (CheckConstraint) obj;
-            messageSender.sendCheckConstraint ($move, constraint);
-        }
-end
+#rule "check-constraints"
+#    agenda-group "evaluate"
+#    no-loop true
+#    when
+#        $move : ManantialesMove ()
+#        $occurrences : HashSet () 
+#            from accumulate ($checkConstraint : CheckConstraint (),
+#                    init ( HashSet set = new HashSet();),
+#                    action (set.add ($checkConstraint);),
+#                    reverse (set.remove ($checkConstraint);),
+#                    result (set))
+#    then
+#        MessageSender messageSender = new MessageSender ();
+#        for (Object obj : $occurrences) {
+#            CheckConstraint constraint = (CheckConstraint) obj;
+#            messageSender.sendCheckConstraint ($move, constraint);
+#        }
+#end
 
 # Determines if there is a winner 
 # TODO:  need to query game, or move for winning score number (based on type

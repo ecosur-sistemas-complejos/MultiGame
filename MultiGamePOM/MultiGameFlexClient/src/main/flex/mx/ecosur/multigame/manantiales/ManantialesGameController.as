@@ -48,6 +48,7 @@ package mx.ecosur.multigame.manantiales
 	    private var _gameWindow:ManantialesWindow
         private var _tokenStorePanels:ArrayCollection;
         private var _annCondGen:AnnualConditionsGenerator;
+        private var _checkConAlert:CheckConstraintAlert;
                 
         // data objects
         private var _gameId:int;
@@ -359,6 +360,7 @@ package mx.ecosur.multigame.manantiales
                     var checkConstraint:CheckConstraint = CheckConstraint(message.body);
                     handleCheckConstraint (checkConstraint);
                     break;
+                
             }
         }        
         
@@ -492,7 +494,7 @@ package mx.ecosur.multigame.manantiales
         } 
         
         private function initTurn():void{ 
-        	if (_game.mode != null)       	
+        	if (_game.mode != null)
         	   _gameWindow.currentState= _game.mode;
             
             if (_gameWindow.currentState == "CLASSIC" || 
@@ -515,7 +517,7 @@ package mx.ecosur.multigame.manantiales
             	 // initialize the move viewer
 	            _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
 	            _gameWindow.moveViewer.board = _gameWindow.board;
-            } 
+            }           
             
             // open annual conditions generator
             _annCondGen = new AnnualConditionsGenerator();
@@ -535,9 +537,12 @@ package mx.ecosur.multigame.manantiales
         	}
         }
         
+        private function handleCheckResult(event:DynamicEvent):void {
+        	PopUpManager.removePopUp(_checkConAlert);
+        }
+        
         private function endTurn():void{
-        	   /* Return to base State */
-        	_gameWindow.currentState = "";             
+        	_gameWindow.currentState = "";           
         }
         
         public function set isTurn(isTurn:Boolean):void{
@@ -579,6 +584,19 @@ package mx.ecosur.multigame.manantiales
                     }
                 }
             }
+            
+            
+            /* Alert player to pending constraints */
+            if (_game.checkConstraints != null) {
+                for (var i:int = 0; i < _game.checkConstraints.length; i++) {
+                    var checkConstraint:CheckConstraint = CheckConstraint(
+                      _game.checkConstraints.getItemAt(i));
+                    if (! checkConstraint.acknowledged) {
+                        _gameWindow.gameStatus.showMessage(checkConstraint.toString(),
+                            Color.getColorCode(_currentPlayer.color));
+                    }
+                }
+            }            
             
             _gameWindow.playersViewer.players = players;
             _players = players;
@@ -916,7 +934,13 @@ package mx.ecosur.multigame.manantiales
         } 
         
         private function handleCheckConstraint (checkConstraint:CheckConstraint):void {
-        	Alert.show(checkConstraint.reason);
+        	if (_checkConAlert == null) {
+                _checkConAlert = new CheckConstraintAlert();
+                _checkConAlert.constraint = checkConstraint;
+                _checkConAlert.addEventListener("result", handleCheckResult);
+                PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(_checkConAlert);
+            }            	
         } 
               
         

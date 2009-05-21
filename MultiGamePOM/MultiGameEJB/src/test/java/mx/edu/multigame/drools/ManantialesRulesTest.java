@@ -45,7 +45,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	private static RuleBase Ruleset;
 	
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = true;
 	
 	private Game game;
 	

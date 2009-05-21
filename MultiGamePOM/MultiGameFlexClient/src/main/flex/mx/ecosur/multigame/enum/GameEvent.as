@@ -24,6 +24,7 @@ package mx.ecosur.multigame.enum {
 		public static const CHAT:String = "CHAT";
 		public static const PLAYER_CHANGE:String = "PLAYER_CHANGE";
 		public static const CHECK_CONSTRAINT:String = "CHECK_CONSTRAINT";
+		public static const STATE_CHANGE:String = "STATE_CHANGE";
 
 	}
 }

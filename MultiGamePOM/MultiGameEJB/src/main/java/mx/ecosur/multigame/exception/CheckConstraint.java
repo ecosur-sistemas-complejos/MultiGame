@@ -12,13 +12,13 @@ package mx.ecosur.multigame.exception;
 
 import java.io.Serializable;
 
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.ejb.entity.Move;
 
 @SuppressWarnings("serial")
 public class CheckConstraint implements Serializable {
 	
 	String reason;
-	GamePlayer initiator;
+	Move initiator;
 	Object [] violators;
 	private int activeTurns;
 	
@@ -26,7 +26,7 @@ public class CheckConstraint implements Serializable {
 		super();
 	}
 	
-	public CheckConstraint (String reason, GamePlayer initiator, Object...violators) 
+	public CheckConstraint (String reason, Move initiator, Object...violators) 
 	{
 		super();
 		this.reason = reason;
@@ -44,7 +44,7 @@ public class CheckConstraint implements Serializable {
 	/**
 	 * @return the initiator
 	 */
-	public GamePlayer getInitiator() {
+	public Move getInitiator() {
 		return initiator;
 	}
 
@@ -65,7 +65,7 @@ public class CheckConstraint implements Serializable {
 	/**
 	 * @param initiator the initiator to set
 	 */
-	public void setInitiator(GamePlayer initiator) {
+	public void setInitiator(Move initiator) {
 		this.initiator = initiator;
 	}
 
