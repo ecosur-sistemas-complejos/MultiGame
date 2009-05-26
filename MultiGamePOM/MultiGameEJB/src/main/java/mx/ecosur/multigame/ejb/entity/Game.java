@@ -18,7 +18,9 @@ package mx.ecosur.multigame.ejb.entity;
 import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -152,9 +154,12 @@ public class Game implements Serializable {
 		this.type = type;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Transient
 	public Set getFacts () {
-		return grid.getCells();
+		Set ret = new HashSet();
+		ret.addAll(grid.getCells());
+		return ret;
 	}
 
 	/**

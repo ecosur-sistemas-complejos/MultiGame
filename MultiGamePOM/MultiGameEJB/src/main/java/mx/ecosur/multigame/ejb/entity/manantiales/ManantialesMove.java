@@ -22,10 +22,12 @@ public class ManantialesMove extends Move {
 	
 	private TokenType type, replacementType;
 	
-	private boolean badYear; 
+	private boolean badYear, premium;
 	
 	public ManantialesMove () {
 		super();
+		badYear = false;
+		premium = false;
 	}
 	
 	public ManantialesMove (GamePlayer player, Ficha destination) {
@@ -68,5 +70,13 @@ public class ManantialesMove extends Move {
 	
 	public void setBadYear (boolean year) {
 		badYear = year;
+	}
+	
+	public boolean isPremium () {
+		return premium;
+	}
+	
+	public void setPremium (boolean premium) {
+		this.premium = premium;
 	}
 }

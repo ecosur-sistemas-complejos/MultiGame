@@ -116,4 +116,12 @@ public class GamePlayer implements Serializable {
 		this.turn = turn;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return player.getName() + ", " + color.name() + ", turn=" + turn;
+	}
+
 }

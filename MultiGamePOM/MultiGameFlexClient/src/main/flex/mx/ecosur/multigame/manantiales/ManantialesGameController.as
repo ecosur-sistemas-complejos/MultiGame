@@ -1,7 +1,5 @@
 package mx.ecosur.multigame.manantiales
 {
-	import com.log2e.utils.SpinningPreloader;
-	
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
@@ -20,7 +18,7 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
-	import mx.ecosur.multigame.exception.CheckConstraint;
+	import mx.ecosur.multigame.manantiales.CheckConstraint;
 	import mx.ecosur.multigame.manantiales.entity.Ficha;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
@@ -59,7 +57,6 @@ package mx.ecosur.multigame.manantiales
         private var _moves:ArrayCollection;       
         private var _selectedMoveInd:Number; 
         private var _gameGrid:GameGrid;
-        private var _centerIndicator:SpinningPreloader;
         
         // server objects
         private var _gameService:RemoteObject;
@@ -591,7 +588,7 @@ package mx.ecosur.multigame.manantiales
                 for (var i:int = 0; i < _game.checkConstraints.length; i++) {
                     var checkConstraint:CheckConstraint = CheckConstraint(
                       _game.checkConstraints.getItemAt(i));
-                    if (! checkConstraint.acknowledged) {
+                    if (!checkConstraint.expired) {
                         _gameWindow.gameStatus.showMessage(checkConstraint.toString(),
                             Color.getColorCode(_currentPlayer.color));
                     }

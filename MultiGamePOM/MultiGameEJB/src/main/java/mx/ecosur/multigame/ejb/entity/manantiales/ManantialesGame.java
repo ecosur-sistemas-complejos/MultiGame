@@ -1,14 +1,15 @@
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.exception.CheckConstraint;
+import mx.ecosur.multigame.manantiales.CheckConstraint;
 import mx.ecosur.multigame.manantiales.Mode;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class ManantialesGame extends Game {
@@ -17,7 +18,7 @@ public class ManantialesGame extends Game {
 	
 	private Mode mode; 
 	
-	private ArrayList<CheckConstraint> checkConstraints;
+	private HashSet<CheckConstraint> checkConstraints;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -28,17 +29,31 @@ public class ManantialesGame extends Game {
         this.mode = mode;
     }
     
-    public ArrayList<CheckConstraint> getCheckConstraints () {
+    public HashSet<CheckConstraint> getCheckConstraints () {
     	return checkConstraints;
     }
     
-    public void setCheckConstraints (ArrayList<CheckConstraint> checkConstraints) {
+    public void setCheckConstraints (HashSet<CheckConstraint> checkConstraints) {
     	this.checkConstraints = checkConstraints;
     }
     
     public void addCheckConstraint (CheckConstraint violation) {
     	if (checkConstraints == null) 
-    		checkConstraints = new ArrayList<CheckConstraint>();
+    		checkConstraints = new HashSet<CheckConstraint>();
+    	if (checkConstraints.contains(violation))
+    		checkConstraints.remove(violation);
     	checkConstraints.add(violation);
     }
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.entity.Game#getFacts()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set getFacts() {
+		Set facts = super.getFacts();
+		if (checkConstraints != null)
+			facts.addAll(checkConstraints);
+		return facts;
+	}
 }

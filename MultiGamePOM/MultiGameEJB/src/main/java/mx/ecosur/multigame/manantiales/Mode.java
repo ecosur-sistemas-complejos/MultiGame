@@ -19,10 +19,10 @@ public enum Mode {
     	
     	switch (this) {
         	case CLASSIC:
-        		ret = 28;
+        		ret = 24;
         		break;
         	case BASIC_PUZZLE:
-        		ret = 28;
+        		ret = 24;
         		break;
         	case SILVOPASTORAL:
         		ret = 32;

@@ -2,7 +2,7 @@ package mx.ecosur.multigame.manantiales.entity
 {
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Game;
-	import mx.ecosur.multigame.exception.CheckConstraint;
+	import mx.ecosur.multigame.manantiales.CheckConstraint;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame")]                       
