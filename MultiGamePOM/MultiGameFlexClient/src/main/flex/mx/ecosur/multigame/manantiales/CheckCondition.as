@@ -3,8 +3,8 @@ package mx.ecosur.multigame.manantiales
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	
-	[RemoteClass (alias="mx.ecosur.multigame.manantiales.CheckConstraint")]
-	public class CheckConstraint
+	[RemoteClass (alias="mx.ecosur.multigame.manantiales.CheckCondition")]
+	public class CheckCondition
 	{
 		private var _reason:String;
 		private var _violators:ArrayCollection

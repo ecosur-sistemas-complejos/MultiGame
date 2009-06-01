@@ -24,17 +24,13 @@ public class ManantialesPlayer extends GamePlayer {
 	
 	private int points, forested, moderate, intensive, vivero, silvo;
 	
-	private boolean badYear;
-	
 	public ManantialesPlayer () {
 		super();
-		badYear = false;
 	}
 	
 	public ManantialesPlayer (Game game, Player player, Color favoriteColor) {
 		super (game, player, favoriteColor);
 		points = 0;
-		badYear = false;	
 	}
 
 	public int getScore() {
@@ -114,5 +110,13 @@ public class ManantialesPlayer extends GamePlayer {
 	public void setSilvo(int silvo) {
 		this.silvo = silvo;
 	}
-
+	
+	public void reset() {
+		this.forested = 0;
+		this.intensive = 0;
+		this.moderate = 0;
+		this.silvo = 0;
+		this.vivero = 0;
+		this.points = 0;
+	}
 }

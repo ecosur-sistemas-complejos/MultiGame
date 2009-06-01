@@ -53,6 +53,10 @@
                 return _currentPlayer;
             }
             
+            public function dispatchCompletion ():void {
+            	this.dispatchEvent(new Event("complete"));
+            }
+            
             /* Only events that effect this container are handled, all others
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
@@ -66,12 +70,12 @@
                     PopUpManager.addPopUp(_helpPanel, this, true);
                     PopUpManager.centerPopUp(_helpPanel);
                 } else if (evt.label=='Lobby') {
-                    this.dispatchEvent(new Event("complete"));
+                    this.dispatchCompletion();
                 } else if (evt.label == 'Quit') {
                 	quitGame();
-                	this.dispatchEvent(new Event("complete"));
+                	this.dispatchCompletion(); 
                 }
-            }
+            }                       
             
             private function closeHelp(event:Event):void{
                 PopUpManager.removePopUp(_helpPanel);

@@ -19,11 +19,12 @@ package mx.ecosur.multigame.enum {
 		
 		public static const BEGIN:String = "BEGIN";
 		public static const END:String = "END";
-		public static const MOVE_COMPLETE:String = "MOVE_COMPLETE";
-		public static const QUALIFY_MOVE:String = "QUALIFY_MOVE";
 		public static const CHAT:String = "CHAT";
+        public static const MOVE_COMPLETE:String = "MOVE_COMPLETE";		
 		public static const PLAYER_CHANGE:String = "PLAYER_CHANGE";
-		public static const CHECK_CONSTRAINT:String = "CHECK_CONSTRAINT";
+		public static const CONDITION_RAISED:String = "CONDITION_RAISED";
+		public static const CONDITION_RESOLVED:String = "CONDITION_RESOLVED";
+		public static const CONDITION_TRIGGERED:String = "CONDITION_TRIGGERED";
 		public static const STATE_CHANGE:String = "STATE_CHANGE";
 
 	}

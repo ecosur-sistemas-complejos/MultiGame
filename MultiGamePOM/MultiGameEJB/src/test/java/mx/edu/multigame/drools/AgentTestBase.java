@@ -12,7 +12,7 @@ import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 import mx.ecosur.multigame.pente.PenteStrategy;
 
 import org.drools.RuleBase;
@@ -27,7 +27,7 @@ public abstract class AgentTestBase extends RulesTestBase {
 
 	protected Game game;
 	
-	protected StrategyPlayer alice, bob, charlie;
+	protected PenteStrategyPlayer alice, bob, charlie;
 	
 	static {
 		PackageBuilder builder = new PackageBuilder();
@@ -57,9 +57,9 @@ public abstract class AgentTestBase extends RulesTestBase {
 		Player c = new Player ("charlie");
 		Player d = new Player ("denise");
 		
-		alice = new StrategyPlayer (game, a, Color.YELLOW, PenteStrategy.RANDOM);
-		bob = new StrategyPlayer (game, b, Color.BLUE, PenteStrategy.BLOCKER);
-		charlie = new StrategyPlayer (game, c, Color.RED, PenteStrategy.SIMPLE);
+		alice = new PenteStrategyPlayer (game, a, Color.YELLOW, PenteStrategy.RANDOM);
+		bob = new PenteStrategyPlayer (game, b, Color.BLUE, PenteStrategy.BLOCKER);
+		charlie = new PenteStrategyPlayer (game, c, Color.RED, PenteStrategy.SIMPLE);
 		
 		game.addPlayer(alice);
 		game.addPlayer(bob);

@@ -10,25 +10,25 @@
  */
 package mx.ecosur.multigame.manantiales;
 
-import java.io.Serializable;
 import java.util.HashSet;
 
+import mx.ecosur.multigame.Condition;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 
 @SuppressWarnings("serial")
-public class CheckConstraint implements Serializable {
-	
-	CheckConstraintType reason;
+public class CheckCondition implements Condition {
+
+	ConditionType reason;
 	GamePlayer player;
 	HashSet<Cell> violators;
 	private boolean expired;
 	
-	public CheckConstraint () {
+	public CheckCondition () {
 		super();
 	}	
 	
-	public CheckConstraint (CheckConstraintType reason, GamePlayer player, 
+	public CheckCondition (ConditionType reason, GamePlayer player, 
 			Cell...violator) 
 	{
 		super();
@@ -38,7 +38,7 @@ public class CheckConstraint implements Serializable {
 		for (Cell cell : violator) {
 			this.violators.add(cell);
 		}		
-	}
+	}	
 
 	/**
 	 * @return the player
@@ -57,14 +57,14 @@ public class CheckConstraint implements Serializable {
 	/**
 	 * @return the reason
 	 */
-	public CheckConstraintType getReason() {
+	public ConditionType getReason() {
 		return reason;
 	}
 
 	/**
 	 * @param reason the reason to set
 	 */
-	public void setReason(CheckConstraintType reason) {
+	public void setReason(ConditionType reason) {
 		this.reason = reason;
 	}
 	
@@ -75,8 +75,8 @@ public class CheckConstraint implements Serializable {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = true;
-		if (obj instanceof CheckConstraint) {
-			CheckConstraint test = (CheckConstraint) obj;
+		if (obj instanceof CheckCondition) {
+			CheckCondition test = (CheckCondition) obj;
 			ret = ret && (test.getReason().equals(this.getReason()));				
 		}
 		

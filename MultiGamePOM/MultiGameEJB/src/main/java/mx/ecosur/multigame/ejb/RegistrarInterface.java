@@ -18,7 +18,7 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.pente.PenteStrategy;
 
@@ -59,7 +59,7 @@ public interface RegistrarInterface {
 	 * TODO:  Make this generic.
 	 */
 
-	public abstract StrategyPlayer registerRobot(Game game, Player player,
+	public abstract PenteStrategyPlayer registerRobot(Game game, Player player,
 			Color color, PenteStrategy strategy)
 			throws InvalidRegistrationException;
 

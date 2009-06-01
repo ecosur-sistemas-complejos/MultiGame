@@ -30,7 +30,7 @@ import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 @MessageDriven(mappedName = "MultiGame")
@@ -78,7 +78,7 @@ public class StrategyPlayerListener implements MessageListener {
 	private void logStart (int gameId) {
 		List <GamePlayer> players = sharedBoard.getPlayers(gameId);
 		for (GamePlayer p : players) {
-			if (p instanceof StrategyPlayer) {
+			if (p instanceof PenteStrategyPlayer) {
 				logger.fine("All players have joined.  Beginning Strategy game.");
 				break;
 			}
@@ -98,15 +98,15 @@ public class StrategyPlayerListener implements MessageListener {
 	{
 		List<GamePlayer> players = (List<GamePlayer>) message.getObject();
 		for (GamePlayer p : players) {
-			if (p instanceof StrategyPlayer) {
-				StrategyPlayer player = (StrategyPlayer) p;
+			if (p instanceof PenteStrategyPlayer) {
+				PenteStrategyPlayer player = (PenteStrategyPlayer) p;
 				if (player.isTurn() && 
 						player.getGame().getState() != GameState.END) {
 					/* Simple 50ms sleep */
 					try {
 						Thread.sleep(250);
 					} catch (InterruptedException e) {}
-					PenteMove move = player.determineNextMove();					
+					PenteMove move = (PenteMove) player.determineNextMove(player.getGame());					
 					try {
 						logger.info("Robot making move: " + move);
 						sharedBoard.move(move);				

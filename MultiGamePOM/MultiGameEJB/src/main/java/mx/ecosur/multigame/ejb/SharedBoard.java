@@ -29,13 +29,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.ChatMessage;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import org.drools.FactException;
@@ -123,7 +124,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		move.setPlayer(player);
 
 		/* persist in order to define id */
-		em.persist(move);
+		Cell current = move.getCurrent();
+		if (current != null)
+			move.setCurrent (em.find (current.getClass(), current.getId()));
+		em.persist(move);		
 		
 		Game game = player.getGame();
 
@@ -134,14 +138,17 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		/* Insert all known information into working memory */
 		statefulSession.insert(move);
 		statefulSession.insert(game);
-		Set facts = game.getFacts();
-		for (Object fact : facts) 
+		for (Object fact : game.getFacts()) 
 			statefulSession.insert(fact);
 		
 		lifecycle(statefulSession);
 		
+			/* Merge all changes */
+		em.merge(move);
+		em.merge(game);		
+		
 		if (move.getStatus().equals(Move.Status.INVALID))
-			throw new InvalidMoveException ("INVALID Move.");	
+			throw new InvalidMoveException ("INVALID Move.");			
 		return move;
 	}
 
@@ -171,8 +178,13 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	public List<Move> getMoves(int gameId) {
 		logger.fine("Getting moves for game with id: " + gameId);
 		Game game = getGame(gameId);
-		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());
+		Query query = em.createNamedQuery(game.getType().getNamedMoveQuery());		
 		query.setParameter("game", game);
+		/* HACK: Neeed to generalize this better */
+		if (game.getType().equals(GameType.MANANTIALES)) {
+			ManantialesGame manantiales = (ManantialesGame) game;
+			query.setParameter("mode", manantiales.getMode());
+		}
 		return (List<Move>) query.getResultList();
 	}
 

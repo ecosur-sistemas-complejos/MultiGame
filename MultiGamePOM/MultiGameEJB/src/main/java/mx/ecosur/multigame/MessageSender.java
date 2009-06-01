@@ -34,7 +34,7 @@ import javax.naming.NamingException;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.manantiales.CheckConstraint;
+import mx.ecosur.multigame.manantiales.CheckCondition;
 
 public class MessageSender {
 
@@ -162,14 +162,33 @@ public class MessageSender {
 	}
 	
 	/**
-	 * Sends the GameEvent.CHECK_CONDITION message with the move that generates
-	 * the check condition.
+	 * Sends the GameEvent.CONDITION_RAISED message with the raised condition.
 	 * 
 	 * @param move
 	 */
-	public void sendCheckConstraint (Move move, CheckConstraint condition) {
+	public void sendConditionRaised (Move move, Condition condition) {
 		Game game = move.getPlayer().getGame();
-		sendMessage(game.getType(), game.getId(), GameEvent.CHECK_CONSTRAINT,
+		sendMessage(game.getType(), game.getId(), GameEvent.CONDITION_RAISED,
+				condition);		
+	}
+	
+	/**
+	 * Sends  the GameEvent.CHECK_CONSTRAINT_RESOLVED message with the 
+	 * resolved condition.
+	 */
+	public void sendConditionResolved (Move move, Condition condition) {
+		Game game = move.getPlayer().getGame();
+		sendMessage (game.getType(), game.getId(), GameEvent.CONDITION_RESOLVED,
+				condition);
+	}
+	
+	/** 
+	 * Sends the GameEvent.CONDITION_TRIGGERED message with the triggered
+	 * condition.
+	 */
+	public void sendConditionTriggered (Move move, Condition condition) {
+		Game game = move.getPlayer().getGame();
+		sendMessage (game.getType(), game.getId(), GameEvent.CONDITION_TRIGGERED,
 				condition);		
 	}
 	

@@ -40,7 +40,7 @@ import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.pente.PenteStrategy;
 
@@ -139,7 +139,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @throws InvalidRegistrationException 
 	 */
 	
-	public StrategyPlayer registerRobot (Game game, Player registrant, 
+	public PenteStrategyPlayer registerRobot (Game game, Player registrant, 
 			Color favoriteColor, PenteStrategy strategy) throws InvalidRegistrationException 
 	{
 		if (!em.contains(game))
@@ -147,7 +147,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		
 		registrant = locatePlayer(registrant.getName());
 		
-		StrategyPlayer player = new StrategyPlayer (game, registrant, favoriteColor, 
+		PenteStrategyPlayer player = new PenteStrategyPlayer (game, registrant, favoriteColor, 
 				strategy);
 		
 		if (!game.getPlayers().contains(player)) {

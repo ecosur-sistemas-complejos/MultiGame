@@ -62,6 +62,8 @@ public enum GameType {
 	public String getNamedMoveQuery() {
 		if (this.equals(GameType.PENTE))
 			return "getPenteMoves";
+		else if (this.equals(GameType.MANANTIALES))
+			return "getManantialesMoves";				
 		else
 			return "getMoves";
 	}

@@ -100,7 +100,11 @@ package mx.ecosur.multigame.manantiales
             
             //create button header
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(mi));
-            btn.label = " to " + _board.getCellDescription(move.destination.column, move.destination.row);
+            if (move.badYear) {
+                btn.label = " no move due to bad year condition.";	
+            } else {
+                btn.label = " to " + _board.getCellDescription(move.destination.column, move.destination.row);
+            }
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);
             btn.setStyle("paddingTop", 5);

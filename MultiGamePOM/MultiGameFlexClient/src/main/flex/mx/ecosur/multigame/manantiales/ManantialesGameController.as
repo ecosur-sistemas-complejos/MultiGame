@@ -18,7 +18,6 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
-	import mx.ecosur.multigame.manantiales.CheckConstraint;
 	import mx.ecosur.multigame.manantiales.entity.Ficha;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
@@ -47,6 +46,8 @@ package mx.ecosur.multigame.manantiales
         private var _tokenStorePanels:ArrayCollection;
         private var _annCondGen:AnnualConditionsGenerator;
         private var _checkConAlert:CheckConstraintAlert;
+        private var _stageChangeAlert:GraphicAlert;
+        private var _endAlert:GraphicAlert;
                 
         // data objects
         private var _gameId:int;
@@ -129,6 +130,7 @@ package mx.ecosur.multigame.manantiales
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;     
             
             // setup display
+            /*
             for (var j:int = 0; j < this._tokenStorePanels.length; j++) {
                 var obj:Object = _tokenStorePanels.getItemAt(j);
                 if (obj is Panel) {
@@ -136,7 +138,7 @@ package mx.ecosur.multigame.manantiales
                     if (pnl.visible)
                         pnl.visible = false;
                 }
-            }
+            }*/
             
             this._gameWindow.playersViewer.autoLayout = true;         	        	
         }
@@ -272,8 +274,10 @@ package mx.ecosur.multigame.manantiales
                 // do move in backend
                 var move:ManantialesMove = new ManantialesMove();
                 move.player = _currentPlayer;
+                move.current = boardCell.token.cell;
                 move.destination = destination;
                 move.status = Move.UNVERIFIED;
+                move.mode = _game.mode;
                 var call:Object = _gameService.doMove(move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;
                 _executingMove = move;   
@@ -327,8 +331,9 @@ package mx.ecosur.multigame.manantiales
             var message:IMessage = event.message;
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
+            var checkConstraint:CheckCondition;
         
-            switch (gameEvent){
+            switch (gameEvent) {
                 case GameEvent.BEGIN:
                     begin();
                     break;
@@ -341,9 +346,8 @@ package mx.ecosur.multigame.manantiales
                     }
                     break;
                 case GameEvent.END:
-                    if (_isTurn){
-                        end();
-                    }
+                    var game:ManantialesGame = ManantialesGame(message.body);
+                    handleGameEnd (game);
                     break;
                 case GameEvent.MOVE_COMPLETE:
                     var move:ManantialesMove = ManantialesMove(message.body);
@@ -353,11 +357,22 @@ package mx.ecosur.multigame.manantiales
                     var players:ArrayCollection = ArrayCollection(message.body);
                     updatePlayers(players);
                     break;
-                case GameEvent.CHECK_CONSTRAINT:
-                    var checkConstraint:CheckConstraint = CheckConstraint(message.body);
+                case GameEvent.CONDITION_RAISED:
+                    checkConstraint = CheckCondition(message.body);
                     handleCheckConstraint (checkConstraint);
                     break;
-                
+                case GameEvent.CONDITION_RESOLVED:
+                    checkConstraint = CheckCondition(message.body);
+                    handleCheckConstraintResolved (checkConstraint);
+                    break;
+                case GameEvent.CONDITION_TRIGGERED:
+                    checkConstraint = CheckCondition(message.body);
+                    handleCheckConstraintTriggered (checkConstraint);
+                    break;    
+                case GameEvent.STATE_CHANGE:
+                    var game:ManantialesGame = ManantialesGame (message.body);
+                    handleStateChange (game);
+                    break;                            
             }
         }        
         
@@ -517,18 +532,22 @@ package mx.ecosur.multigame.manantiales
             }           
             
             // open annual conditions generator
-            _annCondGen = new AnnualConditionsGenerator();
-            _annCondGen.addEventListener("result", handleAnnCondResult);
-            PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
-            PopUpManager.centerPopUp(_annCondGen);       	
+            if (_annCondGen == null) {
+                _annCondGen = new AnnualConditionsGenerator();
+                _annCondGen.addEventListener("result", handleAnnCondResult);
+                PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
+                PopUpManager.centerPopUp(_annCondGen);
+            }       	
         }
         
         private function handleAnnCondResult(event:DynamicEvent):void{
         	PopUpManager.removePopUp(_annCondGen);
+        	_annCondGen = null;
         	if(!event.isGoodYear){
         		var move:ManantialesMove = new ManantialesMove ();
         		move.badYear = true;
-        		move.player = _currentPlayer;        		
+        		move.player = _currentPlayer;   
+        		move.mode = _game.mode;     		
         		var call:Object = _gameService.doMove(move);
         		call.operation = GAME_SERVICE_DO_MOVE_OP;
         	}
@@ -536,7 +555,24 @@ package mx.ecosur.multigame.manantiales
         
         private function handleCheckResult(event:DynamicEvent):void {
         	PopUpManager.removePopUp(_checkConAlert);
-        }
+            _checkConAlert = null;        	
+        }  
+        
+        private function handleStateChangeResult (event:DynamicEvent):void {
+           PopUpManager.removePopUp(this._stageChangeAlert);
+           _stageChangeAlert = null; 
+           
+           /* Reinitialize the grid in case a move was picked from the previous
+           state change */
+            var callGrid:Object = _gameService.getGameGrid(_gameId);
+            callGrid.operation = GAME_SERVICE_GET_GRID_OP;         
+        } 
+        
+        private function handleEndResult (event:DynamicEvent):void {
+        	PopUpManager.removePopUp(this._endAlert);
+        	_endAlert = null;
+        	this._gameWindow.dispatchCompletion();
+        }                       
         
         private function endTurn():void{
         	_gameWindow.currentState = "";           
@@ -586,7 +622,7 @@ package mx.ecosur.multigame.manantiales
             /* Alert player to pending constraints */
             if (_game.checkConstraints != null) {
                 for (var i:int = 0; i < _game.checkConstraints.length; i++) {
-                    var checkConstraint:CheckConstraint = CheckConstraint(
+                    var checkConstraint:CheckCondition = CheckCondition(
                       _game.checkConstraints.getItemAt(i));
                     if (!checkConstraint.expired) {
                         _gameWindow.gameStatus.showMessage(checkConstraint.toString(),
@@ -602,45 +638,46 @@ package mx.ecosur.multigame.manantiales
         public function quitGame (gamePlayer:GamePlayer):void {
         	var call:Object = _gameService.quitGame(gamePlayer);
             call.operation = "quitGame";
-            end();
         }
         
         private function addMove(move:ManantialesMove):void{
-        	
-        	_gameWindow.currentState = "";
-            
-            //get last move in game
-            var lastMove:ManantialesMove = null;
-            if (_moves.length > 0){
-                lastMove = ManantialesMove(_moves[length - 1]);
-            }
-            
-            //if move is after the last move then add moves
-            //else update the move since its info may have changed
-            if (lastMove == null || move.id > lastMove.id){
-                
-                //add to moves
-                _moves.source.push(move);
-                _gameWindow.moveViewer.addMove(move);
-                
-                //if current move is the last move then animate
-                if (_selectedMoveInd == _moves.length - 2){
-                    _selectedMoveInd ++;
-                    doMove(move);
-                }
-            }else{
-                
-                // Search for move in reverse order because its most likely to be the last move
-                var oldMove:ManantialesMove;
-                for (var i:Number = _moves.length - 1; i >= 0; i--){
-                    oldMove = ManantialesMove(_moves[i]);
-                    if (oldMove.id == move.id){
-                        _moves[i] = move;
-                        _gameWindow.moveViewer.updateMove(move);
-                        break;
-                    }
-                }
-            }
+        	if (move.mode == _game.mode) {
+	        	
+	        	_gameWindow.currentState = "";
+	            
+	            //get last move in game
+	            var lastMove:ManantialesMove = null;
+	            if (_moves.length > 0){
+	                lastMove = ManantialesMove(_moves[length - 1]);
+	            }
+	            
+	            //if move is after the last move then add moves
+	            //else update the move since its info may have changed
+	            if (lastMove == null || move.id > lastMove.id){
+	                
+	                //add to moves
+	                _moves.source.push(move);
+	                _gameWindow.moveViewer.addMove(move);
+	                
+	                //if current move is the last move then animate
+	                if (_selectedMoveInd == _moves.length - 2){
+	                    _selectedMoveInd ++;
+	                    doMove(move);
+	                }
+	            }else{
+	                
+	                // Search for move in reverse order because its most likely to be the last move
+	                var oldMove:ManantialesMove;
+	                for (var i:Number = _moves.length - 1; i >= 0; i--){
+	                    oldMove = ManantialesMove(_moves[i]);
+	                    if (oldMove.id == move.id){
+	                        _moves[i] = move;
+	                        _gameWindow.moveViewer.updateMove(move);
+	                        break;
+	                    }
+	                }
+	            }
+	        }
         }        
         
         /*
@@ -810,15 +847,16 @@ package mx.ecosur.multigame.manantiales
                 else if (token is SilvopastoralToken) {
                     _gameWindow.silvoStore.removeToken();
                 }
-            }
-            
-            _gameWindow.moveViewer.selectedMove = move;            
+            }           
             
             boardCell.token = token;
             boardCell.token.blink(1);
             
             // Update move viewer
-            var move:ManantialesMove = ManantialesMove(_moves[_selectedMoveInd])            
+            if (_moves [_selectedMoveInd] != null && _selectedMoveInd > 0) {
+                var move:ManantialesMove = ManantialesMove(_moves[_selectedMoveInd])           
+                _gameWindow.moveViewer.selectedMove = move; 
+            }            
         }
         
         private function undoMove(move:ManantialesMove):void{
@@ -930,15 +968,90 @@ package mx.ecosur.multigame.manantiales
             _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd]);
         } 
         
-        private function handleCheckConstraint (checkConstraint:CheckConstraint):void {
+        private function handleCheckConstraint (checkConstraint:CheckCondition):void {
         	if (_checkConAlert == null) {
                 _checkConAlert = new CheckConstraintAlert();
                 _checkConAlert.constraint = checkConstraint;
+                _checkConAlert.raised = true;
                 _checkConAlert.addEventListener("result", handleCheckResult);
                 PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_checkConAlert);
-            }            	
+            }          	
+        }
+        
+        private function handleCheckConstraintResolved (checkConstraint:CheckCondition):void {
+            if (_checkConAlert == null) {        	
+	            _checkConAlert = new CheckConstraintAlert();
+	            _checkConAlert.constraint = checkConstraint;
+	            _checkConAlert.raised = false;
+	            _checkConAlert.addEventListener("result", handleCheckResult);
+	            PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
+	            PopUpManager.centerPopUp(_checkConAlert);
+	        }   
+        }
+        
+        private function handleCheckConstraintTriggered (checkConstraint:CheckCondition):void {
+            if (_checkConAlert == null) {        	
+	            _checkConAlert = new CheckConstraintAlert();
+	            _checkConAlert.constraint = checkConstraint;
+	            _checkConAlert.raised = false;
+	            _checkConAlert.triggered = true;
+	            _checkConAlert.addEventListener("result", handleCheckResult);
+	            PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
+	            PopUpManager.centerPopUp(_checkConAlert);
+            }
+            
+            initGrid(this._gameGrid);
+        }  
+        
+        private function handleStateChange (game:ManantialesGame):void {
+        	if (_stageChangeAlert == null) {
+        		_stageChangeAlert = new GraphicAlert();
+        		if (_isTurn) {
+        		  _stageChangeAlert.text = "Stage complete.  You have won! Progressing to next stage, '" +
+        		      game.mode + "'";
+        		  _stageChangeAlert.positive = true;
+        	    } else { 
+        		  _stageChangeAlert.text = "Stage complete.  You have lost. Progressing to next stage, '" + 
+        		      game.mode + "'";
+        		  _stageChangeAlert.positive = false;
+        		}
+        		_stageChangeAlert.addEventListener ("result", handleStateChangeResult);
+        		PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
+        		PopUpManager.centerPopUp(_stageChangeAlert);
+        	}
+        	
+            this._game = game;
+            this._gameGrid = game.grid;            
+            this._moves = new ArrayCollection();                             
+            
+            // get the game grid, players and moves
+            var callGrid:Object = _gameService.getGameGrid(_gameId);
+            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+            var callPlayers:Object = _gameService.getPlayers(_gameId);
+            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+            var callMoves:Object = _gameService.getMoves(_gameId);
+            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;                                                                                              
         } 
+        
+        private function handleGameEnd (game:ManantialesGame):void {
+        	if (_endAlert == null) {
+	        	_endAlert = new GraphicAlert();        	
+	            if (_isTurn){
+	            	_endAlert.text = "Game Over.  You have won!";
+	            	_endAlert.positive = true;
+	                end();
+	            } else {
+	            	_endAlert.text= "Game Over.  You have lost.";
+	            	_endAlert.positive = false;
+	            }        	
+	            
+	            _endAlert.addEventListener("result",handleEndResult);
+	            
+	            PopUpManager.addPopUp(_endAlert, _gameWindow, true);
+	            PopUpManager.centerPopUp(_endAlert);
+	        }
+        }                     
               
         
         public function destroy():void{

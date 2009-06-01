@@ -21,7 +21,7 @@ import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -34,14 +34,14 @@ public class AgentLogicTest extends AgentTestBase {
 	
 	
 	@Test
-	/* Simple test to check the Available move logic in StrategyPlayer */
+	/* Simple test to check the Available move logic in PenteStrategyPlayer */
 	public void testAvailableMoves () {
 		TreeSet<PenteMove> unbound = alice.determineAvailableMoves();
 		assertEquals (11, unbound.size());
 	}
 	
 	@Test
-	/* Simple test to check the Scoring move logic in StrategyPlayer */
+	/* Simple test to check the Scoring move logic in PenteStrategyPlayer */
 	public void testScoringMoves () {
 		/* Setup a hash of valid move destinations to compare against */
 		TreeSet<Cell> validDestinations = new TreeSet<Cell> (
@@ -174,7 +174,7 @@ public class AgentLogicTest extends AgentTestBase {
 	}
 	
 	
-	private PenteMove fireRules(StrategyPlayer player) {
+	private PenteMove fireRules(PenteStrategyPlayer player) {
 		RuleBase rules = player.getStrategy().getRuleBase();
 		StatefulSession statefulSession = rules.newStatefulSession();
 		if (DEBUG)

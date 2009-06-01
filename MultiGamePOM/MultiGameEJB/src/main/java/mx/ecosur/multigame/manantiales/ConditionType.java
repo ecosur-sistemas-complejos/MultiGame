@@ -10,7 +10,7 @@
  */
 package mx.ecosur.multigame.manantiales;
 
-public enum CheckConstraintType {
+public enum ConditionType {
 	
 	NORTHERN_BORDER_DEFORESTED, EASTERN_BORDER_DEFORESTED, SOUTHERN_BORDER_DEFORESTED,
 	WESTERN_BORDER_DEFORESTED, MANANTIALES_DRY, TERRITORY_DEFORESTED

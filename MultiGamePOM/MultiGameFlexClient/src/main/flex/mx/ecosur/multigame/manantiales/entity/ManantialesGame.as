@@ -2,7 +2,7 @@ package mx.ecosur.multigame.manantiales.entity
 {
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Game;
-	import mx.ecosur.multigame.manantiales.CheckConstraint;
+	import mx.ecosur.multigame.manantiales.CheckCondition;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame")]                       
@@ -29,7 +29,7 @@ package mx.ecosur.multigame.manantiales.entity
 		  _checkConstraints = checkConstraints;	
 		}
 		
-		public function addCheckConstraint (violation:CheckConstraint):void {
+		public function addCheckConstraint (violation:CheckCondition):void {
 			if (_checkConstraints == null)
 			     _checkConstraints = new ArrayCollection();
 			_checkConstraints.addItem(violation); 

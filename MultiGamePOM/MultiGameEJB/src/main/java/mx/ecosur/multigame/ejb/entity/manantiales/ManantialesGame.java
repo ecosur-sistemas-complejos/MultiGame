@@ -1,7 +1,8 @@
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.manantiales.CheckConstraint;
+import mx.ecosur.multigame.manantiales.CheckCondition;
+import mx.ecosur.multigame.manantiales.ConditionType;
 import mx.ecosur.multigame.manantiales.Mode;
 
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class ManantialesGame extends Game {
 	
 	private Mode mode; 
 	
-	private HashSet<CheckConstraint> checkConstraints;
+	private HashSet<CheckCondition> checkConstraints;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -26,23 +27,36 @@ public class ManantialesGame extends Game {
     }
 		
     public void setMode (Mode mode) {
+    	this.checkConstraints = null;
         this.mode = mode;
     }
     
-    public HashSet<CheckConstraint> getCheckConstraints () {
+    public boolean hasCondition (ConditionType type) {
+    	boolean ret = false;
+    	if (checkConstraints != null) {
+	    	for (CheckCondition condition : checkConstraints) {
+	    		if (condition.getReason().equals(type)) {
+	    			ret = true;
+	    		}
+	    	}
+    	}
+	    	
+    	return ret;
+    }
+    
+    public HashSet<CheckCondition> getCheckConstraints () {
     	return checkConstraints;
     }
     
-    public void setCheckConstraints (HashSet<CheckConstraint> checkConstraints) {
+    public void setCheckConstraints (HashSet<CheckCondition> checkConstraints) {
     	this.checkConstraints = checkConstraints;
     }
     
-    public void addCheckConstraint (CheckConstraint violation) {
+    public void addCheckConstraint (CheckCondition violation) {
     	if (checkConstraints == null) 
-    		checkConstraints = new HashSet<CheckConstraint>();
-    	if (checkConstraints.contains(violation))
-    		checkConstraints.remove(violation);
-    	checkConstraints.add(violation);
+    		checkConstraints = new HashSet<CheckCondition>();
+    	if (!hasCondition (violation.getReason()))
+    		checkConstraints.add(violation);
     }
 
 	/* (non-Javadoc)

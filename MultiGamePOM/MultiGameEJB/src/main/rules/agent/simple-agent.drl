@@ -26,7 +26,7 @@ import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.ejb.entity.pente.PenteMove;
-import mx.ecosur.multigame.ejb.entity.pente.StrategyPlayer;
+import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -36,7 +36,7 @@ import java.util.TreeSet;
 rule "first-move"
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
+    player : PenteStrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
     eval ($grid.getCells().isEmpty())
 then
     PenteMove centerMove = new PenteMove (player, new Cell (
@@ -49,7 +49,7 @@ rule "simple-move"
     no-loop true
 when
     game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : StrategyPlayer (turn == true, nextMove == null)
+    player : PenteStrategyPlayer (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();

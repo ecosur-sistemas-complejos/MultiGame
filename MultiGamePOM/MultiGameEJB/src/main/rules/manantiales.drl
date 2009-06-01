@@ -1,4 +1,4 @@
-#created on: Feb 4, 2009
+#created on: Feb 4, 2009f
 package mx.ecosur.multigame.manantiales
 
 import mx.ecosur.multigame.GameState;
@@ -19,8 +19,8 @@ import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 
-import mx.ecosur.multigame.manantiales.CheckConstraint;
-import mx.ecosur.multigame.manantiales.CheckConstraintType;
+import mx.ecosur.multigame.manantiales.CheckCondition;
+import mx.ecosur.multigame.manantiales.ConditionType;
 import mx.ecosur.multigame.manantiales.Mode;
 import mx.ecosur.multigame.manantiales.TokenType;
 
@@ -30,14 +30,40 @@ import java.util.ArrayList;
 
 
 function boolean isValid (GameGrid grid, ManantialesMove move) {
-    boolean ret = move.getDestination() != null;
-    if (ret) {
+    boolean ret = false;
+    if (move.getDestination() != null) {
 	    Ficha destination = (Ficha) move.getDestination();
 	    Ficha current = (Ficha) grid.getLocation (destination);
-	    ret = ret && (current == null || !(current.getType() == TokenType.INTENSIVE_PASTURE));
+	    if (current != null) {
+	       switch (current.getType()) {
+	           case MANAGED_FOREST:
+	               ret = !destination.getType().equals(TokenType.SILVOPASTORAL) &&
+	                   !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
+	               break;
+	           case MODERATE_PASTURE:
+                   ret = !destination.getType().equals(TokenType.SILVOPASTORAL);
+                   break;               
+	           case VIVERO:
+	               ret = !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
+	               break;
+	           case SILVOPASTORAL:
+	               ret = true;
+	                break;
+	           default:
+	               ret = false;
+	               break;
+	       }
+	    } else {
+	       ret = true;
+	    }
 	}
-    if (!ret)
+	
+    if (!ret) {
         move.setStatus (Status.INVALID);
+        System.out.println ("INVALID in isValid");            
+    } else {
+        System.out.println("VALID move assesed in isValid");
+    }
     return ret;
 }
 
@@ -109,7 +135,7 @@ function GameGrid clearPlayer (ManantialesGame game, ManantialesPlayer player) {
     return grid;        
 }
 
-function GameGrid clearBorder (ManantialesGame game, CheckConstraintType violation) {
+function GameGrid clearBorder (ManantialesGame game, ConditionType violation) {
     GameGrid ret = game.getGrid();
     HashSet<Ficha> deletions = new HashSet<Ficha>();
 
@@ -218,16 +244,36 @@ when
     eval (isValid($game.getGrid(), $move))
 then
     modify ($move) { setStatus (Status.VERIFIED) }    
-end  
+end 
 
-rule "silvopastoral-after-vivero" 
+rule "intensive-replaces-moderate" 
     agenda-group "verify"
 when
     $game : Game (state == GameState.PLAY, $grid : grid)
-    $move : ManantialesMove (badYear == false, status != Status.INVALID, status != Status.VERIFIED,
+    $move : ManantialesMove (badYear == false, status == Status.VERIFIED,
+        type == TokenType.INTENSIVE_PASTURE, replacementType != TokenType.MODERATE_PASTURE)
+then
+System.out.println ("type=" + $move.getType() + ", replacementType="+ $move.getReplacementType());
+    modify ($move) { setStatus (Status.INVALID) }
+end
+ 
+
+rule "silvopastoral-replaces-vivero" 
+    agenda-group "verify"
+when
+    $game : Game (state == GameState.PLAY, $grid : grid)
+    $move : ManantialesMove (badYear == false, status != Status.INVALID,
         type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
 then
     modify ($move) { setStatus (Status.INVALID) }
+end
+
+rule "show-current-and-destination" 
+    agenda-group "verify"
+when
+    $move : ManantialesMove (badYear == false, status != Status.INVALID)
+then
+    System.out.println("Current: " + $move.getCurrent() + ", destination: " + $move.getDestination());
 end
 
 rule "row contiguous intensive"
@@ -309,10 +355,11 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.NORTH, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                            
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+        eval (!$game.hasCondition (ConditionType.NORTHERN_BORDER_DEFORESTED));                         
     then
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.NORTHERN_BORDER_DEFORESTED, 
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.NORTHERN_BORDER_DEFORESTED, 
                 $move.getPlayer(), $tok1, $tok2);
         # We should simply modify the Game object here, but this provokes an 
         # infinite loop. so we have to work around with the move object.
@@ -320,7 +367,7 @@ rule
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);
+        messageSender.sendConditionRaised ($move, constraint);
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -336,17 +383,18 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.EAST, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))       
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        eval (!$game.hasCondition (ConditionType.EASTERN_BORDER_DEFORESTED))       
     then
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2);
         $game.addCheckConstraint(constraint);
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
         modify ($move) { setPlayer (player) }               
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);                
+        messageSender.sendConditionRaised ($move, constraint);                
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -362,17 +410,18 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.SOUTH, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))     
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        eval (!$game.hasCondition (ConditionType.SOUTHERN_BORDER_DEFORESTED))        
     then
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2);
         $game.addCheckConstraint(constraint);
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
         modify ($move) { setPlayer (player) }                 
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);                       
+        messageSender.sendConditionRaised ($move, constraint);                       
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -388,17 +437,18 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.border == BorderType.WEST, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                              
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+        eval (!$game.hasCondition (ConditionType.WESTERN_BORDER_DEFORESTED))                                      
     then
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
                 $tok1, $tok2);
-        $game.addCheckConstraint(constraint);
+        $game.addCheckConstraint (constraint);
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
         modify ($move) { setPlayer (player) }             
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);                       
+        messageSender.sendConditionRaised ($move, constraint);                       
 end
 
 #Enforces Manantiales constraint (only 2 developments around the manantiales
@@ -414,16 +464,17 @@ rule "manantiales"
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
             destination.manantial == true, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        eval (!$game.hasCondition (ConditionType.MANANTIALES_DRY))                   
     then
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2);
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2);
         $game.addCheckConstraint(constraint);
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
         modify ($move) { setPlayer (player) }          
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);                   
+        messageSender.sendConditionRaised ($move, constraint);                   
 end
 
 #Enforces the constaint that no more than 32 sites can be deforested
@@ -437,17 +488,17 @@ rule "territory-deforested"
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $list : ArrayList (size > 30) from collect (
             Ficha (type in (
-                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))) 
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        eval (!$game.hasCondition (ConditionType.TERRITORY_DEFORESTED))                
     then        
         Cell [] cells = (Cell []) $list.toArray(new Cell [ 0 ]);
-        CheckConstraint constraint = new CheckConstraint(
-            CheckConstraintType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
         $game.addCheckConstraint(constraint);
         GamePlayer player = $move.getPlayer();
-        player.setGame($game);
-        #modify ($move) { setPlayer (player) }                 
+        player.setGame($game);             
         MessageSender messageSender = new MessageSender ();
-        messageSender.sendCheckConstraint ($move, constraint);                   
+        messageSender.sendConditionRaised ($move, constraint);                   
 end
 
 # Executes a simple move
@@ -465,200 +516,7 @@ then
     modify ($move) { setStatus (Status.MOVED) }
     MessageSender messageSender = new MessageSender();
     messageSender.sendMoveComplete ($move);
-end
-
-#Expired CheckConstraints
-
-#Triggers an end of game due to Manantial CheckConstraint 
-rule "manantiales-dry-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move  : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (expired == false, player == $player, 
-        reason == CheckConstraintType.MANANTIALES_DRY)
-then
-    $constraint.setExpired(true);
-    modify ($game) {addCheckConstraint ($constraint), setState (GameState.END)}
-    MessageSender messageSender = new MessageSender();
-    messageSender.sendEndGame ($game);
-end
-
-#Triggers an end of game due to Territory Deforestation CheckConstraint
-rule "territory-deforestation-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move  : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (expired == false, player == $player,  
-        reason == CheckConstraintType.TERRITORY_DEFORESTED)
-then
-    $constraint.setExpired(true);
-    modify ($game) { setState (GameState.END), addCheckConstraint ($constraint) }
-    MessageSender messageSender = new MessageSender();
-    messageSender.sendEndGame ($game);
-end
-
-#Clears the NORTHERN Border due to NORTHERN_BORDER_DEFORESTED CheckConstraint
-rule "northern-border-deforested-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move       : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (reason == CheckConstraintType.NORTHERN_BORDER_DEFORESTED,
-        player == $player)    
-then
-    GameGrid grid = clearBorder ($game, $constraint.getReason());
-    #Check constraint is removed as consequences have occurred 
-    HashSet<CheckConstraint> constraints = $game.getCheckConstraints();
-    constraints.remove ($constraint);
-    retract ($constraint);
-    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
-end
-
-#Clears the SOUTHERN Border due to SOUTHERN_BORDER_DEFORESTED CheckConstraint
-rule "southern-border-deforested-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move       : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (reason == CheckConstraintType.SOUTHERN_BORDER_DEFORESTED,
-        player == $player)    
-then
-    GameGrid grid = clearBorder ($game, $constraint.getReason());
-    #Check constraint is removed as consequences have occurred     
-    HashSet<CheckConstraint> constraints = $game.getCheckConstraints();
-    constraints.remove ($constraint);
-    retract ($constraint);
-    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
-end
-
-#Clears the WESTERN Border due to WESTERN_BORDER_DEFORESTED CheckConstraint
-rule "western-border-deforested-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move       : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (reason == CheckConstraintType.WESTERN_BORDER_DEFORESTED,
-        player == $player)    
-then
-    GameGrid grid = clearBorder ($game, $constraint.getReason());
-    #Check constraint is removed as consequences have occurred 
-    HashSet<CheckConstraint> constraints = $game.getCheckConstraints();
-    constraints.remove ($constraint);
-    retract ($constraint);
-    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
-end
-
-#Clears the EASTERN Border due to EASTERN_BORDER_DEFORESTED CheckConstraint
-rule "eastern-border-deforested-expired"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $game  : ManantialesGame (state == GameState.PLAY)
-    $move       : ManantialesMove (player.turn == true, $player : player, 
-        status == Status.MOVED)
-    $constraint : CheckConstraint (reason == CheckConstraintType.EASTERN_BORDER_DEFORESTED,
-        player == $player)    
-then
-    GameGrid grid = clearBorder ($game, $constraint.getReason());
-    #Check constraint is removed as consequences have occurred     
-    HashSet<CheckConstraint> constraints = $game.getCheckConstraints();
-    constraints.remove ($constraint);
-    retract ($constraint);
-    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
-end
-
-rule "blue-borders-deforested"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (player.turn == true, player.color == Color.BLUE,
-        status == Status.MOVED)
-    $constraint1 : CheckConstraint (reason == CheckConstraintType.NORTHERN_BORDER_DEFORESTED)
-    $constraint2 : CheckConstraint (reason == CheckConstraintType.WESTERN_BORDER_DEFORESTED)        
-then
-    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
-    GameGrid grid = clearTerritory (game, Color.BLUE);
-    HashSet<CheckConstraint> constraints = game.getCheckConstraints();
-    constraints.remove ($constraint1);
-    constraints.remove ($constraint2);
-    game.setCheckConstraints(constraints);
-    game.setGrid (grid);
-    retract ($constraint1);
-    retract ($constraint2);
-end
-
-rule "yellow-borders-deforested"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (player.turn == true, player.color == Color.YELLOW,
-        status == Status.MOVED)
-    $constraint1 : CheckConstraint (reason == CheckConstraintType.SOUTHERN_BORDER_DEFORESTED)
-    $constraint2 : CheckConstraint (reason == CheckConstraintType.WESTERN_BORDER_DEFORESTED)
-then
-    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
-    GameGrid grid = clearTerritory (game, Color.YELLOW);
-    HashSet<CheckConstraint> constraints = game.getCheckConstraints();
-    constraints.remove ($constraint1);
-    constraints.remove ($constraint2);
-    game.setCheckConstraints(constraints);
-    game.setGrid (grid);
-    retract ($constraint1);
-    retract ($constraint2); 
-end
-
-rule "black-borders-deforested"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (player.turn == true, player.color == Color.BLACK,
-        status == Status.MOVED, $game : player.game)
-    $constraint1 : CheckConstraint (reason == CheckConstraintType.NORTHERN_BORDER_DEFORESTED)
-    $constraint2 : CheckConstraint (reason == CheckConstraintType.EASTERN_BORDER_DEFORESTED)
-then
-    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
-    GameGrid grid = clearTerritory (game, Color.BLACK);
-    HashSet<CheckConstraint> constraints = game.getCheckConstraints();
-    constraints.remove ($constraint1);
-    constraints.remove ($constraint2);
-    game.setCheckConstraints(constraints);
-    game.setGrid (grid);
-    retract ($constraint1);
-    retract ($constraint2);
-end
-
-rule "red-borders-deforested"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (player.turn == true, player.color == Color.RED,
-        status == Status.MOVED, $game : player.game)
-    $constraint1 : CheckConstraint (reason == CheckConstraintType.SOUTHERN_BORDER_DEFORESTED)
-    $constraint2 : CheckConstraint (reason == CheckConstraintType.WESTERN_BORDER_DEFORESTED)
-then
-    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
-    GameGrid grid = clearTerritory (game, Color.RED);
-    HashSet<CheckConstraint> constraints = game.getCheckConstraints();
-    constraints.remove ($constraint1);
-    constraints.remove ($constraint2);
-    game.setCheckConstraints(constraints);
-    game.setGrid (grid);    
-    retract ($constraint1);
-    retract ($constraint2); 
-end        
-
+end      
 
 # Resolved CheckConstraints 
 
@@ -670,13 +528,15 @@ when
     $move   : ManantialesMove (badYear == false, player.turn == true, type in
         (TokenType.MANAGED_FOREST, TokenType.VIVERO, TokenType.SILVOPASTORAL),
         status == Status.MOVED, $cell : destination)
-    $constraint : CheckConstraint ($violators : violators)
+    $constraint : CheckCondition ($violators : violators)
     Cell ($cell.row == row, $cell.column == column) from $violators
 then
-    HashSet<CheckConstraint> constraints = $game.getCheckConstraints();
+    HashSet<CheckCondition> constraints = $game.getCheckConstraints();
     constraints.remove ($constraint);
     retract ($constraint);
     modify ($game) { setCheckConstraints (constraints) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionResolved ($move, $constraint);    
 end
 
 rule "remove-replaced-token-from-player"
@@ -684,11 +544,12 @@ rule "remove-replaced-token-from-player"
     no-loop true
 when
     $game  : Game (state == GameState.PLAY)
-    $move : ManantialesMove (current != null, player.turn == true, 
-        status == Status.MOVED)
+    $move : ManantialesMove (badYear == false, player.turn == true, 
+        status == Status.MOVED, current != null, destination != null)
 then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
-    switch ($move.getType()) {
+    # remove ficha from count
+    switch ($move.getReplacementType()) {
         case MANAGED_FOREST:
             player.setForested(player.getForested() -  1);
             break;
@@ -706,7 +567,7 @@ then
             break;    
         default:
             break;
-    }
+    }        
     modify ($move) { setPlayer (player) };
 end
 
@@ -731,7 +592,7 @@ end
 rule "score"
     agenda-group "evaluate"
     no-loop true
-    salience -5
+    salience -1    
 when
     $game  : Game (state == GameState.PLAY)
     $move  : ManantialesMove (player.turn == true, status == Status.MOVED)
@@ -741,13 +602,241 @@ then
     modify ($move) { setPlayer (player), setStatus (Status.EVALUATED) };
 end
 
+# Expired CheckConstraints
+
+#Triggers an end of game due to Manantial CheckCondition 
+rule "manantiales-dry-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move  : ManantialesMove (player.turn == true, $player : player, 
+        status == Status.EVALUATED)
+    $constraint : CheckCondition (expired == false, player == $player, 
+        reason == ConditionType.MANANTIALES_DRY)
+then
+    $constraint.setExpired(true);
+    modify ($game) {addCheckConstraint ($constraint), setState (GameState.END)}
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);
+    messageSender.sendEndGame ($game);
+end
+
+#Triggers an end of game due to Territory Deforestation CheckCondition
+rule "territory-deforestation-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move  : ManantialesMove (player.turn == true, $player : player, 
+       status == Status.EVALUATED)
+    $constraint : CheckCondition (expired == false, player == $player,  
+        reason == ConditionType.TERRITORY_DEFORESTED)
+then
+    $constraint.setExpired(true);
+    modify ($game) { setState (GameState.END), addCheckConstraint ($constraint) }
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);
+    messageSender.sendEndGame ($game);
+end
+
+#Clears the NORTHERN Border due to NORTHERN_BORDER_DEFORESTED CheckCondition
+rule "northern-border-deforested-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move       : ManantialesMove (player.turn == true, $player : player, 
+        status == Status.EVALUATED)
+    $constraint : CheckCondition (reason == ConditionType.NORTHERN_BORDER_DEFORESTED,
+        player == $player)    
+then
+    GameGrid grid = clearBorder ($game, $constraint.getReason());
+    #Check constraint is removed as consequences have occurred 
+    HashSet<CheckCondition> constraints = $game.getCheckConstraints();
+    constraints.remove ($constraint);
+    retract ($constraint);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);
+    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
+end
+
+#Clears the SOUTHERN Border due to SOUTHERN_BORDER_DEFORESTED CheckCondition
+rule "southern-border-deforested-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move       : ManantialesMove (player.turn == true, $player : player, 
+        status == Status.EVALUATED)
+    $constraint : CheckCondition (reason == ConditionType.SOUTHERN_BORDER_DEFORESTED,
+        player == $player)    
+then
+    GameGrid grid = clearBorder ($game, $constraint.getReason());
+    #Check constraint is removed as consequences have occurred     
+    HashSet<CheckCondition> constraints = $game.getCheckConstraints();
+    constraints.remove ($constraint);
+    retract ($constraint);
+    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);
+end
+
+#Clears the WESTERN Border due to WESTERN_BORDER_DEFORESTED CheckCondition
+rule "western-border-deforested-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move       : ManantialesMove (player.turn == true, $player : player, 
+        status == Status.EVALUATED)
+    $constraint : CheckCondition (reason == ConditionType.WESTERN_BORDER_DEFORESTED,
+        player == $player)    
+then
+    GameGrid grid = clearBorder ($game, $constraint.getReason());
+    #Check constraint is removed as consequences have occurred 
+    HashSet<CheckCondition> constraints = $game.getCheckConstraints();
+    constraints.remove ($constraint);
+    retract ($constraint);
+    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);    
+end
+
+#Clears the EASTERN Border due to EASTERN_BORDER_DEFORESTED CheckCondition
+rule "eastern-border-deforested-expired"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move       : ManantialesMove (player.turn == true, $player : player, 
+        status == Status.EVALUATED)
+    $constraint : CheckCondition (reason == ConditionType.EASTERN_BORDER_DEFORESTED,
+        player == $player)    
+then
+    GameGrid grid = clearBorder ($game, $constraint.getReason());
+    #Check constraint is removed as consequences have occurred     
+    HashSet<CheckCondition> constraints = $game.getCheckConstraints();
+    constraints.remove ($constraint);
+    retract ($constraint);
+    modify ($game) { setCheckConstraints (constraints), setGrid (grid) };
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);    
+end
+
+rule "blue-borders-deforested"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $move : ManantialesMove ($player : player, player.turn == true, player.color == Color.BLUE,
+        status == Status.EVALUATED)
+    $constraint  : CheckCondition (player == $player, reason in (
+        ConditionType.NORTHERN_BORDER_DEFORESTED, ConditionType.WESTERN_BORDER_DEFORESTED))            
+    $constraint1 : CheckCondition (reason == ConditionType.NORTHERN_BORDER_DEFORESTED)
+    $constraint2 : CheckCondition (reason == ConditionType.WESTERN_BORDER_DEFORESTED)        
+then
+    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
+    GameGrid grid = clearTerritory (game, Color.BLUE);
+    HashSet<CheckCondition> constraints = game.getCheckConstraints();
+    constraints.remove ($constraint1);
+    constraints.remove ($constraint2);
+    game.setCheckConstraints(constraints);
+    game.setGrid (grid);
+    retract ($constraint1);
+    retract ($constraint2);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);        
+end
+
+rule "yellow-borders-deforested"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $move : ManantialesMove ($player : player, player.turn == true, player.color == Color.YELLOW,
+        status == Status.EVALUATED)
+    $constraint  : CheckCondition (player == $player, reason in (
+        ConditionType.SOUTHERN_BORDER_DEFORESTED, ConditionType.WESTERN_BORDER_DEFORESTED))           
+    $constraint1 : CheckCondition (reason == ConditionType.SOUTHERN_BORDER_DEFORESTED)
+    $constraint2 : CheckCondition (reason == ConditionType.WESTERN_BORDER_DEFORESTED)
+then
+    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
+    GameGrid grid = clearTerritory (game, Color.YELLOW);
+    HashSet<CheckCondition> constraints = game.getCheckConstraints();
+    constraints.remove ($constraint1);
+    constraints.remove ($constraint2);
+    game.setCheckConstraints(constraints);
+    game.setGrid (grid);
+    retract ($constraint1);
+    retract ($constraint2);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);         
+end
+
+rule "black-borders-deforested"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $move : ManantialesMove ($player : player, player.turn == true, player.color == Color.BLACK,
+        status == Status.EVALUATED, $game : player.game)
+    $constraint  : CheckCondition (player == $player, reason in (
+        ConditionType.NORTHERN_BORDER_DEFORESTED, ConditionType.EASTERN_BORDER_DEFORESTED))             
+    $constraint1 : CheckCondition (reason == ConditionType.NORTHERN_BORDER_DEFORESTED)
+    $constraint2 : CheckCondition (reason == ConditionType.EASTERN_BORDER_DEFORESTED)
+then
+    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
+    GameGrid grid = clearTerritory (game, Color.BLACK);
+    HashSet<CheckCondition> constraints = game.getCheckConstraints();
+    constraints.remove ($constraint1);
+    constraints.remove ($constraint2);
+    game.setCheckConstraints(constraints);
+    game.setGrid (grid);
+    retract ($constraint1);
+    retract ($constraint2);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);        
+end
+
+rule "red-borders-deforested"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5    
+when
+    $move : ManantialesMove ($player : player, player.turn == true, player.color == Color.RED,
+        status == Status.EVALUATED, $game : player.game)
+    $constraint  : CheckCondition (player == $player, reason in (
+        ConditionType.SOUTHERN_BORDER_DEFORESTED, ConditionType.WESTERN_BORDER_DEFORESTED))          
+    $constraint1 : CheckCondition (reason == ConditionType.SOUTHERN_BORDER_DEFORESTED)
+    $constraint2 : CheckCondition (reason == ConditionType.WESTERN_BORDER_DEFORESTED)
+then
+    ManantialesGame game = (ManantialesGame) $move.getPlayer().getGame();
+    GameGrid grid = clearTerritory (game, Color.RED);
+    HashSet<CheckCondition> constraints = game.getCheckConstraints();
+    constraints.remove ($constraint1);
+    constraints.remove ($constraint2);
+    game.setCheckConstraints(constraints);
+    game.setGrid (grid);    
+    retract ($constraint1);
+    retract ($constraint2);
+    MessageSender messageSender = new MessageSender();
+    messageSender.sendConditionTriggered ($move, $constraint);        
+end 
+
 # Determines if there is a winner 
 # TODO:  need to query game, or move for winning score number (based on type
 # of game.
 rule "stage-won"
     agenda-group "evaluate"
     no-loop true
-    salience -10
+    salience -5
 when
     $game  : ManantialesGame (state == GameState.PLAY, mode != Mode.SILVOPASTORAL)
     $move  : ManantialesMove ($player : player, player.turn == true, 
@@ -756,17 +845,14 @@ when
 then
     List<GamePlayer> players = $game.getPlayers();
     for (GamePlayer p : players) {
-        if (p.getColor() == Color.YELLOW)
-            p.setTurn(true);
-        else
-            p.setTurn(false);
+        ManantialesPlayer player = (ManantialesPlayer) p;
+        player.reset();                 
     }
+    
     GameGrid grid = new GameGrid ();
-    Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
-        setMode (mode) } 
+    Mode mode = incrementMode($game.getMode());    
+    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) } 
     MessageSender messageSender = new MessageSender();
-    messageSender.sendPlayerChange($game);
     messageSender.sendStateChange($game);
 end
 

@@ -33,7 +33,7 @@ import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.manantiales.BorderType;
-import mx.ecosur.multigame.manantiales.CheckConstraint;
+import mx.ecosur.multigame.manantiales.CheckCondition;
 import mx.ecosur.multigame.manantiales.Mode;
 import mx.ecosur.multigame.manantiales.TokenType;
 import mx.ecosur.multigame.solver.manantiales.SolverFicha;
@@ -145,7 +145,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha play = new SolverFicha (5, 4, alice.getColor(), 
-				TokenType.INTENSIVE_PASTURE);
+				TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove (alice, play);
 		
 		statefulSession.insert(game);
@@ -162,7 +162,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha play = new SolverFicha (5, 4, alice.getColor(), 
-				TokenType.INTENSIVE_PASTURE);
+				TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove (alice, play);
 		fireRules (game, move);
 		
@@ -170,8 +170,50 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertEquals (play, game.getGrid().getLocation(play));
 		
 		/* test the scoring */
-		assertEquals (1, alice.getIntensive());
-		assertEquals (3, alice.getScore());
+		assertEquals (1, alice.getModerate());
+		assertEquals (2, alice.getScore());
+	}
+	
+	@Test
+	public void testIntensiveMove () {
+		alice.setTurn (true);
+		game.setState(GameState.PLAY);
+		
+		SolverFicha mod = new SolverFicha (5, 4, alice.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		ManantialesMove move = new ManantialesMove (alice, mod);
+		fireRules (game, move);
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (mod, game.getGrid().getLocation(mod));
+		
+		/* test the scoring */
+		assertEquals (1, alice.getModerate());
+		assertEquals (2, alice.getScore());		
+		
+		/* Remove the previous move from working memory */
+		FactHandle fh = statefulSession.getFactHandle(move);
+		statefulSession.retract(fh);		
+		
+		/* Give alice her turn */
+		alice.setTurn(true);
+		
+		/* Replace the mod with an intensive */
+		SolverFicha intensive = new SolverFicha (5,4, alice.getColor(),
+				TokenType.INTENSIVE_PASTURE);
+		move = new ManantialesMove (alice, mod, intensive);
+		fireRules (game,move);		
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());	
+		
+		assertEquals(1, alice.getIntensive());
+		assertEquals(0, alice.getModerate());
+		assertEquals(3, alice.getScore());
+		
+	}
+	
+	public void testSilvoMove () {
+		
 	}
 	
 	@Test
@@ -248,12 +290,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("Filter is: " + filter.size(), filter.size() == 1);
 		
 	}
 	
@@ -293,16 +335,21 @@ public class ManantialesRulesTest extends RulesTestBase {
 			if (message.getStringProperty("GAME_EVENT").equals("END"))
 					filter.add(message);					
 		}
-		
 		assertTrue (filter.size() > 0);
 		
 		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
+		assertTrue (filter.size() > 0);
 		
-		for (CheckConstraint constraint : game.getCheckConstraints()) {
+		filter.clear();		
+		for (CheckCondition constraint : game.getCheckConstraints()) {
 			if (constraint.isExpired())
 				filter.add(constraint);
-		}
-		
+		}		
 		assertTrue (filter.size() > 0);	
 		
 	}
@@ -333,9 +380,10 @@ public class ManantialesRulesTest extends RulesTestBase {
 		bob.setTurn(true);		
 		SolverFicha resolver = new SolverFicha (4,5, bob.getColor(),
 				TokenType.MANAGED_FOREST);
-		move = new ManantialesMove (bob, resolver);
+		move = new ManantialesMove (bob, man2, resolver);
 		fireRules (game, move);
 		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());			
 		assertEquals (0, game.getCheckConstraints().size());						
 	}	
 	
@@ -361,7 +409,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -391,12 +439,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue (filter.size() == 1);
 		
 	}
 	
@@ -421,7 +469,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -451,12 +499,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue (filter.size() == 1);
 		
 	}	
 	
@@ -503,12 +551,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
-				filter.size() > 0);
+				filter.size() == 1);
 		
 		
 	}	
@@ -542,7 +590,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -576,8 +624,15 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue (filter.size() > 0);
 		
 		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
 		
-		for (CheckConstraint constraint : game.getCheckConstraints()) {
+		filter.clear();
+		
+		for (CheckCondition constraint : game.getCheckConstraints()) {
 			if (constraint.isExpired())
 				filter.add(constraint);
 		}
@@ -614,12 +669,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
-				filter.size() > 0);
+				filter.size() == 1);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -636,9 +691,10 @@ public class ManantialesRulesTest extends RulesTestBase {
 		denise.setTurn(true);		
 		move = new ManantialesMove ();
 		move.setPlayer (denise);
+		move.setCurrent (new SolverFicha (0,0, Color.BLACK, TokenType.MODERATE_PASTURE));
 		move.setDestination(reforest);
 		
-		fireRules (game,move);
+		fireRules (game,move);				
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());
 		assertEquals (0, game.getCheckConstraints().size());
@@ -667,7 +723,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -683,10 +739,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		SolverFicha resolve = new SolverFicha (4,6, alice.getColor(),
 				TokenType.MANAGED_FOREST);
-		move = new ManantialesMove (alice, resolve);
+		move = new ManantialesMove (alice, man3, resolve);
 		
 		fireRules (game,move);
 		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());			
 		assertEquals (0, game.getCheckConstraints().size());		
 		
 	}
@@ -713,7 +770,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -730,10 +787,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		SolverFicha resolve = new SolverFicha (4,0, alice.getColor(),
 				TokenType.MANAGED_FOREST);
-		move = new ManantialesMove (alice, resolve);
+		move = new ManantialesMove (alice, man3, resolve);
 		
 		fireRules (game,move);
 		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConstraints().size());			
 		
 		
@@ -761,7 +819,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -783,6 +841,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		fireRules (game,move);
 		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConstraints().size());		
 		
 	}
@@ -809,7 +868,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -830,6 +889,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		fireRules (game,move);
 		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConstraints().size());				
 	}
 	
@@ -855,7 +915,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -874,7 +934,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move = new ManantialesMove (charlie, terminator);
 		fireRules (game, move);
 		
-		assertTrue (isTerritoryCleared (BorderType.WEST, game.getGrid()));			
+		assertTrue (isTerritoryCleared (BorderType.WEST, game.getGrid()));		
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
 		
 	}
 
@@ -900,7 +967,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -919,7 +986,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move = new ManantialesMove (charlie, terminator);
 		fireRules (game, move);
 		
-		assertTrue (isTerritoryCleared (BorderType.EAST, game.getGrid()));			
+		assertTrue (isTerritoryCleared (BorderType.EAST, game.getGrid()));	
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
 		
 	}	
 
@@ -945,7 +1019,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -964,7 +1038,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move = new ManantialesMove (charlie, terminator);
 		fireRules (game, move);
 		
-		assertTrue (isTerritoryCleared (BorderType.SOUTH, game.getGrid()));			
+		assertTrue (isTerritoryCleared (BorderType.SOUTH, game.getGrid()));		
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
 		
 	}	
 
@@ -990,7 +1071,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CHECK_CONSTRAINT"))
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
 					filter.add(message);
 		}
 		
@@ -1010,6 +1091,13 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game, move);
 		
 		assertTrue (isTerritoryCleared (BorderType.NORTH, game.getGrid()));
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
 		
 	}	
 	
@@ -1052,7 +1140,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game, move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());				
-		assertEquals (24, denise.getScore());
+		assertEquals (0, denise.getScore());
 		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
@@ -1064,14 +1152,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue (filter.size() > 0);
 		
 		filter.clear();
+	
 		
-		messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("PLAYER_CHANGE"))
-					filter.add(message);
-		}
-		
-		assertTrue (filter.size () > 0);
+		assertEquals (GameState.PLAY, game.getState());
 	}
 	
 	@Test
@@ -1113,7 +1196,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testRedBordersDeforested () {
-		//fail ();
+		
+		//fail ("Not implemented.");
 	}
 	
 	/**

@@ -129,8 +129,7 @@ public class Ficha extends Cell {
 					comp.getRow() == getRow() &&
 					comp.getColumn() == getColumn() &&
 					comp.getColor() == getColor());
-		} else 
-			ret = super.equals(obj);
+		} 
 		
 		return ret;
 	}

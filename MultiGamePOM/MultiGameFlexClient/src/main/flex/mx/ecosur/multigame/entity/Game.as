@@ -35,8 +35,18 @@ package mx.ecosur.multigame.entity {
 		
 		private var _state:String;
 		
+		private var _grid:GameGrid;
+		
 		public function Game() {
 			super();
+		}
+		
+		public function get grid():GameGrid {
+			return _grid;
+		}
+		
+		public function set grid (grid:GameGrid):void {
+			_grid = grid;
 		}
 		
 		public function get id():int{

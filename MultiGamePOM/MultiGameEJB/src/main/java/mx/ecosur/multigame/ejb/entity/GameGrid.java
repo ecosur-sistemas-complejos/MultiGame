@@ -85,6 +85,8 @@ public class GameGrid implements Serializable, Cloneable {
 	}
 	
 	public void updateCell (Cell cell) {
+		if (cells.contains(cell))
+			cells.remove(cell);
 		cells.add(cell);
 	}
 	

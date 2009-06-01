@@ -11,18 +11,31 @@
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.manantiales.Mode;
 import mx.ecosur.multigame.manantiales.TokenType;
 
 @SuppressWarnings("serial")
 @Entity
+@NamedQueries( { 
+	@NamedQuery(name = "getManantialesMoves", 
+			query = "select mm from ManantialesMove mm " +
+					"where mm.player.game=:game and mm.mode=:mode " +
+					"order by mm.id asc") 
+})
 public class ManantialesMove extends Move {
 	
 	private TokenType type, replacementType;
 	
 	private boolean badYear, premium;
+	
+	private Mode mode;
 	
 	public ManantialesMove () {
 		super();
@@ -41,10 +54,13 @@ public class ManantialesMove extends Move {
 	}
 
 	public TokenType getType () {
-		if (type == null && destination != null)
-			type = ( (Ficha) destination).getType();
-		else if (type == null && destination == null)
+		if (getDestination() == null) 
 			type = TokenType.UNKNOWN;
+		else {
+			Ficha destination = (Ficha) getDestination();
+			type = destination.getType();
+		}
+		
 		return type;
 	}
 	
@@ -53,10 +69,14 @@ public class ManantialesMove extends Move {
 	}
 
 	public TokenType getReplacementType() {
-		if (replacementType == null && current != null)
-			replacementType = ( (Ficha) current).getType();
-		else if (replacementType == null)
-			replacementType = TokenType.UNKNOWN;
+		if (replacementType == null) {
+			replacementType = TokenType.UNKNOWN;			
+			if (getCurrent() instanceof Ficha) {
+					Ficha current = (Ficha) getCurrent();
+					replacementType = current.getType();
+			}
+		}
+		
 		return replacementType;
 	}
 
@@ -78,5 +98,20 @@ public class ManantialesMove extends Move {
 	
 	public void setPremium (boolean premium) {
 		this.premium = premium;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	@Enumerated(EnumType.STRING)
+	public Mode getMode() {
+		return mode;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 }
