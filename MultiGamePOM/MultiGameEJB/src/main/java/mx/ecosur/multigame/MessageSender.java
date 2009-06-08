@@ -34,7 +34,7 @@ import javax.naming.NamingException;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.manantiales.CheckCondition;
+import mx.ecosur.multigame.ejb.entity.manantiales.CheckCondition;
 
 public class MessageSender {
 

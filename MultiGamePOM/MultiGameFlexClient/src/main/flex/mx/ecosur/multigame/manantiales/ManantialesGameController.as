@@ -18,10 +18,12 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
+	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 	import mx.ecosur.multigame.manantiales.entity.Ficha;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+	import mx.ecosur.multigame.manantiales.enum.ConditionType;
 	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.ecosur.multigame.manantiales.token.*;
 	import mx.ecosur.multigame.util.MessageReceiver;
@@ -44,10 +46,10 @@ package mx.ecosur.multigame.manantiales
 	    // visual components
 	    private var _gameWindow:ManantialesWindow
         private var _tokenStorePanels:ArrayCollection;
-        private var _annCondGen:AnnualConditionsGenerator;
-        private var _checkConAlert:CheckConstraintAlert;
-        private var _stageChangeAlert:GraphicAlert;
+        private var _annCondGen:AnnualConditionsGenerator;     
+        private var _alerts:ArrayCollection;
         private var _endAlert:GraphicAlert;
+        private var _stageChangeAlert:GraphicAlert;   
                 
         // data objects
         private var _gameId:int;
@@ -95,6 +97,7 @@ package mx.ecosur.multigame.manantiales
                 // instantiate collections 
             _moves = new ArrayCollection();
             _tokenStorePanels = new ArrayCollection();
+            _alerts = new ArrayCollection();
             
              // initialize game service remote object
             _gameService = new RemoteObject();
@@ -128,19 +131,8 @@ package mx.ecosur.multigame.manantiales
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;     
-            
-            // setup display
-            /*
-            for (var j:int = 0; j < this._tokenStorePanels.length; j++) {
-                var obj:Object = _tokenStorePanels.getItemAt(j);
-                if (obj is Panel) {
-                    var pnl:Panel = Panel(obj);             
-                    if (pnl.visible)
-                        pnl.visible = false;
-                }
-            }*/
-            
-            this._gameWindow.playersViewer.autoLayout = true;         	        	
+                        
+            //_gameWindow.playersViewer.autoLayout = true;         	        	
         }
         
         public function initializeTokenStorePanel (tokenStorePanel:Panel):void {
@@ -331,7 +323,8 @@ package mx.ecosur.multigame.manantiales
             var message:IMessage = event.message;
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
-            var checkConstraint:CheckCondition;
+            var checkCondition:CheckCondition;
+            var game:ManantialesGame;
         
             switch (gameEvent) {
                 case GameEvent.BEGIN:
@@ -346,7 +339,7 @@ package mx.ecosur.multigame.manantiales
                     }
                     break;
                 case GameEvent.END:
-                    var game:ManantialesGame = ManantialesGame(message.body);
+                    game = ManantialesGame(message.body);
                     handleGameEnd (game);
                     break;
                 case GameEvent.MOVE_COMPLETE:
@@ -358,19 +351,19 @@ package mx.ecosur.multigame.manantiales
                     updatePlayers(players);
                     break;
                 case GameEvent.CONDITION_RAISED:
-                    checkConstraint = CheckCondition(message.body);
-                    handleCheckConstraint (checkConstraint);
+                    checkCondition = CheckCondition(message.body);
+                    handleCheckConstraint (checkCondition);
                     break;
                 case GameEvent.CONDITION_RESOLVED:
-                    checkConstraint = CheckCondition(message.body);
-                    handleCheckConstraintResolved (checkConstraint);
+                    checkCondition = CheckCondition(message.body);
+                    handleCheckConstraintResolved (checkCondition);
                     break;
                 case GameEvent.CONDITION_TRIGGERED:
-                    checkConstraint = CheckCondition(message.body);
-                    handleCheckConstraintTriggered (checkConstraint);
+                    checkCondition = CheckCondition(message.body);
+                    handleCheckConstraintTriggered (checkCondition);
                     break;    
                 case GameEvent.STATE_CHANGE:
-                    var game:ManantialesGame = ManantialesGame (message.body);
+                    game = ManantialesGame (message.body);
                     handleStateChange (game);
                     break;                            
             }
@@ -511,7 +504,7 @@ package mx.ecosur.multigame.manantiales
             
             if (_gameWindow.currentState == "CLASSIC" || 
                 _gameWindow.currentState == "SILVOPASTORAL") 
-           {        	
+            {        	
                 // setup token store panels for hiding 
                 _tokenStorePanels.addItem(_gameWindow.mfp);
                 _tokenStorePanels.addItem(_gameWindow.mgp);
@@ -554,8 +547,20 @@ package mx.ecosur.multigame.manantiales
         }
         
         private function handleCheckResult(event:DynamicEvent):void {
-        	PopUpManager.removePopUp(_checkConAlert);
-            _checkConAlert = null;        	
+        	var idx:int = -1;
+        	
+        	for (var i:int = 0; i < _alerts.length; i++) {
+        		var condition:CheckConstraintAlert = CheckConstraintAlert(_alerts.getItemAt(i));
+        		if (condition.acknowledged == true) {
+        			idx = i;
+        			break;
+        		}
+        	}
+        	
+        	if (idx > -1) {
+                var alert:CheckConstraintAlert = CheckConstraintAlert (_alerts.removeItemAt(idx));        	
+        	   PopUpManager.removePopUp(alert);
+        	}     	
         }  
         
         private function handleStateChangeResult (event:DynamicEvent):void {
@@ -597,8 +602,9 @@ package mx.ecosur.multigame.manantiales
          */
         public function updatePlayers(players:ArrayCollection):void{
             var gamePlayer:ManantialesPlayer;           
+            var i:int;
             
-            for (var i:int = 0; i < players.length; i++){
+            for (i = 0; i < players.length; i++){
                 gamePlayer = ManantialesPlayer(players[i]);
                 _game = ManantialesGame(gamePlayer.game); 
                 if (gamePlayer.id == _currentPlayer.id){
@@ -620,12 +626,12 @@ package mx.ecosur.multigame.manantiales
             
             
             /* Alert player to pending constraints */
-            if (_game.checkConstraints != null) {
-                for (var i:int = 0; i < _game.checkConstraints.length; i++) {
-                    var checkConstraint:CheckCondition = CheckCondition(
-                      _game.checkConstraints.getItemAt(i));
-                    if (!checkConstraint.expired) {
-                        _gameWindow.gameStatus.showMessage(checkConstraint.toString(),
+            if (_game.checkConditions != null) {
+                for (i = 0; i < _game.checkConditions.length; i++) {
+                    var checkCondition:CheckCondition = CheckCondition(
+                      _game.checkConditions.getItemAt(i));
+                    if (!checkCondition.expired) {
+                        _gameWindow.gameStatus.showMessage(checkCondition.toString(),
                             Color.getColorCode(_currentPlayer.color));
                     }
                 }
@@ -968,40 +974,38 @@ package mx.ecosur.multigame.manantiales
             _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd]);
         } 
         
-        private function handleCheckConstraint (checkConstraint:CheckCondition):void {
-        	if (_checkConAlert == null) {
-                _checkConAlert = new CheckConstraintAlert();
-                _checkConAlert.constraint = checkConstraint;
-                _checkConAlert.raised = true;
-                _checkConAlert.addEventListener("result", handleCheckResult);
-                PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
-                PopUpManager.centerPopUp(_checkConAlert);
-            }          	
+        private function handleCheckConstraint (checkCondition:CheckCondition):void {
+            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+            checkConAlert.constraint = checkCondition;
+            checkConAlert.raised = true;
+            checkConAlert.addEventListener("result", handleCheckResult);
+            _alerts.addItem(checkConAlert);
+            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+            PopUpManager.centerPopUp(checkConAlert);         	
         }
         
-        private function handleCheckConstraintResolved (checkConstraint:CheckCondition):void {
-            if (_checkConAlert == null) {        	
-	            _checkConAlert = new CheckConstraintAlert();
-	            _checkConAlert.constraint = checkConstraint;
-	            _checkConAlert.raised = false;
-	            _checkConAlert.addEventListener("result", handleCheckResult);
-	            PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
-	            PopUpManager.centerPopUp(_checkConAlert);
-	        }   
+        private function handleCheckConstraintResolved (checkCondition:CheckCondition):void {       	
+            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+            checkConAlert.constraint = checkCondition;
+            checkConAlert.raised = false;
+            checkConAlert.addEventListener("result", handleCheckResult);
+            _alerts.addItem(checkConAlert);            
+            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+            PopUpManager.centerPopUp(checkConAlert);
         }
         
-        private function handleCheckConstraintTriggered (checkConstraint:CheckCondition):void {
-            if (_checkConAlert == null) {        	
-	            _checkConAlert = new CheckConstraintAlert();
-	            _checkConAlert.constraint = checkConstraint;
-	            _checkConAlert.raised = false;
-	            _checkConAlert.triggered = true;
-	            _checkConAlert.addEventListener("result", handleCheckResult);
-	            PopUpManager.addPopUp(_checkConAlert, _gameWindow, true);
-	            PopUpManager.centerPopUp(_checkConAlert);
-            }
+        private function handleCheckConstraintTriggered (checkCondition:CheckCondition):void {   	
+            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+            checkConAlert.constraint = checkCondition;
+            checkConAlert.raised = false;
+            checkConAlert.triggered = true;
+            checkConAlert.addEventListener("result", handleCheckResult);
+            _alerts.addItem(checkConAlert);            
+            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+            PopUpManager.centerPopUp(checkConAlert);
             
-            initGrid(this._gameGrid);
+            var callGrid:Object = _gameService.getGameGrid(_gameId);
+            callGrid.operation = GAME_SERVICE_GET_GRID_OP;      
         }  
         
         private function handleStateChange (game:ManantialesGame):void {
@@ -1035,19 +1039,47 @@ package mx.ecosur.multigame.manantiales
         } 
         
         private function handleGameEnd (game:ManantialesGame):void {
+        	var i:int;
+        	
         	if (_endAlert == null) {
-	        	_endAlert = new GraphicAlert();        	
-	            if (_isTurn){
-	            	_endAlert.text = "Game Over.  You have won!";
-	            	_endAlert.positive = true;
-	                end();
-	            } else {
-	            	_endAlert.text= "Game Over.  You have lost.";
-	            	_endAlert.positive = false;
-	            }        	
+	        	_endAlert = new GraphicAlert();  
+	        	
+	        	var expiredCondition:CheckCondition = null;
+	        	
+	        	/* See if any checkConstraints are expired and if so, Post a 
+	        	different end condition alert */
+	        	for (i = 0; i < game.checkConditions.length; i++) {
+	        		var checkCondition:CheckCondition = CheckCondition(
+	        		     game.checkConditions.getItemAt(i));
+	        		if (checkCondition.expired && (checkCondition.reason == ConditionType.MANANTIALES_DRY ||
+	        		     checkCondition.reason == ConditionType.TERRITORY_DEFORESTED)) 
+	        	    {
+	        	    	expiredCondition = checkCondition;	        		    	
+	        		}
+	        	}
+	        	    
+	        	if (expiredCondition != null) {    
+		          _endAlert.text = "Game Over due to expiry of SEVERE CheckCondition ('" + 
+		          	   expiredCondition.reason + "')";
+		          _endAlert.positive = false;	 	  
+		        } else {    	
+		            if (_isTurn){
+		            	_endAlert.text = "Game Over.  You have won!";
+		            	_endAlert.positive = true;
+		                end();
+		            } else {
+		            	_endAlert.text= "Game Over.  You have lost.";
+		            	_endAlert.positive = false;
+		            }        	
+	           }
 	            
 	            _endAlert.addEventListener("result",handleEndResult);
 	            
+	            /* Remove all alert conditions from the PopUpManager */
+                for (i = 0; i < _alerts.length; i++) {             	                	
+                	PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i))); 
+                }  
+	            	           	            
 	            PopUpManager.addPopUp(_endAlert, _gameWindow, true);
 	            PopUpManager.centerPopUp(_endAlert);
 	        }

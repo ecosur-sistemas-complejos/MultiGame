@@ -1,17 +1,27 @@
 package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.manantiales.CheckCondition;
 import mx.ecosur.multigame.manantiales.ConditionType;
 import mx.ecosur.multigame.manantiales.Mode;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedQueries( {
+	@NamedQuery(name = "getManantialesGame", query = "select g from ManantialesGame g where g.type=:type "
+		+ "and g.state =:state"),
+	@NamedQuery(name = "getManantialesGameById", query = "select g from ManantialesGame g where g.id=:id "),
+	@NamedQuery(name = "getManantialesGameByTypeAndPlayer", query = "select mp.game from ManantialesPlayer as mp "
+		+ "where mp.player=:player and mp.game.type=:type and mp.game.state <>:state")
+})
 @Entity
 public class ManantialesGame extends Game {
 	
@@ -19,7 +29,7 @@ public class ManantialesGame extends Game {
 	
 	private Mode mode; 
 	
-	private HashSet<CheckCondition> checkConstraints;
+	private Set<CheckCondition> checkConditions;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -27,14 +37,14 @@ public class ManantialesGame extends Game {
     }
 		
     public void setMode (Mode mode) {
-    	this.checkConstraints = null;
+    	this.checkConditions = null;
         this.mode = mode;
     }
     
     public boolean hasCondition (ConditionType type) {
     	boolean ret = false;
-    	if (checkConstraints != null) {
-	    	for (CheckCondition condition : checkConstraints) {
+    	if (checkConditions != null) {
+	    	for (CheckCondition condition : checkConditions) {
 	    		if (condition.getReason().equals(type)) {
 	    			ret = true;
 	    		}
@@ -44,19 +54,22 @@ public class ManantialesGame extends Game {
     	return ret;
     }
     
-    public HashSet<CheckCondition> getCheckConstraints () {
-    	return checkConstraints;
+    @OneToMany (fetch=FetchType.EAGER)
+    public Set<CheckCondition> getCheckConditions () {
+    	if (checkConditions == null)
+    		checkConditions = new HashSet<CheckCondition>();
+    	return checkConditions;
     }
     
-    public void setCheckConstraints (HashSet<CheckCondition> checkConstraints) {
-    	this.checkConstraints = checkConstraints;
+    public void setCheckConditions (Set<CheckCondition> checkConstraints) {
+    	this.checkConditions = checkConstraints;
     }
     
-    public void addCheckConstraint (CheckCondition violation) {
-    	if (checkConstraints == null) 
-    		checkConstraints = new HashSet<CheckCondition>();
+    public void addCheckCondition (CheckCondition violation) {
+    	if (checkConditions == null) 
+    		checkConditions = new HashSet<CheckCondition>();
     	if (!hasCondition (violation.getReason()))
-    		checkConstraints.add(violation);
+    		checkConditions.add(violation);
     }
 
 	/* (non-Javadoc)
@@ -66,8 +79,8 @@ public class ManantialesGame extends Game {
 	@Override
 	public Set getFacts() {
 		Set facts = super.getFacts();
-		if (checkConstraints != null)
-			facts.addAll(checkConstraints);
+		if (checkConditions != null)
+			facts.addAll(checkConditions);
 		return facts;
 	}
 }

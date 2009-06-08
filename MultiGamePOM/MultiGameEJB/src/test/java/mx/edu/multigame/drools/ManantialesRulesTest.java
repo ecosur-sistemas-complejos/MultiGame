@@ -28,12 +28,12 @@ import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.ejb.entity.manantiales.CheckCondition;
 import mx.ecosur.multigame.ejb.entity.manantiales.Ficha;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.manantiales.BorderType;
-import mx.ecosur.multigame.manantiales.CheckCondition;
 import mx.ecosur.multigame.manantiales.Mode;
 import mx.ecosur.multigame.manantiales.TokenType;
 import mx.ecosur.multigame.solver.manantiales.SolverFicha;
@@ -88,21 +88,34 @@ public class ManantialesRulesTest extends RulesTestBase {
 		statefulSession = Ruleset.newStatefulSession();
 		if (DEBUG)
 			statefulSession.addEventListener(new DebugEventListener());
-		Player a, b, c, d;
-		a = new Player ("alice");
-		b = new Player ("bob");
-		c = new Player ("charlie");
-		d = new Player ("denise");
+		Player[] players = {
+				new Player ("alice"),
+				new Player ("bob"),
+				new Player ("charlie"),
+				new Player ("denise") };
 		
-		alice = new ManantialesPlayer (game, a, Color.YELLOW);
-		bob = new ManantialesPlayer (game, b, Color.BLUE);
-		charlie = new ManantialesPlayer (game, c, Color.BLACK);
-		denise = new ManantialesPlayer (game, d, Color.RED);
+		Color [] colors = Color.values();
+		int counter = 0;
 		
-		game.addPlayer(alice);
-		game.addPlayer(bob);
-		game.addPlayer(charlie);
-		game.addPlayer(denise);
+		for (int i = 0; i < colors.length; i++) {
+			if (colors [ i ].equals(Color.UNKNOWN) || colors [ i ].equals(Color.GREEN))
+					continue;
+			game.addPlayer (new ManantialesPlayer (game, players [ counter++ ], 
+					colors [ i ]));
+		}
+		
+		for (GamePlayer player : game.getPlayers()) {
+			if (player.getPlayer().getName().equals("alice")) {
+				alice = (ManantialesPlayer) player;				
+			} else if (player.getPlayer().getName().equals("bob")) {
+				bob = (ManantialesPlayer) player;
+			} else if (player.getPlayer().getName().equals("charlie")) {
+				charlie = (ManantialesPlayer) player;
+			} else if (player.getPlayer().getName().equals("denise")) {
+				denise = (ManantialesPlayer)player;
+			}
+		}
+
 		
 		statefulSession.insert(game);
 		statefulSession.setFocus("initialize");
@@ -212,10 +225,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}
 	
-	public void testSilvoMove () {
-		
-	}
-	
 	@Test
 	public void testRowContiguousIntensiveConstraint () {
 		alice.setTurn (true);
@@ -320,11 +329,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		statefulSession.retract(mh);
 		
 		/* Now have the instigator move */
-		charlie.setTurn (true);
+		bob.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (1,4, charlie.getColor(), 
+		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (charlie, terminator);
+		move = new ManantialesMove (bob, terminator);
 		fireRules (game, move);
 		
 		assertEquals (GameState.END, game.getState());
@@ -346,7 +355,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue (filter.size() > 0);
 		
 		filter.clear();		
-		for (CheckCondition constraint : game.getCheckConstraints()) {
+		for (CheckCondition constraint : game.getCheckConditions()) {
 			if (constraint.isExpired())
 				filter.add(constraint);
 		}		
@@ -374,17 +383,16 @@ public class ManantialesRulesTest extends RulesTestBase {
 		FactHandle mh = statefulSession.getFactHandle(move);
 		statefulSession.retract(mh);
 		
-		/* Now we have bob fix the first condition and relieve the
-		 * checkConstraint
+		/* Fix the first condition and relieve the checkConstraint
 		 */		
-		bob.setTurn(true);		
-		SolverFicha resolver = new SolverFicha (4,5, bob.getColor(),
+		alice.setTurn(true);		
+		SolverFicha resolver = new SolverFicha (4,3, alice.getColor(),
 				TokenType.MANAGED_FOREST);
-		move = new ManantialesMove (bob, man2, resolver);
+		move = new ManantialesMove (alice, man1, resolver);
 		fireRules (game, move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());			
-		assertEquals (0, game.getCheckConstraints().size());						
+		assertEquals (0, game.getCheckConditions().size());						
 	}	
 	
 	
@@ -603,12 +611,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		/* Test expiration and consequences */
 		
-		/* Now have the instigator move */
-		alice.setTurn (true);
+		/* Now have the previous player move */
+		charlie.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (0,6, alice.getColor(), 
+		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (alice, terminator);
+		move = new ManantialesMove (denise, terminator);
 		fireRules (game, move);
 		
 		assertEquals (GameState.END, game.getState());
@@ -632,7 +640,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		filter.clear();
 		
-		for (CheckCondition constraint : game.getCheckConstraints()) {
+		for (CheckCondition constraint : game.getCheckConditions()) {
 			if (constraint.isExpired())
 				filter.add(constraint);
 		}
@@ -681,24 +689,17 @@ public class ManantialesRulesTest extends RulesTestBase {
 		statefulSession.retract(handle);		
 		
 		/* Now, relieve the constraint */
-		SolverFicha reforest = new SolverFicha (0, 0, Color.BLACK,
+		SolverFicha reforest = new SolverFicha (0, 5, alice.getColor(),
 				TokenType.MANAGED_FOREST);
-		
-		/* Slightly out of turn */
-		bob.setTurn(false);			
-		
-			/* Black Player */
-		denise.setTurn(true);		
-		move = new ManantialesMove ();
-		move.setPlayer (denise);
-		move.setCurrent (new SolverFicha (0,0, Color.BLACK, TokenType.MODERATE_PASTURE));
-		move.setDestination(reforest);
+
+		bob.setTurn(false);
+		alice.setTurn(true);		
+		move = new ManantialesMove (alice, deforest, reforest);
 		
 		fireRules (game,move);				
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());
-		assertEquals (0, game.getCheckConstraints().size());
-		
+		assertEquals (0, game.getCheckConditions().size());	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -744,7 +745,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game,move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());			
-		assertEquals (0, game.getCheckConstraints().size());		
+		assertEquals (0, game.getCheckConditions().size());		
 		
 	}
 	
@@ -792,7 +793,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game,move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());	
-		assertEquals (0, game.getCheckConstraints().size());			
+		assertEquals (0, game.getCheckConditions().size());			
 		
 		
 	}
@@ -842,7 +843,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game,move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());	
-		assertEquals (0, game.getCheckConstraints().size());		
+		assertEquals (0, game.getCheckConditions().size());		
 		
 	}
 	
@@ -890,7 +891,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		fireRules (game,move);
 		
 		assertEquals (Move.Status.EVALUATED, move.getStatus());	
-		assertEquals (0, game.getCheckConstraints().size());				
+		assertEquals (0, game.getCheckConditions().size());				
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -927,11 +928,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		statefulSession.retract(handle);		
 
 		/* Now have the instigator move */
-		charlie.setTurn (true);
+		bob.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (0,2, charlie.getColor(), 
+		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (charlie, terminator);
+		move = new ManantialesMove (bob, terminator);
 		fireRules (game, move);
 		
 		assertTrue (isTerritoryCleared (BorderType.WEST, game.getGrid()));		
@@ -979,11 +980,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		statefulSession.retract(handle);		
 
 		/* Now have the instigator move */
-		charlie.setTurn (true);
+		bob.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (0,2, charlie.getColor(), 
+		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (charlie, terminator);
+		move = new ManantialesMove (bob, terminator);
 		fireRules (game, move);
 		
 		assertTrue (isTerritoryCleared (BorderType.EAST, game.getGrid()));	
@@ -1030,12 +1031,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		FactHandle handle = this.statefulSession.getFactHandle(move);
 		statefulSession.retract(handle);		
 
-		/* Now have the instigator move */
-		charlie.setTurn (true);
+		bob.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (0,2, charlie.getColor(), 
+		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (charlie, terminator);
+		move = new ManantialesMove (bob, terminator);
 		fireRules (game, move);
 		
 		assertTrue (isTerritoryCleared (BorderType.SOUTH, game.getGrid()));		
@@ -1082,12 +1082,11 @@ public class ManantialesRulesTest extends RulesTestBase {
 		FactHandle handle = this.statefulSession.getFactHandle(move);
 		statefulSession.retract(handle);		
 
-		/* Now have the instigator move */
-		charlie.setTurn (true);
+		bob.setTurn (true);
 		
-		SolverFicha terminator = new SolverFicha (0,2, charlie.getColor(), 
+		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (charlie, terminator);
+		move = new ManantialesMove (bob, terminator);
 		fireRules (game, move);
 		
 		assertTrue (isTerritoryCleared (BorderType.NORTH, game.getGrid()));

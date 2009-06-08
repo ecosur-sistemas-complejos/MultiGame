@@ -2,7 +2,7 @@ package mx.ecosur.multigame.manantiales.entity
 {
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Game;
-	import mx.ecosur.multigame.manantiales.CheckCondition;
+	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame")]                       
@@ -10,7 +10,7 @@ package mx.ecosur.multigame.manantiales.entity
 	{
 		private var _mode:String;
 		
-		private var _checkConstraints:ArrayCollection;
+		private var _checkConditions:ArrayCollection;
 		
 		public function get mode():String {
 			return _mode;
@@ -20,19 +20,19 @@ package mx.ecosur.multigame.manantiales.entity
 			_mode = mode;
 		}		
 		
-		public function get checkConstraints():ArrayCollection {
-			return _checkConstraints;
+		public function get checkConditions():ArrayCollection {
+			return _checkConditions;
 		}
 		
-		public function set checkConstraints(checkConstraints:ArrayCollection):void 
+		public function set checkConditions(conditions:ArrayCollection):void 
 		{
-		  _checkConstraints = checkConstraints;	
+		  _checkConditions = conditions;	
 		}
 		
-		public function addCheckConstraint (violation:CheckCondition):void {
-			if (_checkConstraints == null)
-			     _checkConstraints = new ArrayCollection();
-			_checkConstraints.addItem(violation); 
+		public function addCheckCondition (violation:CheckCondition):void {
+			if (_checkConditions == null)
+			     _checkConditions = new ArrayCollection();
+			_checkConditions.addItem(violation); 
 		}
 	}
 }

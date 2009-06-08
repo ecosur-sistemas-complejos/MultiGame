@@ -18,8 +18,8 @@
 
 package mx.ecosur.multigame.ejb;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
@@ -57,7 +57,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
 	 */
 	public Game getGame(int gameId) {
-		return em.find(Game.class, gameId);
+		Game game = em.find (Game.class, gameId);
+		if (game == null)
+			throw new RuntimeException ("UNABLE TO FIND GAME WITH ID: " + gameId);
+		return game;
 	}
 
 	/* (non-Javadoc)
@@ -144,8 +147,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		lifecycle(statefulSession);
 		
 			/* Merge all changes */
-		em.merge(move);
-		em.merge(game);		
+		em.merge(move);	
 		
 		if (move.getStatus().equals(Move.Status.INVALID))
 			throw new InvalidMoveException ("INVALID Move.");			

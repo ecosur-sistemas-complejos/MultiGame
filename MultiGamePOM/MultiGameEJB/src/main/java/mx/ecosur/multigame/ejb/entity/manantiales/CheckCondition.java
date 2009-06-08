@@ -8,21 +8,28 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.manantiales;
+package mx.ecosur.multigame.ejb.entity.manantiales;
 
 import java.util.HashSet;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import mx.ecosur.multigame.Condition;
 import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.manantiales.ConditionType;
 
 @SuppressWarnings("serial")
+@Entity
 public class CheckCondition implements Condition {
 
 	ConditionType reason;
 	GamePlayer player;
 	HashSet<Cell> violators;
 	private boolean expired;
+	private int id;
 	
 	public CheckCondition () {
 		super();
@@ -38,8 +45,24 @@ public class CheckCondition implements Condition {
 		for (Cell cell : violator) {
 			this.violators.add(cell);
 		}		
-	}	
+	}
+	
+	/**
+	 * @return the id
+	 */
+	@Id @GeneratedValue
+	public int getId() {
+		return id;
+	}
 
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	
 	/**
 	 * @return the player
 	 */
