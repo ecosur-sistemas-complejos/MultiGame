@@ -422,7 +422,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!", filter.size() > 0);
 		
 	}
 	
@@ -452,7 +452,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() == 1);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() == 1);
 		
 	}
 	
@@ -482,7 +482,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 	}
 	
@@ -512,7 +512,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() == 1);
+		assertTrue ("No RAISED_CONDITION message intercepted!", filter.size() == 1);
 		
 	}	
 	
@@ -728,7 +728,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					filter.add(message);
 		}
 		
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -776,7 +776,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -874,7 +874,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -921,7 +921,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITON message intercepted!", filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -1025,7 +1025,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -1076,7 +1076,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
 		/* Only one move at a time, remove the previous move from WM */
 		FactHandle handle = this.statefulSession.getFactHandle(move);
@@ -1193,11 +1193,108 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue (filter.size() > 0);	
 	}
 	
-	@Test
-	public void testRedBordersDeforested () {
+	/*
+	 * 
+	 */	
+	@Test 
+	public void testReplaceModerateWithIntensiveOnManantial() throws JMSException {
+		game.setState(GameState.PLAY);
 		
-		//fail ("Not implemented.");
+		SolverFicha man1 = new SolverFicha (4,3, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man2 = new SolverFicha (4,5, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man3 = new SolverFicha (4,5, bob.getColor(), 
+				TokenType.INTENSIVE_PASTURE);		
+		game.getGrid().updateCell(man1);
+		game.getGrid().updateCell(man2);
+		
+		bob.setTurn(true);		
+		ManantialesMove move = new ManantialesMove ();
+		move.setPlayer(bob);
+		move.setCurrent(man2);
+		move.setDestination(man3);
+		fireRules (game, move);
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		ArrayList filter = new ArrayList();		
+		List<Message> messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+					filter.add(message);
+		}
+		
+		assertTrue ("CONDITION RAISED ON CONVERSION!", filter.size() == 0);
 	}
+	
+	public void testReplaceModerateWithIntensiveOnBorder () throws JMSException {
+		game.setState(GameState.PLAY);
+		
+		SolverFicha man1 = new SolverFicha (0,4, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man2 = new SolverFicha (1,4, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man3 = new SolverFicha (0,4, bob.getColor(), 
+				TokenType.INTENSIVE_PASTURE);		
+		game.getGrid().updateCell(man1);
+		game.getGrid().updateCell(man2);
+		
+		bob.setTurn(true);		
+		ManantialesMove move = new ManantialesMove (bob, man1, man3);
+		fireRules (game, move);
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		ArrayList filter = new ArrayList();		
+		List<Message> messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+					filter.add(message);
+		}
+		
+		assertTrue ("CONDITION RAISED ON CONVERSION!", filter.size() == 0);		
+	}
+
+	public void testReplaceModerateWithIntensiveOnBorderWithPopulatedBorders () 
+		throws JMSException 
+	{
+		game.setState(GameState.PLAY);
+		
+		SolverFicha man1 = new SolverFicha (0,4, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man2 = new SolverFicha (1,4, bob.getColor(), 
+				TokenType.MODERATE_PASTURE);
+		SolverFicha man3 = new SolverFicha (0,4, bob.getColor(), 
+				TokenType.INTENSIVE_PASTURE);		
+		game.getGrid().updateCell(man1);
+		game.getGrid().updateCell(man2);
+		
+		/* Set MODERATES on the other borders */
+		SolverFicha ficha = new SolverFicha (4,0, alice.getColor(), TokenType.MODERATE_PASTURE);
+		game.getGrid().updateCell (ficha);
+		ficha = new SolverFicha (4,1, alice.getColor(), TokenType.MODERATE_PASTURE);
+		game.getGrid().updateCell(ficha);
+		
+		ficha = new SolverFicha (8,4, charlie.getColor(), TokenType.MODERATE_PASTURE);
+		game.getGrid().updateCell(ficha);
+		ficha = new SolverFicha (7,4, charlie.getColor(), TokenType.MODERATE_PASTURE);
+		game.getGrid().updateCell(ficha);
+		
+		/* Convert Moderate to Intensive */
+		bob.setTurn(true);		
+		ManantialesMove move = new ManantialesMove (bob, man1, man3);
+		fireRules (game, move);
+		
+		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		ArrayList filter = new ArrayList();		
+		List<Message> messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+					filter.add(message);
+		}
+		
+		assertTrue ("CONDITION(S) RAISED ON CONVERSION!  Conditions Raised: " + filter.size(), 
+				filter.size() == 0);		
+	}	
 	
 	/**
 	 * @param north

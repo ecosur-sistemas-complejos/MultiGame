@@ -361,15 +361,17 @@ rule
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
-            destination.border == BorderType.NORTH, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+            destination.border == BorderType.NORTH, type == TokenType.MODERATE_PASTURE)  
         eval (!$game.hasCondition (ConditionType.NORTHERN_BORDER_DEFORESTED));                         
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.NORTHERN_BORDER_DEFORESTED, 
-                $move.getPlayer(), $tok1, $tok2);
-        $game.addCheckCondition(constraint);
-        $move.getPlayer().setGame($game);
+                $move.getPlayer(), $tok1, $tok2, $move.getDestination());
+        # We should simply modify the Game object here, but this provokes an 
+        # infinite loop. so we have to work around with the move object.
+        $game.addCheckCondition (constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
         MessageSender messageSender = new MessageSender ();
         messageSender.sendConditionRaised ($move, constraint);
 end
@@ -386,15 +388,16 @@ rule
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
-            destination.border == BorderType.EAST, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            destination.border == BorderType.EAST, type == TokenType.MODERATE_PASTURE)
         eval (!$game.hasCondition (ConditionType.EASTERN_BORDER_DEFORESTED))       
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, $move.getDestination());
-        $game.addCheckCondition(constraint);
-        $move.getPlayer().setGame($game);      
+        $game.addCheckCondition (constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }               
         MessageSender messageSender = new MessageSender ();
         messageSender.sendConditionRaised ($move, constraint);                
 end
@@ -411,15 +414,16 @@ rule
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
-            destination.border == BorderType.SOUTH, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            destination.border == BorderType.SOUTH, type == TokenType.MODERATE_PASTURE) 
         eval (!$game.hasCondition (ConditionType.SOUTHERN_BORDER_DEFORESTED))        
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
-            $tok1, $tok2,$move.getDestination());
-        $game.addCheckCondition(constraint);
-        $move.getPlayer().setGame($game);         
+            $tok1, $tok2, $move.getDestination());
+        $game.addCheckCondition (constraint);
+        GamePlayer player = $move.getPlayer();
+        player.setGame($game);
+        modify ($move) { setPlayer (player) }                 
         MessageSender messageSender = new MessageSender ();
         messageSender.sendConditionRaised ($move, constraint);                       
 end
@@ -436,13 +440,12 @@ rule
         $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
-            destination.border == BorderType.WEST, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+            destination.border == BorderType.WEST, type == TokenType.MODERATE_PASTURE)   
         eval (!$game.hasCondition (ConditionType.WESTERN_BORDER_DEFORESTED))                                      
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
-                $tok1, $tok2,$move.getDestination());
+                $tok1, $tok2, $move.getDestination());
         $game.addCheckCondition (constraint);
         GamePlayer player = $move.getPlayer();
         player.setGame($game);
@@ -463,10 +466,9 @@ rule "manantiales"
         $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
         $move : ManantialesMove (badYear == false, status != Status.INVALID, 
-            destination.manantial == true, type in (
-            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+            destination.manantial == true, type == TokenType.MODERATE_PASTURE)
         eval (!$game.hasCondition (ConditionType.MANANTIALES_DRY))                   
-    then
+    then 
         CheckCondition constraint = new CheckCondition(
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
             $move.getDestination());

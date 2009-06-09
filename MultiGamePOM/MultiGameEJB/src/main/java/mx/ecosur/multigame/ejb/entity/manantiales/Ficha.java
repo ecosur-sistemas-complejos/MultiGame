@@ -45,13 +45,6 @@ public class Ficha extends Cell {
 	public void setType(TokenType type) {
 		this.type = type;
 	}
-
-	/**
-	 * @return the manantial
-	 */
-	public boolean isManantial() {
-		return checkManantial();
-	}
 	
 	/**
 	 * @return theScore
@@ -62,16 +55,8 @@ public class Ficha extends Cell {
 			ret = type.value();
 		return ret;
 	}
-
-	/**
-	 * @return the border
-	 */
-	@Transient
-	public BorderType getBorder() {
-		return checkBorder();
-	}
 	
-	private BorderType checkBorder () {
+	public BorderType getBorder () {
 		BorderType ret = BorderType.NONE;
 		if (this.getRow() == 4) {
 			if (this.getColumn() < 4) 
@@ -91,7 +76,7 @@ public class Ficha extends Cell {
 	/**
 	 * @return
 	 */
-	private boolean checkManantial() {
+	public boolean isManantial() {
 		if (type.equals(TokenType.UNDEVELOPED))
 			return false;
 		
@@ -107,15 +92,6 @@ public class Ficha extends Cell {
 			ret = true;
 		return ret;
 	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Cell#toString()
-	 */
-//	@Override
-//	public String toString() {
-//		return "[" + super.getColor() + "] " + type.toString() +
-//			"(" + getColumn() + "," + getRow() + ")";
-//	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
