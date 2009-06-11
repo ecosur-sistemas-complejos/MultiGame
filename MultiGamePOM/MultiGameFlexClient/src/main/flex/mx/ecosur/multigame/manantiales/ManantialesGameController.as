@@ -41,7 +41,7 @@ package mx.ecosur.multigame.manantiales
 	import mx.rpc.remoting.RemoteObject;
 	
 	public class ManantialesGameController
-	{	
+	{
 		
 	    // visual components
 	    private var _gameWindow:ManantialesWindow
@@ -83,7 +83,6 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_UPDATE_MOVE_OP:String = "updateMove";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
-        private static const GAME_SERVICE_EVALUATE_FACTS_OP:String = "evaluateFacts";
         
         public function ManantialesGameController (gameWindow:ManantialesWindow) 
         {
@@ -130,9 +129,7 @@ package mx.ecosur.multigame.manantiales
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId);
-            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;     
-                        
-            //_gameWindow.playersViewer.autoLayout = true;         	        	
+            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;           	        	
         }
         
         public function initializeTokenStorePanel (tokenStorePanel:Panel):void {
@@ -430,10 +427,7 @@ package mx.ecosur.multigame.manantiales
             call.operation = "getGameGrid";
         }
         
-        private function initGrid(gameGrid:GameGrid):void{        
-            var ficha:Ficha;
-            var token:ManantialesToken;
-            
+        private function initGrid(gameGrid:GameGrid):void{                   
             _gameGrid = gameGrid;
             _gameWindow.board.clearTokens();
             
@@ -450,25 +444,27 @@ package mx.ecosur.multigame.manantiales
                         roundCell.token = tok;
                     }
                 }
-            }              
+            }
             
+            var ficha:Ficha;
+            var token:ManantialesToken;     
             
             if (_gameGrid.cells && _gameGrid.cells.length > 0) {
                 for (var i:Number = 0; i < _gameGrid.cells.length; i++){
                     ficha = Ficha(_gameGrid.cells[i]);
                     switch (ficha.type) {
-                    	case TokenType.FOREST:
-                    	   token = new ForestToken();
-                    	   token.ficha = ficha;
-                    	   if (token.ficha.color == this._currentPlayer.color)
-                    	       this._gameWindow.forestStore.removeToken();
-                    	   break;
-                    	case TokenType.MODERATE:
-                    	   token = new ModerateToken();
-                    	   token.ficha = ficha;
-                    	   if (token.ficha.color == this._currentPlayer.color)
-                    	       this._gameWindow.moderateStore.removeToken();
-                    	   break;
+                        case TokenType.FOREST:
+                           token = new ForestToken();
+                           token.ficha = ficha;
+                           if (token.ficha.color == this._currentPlayer.color)
+                               this._gameWindow.forestStore.removeToken();
+                           break;
+                        case TokenType.MODERATE:
+                           token = new ModerateToken();
+                           token.ficha = ficha;
+                           if (token.ficha.color == this._currentPlayer.color)
+                               this._gameWindow.moderateStore.removeToken();
+                           break;
                         case TokenType.INTENSIVE:
                            token = new IntensiveToken();
                            token.ficha = ficha;
@@ -489,14 +485,16 @@ package mx.ecosur.multigame.manantiales
                            break;
                         default:
                             break;
-                    }                                      
+                    }
+                                                          
                     _gameWindow.board.addToken(token);
+                    
                 }
-            }
+            }                                            
             
             /* Reset mode (state) */
             _gameWindow.currentState = currentMode;
-        } 
+        }        
         
         private function initTurn():void{ 
         	if (_game.mode != null)
@@ -580,6 +578,7 @@ package mx.ecosur.multigame.manantiales
         }                       
         
         private function endTurn():void{
+        	   /* return the window to the default state */
         	_gameWindow.currentState = "";           
         }
         
@@ -622,21 +621,8 @@ package mx.ecosur.multigame.manantiales
                             gamePlayer.player.name + " to move", Color.getColorCode(gamePlayer.color));
                     }
                 }
-            }
-            
-            
-            /* Alert player to pending constraints */
-            if (_game.checkConditions != null) {
-                for (i = 0; i < _game.checkConditions.length; i++) {
-                    var checkCondition:CheckCondition = CheckCondition(
-                      _game.checkConditions.getItemAt(i));
-                    if (!checkCondition.expired) {
-                        _gameWindow.gameStatus.showMessage(checkCondition.toString(),
-                            Color.getColorCode(_currentPlayer.color));
-                    }
-                }
-            }            
-            
+            }           
+                        
             _gameWindow.playersViewer.players = players;
             _players = players;
         }
@@ -953,25 +939,31 @@ package mx.ecosur.multigame.manantiales
             _gameWindow.animateLayer.removeChild(token);
             
             //add to token store if necessary
-            if(token.cell.color == _currentPlayer.color && _isTurn){
-                if (token is ForestToken) {
-                    _gameWindow.forestStore.addToken();
-                }
-                else if (token is IntensiveToken) {
-                    _gameWindow.intensiveStore.addToken();
-                }
-                else if (token is ModerateToken) { 
-                    _gameWindow.moderateStore.addToken();
-                }
-                else if (token is ViveroToken) {
-                    _gameWindow.viveroStore.addToken();
-                }
-                else if (token is SilvopastoralToken) {
-                    _gameWindow.silvoStore.addToken();
-                }
+            if(_isTurn) {
+            	var ficha:Ficha = Ficha(token.cell);
+            	switch (ficha.type) {
+            		case TokenType.FOREST:
+            		  _gameWindow.forestStore.addToken();
+            		  break;
+            		case TokenType.INTENSIVE:
+            		  _gameWindow.intensiveStore.addToken();
+            		  break;
+            		case TokenType.MODERATE:
+            		  _gameWindow.moderateStore.addToken();
+            		  break;
+            		case TokenType.SILVOPASTORAL:
+            		  _gameWindow.silvoStore.addToken();
+            		  break;
+            		case TokenType.VIVERO:
+            		  _gameWindow.viveroStore.addToken();
+            		  break;
+            		default:            		  
+            		  break;
+            	}
             }
             
-            _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd]);
+            if (_selectedMoveInd >= 0)
+                _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd]);
         } 
         
         private function handleCheckConstraint (checkCondition:CheckCondition):void {
@@ -1004,8 +996,36 @@ package mx.ecosur.multigame.manantiales
             PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
             PopUpManager.centerPopUp(checkConAlert);
             
+            if (checkCondition.player.color == _currentPlayer.color) {
+            	for (var i:int = 0; i < checkCondition.violators.length; i++) {
+                    var ficha:Ficha = Ficha (checkCondition.violators.getItemAt(i));
+            		if (ficha.color == _currentPlayer.color) {
+            			switch (ficha.type) {
+            				case TokenType.FOREST:
+            				    _gameWindow.forestStore.addToken();
+            				    break;
+            				case TokenType.INTENSIVE:
+            				    _gameWindow.intensiveStore.addToken();
+            				    break;
+            			    case TokenType.MODERATE:
+            			        _gameWindow.moderateStore.addToken();
+            			        break;
+            			    case TokenType.SILVOPASTORAL:
+            			        _gameWindow.silvoStore.addToken();
+            			        break;
+            			    case TokenType.VIVERO:
+            			        _gameWindow.viveroStore.addToken();
+            			        break;
+            			    default:
+            			        break;
+            			}
+            		}
+        		}
+            }
+            
+             /* Reset the grid on the board */
             var callGrid:Object = _gameService.getGameGrid(_gameId);
-            callGrid.operation = GAME_SERVICE_GET_GRID_OP;      
+            callGrid.operation = GAME_SERVICE_GET_GRID_OP;                             
         }  
         
         private function handleStateChange (game:ManantialesGame):void {
