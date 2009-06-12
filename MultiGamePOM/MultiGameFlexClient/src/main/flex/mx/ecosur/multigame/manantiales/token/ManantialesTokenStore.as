@@ -14,6 +14,16 @@ package mx.ecosur.multigame.manantiales.token
 	public class ManantialesTokenStore extends TokenStore
 	{
 		protected static const INITIAL_N_TOKENS:int = 6;
+		
+        public function reset():void {
+            while (_nTokens > 0) {
+                removeToken();
+            }
+            
+            for (var i:int = 0; i < INITIAL_N_TOKENS; i++) {
+                addToken();
+            }
+        }		
     
 	    override protected function createChildren():void{
 	        

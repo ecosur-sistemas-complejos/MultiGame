@@ -447,8 +447,21 @@ package mx.ecosur.multigame.manantiales
             }
             
             var ficha:Ficha;
-            var token:ManantialesToken;     
+            var token:ManantialesToken;
             
+            /* reset token stores */
+            if (_gameWindow.forestStore != null) 
+                _gameWindow.forestStore.reset();
+            if (_gameWindow.moderateStore != null)
+                _gameWindow.moderateStore.reset();
+            if (_gameWindow.intensiveStore != null) 
+                _gameWindow.intensiveStore.reset();
+            if (_gameWindow.viveroStore != null)
+                _gameWindow.viveroStore.reset();
+            if (_gameWindow.silvoStore != null)
+                _gameWindow.silvoStore.reset();     
+            
+            /* Now remove all placed tokens from corresonding store */
             if (_gameGrid.cells && _gameGrid.cells.length > 0) {
                 for (var i:Number = 0; i < _gameGrid.cells.length; i++){
                     ficha = Ficha(_gameGrid.cells[i]);
@@ -995,33 +1008,6 @@ package mx.ecosur.multigame.manantiales
             _alerts.addItem(checkConAlert);            
             PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
             PopUpManager.centerPopUp(checkConAlert);
-            
-            if (checkCondition.player.color == _currentPlayer.color) {
-            	for (var i:int = 0; i < checkCondition.violators.length; i++) {
-                    var ficha:Ficha = Ficha (checkCondition.violators.getItemAt(i));
-            		if (ficha.color == _currentPlayer.color) {
-            			switch (ficha.type) {
-            				case TokenType.FOREST:
-            				    _gameWindow.forestStore.addToken();
-            				    break;
-            				case TokenType.INTENSIVE:
-            				    _gameWindow.intensiveStore.addToken();
-            				    break;
-            			    case TokenType.MODERATE:
-            			        _gameWindow.moderateStore.addToken();
-            			        break;
-            			    case TokenType.SILVOPASTORAL:
-            			        _gameWindow.silvoStore.addToken();
-            			        break;
-            			    case TokenType.VIVERO:
-            			        _gameWindow.viveroStore.addToken();
-            			        break;
-            			    default:
-            			        break;
-            			}
-            		}
-        		}
-            }
             
              /* Reset the grid on the board */
             var callGrid:Object = _gameService.getGameGrid(_gameId);
