@@ -35,7 +35,8 @@
             private var _helpPanel:HelpPanel; 
         
             public function init():void {
-                _controller = new ManantialesGameController(this);
+            	if (_controller == null)
+                    _controller = new ManantialesGameController(this);
                 CursorManager.removeBusyCursor();
             }
             
@@ -70,10 +71,10 @@
                     PopUpManager.addPopUp(_helpPanel, this, true);
                     PopUpManager.centerPopUp(_helpPanel);
                 } else if (evt.label=='Lobby') {
-                    this.dispatchCompletion();
+                    dispatchCompletion();
                 } else if (evt.label == 'Quit') {
                 	quitGame();
-                	this.dispatchCompletion(); 
+                	dispatchCompletion(); 
                 }
             }                       
             

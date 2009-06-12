@@ -12,17 +12,21 @@
             
             public function set manantialesPlayer(manantialesPlayer:ManantialesPlayer):void{
                 _manantialesPlayer = manantialesPlayer;
+                update();
+            }            
+            
+            public function get manantialesPlayer():ManantialesPlayer{
+                return _manantialesPlayer;
+            }
+            
+            public function update():void {
                 playerScore.text = "" + manantialesPlayer.score;
                 managedForest.text = "" + manantialesPlayer.forested;
                 moderate.text = "" + manantialesPlayer.moderate;
                 intensive.text = "" + manantialesPlayer.intensive;
                 vivero.text = "" + manantialesPlayer.vivero;
-                silvopastoral.text = "" + manantialesPlayer.silvo; 
-            }
-            
-            public function get manantialesPlayer():ManantialesPlayer{
-                return _manantialesPlayer;
-            }
+                silvopastoral.text = "" + manantialesPlayer.silvo;              
+            }            
                     
         ]]>
     </mx:Script>

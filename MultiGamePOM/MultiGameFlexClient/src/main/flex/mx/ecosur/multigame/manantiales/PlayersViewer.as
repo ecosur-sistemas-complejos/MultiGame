@@ -75,7 +75,7 @@ package mx.ecosur.multigame.manantiales
         /*
          * Updates the players and opens the player whose turn it is. 
          */
-        private function updatePlayers():void{
+        public function updatePlayers():void{
         	/* Set the game players into the game info */
             _gi.players = _players;                                
             
@@ -102,7 +102,12 @@ package mx.ecosur.multigame.manantiales
                     pi = new PlayerInfo();                    
                     addChild(pi);
                     pi.manantialesPlayer = manPlayer;                       
-                }                                                                     
+                }
+                
+                pi.manantialesPlayer = manPlayer;
+                pi.update();        
+                
+                var label:String;                                                           
                 
                 for (j = 0; j < getChildren().length; j++) {
                     if (getChildAt(j) is PlayerInfo) {
@@ -110,7 +115,7 @@ package mx.ecosur.multigame.manantiales
                         if (info.manantialesPlayer.id == manPlayer.id) {
 			                // Create button header if required
 			                btn = getHeaderAt(j)
-			                var label:String = manPlayer.player.name; 
+			                label = manPlayer.player.name; 
 			                btn.label = label;
 			                btn.setStyle("icon", Color.getCellIcon(manPlayer.color));
 			                btn.setStyle("paddingBottom", 5);
@@ -118,7 +123,7 @@ package mx.ecosur.multigame.manantiales
                         }
                     } else {
                         btn = getHeaderAt(j)
-				        var label:String = "Game Info";
+				        label = "Game Info";
 				        btn.label = label;
 				        btn.setStyle("icon", Color.getCellIcon(Color.BLACK));
 				        btn.setStyle("paddingBottom", 5);

@@ -332,7 +332,8 @@ package mx.ecosur.multigame.manantiales
                     _gameWindow.chatPanel.addMessage(chatMessage);
                     if(chatMessage.sender.id != _currentPlayer.player.id){
                         _gameWindow.gameStatus.showMessage(
-                            chatMessage.sender.player.name + " has sent you a message", 0x000000);
+                            chatMessage.sender.player.name + 
+                            " has sent you a message", 0x000000);
                     }
                     break;
                 case GameEvent.END:
@@ -341,6 +342,7 @@ package mx.ecosur.multigame.manantiales
                     break;
                 case GameEvent.MOVE_COMPLETE:
                     var move:ManantialesMove = ManantialesMove(message.body);
+                    _gameWindow.playersViewer.updatePlayers();
                     addMove(move);
                     break;                    
                 case GameEvent.PLAYER_CHANGE:
@@ -448,7 +450,7 @@ package mx.ecosur.multigame.manantiales
             
             var ficha:Ficha;
             var token:ManantialesToken;
-            
+
             /* reset token stores */
             if (_gameWindow.forestStore != null) 
                 _gameWindow.forestStore.reset();
