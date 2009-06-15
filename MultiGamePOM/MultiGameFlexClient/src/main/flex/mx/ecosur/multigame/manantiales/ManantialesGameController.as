@@ -121,7 +121,11 @@ package mx.ecosur.multigame.manantiales
             // initialize the board
             _gameWindow.board.dragEnterHandler = dragEnterBoardCell;
             _gameWindow.board.dragDropHandler = dragDropCell;
-            _gameWindow.board.dragExitHandler = dragExitCell;                          
+            _gameWindow.board.dragExitHandler = dragExitCell;   
+            
+            // initialize the move viewer
+	        _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
+	        _gameWindow.moveViewer.board = _gameWindow.board;                       
             
             // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
@@ -531,10 +535,6 @@ package mx.ecosur.multigame.manantiales
                 for (var i:int = 0; i < _tokenStorePanels.length; i++) {
                     initializeTokenStorePanel (Panel(_tokenStorePanels.getItemAt(i)));
                 }        
-            } else {
-            	 // initialize the move viewer
-	            _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
-	            _gameWindow.moveViewer.board = _gameWindow.board;
             }           
             
             // open annual conditions generator
@@ -708,6 +708,12 @@ package mx.ecosur.multigame.manantiales
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
+        	
+        	// if was a bad year then nothing to do
+        	if(move.badYear){
+        		_gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd + 1]);
+        		return
+        	}
             
             //check that destination is free
             var boardCell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
@@ -867,6 +873,12 @@ package mx.ecosur.multigame.manantiales
         }
         
         private function undoMove(move:ManantialesMove):void{
+        	
+        	// if was a bad year then nothing to undo
+        	if(move.badYear){
+        		_gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd - 1]);
+        		return
+        	}
             
             //define origin
             var boardCell:BoardCell = _gameWindow.board.getBoardCell(move.destination.column, move.destination.row);
@@ -876,45 +888,22 @@ package mx.ecosur.multigame.manantiales
             startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
             
             //define destination
-            var endPoint:Point;
-            var endSize:Number;
-            if(move.player.id == _currentPlayer.id && _isTurn) {
-            	var tok:Ficha = Ficha(move.destination);
-            	switch (tok.type) {
-            		case (TokenType.FOREST):
-            	        endPoint = new Point(_gameWindow.forestStore.width / 2, _gameWindow.forestStore.height / 2);
-                        endPoint = _gameWindow.forestStore.localToGlobal(endPoint);
-                        break;
-                    case (TokenType.INTENSIVE):
-                        endPoint = new Point(_gameWindow.intensiveStore.width / 2, _gameWindow.intensiveStore.height / 2);
-                        endPoint = _gameWindow.intensiveStore.localToGlobal(endPoint);
-                        break;
-                    case (TokenType.MODERATE): 
-                        endPoint = new Point(_gameWindow.moderateStore.width / 2, _gameWindow.moderateStore.height / 2);
-                        endPoint = _gameWindow.moderateStore.localToGlobal(endPoint);
-                        break;
-                    case (TokenType.VIVERO):
-                        endPoint = new Point(_gameWindow.viveroStore.width / 2, _gameWindow.viveroStore.height / 2);
-                        endPoint = _gameWindow.viveroStore.localToGlobal(endPoint);
-                        break;
-                    case (TokenType.SILVOPASTORAL):
-                        endPoint = new Point(_gameWindow.silvoStore.width / 2, _gameWindow.silvoStore.height / 2);
-                        endPoint = _gameWindow.silvoStore.localToGlobal(endPoint);
-                        break;                                                                                                                	  
-            	}
-                
-                endPoint = _gameWindow.animateLayer.globalToLocal(endPoint);
-                endSize = _gameWindow.board.tokenSize;
-            }
+        	var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(ManantialesPlayer(move.player));
+            var endPoint:Point = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
+            endPoint = _gameWindow.playersViewer.localToGlobal(endPoint);
+            endPoint = _gameWindow.animateLayer.globalToLocal(endPoint);
+            var endSize:Number = Color.getCellIconSize();
             
             //create new token
             var token:ManantialesToken = new ManantialesToken();
             token.cell = move.destination;
             token.width = endSize;
             token.height = endSize;
-            boardCell.token = _previousToken;
-            boardCell.reset();
             _gameWindow.animateLayer.addChild(token);
+            
+            // restore undeveloped token
+            boardCell.token = new UndevelopedToken(token.cell.column, token.cell.row);
+            boardCell.reset();
 
             //define motion animation
             var apX:AnimateProperty = new AnimateProperty(token);

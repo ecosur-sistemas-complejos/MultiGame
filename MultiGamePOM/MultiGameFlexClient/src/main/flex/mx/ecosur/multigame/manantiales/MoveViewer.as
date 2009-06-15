@@ -42,32 +42,32 @@ package mx.ecosur.multigame.manantiales
         
         public function set selectedMove(move:ManantialesMove):void{
             var mi:MoveInfo;
-//            for (var i:int = 0; i < _moves.numChildren; i++){
-//                mi = MoveInfo(_moves.getChildAt(i))
-//                if (move != null && move.id == mi.gameMove.id){                	
-//                    
-//                    //deselect currently selected button
-//                    var btn:Button;
-//                    if(_selectedMove){
-//                        btn = _moves.getHeaderAt(_moves.getChildIndex(_selectedMove));
-//                        btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
-//                        btn.setStyle("fillAlphas", [0.6, 0.4]);
-//                        btn.setStyle("color", 0x0B333C);
-//                        btn.setStyle("borderColor", 0xAAB3B3);
-//                    }
-//                    
-//                    //select new button
-//                    btn = _moves.getHeaderAt(_moves.getChildIndex(mi));
-//                    btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
-//                    btn.setStyle("fillAlphas", [1, 1]);
-//                    btn.setStyle("color", 0xFFFFFF);
-//                    btn.setStyle("borderColor", 0xFF3300);
-//                    
-//                    _selectedMove = mi;
-//                    _moves.selectedChild = _selectedMove;
-//                    return;
-//                }
-//            }
+            for (var i:int = 0; i < _moves.numChildren; i++){
+                mi = MoveInfo(_moves.getChildAt(i))
+                if (move != null && move.id == mi.gameMove.id){                	
+                    
+                    //deselect currently selected button
+                    var btn:Button;
+                    if(_selectedMove){
+                        btn = _moves.getHeaderAt(_moves.getChildIndex(_selectedMove));
+                       btn.setStyle("fillColors", [0xE6EEEE, 0xFFFFFF]);
+                        btn.setStyle("fillAlphas", [0.6, 0.4]);
+                        btn.setStyle("color", 0x0B333C);
+                        btn.setStyle("borderColor", 0xAAB3B3);
+                    }
+                    
+                    //select new button
+                    btn = _moves.getHeaderAt(_moves.getChildIndex(mi));
+                    btn.setStyle("fillColors", [0xFF3300, 0xFF6600]);
+                    btn.setStyle("fillAlphas", [1, 1]);
+                    btn.setStyle("color", 0xFFFFFF);
+                    btn.setStyle("borderColor", 0xFF3300);
+                    
+                    _selectedMove = mi;
+                    _moves.selectedChild = _selectedMove;
+                    return;
+                }
+            }
         }
         
         /**
