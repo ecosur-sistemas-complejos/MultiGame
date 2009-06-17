@@ -14,19 +14,19 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.Agent;
+import mx.ecosur.multigame.Type;
+
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
-import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
+
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.pente.PenteStrategy;
 
 public interface RegistrarInterface {
 
 	/**
-	 * Registers a player with the system, returning a color from the
-	 * available list of colors, and registering the Player with the game
+	 * Registers a player with the system and registers the Player with the game
 	 * of the specified type.  This method throws an exception when a specific
 	 * player has already been registered, or if the type of game no longer 
 	 * takes any players.
@@ -37,7 +37,7 @@ public interface RegistrarInterface {
 	 * @throws RemoteException 
 	 */
 	public abstract GamePlayer registerPlayer(Player player, Color color,
-			GameType type) throws InvalidRegistrationException;
+			Type type) throws InvalidRegistrationException;
 
 	/**
 	 * Registers a player with the specified Game object.  Allows greater control
@@ -59,8 +59,8 @@ public interface RegistrarInterface {
 	 * TODO:  Make this generic.
 	 */
 
-	public abstract PenteStrategyPlayer registerRobot(Game game, Player player,
-			Color color, PenteStrategy strategy)
+	public abstract Agent registerAgent(Game game, Player player,
+			Color color, Type type)
 			throws InvalidRegistrationException;
 
 	/**
@@ -103,7 +103,7 @@ public interface RegistrarInterface {
 	 * @return the game.
 	 * @throws RemoteException
 	 */
-	public abstract Game locateGame(Player player, GameType type);
+	public abstract Game locateGame(Player player, Type type);
 
 	/**
 	 * Simply creates a game with no players of the type, "type".
@@ -113,7 +113,7 @@ public interface RegistrarInterface {
 	 * @return
 	 */
 	
-	public abstract Game createGame (GameType type);
+	public abstract Game createGame (Type type);
 
 	/**
 	 * Logs a player into the platform. If the player doesn't exist

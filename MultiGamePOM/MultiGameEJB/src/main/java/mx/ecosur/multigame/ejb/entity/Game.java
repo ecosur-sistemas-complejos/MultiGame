@@ -18,7 +18,6 @@ package mx.ecosur.multigame.ejb.entity;
 import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -44,7 +43,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.Type;
 
 /**
  * @author maxmil
@@ -79,7 +78,7 @@ public class Game implements Serializable {
 	/**
 	 * Game's Type
 	 */
-	private GameType type;
+	private Type type;
 	
 	/**
 	 * The date the game was created
@@ -105,7 +104,7 @@ public class Game implements Serializable {
 		players = new ArrayList<GamePlayer> ();
 	}
 	
-	public void initialize (GameType type) {
+	public void initialize (Type type) {
 		setType(type);
 		setGrid(new GameGrid());
 		setState(GameState.WAITING);

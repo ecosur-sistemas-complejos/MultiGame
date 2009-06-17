@@ -16,7 +16,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.ejb.entity.Cell;
@@ -28,7 +27,7 @@ import mx.ecosur.multigame.ejb.entity.Player;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
-import mx.ecosur.multigame.pente.PenteStrategy;
+import mx.ecosur.multigame.impl.GameType;
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
 

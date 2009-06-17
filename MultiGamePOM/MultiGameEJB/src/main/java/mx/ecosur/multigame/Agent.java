@@ -20,4 +20,9 @@ public interface Agent {
 	 */
 	public Move determineNextMove (Game game);
 	
+	/*
+	 * Returns this agent's type.
+	 */
+	public Type getType ();	
+	
 }

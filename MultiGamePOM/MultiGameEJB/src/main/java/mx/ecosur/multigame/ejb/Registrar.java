@@ -29,20 +29,17 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import mx.ecosur.multigame.Agent;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.Type;
 import mx.ecosur.multigame.ejb.entity.Game;
 import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.ejb.entity.Player;
-import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.ejb.entity.manantiales.ManantialesPlayer;
-import mx.ecosur.multigame.ejb.entity.pente.PenteGame;
-import mx.ecosur.multigame.ejb.entity.pente.PentePlayer;
-import mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer;
+
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.pente.PenteStrategy;
+import mx.ecosur.multigame.impl.GameType;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -139,8 +136,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @throws InvalidRegistrationException 
 	 */
 	
-	public PenteStrategyPlayer registerRobot (Game game, Player registrant, 
-			Color favoriteColor, PenteStrategy strategy) throws InvalidRegistrationException 
+	public Agent registerAgent (Game game, Player registrant, 
+			Color favoriteColor, Type type) throws InvalidRegistrationException 
 	{
 		if (!em.contains(game))
 			game = em.find(Game.class, game.getId());
