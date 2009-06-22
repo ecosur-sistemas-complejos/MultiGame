@@ -15,22 +15,22 @@
 	<dependencies>
 		<dependency>
 			<groupId>mx.ecosur</groupId>
-			<artifactId>multi-game-ejb</artifactId>
+			<artifactId>ecosur-games</artifactId>
 			<version>${version}</version>
 			<type>ejb</type>
 		</dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>multi-game-core</artifactId>
+            <version>${version}</version>
+            <type>ejb</type>
+        </dependency>		
 		<dependency>
 		      <groupId>mx.ecosur</groupId>
-              <artifactId>multi-game-flex-client</artifactId>
+              <artifactId>ecosur-flex-client</artifactId>
               <version>${version}</version>
               <type>war</type>
-		</dependency>
-        <dependency>
-              <groupId>mx.ecosur</groupId>
-              <artifactId>multi-game-experiment</artifactId>
-              <version>${version}</version>
-              <type>war</type>
-        </dependency>		
+		</dependency>	
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
@@ -67,8 +67,12 @@
 		                <modules>
 		                    <ejbModule>
 		                        <groupId>mx.ecosur</groupId>
-		                        <artifactId>multi-game-ejb</artifactId>
+		                        <artifactId>multi-game-core</artifactId>
 		                    </ejbModule>
+                            <ejbModule>
+                                <groupId>mx.ecosur</groupId>
+                                <artifactId>ecosur-games</artifactId>
+                            </ejbModule>		                    
 		                    <jarModule>
 		                        <groupId>org.drools</groupId>
 		                        <artifactId>drools-compiler</artifactId>
@@ -87,11 +91,7 @@
 		                    </jarModule>
 		                    <webModule>
 		                       <groupId>mx.ecosur</groupId>
-		                       <artifactId>multi-game-flex-client</artifactId>
-		                    </webModule>
-		                    <webModule>
-		                       <groupId>${groupId}</groupId>
-		                       <artifactId>multi-game-experiment</artifactId>
+		                       <artifactId>ecosur-flex-client</artifactId>
 		                    </webModule>
 		                </modules>
 		            </configuration>

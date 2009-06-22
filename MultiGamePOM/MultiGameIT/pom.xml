@@ -51,7 +51,7 @@
         </dependency>
 	    <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>ecosur-impl</artifactId>
+            <artifactId>ecosur-games</artifactId>
             <version>${version}</version>
             <type>ejb-client</type>
         </dependency>

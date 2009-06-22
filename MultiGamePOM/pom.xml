@@ -65,9 +65,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-		        <module>MultiGameEJB</module>
-		        <module>MultiGameExperiment</module>
-		        <module>MultiGameFlexClient</module>
+		        <module>MultiGameCore</module>
+		        <module>EcosurGames</module>
+		        <module>EcosurFlexClient</module>
 		        <module>MultiGameEAR</module>
 		        <module>MultiGameIT</module>
 		    </modules>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/mx/ecosur/multigame/solver/manantiales-standard-score-calculator.drl</scoreDrl>
+    <scoreCalculator>
+        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
+    </scoreCalculator>
+    <selector>
+        <selector>
+            <moveFactoryClass>mx.ecosur.multigame.impl.solver.manantiales.MutateMoveFactory</moveFactoryClass>
+            <relativeSelection>1.0</relativeSelection>
+        </selector>
+         <selector>
+            <moveFactoryClass>mx.ecosur.multigame.impl.solver.manantiales.SwapMoveFactory</moveFactoryClass>
+            <relativeSelection>1.0</relativeSelection>
+        </selector>                 
+    </selector>
+    <accepter>
+        <!-- Tabu Local Search -->
+<!--        <completeMoveTabuSize>1000</completeMoveTabuSize>-->
+<!--        <completeUndoMoveTabuSize>1000</completeUndoMoveTabuSize>-->
+        <!--  Use the great deluge heuristic to search -->
+        <accepterType>GREAT_DELUGE</accepterType>
+    </accepter>
+    <forager>
+        <!--  Tabu search  -->
+<!--            <foragerType>MAX_SCORE_OF_ALL</foragerType>-->
+<!--        <foragerType>FIRST_BEST_SCORE_IMPROVING</foragerType>-->
+        <!--  Great Deluge search -->
+        <foragerType>FIRST_RANDOMLY_ACCEPTED</foragerType> 
+    </forager>
+	<finish>
+	    <finishCompositionStyle>OR</finishCompositionStyle> 
+	    <feasableScore>0.0</feasableScore>
+	    <maximumMinutesSpend>2</maximumMinutesSpend> 
+	    <maximumUnimprovedStepCount>1000</maximumUnimprovedStepCount> 
+	</finish>
+</localSearchSolver>
