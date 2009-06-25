@@ -19,11 +19,6 @@ import java.util.Set;
 import mx.ecosur.multigame.Agent;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
@@ -32,6 +27,11 @@ import mx.ecosur.multigame.impl.ejb.entity.pente.PentePlayer;
 import mx.ecosur.multigame.GameType;
 
 import mx.ecosur.multigame.impl.pente.BeadString;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.Player;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;

@@ -14,8 +14,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
+import mx.ecosur.multigame.model.Cell;
 
 public class PenteMoveComparator implements Comparator<PenteMove>, Serializable {
 	

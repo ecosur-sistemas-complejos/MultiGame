@@ -16,10 +16,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.impl.manantiales.Mode;
 import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
 
 @SuppressWarnings("serial")
 @Entity

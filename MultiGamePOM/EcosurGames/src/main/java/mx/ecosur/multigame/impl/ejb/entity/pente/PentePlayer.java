@@ -19,9 +19,9 @@ import javax.persistence.OneToOne;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.impl.pente.BeadString;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Player;
 
 import java.util.HashSet;
 import java.util.List;

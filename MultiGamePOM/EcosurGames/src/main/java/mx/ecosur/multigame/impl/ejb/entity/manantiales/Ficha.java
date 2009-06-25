@@ -17,9 +17,9 @@ import javax.persistence.Enumerated;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.Cell;
 import mx.ecosur.multigame.impl.manantiales.BorderType;
 import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.model.Cell;
 
 @Entity
 public class Ficha extends Cell {
@@ -123,7 +123,7 @@ public class Ficha extends Cell {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Cell#toString()
+	 * @see mx.ecosur.multigame.model.Cell#toString()
 	 */
 	@Override
 	public String toString() {

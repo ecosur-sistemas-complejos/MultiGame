@@ -2,10 +2,10 @@ package mx.ecosur.multigame.impl.ejb.entity.manantiales;
 
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.impl.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.manantiales.Mode;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GameGrid;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -77,7 +77,7 @@ public class ManantialesGame extends Game {
     }
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#getFacts()
+	 * @see mx.ecosur.multigame.model.Game#getFacts()
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -89,7 +89,7 @@ public class ManantialesGame extends Game {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#initialize(mx.ecosur.multigame.GameType)
+	 * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
 	 */
 	@Override
 	public Game initialize(GameType type) {
@@ -103,7 +103,7 @@ public class ManantialesGame extends Game {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#getMaxPlayers()
+	 * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
 	 */
 	@Override
 	public int getMaxPlayers() {

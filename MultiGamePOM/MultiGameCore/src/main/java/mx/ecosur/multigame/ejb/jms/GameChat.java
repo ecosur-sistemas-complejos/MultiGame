@@ -25,7 +25,7 @@ import javax.jms.ObjectMessage;
 
 import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.ejb.SharedBoardLocal;
-import mx.ecosur.multigame.ejb.entity.ChatMessage;
+import mx.ecosur.multigame.model.ChatMessage;
 
 @MessageDriven(mappedName = "MultiGame")
 public class GameChat implements MessageListener {

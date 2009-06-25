@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.ejb.entity;
+package mx.ecosur.multigame.model;
 
 import java.io.Serializable;
 
@@ -126,7 +126,7 @@ public class GamePlayer implements Agent, Serializable {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.Agent#initialize(mx.ecosur.multigame.ejb.entity.Game, mx.ecosur.multigame.ejb.entity.Player, mx.ecosur.multigame.Color)
+	 * @see mx.ecosur.multigame.Agent#initialize(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Player, mx.ecosur.multigame.Color)
 	 */
 	public void initialize(Game game, Player registrant, Color favoriteColor) {
 		this.game = game;

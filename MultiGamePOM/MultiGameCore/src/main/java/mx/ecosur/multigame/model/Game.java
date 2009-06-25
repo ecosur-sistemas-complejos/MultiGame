@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.ejb.entity;
+package mx.ecosur.multigame.model;
 
 import java.awt.Dimension;
 import java.io.Serializable;
@@ -45,9 +45,8 @@ import javax.persistence.Version;
 
 import mx.ecosur.multigame.Agent;
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.GameType;
 
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.model.GamePlayer;
 
 /**
  * @author maxmil
@@ -80,11 +79,6 @@ public abstract class Game implements Serializable {
 	private int id;
 	
 	/**
-	 * Game's Type
-	 */
-	private GameType type;
-	
-	/**
 	 * The date the game was created
 	 */
 	private Date created;
@@ -108,8 +102,6 @@ public abstract class Game implements Serializable {
 		players = new ArrayList<GamePlayer> ();	
 	}
 	
-	public abstract Game initialize (GameType type);
-	
 	/**
 	 * @return the id
 	 */
@@ -123,22 +115,6 @@ public abstract class Game implements Serializable {
 	 */
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the type
-	 */
-	@Enumerated (EnumType.STRING)
-	public GameType getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	
-	public void setType(GameType type) {
-		this.type = type;
 	}
 	
 	@SuppressWarnings("unchecked")

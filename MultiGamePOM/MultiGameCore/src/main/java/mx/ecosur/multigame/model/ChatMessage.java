@@ -11,7 +11,7 @@
  * @author max@alwaysunny.com
  */
 
-package mx.ecosur.multigame.ejb.entity;
+package mx.ecosur.multigame.model;
 
 import java.io.Serializable;
 import java.util.Date;

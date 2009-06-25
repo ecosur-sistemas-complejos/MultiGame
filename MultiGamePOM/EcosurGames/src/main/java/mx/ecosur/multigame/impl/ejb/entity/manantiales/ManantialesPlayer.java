@@ -13,9 +13,9 @@ package mx.ecosur.multigame.impl.ejb.entity.manantiales;
 import javax.persistence.Entity;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Player;
 
 @Entity
 public class ManantialesPlayer extends GamePlayer {

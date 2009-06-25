@@ -30,7 +30,7 @@ public class SolverFicha extends Ficha {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Cell#getId()
+	 * @see mx.ecosur.multigame.model.Cell#getId()
 	 */
 	@Override
 	public int getId() {
@@ -38,7 +38,7 @@ public class SolverFicha extends Ficha {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.manantiales.Ficha#clone()
+	 * @see mx.ecosur.multigame.model.manantiales.Ficha#clone()
 	 */
 	@Override
 	public SolverFicha clone() throws CloneNotSupportedException {

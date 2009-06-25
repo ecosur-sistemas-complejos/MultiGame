@@ -10,8 +10,8 @@
  */
 package mx.ecosur.multigame;
 
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.Player;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.Player;
 
 public interface Agent {
 

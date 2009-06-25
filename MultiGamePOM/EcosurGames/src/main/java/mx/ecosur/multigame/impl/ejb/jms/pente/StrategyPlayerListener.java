@@ -28,12 +28,12 @@ import mx.ecosur.multigame.GameEvent;
 import mx.ecosur.multigame.GameState;
 
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
 
 import mx.ecosur.multigame.GameType;
 
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteStrategyPlayer;
+import mx.ecosur.multigame.model.GamePlayer;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
 

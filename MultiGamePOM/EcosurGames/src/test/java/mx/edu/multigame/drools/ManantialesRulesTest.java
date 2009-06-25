@@ -21,12 +21,6 @@ import javax.jms.Message;
 
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 import mx.ecosur.multigame.impl.ejb.entity.manantiales.CheckCondition;
 import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
@@ -41,6 +35,12 @@ import mx.ecosur.multigame.impl.manantiales.Mode;
 import mx.ecosur.multigame.impl.manantiales.TokenType;
 
 import mx.ecosur.multigame.impl.solver.manantiales.SolverFicha;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GameGrid;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.Player;
 
 import org.drools.FactHandle;
 import org.drools.RuleBase;

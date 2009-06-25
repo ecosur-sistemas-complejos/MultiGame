@@ -17,9 +17,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import mx.ecosur.multigame.Condition;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
 import mx.ecosur.multigame.impl.manantiales.ConditionType;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.GamePlayer;
 
 @SuppressWarnings("serial")
 @Entity

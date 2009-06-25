@@ -28,8 +28,8 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GameGrid;
 
 
 
@@ -76,7 +76,7 @@ public class PenteGame extends Game {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#initialize(mx.ecosur.multigame.GameType)
+	 * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
 	 */
 	@Override
 	public Game initialize(GameType type) {
@@ -90,7 +90,7 @@ public class PenteGame extends Game {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.entity.Game#getMaxPlayers()
+	 * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
 	 */
 	@Override
 	public int getMaxPlayers() {

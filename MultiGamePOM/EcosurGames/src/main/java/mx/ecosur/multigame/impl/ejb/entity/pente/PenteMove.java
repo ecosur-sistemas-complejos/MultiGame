@@ -31,9 +31,9 @@ import mx.ecosur.multigame.impl.pente.BeadString;
 import mx.ecosur.multigame.impl.util.Direction;
 import mx.ecosur.multigame.impl.util.Search;
 import mx.ecosur.multigame.impl.util.Vertice;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
 
 
 @Entity

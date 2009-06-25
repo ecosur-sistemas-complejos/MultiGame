@@ -29,14 +29,14 @@ import mx.ecosur.multigame.GameType;
 
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Player;
 
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PentePlayer;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.GameGrid;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Player;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;

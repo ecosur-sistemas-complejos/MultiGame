@@ -17,11 +17,11 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.CellComparator;
 import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
-import mx.ecosur.multigame.ejb.entity.Move;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteStrategyPlayer;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.GameGrid;
+import mx.ecosur.multigame.model.Move;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;

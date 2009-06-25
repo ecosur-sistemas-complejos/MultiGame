@@ -31,9 +31,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.ejb.entity.Game;
-import mx.ecosur.multigame.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.ejb.entity.Move;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
 import mx.ecosur.multigame.Condition;
 
 public class MessageSender {

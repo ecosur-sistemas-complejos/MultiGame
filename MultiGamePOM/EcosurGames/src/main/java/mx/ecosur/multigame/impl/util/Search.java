@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
 import mx.ecosur.multigame.impl.pente.BeadString;
+import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.model.GameGrid;
 
 public class Search implements Serializable {
 	
