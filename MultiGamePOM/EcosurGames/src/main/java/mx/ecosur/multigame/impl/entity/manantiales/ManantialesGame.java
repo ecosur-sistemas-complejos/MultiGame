@@ -1,6 +1,7 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
@@ -21,6 +22,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -42,6 +51,8 @@ public class ManantialesGame extends GridGame {
 	private Mode mode; 
 	
 	private Set<CheckCondition> checkConditions;
+
+	private RuleBase ruleBase;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -100,11 +111,38 @@ public class ManantialesGame extends GridGame {
 	 * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
 	 */
 	public void initialize() {
-		setGrid(new GameGrid());
-		setState(GameState.WAITING);
-		setCreated(new Date());		
-		setColumns (9);
-		setRows(9);
+		this.setGrid(new GameGrid());
+	    this.setState(GameState.BEGIN);
+	    this.setCreated(new Date());
+		this.setColumns(9);
+		this.setRows(9);
+		
+		if (ruleBase == null) {
+			PackageBuilder builder = new PackageBuilder();
+		    InputStreamReader reader = new InputStreamReader(
+		    		getClass().getResourceAsStream(
+		    				"/mx/ecosur/multigame/impl/manantiales.drl"));
+		    try {
+				builder.addPackageFromDrl(reader);
+			} catch (DroolsParserException e) {
+				e.printStackTrace();
+				throw new RuntimeException (e);
+			} catch (IOException e) {			
+				e.printStackTrace();
+				throw new RuntimeException (e);
+			}
+		    ruleBase = RuleBaseFactory.newRuleBase();
+		    ruleBase.addPackage(builder.getPackage());
+		}
+		
+		StatefulSession session = ruleBase.newStatefulSession();
+		session.insert(this);
+		for (Object fact : getFacts()) {
+			session.insert(fact);
+		}
+		session.setFocus("initialize");
+		session.fireAllRules();
+		session.dispose();						
 	}
 
 	/* (non-Javadoc)
@@ -119,10 +157,37 @@ public class ManantialesGame extends GridGame {
 	 * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
 	 */
 	@Override
-	public void move(MoveImpl move) {
-		
-		
-		
+	public void move(MoveImpl move) throws InvalidMoveException {
+		try {
+			if (ruleBase == null) {
+				PackageBuilder builder = new PackageBuilder();
+			    InputStreamReader reader = new InputStreamReader(
+			    		getClass().getResourceAsStream(
+			    				"/mx/ecosur/multigame/impl/manantiales.drl"));
+			    builder.addPackageFromDrl(reader);
+			    ruleBase = RuleBaseFactory.newRuleBase();
+			    ruleBase.addPackage(builder.getPackage());
+			}
+			
+			/* Make the move */
+			StatefulSession session = ruleBase.newStatefulSession();
+			session.insert(this);
+			session.insert(move);
+			for (Object fact : getFacts()) {
+				session.insert(fact);
+			}
+			
+			session.setFocus("verify");
+		    session.fireAllRules();
+		    session.setFocus("move");
+		    session.fireAllRules();
+		    session.setFocus("evaluate");
+		    session.fireAllRules();
+		    session.dispose();			
+			
+		} catch (Exception e) {
+			throw new InvalidMoveException (e.getMessage());
+		}			
 	}
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {			

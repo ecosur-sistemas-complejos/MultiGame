@@ -33,6 +33,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -42,6 +43,7 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridGame;
 
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -105,6 +107,12 @@ public class GenteGame extends GridGame {
 	 */
 	@Override
 	public void initialize() {
+		this.setGrid(new GameGrid());
+	    this.setState(GameState.BEGIN);
+	    this.setCreated(new Date());
+		this.setColumns(9);
+		this.setRows(9);
+		
 		if (ruleBase == null) {
 			PackageBuilder builder = new PackageBuilder();
 		    InputStreamReader reader = new InputStreamReader(
@@ -121,9 +129,8 @@ public class GenteGame extends GridGame {
 			}
 		    ruleBase = RuleBaseFactory.newRuleBase();
 		    ruleBase.addPackage(builder.getPackage());
-		}
+		}			
 		
-		/* Make the move */
 		StatefulSession session = ruleBase.newStatefulSession();
 		session.insert(this);
 		for (Object fact : getFacts()) {

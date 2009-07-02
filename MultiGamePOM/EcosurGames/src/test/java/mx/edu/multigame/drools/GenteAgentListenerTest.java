@@ -19,6 +19,7 @@ import javax.naming.InitialContext;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
+
 import mx.ecosur.multigame.model.Game;
 
 import org.mockejb.MDBDescriptor;

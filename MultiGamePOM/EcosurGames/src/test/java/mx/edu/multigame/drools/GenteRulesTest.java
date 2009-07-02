@@ -65,6 +65,7 @@ public class GenteRulesTest extends RulesTestBase {
 	@Test
 	public void testInitialize () {
 		game.setState(GameState.BEGIN);
+		game.initialize();
 		assertTrue (game.getGrid().getCells().size() == 0);
 		Collection<GridPlayer> players = game.getPlayers();
 		GentePlayer p = null;
@@ -86,7 +87,7 @@ public class GenteRulesTest extends RulesTestBase {
 		int col = game.getColumns() / 2;
 		GridCell center = new GridCell (row, col, alice.getColor());
 		game.setState(GameState.BEGIN);
-		alice.setGame(game);
+		game.initialize();
 		GenteMove move = new GenteMove (alice, center);
 		game.move (move);		
 		assertEquals (MoveStatus.VERIFIED, move.getStatus());
@@ -99,6 +100,7 @@ public class GenteRulesTest extends RulesTestBase {
 		GridCell center = new GridCell (row, col, alice.getColor());
 		
 		game.setState(GameState.BEGIN);
+		game.initialize();
 		GenteMove move = new GenteMove (alice, center);
 		game.move (move);
 		assertEquals (MoveStatus.MOVED, move.getStatus());
@@ -107,10 +109,9 @@ public class GenteRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testValidateSubsequentMove () throws InvalidMoveException {
-		alice.setTurn (true);
+		game.initialize();
 		GridCell center = new GridCell (10, 10, alice.getColor());
 		game.getGrid().updateCell(center);
-		game.setState(GameState.PLAY);
 		
 		GridCell next = new GridCell (10,9, alice.getColor());
 		GenteMove subsequent = new GenteMove (alice, next);

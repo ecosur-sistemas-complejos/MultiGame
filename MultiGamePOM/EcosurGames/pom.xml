@@ -29,6 +29,7 @@
 			  <configuration>
 			    <excludes>
 			      <exclude>**/StandardSolverTest.java</exclude>
+			      <exclude>**/GenteAgentListenerTest.java</exclude>
 			    </excludes>
 			  </configuration>
 			</plugin>            

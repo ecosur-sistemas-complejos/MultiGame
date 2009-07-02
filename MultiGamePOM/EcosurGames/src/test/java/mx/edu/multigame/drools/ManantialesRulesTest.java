@@ -21,6 +21,7 @@ import javax.jms.Message;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 
 import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
@@ -110,7 +111,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testValidateMove () {
+	public void testValidateMove () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -123,7 +124,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}	
 	
 	@Test
-	public void testExecuteMove () {
+	public void testExecuteMove () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -141,7 +142,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testIntensiveMove () {
+	public void testIntensiveMove () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -175,7 +176,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testRowContiguousIntensiveConstraint () {
+	public void testRowContiguousIntensiveConstraint () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -192,7 +193,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testColumnContiguousIntensiveConstraint () {
+	public void testColumnContiguousIntensiveConstraint () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 
@@ -210,7 +211,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 
 	@Test
-	public void testDiagonalContiguousIntensiveConstraint() {
+	public void testDiagonalContiguousIntensiveConstraint() throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -228,7 +229,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testManantialesCheckConstraint () throws JMSException {
+	public void testManantialesCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
@@ -258,7 +259,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testManantialesCheckConstraintExpired () throws JMSException {
+	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
@@ -310,7 +311,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	
-	public void testManantialesCheckConstraintRelief() {
+	public void testManantialesCheckConstraintRelief() throws InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
@@ -340,7 +341,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	
 	@SuppressWarnings("unchecked")
-	public void testSouthernBorderDeforestedCheckConstraint () throws JMSException {
+	public void testSouthernBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,6, alice.getColor(), 
@@ -370,7 +371,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void testEasternBorderDeforestedCheckConstraint () throws JMSException {
+	public void testEasternBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (6,4, alice.getColor(), 
@@ -400,7 +401,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void testWesternBorderDeforestedCheckConstraint () throws JMSException {
+	public void testWesternBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (2,4, alice.getColor(), 
@@ -430,7 +431,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void testNorthernBorderDeforestedCheckConstraint () throws JMSException {
+	public void testNorthernBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,0, alice.getColor(), 
@@ -460,7 +461,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}	
 	
 	@Test
-	public void testBadYear () {
+	public void testBadYear () throws InvalidMoveException {
 		alice.setTurn (true);
 		game.setState(GameState.PLAY);
 		
@@ -475,7 +476,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testDeforestedCheckConstraint () throws JMSException {
+	public void testDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		alice.setTurn(true);
 		
@@ -514,7 +515,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testDeforestedCheckConstraintExpiration() throws JMSException {
+	public void testDeforestedCheckConstraintExpiration() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		alice.setTurn(true);
 		
@@ -589,7 +590,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testDeforestedCheckConstraintRelief () throws JMSException {
+	public void testDeforestedCheckConstraintRelief () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		alice.setTurn(true);
 		
@@ -639,7 +640,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testSouthernBorderRelief() throws JMSException {
+	public void testSouthernBorderRelief() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,6, alice.getColor(), 
@@ -682,7 +683,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNorthernBorderRelief() throws JMSException {
+	public void testNorthernBorderRelief() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,0, alice.getColor(), 
@@ -727,7 +728,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testEasternBorderRelief() throws JMSException {
+	public void testEasternBorderRelief() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (6,4, alice.getColor(), 
@@ -772,7 +773,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testWesternBorderRelief() throws JMSException {
+	public void testWesternBorderRelief() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (2,4, alice.getColor(), 
@@ -815,7 +816,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testWesternBorderExpiration() throws JMSException {
+	public void testWesternBorderExpiration() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (2,4, alice.getColor(), 
@@ -863,7 +864,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testEasternBorderExpiration() throws JMSException {
+	public void testEasternBorderExpiration() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (6,4, alice.getColor(), 
@@ -911,7 +912,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testSouthernBorderExpiration() throws JMSException {
+	public void testSouthernBorderExpiration() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,6, alice.getColor(), 
@@ -958,7 +959,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 
 	@SuppressWarnings("unchecked")
 	@Test	
-	public void testNorthernBorderExpiration() throws JMSException {
+	public void testNorthernBorderExpiration() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,0, charlie.getColor(), 
@@ -1004,7 +1005,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}	
 	
 	@Test
-	public void testStateChange() throws JMSException {
+	public void testStateChange() throws JMSException, InvalidMoveException {
 		int intensives = 3, moderates = 6, forested = 3;
 		Point [] points = { new Point (0,8), new Point (0,6), new Point (0,4),
 				new Point (1,4), new Point (2,4), new Point (3,4), 
@@ -1060,7 +1061,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@Test
-	public void testWin () throws JMSException {
+	public void testWin () throws JMSException, InvalidMoveException {
 		
 		game.setMode(Mode.SILVOPASTORAL);
 
@@ -1100,7 +1101,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	 * 
 	 */	
 	@Test 
-	public void testReplaceModerateWithIntensiveOnManantial() throws JMSException {
+	public void testReplaceModerateWithIntensiveOnManantial() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (4,3, bob.getColor(), 
@@ -1130,7 +1131,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("CONDITION RAISED ON CONVERSION!", filter.size() == 0);
 	}
 	
-	public void testReplaceModerateWithIntensiveOnBorder () throws JMSException {
+	public void testReplaceModerateWithIntensiveOnBorder () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
 		SolverFicha man1 = new SolverFicha (0,4, bob.getColor(), 
@@ -1158,7 +1159,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 
 	public void testReplaceModerateWithIntensiveOnBorderWithPopulatedBorders () 
-		throws JMSException 
+		throws JMSException, InvalidMoveException 
 	{
 		game.setState(GameState.PLAY);
 		

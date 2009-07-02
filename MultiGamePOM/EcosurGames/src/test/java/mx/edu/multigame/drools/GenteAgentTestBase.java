@@ -1,7 +1,6 @@
 package mx.edu.multigame.drools;
 
 import mx.ecosur.multigame.enums.GameState;
-import mx.ecosur.multigame.model.implementation.GameImpl;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;

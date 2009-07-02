@@ -160,7 +160,7 @@ rule "evaluate-first-move"
     agenda-group "verify"
 when
     game  : GenteGame (state == GameState.PLAY, $grid : grid)
-    move  : GenteMove (status == MoveStatus.UNVERIFIED, player.turn == true, player.color == Color.YELLOW)
+    move  : GenteMove (status != MoveStatus.VERIFIED, player.turn == true, player.color == Color.YELLOW)
     eval ($grid.getCells().isEmpty())
     eval (isCenter (game, move))    
 then
