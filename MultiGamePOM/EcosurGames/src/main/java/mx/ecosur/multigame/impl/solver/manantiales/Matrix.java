@@ -13,7 +13,7 @@ package mx.ecosur.multigame.impl.solver.manantiales;
 import java.util.Arrays;
 import java.util.List;
 
-import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.impl.Color;
 
 /**
  * A Matrix is a solvable set of distributions, such as what might appear

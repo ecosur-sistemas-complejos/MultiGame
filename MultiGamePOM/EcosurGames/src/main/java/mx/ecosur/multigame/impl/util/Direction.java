@@ -12,11 +12,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.util;
-
-import java.util.TreeSet;
-
-import mx.ecosur.multigame.model.Cell;
+package mx.ecosur.multigame.impl.util; 
 
 
 public enum Direction {

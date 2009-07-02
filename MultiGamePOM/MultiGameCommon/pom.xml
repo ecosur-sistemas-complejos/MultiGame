@@ -45,16 +45,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/StandardSolverTest.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-			
+			</plugin>			
 		</plugins>
 	</build>
 	<dependencies>

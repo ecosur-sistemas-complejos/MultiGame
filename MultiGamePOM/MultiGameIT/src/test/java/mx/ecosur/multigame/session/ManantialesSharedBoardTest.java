@@ -19,15 +19,15 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.GameType;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.impl.ejb.entity.Player;
 import mx.ecosur.multigame.manantiales.TokenType;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Player;
 import mx.ecosur.multigame.model.manantiales.Ficha;
 import mx.ecosur.multigame.model.manantiales.ManantialesGame;
 import mx.ecosur.multigame.model.manantiales.ManantialesMove;
@@ -135,7 +135,7 @@ public class ManantialesSharedBoardTest {
 		List<GamePlayer> players = board.getPlayers(gameId);
 		for (GamePlayer player : players) {
 			ManantialesGame playerGame = (ManantialesGame) player.getGame();
-			assertTrue ("Player has no check constraints, while the game does.", 
+			assertTrue ("Registrant has no check constraints, while the game does.", 
 					playerGame.getCheckConditions() != null);
 			assertTrue (playerGame.getCheckConditions().size() == game.getCheckConditions().size());
 		}

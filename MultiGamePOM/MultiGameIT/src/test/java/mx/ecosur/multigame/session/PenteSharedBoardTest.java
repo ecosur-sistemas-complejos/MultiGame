@@ -23,20 +23,20 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameState;
 import mx.ecosur.multigame.GameType;
 
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.ejb.entity.Cell;
+import mx.ecosur.multigame.impl.ejb.entity.GameGrid;
+import mx.ecosur.multigame.impl.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.impl.ejb.entity.Player;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PentePlayer;
-import mx.ecosur.multigame.model.Cell;
-import mx.ecosur.multigame.model.GameGrid;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Player;
+import mx.ecosur.multigame.impl.model.GameState;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;

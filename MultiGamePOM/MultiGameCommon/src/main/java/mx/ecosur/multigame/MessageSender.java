@@ -15,7 +15,6 @@
 package mx.ecosur.multigame;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -31,10 +30,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import mx.ecosur.multigame.enums.GameEvent;
+import mx.ecosur.multigame.model.Condition;
 import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.Condition;
 
 public class MessageSender {
 
@@ -61,10 +60,9 @@ public class MessageSender {
 			topic = (Topic) ic.lookup(TOPIC_JNDI_NAME);
 		} catch (NamingException e) {
 			logger
-					.severe("Not able to get JMS connection and topic from connection factory "
-							+ CONNECTION_FACTORY_JNDI_NAME
-							+ " and topic "
-							+ TOPIC_JNDI_NAME);
+					.severe("Unable to get JMS connection and topic from " +
+							"connection factory " + CONNECTION_FACTORY_JNDI_NAME
+							+ " and topic " + TOPIC_JNDI_NAME);
 			e.printStackTrace();
 		}
 
@@ -77,16 +75,14 @@ public class MessageSender {
 			topic = (Topic) context.lookup(TOPIC_JNDI_NAME);
 		} catch (NamingException e) {
 			logger
-					.severe("Not able to get JMS connection and topic from connection factory "
-							+ CONNECTION_FACTORY_JNDI_NAME
-							+ " and topic "
-							+ TOPIC_JNDI_NAME);
+					.severe("Not able to get JMS connection and topic from " +
+							"connection factory " + CONNECTION_FACTORY_JNDI_NAME
+							+ " and topic " + TOPIC_JNDI_NAME);
 			e.printStackTrace();
 		}
 	}
 
-	public void sendMessage(GameType type, int gameId, GameEvent gameEvent, 
-			Serializable body) 
+	public void sendMessage(int gameId, GameEvent gameEvent, Serializable body) 
 	{
 		try {
 			Connection connection = connectionFactory.createConnection();
@@ -94,7 +90,6 @@ public class MessageSender {
 					Session.AUTO_ACKNOWLEDGE);
 			MessageProducer producer = session.createProducer(topic);
 			ObjectMessage message = session.createObjectMessage();
-			message.setStringProperty("GAME_TYPE", type.name());
 			message.setIntProperty("GAME_ID", gameId);
 			message.setStringProperty("GAME_EVENT", gameEvent.toString());
 			message.setLongProperty("MESSAGE_ID", getNextMessageId(gameId));
@@ -125,7 +120,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendStartGame(Game game) {
-		sendMessage(game.getType(), game.getId(), GameEvent.BEGIN, null);
+		sendMessage(game.getId(), GameEvent.BEGIN, null);
 	}
 
 	/**
@@ -136,8 +131,7 @@ public class MessageSender {
 	 * @param players
 	 */
 	public void sendPlayerChange(Game game) {
-		ArrayList<Agent> players = new ArrayList<Agent> (game.getPlayers());
-		sendMessage(game.getType(), game.getId(), GameEvent.PLAYER_CHANGE, players);
+		sendMessage(game.getId(), GameEvent.PLAYER_CHANGE, game);
 	}
 
 	/**
@@ -147,18 +141,7 @@ public class MessageSender {
 	 */
 	public void sendMoveComplete(Move move) {
 		Game game = move.getPlayer().getGame();
-		sendMessage(game.getType(), game.getId(), GameEvent.MOVE_COMPLETE, move);
-	}
-
-	/**
-	 * Sends the GameEvent.QUALIFY_MOVE message with the move to be qualified.
-	 * 
-	 * @param move
-	 */
-	public void sendQualifyMove(Move move) {
-		Game game = move.getPlayer().getGame();
-		sendMessage(game.getType(), game.getId(), GameEvent.QUALIFY_MOVE,
-				move);
+		sendMessage(game.getId(), GameEvent.MOVE_COMPLETE, move);
 	}
 	
 	/**
@@ -168,8 +151,7 @@ public class MessageSender {
 	 */
 	public void sendConditionRaised (Move move, Condition condition) {
 		Game game = move.getPlayer().getGame();
-		sendMessage(game.getType(), game.getId(), GameEvent.CONDITION_RAISED,
-				condition);		
+		sendMessage(game.getId(), GameEvent.CONDITION_RAISED, condition);		
 	}
 	
 	/**
@@ -178,8 +160,7 @@ public class MessageSender {
 	 */
 	public void sendConditionResolved (Move move, Condition condition) {
 		Game game = move.getPlayer().getGame();
-		sendMessage (game.getType(), game.getId(), GameEvent.CONDITION_RESOLVED,
-				condition);
+		sendMessage (game.getId(), GameEvent.CONDITION_RESOLVED, condition);
 	}
 	
 	/** 
@@ -188,15 +169,14 @@ public class MessageSender {
 	 */
 	public void sendConditionTriggered (Move move, Condition condition) {
 		Game game = move.getPlayer().getGame();
-		sendMessage (game.getType(), game.getId(), GameEvent.CONDITION_TRIGGERED,
-				condition);		
+		sendMessage (game.getId(), GameEvent.CONDITION_TRIGGERED, condition);		
 	}
 	
 	/** 
 	 * Sends the GameEvent.STATE_CHANGE message with the game object.
 	 */
 	public void sendStateChange (Game game) {
-		sendMessage(game.getType(), game.getId(), GameEvent.STATE_CHANGE, game);
+		sendMessage(game.getId(), GameEvent.STATE_CHANGE, game);
 	}
 
 	/**
@@ -205,7 +185,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendEndGame(Game game) {
-		sendMessage(game.getType(), game.getId(), GameEvent.END, game);
+		sendMessage(game.getId(), GameEvent.END, game);
 	}
 
 }

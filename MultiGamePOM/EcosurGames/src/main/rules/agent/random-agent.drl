@@ -19,16 +19,12 @@
  * @author awaterma@ecosur.mx
 */
 
-package mx.ecosur.multigame.pente.strategy;
+package mx.ecosur.multigame.impl.entity.gente;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameState;
-import mx.ecosur.multigame.ejb.entity.Cell;
-import mx.ecosur.multigame.ejb.entity.GameGrid;
+import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.impl.model.GridCell;
 
-import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
-import mx.ecosur.multigame.impl.ejb.entity.pente.PenteMove;
-import mx.ecosur.multigame.impl.ejb.entity.pente.PenteStrategyPlayer;
+import mx.ecosur.multigame.impl.Color;
 
 import java.util.HashSet;
 import java.util.TreeSet;
@@ -37,11 +33,11 @@ import java.util.Random;
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
 when
-    game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : PenteStrategyPlayer (turn == true, color == Color.YELLOW, nextMove==null)
+    game   : GenteGame (state == GameState.PLAY, $grid : grid)
+    player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
     eval ($grid.getCells().isEmpty())
 then
-    PenteMove centerMove = new PenteMove (player, new Cell (
+    GenteMove centerMove = new GenteMove (player, new GridCell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
     modify (player) { suggestNextMove (centerMove) }
 end
@@ -49,23 +45,23 @@ end
 rule "random-move"
     no-loop true
 when
-    game   : PenteGame (state == GameState.PLAY, $grid : grid)
-    player : PenteStrategyPlayer (turn == true, nextMove == null)
+    game   : GenteGame (state == GameState.PLAY, $grid : grid)
+    player : GenteStrategyAgent (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    TreeSet<PenteMove> possible = player.determineAvailableMoves();
+    TreeSet<GenteMove> possible = player.determineAvailableMoves();
     if (possible.size() == 0) 
         possible = player.determineAvailableMoves (player.oppositionColors());
-    PenteMove destination = null;
+    GenteMove destination = null;
     Random random = new Random (System.currentTimeMillis());
-    for (PenteMove move : possible) {
+    for (GenteMove move : possible) {
         if (random.nextBoolean()) { 
             destination = move; 
             break;
         }
     }
     if (destination == null)
-        for (PenteMove move : possible) {
+        for (GenteMove move : possible) {
             destination = move;
             break;
          }

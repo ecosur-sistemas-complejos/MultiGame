@@ -24,6 +24,14 @@
                     </archive>
                 </configuration>
             </plugin>
+			<plugin>
+			  <artifactId>maven-surefire-plugin</artifactId>
+			  <configuration>
+			    <excludes>
+			      <exclude>**/StandardSolverTest.java</exclude>
+			    </excludes>
+			  </configuration>
+			</plugin>            
         </plugins>	
 		<resources>
 			<resource>
@@ -46,7 +54,7 @@
 	<dependencies>
 	    <dependency>
 	        <groupId>mx.ecosur</groupId>
-	        <artifactId>multi-game-core</artifactId>
+	        <artifactId>multi-game-common</artifactId>
 	        <version>${version}</version>
 	        <type>ejb-client</type>
         </dependency>

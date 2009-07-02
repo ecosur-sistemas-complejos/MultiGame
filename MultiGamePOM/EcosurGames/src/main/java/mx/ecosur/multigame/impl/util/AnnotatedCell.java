@@ -13,20 +13,20 @@
 
 package mx.ecosur.multigame.impl.util;
 
-import mx.ecosur.multigame.model.Cell;
+import mx.ecosur.multigame.impl.model.GridCell;
 
 public class AnnotatedCell {
 	
 	private Direction direction;
 	
-	private Cell cell;
+	private GridCell cell;
 	
-	public AnnotatedCell (Cell cell) {
+	public AnnotatedCell (GridCell cell) {
 		this.cell = cell;
 		this.direction = Direction.UNKNOWN;
 	}
 	
-	public AnnotatedCell (Cell cell, Direction direction) {
+	public AnnotatedCell (GridCell cell, Direction direction) {
 		this.cell = cell;
 		this.direction = direction;
 	}
@@ -39,7 +39,7 @@ public class AnnotatedCell {
 		this.direction = direction;
 	}
 
-	public Cell getCell() {
+	public GridCell getCell() {
 		return cell;
 	}
 

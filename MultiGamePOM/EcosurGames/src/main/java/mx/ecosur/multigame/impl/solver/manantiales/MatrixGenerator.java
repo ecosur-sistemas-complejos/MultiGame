@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.util.Permutations;
 
 /**

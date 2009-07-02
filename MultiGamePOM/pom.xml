@@ -65,7 +65,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-		        <module>MultiGameCore</module>
+		        <module>MultiGameCommon</module>
 		        <module>EcosurGames</module>
 		        <module>EcosurFlexClient</module>
 		        <module>MultiGameEAR</module>

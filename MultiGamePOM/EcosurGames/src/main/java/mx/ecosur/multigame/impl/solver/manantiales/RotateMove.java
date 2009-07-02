@@ -10,9 +10,9 @@
  */
 package mx.ecosur.multigame.impl.solver.manantiales;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.manantiales.BorderType;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;

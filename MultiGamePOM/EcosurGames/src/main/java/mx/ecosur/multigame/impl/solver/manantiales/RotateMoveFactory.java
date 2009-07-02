@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.manantiales.BorderType;
+import mx.ecosur.multigame.impl.CellComparator;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.move.factory.AbstractMoveFactory;

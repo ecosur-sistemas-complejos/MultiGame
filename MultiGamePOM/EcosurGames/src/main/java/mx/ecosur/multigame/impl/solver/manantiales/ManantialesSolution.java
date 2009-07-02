@@ -15,10 +15,10 @@ import java.util.HashMap;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.CellComparator;
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.impl.CellComparator;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
 

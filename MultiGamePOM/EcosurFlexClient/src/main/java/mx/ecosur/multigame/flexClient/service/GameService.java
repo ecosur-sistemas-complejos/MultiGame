@@ -15,21 +15,21 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 
-import mx.ecosur.multigame.Color;
 import mx.ecosur.multigame.ejb.RegistrarRemote;
 import mx.ecosur.multigame.ejb.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.ejb.entity.Game;
+import mx.ecosur.multigame.impl.ejb.entity.GameGrid;
+import mx.ecosur.multigame.impl.ejb.entity.GamePlayer;
+import mx.ecosur.multigame.impl.ejb.entity.Move;
+import mx.ecosur.multigame.impl.ejb.entity.Player;
 import mx.ecosur.multigame.impl.ejb.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
 import mx.ecosur.multigame.impl.ejb.entity.pente.PenteStrategyPlayer;
 import mx.ecosur.multigame.impl.pente.PenteStrategy;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GameGrid;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.model.Player;
 import mx.ecosur.multigame.GameType;
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;

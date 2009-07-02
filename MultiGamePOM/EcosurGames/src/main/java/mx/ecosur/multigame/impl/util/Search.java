@@ -19,10 +19,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.pente.BeadString;
-import mx.ecosur.multigame.model.Cell;
-import mx.ecosur.multigame.model.GameGrid;
+import mx.ecosur.multigame.impl.Color;
+
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.gente.BeadString;
 
 public class Search implements Serializable {
 	
@@ -42,7 +43,7 @@ public class Search implements Serializable {
 	 *
 	 */
 	public Set<AnnotatedCell> findCandidates(AnnotatedCell startingCell, 
-			Cell destination, Color[] targetColors, int depth) 
+			GridCell destination, Color[] targetColors, int depth) 
 	{
 		Set<AnnotatedCell> ret = new HashSet<AnnotatedCell> ();
 		
@@ -64,7 +65,7 @@ public class Search implements Serializable {
 			for (int i = 0; i < depth - 1; i++) {
 				for (Color targetColor : targetColors) {
 						/* Search the grid to the depth of current, + 1 */
-					Cell result = this.searchGrid(startingCell.getDirection(), 
+					GridCell result = this.searchGrid(startingCell.getDirection(), 
 							startingCell.getCell(), targetColor, i + 1);
 					if (result != null && result.getColor() == targetColor) {
 						ret.add(new AnnotatedCell (result, 
@@ -84,12 +85,12 @@ public class Search implements Serializable {
      * cell to the list.
 	 */
 	public Set<AnnotatedCell> findAdjacentCells(Color[] targetColors, 
-			Cell destination) 
+			GridCell destination) 
 	{
 		HashMap <AnnotatedCell,Direction> adjacent = new HashMap <AnnotatedCell,Direction> ();
 		for (Direction d : Direction.values()) {
 			for (Color color : targetColors) {
-				Cell result = this.searchGrid (d, destination, color, 1);
+				GridCell result = this.searchGrid (d, destination, color, 1);
 				if (result != null && !adjacent.containsValue(d) && result.getColor().equals(color)) 
 					adjacent.put (new AnnotatedCell (result,d),d);
 			}
@@ -98,12 +99,12 @@ public class Search implements Serializable {
 		return adjacent.keySet();
 	}
 	
-	public Cell searchGrid (Direction direction, Cell cell, int factor) {
+	public GridCell searchGrid (Direction direction, GridCell cell, int factor) {
 		return searchGrid (direction, cell, Color.UNKNOWN, factor);
 	}
 
 	/*
-	 * Returns a Cell to be searched for within a grid, with a factor of 
+	 * Returns a GridCell to be searched for within a grid, with a factor of 
 	 * change defined by "factor".  North is considered the "top" of the 
 	 * board, meaning the lowest row.  All other cardinal points are derived 
 	 * from this simple map.
@@ -112,7 +113,7 @@ public class Search implements Serializable {
 	 * @param factor
 	 * @return
 	 */
-	public Cell searchGrid(Direction direction, Cell cell, Color color, int factor) {
+	public GridCell searchGrid(Direction direction, GridCell cell, Color color, int factor) {
 		int row = 0, column = 0;
 		switch (direction) {
 			case NORTH:
@@ -152,17 +153,17 @@ public class Search implements Serializable {
 
 		}
 
-		Cell searchCell = new Cell (column, row, color);
+		GridCell searchCell = new GridCell (column, row, color);
 		return grid.getLocation(searchCell);
 	}
 	
-	public HashMap<Vertice, HashSet<BeadString>> getString (Cell startingCell, 
+	public HashMap<Vertice, HashSet<BeadString>> getString (GridCell startingCell, 
 			int stringlength) 
 	{
 		return getString (startingCell, stringlength, false);
 	}
 	
-	public HashMap<Vertice, HashSet<BeadString>> getString(Cell startingCell, 
+	public HashMap<Vertice, HashSet<BeadString>> getString(GridCell startingCell, 
 			int stringlength, boolean compliment) 
 	{
 		HashMap<Vertice, HashSet<BeadString>> ret = new HashMap<Vertice, HashSet<BeadString>> ();
@@ -221,7 +222,7 @@ public class Search implements Serializable {
 	}
 
 	private HashMap<Vertice, HashSet<BeadString>> processTerminalString(
-			Cell startingCell, int stringlength, HashMap<Vertice, 
+			GridCell startingCell, int stringlength, HashMap<Vertice, 
 			HashSet<BeadString>> ret, Vertice v, BeadString string) 
 	{
 		string = string.trim (startingCell, stringlength);
@@ -233,7 +234,7 @@ public class Search implements Serializable {
 	}
 	
 	private HashMap<Vertice, HashSet<BeadString>> processMiddleString (
-			Cell startingCell, int stringlength, HashMap<Vertice, 
+			GridCell startingCell, int stringlength, HashMap<Vertice, 
 			HashSet<BeadString>> ret, Vertice v, BeadString string) 
 	{
 		/* Simple middle case */
@@ -241,15 +242,15 @@ public class Search implements Serializable {
 			addString (ret, v, string);
 		} else {
 			/* Joined Case */
-			TreeSet<Cell> cells = string.getBeads();
+			TreeSet<GridCell> cells = string.getBeads();
 			BeadString top = new BeadString ();
 			BeadString bottom = new BeadString ();
-			for (Cell cell : cells) {
+			for (GridCell cell : cells) {
 				if (cell.equals(startingCell))
 					break;
 				top.add(cell);
 			}
-			bottom.setBeads(new TreeSet<Cell>(cells.tailSet(startingCell)));
+			bottom.setBeads(new TreeSet<GridCell>(cells.tailSet(startingCell)));
 
 			/* ensure top and bottom have the destination cell */
 			top.add(startingCell);

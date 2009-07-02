@@ -11,74 +11,55 @@
 package mx.edu.multigame.drools;
 
 import java.awt.Point;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.GameState;
 
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.CheckCondition;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.ManantialesMove;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.impl.Color;
 
-import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
 
-import mx.ecosur.multigame.impl.manantiales.BorderType;
-import mx.ecosur.multigame.impl.manantiales.Mode;
-import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
+import mx.ecosur.multigame.impl.enums.manantiales.Mode;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.solver.manantiales.SolverFicha;
-import mx.ecosur.multigame.model.Cell;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GameGrid;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.model.Player;
 
-import org.drools.FactHandle;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ManantialesRulesTest extends RulesTestBase {
 	
-	private static RuleBase Ruleset = GameType.MANANTIALES.getRuleBase();
-	
-	private static boolean DEBUG = false;
-	
 	private ManantialesGame game;
 	
 	private ManantialesPlayer alice, bob, charlie, denise;
-
-	private StatefulSession statefulSession;
 	
 	@Before
 	public void setUp() throws Exception {
 
 		super.setUp();
 		
-		game = new ManantialesGame();
-		game.initialize(GameType.MANANTIALES);
-		statefulSession = Ruleset.newStatefulSession();
-		if (DEBUG)
-			statefulSession.addEventListener(new DebugEventListener());
-		Player[] players = {
-				new Player ("alice"),
-				new Player ("bob"),
-				new Player ("charlie"),
-				new Player ("denise") };
+		game = new ManantialesGame();		
+		GridRegistrant[] players = {
+				new GridRegistrant ("alice"),
+				new GridRegistrant ("bob"),
+				new GridRegistrant ("charlie"),
+				new GridRegistrant ("denise") };
 		
 		Color [] colors = Color.values();
 		int counter = 0;
@@ -86,11 +67,10 @@ public class ManantialesRulesTest extends RulesTestBase {
 		for (int i = 0; i < colors.length; i++) {
 			if (colors [ i ].equals(Color.UNKNOWN) || colors [ i ].equals(Color.GREEN))
 					continue;
-			game.addPlayer (new ManantialesPlayer (game, players [ counter++ ], 
-					colors [ i ]));
+			game.registerPlayer (players [ counter++ ]);
 		}
 		
-		for (GamePlayer player : game.getPlayers()) {
+		for (GridPlayer player : game.getPlayers()) {
 			if (player.getPlayer().getName().equals("alice")) {
 				alice = (ManantialesPlayer) player;				
 			} else if (player.getPlayer().getName().equals("bob")) {
@@ -101,38 +81,29 @@ public class ManantialesRulesTest extends RulesTestBase {
 				denise = (ManantialesPlayer)player;
 			}
 		}
-
 		
-		statefulSession.insert(game);
-		statefulSession.setFocus("initialize");
-		statefulSession.fireAllRules();
+		game.initialize();
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
-		statefulSession.dispose();
 	}
 	
 	@Test
 	public void testInitialize () {
 		game = new ManantialesGame();
-		game.initialize(GameType.MANANTIALES);
-		game.setState(GameState.BEGIN);
-		
-		game.addPlayer(alice);
-		game.addPlayer(bob);
-		game.addPlayer(charlie);
-		game.addPlayer(denise);		
-		
-		statefulSession.insert(game);
-		statefulSession.setFocus("initialize");
-		statefulSession.fireAllRules();
+		game.setState(GameState.BEGIN);	
+		game.initialize();
 	
 		assertTrue (game.getGrid().getCells().size() == 0);
-		List<GamePlayer> players = game.getPlayers();
+		Collection<GridPlayer> players = game.getPlayers();
+		GridPlayer p = null;
+		for (GridPlayer player : players) {
+			if (player.getPlayer().getName().equals("alice"))
+				p = player;
+		}
 		
-		GamePlayer p = players.get(players.indexOf(alice));
 		assertNotNull (p);
 		assertEquals ("alice", p.getPlayer().getName());
 		assertEquals (true, p.isTurn());
@@ -146,13 +117,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha play = new SolverFicha (5, 4, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove (alice, play);
+		game.move (move);
 		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		statefulSession.insert(game.getGrid().getCells());
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();		
-		assertEquals (Move.Status.VERIFIED, move.getStatus());		
+		assertEquals (MoveStatus.VERIFIED, move.getStatus());		
 	}	
 	
 	@Test
@@ -163,9 +130,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha play = new SolverFicha (5, 4, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove (alice, play);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (play, game.getGrid().getLocation(play));
 		
 		/* test the scoring */
@@ -181,18 +148,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha mod = new SolverFicha (5, 4, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove (alice, mod);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (mod, game.getGrid().getLocation(mod));
 		
 		/* test the scoring */
 		assertEquals (1, alice.getModerate());
-		assertEquals (2, alice.getScore());		
-		
-		/* Remove the previous move from working memory */
-		FactHandle fh = statefulSession.getFactHandle(move);
-		statefulSession.retract(fh);		
+		assertEquals (2, alice.getScore());			
 		
 		/* Give alice her turn */
 		alice.setTurn(true);
@@ -201,9 +164,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha intensive = new SolverFicha (5,4, alice.getColor(),
 				TokenType.INTENSIVE_PASTURE);
 		move = new ManantialesMove (alice, mod, intensive);
-		fireRules (game,move);		
+		game.move (move);		
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());	
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());	
 		
 		assertEquals(1, alice.getIntensive());
 		assertEquals(0, alice.getModerate());
@@ -223,9 +186,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		game.getGrid().updateCell(contig1);
 		ManantialesMove move = new ManantialesMove (alice, contig2);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.INVALID, move.getStatus());
+		assertEquals (MoveStatus.INVALID, move.getStatus());
 	}
 	
 	@Test
@@ -240,9 +203,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		game.getGrid().updateCell(contig1);
 		ManantialesMove move = new ManantialesMove (alice, contig2);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.INVALID, move.getStatus());
+		assertEquals (MoveStatus.INVALID, move.getStatus());
 	}
 	
 
@@ -258,9 +221,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		game.getGrid().updateCell(contig1);
 		ManantialesMove move = new ManantialesMove (alice, contig2);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.INVALID, move.getStatus());
+		assertEquals (MoveStatus.INVALID, move.getStatus());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -279,9 +242,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);		
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -309,10 +272,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);		
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
-		
-		FactHandle mh = statefulSession.getFactHandle(move);
-		statefulSession.retract(mh);
+		game.move (move);
 		
 		/* Now have the instigator move */
 		bob.setTurn (true);
@@ -320,7 +280,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (bob, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertEquals (GameState.END, game.getState());
 		
@@ -364,10 +324,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);		
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
-		
-		FactHandle mh = statefulSession.getFactHandle(move);
-		statefulSession.retract(mh);
+		game.move (move);
 		
 		/* Fix the first condition and relieve the checkConstraint
 		 */		
@@ -375,9 +332,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha resolver = new SolverFicha (4,3, alice.getColor(),
 				TokenType.MANAGED_FOREST);
 		move = new ManantialesMove (alice, man1, resolver);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());			
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());			
 		assertEquals (0, game.getCheckConditions().size());						
 	}	
 	
@@ -397,9 +354,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -427,9 +384,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -457,9 +414,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -487,9 +444,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -510,9 +467,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer(alice);
 		move.setBadYear(true);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.UNVERIFIED, move.getStatus());		
+		assertEquals (MoveStatus.UNVERIFIED, move.getStatus());		
 	}
 	
 	
@@ -539,9 +496,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
 		move.setDestination(deforest);
-		fireRules (game,move);				
+		game.move (move);				
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -578,9 +535,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
 		move.setDestination(deforest);
-		fireRules (game,move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -591,10 +548,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
 				filter.size() > 0);
 		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
-		
 		/* Test expiration and consequences */
 		
 		/* Now have the previous player move */
@@ -603,7 +556,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (denise, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertEquals (GameState.END, game.getState());
 		
@@ -657,9 +610,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
 		move.setDestination(deforest);
-		fireRules (game,move);				
+		game.move (move);				
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -668,11 +621,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
-				filter.size() == 1);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+				filter.size() == 1);	
 		
 		/* Now, relieve the constraint */
 		SolverFicha reforest = new SolverFicha (0, 5, alice.getColor(),
@@ -682,9 +631,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		alice.setTurn(true);		
 		move = new ManantialesMove (alice, deforest, reforest);
 		
-		fireRules (game,move);				
+		game.move (move);				
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (0, game.getCheckConditions().size());	
 	}
 	
@@ -704,9 +653,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -714,11 +663,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					filter.add(message);
 		}
 		
-		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);	
 		
 		/* Relieve the constraint */
 		denise.setTurn(false);
@@ -728,9 +673,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 				TokenType.MANAGED_FOREST);
 		move = new ManantialesMove (alice, man3, resolve);
 		
-		fireRules (game,move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());			
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());			
 		assertEquals (0, game.getCheckConditions().size());		
 		
 	}
@@ -751,9 +696,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -762,11 +707,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);	
 		
 		/* Relieve the constraint */
 		denise.setTurn(false);
@@ -776,9 +717,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 				TokenType.MANAGED_FOREST);
 		move = new ManantialesMove (alice, man3, resolve);
 		
-		fireRules (game,move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());	
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConditions().size());			
 		
 		
@@ -800,9 +741,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -812,10 +753,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		/* Should only be one message */
 		assertTrue (filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
 
 		
 		/* Relieve the constraint */
@@ -826,9 +763,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 				TokenType.MANAGED_FOREST);
 		move = new ManantialesMove (alice, resolve);
 		
-		fireRules (game,move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());	
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConditions().size());		
 		
 	}
@@ -849,9 +786,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -862,10 +799,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 		/* Should only be one message */
 		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
 		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);
-		
 		/* Relieve the constraint */
 		denise.setTurn(false);
 		alice.setTurn (true);
@@ -874,9 +807,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 				TokenType.MANAGED_FOREST);
 		move = new ManantialesMove (alice, resolve);
 		
-		fireRules (game,move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());	
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());	
 		assertEquals (0, game.getCheckConditions().size());				
 	}
 	
@@ -896,9 +829,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -907,11 +840,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITON message intercepted!", filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue ("No RAISED_CONDITON message intercepted!", filter.size() > 0);	
 
 		/* Now have the instigator move */
 		bob.setTurn (true);
@@ -919,7 +848,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (bob, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertTrue (isTerritoryCleared (BorderType.WEST, game.getGrid()));		
 		
@@ -948,9 +877,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -959,11 +888,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue (filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue (filter.size() > 0);	
 
 		/* Now have the instigator move */
 		bob.setTurn (true);
@@ -971,7 +896,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (bob, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertTrue (isTerritoryCleared (BorderType.EAST, game.getGrid()));	
 		
@@ -1000,9 +925,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -1011,18 +936,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);	
 
 		bob.setTurn (true);
 		
 		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (bob, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertTrue (isTerritoryCleared (BorderType.SOUTH, game.getGrid()));		
 		
@@ -1051,9 +972,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		charlie.setTurn(true);
 		ManantialesMove move = new ManantialesMove (charlie, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -1062,18 +983,14 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);
-		
-		/* Only one move at a time, remove the previous move from WM */
-		FactHandle handle = this.statefulSession.getFactHandle(move);
-		statefulSession.retract(handle);		
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() > 0);		
 
 		bob.setTurn (true);
 		
 		SolverFicha terminator = new SolverFicha (0,2, bob.getColor(), 
 				TokenType.MANAGED_FOREST);		
 		move = new ManantialesMove (bob, terminator);
-		fireRules (game, move);
+		game.move (move);
 		
 		assertTrue (isTerritoryCleared (BorderType.NORTH, game.getGrid()));
 		
@@ -1122,9 +1039,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		/* Denise is RED */
 		denise.setTurn(true);
 		ManantialesMove move = new ManantialesMove (denise, end);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());				
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());				
 		assertEquals (0, denise.getScore());
 		
 		ArrayList filter = new ArrayList();		
@@ -1164,9 +1081,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		/* Denise is RED */
 		denise.setTurn(true);
 		ManantialesMove move = new ManantialesMove (denise, end);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());				
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());				
 		assertEquals (33, denise.getScore());
 		
 		ArrayList filter = new ArrayList();		
@@ -1200,9 +1117,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move.setPlayer(bob);
 		move.setCurrent(man2);
 		move.setDestination(man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -1227,9 +1144,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		bob.setTurn(true);		
 		ManantialesMove move = new ManantialesMove (bob, man1, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -1268,9 +1185,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		/* Convert Moderate to Intensive */
 		bob.setTurn(true);		
 		ManantialesMove move = new ManantialesMove (bob, man1, man3);
-		fireRules (game, move);
+		game.move (move);
 		
-		assertEquals (Move.Status.EVALUATED, move.getStatus());		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
@@ -1288,7 +1205,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	 */
 	private boolean isTerritoryCleared(BorderType borderType, GameGrid grid) {
 		boolean ret  = grid.getCells() != null && grid.getCells().size() > 0;
-		for (Cell cell : grid.getCells()) {
+		for (GridCell cell : grid.getCells()) {
 			Ficha ficha = (Ficha) cell;
 			if (ficha.getBorder().equals(borderType)) {
 				ret = false;
@@ -1296,20 +1213,5 @@ public class ManantialesRulesTest extends RulesTestBase {
 			}			
 		}
 		return ret;
-	}
-
-	private void fireRules(Game game, ManantialesMove move) {
-		
-		statefulSession.insert(game);
-		statefulSession.insert(move);
-		for (Object obj : game.getFacts()) {
-			statefulSession.insert(obj);
-		}
-		statefulSession.setFocus("verify");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("move");
-		statefulSession.fireAllRules();
-		statefulSession.setFocus ("evaluate");
-		statefulSession.fireAllRules();
 	}	
 }

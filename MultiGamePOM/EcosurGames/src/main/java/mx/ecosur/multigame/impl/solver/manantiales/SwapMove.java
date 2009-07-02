@@ -10,8 +10,8 @@
  */
 package mx.ecosur.multigame.impl.solver.manantiales;
 
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.manantiales.TokenType;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;

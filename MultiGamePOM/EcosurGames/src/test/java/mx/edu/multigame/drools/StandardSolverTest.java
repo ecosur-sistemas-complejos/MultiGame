@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import mx.ecosur.multigame.Color;
+import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.solver.manantiales.Distribution;
 import mx.ecosur.multigame.impl.solver.manantiales.ManantialesSolution;
 import mx.ecosur.multigame.impl.solver.manantiales.Matrix;
