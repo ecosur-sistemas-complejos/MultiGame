@@ -132,4 +132,12 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		pr.persist(chatMessage);
 		pr.flush();
 	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
+	 */
+	public Move updateMove(Move move) {
+		pr.merge(move.getImplementation());
+		return move;
+	}
 }

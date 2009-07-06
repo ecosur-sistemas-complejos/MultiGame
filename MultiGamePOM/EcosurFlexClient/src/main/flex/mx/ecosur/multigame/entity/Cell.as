@@ -17,7 +17,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents a server side cell object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Cell")]
+	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridCell")]
 	public class Cell extends UIComponent{
 		
 		protected var _row:int;

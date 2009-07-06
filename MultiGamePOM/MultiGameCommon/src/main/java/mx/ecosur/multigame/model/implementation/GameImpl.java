@@ -58,4 +58,10 @@ public interface GameImpl extends Implementation {
 	 */
 	public Collection<MoveImpl> getMoves();
 
+	/**
+	 * @param implementation
+	 * @return
+	 */
+	public GamePlayerImpl addPlayer(GamePlayerImpl implementation);
+
 }

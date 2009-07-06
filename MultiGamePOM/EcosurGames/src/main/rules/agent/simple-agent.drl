@@ -37,7 +37,7 @@ when
 then
     GenteMove centerMove = new GenteMove (player, new GridCell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
-    modify (player) { suggestNextMove (centerMove) }
+    modify (player) { setNextMove (centerMove) }
 end
 
 
@@ -78,5 +78,5 @@ then
              }
         }
     }
-    modify (player) { suggestNextMove (nextMove) }
+    modify (player) { setNextMove (nextMove) }
 end

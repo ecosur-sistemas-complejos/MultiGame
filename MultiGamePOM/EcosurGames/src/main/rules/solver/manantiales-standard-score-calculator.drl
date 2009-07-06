@@ -7,8 +7,9 @@ package mx.ecosur.multigame.impl.entity.manantiales
 
 import java.util.ArrayList;
 
-import mx.ecosur.multigame.Color;
-import mx.ecosur.multigame.impl.solver.manantiales.SolverFicha;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.enums.manantiales.*;
+import mx.ecosur.multigame.impl.solver.manantiales.*;
 
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
@@ -144,6 +145,7 @@ rule "too many deforested sites"
         insertLogical (new UnweightedConstraintOccurrence(
             "Too many deforested sites", $list));
 end  
+
 
 #Enforce territorial constraints
 rule "blue territory worth at least 24 points"

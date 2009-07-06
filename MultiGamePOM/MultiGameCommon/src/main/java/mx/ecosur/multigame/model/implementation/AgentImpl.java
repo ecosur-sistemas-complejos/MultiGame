@@ -14,6 +14,5 @@ public interface AgentImpl extends GamePlayerImpl {
 	
 	public void initialize();
 
-	public MoveImpl nextMove();
-
+	public MoveImpl determineNextMove();
 }

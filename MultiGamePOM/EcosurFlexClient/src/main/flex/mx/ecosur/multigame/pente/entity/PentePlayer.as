@@ -17,7 +17,7 @@ package mx.ecosur.multigame.pente.entity {
 	/**
 	 * Represents a server side GamePlayer object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.pente.PentePlayer")]
+	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GentePlayer")]
 	public class PentePlayer extends GamePlayer{
 		
 		private var _points:int;

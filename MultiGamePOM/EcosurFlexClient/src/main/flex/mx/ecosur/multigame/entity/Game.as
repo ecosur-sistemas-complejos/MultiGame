@@ -18,7 +18,7 @@ package mx.ecosur.multigame.entity {
 	 * Not all server side properties are represented on
 	 * the client for speed of parsing
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.Game")]
+	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridGame")]
 	public class Game {
 		
 		private var _id:int;

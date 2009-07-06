@@ -39,7 +39,7 @@ when
 then
     GenteMove centerMove = new GenteMove (player, new GridCell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
-    modify (player) { suggestNextMove (centerMove) }
+    modify (player) { setNextMove (centerMove) }
 end
 
 rule "random-move"
@@ -65,5 +65,5 @@ then
             destination = move;
             break;
          }
-    modify (player) { suggestNextMove (destination) }
+    modify (player) { setNextMove (destination) }
 end

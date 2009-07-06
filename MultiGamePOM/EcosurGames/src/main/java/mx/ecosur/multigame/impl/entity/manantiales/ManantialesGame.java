@@ -11,6 +11,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
@@ -68,7 +69,7 @@ public class ManantialesGame extends GridGame {
     	boolean ret = false;
     	if (checkConditions != null) {
 	    	for (CheckCondition condition : checkConditions) {
-	    		if (condition.getReason().equals(type)) {
+	    		if (condition.getType().equals(type)) {
 	    			ret = true;
 	    		}
 	    	}
@@ -98,10 +99,9 @@ public class ManantialesGame extends GridGame {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.Game#getFacts()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public Set getFacts() {
-		Set facts = super.getFacts();
+	public Set<Implementation> getFacts() {
+		Set<Implementation> facts = super.getFacts();
 		if (checkConditions != null)
 			facts.addAll(checkConditions);
 		return facts;
@@ -173,7 +173,7 @@ public class ManantialesGame extends GridGame {
 			StatefulSession session = ruleBase.newStatefulSession();
 			session.insert(this);
 			session.insert(move);
-			for (Object fact : getFacts()) {
+			for (Implementation fact : getFacts()) {
 				session.insert(fact);
 			}
 			
@@ -186,6 +186,7 @@ public class ManantialesGame extends GridGame {
 		    session.dispose();			
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new InvalidMoveException (e.getMessage());
 		}			
 	}

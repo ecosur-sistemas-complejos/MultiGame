@@ -20,19 +20,13 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GameGrid;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.junit.Test;
 
 
 public class GenteAgentLogicTest extends GenteAgentTestBase {
-	
-	private static boolean DEBUG = false;
-	
 	
 	@Test
 	/* Simple test to check the Available move logic in GenteStrategyAgent */
@@ -104,8 +98,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	
 	@Test
 	public void testRandomNextMove () throws InvalidMoveException {
-		alice.setTurn(true);
-		GenteMove next = fireRules (alice);
+		GenteMove next = alice.determineNextMove();
+		//GenteMove next = alice.nextMove();
 		assertNotNull (next);
 		game.move(next);
 		/* Validate that the move was made */
@@ -124,8 +118,10 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	
 	@Test
 	public void testBlockerNextMove () throws InvalidMoveException {
+		alice.setTurn(false);
 		bob.setTurn(true);
-		GenteMove next = fireRules (bob);
+		bob.determineNextMove();
+		GenteMove next = (GenteMove) bob.getNextMove();
 		assertNotNull (next);
 		/* Ensure that the last move blocks a score by blue or green */
 		GridCell destination = (GridCell) next.getDestination();
@@ -149,7 +145,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	@Test
 	public void testSimpleNextMove () throws InvalidMoveException {
 		charlie.setTurn(true);
-		GenteMove next = fireRules (charlie);
+		charlie.determineNextMove();
+		GenteMove next = (GenteMove) charlie.getNextMove();
 		assertNotNull (next);
 		/* Validate that the next move is possible */
 		game.move (next);
@@ -167,22 +164,11 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		game.setState(GameState.PLAY);
 		
 		charlie.setTurn(true);
-		GenteMove next = fireRules (charlie);
+		charlie.determineNextMove();
+		GenteMove next = (GenteMove) charlie.getNextMove();
 		assertNotNull (next);
 		/* Validate that the next move is possible */
 		game.move (next);
 		assertEquals (MoveStatus.EVALUATED, next.getStatus());		
-	}
-	
-	
-	private GenteMove fireRules(GenteStrategyAgent player) {
-		RuleBase rules = player.getStrategy().getRuleBase();
-		StatefulSession statefulSession = rules.newStatefulSession();
-		if (DEBUG)
-			statefulSession.addEventListener(new DebugEventListener());
-		statefulSession.insert(player);
-		statefulSession.insert(game);
-		statefulSession.fireAllRules();
-		return (GenteMove) player.nextMove();
 	}
 }

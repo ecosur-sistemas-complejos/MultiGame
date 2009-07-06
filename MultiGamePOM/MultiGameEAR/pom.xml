@@ -67,7 +67,7 @@
 		                <modules>
 		                    <ejbModule>
 		                        <groupId>mx.ecosur</groupId>
-		                        <artifactId>multi-game-core</artifactId>
+		                        <artifactId>multi-game-common</artifactId>
 		                    </ejbModule>
                             <ejbModule>
                                 <groupId>mx.ecosur</groupId>

@@ -40,7 +40,6 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 		game.initialize();
 		
 		setupBoard(game);
-		game.initialize();
 	}
 
 
@@ -73,6 +72,5 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 		grid.updateCell(green2);
 		
 		game.setGrid(grid);
-		game.setState(GameState.BEGIN);
 	}
 }

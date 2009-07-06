@@ -28,8 +28,8 @@ public class Agent extends GamePlayer {
 		implementation.initialize();
 	}
 
-	public Move nextMove() {
-		MoveImpl move = implementation.nextMove();
+	public Move determineNextMove() {
+		MoveImpl move = implementation.determineNextMove();
 		return new Move (move);
 	}
 }

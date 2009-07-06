@@ -16,7 +16,6 @@ import java.util.Collection;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.model.ChatMessage;
 import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
 
 public interface SharedBoardInterface {
@@ -61,5 +60,13 @@ public interface SharedBoardInterface {
 	 * @param chatMessage
 	 */
 	public void addMessage(ChatMessage chatMessage);	
+	
+	/**
+	 * Updates a move (with user input information, for example)
+	 * 
+	 * @param move
+	 * 			the move to be updated.
+	 */
+	public Move updateMove (Move move);
 
 }

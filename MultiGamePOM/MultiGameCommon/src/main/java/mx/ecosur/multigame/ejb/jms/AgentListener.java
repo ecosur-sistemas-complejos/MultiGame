@@ -86,7 +86,7 @@ public class AgentListener implements MessageListener {
 					/* Simple 50ms sleep */
 					try {
 						Thread.sleep(250);					
-						Move move = agent.nextMove();		
+						Move move = agent.determineNextMove();		
 						logger.info("Agent moving: " + move);
 						sharedBoard.move(move);				
 						message.acknowledge();

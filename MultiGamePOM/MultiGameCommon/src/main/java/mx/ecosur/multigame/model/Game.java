@@ -70,6 +70,13 @@ public class Game implements Model, Serializable {
 	public void initialize() {
 		gameImpl.initialize();
 	}
+	
+	/**
+	 * 
+	 */
+	public GamePlayer addPlayer (GamePlayer player) {
+		return new GamePlayer (gameImpl.addPlayer(player.getImplementation()));
+	}
 
 	/**
 	 * @param move

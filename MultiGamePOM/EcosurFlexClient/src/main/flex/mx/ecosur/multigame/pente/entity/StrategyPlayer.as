@@ -16,7 +16,7 @@ package mx.ecosur.multigame.pente.entity {
     /**
      * Represents a server side StrategyPlayer object
      */
-    [RemoteClass (alias="mx.ecosur.multigame.ejb.entity.pente.PenteStrategyPlayer")]
+    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent")]
     public class StrategyPlayer extends PentePlayer {
    
     	private var _strategy:String;

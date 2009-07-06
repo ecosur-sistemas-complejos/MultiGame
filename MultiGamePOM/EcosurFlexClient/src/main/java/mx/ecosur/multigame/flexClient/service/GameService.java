@@ -8,36 +8,40 @@
 package mx.ecosur.multigame.flexClient.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-
-import mx.ecosur.multigame.ejb.RegistrarRemote;
-import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
+import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
+
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.ejb.entity.Game;
-import mx.ecosur.multigame.impl.ejb.entity.GameGrid;
-import mx.ecosur.multigame.impl.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.impl.ejb.entity.Move;
-import mx.ecosur.multigame.impl.ejb.entity.Player;
-import mx.ecosur.multigame.impl.ejb.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.ejb.entity.pente.PenteGame;
-import mx.ecosur.multigame.impl.ejb.entity.pente.PenteStrategyPlayer;
-import mx.ecosur.multigame.impl.pente.PenteStrategy;
-import mx.ecosur.multigame.GameType;
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridMove;
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.impl.entity.gente.GenteGame;
+import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.impl.enums.gente.*;
+
+import mx.ecosur.multigame.model.Agent;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.Registrant;
+
+
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
 
 public class GameService {
-
-	private static Logger logger = Logger.getLogger(GameService.class
-			.getCanonicalName());
 
 	private SharedBoardRemote getSharedBoard() {
 		FlexSession session = FlexContext.getFlexSession();
@@ -75,26 +79,27 @@ public class GameService {
 		return registrar;
 	}
 	
-	public GamePlayer startNewGame(Player player, Color preferedColor,
+	public GridPlayer startNewGame(GridRegistrant player, Color preferedColor,
 			String gameTypeStr) {
-		GamePlayer gamePlayer = null;
+		GridPlayer gamePlayer = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();							
-			Game game = null;
+			GridGame game = null;
 			GameType type = GameType.valueOf(gameTypeStr);
 			
 			switch (type) {
-			case PENTE:
-				game = new PenteGame();
+			case GENTE:
+				game = new GenteGame();
 				break;
 			case MANANTIALES:
 				game = new ManantialesGame();
 				break;				
 			}
 			
-			game.initialize(GameType.valueOf(gameTypeStr));
-			game = registrar.persist(game);
-			gamePlayer = registrar.registerPlayer(game, player, preferedColor);
+			GamePlayer playerModel = registrar.registerAgent(new Game(game), 
+					new Registrant(player));
+			gamePlayer = (GridPlayer) playerModel.getImplementation();
+			
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -108,13 +113,16 @@ public class GameService {
 		return gamePlayer;
 	}
 	
-	public GamePlayer joinPendingGame (Game game, Player player, 
+	public GridPlayer joinPendingGame (GridGame game, GridRegistrant player, 
 			Color preferredColor) 
 	{
-		GamePlayer ret = null;
+		GridPlayer ret = null;
 		RegistrarRemote registrar = getRegistrar();
 		try {
-			ret = registrar.registerPlayer(game, player, preferredColor);
+			GamePlayer playerModel = registrar.registerAgent (new Game(game), 
+					new Registrant(player));
+			ret = (GridPlayer) playerModel.getImplementation();
+			
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException (e);
@@ -123,11 +131,11 @@ public class GameService {
 		return ret;
 	}
 	
-	public boolean quitGame (GamePlayer player) {
+	public boolean quitGame (GridPlayer player) {
 		boolean ret = false;
 		try {
 			RegistrarRemote registrar = getRegistrar();
-			registrar.unregisterPlayer(player);
+			registrar.unregisterPlayer(new GamePlayer (player));
 			ret = true;
 		} catch (InvalidRegistrationException e) {
 			// TODO Auto-generated catch block
@@ -140,26 +148,32 @@ public class GameService {
 	/*
 	 * Starts a new game with a given player and the number of selected AI robots. 
 	 */
-	public GamePlayer startNewGameWithAI (Player player, Color preferredColor, 
+	public GridPlayer startNewGameWithAI (GridRegistrant player, Color preferredColor, 
 			String gameTypeStr, String [] strategies)
 	{
-		GamePlayer ret = null;
+		GridPlayer ret = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
-			if (gameType.equals(GameType.PENTE)) {
-				Game game = new PenteGame ();
-				game.initialize(gameType);
-				registrar.persist(game);
-				ret = registrar.registerPlayer(game, player, preferredColor);
+			if (gameType.equals(GameType.GENTE)) {
+				GridGame game = new GenteGame ();	
+				GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+						new Registrant (player));				
 				for (int i = 0; i < strategies.length; i++) {
 					if (strategies [ i ].equals("HUMAN"))
 						continue;
-					PenteStrategy strategy = PenteStrategy.valueOf(strategies [ i ]);
-					Player robot = new Player (strategy.name() + "-" + (i + 1));
-					PenteStrategyPlayer agent = new PenteStrategyPlayer (game, robot, Color.UNKNOWN, strategy);
-					registrar.registerAgent(game, robot, agent);
+					GenteStrategy strategy = GenteStrategy.valueOf(
+							strategies [ i ]);
+					GridRegistrant robot = new GridRegistrant (
+							strategy.name() + "-" + (i + 1));
+					GenteStrategyAgent agent = new GenteStrategyAgent (game, 
+							robot, Color.UNKNOWN, strategy);
+					registrar.registerAgent (
+							new Game(game), new Agent (agent));
 				}
+				
+				ret = (GridPlayer) gamePlayer.getImplementation();
+				
 			} else 
 				ret = startNewGame(player, preferredColor, gameTypeStr);
 			
@@ -171,62 +185,73 @@ public class GameService {
 		return ret;
 	}
 	
-	public Player login(String name){
+	
+	public List<GridGame> getUnfinishedGames(GridRegistrant player){
 		RegistrarRemote registrar = getRegistrar();
-		return registrar.login(name);
+		Collection<Game> games = registrar.getUnfinishedGames(
+				new Registrant (player));
+		List<GridGame> ret = new ArrayList<GridGame>();
+		for (Game game : games) {
+			ret.add((GridGame) game.getImplementation());
+		}
+		return ret;
 	}
 	
-	
-	public List<Game> getUnfinishedGames(Player player){
+	public List<GridGame> getPendingGames(GridRegistrant player){
 		RegistrarRemote registrar = getRegistrar();
-		return registrar.getUnfinishedGames(player);
-	}
-	
-	public List<Game> getPendingGames(Player player){
-		RegistrarRemote registrar = getRegistrar();
-		return registrar.getPendingGames(player);
+		Collection<Game> games = registrar.getPendingGames(new Registrant (
+				player));
+		List<GridGame> ret = new ArrayList<GridGame>();
+		for (Game game : games) {
+			ret.add((GridGame) game.getImplementation());
+		}
+		return ret;
 	}
 
-	public Game getGame(int gameId) {
+	public GridGame getGame(int gameId) {
 
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		return sharedBoard.getGame(gameId);
+		Game game = sharedBoard.getGame(gameId);
+		return (GridGame) game.getImplementation();
 	}
 
 	public GameGrid getGameGrid(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		return sharedBoard.getGameGrid(gameId);
+		Game game = sharedBoard.getGame(gameId);
+		GridGame gridGame = (GridGame) game.getImplementation();
+		return gridGame.getGrid();
 	}
 
-	public List<GamePlayer> getPlayers(int gameId) {
+	public List<GridPlayer> getPlayers(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<GamePlayer> players = sharedBoard.getPlayers(gameId);
-		ArrayList<GamePlayer> ret = new ArrayList<GamePlayer>();
-		for (GamePlayer player : players) {
-			ret.add (player);
-		}
-		
-		return ret;
+		Game game = sharedBoard.getGame(gameId);
+		GridGame gridGame = (GridGame) game.getImplementation();
+		return gridGame.getPlayers();
 	}
 
-	public void doMove(Move move) {
-		SharedBoardRemote sharedBoard = getSharedBoard();
+	public void doMove(GridMove move) {
+		SharedBoardRemote sharedBoard = getSharedBoard();		
 		try {
-			sharedBoard.move(move);
+			sharedBoard.move(new Move(move));
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 			throw new GameException(e);
 		}
 	}
 
-	public List<Move> getMoves(int gameId) {
+	public List<GridMove> getMoves(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<Move> moves = sharedBoard.getMoves(gameId);
+		List<GridMove> moves = new ArrayList<GridMove>();		
+		Collection<Move> boardMoves = sharedBoard.getMoves(gameId);
+		for (Move move : boardMoves) {
+			moves.add((GridMove) move.getImplementation());
+		}		
 		return moves;
 	}
 
-	public Move updateMove(Move move) {
+	public GridMove updateMove(GridMove move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		return sharedBoard.updateMove(move);
+		Move moveModel = sharedBoard.updateMove(new Move(move));
+		return (GridMove) moveModel.getImplementation();
 	}
 }

@@ -20,8 +20,6 @@ import org.drools.StatefulSession;
 
 import mx.ecosur.multigame.MessageSender;
 
-import mx.ecosur.multigame.enums.MoveStatus;
-
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.Color;
 
@@ -37,7 +35,6 @@ import mx.ecosur.multigame.impl.util.Direction;
 import mx.ecosur.multigame.impl.util.Search;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 @Entity
 public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
@@ -50,6 +47,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	
 	public GenteStrategyAgent () {
 		super();
+		nextMove = null;
 	}
 	
 	public GenteStrategyAgent (GridGame game, GridRegistrant player, Color color, 
@@ -58,6 +56,13 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		super (game, player, color);
 		this.strategy = strategy;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.AgentImpl#initialize()
+	 */
+	public void initialize() {
+		nextMove = null;
+	}
 
 	public GenteStrategy getStrategy() {
 		return strategy;
@@ -65,11 +70,6 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 
 	public void setStrategy(GenteStrategy strategy) {
 		this.strategy = strategy;
-	}
-
-	public void suggestNextMove (GenteMove next) {
-		/* Clone the move */
-		nextMove = next;
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.Agent#determineNextMove(mx.ecosur.multigame.model.Game)
 	 */
-	public GenteMove determineNextMove(GenteGame game) {
+	public GenteMove determineNextMove() {
 		RuleBase ruleBase = strategy.getRuleBase();
 		StatefulSession statefulSession = ruleBase.newStatefulSession();
 		statefulSession.insert(this);
@@ -237,34 +237,21 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		statefulSession.dispose();
 		/* Rules should have created the next Move into this player, if 
 		 * one available */
-		GenteMove ret = (GenteMove) nextMove ();
+		GenteMove ret = (GenteMove) getNextMove ();
 		if (ret != null) {
 			GridCell destination = (GridCell) ret.getDestination();
 			destination.setColor(getColor());
 			ret.setDestination(destination);
-			/* Clear the next move for upcoming calls */
-			nextMove = null;
 		}
 		
 		return ret;	
 	}
 	
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.AgentImpl#nextMove()
-	 */	
-	public MoveImpl nextMove() {
-		if (nextMove != null) {
-			nextMove.setTrias(null);
-			nextMove.setTesseras(null);
-			nextMove.setStatus(MoveStatus.UNVERIFIED);
-		}
+	public void setNextMove (GenteMove next) {
+		this.nextMove = next;
+	}
+	
+	public GenteMove getNextMove () {
 		return nextMove;
-	}	
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.AgentImpl#initialize()
-	 */
-	public void initialize() {
-		nextMove = null;
 	}
 }

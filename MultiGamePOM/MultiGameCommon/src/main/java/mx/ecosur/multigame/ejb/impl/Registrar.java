@@ -32,6 +32,7 @@ import mx.ecosur.multigame.ejb.interfaces.RepositoryImpl;
 import mx.ecosur.multigame.enums.GameState;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Model;
@@ -102,7 +103,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		/* Remove the user from the Game */
 		Game game = player.getGame();
-		if (!pr.contains(game))
+		if (!pr.contains(game.getImplementation()))
 			game = new Game ((GameImpl) pr.find(GameImpl.class, game.getId()));
 
 		/* refresh the game object */
@@ -138,5 +139,24 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		}
 		
 		return ret;		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
+	 */
+	public GamePlayer registerAgent(Game game, Agent agent) throws 
+		InvalidRegistrationException 
+	{
+		if (!pr.contains(game.getImplementation()))
+			game = new Game ((GameImpl) pr.find(GameImpl.class, game.getId()));
+
+		/* refresh the game object */
+		pr.refresh (game.getImplementation());		
+		GamePlayer ret = game.addPlayer(agent);		
+		pr.flush();
+		
+		return ret;
+		
 	}
 }

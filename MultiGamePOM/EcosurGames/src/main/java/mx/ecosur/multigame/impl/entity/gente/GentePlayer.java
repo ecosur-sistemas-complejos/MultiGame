@@ -31,9 +31,6 @@ import java.util.HashSet;
 @Entity
 public class GentePlayer extends GridPlayer {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7540174337729169503L;
 
 	private int points;

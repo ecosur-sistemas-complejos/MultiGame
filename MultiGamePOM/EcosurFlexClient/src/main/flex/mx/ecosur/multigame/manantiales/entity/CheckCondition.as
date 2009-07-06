@@ -3,7 +3,7 @@ package mx.ecosur.multigame.manantiales.entity
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	
-	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.manantiales.CheckCondition")]
+	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.CheckCondition")]
 	public class CheckCondition
 	{
 		private var _reason:String;

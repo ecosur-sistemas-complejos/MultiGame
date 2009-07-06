@@ -4,7 +4,7 @@ package mx.ecosur.multigame.manantiales.entity
 	import mx.ecosur.multigame.pente.entity.StrategyPlayer;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.ejb.entity.manantiales.ManantialesMove")]
+        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove")]
 	public class ManantialesMove extends Move
 	{
 		private var _badYear:Boolean;

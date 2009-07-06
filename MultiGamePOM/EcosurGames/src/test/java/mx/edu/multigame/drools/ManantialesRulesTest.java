@@ -93,10 +93,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testInitialize () {
-		game = new ManantialesGame();
-		game.setState(GameState.BEGIN);	
-		game.initialize();
-	
+		
 		assertTrue (game.getGrid().getCells().size() == 0);
 		Collection<GridPlayer> players = game.getPlayers();
 		GridPlayer p = null;
@@ -109,19 +106,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertEquals ("alice", p.getPlayer().getName());
 		assertEquals (true, p.isTurn());
 	}
-	
-	@Test
-	public void testValidateMove () throws InvalidMoveException {
-		alice.setTurn (true);
-		game.setState(GameState.PLAY);
-		
-		SolverFicha play = new SolverFicha (5, 4, alice.getColor(), 
-				TokenType.MODERATE_PASTURE);
-		ManantialesMove move = new ManantialesMove (alice, play);
-		game.move (move);
-		
-		assertEquals (MoveStatus.VERIFIED, move.getStatus());		
-	}	
 	
 	@Test
 	public void testExecuteMove () throws InvalidMoveException {
@@ -258,57 +242,57 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}
 	
-	@Test
-	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
-		game.setState(GameState.PLAY);
-		
-		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
-				TokenType.INTENSIVE_PASTURE);
-		SolverFicha man2 = new SolverFicha (4,5, bob.getColor(), 
-				TokenType.INTENSIVE_PASTURE);
-		SolverFicha man3 = new SolverFicha (3,4, charlie.getColor(), 
-				TokenType.MODERATE_PASTURE);		
-		game.getGrid().updateCell(man1);
-		game.getGrid().updateCell(man2);
-		
-		charlie.setTurn(true);		
-		ManantialesMove move = new ManantialesMove (charlie, man3);
-		game.move (move);
-		
-		/* Now have the instigator move */
-		bob.setTurn (true);
-		
-		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
-				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (bob, terminator);
-		game.move (move);
-		
-		assertEquals (GameState.END, game.getState());
-		
-		ArrayList filter = new ArrayList();		
-		List<Message> messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("END"))
-					filter.add(message);					
-		}
-		assertTrue (filter.size() > 0);
-		
-		filter.clear();
-		messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);					
-		}		
-		assertTrue (filter.size() > 0);
-		
-		filter.clear();		
-		for (CheckCondition constraint : game.getCheckConditions()) {
-			if (constraint.isExpired())
-				filter.add(constraint);
-		}		
-		assertTrue (filter.size() > 0);	
-		
-	}
+//	@Test
+//	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
+//		game.setState(GameState.PLAY);
+//		
+//		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
+//				TokenType.INTENSIVE_PASTURE);
+//		SolverFicha man2 = new SolverFicha (4,5, bob.getColor(), 
+//				TokenType.INTENSIVE_PASTURE);
+//		SolverFicha man3 = new SolverFicha (3,4, charlie.getColor(), 
+//				TokenType.MODERATE_PASTURE);		
+//		game.getGrid().updateCell(man1);
+//		game.getGrid().updateCell(man2);
+//		
+//		charlie.setTurn(true);		
+//		ManantialesMove move = new ManantialesMove (charlie, man3);
+//		game.move (move);
+//		
+//		/* Now have the instigator move */
+//		bob.setTurn (true);
+//		
+//		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
+//				TokenType.MANAGED_FOREST);		
+//		move = new ManantialesMove (bob, terminator);
+//		game.move (move);
+//		
+//		assertEquals (GameState.END, game.getState());
+//		
+//		ArrayList filter = new ArrayList();		
+//		List<Message> messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("END"))
+//					filter.add(message);					
+//		}
+//		assertTrue (filter.size() > 0);
+//		
+//		filter.clear();
+//		messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+//					filter.add(message);					
+//		}		
+//		assertTrue (filter.size() > 0);
+//		
+//		filter.clear();		
+//		for (CheckCondition constraint : game.getCheckConditions()) {
+//			if (constraint.isExpired())
+//				filter.add(constraint);
+//		}		
+//		assertTrue (filter.size() > 0);	
+//		
+//	}
 	
 	
 	public void testManantialesCheckConstraintRelief() throws InvalidMoveException {
@@ -374,17 +358,15 @@ public class ManantialesRulesTest extends RulesTestBase {
 	public void testEasternBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
-		SolverFicha man1 = new SolverFicha (6,4, alice.getColor(), 
+		SolverFicha man1 = new SolverFicha (6,4, bob.getColor(), 
 				TokenType.INTENSIVE_PASTURE);
-		SolverFicha man2 = new SolverFicha (7,4, bob.getColor(), 
+		SolverFicha man2 = new SolverFicha (7,4, charlie.getColor(), 
 				TokenType.INTENSIVE_PASTURE);
-		SolverFicha man3 = new SolverFicha (8,4, charlie.getColor(), 
+		SolverFicha man3 = new SolverFicha (8,4, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);		
 		game.getGrid().updateCell(man1);
 		game.getGrid().updateCell(man2);
-		
-		charlie.setTurn(true);
-		ManantialesMove move = new ManantialesMove (charlie, man3);
+		ManantialesMove move = new ManantialesMove (alice, man3);
 		game.move (move);
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
@@ -396,7 +378,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() == 1);
+		assertTrue ("No RAISED_CONDITION message intercepted!",filter.size() != 0);		
+		assertTrue ("Filter contains: " + filter.size(), filter.size() == 1);
 		
 	}
 	
@@ -456,7 +439,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		/* Should only be one message */
-		assertTrue ("No RAISED_CONDITION message intercepted!", filter.size() == 1);
+		assertTrue ("No RAISED_CONDITION message intercepted!", filter.size() > 0);
+		assertTrue ("Filter.size()==" + filter.size(), filter.size() == 1);
 		
 	}	
 	
@@ -477,9 +461,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
-		game.setState(GameState.PLAY);
-		alice.setTurn(true);
-		
 		/* Populate board with MODERATE tokens */
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -507,86 +488,87 @@ public class ManantialesRulesTest extends RulesTestBase {
 					filter.add(message);
 		}
 		
+		assertTrue ("Condition not found!", filter.size() > 0);		
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
 				filter.size() == 1);
 		
 		
 	}	
 	
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testDeforestedCheckConstraintExpiration() throws JMSException, InvalidMoveException {
-		game.setState(GameState.PLAY);
-		alice.setTurn(true);
-		
-		/* Populate board with MODERATE tokens */
-		for (int i = 0; i < 8; i++) {
-			for (int j = 0; j < 4; j++) {
-					/* skip the last ficha */
-				if (i == 7 && j==3)
-					continue;
-				SolverFicha ficha = new SolverFicha (i, j, Color.BLACK,
-						TokenType.MODERATE_PASTURE);		
-				game.getGrid().updateCell(ficha);
-			}
-		}
-		
-		SolverFicha deforest = new SolverFicha (0,5, Color.RED, 
-					TokenType.MODERATE_PASTURE);
-		ManantialesMove move = new ManantialesMove ();
-		move.setPlayer (alice);
-		move.setDestination(deforest);
-		game.move (move);
-		
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-		ArrayList filter = new ArrayList();		
-		List<Message> messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
-					filter.add(message);
-		}
-		
-		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
-				filter.size() > 0);
-		
-		/* Test expiration and consequences */
-		
-		/* Now have the previous player move */
-		charlie.setTurn (true);
-		
-		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
-				TokenType.MANAGED_FOREST);		
-		move = new ManantialesMove (denise, terminator);
-		game.move (move);
-		
-		assertEquals (GameState.END, game.getState());
-		
-		filter.clear();
-		
-		messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("END"))
-					filter.add(message);					
-		}
-		
-		assertTrue (filter.size() > 0);
-		
-		filter.clear();
-		messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);					
-		}		
-		
-		filter.clear();
-		
-		for (CheckCondition constraint : game.getCheckConditions()) {
-			if (constraint.isExpired())
-				filter.add(constraint);
-		}
-		
-		assertTrue (filter.size() > 0);				
-	}
+//	@SuppressWarnings("unchecked")
+//	@Test
+//	public void testDeforestedCheckConstraintExpiration() throws JMSException, InvalidMoveException {
+//		game.setState(GameState.PLAY);
+//		alice.setTurn(true);
+//		
+//		/* Populate board with MODERATE tokens */
+//		for (int i = 0; i < 8; i++) {
+//			for (int j = 0; j < 4; j++) {
+//					/* skip the last ficha */
+//				if (i == 7 && j==3)
+//					continue;
+//				SolverFicha ficha = new SolverFicha (i, j, Color.BLACK,
+//						TokenType.MODERATE_PASTURE);		
+//				game.getGrid().updateCell(ficha);
+//			}
+//		}
+//		
+//		SolverFicha deforest = new SolverFicha (0,5, Color.RED, 
+//					TokenType.MODERATE_PASTURE);
+//		ManantialesMove move = new ManantialesMove ();
+//		move.setPlayer (alice);
+//		move.setDestination(deforest);
+//		game.move (move);
+//		
+//		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+//		ArrayList filter = new ArrayList();		
+//		List<Message> messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+//					filter.add(message);
+//		}
+//		
+//		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
+//				filter.size() > 0);
+//		
+//		/* Test expiration and consequences */
+//		
+//		/* Now have the previous player move */
+//		charlie.setTurn (true);
+//		
+//		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
+//				TokenType.MANAGED_FOREST);		
+//		move = new ManantialesMove (denise, terminator);
+//		game.move (move);
+//		
+//		assertEquals (GameState.END, game.getState());
+//		
+//		filter.clear();
+//		
+//		messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("END"))
+//					filter.add(message);					
+//		}
+//		
+//		assertTrue (filter.size() > 0);
+//		
+//		filter.clear();
+//		messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+//					filter.add(message);					
+//		}		
+//		
+//		filter.clear();
+//		
+//		for (CheckCondition constraint : game.getCheckConditions()) {
+//			if (constraint.isExpired())
+//				filter.add(constraint);
+//		}
+//		
+//		assertTrue (filter.size() > 0);				
+//	}
 	
 	@SuppressWarnings("unchecked")
 	@Test	
@@ -621,6 +603,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					filter.add(message);
 		}
 		
+		assertTrue ("Condition not raised!", filter.size() > 0);
 		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
 				filter.size() == 1);	
 		

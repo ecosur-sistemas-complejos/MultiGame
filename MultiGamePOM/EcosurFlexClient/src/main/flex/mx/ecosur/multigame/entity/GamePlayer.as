@@ -16,7 +16,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents a server side GamePlayer object.
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.ejb.entity.GamePlayer")]
+	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridPlayer")]
 	public class GamePlayer {
 		
 		private var _id:int;

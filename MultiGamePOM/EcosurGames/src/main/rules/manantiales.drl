@@ -380,8 +380,6 @@ rule
         CheckCondition constraint = new CheckCondition(
             ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
                 (Ficha) $move.getDestination());
-        # We should simply modify the GridGame object here, but this provokes an 
-        # infinite loop. so we have to work around with the move object.
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
         player.setGame($game);
@@ -411,8 +409,7 @@ rule
             $tok1, $tok2, (Ficha) $move.getDestination());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        player.setGame($game);
-        modify ($move) { setPlayer (player) }               
+        player.setGame($game);           
         MessageSender messageSender = new MessageSender ();
         Condition condition = new Condition (constraint);
         Move move = new Move ($move);
@@ -516,7 +513,7 @@ rule "territory-deforested"
         eval (!$game.hasCondition (ConditionType.TERRITORY_DEFORESTED))                
     then      
         $list.add($move.getDestination());  
-        Ficha [] cells = (Ficha []) $list.toArray(new GridCell [ 0 ]);
+        Ficha [] cells = (Ficha []) $list.toArray(new Ficha [ 0 ]);
         CheckCondition constraint = new CheckCondition(
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
         $game.addCheckCondition(constraint);

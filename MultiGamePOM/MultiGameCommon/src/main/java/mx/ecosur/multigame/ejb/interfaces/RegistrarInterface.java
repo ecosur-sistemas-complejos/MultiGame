@@ -13,6 +13,7 @@ package mx.ecosur.multigame.ejb.interfaces;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Registrant;
@@ -33,7 +34,19 @@ public interface RegistrarInterface {
 	 * @return
 	 * @throws InvalidRegistrationException
 	 */
-	public abstract GamePlayer registerAgent(Game game, Registrant player) 
+	public GamePlayer registerAgent(Game game, Registrant player) 
+		throws 
+	InvalidRegistrationException;
+	
+	/**
+	 * Adds registers an agent with a specific game.
+	 * 
+	 * @param game
+	 * 		the game the agent is being registered with
+	 * @param agent
+	 * 		the agent being registered
+	 */
+	public GamePlayer registerAgent(Game game, Agent agent)
 		throws 
 	InvalidRegistrationException;
 
@@ -45,7 +58,7 @@ public interface RegistrarInterface {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public abstract void unregisterPlayer(GamePlayer player) 
+	public void unregisterPlayer(GamePlayer player) 
 		throws 
 	InvalidRegistrationException;
 
@@ -57,7 +70,7 @@ public interface RegistrarInterface {
 	 * 			the player
 	 * @return
 	 */
- 	public abstract List<Game> getUnfinishedGames(Registrant player);
+ 	public List<Game> getUnfinishedGames(Registrant player);
  	
  	/**
  	 * Gets all pending games that the specific player has not
@@ -67,5 +80,5 @@ public interface RegistrarInterface {
  	 * 			the player
  	 * @return
  	 */
- 	public abstract List<Game> getPendingGames(Registrant player);
+ 	public List<Game> getPendingGames(Registrant player);
 }

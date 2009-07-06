@@ -5,7 +5,7 @@ package mx.ecosur.multigame.manantiales.entity
 	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.ejb.entity.manantiales.ManantialesGame")]                       
+        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame")]                       
 	public class ManantialesGame extends Game
 	{
 		private var _mode:String;

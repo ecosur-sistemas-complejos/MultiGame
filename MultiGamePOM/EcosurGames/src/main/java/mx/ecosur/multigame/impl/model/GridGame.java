@@ -48,6 +48,7 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 /**
@@ -125,10 +126,9 @@ public abstract class GridGame implements GameImpl {
 		this.id = id;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Transient
-	public Set getFacts () {
-		Set ret = new HashSet();
+	public Set<Implementation> getFacts () {
+		Set<Implementation> ret = new HashSet<Implementation>();
 		ret.addAll(grid.getCells());
 		return ret;
 	}
@@ -270,6 +270,13 @@ public abstract class GridGame implements GameImpl {
 	    }
 	 
 	    return colors;
+	}
+	
+	public GridPlayer addPlayer (GamePlayerImpl player) {
+		GridPlayer gridPlayer = (GridPlayer) player;
+		gridPlayer.setGame(this);
+		players.add(gridPlayer);
+		return gridPlayer;
 	}
 	
 	public abstract List<Color> getColors();	
