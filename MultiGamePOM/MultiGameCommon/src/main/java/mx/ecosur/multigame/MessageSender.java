@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -40,11 +41,15 @@ public class MessageSender {
 	private static Logger logger = Logger.getLogger(MessageSender.class
 			.getCanonicalName());
 
-	private static String CONNECTION_FACTORY_JNDI_NAME = "jms/TopicConnectionFactory";
-	private static String TOPIC_JNDI_NAME = "MultiGame";
+	private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/TopicConnectionFactory";
+	private static final String TOPIC_JNDI_NAME = "MultiGame";
 
+	@Resource(mappedName = CONNECTION_FACTORY_JNDI_NAME)
 	private ConnectionFactory connectionFactory;
+	
+	@Resource (mappedName = TOPIC_JNDI_NAME)
 	private Topic topic;
+	
 	private static Map<Integer, Long> msgIdCount = new HashMap<Integer, Long>();
 
 	/**
@@ -52,27 +57,34 @@ public class MessageSender {
 	 */
 	public MessageSender() {
 		super();
-		InitialContext ic;
-		try {
-			ic = new InitialContext();
-			connectionFactory = (ConnectionFactory) ic
-					.lookup(CONNECTION_FACTORY_JNDI_NAME);
-			topic = (Topic) ic.lookup(TOPIC_JNDI_NAME);
-		} catch (NamingException e) {
-			logger
-					.severe("Unable to get JMS connection and topic from " +
-							"connection factory " + CONNECTION_FACTORY_JNDI_NAME
-							+ " and topic " + TOPIC_JNDI_NAME);
-			e.printStackTrace();
+		if (connectionFactory == null || topic == null) 
+		{
+			InitialContext ic;
+			try {
+				ic = new InitialContext();
+				if (connectionFactory == null)
+					connectionFactory = (ConnectionFactory) ic
+						.lookup(CONNECTION_FACTORY_JNDI_NAME);
+				if (topic == null)
+					topic = (Topic) ic.lookup(TOPIC_JNDI_NAME);
+			} catch (Exception e) {
+				logger
+						.severe("Unable to get JMS connection and topic from " +
+								"connection factory " + CONNECTION_FACTORY_JNDI_NAME
+								+ " and topic " + TOPIC_JNDI_NAME);
+				e.printStackTrace();
+			}
 		}
 
 	}
 	
 	public MessageSender (Context context) {
 		try {
-			connectionFactory = (ConnectionFactory) context
+			if (connectionFactory == null)
+				connectionFactory = (ConnectionFactory) context
 					.lookup(CONNECTION_FACTORY_JNDI_NAME);
-			topic = (Topic) context.lookup(TOPIC_JNDI_NAME);
+			if (topic == null)
+				topic = (Topic) context.lookup(TOPIC_JNDI_NAME);
 		} catch (NamingException e) {
 			logger
 					.severe("Not able to get JMS connection and topic from " +
@@ -92,7 +104,7 @@ public class MessageSender {
 			ObjectMessage message = session.createObjectMessage();
 			message.setIntProperty("GAME_ID", gameId);
 			message.setStringProperty("GAME_EVENT", gameEvent.toString());
-			message.setLongProperty("MESSAGE_ID", getNextMessageId(gameId));
+			message.setLongProperty("MESSAGE_ID", getNextMessageId(gameId));				
 			if (body != null) {
 				message.setObject(body);
 			}
@@ -120,7 +132,7 @@ public class MessageSender {
 	 * @param game
 	 */
 	public void sendStartGame(Game game) {
-		sendMessage(game.getId(), GameEvent.BEGIN, null);
+		sendMessage(game.getId(), GameEvent.BEGIN, game);
 	}
 
 	/**
@@ -139,8 +151,7 @@ public class MessageSender {
 	 * 
 	 * @param move
 	 */
-	public void sendMoveComplete(Move move) {
-		Game game = move.getPlayer().getGame();
+	public void sendMoveComplete(Game game, Move move) {
 		sendMessage(game.getId(), GameEvent.MOVE_COMPLETE, move);
 	}
 	
@@ -149,8 +160,7 @@ public class MessageSender {
 	 * 
 	 * @param move
 	 */
-	public void sendConditionRaised (Move move, Condition condition) {
-		Game game = move.getPlayer().getGame();
+	public void sendConditionRaised (Game game, Move move, Condition condition) {
 		sendMessage(game.getId(), GameEvent.CONDITION_RAISED, condition);		
 	}
 	
@@ -158,8 +168,7 @@ public class MessageSender {
 	 * Sends  the GameEvent.CHECK_CONSTRAINT_RESOLVED message with the 
 	 * resolved condition.
 	 */
-	public void sendConditionResolved (Move move, Condition condition) {
-		Game game = move.getPlayer().getGame();
+	public void sendConditionResolved (Game game, Move move, Condition condition) {
 		sendMessage (game.getId(), GameEvent.CONDITION_RESOLVED, condition);
 	}
 	
@@ -167,8 +176,7 @@ public class MessageSender {
 	 * Sends the GameEvent.CONDITION_TRIGGERED message with the triggered
 	 * condition.
 	 */
-	public void sendConditionTriggered (Move move, Condition condition) {
-		Game game = move.getPlayer().getGame();
+	public void sendConditionTriggered (Game game, Move move, Condition condition) {
 		sendMessage (game.getId(), GameEvent.CONDITION_TRIGGERED, condition);		
 	}
 	

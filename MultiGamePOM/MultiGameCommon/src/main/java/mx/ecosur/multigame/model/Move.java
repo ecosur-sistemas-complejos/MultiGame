@@ -15,8 +15,9 @@ import java.io.Serializable;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
-@SuppressWarnings("serial")
 public class Move implements Model, Serializable {
+	
+	private static final long serialVersionUID = 8462209469604832617L;
 	
 	private MoveImpl moveImpl;
 	
@@ -27,36 +28,16 @@ public class Move implements Model, Serializable {
 	/**
 	 * @return
 	 */
-	public GamePlayer getPlayer() {
-		return new GamePlayer (moveImpl.getPlayer());
-	}
-
-	/**
-	 * @param player
-	 */
-	public void setPlayer(GamePlayer player) {
-		moveImpl.setPlayer (player.getImplementation());
-	}
-
-	/**
-	 * @return
-	 */
-	public Cell getCurrent() {
-		return new Cell(moveImpl.getCurrent());
-	}
-
-	/**
-	 * @param find
-	 */
-	public void setCurrent(Cell cell) {
-		moveImpl.setCurrent (cell.getImplementation());
-	}
-
-	/**
-	 * @return
-	 */
 	public MoveStatus getStatus() {
 		return moveImpl.getStatus();
+	}
+	
+	public GamePlayer getPlayer () {
+		return moveImpl.getPlayerModel();
+	}
+	
+	public void setPlayer (GamePlayer player) {
+		moveImpl.setPlayerModel (player);
 	}
 	
 	public MoveImpl getImplementation() {

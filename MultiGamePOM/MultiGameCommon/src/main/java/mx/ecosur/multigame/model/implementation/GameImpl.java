@@ -11,9 +11,11 @@
 package mx.ecosur.multigame.model.implementation;
 
 import java.util.Collection;
+import java.util.List;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.model.GamePlayer;
 
 public interface GameImpl extends Implementation {
 
@@ -44,11 +46,6 @@ public interface GameImpl extends Implementation {
 	public GameState getState();
 
 	/**
-	 * 
-	 */
-	public void initialize();
-
-	/**
 	 * @param move
 	 */
 	public void move(MoveImpl move) throws InvalidMoveException;
@@ -59,9 +56,13 @@ public interface GameImpl extends Implementation {
 	public Collection<MoveImpl> getMoves();
 
 	/**
-	 * @param implementation
 	 * @return
 	 */
-	public GamePlayerImpl addPlayer(GamePlayerImpl implementation);
+	public List<GamePlayer> listPlayers();
+
+	/**
+	 * @return
+	 */
+	public int getMaxPlayers();
 
 }

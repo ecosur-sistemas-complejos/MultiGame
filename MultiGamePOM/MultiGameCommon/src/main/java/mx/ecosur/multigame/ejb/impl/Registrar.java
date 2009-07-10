@@ -15,20 +15,19 @@
 
 package mx.ecosur.multigame.ejb.impl;
 
-import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import mx.ecosur.multigame.MessageSender;
-import mx.ecosur.multigame.PersistentRepository;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarLocal;
-import mx.ecosur.multigame.ejb.interfaces.RepositoryImpl;
 import mx.ecosur.multigame.enums.GameState;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
@@ -37,8 +36,6 @@ import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Model;
 import mx.ecosur.multigame.model.Registrant;
-import mx.ecosur.multigame.model.implementation.GameImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -46,10 +43,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 	private MessageSender messageSender;
 	
-	@Resource
-	private String repositoryImpl;
-	
-	PersistentRepository pr;
+	@PersistenceContext (unitName="MultiGame")
+	EntityManager em;
 
 	/**
 	 * Default constructor
@@ -62,9 +57,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	{
 		super();
 		messageSender = new MessageSender();
-		RepositoryImpl impl = (RepositoryImpl) 
-				Class.forName(repositoryImpl).newInstance();
-		pr = new PersistentRepository (impl);
 	}
 	
 	
@@ -78,39 +70,44 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	public GamePlayer registerAgent (Game game, Registrant registrant) 
 		throws InvalidRegistrationException 
 	{
-		if (!pr.contains(game.getImplementation()))
-			game = new Game((GameImpl) pr.find(GameImpl.class, game.getId()));
+		if (!em.contains(game.getImplementation())) {
+			Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
+			if (test.getImplementation() == null) 
+				em.persist(game.getImplementation());
+			else
+				game = new Game (test.getImplementation());
+		}
 		
-		if (!pr.contains(registrant)) {
-			Registrant test = new Registrant ((RegistrantImpl) 
-					pr.find (RegistrantImpl.class, registrant.getId()));
-			if (test == null)
-				pr.persist(registrant.getImplementation());
+		if (!em.contains(registrant.getImplementation())) {
+			Registrant test = new Registrant (em.find (
+					registrant.getImplementation().getClass(), registrant.getId()));
+			if (test.getImplementation() == null)
+				em.persist(registrant.getImplementation());
+			else
+				registrant = new Registrant (test.getImplementation());
 		}				
 
 		registrant.setLastRegistration(System.currentTimeMillis());
 		GamePlayer player = game.registerPlayer (registrant);		
-		pr.persist(player.getImplementation());		
+		em.persist(player.getImplementation());	
 		
-		messageSender.sendPlayerChange(game);
-		pr.flush();
+		messageSender.sendPlayerChange(new Game (game.getImplementation()));		
 		return player;	
 	}
 
-	public void unregisterPlayer(GamePlayer player) 
+
+	public void unregisterPlayer(Game game, GamePlayer player) 
 		throws 
 	InvalidRegistrationException {
 
 		/* Remove the user from the Game */
-		Game game = player.getGame();
-		if (!pr.contains(game.getImplementation()))
-			game = new Game ((GameImpl) pr.find(GameImpl.class, game.getId()));
+		if (!em.contains(game.getImplementation()))
+			game = new Game (em.find(game.getImplementation().getClass(), game.getId()));
 
 		/* refresh the game object */
-		pr.refresh (game.getImplementation());
+		em.refresh (game.getImplementation());
 		game.removePlayer(player);
 		game.setState(GameState.END);
-		pr.flush();
 	}
 
 	/* (non-Javadoc)
@@ -118,7 +115,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 */
 	public List<Game> getUnfinishedGames(Registrant player) 
 	{
-		List<Model> results = pr.executeNamedQuery ("getGamesByPlayer", player);
+		/** TODO: replace string with call into registrant */
+		Query query = player.getCurrentGames(em);		
+		List<Model> results = query.getResultList();
 		List<Game> ret = new ArrayList<Game>();
 		for (Model model : results) {
 			ret.add( (Game) model);
@@ -131,8 +130,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
 	 */
 	public List<Game> getPendingGames(Registrant player) {
-		List <Model> results = pr.executeNamedQuery ("getGamesByNotPlayer", player, 
-				State.WAITING);
+		
+		/** TODO: replace string with call into registrant */
+		Query query = player.getAvailableGames(em);
+		List <Model> results = query.getResultList();
 		List<Game> ret = new ArrayList<Game>();
 		for (Model model : results) {
 			ret.add( (Game) model);
@@ -148,15 +149,13 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	public GamePlayer registerAgent(Game game, Agent agent) throws 
 		InvalidRegistrationException 
 	{
-		if (!pr.contains(game.getImplementation()))
-			game = new Game ((GameImpl) pr.find(GameImpl.class, game.getId()));
+		if (!em.contains(game.getImplementation()))
+			game = new Game (em.find(game.getImplementation().getClass(), game.getId()));
 
 		/* refresh the game object */
-		pr.refresh (game.getImplementation());		
-		GamePlayer ret = game.addPlayer(agent);		
-		pr.flush();
-		
-		return ret;
-		
-	}
+		em.refresh (game.getImplementation());		
+		/*TODO FIX*/
+//		GamePlayer ret = game.registerPlayer(agent);
+		return agent;		
+	}		
 }

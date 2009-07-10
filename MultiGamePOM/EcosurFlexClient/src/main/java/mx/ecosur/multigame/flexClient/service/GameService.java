@@ -88,7 +88,7 @@ public class GameService {
 			GameType type = GameType.valueOf(gameTypeStr);
 			
 			switch (type) {
-			case GENTE:
+			case PENTE:
 				game = new GenteGame();
 				break;
 			case MANANTIALES:
@@ -135,7 +135,8 @@ public class GameService {
 		boolean ret = false;
 		try {
 			RegistrarRemote registrar = getRegistrar();
-			registrar.unregisterPlayer(new GamePlayer (player));
+			GridGame game = player.getGame();
+			registrar.unregisterPlayer(new Game (game), new GamePlayer (player));
 			ret = true;
 		} catch (InvalidRegistrationException e) {
 			// TODO Auto-generated catch block
@@ -155,7 +156,7 @@ public class GameService {
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
-			if (gameType.equals(GameType.GENTE)) {
+			if (gameType.equals(GameType.PENTE)) {
 				GridGame game = new GenteGame ();	
 				GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
 						new Registrant (player));				
@@ -232,7 +233,8 @@ public class GameService {
 	public void doMove(GridMove move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();		
 		try {
-			sharedBoard.move(new Move(move));
+			GridGame game = move.getPlayer().getGame();
+			sharedBoard.move(new Game (game), new Move(move));
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -253,5 +255,9 @@ public class GameService {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		Move moveModel = sharedBoard.updateMove(new Move(move));
 		return (GridMove) moveModel.getImplementation();
+	}
+	
+	public GridRegistrant login (String name) {
+		return new GridRegistrant (name);
 	}
 }

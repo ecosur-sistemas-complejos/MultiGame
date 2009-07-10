@@ -28,15 +28,16 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.model.implementation.CellImpl;
+import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries( { 
-	@NamedQuery(name = "getMoves", query = "select m from Move m where m.player.game=:game order by m.id asc") 
+	@NamedQuery(name = "getMoves", query = "select m from GridMove m where m.player.game=:game order by m.id asc") 
 })
 public abstract class GridMove implements MoveImpl {
 
@@ -78,26 +79,36 @@ public abstract class GridMove implements MoveImpl {
 	}
 
 	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-	public CellImpl getDestination() {
+	public GridCell getDestination() {
 		return this.destination;
 	}
 
-	public void setDestination(CellImpl destination) {
-		this.destination = (GridCell) destination;
+	public void setDestination(GridCell destination) {
+		this.destination = destination;
 	}
 
 	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-	public CellImpl getCurrent() {
+	public GridCell getCurrent() {
 		return this.current;
 	}
 
-	public void setCurrent(CellImpl current) {
-		this.current = (GridCell) current;
+	public void setCurrent(GridCell current) {
+		this.current = current;
 	}
 
 	@OneToOne  (cascade={CascadeType.ALL},fetch=FetchType.EAGER)
 	public GridPlayer getPlayer() {
 		return this.player;
+	}
+	
+	@Transient
+	public GamePlayer getPlayerModel () {
+		return new GamePlayer (player);
+	}
+	
+	@Transient
+	public void setPlayerModel (GamePlayer model) {
+		this.player = (GridPlayer) model.getImplementation();
 	}
 
 	public void setPlayer(GridPlayer player) {

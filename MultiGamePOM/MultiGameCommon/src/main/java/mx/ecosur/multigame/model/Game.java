@@ -10,17 +10,18 @@
  */
 package mx.ecosur.multigame.model;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
-@SuppressWarnings("serial")
-public class Game implements Model, Serializable {
+public class Game implements Model {
+
+	private static final long serialVersionUID = 4651502618321513050L;
 	
 	private GameImpl gameImpl;
 	
@@ -65,20 +66,6 @@ public class Game implements Model, Serializable {
 	}
 
 	/**
-	 * 
-	 */
-	public void initialize() {
-		gameImpl.initialize();
-	}
-	
-	/**
-	 * 
-	 */
-	public GamePlayer addPlayer (GamePlayer player) {
-		return new GamePlayer (gameImpl.addPlayer(player.getImplementation()));
-	}
-
-	/**
 	 * @param move
 	 * @throws InvalidMoveException 
 	 */
@@ -97,6 +84,20 @@ public class Game implements Model, Serializable {
 		}
 		return collection;
 	}
+	
+	/**
+	 * 
+	 */
+	public int getMaxPlayers () {
+		return gameImpl.getMaxPlayers();
+	}
+	
+	/**
+	 * 
+	 */
+	public List<GamePlayer> listPlayers () {
+		return gameImpl.listPlayers();
+	}
 
 	/**
 	 * @return
@@ -104,5 +105,4 @@ public class Game implements Model, Serializable {
 	public GameImpl getImplementation() {
 		return gameImpl;
 	}
-
 }

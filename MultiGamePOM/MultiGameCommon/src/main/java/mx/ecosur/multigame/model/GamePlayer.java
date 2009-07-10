@@ -10,11 +10,11 @@
  */
 package mx.ecosur.multigame.model;
 
-import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 public class GamePlayer implements Model {
+	
+	private static final long serialVersionUID = 8222591967075020143L;
 	
 	private GamePlayerImpl implementation;
 
@@ -36,16 +36,5 @@ public class GamePlayer implements Model {
 	
 	public void setTurn (boolean bool) {
 		implementation.setTurn(bool);
-	}
-
-	public Game getGame() {
-		GameImpl game = implementation.getGame();
-		return new Game(game);
-	}
-
-	public Registrant getPlayer() {
-		RegistrantImpl registrant = implementation.getPlayer();
-		return new Registrant (registrant);
 	}	
-
 }

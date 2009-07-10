@@ -11,10 +11,13 @@
 package mx.ecosur.multigame.model;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 
 public class Agent extends GamePlayer {
+	
+	private static final long serialVersionUID = -6708647912533704063L;
 	
 	private AgentImpl implementation;
 	
@@ -31,5 +34,10 @@ public class Agent extends GamePlayer {
 	public Move determineNextMove() {
 		MoveImpl move = implementation.determineNextMove();
 		return new Move (move);
+	}
+	
+	public Game findGame () {
+		GameImpl gameImpl = implementation.findGame();
+		return new Game(gameImpl);
 	}
 }

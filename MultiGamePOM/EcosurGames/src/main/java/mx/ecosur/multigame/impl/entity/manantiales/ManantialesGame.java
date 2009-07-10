@@ -6,6 +6,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -38,11 +39,8 @@ import java.util.List;
 import java.util.Set;
 
 @NamedQueries( {
-	@NamedQuery(name = "getManantialesGame", query = "select g from ManantialesGame g where g.type=:type "
-		+ "and g.state =:state"),
-	@NamedQuery(name = "getManantialesGameById", query = "select g from ManantialesGame g where g.id=:id "),
-	@NamedQuery(name = "getManantialesGameByTypeAndPlayer", query = "select mp.game from ManantialesPlayer as mp "
-		+ "where mp.player=:player and mp.game.type=:type and mp.game.state <>:state")
+	@NamedQuery(name = "getManantialesGame", query = "select g from ManantialesGame g where g.state =:state"),
+	@NamedQuery(name = "getManantialesGameById", query = "select g from ManantialesGame g where g.id=:id ")
 })
 @Entity
 public class ManantialesGame extends GridGame {
@@ -52,8 +50,6 @@ public class ManantialesGame extends GridGame {
 	private Mode mode; 
 	
 	private Set<CheckCondition> checkConditions;
-
-	private RuleBase ruleBase;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -116,12 +112,12 @@ public class ManantialesGame extends GridGame {
 	    this.setCreated(new Date());
 		this.setColumns(9);
 		this.setRows(9);
+		RuleBase ruleBase = null;
 		
 		if (ruleBase == null) {
 			PackageBuilder builder = new PackageBuilder();
 		    InputStreamReader reader = new InputStreamReader(
-		    		getClass().getResourceAsStream(
-		    				"/mx/ecosur/multigame/impl/manantiales.drl"));
+		    		getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.drl"));
 		    try {
 				builder.addPackageFromDrl(reader);
 			} catch (DroolsParserException e) {
@@ -158,6 +154,8 @@ public class ManantialesGame extends GridGame {
 	 */
 	@Override
 	public void move(MoveImpl move) throws InvalidMoveException {
+		RuleBase ruleBase = null;
+		
 		try {
 			if (ruleBase == null) {
 				PackageBuilder builder = new PackageBuilder();
@@ -191,9 +189,9 @@ public class ManantialesGame extends GridGame {
 		}			
 	}
 	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {			
+	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {	
 		ManantialesPlayer player = new ManantialesPlayer ();
-		player.setPlayer(registrant);
+		player.setPlayer((GridRegistrant) registrant);
 		player.setGame(this);
 		
 		int max = getMaxPlayers();
@@ -204,11 +202,11 @@ public class ManantialesGame extends GridGame {
 		player.setColor(colors.get(0));		
 		players.add(player);
 		
-		/* If we've reached the max, then set the GameState to begin */
-		if (players.size() == max)
-			state = GameState.BEGIN;
+		if (players.size() == getMaxPlayers())
+			initialize();
+		
 		/* Be sure that the player has a good reference to this game */
-		player.setGame(this);
+		player.setGame(this);	
 		
 		return player;
 	}
@@ -228,5 +226,5 @@ public class ManantialesGame extends GridGame {
 		}
 		
 		return ret;
-	}	
+	}
 }

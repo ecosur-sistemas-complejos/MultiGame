@@ -26,7 +26,6 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.gente.BeadString;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,8 +54,6 @@ public class GenteRulesTest extends RulesTestBase {
 		bob = (GentePlayer) game.registerPlayer(b);
 		charlie = (GentePlayer) game.registerPlayer(c);
 		denise = (GentePlayer) game.registerPlayer(d);
-		
-		game.initialize();
 	}
 	
 	@After
@@ -69,7 +66,7 @@ public class GenteRulesTest extends RulesTestBase {
 		assertTrue (game.getGrid().getCells().size() == 0);
 		Collection<GridPlayer> players = game.getPlayers();
 		GentePlayer p = null;
-		for (GamePlayerImpl player : players) {
+		for (GridPlayer player : players) {
 			if (player.getPlayer().getName().equals("alice")) {
 				p = (GentePlayer) player;
 				break;

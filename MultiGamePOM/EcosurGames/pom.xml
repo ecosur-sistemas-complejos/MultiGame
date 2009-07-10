@@ -4,7 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.ecosur</groupId>
 	<artifactId>ecosur-games</artifactId>
-	<packaging>ejb</packaging>
 	<parent>
 		<artifactId>multi-game</artifactId>
 		<groupId>mx.ecosur</groupId>

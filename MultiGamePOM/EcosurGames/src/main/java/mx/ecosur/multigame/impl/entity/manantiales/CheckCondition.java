@@ -18,7 +18,6 @@ import javax.persistence.Id;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridCell;
 
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
@@ -27,17 +26,24 @@ public class CheckCondition implements ConditionImpl {
 
 	ConditionType reason;
 	GridPlayer agent;
-	HashSet<GridCell> violators;
+	HashSet<Ficha> violators;
 	private boolean expired;
 	private int id;	
+	
+	public CheckCondition () {
+		reason = null;
+		agent = null;
+		violators = null;
+		expired = false;
+	}
 	
 	public CheckCondition (ConditionType reason, GridPlayer agent, 
 			Ficha...violator)  
 	{
 		this.reason = reason;
 		this.agent = agent;
-		this.violators = new HashSet<GridCell>();
-		for (GridCell cell : violator) {
+		this.violators = new HashSet<Ficha>();
+		for (Ficha cell : violator) {
 			this.violators.add(cell);
 		}		
 	}
@@ -122,14 +128,14 @@ public class CheckCondition implements ConditionImpl {
 	/**
 	 * @return the violators
 	 */
-	public HashSet<GridCell> getViolators() {
+	public HashSet<Ficha> getViolators() {
 		return violators;
 	}
 
 	/**
 	 * @param violators the violators to set
 	 */
-	public void setViolators(HashSet<GridCell> violators) {
+	public void setViolators(HashSet<Ficha> violators) {
 		this.violators = violators;
 	}
 

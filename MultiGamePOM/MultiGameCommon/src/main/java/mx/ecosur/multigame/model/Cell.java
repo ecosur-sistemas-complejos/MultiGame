@@ -14,6 +14,8 @@ import mx.ecosur.multigame.model.implementation.CellImpl;
 
 public class Cell implements Model {
 	
+	private static final long serialVersionUID = -5382384031755001844L;
+	
 	private CellImpl cellImpl;
 	
 	public Cell (CellImpl cellImpl) {

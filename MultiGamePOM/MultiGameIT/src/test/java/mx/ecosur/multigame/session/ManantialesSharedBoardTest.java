@@ -19,19 +19,21 @@ import java.util.List;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.GameType;
-import mx.ecosur.multigame.ejb.RegistrarRemote;
-import mx.ecosur.multigame.ejb.SharedBoardRemote;
+import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
+import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.ejb.entity.GamePlayer;
-import mx.ecosur.multigame.impl.ejb.entity.Player;
-import mx.ecosur.multigame.manantiales.TokenType;
-import mx.ecosur.multigame.model.manantiales.Ficha;
-import mx.ecosur.multigame.model.manantiales.ManantialesGame;
-import mx.ecosur.multigame.model.manantiales.ManantialesMove;
-import mx.ecosur.multigame.model.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.Registrant;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,26 +56,33 @@ public class ManantialesSharedBoardTest {
 		InitialContext ic = new InitialContext();
 		
 		registrar = (RegistrarRemote) ic.lookup(
-			"mx.ecosur.multigame.ejb.RegistrarRemote");
+			"mx.ecosur.multigame.ejb.interfaces.RegistrarRemote");
 		
-		Player[] registrants = {
-			new Player ("alice"),
-			new Player ("bob"),
-			new Player ("charlie"),
-			new Player ("denise")};
+		GridRegistrant[] registrants = {
+			new GridRegistrant ("alice"),
+			new GridRegistrant ("bob"),
+			new GridRegistrant ("charlie"),
+			new GridRegistrant ("denise")};
 		
-		gameId = registrar.registerPlayer(registrants [ 0 ], Color.YELLOW, GameType.MANANTIALES).getGame().getId();
-		registrar.registerPlayer(registrants [ 1 ], Color.BLUE, GameType.MANANTIALES);
-		registrar.registerPlayer(registrants [ 2 ], Color.GREEN, GameType.MANANTIALES);
-		registrar.registerPlayer(registrants [ 3 ], Color.RED, GameType.MANANTIALES);
+		ManantialesGame game = new ManantialesGame ();
+		
+		for (int i = 0; i < registrants.length; i++) {
+			GamePlayer player = registrar.registerAgent(new Game (game), 
+					new Registrant (registrants [ i ]));
+			if (gameId == 0) {
+				GridPlayer gp = (GridPlayer) player.getImplementation();
+				gameId = gp.getGame().getId();
+			}
+		}
 		
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(
-				"mx.ecosur.multigame.ejb.SharedBoardRemote");
+				"mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote");
+		game = (ManantialesGame) board.getGame(gameId).getImplementation();
 
 		/* Set the GamePlayers from the SharedBoard */
-		List<GamePlayer> players = board.getPlayers(gameId);
-		for (GamePlayer p : players) {
+		List<GridPlayer> players = game.getPlayers();
+		for (GridPlayer p : players) {
 			if (p.getPlayer().getName().equals("alice"))
 				alice = (ManantialesPlayer) p;
 			else if (p.getPlayer().getName().equals("bob"))
@@ -87,10 +96,11 @@ public class ManantialesSharedBoardTest {
 	
 	@After
 	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
-		registrar.unregisterPlayer(alice);
-		registrar.unregisterPlayer(bob);
-		registrar.unregisterPlayer(charlie);
-		registrar.unregisterPlayer(denise);
+		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
+		registrar.unregisterPlayer(new Game (game), new GamePlayer (alice));
+		registrar.unregisterPlayer(new Game (game), new GamePlayer (bob));
+		registrar.unregisterPlayer(new Game (game), new GamePlayer (charlie));
+		registrar.unregisterPlayer(new Game (game), new GamePlayer (denise));
 	}	
 	
 	
@@ -101,7 +111,7 @@ public class ManantialesSharedBoardTest {
 	 */
 	@Test
 	public void testGetGameGrid() throws RemoteException {
-		ManantialesGame game = (ManantialesGame) board.getGame(gameId);
+		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
 		assertTrue (game.getGrid().getCells().size() == 0);
 	}	
 	
@@ -109,31 +119,29 @@ public class ManantialesSharedBoardTest {
 	 * @throws InvalidMoveException */
 	@Test
 	public void testCheckConstraints () throws InvalidMoveException {
-		ManantialesGame game = (ManantialesGame) board.getGame(gameId);
+		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
 		Ficha ficha = new Ficha (4,3, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		
 		ManantialesMove move = new ManantialesMove (alice, ficha);
-		move = (ManantialesMove) board.move(move);
-		game = (ManantialesGame) move.getPlayer().getGame();
+		board.move(new Game (game), new Move (move));
 		
 		ficha = new Ficha (4,5, bob.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (bob, ficha);
-		move = (ManantialesMove) board.move(move);
-		game = (ManantialesGame) move.getPlayer().getGame();
+		board.move(new Game (game), new Move (move));
 		
 		ficha = new Ficha (3,4, charlie.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (charlie, ficha);
-		move = (ManantialesMove) board.move (move);
-		game = (ManantialesGame) move.getPlayer().getGame();
+		board.move(new Game (game), new Move (move));
 		
 		assertTrue ("CheckConstraint not fired!", game.getCheckConditions() != null);
 		assertEquals (1, game.getCheckConditions().size());
 		
-		List<GamePlayer> players = board.getPlayers(gameId);
-		for (GamePlayer player : players) {
+		game = (ManantialesGame) board.getGame(gameId).getImplementation();
+		List<GridPlayer> players = game.getPlayers();
+		for (GridPlayer player : players) {
 			ManantialesGame playerGame = (ManantialesGame) player.getGame();
 			assertTrue ("Registrant has no check constraints, while the game does.", 
 					playerGame.getCheckConditions() != null);

@@ -14,6 +14,8 @@ import mx.ecosur.multigame.model.implementation.ChatMessageImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 public class ChatMessage implements Model {
+
+	private static final long serialVersionUID = -5474115636921841270L;
 	
 	private ChatMessageImpl chatMessageImpl;
 

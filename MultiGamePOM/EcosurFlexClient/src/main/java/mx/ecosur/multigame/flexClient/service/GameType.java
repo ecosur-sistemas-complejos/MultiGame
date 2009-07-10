@@ -8,13 +8,10 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.flexClient.service;
 
-import java.io.Serializable;
-
-import javax.persistence.Entity;
-
-@Entity
-public interface Implementation extends Serializable {
+public enum GameType {
+	
+	PENTE, MANANTIALES;
 
 }

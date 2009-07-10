@@ -24,6 +24,11 @@
 	                    <phase>integration-test</phase>
 	                </execution>
 	            </executions>
+	            <configuration>
+		          <excludes>
+		            <exclude></exclude>
+		          </excludes>
+		        </configuration>
 	        </plugin>
 		</plugins>
 	</build>
@@ -53,7 +58,6 @@
             <groupId>mx.ecosur</groupId>
             <artifactId>ecosur-games</artifactId>
             <version>${version}</version>
-            <type>ejb-client</type>
         </dependency>
 		<dependency>
             <groupId>junit</groupId>

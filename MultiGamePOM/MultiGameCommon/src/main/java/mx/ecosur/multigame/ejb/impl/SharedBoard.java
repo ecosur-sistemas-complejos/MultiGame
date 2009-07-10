@@ -21,26 +21,24 @@ package mx.ecosur.multigame.ejb.impl;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
-import mx.ecosur.multigame.PersistentRepository;
-
-import mx.ecosur.multigame.ejb.interfaces.RepositoryImpl;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 
-import mx.ecosur.multigame.model.Cell;
 import mx.ecosur.multigame.model.ChatMessage;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
-
 import mx.ecosur.multigame.model.implementation.GameImpl;
 
 @Stateless
@@ -50,16 +48,13 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	private static Logger logger = Logger.getLogger(SharedBoard.class
 			.getCanonicalName());
 	
-	PersistentRepository pr;
-	
-	@Resource
-	String repositoryImpl;
+	@PersistenceContext (unitName="MultiGame")
+	EntityManager em;
 	
 	public SharedBoard () throws InstantiationException, IllegalAccessException, 
 		ClassNotFoundException 
 	{
-		RepositoryImpl impl = (RepositoryImpl) Class.forName(repositoryImpl).newInstance();
-		pr = new PersistentRepository (impl);		
+		super();
 	}	
 	
 	/* (non-Javadoc)
@@ -67,42 +62,41 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 */
 	public Game getGame(int gameId) {
 		logger.fine ("Getting game with id: " + gameId);
-		GameImpl impl = (GameImpl) pr.find (GameImpl.class, gameId);
-		if (impl == null)
+		Query query = em.createNamedQuery("getGameById");
+		query.setParameter("id", gameId);
+		GameImpl impl = null;
+		try {
+			impl = (GameImpl) query.getSingleResult();
+		} catch (NoResultException e) {
 			throw new RuntimeException ("UNABLE TO FIND GAME WITH ID: " + gameId);
-		return new Game(impl);
+		}
+		
+		return new Game (impl); 
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
 	 */
-	public Move move(Move move) throws InvalidMoveException {		
+	public Move move(Game game, Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
-
-		/* Obtain attached instance of game and player */
-		GamePlayer player = (GamePlayer) move.getPlayer();
-		if (!pr.contains(player.getImplementation()))
-			player = (GamePlayer) pr.find(player.getImplementation().getClass(), 
-					player.getId());
-
-		/* Refresh the move with the managed game and player */
-		move.setPlayer(player);
+		
+		GamePlayer player = move.getPlayer();
+		
+		/* Refresh a detached GamePlayer in the Move */
+		if (!em.contains(player.getImplementation())) {
+			player = new GamePlayer (em.find(player.getImplementation().getClass(),
+					player.getId()));
+			move.setPlayer(player);
+		}
 
 		/* persist in order to define id */
-		Cell current = move.getCurrent();
-		if (current != null)
-			move.setCurrent ((Cell) pr.find (current.getImplementation().getClass(), 
-					current.getId()));
-		pr.persist(move.getImplementation());		
-		
-		Game game = player.getGame();
+		em.persist(move.getImplementation());		
 
 		/* Execute the move in the rules */
 		game.move (move);
 		
 			/* Merge all changes */
-		pr.merge(move.getImplementation());		
-		pr.flush();
+		em.merge(move.getImplementation());		
 		
 		if (move.getStatus().equals(MoveStatus.INVALID))
 			throw new InvalidMoveException ("INVALID Move.");			
@@ -124,20 +118,19 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	
 	public void addMessage(ChatMessage chatMessage) {		
 		/* chat message sender may be detatched */
-		if (!pr.contains(chatMessage.getSender())) {
-			chatMessage.setSender((GamePlayer) pr.find(GamePlayer.class, chatMessage.getSender()
-					.getId()));
+		if (!em.contains(chatMessage.getSender())) {
+			chatMessage.setSender(em.find(chatMessage.getSender().getClass(), 
+					chatMessage.getSender().getId()));
 		}
 
-		pr.persist(chatMessage);
-		pr.flush();
+		em.persist(chatMessage);
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
 	 */
 	public Move updateMove(Move move) {
-		pr.merge(move.getImplementation());
+		em.merge(move.getImplementation());
 		return move;
 	}
 }

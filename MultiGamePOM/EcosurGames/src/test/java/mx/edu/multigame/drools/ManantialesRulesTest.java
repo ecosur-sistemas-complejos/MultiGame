@@ -82,8 +82,6 @@ public class ManantialesRulesTest extends RulesTestBase {
 				denise = (ManantialesPlayer)player;
 			}
 		}
-		
-		game.initialize();
 	}
 	
 	@After
@@ -242,57 +240,57 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}
 	
-//	@Test
-//	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
-//		game.setState(GameState.PLAY);
-//		
-//		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
-//				TokenType.INTENSIVE_PASTURE);
-//		SolverFicha man2 = new SolverFicha (4,5, bob.getColor(), 
-//				TokenType.INTENSIVE_PASTURE);
-//		SolverFicha man3 = new SolverFicha (3,4, charlie.getColor(), 
-//				TokenType.MODERATE_PASTURE);		
-//		game.getGrid().updateCell(man1);
-//		game.getGrid().updateCell(man2);
-//		
-//		charlie.setTurn(true);		
-//		ManantialesMove move = new ManantialesMove (charlie, man3);
-//		game.move (move);
-//		
-//		/* Now have the instigator move */
-//		bob.setTurn (true);
-//		
-//		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
-//				TokenType.MANAGED_FOREST);		
-//		move = new ManantialesMove (bob, terminator);
-//		game.move (move);
-//		
-//		assertEquals (GameState.END, game.getState());
-//		
-//		ArrayList filter = new ArrayList();		
-//		List<Message> messageList = mockTopic.getReceivedMessageList();
-//		for (Message  message : messageList) {
-//			if (message.getStringProperty("GAME_EVENT").equals("END"))
-//					filter.add(message);					
-//		}
-//		assertTrue (filter.size() > 0);
-//		
-//		filter.clear();
-//		messageList = mockTopic.getReceivedMessageList();
-//		for (Message  message : messageList) {
-//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-//					filter.add(message);					
-//		}		
-//		assertTrue (filter.size() > 0);
-//		
-//		filter.clear();		
-//		for (CheckCondition constraint : game.getCheckConditions()) {
-//			if (constraint.isExpired())
-//				filter.add(constraint);
-//		}		
-//		assertTrue (filter.size() > 0);	
-//		
-//	}
+	@Test
+	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
+		game.setState(GameState.PLAY);
+		
+		SolverFicha man1 = new SolverFicha (4,3, alice.getColor(), 
+				TokenType.INTENSIVE_PASTURE);
+		SolverFicha man2 = new SolverFicha (4,5, bob.getColor(), 
+				TokenType.INTENSIVE_PASTURE);
+		SolverFicha man3 = new SolverFicha (3,4, charlie.getColor(), 
+				TokenType.MODERATE_PASTURE);		
+		game.getGrid().updateCell(man1);
+		game.getGrid().updateCell(man2);
+		
+		charlie.setTurn(true);		
+		ManantialesMove move = new ManantialesMove (charlie, man3);
+		game.move (move);
+		
+		/* Now have the instigator move */
+		bob.setTurn (true);
+		
+		SolverFicha terminator = new SolverFicha (1,4, bob.getColor(), 
+				TokenType.MANAGED_FOREST);		
+		move = new ManantialesMove (bob, terminator);
+		game.move (move);
+		
+		assertEquals (GameState.END, game.getState());
+		
+		ArrayList filter = new ArrayList();		
+		List<Message> messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("END"))
+					filter.add(message);					
+		}
+		assertTrue (filter.size() > 0);
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
+		assertTrue (filter.size() > 0);
+		
+		filter.clear();		
+		for (CheckCondition constraint : game.getCheckConditions()) {
+			if (constraint.isExpired())
+				filter.add(constraint);
+		}		
+		assertTrue (filter.size() > 0);	
+		
+	}
 	
 	
 	public void testManantialesCheckConstraintRelief() throws InvalidMoveException {
@@ -495,80 +493,80 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}	
 	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testDeforestedCheckConstraintExpiration() throws JMSException, InvalidMoveException {
-//		game.setState(GameState.PLAY);
-//		alice.setTurn(true);
-//		
-//		/* Populate board with MODERATE tokens */
-//		for (int i = 0; i < 8; i++) {
-//			for (int j = 0; j < 4; j++) {
-//					/* skip the last ficha */
-//				if (i == 7 && j==3)
-//					continue;
-//				SolverFicha ficha = new SolverFicha (i, j, Color.BLACK,
-//						TokenType.MODERATE_PASTURE);		
-//				game.getGrid().updateCell(ficha);
-//			}
-//		}
-//		
-//		SolverFicha deforest = new SolverFicha (0,5, Color.RED, 
-//					TokenType.MODERATE_PASTURE);
-//		ManantialesMove move = new ManantialesMove ();
-//		move.setPlayer (alice);
-//		move.setDestination(deforest);
-//		game.move (move);
-//		
-//		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-//		ArrayList filter = new ArrayList();		
-//		List<Message> messageList = mockTopic.getReceivedMessageList();
-//		for (Message  message : messageList) {
-//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
-//					filter.add(message);
-//		}
-//		
-//		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
-//				filter.size() > 0);
-//		
-//		/* Test expiration and consequences */
-//		
-//		/* Now have the previous player move */
-//		charlie.setTurn (true);
-//		
-//		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
-//				TokenType.MANAGED_FOREST);		
-//		move = new ManantialesMove (denise, terminator);
-//		game.move (move);
-//		
-//		assertEquals (GameState.END, game.getState());
-//		
-//		filter.clear();
-//		
-//		messageList = mockTopic.getReceivedMessageList();
-//		for (Message  message : messageList) {
-//			if (message.getStringProperty("GAME_EVENT").equals("END"))
-//					filter.add(message);					
-//		}
-//		
-//		assertTrue (filter.size() > 0);
-//		
-//		filter.clear();
-//		messageList = mockTopic.getReceivedMessageList();
-//		for (Message  message : messageList) {
-//			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-//					filter.add(message);					
-//		}		
-//		
-//		filter.clear();
-//		
-//		for (CheckCondition constraint : game.getCheckConditions()) {
-//			if (constraint.isExpired())
-//				filter.add(constraint);
-//		}
-//		
-//		assertTrue (filter.size() > 0);				
-//	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeforestedCheckConstraintExpiration() throws JMSException, InvalidMoveException {
+		game.setState(GameState.PLAY);
+		alice.setTurn(true);
+		
+		/* Populate board with MODERATE tokens */
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 4; j++) {
+					/* skip the last ficha */
+				if (i == 7 && j==3)
+					continue;
+				SolverFicha ficha = new SolverFicha (i, j, Color.BLACK,
+						TokenType.MODERATE_PASTURE);		
+				game.getGrid().updateCell(ficha);
+			}
+		}
+		
+		SolverFicha deforest = new SolverFicha (0,5, Color.RED, 
+					TokenType.MODERATE_PASTURE);
+		ManantialesMove move = new ManantialesMove ();
+		move.setPlayer (alice);
+		move.setDestination(deforest);
+		game.move (move);
+		
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+		ArrayList filter = new ArrayList();		
+		List<Message> messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+					filter.add(message);
+		}
+		
+		assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]", 
+				filter.size() > 0);
+		
+		/* Test expiration and consequences */
+		
+		/* Now have the previous player move */
+		charlie.setTurn (true);
+		
+		SolverFicha terminator = new SolverFicha (0,6, charlie.getColor(), 
+				TokenType.MANAGED_FOREST);		
+		move = new ManantialesMove (denise, terminator);
+		game.move (move);
+		
+		assertEquals (GameState.END, game.getState());
+		
+		filter.clear();
+		
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("END"))
+					filter.add(message);					
+		}
+		
+		assertTrue (filter.size() > 0);
+		
+		filter.clear();
+		messageList = mockTopic.getReceivedMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);					
+		}		
+		
+		filter.clear();
+		
+		for (CheckCondition constraint : game.getCheckConditions()) {
+			if (constraint.isExpired())
+				filter.add(constraint);
+		}
+		
+		assertTrue (filter.size() > 0);				
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Test	
@@ -987,61 +985,61 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 	}	
 	
-	@Test
-	public void testStateChange() throws JMSException, InvalidMoveException {
-		int intensives = 3, moderates = 6, forested = 3;
-		Point [] points = { new Point (0,8), new Point (0,6), new Point (0,4),
-				new Point (1,4), new Point (2,4), new Point (3,4), 
-				new Point (1,5), new Point (3,5), new Point (2,6),
-				new Point (1,7), new Point (3,7), new Point (2,8) };
-		
-		for (int i = 0; i < 11; i++) {
-			SolverFicha ficha = null;			
-			if (intensives > 0) {
-				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
-						TokenType.INTENSIVE_PASTURE);
-				intensives--;
-				denise.setIntensive(denise.getIntensive() + 1);
-			} else if (moderates > 0) {				
-				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
-						TokenType.MODERATE_PASTURE);				
-				moderates--;
-				denise.setModerate(denise.getModerate() + 1);
-			} else {
-				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
-						TokenType.MANAGED_FOREST);
-				forested--;
-				denise.setForested (denise.getForested() + 1);
-			}
-			
-			game.getGrid().updateCell(ficha);
-		}
-		
-		SolverFicha end = new SolverFicha (points [ 11 ].x, points [ 11 ].y, Color.RED,
-				TokenType.MANAGED_FOREST);
-		
-		/* Denise is RED */
-		denise.setTurn(true);
-		ManantialesMove move = new ManantialesMove (denise, end);
-		game.move (move);
-		
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());				
-		assertEquals (0, denise.getScore());
-		
-		ArrayList filter = new ArrayList();		
-		List<Message> messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("STATE_CHANGE"))
-					filter.add(message);
-		}
-		
-		assertTrue (filter.size() > 0);
-		
-		filter.clear();
-	
-		
-		assertEquals (GameState.PLAY, game.getState());
-	}
+//	@Test
+//	public void testStateChange() throws JMSException, InvalidMoveException {
+//		int intensives = 3, moderates = 6, forested = 3;
+//		Point [] points = { new Point (0,8), new Point (0,6), new Point (0,4),
+//				new Point (1,4), new Point (2,4), new Point (3,4), 
+//				new Point (1,5), new Point (3,5), new Point (2,6),
+//				new Point (1,7), new Point (3,7), new Point (2,8) };
+//		
+//		for (int i = 0; i < 11; i++) {
+//			SolverFicha ficha = null;			
+//			if (intensives > 0) {
+//				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
+//						TokenType.INTENSIVE_PASTURE);
+//				intensives--;
+//				denise.setIntensive(denise.getIntensive() + 1);
+//			} else if (moderates > 0) {				
+//				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
+//						TokenType.MODERATE_PASTURE);				
+//				moderates--;
+//				denise.setModerate(denise.getModerate() + 1);
+//			} else {
+//				ficha = new SolverFicha (points [ i ].x, points [ i ].y, Color.RED,
+//						TokenType.MANAGED_FOREST);
+//				forested--;
+//				denise.setForested (denise.getForested() + 1);
+//			}
+//			
+//			game.getGrid().updateCell(ficha);
+//		}
+//		
+//		SolverFicha end = new SolverFicha (points [ 11 ].x, points [ 11 ].y, Color.RED,
+//				TokenType.MANAGED_FOREST);
+//		
+//		/* Denise is RED */
+//		denise.setTurn(true);
+//		ManantialesMove move = new ManantialesMove (denise, end);
+//		game.move (move);
+//		
+//		assertEquals (MoveStatus.EVALUATED, move.getStatus());				
+//		assertEquals (24, denise.getScore());
+//		
+//		ArrayList filter = new ArrayList();		
+//		List<Message> messageList = mockTopic.getReceivedMessageList();
+//		for (Message  message : messageList) {
+//			if (message.getStringProperty("GAME_EVENT").equals("STATE_CHANGE"))
+//					filter.add(message);
+//		}
+//		
+//		assertTrue ("STATE_CHANGE not found in message filter!", filter.size() > 0);
+//		
+//		filter.clear();
+//	
+//		
+//		assertEquals (GameState.PLAY, game.getState());
+//	}
 	
 	@Test
 	public void testWin () throws JMSException, InvalidMoveException {

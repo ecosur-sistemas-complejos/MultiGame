@@ -10,6 +10,9 @@
  */
 package mx.ecosur.multigame.model.implementation;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 public interface RegistrantImpl extends Implementation {
 
 	/**
@@ -27,5 +30,16 @@ public interface RegistrantImpl extends Implementation {
 	 * @return
 	 */
 	public String getName();
+
+	/**
+	 * @param em 
+	 * @return
+	 */
+	public Query getAvailableGames(EntityManager em);
+
+	/**
+	 * @return
+	 */
+	public Query getCurrentGames(EntityManager em);
 
 }

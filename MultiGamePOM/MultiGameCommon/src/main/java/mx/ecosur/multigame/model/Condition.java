@@ -14,8 +14,9 @@ import java.io.Serializable;
 
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
-@SuppressWarnings("serial")
-public class Condition implements Model, Serializable {
+public class Condition implements Model {
+
+	private static final long serialVersionUID = -5295777444155230289L;
 	
 	private ConditionImpl conditionImpl;
 
@@ -29,6 +30,13 @@ public class Condition implements Model, Serializable {
 	
 	public Object[] getTriggers () {
 		return conditionImpl.getTriggers();
+	}
+
+	/**
+	 * @return
+	 */
+	public ConditionImpl getImplementation() {
+		return conditionImpl;
 	}
 
 }

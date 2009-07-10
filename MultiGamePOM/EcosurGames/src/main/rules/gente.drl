@@ -46,10 +46,8 @@ import mx.ecosur.multigame.impl.util.Direction;
 
 #Functions for the modified GridGame of PENTE, "GENTE"
 
-/*
-    Determines if the destination of the requested move
-    is in the center of the grid.
-*/
+#    Determines if the destination of the requested move
+#    is in the center of the grid.
 function boolean isCenter (GenteGame game, GenteMove move) {
     Dimension size = game.getSize();
     GridCell destination = (GridCell) move.getDestination ();
@@ -64,10 +62,8 @@ function boolean isCenter (GenteGame game, GenteMove move) {
     return ret;
 }
 
-/*
-    Determines if the destination of the requested move is
-    empty on the grid.
-*/
+#    Determines if the destination of the requested move is
+#    empty on the grid.
 function boolean isEmpty (GameGrid grid, GenteMove move) {
     GridCell destination = (GridCell) move.getDestination();
     GridCell current = grid.getLocation (destination);
@@ -95,18 +91,15 @@ function int scorePlayer (GenteMove move) {
     return ret;
 }
 
-/*
-    Determines if the game has a winner.
-*/
+#    Determines if the game has a winner.
 function boolean hasWinner (GenteGame game) {
     return (game.getWinners().size() > 0);
 }
 
-/*
-    Gets the winner from a specified game.  For more complicated payoff
-    schemas, this function should return a PriorityQueue of Players 
-    based upon positions on the board.
-*/
+
+#    Gets the winner from a specified game.  For more complicated payoff
+#    schemas, this function should return a PriorityQueue of Players 
+#    based upon positions on the board.
 function Set getWinners (GenteGame game) {   
     GenteGame pente = (GenteGame) game;
     return pente.getWinners();
@@ -117,7 +110,7 @@ function GridPlayer incrementTurn (GenteMove move) {
     player.setTurn(false);
     GenteGame game = (GenteGame) player.getGame();
 
-    /* Find next player */
+    # Find next player 
     List<GridPlayer> players = game.getPlayers();
     int playerNumber = players.indexOf(player);
     GridPlayer nextPlayer = null;
@@ -195,7 +188,7 @@ then
     modify (game) { setGrid (modifiedGrid) }
     Move model = new Move (move);
     MessageSender messageSender = new MessageSender();
-    messageSender.sendMoveComplete(model);
+    messageSender.sendMoveComplete(new Game(game), model);
 end
  
 rule "find-the-trias"

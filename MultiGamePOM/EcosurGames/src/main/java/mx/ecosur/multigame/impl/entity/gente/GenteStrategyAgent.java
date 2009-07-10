@@ -35,6 +35,7 @@ import mx.ecosur.multigame.impl.util.Direction;
 import mx.ecosur.multigame.impl.util.Search;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 
 @Entity
 public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
@@ -253,5 +254,12 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	
 	public GenteMove getNextMove () {
 		return nextMove;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.AgentImpl#findGame()
+	 */
+	public GameImpl findGame() {
+		return super.getGame();
 	}
 }

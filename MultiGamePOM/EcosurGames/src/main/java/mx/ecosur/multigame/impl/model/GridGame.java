@@ -46,6 +46,7 @@ import javax.persistence.Version;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
@@ -56,16 +57,12 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
  *
  */
 @NamedQueries( {
-	@NamedQuery(name = "getGameByType", query = "select g from Game g where g.type=:type "
-			+ "and g.state =:state"),
-	@NamedQuery(name = "getGameById", query = "select g from Game g where g.id=:id"),
-	@NamedQuery(name = "getGameByTypeAndPlayer", query = "select gp.game from GridRegistrant as gp "
-			+ "where gp.player=:player and gp.game.type=:type and gp.game.state <>:state"),
-	@NamedQuery(name = "getGamesByPlayer", query = "select gp.game from GridRegistrant as gp "
+	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
+	@NamedQuery(name = "getGamesByPlayer", query = "select gp.game from GridPlayer as gp "
 				+ "where gp.player=:player and gp.game.state <> :state"),
 	@NamedQuery(name = "getGamesByNotPlayer", 
-			query = "select g from Game as g where g.state = :state and not exists " +
-					"(select gp from GridRegistrant as gp where " +
+			query = "select g from GridGame as g where g.state = :state and not exists " +
+					"(select gp from GridPlayer as gp where " +
 					"gp.player = :player and gp.game.id = g.id)")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -272,24 +269,25 @@ public abstract class GridGame implements GameImpl {
 	    return colors;
 	}
 	
-	public GridPlayer addPlayer (GamePlayerImpl player) {
-		GridPlayer gridPlayer = (GridPlayer) player;
-		gridPlayer.setGame(this);
-		players.add(gridPlayer);
-		return gridPlayer;
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.GameImpl#listPlayers()
+	 */
+	public List<GamePlayer> listPlayers() {
+		List<GamePlayer> ret = new ArrayList<GamePlayer>();
+		for (GridPlayer player : players) {
+			ret.add(new GamePlayer (player));
+		}
+		
+		return ret;
 	}
 	
 	public abstract List<Color> getColors();	
 	
 	public abstract int getMaxPlayers ();
-	
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.GameImpl#initialize()
-	 */
-	public abstract void initialize();
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.GameImpl#move(mx.ecosur.multigame.model.implementation.MoveImpl)
 	 */
 	public abstract void move(MoveImpl move) throws InvalidMoveException;
+
 }

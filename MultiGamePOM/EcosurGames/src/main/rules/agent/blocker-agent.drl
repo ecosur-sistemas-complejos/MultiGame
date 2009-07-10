@@ -25,6 +25,8 @@
 package mx.ecosur.multigame.impl.entity.gente;
 
 import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.model.impl.*;
+
 import mx.ecosur.multigame.impl.model.GridCell;
 
 import mx.ecosur.multigame.impl.Color;

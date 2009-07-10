@@ -10,9 +10,14 @@
  */
 package mx.ecosur.multigame.model;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 public class Registrant implements Model {
+
+	private static final long serialVersionUID = 1672849851772628554L;
 	
 	private RegistrantImpl playerImpl;
 
@@ -36,5 +41,13 @@ public class Registrant implements Model {
 	
 	public RegistrantImpl getImplementation() {
 		return playerImpl;
+	}
+	
+	public Query getCurrentGames (EntityManager em) {
+		return playerImpl.getCurrentGames(em);
+	}
+	
+	public Query getAvailableGames (EntityManager em) {
+		return playerImpl.getAvailableGames(em);
 	}
 }

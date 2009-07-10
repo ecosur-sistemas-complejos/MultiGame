@@ -58,7 +58,7 @@ public interface RegistrarInterface {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public void unregisterPlayer(GamePlayer player) 
+	public void unregisterPlayer(Game game, GamePlayer player) 
 		throws 
 	InvalidRegistrationException;
 

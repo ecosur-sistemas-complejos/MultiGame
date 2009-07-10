@@ -43,7 +43,6 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridGame;
 
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -52,18 +51,12 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 
 @NamedQueries( {
-	@NamedQuery(name = "getPenteGame", query = "select g from GenteGame g where g.type=:type "
-		+ "and g.state =:state"),
-	@NamedQuery(name = "getPenteGameById", query = "select g from GenteGame g where g.id=:id "),
-	@NamedQuery(name = "getPenteGameByTypeAndPlayer", query = "select pp.game from GentePlayer as pp "
-		+ "where pp.player=:player and pp.game.type=:type and pp.game.state <>:state") 
-})
+	@NamedQuery(name = "getPenteGame", query = "select g from GenteGame g where g.state =:state"),
+	@NamedQuery(name = "getPenteGameById", query = "select g from GenteGame g where g.id=:id ") })
 @Entity
 public class GenteGame extends GridGame {
 	
 	private static final long serialVersionUID = -4437359200244786305L;
-	
-	 private RuleBase ruleBase;
 	
 	private Set<GentePlayer> winners;
 	
@@ -105,13 +98,12 @@ public class GenteGame extends GridGame {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridGame#initialize()
 	 */
-	@Override
 	public void initialize() {
-		this.setGrid(new GameGrid());
-	    this.setState(GameState.BEGIN);
 	    this.setCreated(new Date());
+	    this.setState(GameState.BEGIN);
 		this.setColumns(9);
-		this.setRows(9);
+		this.setRows(9);	  
+		RuleBase ruleBase = null;
 		
 		if (ruleBase == null) {
 			PackageBuilder builder = new PackageBuilder();
@@ -146,6 +138,8 @@ public class GenteGame extends GridGame {
 	 */
 	@Override
 	public void move(MoveImpl move) throws InvalidMoveException {
+		RuleBase ruleBase = null;
+		
 		try {
 			if (ruleBase == null) {
 				PackageBuilder builder = new PackageBuilder();
@@ -181,7 +175,7 @@ public class GenteGame extends GridGame {
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {			
 		GentePlayer player = new GentePlayer ();
 		player.setPlayer(registrant);
-		player.setGame(this);
+		player.setGame(this);	
 		
 		int max = getMaxPlayers();
 		if (players.size() == max)
@@ -191,9 +185,9 @@ public class GenteGame extends GridGame {
 		player.setColor(colors.get(0));		
 		players.add(player);
 		
-		/* If we've reached the max, then set the GameState to begin */
-		if (players.size() == max)
-			state = GameState.BEGIN;
+		if (players.size() == getMaxPlayers())
+			initialize();		
+		
 		/* Be sure that the player has a good reference to this game */
 		player.setGame(this);
 		
@@ -215,5 +209,5 @@ public class GenteGame extends GridGame {
 		}
 		
 		return ret;
-	}	
+	}
 }

@@ -11,32 +11,23 @@
 package mx.ecosur.multigame.model.implementation;
 
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.model.GamePlayer;
 
 public interface MoveImpl extends Implementation {
 
 	/**
 	 * @return
 	 */
-	public GamePlayerImpl getPlayer();
-
-	/**
-	 * @param gamePlayerImpl
-	 */
-	public void setPlayer(GamePlayerImpl gamePlayerImpl);
-
-	/**
-	 * @return
-	 */
-	public CellImpl getCurrent();
-
-	/**
-	 * @param cell
-	 */
-	public void setCurrent(CellImpl cell);
-
-	/**
-	 * @return
-	 */
 	public MoveStatus getStatus();
+
+	/**
+	 * @return
+	 */
+	public GamePlayer getPlayerModel();
+
+	/**
+	 * @param player
+	 */
+	public void setPlayerModel(GamePlayer player);
 
 }

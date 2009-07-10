@@ -32,6 +32,8 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.model.Agent;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
 
 @MessageDriven(mappedName = "MultiGame")
@@ -45,62 +47,42 @@ public class AgentListener implements MessageListener {
 
 	private static final long serialVersionUID = -312450142866686545L;
 
-	public void onMessage(Message msg) {			
+	public void onMessage(Message message) {			
 		try {
-			GameEvent gameEvent = GameEvent.valueOf(msg.getStringProperty(
+			GameEvent gameEvent = GameEvent.valueOf(message.getStringProperty(
 				"GAME_EVENT"));
-			
-			/* The listener should only be activated when the Game Begins,
-			 * or a Move has been completed.
-			 */
-			switch (gameEvent) {
-				case PLAYER_CHANGE:
-					handleEvent ((ObjectMessage) msg);
-					break;
-				default:
-					break;
+			ObjectMessage msg = (ObjectMessage) message;
+
+			if (gameEvent.equals(GameEvent.PLAYER_CHANGE)) {
+				Game game = (Game) msg.getObject();
+				List<GamePlayer> players = game.listPlayers();
+				for (GamePlayer p : players) {
+					if (p instanceof Agent) {
+						Agent agent = (Agent) p;
+						if (agent.isTurn() && agent.findGame().getState() != GameState.END) {
+							/* Simple 50ms sleep */
+							try {
+								Thread.sleep(250);					
+								Move move = agent.determineNextMove();		
+								logger.info("Agent moving: " + move);
+								sharedBoard.move(agent.findGame(), move);				
+								message.acknowledge();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							} catch (InvalidMoveException e) {
+								logger.log(Level.SEVERE, "Invalid move suggested " +
+										"by agent!");
+								e.printStackTrace();
+							}
+							
+						}
+					}
+				}
 			}
 			
 		} catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-	}
-
-	/**
-	 * 
-	 * 
-	 * @param msg 
-	 * @throws InvalidMoveException 
-	 * @throws JMSException 
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	private void handleEvent (ObjectMessage message) throws JMSException 
-	{
-		List<Agent> players = (List<Agent>) message.getObject();
-		for (Agent p : players) {
-			if (p instanceof Agent) {
-				Agent agent = (Agent) p;
-				if (agent.isTurn() && agent.getGame().getState() != GameState.END) {
-					/* Simple 50ms sleep */
-					try {
-						Thread.sleep(250);					
-						Move move = agent.determineNextMove();		
-						logger.info("Agent moving: " + move);
-						sharedBoard.move(move);				
-						message.acknowledge();
-					} catch (InterruptedException e) {
-						handleEvent (message);
-						e.printStackTrace();
-					} catch (InvalidMoveException e) {
-						logger.log(Level.SEVERE, "Invalid move suggested " +
-								"by agent!");
-						e.printStackTrace();
-					}
-					
-				}
-			}	
-		}
 	}
 }

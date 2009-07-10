@@ -31,14 +31,13 @@ import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.impl.Color;
 
-import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 
 @NamedQueries ({
 	@NamedQuery(name="getGamePlayer",
-			query="select gp from GridRegistrant gp where gp.player=:player " +
+			query="select gp from GridPlayer gp where gp.player=:player " +
 					"and gp.game=:game")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -93,12 +92,12 @@ public class GridPlayer implements GamePlayerImpl {
 
 	@ManyToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
 	@JoinColumn(name="GAME_ID")
-	public GameImpl getGame() {
-		return (GameImpl) game;
+	public GridGame getGame() {
+		return game;
 	}
 
-	public void setGame(GameImpl game) {
-		this.game = (GridGame) game;
+	public void setGame(GridGame game) {
+		this.game = game;
 	}
 
 	@Enumerated (EnumType.STRING)
