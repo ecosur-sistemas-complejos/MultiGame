@@ -70,7 +70,8 @@
                             </ejbModule>
                             <jarModule>
                                 <groupId>mx.ecosur</groupId>
-                                <artifactId>ecosur-games</artifactId>                         
+                                <artifactId>ecosur-games</artifactId>  
+                                <bundleDir>lib</bundleDir>                       
                             </jarModule>                            
                             <jarModule>
                                 <groupId>org.drools</groupId>

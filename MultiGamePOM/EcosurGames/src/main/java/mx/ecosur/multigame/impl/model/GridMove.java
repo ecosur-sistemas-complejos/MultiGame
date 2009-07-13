@@ -101,6 +101,10 @@ public abstract class GridMove implements MoveImpl {
 		return this.player;
 	}
 	
+	public void setGame (GridGame game) {
+		this.player.setGame(game);
+	}
+	
 	@Transient
 	public GamePlayer getPlayerModel () {
 		return new GamePlayer (player);

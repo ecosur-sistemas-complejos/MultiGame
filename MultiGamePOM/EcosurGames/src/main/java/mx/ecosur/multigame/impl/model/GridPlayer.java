@@ -31,13 +31,13 @@ import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.impl.Color;
 
+import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 
 @NamedQueries ({
 	@NamedQuery(name="getGamePlayer",
-			query="select gp from GridPlayer gp where gp.player=:player " +
+			query="select gp from GridPlayer gp where gp.registrant=:player " +
 					"and gp.game=:game")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -82,12 +82,12 @@ public class GridPlayer implements GamePlayerImpl {
 		this.id = id;
 	}
 	
-	public RegistrantImpl getPlayer() {
-		return (RegistrantImpl) player;
+	public GridRegistrant getRegistrant() {
+		return player;
 	}
-
-	public void setPlayer(RegistrantImpl player) {
-		this.player = (GridRegistrant) player;
+	
+	public void setRegistrant (GridRegistrant player) {
+		this.player = player;
 	}
 
 	@ManyToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
@@ -123,5 +123,12 @@ public class GridPlayer implements GamePlayerImpl {
 	@Override
 	public String toString() {
 		return player.getName() + ", " + color.name() + ", turn=" + turn;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.GamePlayerImpl#setGame(mx.ecosur.multigame.model.implementation.GameImpl)
+	 */
+	public void setGame(GameImpl implementation) {
+		this.game = (GridGame) implementation;
 	}
 }

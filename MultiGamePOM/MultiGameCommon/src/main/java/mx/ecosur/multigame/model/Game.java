@@ -69,8 +69,8 @@ public class Game implements Model {
 	 * @param move
 	 * @throws InvalidMoveException 
 	 */
-	public void move(Move move) throws InvalidMoveException {
-		gameImpl.move(move.getImplementation());
+	public Move move(Move move) throws InvalidMoveException {
+		return new Move (gameImpl.move(move.getImplementation()));
 	}
 
 	/**

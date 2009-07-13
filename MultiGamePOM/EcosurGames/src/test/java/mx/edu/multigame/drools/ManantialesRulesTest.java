@@ -72,13 +72,13 @@ public class ManantialesRulesTest extends RulesTestBase {
 		}
 		
 		for (GridPlayer player : game.getPlayers()) {
-			if (player.getPlayer().getName().equals("alice")) {
+			if (player.getRegistrant().getName().equals("alice")) {
 				alice = (ManantialesPlayer) player;				
-			} else if (player.getPlayer().getName().equals("bob")) {
+			} else if (player.getRegistrant().getName().equals("bob")) {
 				bob = (ManantialesPlayer) player;
-			} else if (player.getPlayer().getName().equals("charlie")) {
+			} else if (player.getRegistrant().getName().equals("charlie")) {
 				charlie = (ManantialesPlayer) player;
-			} else if (player.getPlayer().getName().equals("denise")) {
+			} else if (player.getRegistrant().getName().equals("denise")) {
 				denise = (ManantialesPlayer)player;
 			}
 		}
@@ -96,12 +96,12 @@ public class ManantialesRulesTest extends RulesTestBase {
 		Collection<GridPlayer> players = game.getPlayers();
 		GridPlayer p = null;
 		for (GridPlayer player : players) {
-			if (player.getPlayer().getName().equals("alice"))
+			if (player.getRegistrant().getName().equals("alice"))
 				p = player;
 		}
 		
 		assertNotNull (p);
-		assertEquals ("alice", p.getPlayer().getName());
+		assertEquals ("alice", p.getRegistrant().getName());
 		assertEquals (true, p.isTurn());
 	}
 	

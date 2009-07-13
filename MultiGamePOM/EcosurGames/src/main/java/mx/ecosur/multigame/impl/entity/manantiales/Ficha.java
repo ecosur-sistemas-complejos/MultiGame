@@ -13,6 +13,7 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -41,6 +42,7 @@ public class Ficha extends GridCell {
 		return type;
 	}
 
+	@Enumerated (EnumType.STRING)
 	public void setType(TokenType type) {
 		this.type = type;
 	}
@@ -55,6 +57,7 @@ public class Ficha extends GridCell {
 		return ret;
 	}
 	
+	@Transient
 	public BorderType getBorder () {
 		BorderType ret = BorderType.NONE;
 		if (this.getRow() == 4) {
@@ -75,6 +78,7 @@ public class Ficha extends GridCell {
 	/**
 	 * @return
 	 */
+	@Transient
 	public boolean isManantial() {
 		if (type.equals(TokenType.UNDEVELOPED))
 			return false;

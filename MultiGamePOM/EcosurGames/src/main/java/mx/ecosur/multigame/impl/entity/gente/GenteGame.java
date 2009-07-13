@@ -44,6 +44,8 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridMove;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
@@ -137,7 +139,7 @@ public class GenteGame extends GridGame {
 	 * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
 	 */
 	@Override
-	public void move(MoveImpl move) throws InvalidMoveException {
+	public MoveImpl move(MoveImpl move) throws InvalidMoveException {
 		RuleBase ruleBase = null;
 		
 		try {
@@ -165,8 +167,10 @@ public class GenteGame extends GridGame {
 		    session.fireAllRules();
 		    session.setFocus("evaluate");
 		    session.fireAllRules();
-		    session.dispose();			
-			
+		    session.dispose();
+		    
+		    return move;
+		    
 		} catch (Exception e) {
 			throw new InvalidMoveException (e.getMessage());
 		}										
@@ -174,7 +178,7 @@ public class GenteGame extends GridGame {
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {			
 		GentePlayer player = new GentePlayer ();
-		player.setPlayer(registrant);
+		player.setRegistrant((GridRegistrant) registrant);
 		player.setGame(this);	
 		
 		int max = getMaxPlayers();

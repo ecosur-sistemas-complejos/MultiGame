@@ -184,8 +184,8 @@ then
     #Calculate Trias and Tesseras before serialziing move over jms.
     move.getTrias();
     move.getTesseras();
-    modify (move) { setStatus (MoveStatus.MOVED) }
     modify (game) { setGrid (modifiedGrid) }
+    modify (move) { setStatus (MoveStatus.MOVED), setGame (game) }
     Move model = new Move (move);
     MessageSender messageSender = new MessageSender();
     messageSender.sendMoveComplete(new Game(game), model);

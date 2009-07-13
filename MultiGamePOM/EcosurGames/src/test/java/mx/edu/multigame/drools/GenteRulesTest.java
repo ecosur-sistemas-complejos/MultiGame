@@ -67,14 +67,14 @@ public class GenteRulesTest extends RulesTestBase {
 		Collection<GridPlayer> players = game.getPlayers();
 		GentePlayer p = null;
 		for (GridPlayer player : players) {
-			if (player.getPlayer().getName().equals("alice")) {
+			if (player.getRegistrant().getName().equals("alice")) {
 				p = (GentePlayer) player;
 				break;
 			}
 		}
 		
 		assertNotNull (p);
-		assertEquals ("alice", p.getPlayer().getName());
+		assertEquals ("alice", p.getRegistrant().getName());
 		assertEquals (true, p.isTurn());
 	}
 	
@@ -512,7 +512,7 @@ public class GenteRulesTest extends RulesTestBase {
 		/* Clean up turns for our tests */
 		Collection<GridPlayer> players = game.getPlayers();
 		for (GridPlayer player : players) {
-			if (player.getPlayer().getName().equals(alice.getPlayer().getName()))
+			if (player.getRegistrant().getName().equals(alice.getRegistrant().getName()))
 				player.setTurn(true);
 			else
 				player.setTurn(false);

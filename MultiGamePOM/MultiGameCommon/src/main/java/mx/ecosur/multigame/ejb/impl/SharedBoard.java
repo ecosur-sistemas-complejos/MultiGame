@@ -80,27 +80,35 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	public Move move(Game game, Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
 		
+		/* Refresh a detached GamePlayer in the Move */
 		GamePlayer player = move.getPlayer();
 		
-		/* Refresh a detached GamePlayer in the Move */
-		if (!em.contains(player.getImplementation())) {
-			player = new GamePlayer (em.find(player.getImplementation().getClass(),
-					player.getId()));
-			move.setPlayer(player);
+		/* Refresh a detached Game in GamePlayer */
+		if (!em.contains (player.getGame().getImplementation())) {
+			GameImpl impl = em.find (player.getGame().getImplementation().getClass(),
+					player.getGame().getId());
+			game = new Game (impl);
+			player.setGame(game);			
 		}
-
+		
+		if (!em.contains (player.getImplementation())) {
+			player = new GamePlayer (em.find(
+					player.getImplementation().getClass(), player.getId()));
+		}		
+		
+		move.setPlayer(player);
+		
 		/* persist in order to define id */
-		em.persist(move.getImplementation());		
+		em.persist(move.getImplementation());
 
-		/* Execute the move in the rules */
-		game.move (move);
+		/* Execute the move */
+		move = game.move (move);		
 		
-			/* Merge all changes */
-		em.merge(move.getImplementation());		
-		
-		if (move.getStatus().equals(MoveStatus.INVALID))
-			throw new InvalidMoveException ("INVALID Move.");			
+		if (move.getStatus().equals(MoveStatus.INVALID)) {
+			throw new InvalidMoveException ("INVALID Move.");
+		}
 		return move;
+		
 	}
 
 	/* (non-Javadoc)

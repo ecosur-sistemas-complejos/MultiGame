@@ -94,13 +94,13 @@ public class GenteSharedBoardTest {
 		/* Set the GamePlayers from the SharedBoard */
 		List<GridPlayer> players = game.getPlayers();
 		for (GridPlayer p : players) {
-			if (p.getPlayer().getName().equals("alice"))
+			if (p.getRegistrant().getName().equals("alice"))
 				alice = (GentePlayer) p;
-			else if (p.getPlayer().getName().equals("bob"))
+			else if (p.getRegistrant().getName().equals("bob"))
 				bob = (GentePlayer) p;
-			else if (p.getPlayer().getName().equals("charlie"))
+			else if (p.getRegistrant().getName().equals("charlie"))
 				charlie = (GentePlayer) p;
-			else if (p.getPlayer().getName().equals("denise"))
+			else if (p.getRegistrant().getName().equals("denise"))
 				denise = (GentePlayer) p;
 		}
 	}
@@ -135,7 +135,8 @@ public class GenteSharedBoardTest {
 	public void testFirstMove () throws InvalidMoveException, RemoteException {
 		GenteGame game = (GenteGame) board.getGame(gameId).getImplementation();
 		GenteMove move = new GenteMove (alice, center);
-		board.move(new Game (game), new Move (move));
+		Move mv = board.move(new Game (game), new Move (move));
+		move = (GenteMove) mv.getImplementation();
 		game = (GenteGame) board.getGame(gameId).getImplementation();
 		assertNotNull (game.getGrid().getLocation(move.getDestination()));
 	}	

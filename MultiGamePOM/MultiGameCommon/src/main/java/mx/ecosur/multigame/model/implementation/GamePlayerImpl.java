@@ -20,4 +20,6 @@ public interface GamePlayerImpl extends Implementation {
 
 	public GameImpl getGame();
 
+	public void setGame(GameImpl implementation);
+
 }

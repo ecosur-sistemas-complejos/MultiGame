@@ -83,13 +83,13 @@ public class ManantialesSharedBoardTest {
 		/* Set the GamePlayers from the SharedBoard */
 		List<GridPlayer> players = game.getPlayers();
 		for (GridPlayer p : players) {
-			if (p.getPlayer().getName().equals("alice"))
+			if (p.getRegistrant().getName().equals("alice"))
 				alice = (ManantialesPlayer) p;
-			else if (p.getPlayer().getName().equals("bob"))
+			else if (p.getRegistrant().getName().equals("bob"))
 				bob = (ManantialesPlayer) p;
-			else if (p.getPlayer().getName().equals("charlie"))
+			else if (p.getRegistrant().getName().equals("charlie"))
 				charlie = (ManantialesPlayer) p;
-			else if (p.getPlayer().getName().equals("denise"))
+			else if (p.getRegistrant().getName().equals("denise"))
 				denise = (ManantialesPlayer) p;
 		}
 	}

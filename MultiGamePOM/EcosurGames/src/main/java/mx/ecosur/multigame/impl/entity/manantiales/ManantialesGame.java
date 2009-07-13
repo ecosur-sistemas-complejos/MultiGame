@@ -153,7 +153,7 @@ public class ManantialesGame extends GridGame {
 	 * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
 	 */
 	@Override
-	public void move(MoveImpl move) throws InvalidMoveException {
+	public MoveImpl move(MoveImpl move) throws InvalidMoveException {
 		RuleBase ruleBase = null;
 		
 		try {
@@ -181,7 +181,9 @@ public class ManantialesGame extends GridGame {
 		    session.fireAllRules();
 		    session.setFocus("evaluate");
 		    session.fireAllRules();
-		    session.dispose();			
+		    session.dispose();		
+		    
+		    return move;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -191,7 +193,7 @@ public class ManantialesGame extends GridGame {
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {	
 		ManantialesPlayer player = new ManantialesPlayer ();
-		player.setPlayer((GridRegistrant) registrant);
+		player.setRegistrant((GridRegistrant) registrant);
 		player.setGame(this);
 		
 		int max = getMaxPlayers();

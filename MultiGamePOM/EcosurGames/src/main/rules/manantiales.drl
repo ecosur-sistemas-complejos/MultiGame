@@ -533,7 +533,7 @@ then
     GameGrid modifiedGrid = $game.getGrid();   
     modifiedGrid.updateCell ((GridCell) $move.getDestination());
     modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.MOVED) }
+    modify ($move) { setStatus (MoveStatus.MOVED), setGame ($game) }
     MessageSender messageSender = new MessageSender();
     Move model = new Move ($move);
     messageSender.sendMoveComplete (new Game($game), model);

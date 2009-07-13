@@ -36,5 +36,16 @@ public class GamePlayer implements Model {
 	
 	public void setTurn (boolean bool) {
 		implementation.setTurn(bool);
-	}	
+	}
+	
+	public Game getGame () {
+		return new Game (implementation.getGame());
+	}
+
+	/**
+	 * @param game
+	 */
+	public void setGame(Game game) {
+		implementation.setGame (game.getImplementation());		
+	}
 }

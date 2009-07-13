@@ -11,10 +11,15 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
@@ -23,7 +28,9 @@ import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
 @Entity
 public class CheckCondition implements ConditionImpl {
-
+	
+	private static final long serialVersionUID = -9183594100309734640L;
+	
 	ConditionType reason;
 	GridPlayer agent;
 	HashSet<Ficha> violators;
@@ -92,6 +99,7 @@ public class CheckCondition implements ConditionImpl {
 		this.reason = ConditionType.valueOf(reason);
 	}
 	
+	@Transient
 	public ConditionType getType () {
 		return reason;
 	}
@@ -128,15 +136,17 @@ public class CheckCondition implements ConditionImpl {
 	/**
 	 * @return the violators
 	 */
-	public HashSet<Ficha> getViolators() {
+	@OneToMany (cascade={CascadeType.ALL},
+			fetch=FetchType.EAGER)	
+	public Set<Ficha> getViolators() {
 		return violators;
 	}
 
 	/**
 	 * @param violators the violators to set
 	 */
-	public void setViolators(HashSet<Ficha> violators) {
-		this.violators = violators;
+	public void setViolators(Set<Ficha> violators) {
+		this.violators = (HashSet<Ficha>) violators;
 	}
 
 	/* (non-Javadoc)

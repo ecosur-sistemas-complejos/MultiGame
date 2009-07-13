@@ -48,7 +48,7 @@ public interface GameImpl extends Implementation {
 	/**
 	 * @param move
 	 */
-	public void move(MoveImpl move) throws InvalidMoveException;
+	public MoveImpl move(MoveImpl move) throws InvalidMoveException;
 
 	/**
 	 * @return
