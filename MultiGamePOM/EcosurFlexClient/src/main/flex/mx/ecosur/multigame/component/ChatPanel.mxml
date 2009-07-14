@@ -35,7 +35,7 @@
 			}
         	
         	public function addMessage(chatMessage:ChatMessage):void {
-				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.player.name + ": " + chatMessage.body + "\n";
+				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
 				callLater(updateScroll);
 			}
 			

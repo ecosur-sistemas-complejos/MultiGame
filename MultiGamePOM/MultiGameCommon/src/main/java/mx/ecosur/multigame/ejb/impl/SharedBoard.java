@@ -104,9 +104,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		/* Execute the move */
 		move = game.move (move);		
 		
-		if (move.getStatus().equals(MoveStatus.INVALID)) {
+		if (move.getStatus().equals(MoveStatus.INVALID)) 
 			throw new InvalidMoveException ("INVALID Move.");
-		}
+
 		return move;
 		
 	}

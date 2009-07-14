@@ -20,7 +20,7 @@ package mx.ecosur.multigame.entity {
 	public class GamePlayer {
 		
 		private var _id:int;
-		private var _player:Player;
+		private var _player:Registrant;
 		private var _color:String;
 		private var _turn:Boolean;
 		private var _game:Game;
@@ -37,11 +37,11 @@ package mx.ecosur.multigame.entity {
 			_id = id;
 		}
 		
-		public function get player():Player{
+		public function get registrant():Registrant{
 			return _player;
 		}
 		
-		public function set player(player:Player):void {
+		public function set registrant(player:Registrant):void {
 			_player = player;
 		}
 		
@@ -70,7 +70,8 @@ package mx.ecosur.multigame.entity {
 		}
 		
 		public function toString():String{
-			return "id = " + id + ", player = {" + player + "}, color = " + color + ", turn = " + turn + ", game = {" + game + "}";
+			return "id = " + id + ", player = {" + registrant + "}, color = " + 
+			     color + ", turn = " + turn + ", game = {" + game + "}";
 		}
 	}
 }

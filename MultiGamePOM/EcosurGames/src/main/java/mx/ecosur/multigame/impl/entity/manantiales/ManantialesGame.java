@@ -11,6 +11,7 @@ import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
+import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
@@ -181,7 +182,12 @@ public class ManantialesGame extends GridGame {
 		    session.fireAllRules();
 		    session.setFocus("evaluate");
 		    session.fireAllRules();
-		    session.dispose();		
+		    session.dispose();	
+		    
+		    if (moves == null)
+		    	moves = new ArrayList<MoveImpl>();
+		    
+		    moves.add(move);		    
 		    
 		    return move;
 			
@@ -208,10 +214,20 @@ public class ManantialesGame extends GridGame {
 			initialize();
 		
 		/* Be sure that the player has a good reference to this game */
-		player.setGame(this);	
+		player.setGame(this);
+		
+		if (this.created == null)
+		    this.setCreated(new Date());	
+		if (this.state == null)
+			this.state = GameState.WAITING;
 		
 		return player;
 	}
+	
+	public AgentImpl registerAgent (AgentImpl agent) {
+		/** TODO:  implement Agent for Manantiales */		
+		return null;
+	}	
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()

@@ -44,7 +44,7 @@ package mx.ecosur.multigame.manantiales.entity
 		}
 		
 		public function toString():String {
-			return _player.player.name + " initiated the check '" 
+			return _player.registrant.name + " initiated the check '" 
 			 + _reason +"' which must be resolved before his/her next turn.";
 		}
 	}

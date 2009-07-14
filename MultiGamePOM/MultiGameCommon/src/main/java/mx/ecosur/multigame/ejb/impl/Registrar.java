@@ -89,11 +89,40 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		registrant.setLastRegistration(System.currentTimeMillis());
 		GamePlayer player = game.registerPlayer (registrant);		
-		em.persist(player.getImplementation());	
-		
-		messageSender.sendPlayerChange(new Game (game.getImplementation()));		
+		em.persist(player.getImplementation());			
+		messageSender.sendPlayerChange(game);		
 		return player;	
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
+	 */
+	public Agent registerAgent(Game game, Agent agent) throws 
+		InvalidRegistrationException 
+	{
+		if (!em.contains(game.getImplementation())) {
+			Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
+			if (test.getImplementation() == null) 
+				em.persist(game.getImplementation());
+			else
+				game = new Game (test.getImplementation());
+		}
+		
+		if (!em.contains(agent.getImplementation())) {
+			Agent test = new Agent (em.find (
+					agent.getImplementation().getClass(), agent.getId()));
+			if (test.getImplementation() == null)
+				em.persist(agent.getImplementation());
+			else
+				agent = new Agent (test.getImplementation());
+		}	
+			
+		Agent ret = game.registerAgent (agent);
+		em.persist(ret.getImplementation());		
+		messageSender.sendPlayerChange(game);		
+		return agent;		
+	}		
 
 
 	public void unregisterPlayer(Game game, GamePlayer player) 
@@ -115,7 +144,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 */
 	public List<Game> getUnfinishedGames(Registrant player) 
 	{
-		/** TODO: replace string with call into registrant */
 		Query query = player.getCurrentGames(em);		
 		List<Model> results = query.getResultList();
 		List<Game> ret = new ArrayList<Game>();
@@ -130,8 +158,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
 	 */
 	public List<Game> getPendingGames(Registrant player) {
-		
-		/** TODO: replace string with call into registrant */
 		Query query = player.getAvailableGames(em);
 		List <Model> results = query.getResultList();
 		List<Game> ret = new ArrayList<Game>();
@@ -140,22 +166,5 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		}
 		
 		return ret;		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
-	 */
-	public GamePlayer registerAgent(Game game, Agent agent) throws 
-		InvalidRegistrationException 
-	{
-		if (!em.contains(game.getImplementation()))
-			game = new Game (em.find(game.getImplementation().getClass(), game.getId()));
-
-		/* refresh the game object */
-		em.refresh (game.getImplementation());		
-		/*TODO FIX*/
-//		GamePlayer ret = game.registerPlayer(agent);
-		return agent;		
-	}		
+	}	
 }

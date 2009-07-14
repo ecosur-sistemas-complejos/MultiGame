@@ -65,4 +65,10 @@ public interface GameImpl extends Implementation {
 	 */
 	public int getMaxPlayers();
 
+	/**
+	 * @param implementation
+	 * @return
+	 */
+	public AgentImpl registerAgent(AgentImpl implementation);
+
 }

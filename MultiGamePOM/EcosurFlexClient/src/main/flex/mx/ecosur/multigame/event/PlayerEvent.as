@@ -2,13 +2,13 @@ package mx.ecosur.multigame.event
 {
 	import flash.events.Event;
 	
-	import mx.ecosur.multigame.entity.Player;
+	import mx.ecosur.multigame.entity.Registrant;
 
 	public class PlayerEvent extends Event
 	{
-		public var player:Player;
+		public var player:Registrant;
 		
-		public function PlayerEvent(type:String, player:Player, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function PlayerEvent(type:String, player:Registrant, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
 			this.player = player;

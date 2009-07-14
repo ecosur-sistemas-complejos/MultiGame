@@ -114,7 +114,7 @@ package mx.ecosur.multigame.manantiales
             
             // initialize game status
             _gameWindow.gameStatus.showMessage("Welcome to the game " + 
-                _currentPlayer.player.name + "!\n\n You are " + 
+                _currentPlayer.registrant.name + "!\n\n You are " + 
                 Color.getColorDescription(_currentPlayer.color), 
                 Color.getColorCode(_currentPlayer.color));            
             
@@ -334,9 +334,9 @@ package mx.ecosur.multigame.manantiales
                 case GameEvent.CHAT:
                     var chatMessage:ChatMessage = ChatMessage(message.body); 
                     _gameWindow.chatPanel.addMessage(chatMessage);
-                    if(chatMessage.sender.id != _currentPlayer.player.id){
+                    if(chatMessage.sender.id != _currentPlayer.registrant.id){
                         _gameWindow.gameStatus.showMessage(
-                            chatMessage.sender.player.name + 
+                            chatMessage.sender.registrant.name + 
                             " has sent you a message", 0x000000);
                     }
                     break;
@@ -633,7 +633,7 @@ package mx.ecosur.multigame.manantiales
                         _gameWindow.currentState = _game.mode;
                     }else{
                         _gameWindow.gameStatus.showMessage(
-                            gamePlayer.player.name + " to move", Color.getColorCode(gamePlayer.color));
+                            gamePlayer.registrant.name + " to move", Color.getColorCode(gamePlayer.color));
                     }
                 }
             }           

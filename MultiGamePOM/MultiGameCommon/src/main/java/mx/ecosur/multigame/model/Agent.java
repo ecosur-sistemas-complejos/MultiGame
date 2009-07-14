@@ -40,4 +40,8 @@ public class Agent extends GamePlayer {
 		GameImpl gameImpl = implementation.findGame();
 		return new Game(gameImpl);
 	}
+	
+	public AgentImpl getImplementation() {
+		return implementation;
+	}
 }

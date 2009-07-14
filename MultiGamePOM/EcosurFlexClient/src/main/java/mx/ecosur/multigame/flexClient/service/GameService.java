@@ -159,7 +159,8 @@ public class GameService {
 			if (gameType.equals(GameType.PENTE)) {
 				GridGame game = new GenteGame ();	
 				GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
-						new Registrant (player));				
+						new Registrant (player));
+				game = (GridGame) gamePlayer.getGame().getImplementation();
 				for (int i = 0; i < strategies.length; i++) {
 					if (strategies [ i ].equals("HUMAN"))
 						continue;

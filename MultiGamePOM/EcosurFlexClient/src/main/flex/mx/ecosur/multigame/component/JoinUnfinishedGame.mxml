@@ -18,14 +18,16 @@
             import flash.events.MouseEvent;
             import mx.controls.Alert;
             import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Player;
+            import mx.ecosur.multigame.entity.Registrant;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.Game;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.enum.Color;
             import mx.ecosur.multigame.enum.PenteStrategy;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+            import mx.ecosur.multigame.pente.entity.PenteGame;            
             
-            public var player:Player;
+            public var player:Registrant;
             private var _games:ArrayCollection;
             
             public function init(event:Event):void{
@@ -57,12 +59,15 @@
             	for (var i:Number = 0; i < _games.length; i++){
             		game = Game(_games.getItemAt(i));
             		dataItem = new Object();
-            		dataItem.gameType = game.type;
+            		if (game.isPrototypeOf(PenteGame))
+            		  dataItem.gameType = "Gente";
+            		else if (game.isPrototypeOf(ManantialesGame))
+            		  dataItem.gameType = "Manantiales";
             		dataItem.created = df.format(game.created);
             		dataItem.players = "";
             		for (var j:Number = 0; j < game.players.length; j++){
             			gamePlayer = GamePlayer(game.players[j]);
-            			dataItem.players += gamePlayer.player.name + " (" + gamePlayer.color + "), ";
+            			dataItem.players += gamePlayer.registrant.name + " (" + gamePlayer.color + "), ";
             		}
             		if(dataItem.players.length > 2){
             			dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
@@ -78,7 +83,7 @@
             	var game:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
             	for (var p:String in game.players){
             		gamePlayer = GamePlayer(game.players[p]);
-            		if (gamePlayer.player.id == player.id){
+            		if (gamePlayer.registrant.id == player.id){
             			dispatchEvent(new GamePlayerEvent("gameChosen", gamePlayer));
             			return;
             		}

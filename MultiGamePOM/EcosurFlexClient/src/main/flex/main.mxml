@@ -9,13 +9,15 @@
 	
 	<mx:Script> 
         <![CDATA[
+        	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        	import mx.ecosur.multigame.pente.entity.PenteGame;
             import mx.managers.CursorManager;
         
             import mx.ecosur.multigame.entity.Game;
         	import mx.ecosur.multigame.entity.GamePlayer;
         	import mx.ecosur.multigame.event.GamePlayerEvent;
         	import mx.ecosur.multigame.event.PlayerEvent;
-        	import mx.ecosur.multigame.entity.Player;
+        	import mx.ecosur.multigame.entity.Registrant;
         	import mx.controls.Alert;
         	import mx.ecosur.multigame.pente.PenteGameWindow;
         	import mx.ecosur.multigame.manantiales.ManantialesWindow;
@@ -36,8 +38,7 @@
         	
         	private function lobbyDone(event:GamePlayerEvent):void{   
         		setBusy ();	
-        		var game:Game = event.gamePlayer.game;
-        		if (game.type == "PENTE") {
+        		if (event.gamePlayer.game is PenteGame) {
 	        		//create new pente game window
 	        		_penteGameWindow = new PenteGameWindow();
 	        		_penteGameWindow.currentPlayer = event.gamePlayer;
@@ -47,13 +48,18 @@
 
 	        		vstack.addChild(_penteGameWindow);
 	        		vstack.selectedChild = _penteGameWindow;
-	        	} else if (game.type == "MANANTIALES") {
+	        	} else if (event.gamePlayer.game is ManantialesGame) {
                     _manantialesWindow = new ManantialesWindow();
                     _manantialesWindow.currentPlayer = event.gamePlayer;                
                     _manantialesWindow.addEventListener("complete", gameComplete);
 
                     vstack.addChild(_manantialesWindow);
                     vstack.selectedChild = _manantialesWindow;	
+	        	} else {
+	        		var game:Game = event.gamePlayer.game;
+	        		Alert.show("Error!  Unknown GameType [" + event.gamePlayer.game + "]");
+	        		Alert.show("Game info" + game.id + "," + game.columns + ", " + game.rows);
+	        		CursorManager.removeBusyCursor();
 	        	}
         	}
         	

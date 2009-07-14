@@ -12,7 +12,7 @@
         	
         	public function set pentePlayer(pentePlayer:PentePlayer):void{
         		playerTeam.text = Color.getTeamName(pentePlayer.color);
-        		var d:Date = new Date(pentePlayer.player.lastRegistration);
+        		var d:Date = new Date(pentePlayer.registrant.lastRegistration);
         		var df:DateFormatter = new DateFormatter();
         		df.formatString = "DD/MM/YYYY H:NN";
         		playerLastRegistration.text = df.format(d);

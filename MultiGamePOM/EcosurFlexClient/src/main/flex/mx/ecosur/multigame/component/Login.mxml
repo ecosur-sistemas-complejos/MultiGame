@@ -14,9 +14,9 @@
             import mx.ecosur.multigame.event.PlayerEvent;
             import mx.controls.Alert;
             import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Player;
+            import mx.ecosur.multigame.entity.Registrant;
             
-            public var player:Player;
+            public var player:Registrant;
     
             private function doLogin(eventObj:MouseEvent):void {
             	
@@ -29,7 +29,7 @@
             }
             
             private function resultHandler(event:ResultEvent):void{
-            	player = Player(event.result);
+            	player = Registrant(event.result);
             	dispatchEvent(new PlayerEvent("complete", player));
             }   
                         

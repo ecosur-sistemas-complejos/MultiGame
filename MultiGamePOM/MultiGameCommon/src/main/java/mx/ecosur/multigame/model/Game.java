@@ -43,6 +43,14 @@ public class Game implements Model {
 	public GamePlayer registerPlayer(Registrant registrant) {
 		return new GamePlayer(gameImpl.registerPlayer(registrant.getImplementation()));
 	}
+	
+	/**
+	 * @param agent
+	 * @return Agent
+	 */
+	public Agent registerAgent (Agent agent) {
+		return new Agent (gameImpl.registerAgent (agent.getImplementation()));
+	}
 
 	/**
 	 * @param player

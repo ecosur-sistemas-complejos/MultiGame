@@ -15,8 +15,6 @@
 
 package mx.ecosur.multigame.impl.model;
 
-import java.lang.annotation.Annotation;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

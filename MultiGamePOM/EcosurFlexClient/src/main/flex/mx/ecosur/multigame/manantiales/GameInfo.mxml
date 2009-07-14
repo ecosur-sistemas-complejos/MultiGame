@@ -36,22 +36,22 @@
                 	   + vivero + silvo);                	
                 	_deforested = _deforested + (moderate + intensive);
                 	if (i == 0) {
-                	   player1.text=player.player.name;
+                	   player1.text=player.registrant.name;
                 	   player1Pts.text = "" + player.score;
                 	   player1Tks.text = "" + player.tokens;
                 	   player1Pr.text = "" + player.premiums;
                 	} else if (i == 1) { 
-                	   player2.text=player.player.name;
+                	   player2.text=player.registrant.name;
                 	   player2Pts.text = "" +  player.score;
                        player2Tks.text = "" + player.tokens;
                        player2Pr.text = "" + player.premiums;                	   
                 	} else if (i == 2) {
-                	   player3.text=player.player.name;
+                	   player3.text=player.registrant.name;
                 	   player3Pts.text = "" + player.score;
                        player3Tks.text = "" + player.tokens;
                        player3Pr.text = "" + player.premiums;                	   
                 	} else if (i == 3) {
-                	   player4.text=player.player.name;
+                	   player4.text=player.registrant.name;
                 	   player4Pts.text = "" + player.score;
                        player4Tks.text = "" + player.tokens;
                        player4Pr.text = "" + player.premiums;                	   

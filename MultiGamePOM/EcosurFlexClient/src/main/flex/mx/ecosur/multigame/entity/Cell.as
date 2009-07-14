@@ -24,7 +24,7 @@ package mx.ecosur.multigame.entity {
 		protected var _column:int;
 		protected var _color:String;
 		protected var _colorCode:uint;
-		protected var _player:Player;
+		protected var _player:Registrant;
 		
 		public function Cell(){
 			super();
@@ -61,11 +61,11 @@ package mx.ecosur.multigame.entity {
 			return _colorCode;
 		}
 		
-		public function get player():Player{
+		public function get player():Registrant{
 			return _player;
 		}
 		
-		public function set player(player:Player):void{
+		public function set player(player:Registrant):void{
 			_player = player;
 		}
 		

@@ -256,6 +256,8 @@ public abstract class GridGame implements GameImpl {
 	 * @see mx.ecosur.multigame.model.implementation.GameImpl#getMoves()
 	 */
 	public Collection<MoveImpl> getMoves() {
+		if (moves == null)
+			moves = new ArrayList<MoveImpl>();
 		return moves;		
 	}	
 	

@@ -23,15 +23,14 @@
                     </archive>
                 </configuration>
             </plugin>
-<!--			<plugin>-->
-<!--			  <artifactId>maven-surefire-plugin</artifactId>-->
-<!--			  <configuration>-->
-<!--			    <excludes>-->
-<!--			      <exclude>**/StandardSolverTest.java</exclude>-->
-<!--			      <exclude>**/GenteAgentListenerTest.java</exclude>-->
-<!--			    </excludes>-->
-<!--			  </configuration>-->
-<!--			</plugin>            -->
+			<plugin>
+			  <artifactId>maven-surefire-plugin</artifactId>
+			  <configuration>
+			    <excludes>
+			      <exclude>**/StandardSolverTest.java</exclude>
+			    </excludes>
+			  </configuration>
+			</plugin>            
         </plugins>	
 		<resources>
 			<resource>

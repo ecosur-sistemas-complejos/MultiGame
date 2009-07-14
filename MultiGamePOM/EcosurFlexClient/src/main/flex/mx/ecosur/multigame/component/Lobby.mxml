@@ -18,11 +18,11 @@
             import flash.utils.Timer;
             import mx.controls.Alert;
             import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Player;
+            import mx.ecosur.multigame.entity.Registrant;
             import mx.ecosur.multigame.event.GamePlayerEvent;
             
             [Bindable]
-            public var player:Player;
+            public var player:Registrant;
             public var timer:Timer;
     
             private function init(event:Event):void {

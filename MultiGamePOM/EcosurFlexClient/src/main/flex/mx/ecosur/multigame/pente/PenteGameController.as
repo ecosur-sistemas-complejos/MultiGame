@@ -144,7 +144,10 @@ package mx.ecosur.multigame.pente{
             _tokenStore.active = false;
             
             // initialize game status
-            _gameStatus.showMessage("Welcome to the game " + currentPlayer.player.name + "!\n\n You are " + Color.getColorDescription(currentPlayer.color), Color.getColorCode(currentPlayer.color));
+            _gameStatus.showMessage("Welcome to the game " + 
+                currentPlayer.registrant.name + "!\n\n You are " + 
+                Color.getColorDescription(currentPlayer.color), 
+                    Color.getColorCode(currentPlayer.color));
     
             // initialize the move viewer
             _moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
@@ -192,7 +195,8 @@ package mx.ecosur.multigame.pente{
                     if (gamePlayer.id == _currentPlayer.id){
                         _gameStatus.showMessage("Its your turn", Color.getColorCode(_currentPlayer.color));
                     }else{
-                        _gameStatus.showMessage(gamePlayer.player.name + " to move", Color.getColorCode(gamePlayer.color));
+                        _gameStatus.showMessage(gamePlayer.registrant.name + 
+                            " to move", Color.getColorCode(gamePlayer.color));
                     }
                 }
             }
@@ -225,7 +229,7 @@ package mx.ecosur.multigame.pente{
             var pentePlayer:PentePlayer = PentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = pentePlayer.player.name + " has won the game.";
+                msg = pentePlayer.registrant.name + " has won the game.";
                 color = Color.getColorCode(pentePlayer.color);
             }else{
                 /*
@@ -326,8 +330,9 @@ package mx.ecosur.multigame.pente{
                 case GameEvent.CHAT:
                     var chatMessage:ChatMessage = ChatMessage(message.body); 
                     _chatPanel.addMessage(chatMessage);
-                    if(chatMessage.sender.id != _currentPlayer.player.id){
-                        _gameStatus.showMessage(chatMessage.sender.player.name + " has sent you a message", 0x000000);
+                    if(chatMessage.sender.id != _currentPlayer.registrant.id){
+                        _gameStatus.showMessage(chatMessage.sender.registrant.name + 
+                            " has sent you a message", 0x000000);
                     }
                     break;
                 case GameEvent.END:
@@ -634,7 +639,8 @@ package mx.ecosur.multigame.pente{
             }
             
             if(hasScored){
-                _gameStatus.showMessage(move.player.player.name + " has just scored.", Color.getColorCode(move.player.color));
+                _gameStatus.showMessage(move.player.registrant.name + 
+                    " has just scored.", Color.getColorCode(move.player.color));
             }
 
         }

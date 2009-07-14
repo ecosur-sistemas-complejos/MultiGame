@@ -12,7 +12,6 @@
 package mx.ecosur.multigame.pente.entity {
 	
 	import mx.collections.ArrayCollection;
-	import mx.ecosur.multigame.entity.Player;
 	
 	/**
 	 * Represents a server side BeadString object.

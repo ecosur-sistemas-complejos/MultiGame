@@ -15,13 +15,13 @@
             import flash.events.MouseEvent;
             import mx.controls.Alert;
             import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Player;
+            import mx.ecosur.multigame.entity.Registrant;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.Game;
             import mx.ecosur.multigame.enum.Color;
             import mx.ecosur.multigame.enum.PenteStrategy;
             
-            public var player:Player;
+            public var player:Registrant;
     
             private function doRegister(eventObj:MouseEvent):void {
             		
