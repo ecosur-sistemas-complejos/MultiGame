@@ -65,13 +65,15 @@ public class ManantialesSharedBoardTest {
 			new GridRegistrant ("denise")};
 		
 		ManantialesGame game = new ManantialesGame ();
+		Game boardGame = new Game (game);
 		
-		for (int i = 0; i < registrants.length; i++) {
-			GamePlayer player = registrar.registerAgent(new Game (game), 
-					new Registrant (registrants [ i ]));
+		for (int i = 0; i < 4; i++) {
+			Registrant registrant = registrar.register(registrants [ i ]);
+			GamePlayer player = registrar.registerAgent(boardGame, registrant);
 			if (gameId == 0) {
 				GridPlayer gp = (GridPlayer) player.getImplementation();
 				gameId = gp.getGame().getId();
+				boardGame = player.getGame();
 			}
 		}
 		
@@ -92,6 +94,11 @@ public class ManantialesSharedBoardTest {
 			else if (p.getRegistrant().getName().equals("denise"))
 				denise = (ManantialesPlayer) p;
 		}
+		
+		assertNotNull ("Alice not found in game!", alice);
+		assertNotNull ("Bob not found in game!", bob);
+		assertNotNull ("Charlie not found in game!", charlie);
+		assertNotNull ("Denise not found in game!", denise);
 	}
 	
 	@After
@@ -119,33 +126,39 @@ public class ManantialesSharedBoardTest {
 	 * @throws InvalidMoveException */
 	@Test
 	public void testCheckConstraints () throws InvalidMoveException {
-		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
+		ManantialesGame mg = (ManantialesGame) board.getGame(gameId).getImplementation();
 		Ficha ficha = new Ficha (4,3, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		
+		Game game = new Game (mg);
 		ManantialesMove move = new ManantialesMove (alice, ficha);
-		board.move(new Game (game), new Move (move));
+		Move mv = board.move(game, new Move (move));
+		game = mv.getPlayer().getGame();
+		
 		
 		ficha = new Ficha (4,5, bob.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (bob, ficha);
-		board.move(new Game (game), new Move (move));
+		mv = board.move(game, new Move (move));
+		game = mv.getPlayer().getGame();
 		
 		ficha = new Ficha (3,4, charlie.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (charlie, ficha);
-		board.move(new Game (game), new Move (move));
+		mv = board.move(game, new Move (move));
+		game = mv.getPlayer().getGame();
 		
-		assertTrue ("CheckConstraint not fired!", game.getCheckConditions() != null);
-		assertEquals (1, game.getCheckConditions().size());
+		mg = (ManantialesGame) game.getImplementation();
+		assertTrue ("CheckConstraint not fired!", mg.getCheckConditions() != null);
+		assertEquals (1, mg.getCheckConditions().size());
 		
-		game = (ManantialesGame) board.getGame(gameId).getImplementation();
-		List<GridPlayer> players = game.getPlayers();
+		mg = (ManantialesGame) board.getGame(gameId).getImplementation();
+		List<GridPlayer> players = mg.getPlayers();
 		for (GridPlayer player : players) {
 			ManantialesGame playerGame = (ManantialesGame) player.getGame();
 			assertTrue ("Registrant has no check constraints, while the game does.", 
 					playerGame.getCheckConditions() != null);
-			assertTrue (playerGame.getCheckConditions().size() == game.getCheckConditions().size());
+			assertTrue (playerGame.getCheckConditions().size() == mg.getCheckConditions().size());
 		}
 	}
 }

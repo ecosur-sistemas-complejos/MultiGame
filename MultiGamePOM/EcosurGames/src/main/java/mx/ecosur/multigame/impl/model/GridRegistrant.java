@@ -16,7 +16,7 @@
 
 package mx.ecosur.multigame.impl.model;
 
-import java.lang.Thread.State;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -27,11 +27,13 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Query;
 
 import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
-@NamedQueries ({
-	@NamedQuery(name="getPlayer",
-			query="select p from GridRegistrant p where p.name=:name")})
+@NamedQueries( {
+	@NamedQuery(name = "getRegistrantByName", 
+			query = "select gr from GridRegistrant as gr where gr.name = :name")
+})
 @Entity
 public class GridRegistrant implements RegistrantImpl {
 
@@ -184,20 +186,20 @@ public class GridRegistrant implements RegistrantImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getAvailableGames()
 	 */
-	public Query getAvailableGames(EntityManager em) {
-		Query query = em.createNamedQuery("getGamesByPlayer");
+	public List<GameImpl> getAvailableGames(EntityManager em) {
+		Query query = em.createNamedQuery("getAvailableGames");
 		query.setParameter("player", this);
-		query.setParameter("state", GameState.PLAY);
-		return query;
+		query.setParameter("state", GameState.WAITING);
+		return query.getResultList();
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getCurrentGames()
 	 */
-	public Query getCurrentGames(EntityManager em) {
-		Query query = em.createNamedQuery("getGamesByPlayer");
+	public List<GameImpl> getCurrentGames(EntityManager em) {
+		Query query = em.createNamedQuery("getCurrentGames");
 		query.setParameter("player", this);
-		query.setParameter("state",GameState.WAITING);
-		return query;
+		query.setParameter("state",GameState.END);
+		return query.getResultList();
 	}
 }

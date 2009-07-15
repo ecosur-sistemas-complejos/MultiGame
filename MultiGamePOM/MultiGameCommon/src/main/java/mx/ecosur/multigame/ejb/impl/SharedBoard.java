@@ -62,6 +62,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 */
 	public Game getGame(int gameId) {
 		logger.fine ("Getting game with id: " + gameId);
+		
+		/** TODO:  Inject or make this query static */
 		Query query = em.createNamedQuery("getGameById");
 		query.setParameter("id", gameId);
 		GameImpl impl = null;

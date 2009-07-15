@@ -1,6 +1,7 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
+
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.impl.Color;
@@ -17,13 +18,13 @@ import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -39,10 +40,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@NamedQueries( {
-	@NamedQuery(name = "getManantialesGame", query = "select g from ManantialesGame g where g.state =:state"),
-	@NamedQuery(name = "getManantialesGameById", query = "select g from ManantialesGame g where g.id=:id ")
-})
 @Entity
 public class ManantialesGame extends GridGame {
 	
@@ -74,8 +71,7 @@ public class ManantialesGame extends GridGame {
 	    	
     	return ret;
     }
-    
-    @OneToMany (fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
     	if (checkConditions == null)
     		checkConditions = new HashSet<CheckCondition>();
@@ -200,7 +196,6 @@ public class ManantialesGame extends GridGame {
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {	
 		ManantialesPlayer player = new ManantialesPlayer ();
 		player.setRegistrant((GridRegistrant) registrant);
-		player.setGame(this);
 		
 		int max = getMaxPlayers();
 		if (players.size() == max)

@@ -17,10 +17,16 @@ import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Registrant;
+import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 public interface RegistrarInterface {
+	
+	/**
+	 * Creates a managed Registrant in the system
+	 */
+	public Registrant register (RegistrantImpl regsitrant);
 	
 	/**
 	 * Registers a player with the specified Game object.  Allows greater control

@@ -10,9 +10,12 @@
  */
 package mx.ecosur.multigame.model;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 public class Registrant implements Model {
@@ -43,11 +46,21 @@ public class Registrant implements Model {
 		return playerImpl;
 	}
 	
-	public Query getCurrentGames (EntityManager em) {
-		return playerImpl.getCurrentGames(em);
+	public List<Game> getCurrentGames (EntityManager em) {
+		List<GameImpl> implementations = playerImpl.getCurrentGames(em);
+		List<Game> ret = new ArrayList<Game> ();
+		for (GameImpl imp : implementations) {
+			ret.add(new Game(imp));
+		}
+		return ret;
 	}
 	
-	public Query getAvailableGames (EntityManager em) {
-		return playerImpl.getAvailableGames(em);
+	public List<Game> getAvailableGames (EntityManager em) {
+		List<GameImpl> implementations = playerImpl.getAvailableGames(em);
+		List<Game> ret = new ArrayList<Game> ();
+		for (GameImpl imp : implementations) {
+			ret.add(new Game(imp));
+		}
+		return ret;
 	}
 }

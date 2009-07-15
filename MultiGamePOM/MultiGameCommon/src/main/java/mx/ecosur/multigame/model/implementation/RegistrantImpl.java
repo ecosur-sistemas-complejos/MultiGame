@@ -10,8 +10,10 @@
  */
 package mx.ecosur.multigame.model.implementation;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+
 
 public interface RegistrantImpl extends Implementation {
 
@@ -35,11 +37,11 @@ public interface RegistrantImpl extends Implementation {
 	 * @param em 
 	 * @return
 	 */
-	public Query getAvailableGames(EntityManager em);
+	public List<GameImpl> getAvailableGames(EntityManager em);
 
 	/**
 	 * @return
 	 */
-	public Query getCurrentGames(EntityManager em);
+	public List<GameImpl> getCurrentGames(EntityManager em);
 
 }

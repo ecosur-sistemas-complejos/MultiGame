@@ -26,19 +26,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.impl.Color;
 
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
-
-@NamedQueries ({
-	@NamedQuery(name="getGamePlayer",
-			query="select gp from GridPlayer gp where gp.registrant=:player " +
-					"and gp.game=:game")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class GridPlayer implements GamePlayerImpl {

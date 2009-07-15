@@ -15,7 +15,6 @@
 
 package mx.ecosur.multigame.ejb.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -34,8 +33,8 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Model;
 import mx.ecosur.multigame.model.Registrant;
+import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -59,6 +58,26 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		messageSender = new MessageSender();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#register(java.lang.String)
+	 */
+	public Registrant register(RegistrantImpl registrant) {
+		Registrant ret = null;
+		
+		/* TODO: inject or make this query static */
+		Query query = em.createNamedQuery("getRegistrantByName");
+		query.setParameter("name", registrant.getName());
+		List<RegistrantImpl> registrants = query.getResultList();
+		if (registrants.size() == 0) { 
+			em.persist(registrant);
+			ret = new Registrant (registrant);
+		} else {			
+			RegistrantImpl impl = (RegistrantImpl) registrants.get(0);
+			ret = new Registrant (impl);
+		}
+		
+		return ret;
+	}		
 	
 	/**
 	 * Registers a robot with she specified Game object.
@@ -142,29 +161,14 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.model.Registrant)
 	 */
-	public List<Game> getUnfinishedGames(Registrant player) 
-	{
-		Query query = player.getCurrentGames(em);		
-		List<Model> results = query.getResultList();
-		List<Game> ret = new ArrayList<Game>();
-		for (Model model : results) {
-			ret.add( (Game) model);
-		}
-		
-		return ret;
+	public List<Game> getUnfinishedGames(Registrant player) {
+		return player.getCurrentGames(em);		
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
 	 */
 	public List<Game> getPendingGames(Registrant player) {
-		Query query = player.getAvailableGames(em);
-		List <Model> results = query.getResultList();
-		List<Game> ret = new ArrayList<Game>();
-		for (Model model : results) {
-			ret.add( (Game) model);
-		}
-		
-		return ret;		
-	}	
+		return player.getAvailableGames(em);
+	}
 }

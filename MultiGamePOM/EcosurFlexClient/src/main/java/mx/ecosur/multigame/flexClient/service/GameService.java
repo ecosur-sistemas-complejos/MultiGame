@@ -259,6 +259,9 @@ public class GameService {
 	}
 	
 	public GridRegistrant login (String name) {
-		return new GridRegistrant (name);
+		GridRegistrant gr = new GridRegistrant (name);
+		RegistrarRemote registrar = this.getRegistrar();
+		Registrant registrant = registrar.register(gr);
+		return (GridRegistrant) registrant.getImplementation();
 	}
 }

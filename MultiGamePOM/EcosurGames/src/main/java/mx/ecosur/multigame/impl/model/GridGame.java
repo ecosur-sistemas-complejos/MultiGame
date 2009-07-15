@@ -58,12 +58,12 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
  */
 @NamedQueries( {
 	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
-	@NamedQuery(name = "getGamesByPlayer", query = "select gp.game from GridPlayer as gp "
-				+ "where gp.registrant=:player and gp.game.state <> :state"),
-	@NamedQuery(name = "getGamesByNotPlayer", 
-			query = "select g from GridGame as g where g.state = :state and not exists " +
-					"(select gp from GridPlayer as gp where " +
-					"gp.registrant = :player and gp.game.id = g.id)")})
+	@NamedQuery(name = "getCurrentGames", query = "select gp.game from GridPlayer as gp "
+		+ "where gp.registrant=:player and gp.game.state <> :state"),
+    @NamedQuery(name = "getAvailableGames", 
+	query = "select g from GridGame as g where g.state = :state and not exists " +
+			"(select gp from GridPlayer as gp where " +
+			"gp.registrant = :player and gp.game.id = g.id)")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class GridGame implements GameImpl {
