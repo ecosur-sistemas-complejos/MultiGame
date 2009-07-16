@@ -10,16 +10,18 @@
  */
 package mx.ecosur.multigame.model;
 
-import java.io.Serializable;
-
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
-public class Move implements Model, Serializable {
+public class Move implements Model {
 	
 	private static final long serialVersionUID = 8462209469604832617L;
 	
 	private MoveImpl moveImpl;
+	
+	public Move () {
+		super();
+	}
 	
 	public Move (MoveImpl moveImpl) {
 		this.moveImpl = moveImpl;
@@ -42,5 +44,9 @@ public class Move implements Model, Serializable {
 	
 	public MoveImpl getImplementation() {
 		return moveImpl;
+	}
+	
+	public void setImplementation(MoveImpl moveImpl) {
+		this.moveImpl = moveImpl;
 	}
 }

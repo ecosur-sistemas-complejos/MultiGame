@@ -35,6 +35,8 @@ package mx.ecosur.multigame.pente{
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.model.GameModel;
+    import mx.ecosur.multigame.model.MoveModel;
     import mx.ecosur.multigame.pente.entity.BeadString;
     import mx.ecosur.multigame.pente.entity.PenteGame;
     import mx.ecosur.multigame.pente.entity.PenteMove;
@@ -322,6 +324,7 @@ package mx.ecosur.multigame.pente{
             var message:IMessage = event.message;
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
+            var gameModel:GameModel = null;
         
             switch (gameEvent){
                 case GameEvent.BEGIN:
@@ -336,17 +339,28 @@ package mx.ecosur.multigame.pente{
                     }
                     break;
                 case GameEvent.END:
-                    _winners = PenteGame(message.body).winners;
+                    gameModel = GameModel (message.body);
+                    var game:PenteGame = PenteGame (gameModel.implementation);
+                    if (game == null)
+                        Alert.show("Game from model [" + gameModel + "] is null!");
+                    _winners = game.winners;                
                     if (_isTurn){
                         end();
                     }
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var move:PenteMove = PenteMove(message.body);
+                    var moveModel:MoveModel = MoveModel (message.body);                    
+                    var move:PenteMove = PenteMove(moveModel.implementation);
+                    if (move == null)
+                        Alert.show ("Move from model [" + moveModel + "] is null!");
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
-                    var players:ArrayCollection = ArrayCollection(message.body);
+                    gameModel = GameModel (message.body);
+                    var game:PenteGame = PenteGame (gameModel.implementation);
+                    if (game == null)
+                        Alert.show ("Game from model [" + gameModel + "] is null!");
+                    var players:ArrayCollection = PenteGame(gameModel.implementation).players;
                     updatePlayers(players);
                     break;
             }

@@ -26,6 +26,9 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.manantiales.enum.ConditionType;
 	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.ecosur.multigame.manantiales.token.*;
+	import mx.ecosur.multigame.model.ConditionModel;
+	import mx.ecosur.multigame.model.GameModel;
+	import mx.ecosur.multigame.model.MoveModel;
 	import mx.ecosur.multigame.util.MessageReceiver;
 	import mx.effects.AnimateProperty;
 	import mx.events.CloseEvent;
@@ -341,32 +344,52 @@ package mx.ecosur.multigame.manantiales
                     }
                     break;
                 case GameEvent.END:
-                    game = ManantialesGame(message.body);
+                    var gameModel:GameModel = GameModel (message.body);
+                    var game:ManantialesGame = ManantialesGame(gameModel.implementation);
+                    if (game == null)
+                        Alert.show("Game from model [" + gameModel + "] is null!");
                     handleGameEnd (game);
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var move:ManantialesMove = ManantialesMove(message.body);
+                    var moveModel:MoveModel = MoveModel (message.body);                    
+                    var move:ManantialesMove = ManantialesMove(moveModel.implementation);
                     _gameWindow.playersViewer.updatePlayers();
                     addMove(move);
                     break;                    
                 case GameEvent.PLAYER_CHANGE:
-                    var players:ArrayCollection = ArrayCollection(message.body);
+                var gameModel:GameModel = GameModel (message.body);
+                    var game:ManantialesGame = ManantialesGame(gameModel.implementation);
+                    if (game == null)
+                        Alert.show("Game from model [" + gameModel + "] is null!");
+                    var players:ArrayCollection = game.players;
                     updatePlayers(players);
                     break;
                 case GameEvent.CONDITION_RAISED:
-                    checkCondition = CheckCondition(message.body);
+                    var conditionModel:ConditionModel = ConditionModel (message.body);
+                    checkCondition = CheckCondition(conditionModel.implementation);
+                    if (checkCondition == null)
+                        Alert.show ("Condition from model [" + conditionModel  + "] is null!");
                     handleCheckConstraint (checkCondition);
                     break;
                 case GameEvent.CONDITION_RESOLVED:
-                    checkCondition = CheckCondition(message.body);
+                    var conditionModel:ConditionModel = ConditionModel (message.body);
+                    checkCondition = CheckCondition(conditionModel.implementation);
+                    if (checkCondition == null)
+                        Alert.show ("Condition from model [" + conditionModel  + "] is null!");                    
                     handleCheckConstraintResolved (checkCondition);
                     break;
                 case GameEvent.CONDITION_TRIGGERED:
-                    checkCondition = CheckCondition(message.body);
+                    var conditionModel:ConditionModel = ConditionModel (message.body);
+                    checkCondition = CheckCondition(conditionModel.implementation);
+                    if (checkCondition == null)
+                        Alert.show ("Condition from model [" + conditionModel  + "] is null!");                    
                     handleCheckConstraintTriggered (checkCondition);
                     break;    
                 case GameEvent.STATE_CHANGE:
-                    game = ManantialesGame (message.body);
+                    var gameModel:GameModel = GameModel (message.body);
+                    var game:ManantialesGame = ManantialesGame(gameModel.implementation);  
+                    if (game == null)
+                        Alert.show("Game from model [" + gameModel + "] is null!");                    
                     handleStateChange (game);
                     break;                            
             }

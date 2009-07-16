@@ -25,6 +25,10 @@ public class Game implements Model {
 	
 	private GameImpl gameImpl;
 	
+	public Game() {
+		super();
+	}
+	
 	public Game (GameImpl gameImpl) {
 		this.gameImpl = gameImpl;
 	}
@@ -112,5 +116,9 @@ public class Game implements Model {
 	 */
 	public GameImpl getImplementation() {
 		return gameImpl;
+	}
+	
+	public void setImplementation(GameImpl gameImpl) {
+		this.gameImpl = gameImpl;
 	}
 }

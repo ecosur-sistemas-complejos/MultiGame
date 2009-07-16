@@ -10,8 +10,6 @@
  */
 package mx.ecosur.multigame.model;
 
-import java.io.Serializable;
-
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
 public class Condition implements Model {
@@ -19,6 +17,10 @@ public class Condition implements Model {
 	private static final long serialVersionUID = -5295777444155230289L;
 	
 	private ConditionImpl conditionImpl;
+	
+	public Condition () {
+		super();
+	}
 
 	public Condition (ConditionImpl conditionImpl) {
 		this.conditionImpl = conditionImpl;
@@ -37,6 +39,10 @@ public class Condition implements Model {
 	 */
 	public ConditionImpl getImplementation() {
 		return conditionImpl;
+	}
+	
+	public void setImplementation (ConditionImpl conditionImpl) {
+		this.conditionImpl = conditionImpl;
 	}
 
 }
