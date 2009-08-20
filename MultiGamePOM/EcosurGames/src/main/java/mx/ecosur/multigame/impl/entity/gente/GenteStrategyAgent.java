@@ -13,7 +13,12 @@ package mx.ecosur.multigame.impl.entity.gente;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -65,6 +70,8 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		nextMove = null;
 	}
 
+	@Enumerated (EnumType.STRING)
+	@OneToOne  (cascade={CascadeType.PERSIST})
 	public GenteStrategy getStrategy() {
 		return strategy;
 	}
@@ -252,6 +259,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		this.nextMove = next;
 	}
 	
+	@Transient
 	public GenteMove getNextMove () {
 		return nextMove;
 	}

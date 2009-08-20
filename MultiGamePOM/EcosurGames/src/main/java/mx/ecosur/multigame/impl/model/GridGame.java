@@ -133,7 +133,7 @@ public abstract class GridGame implements GameImpl {
 	/**
 	 * @return the players
 	 */
-	@OneToMany (mappedBy="game", cascade={CascadeType.ALL},
+	@OneToMany (mappedBy="game", cascade={CascadeType.PERSIST},
 			fetch=FetchType.EAGER)
 	public List<GridPlayer> getPlayers() {
 		return players;

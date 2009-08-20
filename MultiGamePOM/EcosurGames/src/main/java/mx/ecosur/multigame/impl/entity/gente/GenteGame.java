@@ -104,7 +104,8 @@ public class GenteGame extends GridGame {
 	    this.setCreated(new Date());
 	    this.setState(GameState.BEGIN);
 		this.setColumns(19);
-		this.setRows(19);	  
+		this.setRows(19);	
+		
 		RuleBase ruleBase = null;
 		
 		if (ruleBase == null) {
@@ -214,14 +215,12 @@ public class GenteGame extends GridGame {
 			throw new RuntimeException ("Maximum Players reached!");
 		
 		List<Color> colors = getAvailableColors();
-		player.setColor(colors.get(0));		
+		player.setColor(colors.get(0));
+		player.setGame(this);
 		players.add(player);
 		
 		if (players.size() == getMaxPlayers())
 			initialize();		
-		
-		/* Be sure that the player has a good reference to this game */
-		player.setGame(this);
 		
 		if (this.created == null)
 		    this.setCreated(new Date());
