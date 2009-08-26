@@ -16,6 +16,7 @@ import java.util.List;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
@@ -43,16 +44,18 @@ public class Game implements Model {
 	/**
 	 * @param registrant
 	 * @return
+	 * @throws InvalidRegistrationException 
 	 */
-	public GamePlayer registerPlayer(Registrant registrant) {
+	public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException {
 		return new GamePlayer(gameImpl.registerPlayer(registrant.getImplementation()));
 	}
 	
 	/**
 	 * @param agent
 	 * @return Agent
+	 * @throws InvalidRegistrationException 
 	 */
-	public Agent registerAgent (Agent agent) {
+	public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
 		return new Agent (gameImpl.registerAgent (agent.getImplementation()));
 	}
 

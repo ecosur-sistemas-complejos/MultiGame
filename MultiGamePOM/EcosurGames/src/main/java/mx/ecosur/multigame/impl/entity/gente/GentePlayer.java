@@ -15,7 +15,6 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 
 import mx.ecosur.multigame.impl.Color;
@@ -100,7 +99,7 @@ public class GentePlayer extends GridPlayer {
 			tesseras.add(tessera);
 	}
 	
-	@OneToOne (cascade={CascadeType.PERSIST})
+	@OneToOne (cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	public GentePlayer getPartner() {
         if (partner == null) {
             Color color = this.getColor().getCompliment();

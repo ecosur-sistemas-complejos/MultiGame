@@ -100,14 +100,21 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		
 		move.setPlayer(player);
 		
-		/* persist in order to define id */
-		em.persist(move.getImplementation());
+		if (!em.contains(move.getImplementation()))
+			em.persist(move.getImplementation());
+		else {
+			Move test = new Move (em.find (move.getImplementation().getClass(),
+					move.getImplementation().getId()));
+			if (test.getImplementation() != null)
+				move.setImplementation(test.getImplementation());
+		}			
 
 		/* Execute the move */
-		move = game.move (move);		
+		move = game.move (move);	
 		
-		if (move.getStatus().equals(MoveStatus.INVALID)) 
+		if (move.getStatus().equals(MoveStatus.INVALID)) {
 			throw new InvalidMoveException ("INVALID Move.");
+		}
 
 		return move;
 		
@@ -128,18 +135,29 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	
 	public void addMessage(ChatMessage chatMessage) {		
 		/* chat message sender may be detatched */
-		if (!em.contains(chatMessage.getSender())) {
-			chatMessage.setSender(em.find(chatMessage.getSender().getClass(), 
-					chatMessage.getSender().getId()));
+		GamePlayer sender = chatMessage.getSender();
+		
+		if (!em.contains(sender.getImplementation())) {
+			chatMessage.setSender(new GamePlayer (em.find(sender.getImplementation().getClass(), 
+					sender.getImplementation().getId())));
 		}
 
-		em.persist(chatMessage);
+		em.persist(chatMessage.getImplementation());
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
 	 */
 	public Move updateMove(Move move) {
+		/* Refresh the GamePlayer impl reference and proceed to merge any changes in
+		 * the move back into the backend
+		 */
+		if (!em.contains(move.getPlayer().getImplementation())) {
+			GamePlayer player = new GamePlayer (em.find (
+					move.getPlayer().getImplementation().getClass(), move.getPlayer().getImplementation().getId()));
+			move.setPlayer(player);
+		}
+		
 		em.merge(move.getImplementation());
 		return move;
 	}

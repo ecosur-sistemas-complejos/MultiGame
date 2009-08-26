@@ -20,6 +20,6 @@ public interface ChatMessageImpl extends Implementation {
 	/**
 	 * @param agent
 	 */
-	public void setAgent(GamePlayerImpl agent);
+	public void setSender (GamePlayerImpl agent);
 
 }

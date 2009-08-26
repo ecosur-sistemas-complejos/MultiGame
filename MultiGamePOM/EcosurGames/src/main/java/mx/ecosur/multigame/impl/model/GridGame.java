@@ -46,7 +46,9 @@ import javax.persistence.Version;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
@@ -277,7 +279,10 @@ public abstract class GridGame implements GameImpl {
 	public List<GamePlayer> listPlayers() {
 		List<GamePlayer> ret = new ArrayList<GamePlayer>();
 		for (GridPlayer player : players) {
-			ret.add(new GamePlayer (player));
+			if (player instanceof AgentImpl)
+				ret.add(new Agent((AgentImpl) player));
+			else			
+				ret.add(new GamePlayer (player));
 		}
 		
 		return ret;

@@ -24,18 +24,35 @@ public class ChatMessage implements Model {
 	}
 
 	/**
+	 * @return the chatMessageImpl
+	 */
+	public ChatMessageImpl getImplementation() {
+		return chatMessageImpl;
+	}
+
+	/**
+	 * @param chatMessageImpl the chatMessageImpl to set
+	 */
+	public void setImplementation(ChatMessageImpl chatMessageImpl) {
+		this.chatMessageImpl = chatMessageImpl;
+	}
+
+	/**
 	 * @return
 	 */
 	public GamePlayer getSender() {
 		GamePlayerImpl sender =  chatMessageImpl.getSender();
-		return new GamePlayer (sender);
+		if (sender == null)
+			return null;
+		else
+			return new GamePlayer (sender);
 	}
 
 	/**
 	 * @param find
 	 */
 	public void setSender(GamePlayer agent) {		
-		chatMessageImpl.setAgent (agent.getImplementation());
+		chatMessageImpl.setSender (agent.getImplementation());
 	}
 
 }

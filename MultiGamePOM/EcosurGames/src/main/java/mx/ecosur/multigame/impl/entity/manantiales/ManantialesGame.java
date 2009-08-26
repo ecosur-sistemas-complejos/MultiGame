@@ -3,10 +3,12 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 import mx.ecosur.multigame.enums.GameState;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
@@ -24,7 +26,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -193,9 +194,15 @@ public class ManantialesGame extends GridGame {
 		}			
 	}
 	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {	
+	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
 		ManantialesPlayer player = new ManantialesPlayer ();
 		player.setRegistrant((GridRegistrant) registrant);
+		
+		for (GridPlayer p : this.getPlayers()) {
+			if (p.equals (player))
+				throw new InvalidRegistrationException (
+						"Duplicate Registration! " + player.getRegistrant().getName());
+		}		
 		
 		int max = getMaxPlayers();
 		if (players.size() == max)
@@ -219,9 +226,9 @@ public class ManantialesGame extends GridGame {
 		return player;
 	}
 	
-	public AgentImpl registerAgent (AgentImpl agent) {
-		/** TODO:  implement Agent for Manantiales */		
-		return null;
+	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+		throw new InvalidRegistrationException (
+				"Agents cannot be registered with a Manantiales Game!");
 	}	
 
 	/* (non-Javadoc)

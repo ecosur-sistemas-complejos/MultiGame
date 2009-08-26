@@ -88,7 +88,7 @@ public class GridChatMessage implements ChatMessageImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.ChatMessageImpl#setAgent(mx.ecosur.multigame.model.implementation.AgentImpl)
 	 */
-	public void setAgent(GamePlayerImpl agent) {
+	public void setSender(GamePlayerImpl agent) {
 		this.sender = (GridPlayer) agent;
 	}
 }

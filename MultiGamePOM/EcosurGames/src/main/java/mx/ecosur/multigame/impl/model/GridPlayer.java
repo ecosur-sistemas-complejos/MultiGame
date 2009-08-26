@@ -124,4 +124,21 @@ public class GridPlayer implements GamePlayerImpl {
 	public void setGame(GameImpl implementation) {
 		this.game = (GridGame) implementation;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = false;
+		
+		/* Simple equality test based upon stated "name" of associated registrant */
+		if (obj instanceof GridPlayer) {
+			GridPlayer test = (GridPlayer) obj;
+			if (test.getRegistrant().getName().equals(this.getRegistrant().getName()))
+				ret = true;
+		}
+		
+		return ret;
+	}
 }

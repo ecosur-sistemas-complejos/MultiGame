@@ -34,6 +34,14 @@ public class BeadString implements Serializable {
 	public BeadString () {
 		this.beads = new TreeSet<GridCell>(new CellComparator());
 	}
+	
+	public BeadString (GridCell cell1, GridCell... cells) {
+		this();
+		add(cell1);
+		for (GridCell cell : cells) {
+			add(cell);
+		}
+	}
 
 	public TreeSet<GridCell> getBeads () {
 		return beads;

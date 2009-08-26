@@ -49,4 +49,12 @@ public class Move implements Model {
 	public void setImplementation(MoveImpl moveImpl) {
 		this.moveImpl = moveImpl;
 	}
+	
+	public Cell getCurrent () {
+		return new Cell(moveImpl.getCurrent());
+	}
+	
+	public Cell getDestination() {
+		return new Cell (moveImpl.getDestination());
+	}
 }

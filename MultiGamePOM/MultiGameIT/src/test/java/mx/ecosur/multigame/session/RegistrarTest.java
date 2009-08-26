@@ -10,6 +10,8 @@
  */
 package mx.ecosur.multigame.session;
 
+import static org.junit.Assert.*;
+
 import java.rmi.RemoteException;
 
 import javax.naming.InitialContext;
@@ -64,6 +66,29 @@ public class RegistrarTest {
 					new Game(game), new Registrant (registrant));
 		}		
 	}
+
+	@Test
+	public void testDuplicatePlayerRegistration () throws InvalidRegistrationException {
+		Exception caught = null;
+		GridRegistrant player = new GridRegistrant ("Alice");
+		GridGame game = new GenteGame ();	
+		GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+				new Registrant (player));		
+		game = (GridGame) gamePlayer.getGame().getImplementation();
+		try {
+			for (int i = 0; i < 3; i++) {
+				GridRegistrant registrant = new GridRegistrant (
+						"TEST");
+				registrar.registerAgent (
+						new Game(game), new Registrant (registrant));
+			}
+		} catch (Exception e) {
+			caught = e;
+		}
+		
+		assertNotNull ("Expected exception not caught!", caught);
+		
+	}	
 	
 	@Test
 	public void testSimpleRobotRegistration () throws InvalidRegistrationException {

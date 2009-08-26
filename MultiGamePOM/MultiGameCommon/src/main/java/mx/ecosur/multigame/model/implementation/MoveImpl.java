@@ -14,6 +14,11 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.GamePlayer;
 
 public interface MoveImpl extends Implementation {
+	
+	/**
+	 * @return
+	 */
+	public int getId();
 
 	/**
 	 * @return
@@ -29,5 +34,15 @@ public interface MoveImpl extends Implementation {
 	 * @param player
 	 */
 	public void setPlayerModel(GamePlayer player);
+
+	/**
+	 * @return
+	 */
+	public CellImpl getCurrent();
+
+	/**
+	 * @return
+	 */
+	public CellImpl getDestination();
 
 }

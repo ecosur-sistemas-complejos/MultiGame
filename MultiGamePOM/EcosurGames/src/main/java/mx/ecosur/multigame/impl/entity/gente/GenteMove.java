@@ -13,8 +13,9 @@
  */
 package mx.ecosur.multigame.impl.entity.gente;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,15 +23,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridMove;
 
 import mx.ecosur.multigame.impl.model.gente.BeadString;
 
-import mx.ecosur.multigame.impl.util.Search;
-import mx.ecosur.multigame.impl.util.Vertice;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 
@@ -51,12 +50,11 @@ public class GenteMove extends GridMove {
 
 	private CooperationQualifier qualifier;
 	
-	private Search searchUtil;
+	private ArrayList<Color> teamColors;
 	
 	public GenteMove () {
 		super ();
 	}
-	
 	
 	
 	/**
@@ -66,29 +64,19 @@ public class GenteMove extends GridMove {
 	public GenteMove(GridPlayer player, GridCell cell) {
 		super (player, cell);
 	}
-
+	
+	public void addTria(BeadString t) {
+		if (trias == null)
+			trias = new HashSet<BeadString> ();
+		trias.add(t);
+	}
 
 	/**
 	 * Gets the Trias that this move created.
 	 */
 	public HashSet<BeadString> getTrias () {
-		if (searchUtil == null) {
-			GridGame game = (GridGame) getPlayer().getGame();			
-			searchUtil = new Search(game.getGrid());
-		}
-		if (trias == null) {
-			trias = new HashSet<BeadString> ();
-			HashMap<Vertice, HashSet<BeadString>> stringMap = 
-				searchUtil.getString ((GridCell) getDestination(), 3);
-			for (Vertice v: stringMap.keySet()) {
-				HashSet<BeadString> stringSet = stringMap.get(v);
-				for (BeadString string : stringSet) {
-					if (uncountedString (string) && string.contiguous(v))
-						trias.add(string);
-				}
-			}
-		}
-		
+		if (trias == null)
+			trias = new HashSet<BeadString> ();		
 		return trias;
 	}
 	
@@ -96,48 +84,23 @@ public class GenteMove extends GridMove {
 		trias = new_trias;
 	}
 	
+	public void addTessera (BeadString t) {
+		if (tesseras == null)
+			tesseras = new HashSet<BeadString> ();
+		tesseras.add(t);
+	}
+	
 	/**
-	 * Gets the Tesseras that this move created.  This search will include
-	 * this color's compliment.
-	 * 
-	 * NOTE:  This call works with the GENTE rules.  Eligible candidate for
-	 * refactoring.
+	 * Gets the Tesseras that this move created.  
 	 */
-	public HashSet<BeadString> getTesseras () {
-		if (searchUtil == null) {
-			GridGame game = (GridGame) getPlayer().getGame();		
-			searchUtil = new Search(game.getGrid());
-		}
-		if (tesseras == null) {
-			tesseras = new HashSet<BeadString>();
-			HashMap<Vertice, HashSet<BeadString>> stringMap = 
-				searchUtil.getString ((GridCell) getDestination(), 4, true);
-			for (Vertice v : stringMap.keySet()) {
-				HashSet<BeadString> stringSet = stringMap.get(v);
-				for (BeadString string : stringSet) {
-					if (uncountedString (string) && string.contiguous(v))
-						tesseras.add(string);
-				}
-			}
-		}
-		
+	public HashSet<BeadString> getTesseras () {	
+		if (tesseras == null)
+			tesseras = new HashSet<BeadString> ();		
 		return tesseras;
 	}
 	
 	public void setTesseras (HashSet<BeadString> new_tesseras) {
 		tesseras = new_tesseras;
-	}
-	
-	/* Tests as to whether the Registrant or his Partner, already contains a reference 
-	 * to the candidate string. 
-	 */
-	private boolean uncountedString(BeadString string) {
-		boolean ret = false;		
-		GentePlayer pentePlayer = (GentePlayer) getPlayer();
-		GentePlayer partner = pentePlayer.getPartner();
-		if (!pentePlayer.containsString(string) && !partner.containsString(string))
-			ret = true;
-		return ret;
 	}
 	
 	/**
@@ -180,5 +143,28 @@ public class GenteMove extends GridMove {
 	 */
 	public void setPlayer(GamePlayerImpl player) {
 		this.player = (GridPlayer) player;
+	}
+
+
+	/**
+	 * @return the teamColors
+	 */
+	public List<Color> getTeamColors() {
+		if (teamColors == null) {
+			teamColors = new ArrayList<Color>();
+			GentePlayer player = (GentePlayer) this.player;
+			teamColors.add(this.player.getColor());
+			teamColors.add (player.getPartner().getColor());
+		}
+		
+		return teamColors;
+	}
+
+
+	/**
+	 * @param teamColors the teamColors to set
+	 */
+	public void setTeamColors(List<Color> teamColors) {
+		this.teamColors = (ArrayList<Color>) teamColors;
 	}
 }

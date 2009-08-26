@@ -26,6 +26,7 @@ import javax.jms.ObjectMessage;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.model.ChatMessage;
+import mx.ecosur.multigame.model.implementation.ChatMessageImpl;
 
 @MessageDriven(mappedName = "MultiGame")
 public class ChatListener implements MessageListener {
@@ -47,8 +48,8 @@ public class ChatListener implements MessageListener {
 			// TODO: Add selector or filter to only treat CHAT messages
 			gameEvent = GameEvent.valueOf(msg.getStringProperty("GAME_EVENT"));
 			if (gameEvent.equals(GameEvent.CHAT)) {
-				ChatMessage chatMessage = (ChatMessage) msg.getObject();
-				sharedBoard.addMessage(chatMessage);
+				ChatMessageImpl chatMessage = (ChatMessageImpl) msg.getObject();
+				sharedBoard.addMessage(new ChatMessage (chatMessage));
 				msg.acknowledge();
 			}
 		} catch (JMSException e) {

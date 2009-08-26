@@ -41,9 +41,11 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.enums.GameState;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
@@ -182,13 +184,21 @@ public class GenteGame extends GridGame {
 		}										
 	}
 	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant)  {	
+	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws 
+		InvalidRegistrationException  
+	{	
 		GentePlayer player = new GentePlayer ();
 		player.setRegistrant((GridRegistrant) registrant);
 		
+		for (GridPlayer p : this.getPlayers()) {
+			if (p.equals (player))
+				throw new InvalidRegistrationException (
+						"Duplicate Registration! " + player.getRegistrant().getName());
+		}
+		
 		int max = getMaxPlayers();
 		if (players.size() == max)
-			throw new RuntimeException ("Maximum Players reached!");
+			throw new InvalidRegistrationException ("Maximum Players reached!");
 		
 		List<Color> colors = getAvailableColors();
 		player.setColor(colors.get(0));		
@@ -208,8 +218,15 @@ public class GenteGame extends GridGame {
 		return player;
 	}
 	
-	public AgentImpl registerAgent (AgentImpl agent) {
+	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
 		GenteStrategyAgent player = (GenteStrategyAgent) agent;
+		
+		for (GridPlayer p : this.getPlayers()) {
+			if (p.equals (player))
+				throw new InvalidRegistrationException (
+						"Duplicate Registration! " + player.getRegistrant().getName());
+		}		
+		
 		int max = getMaxPlayers();
 		if (players.size() == max)
 			throw new RuntimeException ("Maximum Players reached!");
