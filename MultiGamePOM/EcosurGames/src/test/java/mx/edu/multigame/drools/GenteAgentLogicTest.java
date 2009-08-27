@@ -35,66 +35,66 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		assertEquals (11, unbound.size());
 	}
 	
-	@Test
-	/* Simple test to check the Scoring move logic in GenteStrategyAgent */
-	public void testScoringMoves () {
-		/* Setup a hash of valid move destinations to compare against */
-		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
-				new CellComparator());
-		validDestinations.add(new GridCell (9,11, Color.YELLOW));
-		validDestinations.add(new GridCell (13,7, Color.YELLOW));
-		validDestinations.add(new GridCell (11,10,Color.RED));
-		validDestinations.add(new GridCell (11,7, Color.RED));
-		validDestinations.add(new GridCell (9,11, Color.BLUE));
-		validDestinations.add(new GridCell (9,8, Color.BLUE));
-		validDestinations.add(new GridCell (10,9, Color.BLUE));
-		validDestinations.add(new GridCell (6,13, Color.GREEN));
-		
-		TreeSet<GenteMove> scoringMoves = alice.determineScoringMoves(Color.YELLOW);
-		assertEquals (2, scoringMoves.size());
-		for (GenteMove move : scoringMoves) {
-			GridCell destination = (GridCell) move.getDestination();
-			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
-			assertTrue (destination + " is not valid!", 
-					tail.contains(destination));
-		}
-		scoringMoves = alice.determineScoringMoves(Color.RED);
-		assertEquals (2, scoringMoves.size());	
-		for (GenteMove move : scoringMoves) {
-			GridCell destination = (GridCell) move.getDestination();
-			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
-			assertTrue (destination + " is not valid!", 
-					tail.contains(destination));
-		}
-
-		scoringMoves = alice.determineScoringMoves(Color.BLUE);
-		assertEquals (3, scoringMoves.size());
-		for (GenteMove move : scoringMoves) {
-			GridCell destination = (GridCell) move.getDestination();
-			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
-			assertTrue (destination + " is not valid!", 
-					tail.contains(destination));
-		}
-		
-		scoringMoves = alice.determineScoringMoves(Color.GREEN);
-		assertEquals (1, scoringMoves.size());
-		for (GenteMove move : scoringMoves) {
-			GridCell destination = (GridCell) move.getDestination();
-			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
-			assertTrue (destination + " is not valid!", 
-					tail.contains(destination));
-		}
-		
-		
-		scoringMoves = alice.determineScoringMoves(alice.oppositionColors());
-		assertEquals (4, scoringMoves.size());
-		for (GenteMove move : scoringMoves) {
-			GridCell destination = (GridCell) move.getDestination();
-			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
-			assertTrue (destination + " is not valid!", 
-					tail.contains(destination));
-		}
-	}
+//	@Test
+//	/* Simple test to check the Scoring move logic in GenteStrategyAgent */
+//	public void testScoringMoves () {
+//		/* Setup a hash of valid move destinations to compare against */
+//		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
+//				new CellComparator());
+//		validDestinations.add(new GridCell (9,11, Color.YELLOW));
+//		validDestinations.add(new GridCell (13,7, Color.YELLOW));
+//		validDestinations.add(new GridCell (11,10,Color.RED));
+//		validDestinations.add(new GridCell (11,7, Color.RED));
+//		validDestinations.add(new GridCell (9,11, Color.BLUE));
+//		validDestinations.add(new GridCell (9,8, Color.BLUE));
+//		validDestinations.add(new GridCell (10,9, Color.BLUE));
+//		validDestinations.add(new GridCell (6,13, Color.GREEN));
+//		
+//		TreeSet<GenteMove> scoringMoves = alice.determineScoringMoves(Color.YELLOW);
+//		assertEquals (2, scoringMoves.size());
+//		for (GenteMove move : scoringMoves) {
+//			GridCell destination = (GridCell) move.getDestination();
+//			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
+//			assertTrue (destination + " is not valid!", 
+//					tail.contains(destination));
+//		}
+//		scoringMoves = alice.determineScoringMoves(Color.RED);
+//		assertEquals (2, scoringMoves.size());	
+//		for (GenteMove move : scoringMoves) {
+//			GridCell destination = (GridCell) move.getDestination();
+//			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
+//			assertTrue (destination + " is not valid!", 
+//					tail.contains(destination));
+//		}
+//
+//		scoringMoves = alice.determineScoringMoves(Color.BLUE);
+//		assertEquals (3, scoringMoves.size());
+//		for (GenteMove move : scoringMoves) {
+//			GridCell destination = (GridCell) move.getDestination();
+//			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
+//			assertTrue (destination + " is not valid!", 
+//					tail.contains(destination));
+//		}
+//		
+//		scoringMoves = alice.determineScoringMoves(Color.GREEN);
+//		assertEquals (1, scoringMoves.size());
+//		for (GenteMove move : scoringMoves) {
+//			GridCell destination = (GridCell) move.getDestination();
+//			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
+//			assertTrue (destination + " is not valid!", 
+//					tail.contains(destination));
+//		}
+//		
+//		
+//		scoringMoves = alice.determineScoringMoves(alice.oppositionColors());
+//		assertEquals (4, scoringMoves.size());
+//		for (GenteMove move : scoringMoves) {
+//			GridCell destination = (GridCell) move.getDestination();
+//			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
+//			assertTrue (destination + " is not valid!", 
+//					tail.contains(destination));
+//		}
+//	}
 	
 	@Test
 	public void testRandomNextMove () throws InvalidMoveException {
@@ -116,31 +116,31 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		testRandomNextMove ();
 	}
 	
-	@Test
-	public void testBlockerNextMove () throws InvalidMoveException {
-		alice.setTurn(false);
-		bob.setTurn(true);
-		bob.determineNextMove();
-		GenteMove next = (GenteMove) bob.getNextMove();
-		assertNotNull (next);
-		/* Ensure that the last move blocks a score by blue or green */
-		GridCell destination = (GridCell) next.getDestination();
-		if (destination.getColumn() == 11) {
-			if (destination.getRow() != 10 && destination.getRow () != 7)
-				fail("Destination [" + destination + "] does not block any available " +
-				"enemy moves!");
-		} else if (destination.getColumn() == 9) {
-			assertEquals (11, destination.getRow());
-		} else if (destination.getColumn() == 13) {
-			assertEquals (7, destination.getRow());
-		} else 
-			fail("Destination [" + destination + "] does not block any available " +
-					"enemy moves!");
-		/* Validate that the next move was made, and is on the board */
-		game.move(next);
-		assertEquals (next.getDestination(), game.getGrid().getLocation(
-				(GridCell) next.getDestination()));
-	}
+//	@Test
+//	public void testBlockerNextMove () throws InvalidMoveException {
+//		alice.setTurn(false);
+//		bob.setTurn(true);
+//		bob.determineNextMove();
+//		GenteMove next = (GenteMove) bob.getNextMove();
+//		assertNotNull (next);
+//		/* Ensure that the last move blocks a score by blue or green */
+//		GridCell destination = (GridCell) next.getDestination();
+//		if (destination.getColumn() == 11) {
+//			if (destination.getRow() != 10 && destination.getRow () != 7)
+//				fail("Destination [" + destination + "] does not block any available " +
+//				"enemy moves!");
+//		} else if (destination.getColumn() == 9) {
+//			assertEquals (11, destination.getRow());
+//		} else if (destination.getColumn() == 13) {
+//			assertEquals (7, destination.getRow());
+//		} else 
+//			fail("Destination [" + destination + "] does not block any available " +
+//					"enemy moves!");
+//		/* Validate that the next move was made, and is on the board */
+//		game.move(next);
+//		assertEquals (next.getDestination(), game.getGrid().getLocation(
+//				(GridCell) next.getDestination()));
+//	}
 	
 	@Test
 	public void testSimpleNextMove () throws InvalidMoveException {

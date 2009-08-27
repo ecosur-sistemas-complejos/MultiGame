@@ -43,7 +43,6 @@ import mx.ecosur.multigame.impl.util.Direction;
 #Dr. Luis Garcia Barrios at ECOSUR, in San Cristobal de Las Casas,
 #Chiapas, Mexico.
 
-
 #Functions for the modified GridGame of PENTE, "GENTE"
 
 #    Determines if the destination of the requested move
@@ -88,7 +87,6 @@ function boolean hasWinner (GenteGame game) {
     return (game.getWinners().size() > 0);
 }
 
-
 #    Gets the winner from a specified game.  For more complicated payoff
 #    schemas, this function should return a PriorityQueue of Players 
 #    based upon positions on the board.
@@ -114,6 +112,30 @@ function GridPlayer incrementTurn (GenteMove move) {
     
     nextPlayer.setTurn (true);
     return nextPlayer;
+}
+
+#Determines if a Tria has already been scored
+function boolean hasTria (GridCell cell1, GridCell cell2, GridCell cell3, GenteMove move) {
+    BeadString tria = new BeadString (cell1, cell2, cell3);
+    for (BeadString test : move.getTrias()) {
+        if (test.equals(tria))
+            return true;
+    }
+    
+    return false;
+}
+
+#Determines if a Tessera has already been scored
+function boolean hasTessera (GridCell cell1, GridCell cell2, GridCell cell3, 
+    GridCell cell4, GenteMove move) 
+{
+    BeadString tessera = new BeadString (cell1, cell2, cell3, cell4);
+    for (BeadString test : move.getTesseras()) {
+        if (test.equals(tessera))
+            return true;
+    }
+    
+    return false;
 }
 
 #Rules for the game of PENTE
@@ -173,9 +195,6 @@ when
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell ((GridCell) move.getDestination());
-    #Calculate Trias and Tesseras before serialziing move over jms.
-    move.getTrias();
-    move.getTesseras();
     modify (game) { setGrid (modifiedGrid) }
     modify (move) { setStatus (MoveStatus.MOVED), setGame (game) }
     insert (move.getDestination());
@@ -190,15 +209,22 @@ rule "find-vertical-trias"
 when
     $game  : GenteGame (state == GameState.PLAY)
     $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
-    $cell1 : GridCell ($id1 : id, $column1 : column, $color : color)
-    $cell2 : GridCell ($id2 : id != $id1, column == $column1, color == $color)
-    $cell3 : GridCell (id not in ($id1, $id2), column == $column1, color == $color)
-    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))   
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), column == $column1, $row3 : row, color == $color)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1)
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))   
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tria = new BeadString ($cell1, $cell2, $cell3);
     player.addTria(tria);
-    modify ($move) { addTria (tria), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    if ($move.getSearchCount() >= 7)
+        modify ($move) { addTria (tria), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-horizontal-trias"
@@ -207,15 +233,22 @@ rule "find-horizontal-trias"
 when
     $game  : GenteGame (state == GameState.PLAY)
     $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
-    $cell1 : GridCell ($id1 : id, $row1 : row, $color : color)
-    $cell2 : GridCell ($id2 : id != $id1, row == $row1, color == $color)
-    $cell3 : GridCell (id not in ($id1, $id2), row == $row1, color == $color)
+    $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), row == $row1, $column3 : column, color == $color)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1)
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))    
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tria = new BeadString ($cell1, $cell2, $cell3);
     player.addTria(tria);
-    modify ($move) { addTria (tria), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    if ($move.getSearchCount() >= 7)
+        modify ($move) { addTria (tria), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-right-diagonal-trias"
@@ -227,14 +260,21 @@ when
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
     eval ($row2 == $row1 + 1 && $row3 == $row2 + 1) 
     eval ($column2 == $column1 + 1 && $column3 == $column2 + 1)    
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tria = new BeadString ($cell1, $cell2, $cell3);
     player.addTria(tria);
-    modify ($move) { addTria (tria), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    if ($move.getSearchCount() >= 7) 
+        modify ($move) { addTria (tria), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-left-diagonal-trias"
@@ -248,12 +288,18 @@ when
     $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
     eval ($row2 == $row1 - 1 && $row3 == $row2 - 1) 
-    eval ($column2 == $column1 - 1 && $column3 == $column2 - 1)     
+    eval ($column2 == $column1 - 1 && $column3 == $column2 - 1)   
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))      
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tria = new BeadString ($cell1, $cell2, $cell3);
     player.addTria(tria);
-    modify ($move) { addTria (tria), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    if ($move.getSearchCount() >= 7) 
+        modify ($move) { addTria (tria), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-vertical-tesseras"
@@ -263,19 +309,28 @@ when
     $game  : GenteGame (state == GameState.PLAY)
     $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
         $colors : teamColors)               
-    $cell1 : GridCell ($id1 : id, $column1 : column, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), column == $column1, $color4 : color)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, $color2 : color)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $row3 : row, $color3 : color)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), column == $column1, $row4 : row, $color4 : color)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination) 
         || $cell4.equals($destination))        
     eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
         && $colors.contains($color4))
+    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1 && $row4 == $row3 + 1)
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
     player.addTessera(tessera);
-    modify ($move) { addTessera (tessera), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);
+    if ($move.getSearchCount() >= 7)
+        modify ($move) { addTessera (tessera), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount(searchCount) }  
 end
 
 rule "find-horizontal-tesseras"
@@ -285,19 +340,28 @@ when
     $game  : GenteGame (state == GameState.PLAY)
     $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
         $colors : teamColors)               
-    $cell1 : GridCell ($id1 : id, $row1 : column, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), row == $row1, $color4 : color)
+    $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color1 : color)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, $color2 : color)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column, $color3 : color)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), row == $row1, $column4 : column, $color4 : color)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination) 
         || $cell4.equals($destination)) 
     eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4))        
+        && $colors.contains($color4)) 
+    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1 && $column4 == $column3 + 1)
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))           
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
     player.addTessera(tessera);
-    modify ($move) { addTessera (tessera), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    if ($move.getSearchCount() >= 7) 
+        modify ($move) { addTessera (tessera), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-right-diagonal-tesseras"
@@ -317,11 +381,19 @@ when
     eval ($column2 == $column1 + 1 && $column3 == $column2 + 1 && $column4 == $column3 + 1)  
     eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
         && $colors.contains($color4)) 
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
     player.addTessera(tessera);
-    modify ($move) { addTessera (tessera), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    if ($move.getSearchCount() >= 7)
+        modify ($move) { addTessera (tessera), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount (searchCount) }
+    else
+        modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount (searchCount) }  
 end
 
 rule "find-left-diagonal-tesseras"
@@ -341,22 +413,30 @@ when
     eval ($column2 == $column1 - 1 && $column3 == $column2 - 1 && $column4 == $column3 - 1)
     eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
         && $colors.contains($color4))                    
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
+    int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
     BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
     player.addTessera(tessera);
-    modify ($move) { addTessera (tessera), setPlayer (player), setStatus (MoveStatus.EVALUATED) }
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    if ($move.getSearchCount() >= 7) 
+        modify ($move) { addTessera (tessera), setPlayer (player), setStatus(MoveStatus.EVALUATED),
+            setSearchCount(searchCount) }
+    else
+        modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount(searchCount) }  
 end
 
 rule "evaluate-nonscoring-move"
     agenda-group "evaluate"
     no-loop true
-    salience -5
+    salience -10
 when
     game  : GenteGame (state == GameState.PLAY)
     move  : GenteMove (player.turn == true, status == MoveStatus.MOVED)
 then
-    modify (move) { setStatus (MoveStatus.EVALUATED) }
+    modify (move) { setStatus (MoveStatus.EVALUATED)}
 end 
 
 rule "score"
@@ -411,9 +491,3 @@ then
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange(model);
 end
-
-#Special cases
-
-#Special case, tria that is part of a tessera 
-
-#Special case, two tesseras joined by a shared token

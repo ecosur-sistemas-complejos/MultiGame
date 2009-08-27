@@ -52,6 +52,8 @@ public class GenteMove extends GridMove {
 	
 	private ArrayList<Color> teamColors;
 	
+	private int searchCount;
+	
 	public GenteMove () {
 		super ();
 	}
@@ -66,9 +68,21 @@ public class GenteMove extends GridMove {
 	}
 	
 	public void addTria(BeadString t) {
+		boolean contained = false;
+		
 		if (trias == null)
 			trias = new HashSet<BeadString> ();
-		trias.add(t);
+		/* Only add trias that are not contained by other trias */
+		for (BeadString tria : trias) {
+			if (tria.contains(t)) {
+				contained = true;
+				break;
+			}
+				
+		}
+		
+		if (!contained)
+			trias.add(t);
 	}
 
 	/**
@@ -85,9 +99,20 @@ public class GenteMove extends GridMove {
 	}
 	
 	public void addTessera (BeadString t) {
+		boolean contained = false;
+		
 		if (tesseras == null)
 			tesseras = new HashSet<BeadString> ();
-		tesseras.add(t);
+		for (BeadString tessera : tesseras) {
+			if (tessera.contains(t)) {
+				contained = true;
+				break;
+			}
+				
+		}
+		
+		if (!contained)
+			tesseras.add(t);
 	}
 	
 	/**
@@ -149,7 +174,7 @@ public class GenteMove extends GridMove {
 	/**
 	 * @return the teamColors
 	 */
-	public List<Color> getTeamColors() {
+	public ArrayList<Color> getTeamColors() {
 		if (teamColors == null) {
 			teamColors = new ArrayList<Color>();
 			GentePlayer player = (GentePlayer) this.player;
@@ -164,7 +189,23 @@ public class GenteMove extends GridMove {
 	/**
 	 * @param teamColors the teamColors to set
 	 */
-	public void setTeamColors(List<Color> teamColors) {
-		this.teamColors = (ArrayList<Color>) teamColors;
+	public void setTeamColors(ArrayList<Color> teamColors) {
+		this.teamColors = teamColors;
+	}
+
+
+	/**
+	 * @return the searchCount
+	 */
+	public int getSearchCount() {
+		return searchCount;
+	}
+
+
+	/**
+	 * @param searchCount the searchCount to set
+	 */
+	public void setSearchCount(int searchCount) {
+		this.searchCount = searchCount;
 	}
 }
