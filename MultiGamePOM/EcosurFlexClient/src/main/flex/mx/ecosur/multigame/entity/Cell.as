@@ -24,7 +24,6 @@ package mx.ecosur.multigame.entity {
 		protected var _column:int;
 		protected var _color:String;
 		protected var _colorCode:uint;
-		protected var _player:Registrant;
 		
 		public function Cell(){
 			super();
@@ -61,14 +60,6 @@ package mx.ecosur.multigame.entity {
 			return _colorCode;
 		}
 		
-		public function get player():Registrant{
-			return _player;
-		}
-		
-		public function set player(player:Registrant):void{
-			_player = player;
-		}
-		
 		/**
 		 * Returns a clone of the actual cell. The clone
 		 * is not recursive.
@@ -80,14 +71,13 @@ package mx.ecosur.multigame.entity {
 			clone.color = _color;
 			clone.column = _column;
 			clone.row = _row;
-			clone.player = _player;
 			return clone; 
 		}
 		
 		/* Overrrides */
 		
 		override public function toString():String{
-			return "id = " + id + ", color = " + color + ", colorCode = " + ",  column = " + column + ", row = " + row + " player = " + player; 
+			return "id = " + id + ", color = " + color + ", colorCode = " + ",  column = " + column + ", row = " + row; 
 		}
 	}
 }

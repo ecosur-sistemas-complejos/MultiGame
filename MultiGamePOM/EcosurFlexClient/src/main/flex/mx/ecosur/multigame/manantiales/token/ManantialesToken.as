@@ -40,7 +40,6 @@ package mx.ecosur.multigame.manantiales.token
 		      _ficha.row = cell.row;
 		      _ficha.column = cell.column;
 		      _ficha.color = cell.color;
-		      _ficha.player = cell.player;
 		      _ficha.type = _type;	
 		  }	
 		  					  

@@ -12,6 +12,11 @@ package mx.ecosur.multigame.model;
 
 import java.io.Serializable;
 
-public interface Model extends Serializable {
+import mx.ecosur.multigame.model.implementation.Implementation;
 
+public interface Model extends Serializable {
+	
+	public void setImplementation (Implementation impl);
+	
+	public Implementation getImplementation();
 }

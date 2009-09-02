@@ -17,7 +17,6 @@ import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Registrant;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
@@ -26,7 +25,7 @@ public interface RegistrarInterface {
 	/**
 	 * Creates a managed Registrant in the system
 	 */
-	public Registrant register (RegistrantImpl regsitrant);
+	public Registrant register (Registrant regsitrant);
 	
 	/**
 	 * Registers a player with the specified Game object.  Allows greater control
@@ -40,7 +39,7 @@ public interface RegistrarInterface {
 	 * @return
 	 * @throws InvalidRegistrationException
 	 */
-	public GamePlayer registerAgent(Game game, Registrant player) 
+	public GamePlayer registerPlayer(Game game, Registrant player) 
 		throws 
 	InvalidRegistrationException;
 	
@@ -64,7 +63,7 @@ public interface RegistrarInterface {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public void unregisterPlayer(Game game, GamePlayer player) 
+	public void unregister(Game game, GamePlayer player) 
 		throws 
 	InvalidRegistrationException;
 

@@ -15,7 +15,6 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

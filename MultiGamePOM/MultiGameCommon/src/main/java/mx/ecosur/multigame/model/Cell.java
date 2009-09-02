@@ -11,12 +11,17 @@
 package mx.ecosur.multigame.model;
 
 import mx.ecosur.multigame.model.implementation.CellImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 
 public class Cell implements Model {
 	
 	private static final long serialVersionUID = -5382384031755001844L;
 	
 	private CellImpl cellImpl;
+	
+	public Cell () {
+		super();
+	}
 	
 	public Cell (CellImpl cellImpl) {
 		this.cellImpl = cellImpl;
@@ -48,5 +53,9 @@ public class Cell implements Model {
 	 */
 	public CellImpl getImplementation() {
 		return cellImpl;
+	}
+
+	public void setImplementation(Implementation impl) {
+		this.cellImpl = (CellImpl) impl;
 	}
 }

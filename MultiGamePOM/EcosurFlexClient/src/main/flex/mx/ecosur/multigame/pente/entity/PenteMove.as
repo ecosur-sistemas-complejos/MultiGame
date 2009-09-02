@@ -31,14 +31,6 @@ package mx.ecosur.multigame.pente.entity {
 		public function PenteMove() {
 			super();
 		}
-				
-		public function set captures(captures:ArrayCollection):void{
-			_captures = captures;
-		}
-		
-		public function get captures():ArrayCollection{
-			return _captures;
-		}
 		
 		public function set trias(trias:ArrayCollection):void{
 			_trias = trias;

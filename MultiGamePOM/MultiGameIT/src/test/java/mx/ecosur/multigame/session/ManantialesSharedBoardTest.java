@@ -68,8 +68,8 @@ public class ManantialesSharedBoardTest {
 		Game boardGame = new Game (game);
 		
 		for (int i = 0; i < 4; i++) {
-			Registrant registrant = registrar.register(registrants [ i ]);
-			GamePlayer player = registrar.registerAgent(boardGame, registrant);
+			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
+			GamePlayer player = registrar.registerPlayer(boardGame, registrant);
 			if (gameId == 0) {
 				GridPlayer gp = (GridPlayer) player.getImplementation();
 				gameId = gp.getGame().getId();
@@ -104,10 +104,10 @@ public class ManantialesSharedBoardTest {
 	@After
 	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
 		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
-		registrar.unregisterPlayer(new Game (game), new GamePlayer (alice));
-		registrar.unregisterPlayer(new Game (game), new GamePlayer (bob));
-		registrar.unregisterPlayer(new Game (game), new GamePlayer (charlie));
-		registrar.unregisterPlayer(new Game (game), new GamePlayer (denise));
+		registrar.unregister(new Game (game), new GamePlayer (alice));
+		registrar.unregister(new Game (game), new GamePlayer (bob));
+		registrar.unregister(new Game (game), new GamePlayer (charlie));
+		registrar.unregister(new Game (game), new GamePlayer (denise));
 	}	
 	
 	
@@ -132,20 +132,20 @@ public class ManantialesSharedBoardTest {
 		
 		Game game = new Game (mg);
 		ManantialesMove move = new ManantialesMove (alice, ficha);
-		Move mv = board.move(game, new Move (move));
+		Move mv = board.doMove(game, new Move (move));
 		game = mv.getPlayer().getGame();
 		
 		
 		ficha = new Ficha (4,5, bob.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (bob, ficha);
-		mv = board.move(game, new Move (move));
+		mv = board.doMove(game, new Move (move));
 		game = mv.getPlayer().getGame();
 		
 		ficha = new Ficha (3,4, charlie.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (charlie, ficha);
-		mv = board.move(game, new Move (move));
+		mv = board.doMove(game, new Move (move));
 		game = mv.getPlayer().getGame();
 		
 		mg = (ManantialesGame) game.getImplementation();

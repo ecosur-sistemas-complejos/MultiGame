@@ -325,6 +325,7 @@ package mx.ecosur.multigame.pente{
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
             var gameModel:GameModel = null;
+            var game:PenteGame = null;
         
             switch (gameEvent){
                 case GameEvent.BEGIN:
@@ -340,7 +341,7 @@ package mx.ecosur.multigame.pente{
                     break;
                 case GameEvent.END:
                     gameModel = GameModel (message.body);
-                    var game:PenteGame = PenteGame (gameModel.implementation);
+                    game = PenteGame (gameModel.implementation);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     _winners = game.winners;                
@@ -357,7 +358,7 @@ package mx.ecosur.multigame.pente{
                     break;
                 case GameEvent.PLAYER_CHANGE:
                     gameModel = GameModel (message.body);
-                    var game:PenteGame = PenteGame (gameModel.implementation);
+                    game = PenteGame (gameModel.implementation);
                     if (game == null)
                         Alert.show ("Game from model [" + gameModel + "] is null!");
                     var players:ArrayCollection = PenteGame(gameModel.implementation).players;
@@ -782,8 +783,10 @@ package mx.ecosur.multigame.pente{
                 // do move in backend
                 var move:PenteMove = new PenteMove();
                 move.player = _currentPlayer;
+                move.current = destination;
                 move.destination = destination;
                 move.status = Move.UNVERIFIED;
+                Alert.show ("Move.destination: " + move.destination);
                 var call:Object = _gameService.doMove(move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;
                 _executingMove = move; 

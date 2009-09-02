@@ -72,8 +72,8 @@ public class GenteSharedBoardTest {
 		Game boardGame = new Game (game);
 		
 		for (int i = 0; i < 4; i++) {
-			Registrant registrant = registrar.register(registrants [ i ]);
-			GamePlayer player = registrar.registerAgent(boardGame, registrant);
+			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
+			GamePlayer player = registrar.registerPlayer(boardGame, registrant);
 			if (gameId == 0) {
 				GridPlayer gp = (GridPlayer) player.getImplementation();
 				gameId = gp.getGame().getId();
@@ -114,10 +114,10 @@ public class GenteSharedBoardTest {
 	@After
 	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
 		Game boardGame = board.getGame(gameId);		
-		registrar.unregisterPlayer(boardGame, new GamePlayer (alice));
-		registrar.unregisterPlayer(boardGame, new GamePlayer (bob));
-		registrar.unregisterPlayer(boardGame, new GamePlayer (charlie));
-		registrar.unregisterPlayer(boardGame, new GamePlayer (denise));
+		registrar.unregister(boardGame, new GamePlayer (alice));
+		registrar.unregister(boardGame, new GamePlayer (bob));
+		registrar.unregister(boardGame, new GamePlayer (charlie));
+		registrar.unregister(boardGame, new GamePlayer (denise));
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class GenteSharedBoardTest {
 	public void testFirstMove () throws InvalidMoveException, RemoteException {
 		GenteGame game = (GenteGame) board.getGame(gameId).getImplementation();
 		GenteMove move = new GenteMove (alice, center);
-		Move mv = board.move(new Game (game), new Move (move));
+		Move mv = board.doMove(new Game (game), new Move (move));
 		move = (GenteMove) mv.getImplementation();
 		game = (GenteGame) board.getGame(gameId).getImplementation();
 		assertNotNull (game.getGrid().getLocation(move.getDestination()));
@@ -161,7 +161,7 @@ public class GenteSharedBoardTest {
 		GenteMove move = new GenteMove (alice, center);
 
 		try {
-			board.move (new Game (game), new Move (move));
+			board.doMove (new Game (game), new Move (move));
 			fail ("Invalid Move must be thrown!");
 		} catch (InvalidMoveException e) {
 			assertTrue (e != null);
@@ -173,44 +173,44 @@ public class GenteSharedBoardTest {
 		/* Round 1 */
 		GenteGame game = (GenteGame) board.getGame(gameId).getImplementation();
 		GenteMove move = new GenteMove (alice, center);
-		Move mv = board.move(new Game (game), new Move (move));
+		Move mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		GridCell cell = new GridCell (1, 1, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,1, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5,1, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 2 */
 		
 		cell = new GridCell (7, 1, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 2, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,2, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5, 2, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		
@@ -218,12 +218,12 @@ public class GenteSharedBoardTest {
 
 		cell = new GridCell (7, 2, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 3, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		move = (GenteMove) mv.getImplementation();		
@@ -248,55 +248,55 @@ public class GenteSharedBoardTest {
 		
 		/* Round 1 */
 		GenteMove move = new GenteMove (alice, center);
-		Move mv = board.move(new Game (game), new Move (move));
+		Move mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		GridCell cell = new GridCell (1, 1, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,1, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5,1, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 2 */
 		cell = new GridCell (7, 1, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 2, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,2, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 
 		cell = new GridCell (5, 2, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		
 		/* Round 3 */
 		cell = new GridCell (7, 2, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 3, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		move = (GenteMove) mv.getImplementation();		
@@ -316,70 +316,70 @@ public class GenteSharedBoardTest {
 		
 		cell = new GridCell (3,3, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		denise.setTurn(true);
 		cell = new GridCell (5, 3, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 4 */
 		alice.setTurn(true);
 		cell = new GridCell (7, 3, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		bob.setTurn(true);
 		cell = new GridCell (9,1, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		charlie.setTurn(true);
 		cell = new GridCell (3, 5, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		denise.setTurn(true);
 		cell = new GridCell (5, 5, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 5 */
 		cell = new GridCell (7, 5, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (9, 2, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3, 6, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5, 6, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 6 */
 		cell = new GridCell (7, 6, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (9,3, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Game should be over, with Bob the winner */
@@ -401,64 +401,64 @@ public class GenteSharedBoardTest {
 		
 		/* Round 1 */
 		GenteMove move = new GenteMove (alice, center);
-		Move mv = board.move(new Game (game), new Move (move));
+		Move mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		GridCell cell = new GridCell (1, 1, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,1, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5,1, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 2 */
 		cell = new GridCell (7, 1, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 2, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3,2, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5, 2, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 3 */
 		cell = new GridCell (7, 2, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3, 3, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1, 3, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5, 3, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Assert that Denise has completed a tria */
@@ -479,12 +479,12 @@ public class GenteSharedBoardTest {
 		/* Round 4 */
 		cell = new GridCell (7, 3, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (1,4, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Assert that Bob has completed a tessera */
@@ -504,7 +504,7 @@ public class GenteSharedBoardTest {
 		
 		cell = new GridCell (3, 4, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Assert that Charlie has completed a tessera */
@@ -513,39 +513,39 @@ public class GenteSharedBoardTest {
 		
 		cell = new GridCell (5, 5, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 5 */
 		cell = new GridCell (7, 5, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (0, 3, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (2, 5, charlie.getColor());
 		move = new GenteMove (charlie, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (5, 7, denise.getColor());
 		move = new GenteMove (denise, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Round 6 */
 		cell = new GridCell (7, 6, alice.getColor());
 		move = new GenteMove (alice, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		cell = new GridCell (3, 6, bob.getColor());
 		move = new GenteMove (bob, cell);
-		mv = board.move(new Game (game), new Move (move));
+		mv = board.doMove(new Game (game), new Move (move));
 		game = (GenteGame) mv.getPlayer().getGame().getImplementation();
 		
 		/* Confirm cooperative scoring */

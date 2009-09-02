@@ -18,6 +18,7 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 public class Game implements Model {
@@ -120,8 +121,11 @@ public class Game implements Model {
 	public GameImpl getImplementation() {
 		return gameImpl;
 	}
-	
-	public void setImplementation(GameImpl gameImpl) {
-		this.gameImpl = gameImpl;
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
+	 */
+	public void setImplementation(Implementation impl) {
+		this.gameImpl = (GameImpl) gameImpl;
 	}
 }

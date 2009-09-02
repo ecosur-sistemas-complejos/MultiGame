@@ -12,28 +12,19 @@ package mx.ecosur.multigame.model;
 
 import mx.ecosur.multigame.model.implementation.ChatMessageImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 
 public class ChatMessage implements Model {
 
 	private static final long serialVersionUID = -5474115636921841270L;
 	
 	private ChatMessageImpl chatMessageImpl;
+	
+	public ChatMessage () {
+		super();
+	}
 
 	public ChatMessage (ChatMessageImpl chatMessageImpl) {
-		this.chatMessageImpl = chatMessageImpl;
-	}
-
-	/**
-	 * @return the chatMessageImpl
-	 */
-	public ChatMessageImpl getImplementation() {
-		return chatMessageImpl;
-	}
-
-	/**
-	 * @param chatMessageImpl the chatMessageImpl to set
-	 */
-	public void setImplementation(ChatMessageImpl chatMessageImpl) {
 		this.chatMessageImpl = chatMessageImpl;
 	}
 
@@ -53,6 +44,20 @@ public class ChatMessage implements Model {
 	 */
 	public void setSender(GamePlayer agent) {		
 		chatMessageImpl.setSender (agent.getImplementation());
+	}
+	
+	/**
+	 * @return the chatMessageImpl
+	 */
+	public ChatMessageImpl getImplementation() {
+		return chatMessageImpl;
+	}	
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
+	 */
+	public void setImplementation(Implementation impl) {
+		this.chatMessageImpl = (ChatMessageImpl) impl;
 	}
 
 }

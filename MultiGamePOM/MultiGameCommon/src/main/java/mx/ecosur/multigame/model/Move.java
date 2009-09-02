@@ -10,7 +10,10 @@
  */
 package mx.ecosur.multigame.model;
 
+import javax.xml.bind.annotation.XmlType;
+
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 public class Move implements Model {
@@ -42,14 +45,6 @@ public class Move implements Model {
 		moveImpl.setPlayerModel (player);
 	}
 	
-	public MoveImpl getImplementation() {
-		return moveImpl;
-	}
-	
-	public void setImplementation(MoveImpl moveImpl) {
-		this.moveImpl = moveImpl;
-	}
-	
 	public Cell getCurrent () {
 		return new Cell(moveImpl.getCurrent());
 	}
@@ -57,4 +52,16 @@ public class Move implements Model {
 	public Cell getDestination() {
 		return new Cell (moveImpl.getDestination());
 	}
+	
+	public MoveImpl getImplementation() {
+		return moveImpl;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
+	 */
+	public void setImplementation(Implementation impl) {
+		this.moveImpl = (MoveImpl) impl;
+	}
+		
 }

@@ -56,13 +56,13 @@ public class RegistrarTest {
 	public void testPlayerRegistration () throws InvalidRegistrationException {
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 				new Registrant (player));		
 		game = (GridGame) gamePlayer.getGame().getImplementation();
 		for (int i = 0; i < 3; i++) {
 			GridRegistrant registrant = new GridRegistrant (
 					"TEST" + "-" + (i + 1));
-			registrar.registerAgent (
+			registrar.registerPlayer (
 					new Game(game), new Registrant (registrant));
 		}		
 	}
@@ -72,14 +72,14 @@ public class RegistrarTest {
 		Exception caught = null;
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 				new Registrant (player));		
 		game = (GridGame) gamePlayer.getGame().getImplementation();
 		try {
 			for (int i = 0; i < 3; i++) {
 				GridRegistrant registrant = new GridRegistrant (
 						"TEST");
-				registrar.registerAgent (
+				registrar.registerPlayer (
 						new Game(game), new Registrant (registrant));
 			}
 		} catch (Exception e) {
@@ -94,7 +94,7 @@ public class RegistrarTest {
 	public void testSimpleRobotRegistration () throws InvalidRegistrationException {
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 				new Registrant (player));
 		game = (GridGame) gamePlayer.getGame().getImplementation();
 		for (int i = 0; i < 3; i++) {

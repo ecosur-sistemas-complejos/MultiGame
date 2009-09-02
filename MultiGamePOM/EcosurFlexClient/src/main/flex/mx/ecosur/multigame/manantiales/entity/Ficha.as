@@ -32,7 +32,6 @@ package mx.ecosur.multigame.manantiales.entity
             clone.color = _color;
             clone.column = _column;
             clone.row = _row;
-            clone.player = _player;
             clone.type = _type;
             return clone; 
         }		

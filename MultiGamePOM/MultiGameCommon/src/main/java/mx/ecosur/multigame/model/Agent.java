@@ -22,6 +22,11 @@ public class Agent extends GamePlayer {
 	private AgentImpl implementation;
 	
 	
+	public Agent () {
+		super();
+	}
+	
+	
 	public Agent (AgentImpl agentImpl) {
 		super (agentImpl);
 		this.implementation = agentImpl;
@@ -43,5 +48,9 @@ public class Agent extends GamePlayer {
 	
 	public AgentImpl getImplementation() {
 		return implementation;
+	}
+	
+	public void setImplementation(AgentImpl implementation) {
+		this.implementation = implementation;
 	}
 }

@@ -96,7 +96,7 @@ public class GameService {
 				break;				
 			}
 			
-			GamePlayer playerModel = registrar.registerAgent(new Game(game), 
+			GamePlayer playerModel = registrar.registerPlayer(new Game(game), 
 					new Registrant(player));
 			gamePlayer = (GridPlayer) playerModel.getImplementation();
 			
@@ -119,7 +119,7 @@ public class GameService {
 		GridPlayer ret = null;
 		RegistrarRemote registrar = getRegistrar();
 		try {
-			GamePlayer playerModel = registrar.registerAgent (new Game(game), 
+			GamePlayer playerModel = registrar.registerPlayer (new Game(game), 
 					new Registrant(player));
 			ret = (GridPlayer) playerModel.getImplementation();
 			
@@ -136,7 +136,7 @@ public class GameService {
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GridGame game = player.getGame();
-			registrar.unregisterPlayer(new Game (game), new GamePlayer (player));
+			registrar.unregister (new Game (game), new GamePlayer (player));
 			ret = true;
 		} catch (InvalidRegistrationException e) {
 			// TODO Auto-generated catch block
@@ -158,7 +158,7 @@ public class GameService {
 			GameType gameType = GameType.valueOf(gameTypeStr);
 			if (gameType.equals(GameType.PENTE)) {
 				GridGame game = new GenteGame ();	
-				GamePlayer gamePlayer = registrar.registerAgent(new Game(game), 
+				GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 						new Registrant (player));
 				game = (GridGame) gamePlayer.getGame().getImplementation();
 				for (int i = 0; i < strategies.length; i++) {
@@ -232,10 +232,12 @@ public class GameService {
 	}
 
 	public void doMove(GridMove move) {
+System.out.println("****************");
+System.out.println("Move: " + move);
 		SharedBoardRemote sharedBoard = getSharedBoard();		
 		try {
 			GridGame game = move.getPlayer().getGame();
-			sharedBoard.move(new Game (game), new Move(move));
+			sharedBoard.doMove(new Game (game), new Move(move));
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -261,7 +263,7 @@ public class GameService {
 	public GridRegistrant login (String name) {
 		GridRegistrant gr = new GridRegistrant (name);
 		RegistrarRemote registrar = this.getRegistrar();
-		Registrant registrant = registrar.register(gr);
+		Registrant registrant = registrar.register(new Registrant (gr));
 		return (GridRegistrant) registrant.getImplementation();
 	}
 }

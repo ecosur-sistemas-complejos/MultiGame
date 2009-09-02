@@ -244,7 +244,7 @@ public class GenteGame extends GridGame {
 		if (this.state == null)
 			this.state = GameState.WAITING;
 		
-		return player;
+		return (AgentImpl) player;
 	}
 
 	/* (non-Javadoc)

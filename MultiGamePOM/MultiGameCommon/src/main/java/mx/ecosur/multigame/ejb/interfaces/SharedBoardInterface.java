@@ -38,7 +38,7 @@ public interface SharedBoardInterface {
 	 * @throws InvalidMoveException
 	 * @throws RemoteException
 	 */
-	public Move move (Game game, Move move) throws InvalidMoveException;
+	public Move doMove (Game game, Move move) throws InvalidMoveException;
 
 	/**
 	 * Gets all the moves for a given game.

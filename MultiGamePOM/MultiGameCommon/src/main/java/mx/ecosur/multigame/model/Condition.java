@@ -11,6 +11,7 @@
 package mx.ecosur.multigame.model;
 
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 
 public class Condition implements Model {
 
@@ -40,9 +41,12 @@ public class Condition implements Model {
 	public ConditionImpl getImplementation() {
 		return conditionImpl;
 	}
-	
-	public void setImplementation (ConditionImpl conditionImpl) {
-		this.conditionImpl = conditionImpl;
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
+	 */
+	public void setImplementation(Implementation impl) {
+		this.conditionImpl = (ConditionImpl) impl;
 	}
 
 }

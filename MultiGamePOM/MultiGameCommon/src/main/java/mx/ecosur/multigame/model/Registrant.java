@@ -16,6 +16,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 public class Registrant implements Model {
@@ -23,6 +24,10 @@ public class Registrant implements Model {
 	private static final long serialVersionUID = 1672849851772628554L;
 	
 	private RegistrantImpl playerImpl;
+	
+	public Registrant() {
+		super();
+	}
 
 	public Registrant (RegistrantImpl playerImpl) {
 		this.playerImpl = playerImpl;
@@ -42,10 +47,6 @@ public class Registrant implements Model {
 		playerImpl.setLastRegistration(currentTimeMillis);		
 	}
 	
-	public RegistrantImpl getImplementation() {
-		return playerImpl;
-	}
-	
 	public List<Game> getCurrentGames (EntityManager em) {
 		List<GameImpl> implementations = playerImpl.getCurrentGames(em);
 		List<Game> ret = new ArrayList<Game> ();
@@ -63,4 +64,16 @@ public class Registrant implements Model {
 		}
 		return ret;
 	}
+	
+	
+	public RegistrantImpl getImplementation() {
+		return playerImpl;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
+	 */
+	public void setImplementation(Implementation impl) {
+		this.playerImpl = (RegistrantImpl) impl;
+	}	
 }

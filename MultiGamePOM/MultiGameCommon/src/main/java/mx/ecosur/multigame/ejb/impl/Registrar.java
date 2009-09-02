@@ -20,6 +20,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -36,6 +38,7 @@ import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Registrant;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
+@WebService 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class Registrar implements RegistrarRemote, RegistrarLocal {
@@ -61,19 +64,21 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#register(java.lang.String)
 	 */
-	public Registrant register(RegistrantImpl registrant) {
+	@WebMethod (operationName = "Register")
+	public Registrant register(Registrant registrant) {
 		Registrant ret = null;
+		RegistrantImpl impl = registrant.getImplementation();
 		
 		/* TODO: inject or make this query static */
 		Query query = em.createNamedQuery("getRegistrantByName");
-		query.setParameter("name", registrant.getName());
+		query.setParameter("name", impl.getName());
 		List<RegistrantImpl> registrants = query.getResultList();
 		if (registrants.size() == 0) { 
-			em.persist(registrant);
-			ret = new Registrant (registrant);
-		} else {			
-			RegistrantImpl impl = (RegistrantImpl) registrants.get(0);
+			em.persist(impl);
 			ret = new Registrant (impl);
+		} else {			
+			RegistrantImpl reg = (RegistrantImpl) registrants.get(0);
+			ret = new Registrant (reg);
 		}
 		
 		return ret;
@@ -85,8 +90,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * TODO:  Make this generic.
 	 * @throws InvalidRegistrationException 
 	 */
-	
-	public GamePlayer registerAgent (Game game, Registrant registrant) 
+	@WebMethod (operationName = "RegisterPlayer") 
+	public GamePlayer registerPlayer (Game game, Registrant registrant) 
 		throws InvalidRegistrationException 
 	{
 		if (!em.contains(game.getImplementation())) {
@@ -117,6 +122,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
 	 */
+	@WebMethod (operationName = "RegisterAgent")
 	public Agent registerAgent(Game game, Agent agent) throws 
 		InvalidRegistrationException 
 	{		
@@ -149,8 +155,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		return agent;		
 	}		
 
-
-	public void unregisterPlayer(Game game, GamePlayer player) 
+	@WebMethod (operationName = "Unregister")
+	public void unregister(Game game, GamePlayer player) 
 		throws 
 	InvalidRegistrationException {
 

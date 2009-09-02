@@ -65,7 +65,7 @@ public class AgentListener implements MessageListener {
 								Thread.sleep(250);					
 								Move move = agent.determineNextMove();		
 								logger.info("Agent moving: " + move);
-								sharedBoard.move(agent.findGame(), move);				
+								sharedBoard.doMove(agent.findGame(), move);				
 								message.acknowledge();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
