@@ -30,8 +30,45 @@
 		          </excludes>
 		        </configuration>
 	        </plugin>
+			<plugin>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-wsdl2code-maven-plugin</artifactId>         
+                <version>1.5</version>
+				<executions>
+					<execution>
+					   <id>registrar</id>
+						<goals>
+							<goal>wsdl2code</goal>
+						</goals>
+						<configuration>
+							<packageName>mx.ecosur.multigame.webservice.registrar</packageName>
+							<wsdlFile>src/main/axis2/Registrar.xml</wsdlFile>
+							<databindingName>xmlbeans</databindingName>
+							<generateTestcase>true</generateTestcase>
+						</configuration>
+                    </execution>
+                    <execution>
+                        <id>sharedboard</id>
+                        <goals>
+                            <goal>wsdl2code</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>mx.ecosur.multigame.webservice.sharedboard</packageName>
+                            <wsdlFile>src/main/axis2/SharedBoard.xml</wsdlFile>    
+                            <databindingName>xmlbeans</databindingName>
+                            <generateTestcase>true</generateTestcase>
+                        </configuration>
+                    </execution>                               
+				</executions>
+				</plugin>
 		</plugins>
-	</build>
+		<resources>
+			<resource>
+				<directory>target/generated-sources/axis2/wsdl2code/test</directory>
+				<targetPath>src/test/webservices</targetPath>	
+			</resource>
+		</resources>		
+	</build>	
 	<dependencies>
 	   <dependency>
             <groupId>javax.ejb</groupId>
@@ -64,10 +101,21 @@
             <artifactId>junit</artifactId>
             <version>4.0</version>
         </dependency>
+	        <!--  Axis 2 -->
         <dependency>
-            <groupId>org.apache.axis2 </groupId>
+            <groupId>org.apache.axis2</groupId>
             <artifactId>axis2</artifactId>
             <version>1.5</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-java2wsdl</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-xmlbeans</artifactId>
+            <version>1.5</version>
+        </dependency>
 	</dependencies>
 </project>
