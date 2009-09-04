@@ -60,26 +60,18 @@
     </organization>
     <profiles>
         <profile>
-            <id>internal</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
 		        <module>MultiGameCommon</module>		        
-			<module>EcosurGames</module>
+			    <module>EcosurGames</module>
 		        <module>EcosurFlexClient</module>
-		        <module>MultiGameEAR</module>
-                <module>MultiGameWebService</module>		        
-		        <module>MultiGameIT</module>
+		        <module>EcosurEAR</module>
+		        <!--  The Webservice client can only be built after deployment -->
+                <module>MultiGameWebServiceClient</module>		        
+		        <module>EcosurIT</module>
 		    </modules>
-        </profile>
-        <profile>
-            <id>external</id>
-            <modules>
-                <module>MultiGameEJB</module>
-                <module>MultiGameFlexClient</module>
-                <module>MultiGameEAR</module>
-            </modules>
         </profile>
     </profiles>
     <!--  
