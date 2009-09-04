@@ -65,10 +65,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-		        <module>MultiGameCommon</module>
-		        <module>EcosurGames</module>
+		        <module>MultiGameCommon</module>		        
+			<module>EcosurGames</module>
 		        <module>EcosurFlexClient</module>
 		        <module>MultiGameEAR</module>
+                <module>MultiGameWebService</module>		        
 		        <module>MultiGameIT</module>
 		    </modules>
         </profile>

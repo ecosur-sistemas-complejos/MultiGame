@@ -4,11 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.ecosur</groupId>
 	<artifactId>ecosur-games</artifactId>
+	<name>Ecosur Game Implemetnations</name>
+	<description>Implementations of all games developed at ECOSUR SCLC as part of our ongoing participatory modeling work.</description>
 	<parent>
 		<artifactId>multi-game</artifactId>
 		<groupId>mx.ecosur</groupId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
+	<organization>
+		<name>ECOSUR</name>
+		<url>http://www.ecosur.mx</url>
+	</organization>
 	<build>
         <plugins>
             <plugin>

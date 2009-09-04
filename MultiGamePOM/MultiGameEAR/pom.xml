@@ -4,9 +4,10 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>mx.ecosur</groupId>
-    <artifactId>multi-game-ear</artifactId>
+    <artifactId>ecosur-ear</artifactId>
     <packaging>ear</packaging>
-    <description></description>
+    <name>Ecosur Game EAR</name>
+    <description>EAR containing common EJBs/Webservices, Rule implementationso of ECOSUR games and RIA Flex client for game play and participant registration.</description>
     <parent>
         <artifactId>multi-game</artifactId>
         <groupId>mx.ecosur</groupId>

@@ -5,6 +5,8 @@
 	<groupId>mx.ecosur</groupId>
 	<artifactId>multi-game-common</artifactId>
 	<packaging>ejb</packaging>
+	<name>Common EJB API and Implementation Interfaces for MultiGame WebService</name>
+	<description>This API deploys as an EJB into a JEE container.  It expects client implementations to be @Entity beans.</description>
 	<parent>
 		<artifactId>multi-game</artifactId>
 		<groupId>mx.ecosur</groupId>
