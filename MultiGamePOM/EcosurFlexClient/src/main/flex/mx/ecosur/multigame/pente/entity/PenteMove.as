@@ -26,6 +26,10 @@ package mx.ecosur.multigame.pente.entity {
 		
 		private var _tesseras:ArrayCollection;
 		
+		private var _teamColors:ArrayCollection;
+		
+		private var _searchCount:int;
+		
 		private var _qualifier:String;
 		
 		public function PenteMove() {
@@ -46,6 +50,22 @@ package mx.ecosur.multigame.pente.entity {
 		
 		public function get tesseras():ArrayCollection{
 			return _tesseras;
+		}
+		
+		public function get teamColors():ArrayCollection {
+			return _teamColors;
+		}
+		
+		public function set teamColors(teamColors:ArrayCollection):void {
+			_teamColors = teamColors;
+		}
+		
+		public function get searchCount():int {
+			return _searchCount;
+		}
+		
+		public function set searchCount(searchCount:int):void {
+			_searchCount = searchCount;
 		}
 		
 		public function set qualifier(qualifier:String):void{

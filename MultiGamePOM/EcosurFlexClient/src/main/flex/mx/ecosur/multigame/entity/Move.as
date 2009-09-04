@@ -52,14 +52,6 @@ package mx.ecosur.multigame.entity {
 			_player = player;
 		}
 		
-		public function get current():Cell{
-			return _current;
-		}
-		
-		public function set current(current:Cell):void{
-			_current = current;
-		}
-		
 		public function get destination():Cell{
 			return _destination;
 		}
@@ -67,6 +59,14 @@ package mx.ecosur.multigame.entity {
 		public function set destination(destination:Cell):void{
 			_destination = destination;
 		}
+		
+        public function get current():Cell{
+            return _current;
+        }
+        
+        public function set current(current:Cell):void{
+            _current = current;
+        }		
 		
 		public function get status():String{
 			return _status;

@@ -207,4 +207,22 @@ public class GenteMove extends GridMove {
 	public void setSearchCount(int searchCount) {
 		this.searchCount = searchCount;
 	}
+
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.impl.model.GridMove#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuffer ret = new StringBuffer();
+		ret.append("GenteMove: ");
+		ret.append("current=" + getCurrent() + ", ");		
+		ret.append("destination=" + getDestination() + ", ");
+		ret.append("qualifier=" + getQualifier() + ", ");
+		ret.append("trias=" + getTrias().size() + ", ");
+		ret.append("tesseras=" + getTesseras().size() + ", ");
+		ret.append("teamColors=" + getTeamColors());
+		
+		return ret.toString();
+	}
 }
