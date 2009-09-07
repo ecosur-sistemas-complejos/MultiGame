@@ -69,8 +69,6 @@ public class GridRegistrant implements RegistrantImpl {
 	 */
 	private long lastRegistration;
 	
-	private PlayerType type;
-	
 	public enum PlayerType {
 		ADMINISTRATOR, PLAYER
 	}
@@ -167,14 +165,6 @@ public class GridRegistrant implements RegistrantImpl {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public PlayerType getType() {
-		return type;
-	}
-
-	public void setType(PlayerType type) {
-		this.type = type;
 	}
 
 	public String toString() {

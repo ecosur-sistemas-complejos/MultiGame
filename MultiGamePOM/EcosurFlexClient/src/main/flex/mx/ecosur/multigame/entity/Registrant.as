@@ -23,7 +23,6 @@ package mx.ecosur.multigame.entity {
 		private var _gamecount:int;
 		private var _wins:int;
 		private var _lastRegistration:Number;
-		private var _type:String;
 		
 		public function Registrant(){
 			super();
@@ -76,14 +75,6 @@ package mx.ecosur.multigame.entity {
 		public function set lastRegistration(lastRegistration:Number):void {
 			_lastRegistration = lastRegistration;
 		}
-		
-		public function get type():String{
-            return _type;
-        }
-        
-        public function set type(type:String):void {
-            _type = type;
-        }
 		
 		public function toString():String{
 			return "id = " + id + ", name = " + name + ", gamecount = " + gamecount + ", lastRegistration = " + lastRegistration + ", wins = " + wins;

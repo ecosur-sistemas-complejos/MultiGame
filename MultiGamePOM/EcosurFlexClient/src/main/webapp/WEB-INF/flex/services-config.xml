@@ -85,16 +85,16 @@
     </channels>
 
     <logging>
-        <target class="flex.messaging.log.ConsoleTarget" level="Error">
+        <target class="flex.messaging.log.ConsoleTarget" level="Debug">
             <properties>
                 <prefix>[BlazeDS] </prefix>
-                <includeDate>false</includeDate>
-                <includeTime>false</includeTime>
+                <includeDate>true</includeDate>
+                <includeTime>true</includeTime>
                 <includeLevel>true</includeLevel>
-                <includeCategory>false</includeCategory>
+                <includeCategory>true</includeCategory>
             </properties>
             <filters>
-                <pattern>Endpoint.*</pattern>
+                <pattern>Message.*</pattern>
                 <!-- pattern>Service.*</pattern>
                 <pattern>Configuration</pattern-->
             </filters>

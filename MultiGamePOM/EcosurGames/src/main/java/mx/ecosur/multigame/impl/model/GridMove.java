@@ -52,6 +52,9 @@ public abstract class GridMove implements MoveImpl {
 	public GridMove() {
 		super();
 		this.status = MoveStatus.UNVERIFIED;
+		this.current = null;
+		this.destination = null;
+		this.player = null;
 	}
 
 	public GridMove(GridPlayer player, GridCell destination) {

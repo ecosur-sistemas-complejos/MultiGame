@@ -225,4 +225,24 @@ public class GenteMove extends GridMove {
 		
 		return ret.toString();
 	}
+
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.impl.model.GridMove#getDestination()
+	 */
+	@Override
+	public GridCell getDestination() {
+		// TODO Auto-generated method stub
+		return super.getDestination();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.impl.model.GridMove#setDestination(mx.ecosur.multigame.impl.model.GridCell)
+	 */
+	@Override
+	public void setDestination(GridCell destination) {
+		// TODO Auto-generated method stub
+		super.setDestination(destination);
+	}
 }

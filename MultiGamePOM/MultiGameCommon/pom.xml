@@ -80,6 +80,11 @@
 			<artifactId>drools-compiler</artifactId>
             <version>5.0.0.M5</version>
 		</dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-api</artifactId>
+            <version>5.0.0.M5</version>
+        </dependency>		
 		<dependency>
             <groupId>org.drools.solver</groupId>
             <artifactId>drools-solver-core</artifactId>
