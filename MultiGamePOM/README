@@ -2,10 +2,10 @@ GETTING STARTED
 
 This README requires you to have installed the following products:
 
-1.  Sun's opensource Application Server, GLASSFISH.  
+1.  Sun's opensource Application Server, GLASSFISH.
     * available from:  https://glassfish.dev.java.net/public/downloadsindex.html
-    * We have been using version 2-ur2 during development.
-2.  Adobe's open source FLEX3 SDK
+    * We have been using version 2.1 during development.
+2.  Adobe's open source FLEX3.4 SDK
     * available from:  http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK
 
 All other dependencies are managed by means of Maven.
@@ -33,9 +33,9 @@ This prototype requires the following environmental changes be made, before bein
 built and deployed.
 
 1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
-point to the top-level directory of glassfish-v2-ur2.  
+point to the top-level directory of glassfish-v2.1.
 2.  The environmental property "FLEX_SDK" must be set by the builder to point to the top-
-level directory of the FLEX3 SDK.   
+level directory of the FLEX3.4 SDK.
 
 For example, in BASH, you would do the following:
 
