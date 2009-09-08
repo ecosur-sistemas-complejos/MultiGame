@@ -19,7 +19,7 @@ package mx.ecosur.multigame.enum {
 		public static const WAITING:String = "WAITING";
 		public static const BEGIN:String = "BEGIN";
 		public static const PLAY:String = "PLAY";
-		public static const END:String = "END";
+		public static const ENDED:String = "ENDED";
 	
 		public static function getDescription(state:String):String{
 			switch (state){
@@ -30,7 +30,7 @@ package mx.ecosur.multigame.enum {
 				case PLAY:
 					return "In progress";
 				break;
-				case END:
+				case ENDED:
 					return "Finished";
 				break;
 			}

@@ -472,7 +472,7 @@ when
     eval (hasWinner(game))
 then
     Set<GentePlayer> winners = getWinners (game);
-    modify (game) { setState (GameState.END), setWinners (winners) }
+    modify (game) { setState (GameState.ENDED), setWinners (winners) }
     Game model = new Game(game);
     MessageSender messageSender = new MessageSender();
 	messageSender.sendEndGame (model);

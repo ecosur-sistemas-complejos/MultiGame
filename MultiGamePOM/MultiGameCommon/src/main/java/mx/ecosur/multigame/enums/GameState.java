@@ -11,5 +11,5 @@
 package mx.ecosur.multigame.enums;
 
 public enum GameState {
-	BEGIN, WAITING, END, PLAY
+	BEGIN, WAITING, PLAY, ENDED
 }

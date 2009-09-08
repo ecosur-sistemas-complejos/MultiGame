@@ -189,7 +189,7 @@ public class GridRegistrant implements RegistrantImpl {
 	public List<GameImpl> getCurrentGames(EntityManager em) {
 		Query query = em.createNamedQuery("getCurrentGames");
 		query.setParameter("player", this);
-		query.setParameter("state",GameState.END);
+		query.setParameter("state",GameState.ENDED);
 		return query.getResultList();
 	}
 }

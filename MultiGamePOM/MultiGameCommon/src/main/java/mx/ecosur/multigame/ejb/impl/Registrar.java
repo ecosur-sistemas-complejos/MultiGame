@@ -167,7 +167,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		/* refresh the game object */
 		em.refresh (game.getImplementation());
 		game.removePlayer(player);
-		game.setState(GameState.END);
+		game.setState(GameState.ENDED);
 	}
 
 	/* (non-Javadoc)

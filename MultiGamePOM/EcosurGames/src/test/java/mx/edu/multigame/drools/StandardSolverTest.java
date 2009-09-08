@@ -34,6 +34,7 @@ import mx.ecosur.multigame.impl.util.CSV;
 
 import org.drools.solver.config.XmlSolverConfigurer;
 import org.drools.solver.core.Solver;
+import org.drools.solver.core.score.Score;
 import org.drools.solver.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -133,8 +134,8 @@ public class StandardSolverTest {
 			matrices = generator.find();
 		assertTrue ("No matrices generated!", matrices.size() > 0);
 		logger.info("Testing " + matrices.size() + " distributions for validity.\n");
-		Map <Matrix, Double> goodMatrices = new HashMap<Matrix, Double>();
-		Map <Matrix, Double> badMatrices = new HashMap<Matrix, Double>();
+		Map <Matrix, Score> goodMatrices = new HashMap<Matrix, Score>();
+		Map <Matrix, Score> badMatrices = new HashMap<Matrix, Score>();
 		StringBuffer log = new StringBuffer();
 		for (Matrix matrix : matrices) {
 			log.delete(0, log.length());
@@ -154,12 +155,12 @@ public class StandardSolverTest {
 				log.append("Best score = " + solver.getBestScore() + " in " + 
 						solver.getTimeMillisSpend() + " ms");
 				logger.info (log.toString());
-				if (solver.getBestScore() != 0.0) {
-					badMatrices.put(matrix, new Double (solver.getBestScore()));
+				if (!solver.getBestScore().equals(0.0)) {
+					badMatrices.put(matrix, solver.getBestScore());
 				} else 
-					goodMatrices.put(matrix, new Double (solver.getBestScore()));
+					goodMatrices.put(matrix, solver.getBestScore());
 			} catch (RuntimeException e) {
-				badMatrices.put(matrix, new Double(-99.0));
+				badMatrices.put(matrix, null);
 			}
 		}
 		
@@ -180,8 +181,8 @@ public class StandardSolverTest {
 		Solver solver =configurer.buildSolver();
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
-		Map <Matrix, Double> goodMatrices = new HashMap<Matrix, Double>();
-		Map <Matrix, Double> badMatrices = new HashMap<Matrix, Double>();
+		Map <Matrix, Score> goodMatrices = new HashMap<Matrix, Score>();
+		Map <Matrix, Score> badMatrices = new HashMap<Matrix, Score>();
 		List<Matrix> unconfigurable = new ArrayList<Matrix>();
 		logger.info ("Reading in CSV matrices from file and solving ...");
 		int counter = 0;
@@ -201,10 +202,10 @@ public class StandardSolverTest {
 						solver.getTimeMillisSpend() + " ms");
 				logger.info ("-------------\n" + solution.toString() + 
 						"\n-------------\n");
-				if (solver.getBestScore() != 0.0) {
-					badMatrices.put(matrix, new Double (solver.getBestScore()));
+				if (!solver.getBestScore().equals(0.0)) {
+					badMatrices.put(matrix, solver.getBestScore());
 				} else 
-					goodMatrices.put(matrix, new Double (solver.getBestScore()));
+					goodMatrices.put(matrix, solver.getBestScore());
 			} catch (UnconfigurableException e) {
 				unconfigurable.add(matrix);
 			} catch (Exception e) {

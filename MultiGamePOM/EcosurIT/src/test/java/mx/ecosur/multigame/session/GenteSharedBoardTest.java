@@ -83,7 +83,7 @@ public class GenteSharedBoardTest {
 		
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(
-				"mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote");	
+				"mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote");
 		boardGame = board.getGame(gameId);
 		game = (GenteGame) boardGame.getImplementation();
 		
@@ -384,7 +384,7 @@ public class GenteSharedBoardTest {
 		
 		/* Game should be over, with Bob the winner */
 		game = (GenteGame) board.getGame(gameId).getImplementation();
-		assertEquals (GameState.END, game.getState()); 
+		assertEquals (GameState.ENDED, game.getState());
 		
 		Set <GentePlayer> winners = game.getWinners();
 		
@@ -569,7 +569,7 @@ public class GenteSharedBoardTest {
 
 		/* Check the "find-the-winners" rule */
 		GenteGame pente = (GenteGame) board.getGame(gameId).getImplementation();
-		assertEquals (GameState.END, pente.getState()); 
+		assertEquals (GameState.ENDED, pente.getState());
 		
 		Set <GentePlayer> winners = pente.getWinners();
 		assertEquals (2, winners.size());

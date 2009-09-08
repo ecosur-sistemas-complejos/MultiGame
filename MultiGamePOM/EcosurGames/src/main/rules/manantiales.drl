@@ -664,7 +664,7 @@ when
     eval (isPrecedingPlayer((GridPlayer) $player, $player2));  
 then
     $condition.setExpired(true);
-    modify ($game) {addCheckCondition ($condition), setState (GameState.END)}
+    modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
     MessageSender messageSender = new MessageSender();
     Game game = new Game($game);
     Move move = new Move($move);
@@ -820,7 +820,7 @@ when
         status == MoveStatus.EVALUATED)
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
-    modify ($game) { setState (GameState.END) };
+    modify ($game) { setState (GameState.ENDED) };
     MessageSender messageSender = new MessageSender();
     Game game = new Game($game);
     messageSender.sendEndGame (game);

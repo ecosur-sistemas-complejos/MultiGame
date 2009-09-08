@@ -85,22 +85,22 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
 		</dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
         </dependency>   		
 		<dependency>
             <groupId>org.drools.solver</groupId>
             <artifactId>drools-solver-core</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
         </dependency>
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
         <!--  Use slf4j-jcl to show solver logging -->

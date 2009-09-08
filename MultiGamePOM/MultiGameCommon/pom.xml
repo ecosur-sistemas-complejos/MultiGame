@@ -5,7 +5,7 @@
 	<groupId>mx.ecosur</groupId>
 	<artifactId>multi-game-common</artifactId>
 	<packaging>ejb</packaging>
-	<name>Common EJB API and Implementation Interfaces for MultiGame WebService</name>
+	<name>EJB and Common API</name>
 	<description>This API deploys as an EJB into a JEE container.  It expects client implementations to be @Entity beans.</description>
 	<parent>
 		<artifactId>multi-game</artifactId>
@@ -13,23 +13,6 @@
 		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/rules</directory>
-				<targetPath>mx/ecosur/multigame</targetPath>
-			</resource>
-			<resource>
-			     <directory>src/main/rules/solver</directory>
-			     <targetPath>mx/ecosur/multigame/solver</targetPath>
-			</resource>
-            <resource>
-                 <directory>src/main/rules/agent</directory>
-                 <targetPath>mx/ecosur/multigame/agent</targetPath>
-            </resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-ejb-plugin</artifactId>
@@ -73,22 +56,22 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
 		</dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
         </dependency>		
 		<dependency>
             <groupId>org.drools.solver</groupId>
             <artifactId>drools-solver-core</artifactId>
-            <version>5.0.0.M5</version>
+            <version>5.0.1</version>
         </dependency>
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
         <!--  Use slf4j-jcl to show solver logging -->

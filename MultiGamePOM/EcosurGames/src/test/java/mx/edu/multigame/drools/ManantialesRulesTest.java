@@ -265,7 +265,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move = new ManantialesMove (bob, terminator);
 		game.move (move);
 		
-		assertEquals (GameState.END, game.getState());
+		assertEquals (GameState.ENDED, game.getState());
 		
 		ArrayList filter = new ArrayList();		
 		List<Message> messageList = mockTopic.getReceivedMessageList();
@@ -539,7 +539,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 		move = new ManantialesMove (denise, terminator);
 		game.move (move);
 		
-		assertEquals (GameState.END, game.getState());
+		assertEquals (GameState.ENDED, game.getState());
 		
 		filter.clear();
 		

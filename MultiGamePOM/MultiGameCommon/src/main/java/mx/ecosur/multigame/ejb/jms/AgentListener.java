@@ -59,7 +59,7 @@ public class AgentListener implements MessageListener {
 				for (GamePlayer p : players) {
 					if (p instanceof Agent) {
 						Agent agent = (Agent) p;
-						if (agent.isTurn() && agent.findGame().getState() != GameState.END) {
+						if (agent.isTurn() && agent.findGame().getState() != GameState.ENDED) {
 							/* Simple 50ms sleep */
 							try {
 								Thread.sleep(250);					
