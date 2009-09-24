@@ -20,6 +20,10 @@ import java.util.logging.Logger;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.KnowledgeBase;
+import org.drools.io.ResourceFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 
@@ -27,68 +31,38 @@ public enum GenteStrategy {
 	
 	RANDOM, BLOCKER, SIMPLE;
 	
-	private RuleBase ruleBase;
-	
-	private static Logger logger = Logger.getLogger(GenteStrategy.class
-			.getCanonicalName());
+	private KnowledgeAgent kagent;
 
-	public RuleBase getRuleBase() {
-		/* Check that rule set has not already been created */
-		if (ruleBase != null) {
-			return ruleBase;
-		}
+    private static Logger logger = Logger.getLogger(GenteStrategy.class
+            .getCanonicalName());
 
-		try {
+    public KnowledgeBase getRuleBase() {
+        /* Check that rule set has not already been created */
+        if (kagent == null) {
+            logger.fine("Initializing knowledge agent for type " + this);
+            /* Setup the knowledge agent */
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                    this + "Agent");
+        }
 
-			logger.fine("Initializing rule set for type " + this);
+        switch (this) {
+            case BLOCKER:
+                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                break;
+            case RANDOM:
+                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                break;
+            case SIMPLE:
+                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                break;
+            default:
+                break;
+        }
 
-			/* Initialize the rules based on the type of game */
-			PackageBuilder builder = new PackageBuilder();
-			InputStreamReader reader = null;
+        return kagent.getKnowledgeBase();
 
-			switch (this) {
-			case BLOCKER:
-				reader = new InputStreamReader(this.getClass()
-						.getResourceAsStream(
-								"/mx/ecosur/multigame/impl/agent/blocker-agent.drl"));
-				builder.addPackageFromDrl(reader);
-				break;
-			case RANDOM:
-				reader = new InputStreamReader(this.getClass()
-						.getResourceAsStream(
-								"/mx/ecosur/multigame/impl/agent/random-agent.drl"));
-				builder.addPackageFromDrl(reader);
-				break;
-			case SIMPLE:
-				reader = new InputStreamReader(this.getClass()
-						.getResourceAsStream(
-								"/mx/ecosur/multigame/impl/agent/simple-agent.drl"));
-				builder.addPackageFromDrl(reader);
-				break;					
-			default:
-				break;
-			}
-
-			if (reader != null)
-				reader.close();
-
-			/* Create the ruleBase */
-			ruleBase = RuleBaseFactory.newRuleBase();
-			ruleBase = RuleBaseFactory.newRuleBase();
-			ruleBase.addPackage(builder.getPackage());
-
-			logger.fine("Rule set for type " + this + " added to rulesets.");
-			return ruleBase;
-
-		} catch (DroolsParserException e) {
-			e.printStackTrace();
-			throw new RuntimeException (e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
+    }
 }

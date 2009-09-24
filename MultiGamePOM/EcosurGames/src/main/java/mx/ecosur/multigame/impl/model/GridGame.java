@@ -93,7 +93,7 @@ public abstract class GridGame implements GameImpl {
 	/**
 	 * Moves from the game.
 	 */
-	protected List<MoveImpl> moves;
+	protected Set<MoveImpl> moves;
 	
 	protected GameGrid grid;
 	
@@ -259,7 +259,7 @@ public abstract class GridGame implements GameImpl {
 	 */
 	public Collection<MoveImpl> getMoves() {
 		if (moves == null)
-			moves = new ArrayList<MoveImpl>();
+			moves = new HashSet<MoveImpl>();
 		return moves;		
 	}	
 	

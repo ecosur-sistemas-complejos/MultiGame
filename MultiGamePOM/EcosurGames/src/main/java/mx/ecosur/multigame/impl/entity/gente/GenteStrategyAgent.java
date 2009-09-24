@@ -22,6 +22,8 @@ import javax.persistence.Transient;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.KnowledgeBase;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 import mx.ecosur.multigame.MessageSender;
 
@@ -232,28 +234,28 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		return new GridCell (column, row, Color.UNKNOWN);
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.Agent#determineNextMove(mx.ecosur.multigame.model.Game)
-	 */
-	public GenteMove determineNextMove() {
-		RuleBase ruleBase = strategy.getRuleBase();
-		StatefulSession statefulSession = ruleBase.newStatefulSession();
-		statefulSession.insert(this);
-		statefulSession.insert(game);
-		statefulSession.insert(new MessageSender());
-		statefulSession.fireAllRules();
-		statefulSession.dispose();
-		/* Rules should have created the next Move into this player, if 
-		 * one available */
-		GenteMove ret = (GenteMove) getNextMove ();
-		if (ret != null) {
-			GridCell destination = (GridCell) ret.getDestination();
-			destination.setColor(getColor());
-			ret.setDestination(destination);
-		}
-		
-		return ret;	
-	}
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.Agent#determineNextMove(mx.ecosur.multigame.model.Game)
+      */
+    public GenteMove determineNextMove() {
+        KnowledgeBase kBase = strategy.getRuleBase();
+        StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+        session.insert(this);
+        session.insert(game);
+        session.insert(new MessageSender());
+        session.fireAllRules();
+        session.dispose();
+        /* Rules should have created the next Move into this player, if
+           * one available */
+        GenteMove ret = (GenteMove) getNextMove();
+        if (ret != null) {
+            GridCell destination = (GridCell) ret.getDestination();
+            destination.setColor(getColor());
+            ret.setDestination(destination);
+        }
+
+        return ret;
+    }
 	
 	public void setNextMove (GenteMove next) {
 		this.nextMove = next;

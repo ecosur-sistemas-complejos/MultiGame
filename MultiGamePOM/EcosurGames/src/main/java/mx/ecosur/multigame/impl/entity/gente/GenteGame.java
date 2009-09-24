@@ -14,15 +14,16 @@
  */
 package mx.ecosur.multigame.impl.entity.gente;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.KnowledgeBase;
+import org.drools.io.ResourceFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.KnowledgeAgent;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -31,12 +32,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.net.MalformedURLException;
 
 import mx.ecosur.multigame.enums.GameState;
 
@@ -63,6 +60,8 @@ public class GenteGame extends GridGame {
 	private static final long serialVersionUID = -4437359200244786305L;
 	
 	private Set<GentePlayer> winners;
+
+     private KnowledgeAgent kagent;
 	
 	@OneToMany (fetch=FetchType.EAGER)
 	public Set <GentePlayer> getWinners () {
@@ -99,90 +98,61 @@ public class GenteGame extends GridGame {
 		return 4;
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#initialize()
-	 */
-	public void initialize() {
-	    this.setCreated(new Date());
-	    this.setState(GameState.BEGIN);
-		this.setColumns(19);
-		this.setRows(19);	
-		
-		RuleBase ruleBase = null;
-		
-		if (ruleBase == null) {
-			PackageBuilder builder = new PackageBuilder();
-		    InputStreamReader reader = new InputStreamReader(
-		    		getClass().getResourceAsStream(
-		    				"/mx/ecosur/multigame/impl/gente.drl"));
-		    try {
-				builder.addPackageFromDrl(reader);
-			} catch (DroolsParserException e) {
-				e.printStackTrace();
-				throw new RuntimeException (e);
-			} catch (IOException e) {			
-				e.printStackTrace();
-				throw new RuntimeException (e);
-			}
-		    ruleBase = RuleBaseFactory.newRuleBase();
-		    ruleBase.addPackage(builder.getPackage());
-		}			
-		
-		StatefulSession session = ruleBase.newStatefulSession();
-		session.insert(this);
-		for (Object fact : getFacts()) {
-			session.insert(fact);
-		}
-		session.setFocus("initialize");
-		session.fireAllRules();
-		session.dispose();
-	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
-	 */
-	@Override
-	public MoveImpl move(MoveImpl move) throws InvalidMoveException {
-		RuleBase ruleBase = null;
-		
-		try {
-			if (ruleBase == null) {
-				PackageBuilder builder = new PackageBuilder();
-			    InputStreamReader reader = new InputStreamReader(
-			    		getClass().getResourceAsStream(
-			    				"/mx/ecosur/multigame/impl/gente.drl"));
-			    builder.addPackageFromDrl(reader);
-			    ruleBase = RuleBaseFactory.newRuleBase();
-			    ruleBase.addPackage(builder.getPackage());
-			}
-			
-			/* Make the move */
-			StatefulSession session = ruleBase.newStatefulSession();
-			session.insert(this);
-			session.insert(move);
-			for (Object fact : getFacts()) {
-				session.insert(fact);
-			}
-			
-			session.setFocus("verify");
-		    session.fireAllRules();
-		    session.setFocus("move");
-		    session.fireAllRules();
-		    session.setFocus("evaluate");
-		    session.fireAllRules();
-		    session.dispose();
-		    
-		    if (moves == null)
-		    	moves = new ArrayList<MoveImpl>();
-		    
-		    moves.add(move);
-		    
-		    return move;
-		    
-		} catch (Exception e) {
-			throw new InvalidMoveException (e.getMessage());
-		}										
-	}
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.impl.model.GridGame#initialize()
+      */
+    public void initialize() throws MalformedURLException {
+        this.setCreated(new Date());
+        this.setState(GameState.BEGIN);
+        this.setColumns(19);
+        this.setRows(19);
+
+        /* Setup the knowledge agent */
+        kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "GenteAgent");
+        kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
+        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
+
+        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        session.insert(this);
+        for (Object fact : getFacts()) {
+            session.insert(fact);
+        }
+
+        session.getAgenda().getAgendaGroup("initialize").setFocus();
+        session.fireAllRules();
+        session.dispose();
+    }
+
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+      */
+    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
+
+        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        session.insert(this);
+        session.insert(move);
+        for (Object fact : getFacts()) {
+            session.insert(fact);
+        }
+
+        session.getAgenda().getAgendaGroup("verify").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("move").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("evaluate").setFocus();
+        session.fireAllRules();
+        session.dispose();
+
+        if (moves == null)
+            moves = new HashSet<MoveImpl>();
+        moves.add(move);
+
+        return move;
+    }
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws 
 		InvalidRegistrationException  
@@ -203,9 +173,14 @@ public class GenteGame extends GridGame {
 		List<Color> colors = getAvailableColors();
 		player.setColor(colors.get(0));		
 		players.add(player);
-		
-		if (players.size() == getMaxPlayers())
-			initialize();		
+
+        try {
+
+		    if (players.size() == getMaxPlayers())
+			    initialize();
+        } catch (MalformedURLException e) {
+            throw new InvalidRegistrationException (e);
+        }
 		
 		/* Be sure that the player has a good reference to this game */
 		player.setGame(this);
@@ -237,9 +212,13 @@ public class GenteGame extends GridGame {
 		players.add(player);
 		
 		if (players.size() == getMaxPlayers())
-			initialize();		
-		
-		if (this.created == null)
+            try {
+                initialize();
+            } catch (MalformedURLException e) {
+                throw new InvalidRegistrationException (e);
+            }
+
+        if (this.created == null)
 		    this.setCreated(new Date());
 		if (this.state == null)
 			this.state = GameState.WAITING;

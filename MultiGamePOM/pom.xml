@@ -19,7 +19,7 @@
 			<url>http://www.opensource.org/licenses/afl-3.0.php</url>
 			<distribution>repo</distribution>
 			<comments>
-			     Copyright (C) 2008, ECOSUR, Andrew Waterman and Max Pimm
+			     Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman and Max Pimm
 			</comments>
 		</license>
 	</licenses>
@@ -28,6 +28,7 @@
       <name>Andrew Waterman</name>
       <email>awaterma@ecosur.mx</email>
       <roles>
+        <role>Architect</role>
         <role>Developer</role>
       </roles>
     </developer>
@@ -50,7 +51,7 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <glassfish>/Users/awater/util/glassfish-install/glassfish</glassfish>
+        <glassfish>/Users/awater/util/glassfish-install/glassfish2.1</glassfish>
         <flexSDK>/Users/awater/util/flex_sdk_3.4</flexSDK>
         <multigame-server>multigame.ecosur.mx</multigame-server>
     </properties>
@@ -67,9 +68,7 @@
 		        <module>MultiGameCommon</module>		        
 			    <module>EcosurGames</module>
 		        <module>EcosurFlexClient</module>
-		        <module>EcosurEAR</module>
-		        <!--  The Webservice client can only be built after deployment -->
-                <module>MultiGameWebServiceClient</module>		        
+		        <module>EcosurEAR</module>		        		        
 		        <module>EcosurIT</module>
 		    </modules>
         </profile>
