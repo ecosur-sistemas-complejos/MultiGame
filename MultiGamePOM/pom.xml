@@ -80,6 +80,16 @@
         into normal Maven format, and staged the caches on Apache.
      -->
     <repositories>
+        <repository>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 		<repository>
 			<id>repository.jboss.org</id>
 			<url>http://repository.jboss.org/maven2</url>
@@ -131,6 +141,18 @@
     		<url>http://${multigame-server}/m2/repo1-cache</url>
     	</repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>local</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
     <reporting>
         <plugins>
             <plugin>

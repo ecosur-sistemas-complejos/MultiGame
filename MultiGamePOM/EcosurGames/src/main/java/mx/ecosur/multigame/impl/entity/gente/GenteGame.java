@@ -61,7 +61,7 @@ public class GenteGame extends GridGame {
 	
 	private Set<GentePlayer> winners;
 
-     private KnowledgeAgent kagent;
+    private transient KnowledgeAgent kagent;
 	
 	@OneToMany (fetch=FetchType.EAGER)
 	public Set <GentePlayer> getWinners () {

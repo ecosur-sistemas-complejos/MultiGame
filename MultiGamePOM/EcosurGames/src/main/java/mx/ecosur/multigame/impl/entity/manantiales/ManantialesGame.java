@@ -56,7 +56,7 @@ public class ManantialesGame extends GridGame {
 	
 	private Set<CheckCondition> checkConditions;
 
-    private KnowledgeAgent kagent;
+    private transient KnowledgeAgent kagent;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {

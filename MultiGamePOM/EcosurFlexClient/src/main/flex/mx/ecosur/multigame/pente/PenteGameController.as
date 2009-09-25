@@ -786,7 +786,6 @@ package mx.ecosur.multigame.pente{
                 // do move in backend
                 var move:PenteMove = new PenteMove();
                 move.player = _currentPlayer;
-                move.current = destination;
                 move.destination = destination;
                 move.status = Move.UNVERIFIED;
                 var call:Object = _gameService.doMove(move);

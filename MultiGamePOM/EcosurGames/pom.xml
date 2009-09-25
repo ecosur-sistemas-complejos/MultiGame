@@ -142,5 +142,10 @@
 			<version>jdk1.5-j2ee1.3-0.4</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.4.0.GA</version>
+        </dependency>
 	</dependencies>
 </project>

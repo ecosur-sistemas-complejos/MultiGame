@@ -59,54 +59,76 @@
       <artifactId>persistence-api</artifactId>
       <version>1.0</version>
     </dependency>
+      <dependency>
+       <groupId>com.adobe.flex.framework</groupId>
+         <artifactId>flex-framework</artifactId>
+         <version>3.2.0.3958</version>
+         <type>pom</type>
+       </dependency>
   </dependencies>
   <build>
-    <finalName>${artifactId}</finalName>
-    <plugins>
-        <plugin>
-            <!-- Use the EXEC plugin to build the flex application and deploy war on server -->
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <version>1.1</version>
-            <executions>
-                <execution>
-                    <id>compile-main</id>
-                    <phase>compile</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <executable>${flexSDK}/bin/mxmlc</executable>
-                        <workingDirectory>src/main/flex</workingDirectory>
-                        <arguments>
-                            <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
-                            <argument>-compiler.strict=true</argument>
-                            <argument>-compiler.context-root=${artifactId}</argument>
-                            <argument>-output=../webapp/main.swf</argument>
-                            <argument>main.mxml</argument>
-                        </arguments>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>compile-replay</id>
-                    <phase>compile</phase>
-                    <goals>
-                        <goal>exec</goal>
-                    </goals>
-                    <configuration>
-                        <executable>${flexSDK}/bin/mxmlc</executable>
-                        <workingDirectory>src/main/flex</workingDirectory>
-                        <arguments>
-                            <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
-                            <argument>-compiler.strict=true</argument>
-                            <argument>-compiler.context-root=${artifactId}</argument>
-                            <argument>-output=../webapp/PenteGameReplay.swf</argument>
-                            <argument>PenteGameReplay.mxml</argument>
-                        </arguments>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+   <finalName>${artifactId}</finalName>
+   <!-- Commenting out for use with Exec plugin, for now, sonatype is used just
+        to get IDE to validate as a Flex facet -->
+   <!--
+   <sourceDirectory>src/main/flex</sourceDirectory>
+   <testSourceDirectory>src/test/flex</testSourceDirectory>
+   -->
+   <plugins>
+    <plugin>
+      <groupId>org.sonatype.flexmojos</groupId>
+      <artifactId>flexmojos-maven-plugin</artifactId>
+      <version>3.2.0</version>
+      <extensions>true</extensions>
+      <configuration>
+        <!-- put your configuration options here -->
+        <debug>true</debug>
+        <allowSourcePathOverlap>true</allowSourcePathOverlap>
+      </configuration>
+    </plugin>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.1</version>
+        <executions>
+            <execution>
+                <id>compile-main</id>
+                <phase>compile</phase>
+                <goals>
+                    <goal>exec</goal>
+                </goals>
+                <configuration>
+                    <executable>${flexSDK}/bin/mxmlc</executable>
+                    <workingDirectory>src/main/flex</workingDirectory>
+                    <arguments>
+                        <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
+                        <argument>-compiler.strict=true</argument>
+                        <argument>-compiler.context-root=${artifactId}</argument>
+                        <argument>-output=../webapp/main.swf</argument>
+                        <argument>main.mxml</argument>
+                    </arguments>
+                </configuration>
+            </execution>
+            <execution>
+                <id>compile-replay</id>
+                <phase>compile</phase>
+                <goals>
+                    <goal>exec</goal>
+                </goals>
+                <configuration>
+                    <executable>${flexSDK}/bin/mxmlc</executable>
+                    <workingDirectory>src/main/flex</workingDirectory>
+                    <arguments>
+                        <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
+                        <argument>-compiler.strict=true</argument>
+                        <argument>-compiler.context-root=${artifactId}</argument>
+                        <argument>-output=../webapp/PenteGameReplay.swf</argument>
+                        <argument>PenteGameReplay.mxml</argument>
+                    </arguments>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
     </plugins>
   </build>
 </project>

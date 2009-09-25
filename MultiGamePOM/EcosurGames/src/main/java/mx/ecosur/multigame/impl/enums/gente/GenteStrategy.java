@@ -31,7 +31,7 @@ public enum GenteStrategy {
 	
 	RANDOM, BLOCKER, SIMPLE;
 	
-	private KnowledgeAgent kagent;
+	private transient KnowledgeAgent kagent;
 
     private static Logger logger = Logger.getLogger(GenteStrategy.class
             .getCanonicalName());
