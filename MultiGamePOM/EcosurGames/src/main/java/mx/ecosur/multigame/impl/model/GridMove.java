@@ -32,6 +32,7 @@ import javax.persistence.Transient;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.implementation.CellImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 @Entity
@@ -136,6 +137,20 @@ public abstract class GridMove implements MoveImpl {
 	 */
 	public void setStatus(MoveStatus status) {
 		this.status = status;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setCurrent(mx.ecosur.multigame.model.implementation.CellImpl)
+	 */
+	public void setCurrent(CellImpl cellImpl) {
+		setCurrent((GridCell) cellImpl);
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setDestination(mx.ecosur.multigame.model.implementation.CellImpl)
+	 */
+	public void setDestination(CellImpl cellImpl) {
+		setDestination((GridCell) cellImpl);
 	}
 
 	public String toString() {

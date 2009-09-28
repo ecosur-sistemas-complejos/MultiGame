@@ -18,11 +18,8 @@ import javax.persistence.NamedQuery;
 
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridMove;
-
+import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
@@ -125,23 +122,5 @@ public class ManantialesMove extends GridMove {
 	 */
 	public void setPlayer(GamePlayerImpl player) {
 		this.player = (GridPlayer) player;
-	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridMove#getDestination()
-	 */
-	@Override
-	public GridCell getDestination() {
-		// TODO Auto-generated method stub
-		return super.getDestination();
-	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridMove#setDestination(mx.ecosur.multigame.impl.model.GridCell)
-	 */
-	@Override
-	public void setDestination(GridCell destination) {
-		// TODO Auto-generated method stub
-		super.setDestination(destination);
 	}
 }

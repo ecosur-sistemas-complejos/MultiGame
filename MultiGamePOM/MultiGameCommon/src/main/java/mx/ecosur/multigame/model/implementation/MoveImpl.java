@@ -39,10 +39,28 @@ public interface MoveImpl extends Implementation {
 	 * @return
 	 */
 	public CellImpl getCurrent();
+	
+	/**
+	 * Sets the current cell. Each class that implements
+	 * this method will cast the CellImpl to their preferred
+	 * type of cell implementation.
+	 * 
+	 * @param cellImpl
+	 */
+	public void setCurrent(CellImpl cellImpl);
 
 	/**
 	 * @return
 	 */
 	public CellImpl getDestination();
+	
+	/**
+	 * Sets the destination cell. Each class that implements
+	 * this method will cast the CellImpl to their preferred
+	 * type of cell implementation.
+	 * 
+	 * @param cellImpl
+	 */
+	public void setDestination(CellImpl cellImpl);
 
 }
