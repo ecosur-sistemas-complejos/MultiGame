@@ -153,6 +153,12 @@ public class ManantialesGame extends GridGame {
       * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+        if (kagent == null) {
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "ManantialesAgent");
+            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        }
         KnowledgeBase ruleBase = kagent.getKnowledgeBase();
         StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
         session.insert(this);

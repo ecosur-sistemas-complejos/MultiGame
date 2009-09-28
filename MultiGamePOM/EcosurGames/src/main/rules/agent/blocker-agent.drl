@@ -1,6 +1,6 @@
 /*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
-* 
+* Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman
+*
 * Licensed under the Academic Free License v. 3.0. 
 * http://www.opensource.org/licenses/afl-3.0.php
 */
@@ -63,7 +63,7 @@ then
     
     if (scoringMoves.size() > 0) {
         for (GenteMove move : scoringMoves) {
-            GridCell destination = (GridCell) move.getDestination();
+            GridCell destination = (GridCell) move.getDestinationCell();
             destination.setColor(player.getColor());
             nextMove = new GenteMove (player, destination);
             break;

@@ -16,19 +16,7 @@
 
 package mx.ecosur.multigame.impl.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.GamePlayer;
@@ -83,20 +71,20 @@ public abstract class GridMove implements MoveImpl {
 	}
 
 	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-	public GridCell getDestination() {
+	public GridCell getDestinationCell() {
 		return this.destination;
 	}
 
-	public void setDestination(GridCell destination) {
+	public void setDestinationCell(GridCell destination) {
 		this.destination = destination;
 	}
 
 	@OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-	public GridCell getCurrent() {
+	public GridCell getCurrentCell() {
 		return this.current;
 	}
 
-	public void setCurrent(GridCell current) {
+	public void setCurrentCell(GridCell current) {
 		this.current = current;
 	}
 
@@ -142,15 +130,15 @@ public abstract class GridMove implements MoveImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setCurrent(mx.ecosur.multigame.model.implementation.CellImpl)
 	 */
-	public void setCurrent(CellImpl cellImpl) {
-		setCurrent((GridCell) cellImpl);
+	public void setCurrentCell(CellImpl cellImpl) {
+		setCurrentCell((GridCell) cellImpl);
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setDestination(mx.ecosur.multigame.model.implementation.CellImpl)
 	 */
-	public void setDestination(CellImpl cellImpl) {
-		setDestination((GridCell) cellImpl);
+	public void setDestinationCell(CellImpl cellImpl) {
+		setDestinationCell((GridCell) cellImpl);
 	}
 
 	public String toString() {

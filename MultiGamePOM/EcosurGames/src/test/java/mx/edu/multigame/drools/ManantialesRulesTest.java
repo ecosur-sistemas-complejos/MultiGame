@@ -475,7 +475,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
-		move.setDestination(deforest);
+		move.setDestinationCell(deforest);
 		game.move (move);				
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -515,7 +515,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
-		move.setDestination(deforest);
+		move.setDestinationCell(deforest);
 		game.move (move);
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -590,7 +590,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 					TokenType.MODERATE_PASTURE);
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer (alice);
-		move.setDestination(deforest);
+		move.setDestinationCell(deforest);
 		game.move (move);				
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -1097,8 +1097,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		bob.setTurn(true);		
 		ManantialesMove move = new ManantialesMove ();
 		move.setPlayer(bob);
-		move.setCurrent(man2);
-		move.setDestination(man3);
+		move.setCurrentCell(man2);
+		move.setDestinationCell(man3);
 		game.move (move);
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());		
@@ -1182,7 +1182,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}	
 	
 	/**
-	 * @param north
+	 * @param borderType
 	 * @param grid
 	 */
 	private boolean isTerritoryCleared(BorderType borderType, GameGrid grid) {

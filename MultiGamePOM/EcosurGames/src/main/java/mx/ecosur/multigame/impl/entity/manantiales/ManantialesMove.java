@@ -56,10 +56,10 @@ public class ManantialesMove extends GridMove {
 	}
 
 	public TokenType getType () {
-		if (getDestination() == null) 
+		if (getDestinationCell() == null)
 			type = TokenType.UNKNOWN;
 		else {
-			Ficha destination = (Ficha) getDestination();
+			Ficha destination = (Ficha) getDestinationCell();
 			type = destination.getType();
 		}
 		
@@ -73,8 +73,8 @@ public class ManantialesMove extends GridMove {
 	public TokenType getReplacementType() {
 		if (replacementType == null) {
 			replacementType = TokenType.UNKNOWN;			
-			if (getCurrent() instanceof Ficha) {
-					Ficha current = (Ficha) getCurrent();
+			if (getCurrentCell() instanceof Ficha) {
+					Ficha current = (Ficha) getCurrentCell();
 					replacementType = current.getType();
 			}
 		}

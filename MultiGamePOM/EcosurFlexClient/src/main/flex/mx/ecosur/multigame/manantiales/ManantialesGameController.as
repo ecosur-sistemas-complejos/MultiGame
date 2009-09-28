@@ -270,8 +270,8 @@ package mx.ecosur.multigame.manantiales
                 // do move in backend
                 var move:ManantialesMove = new ManantialesMove();
                 move.player = _currentPlayer;
-                move.current = boardCell.token.cell;
-                move.destination = token.ficha;
+                move.currentCell = boardCell.token.cell;
+                move.destinationCell = token.ficha;
                 move.status = Move.UNVERIFIED;
                 move.mode = _game.mode;
                 
@@ -747,7 +747,7 @@ package mx.ecosur.multigame.manantiales
             
             //check that destination is free
             var boardCell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
-                move.destination.column, move.destination.row));
+                move.destinationCell.column, move.destinationCell.row));
             if (!boardCell.token is UndevelopedToken || 
                 boardCell.token is IntensiveToken) 
             {
@@ -755,7 +755,7 @@ package mx.ecosur.multigame.manantiales
                 return;
             }
             
-            var destination:Ficha = Ficha(move.destination);                                      
+            var destination:Ficha = Ficha(move.destinationCell);
             
             //define origin
             var startPoint:Point;
@@ -830,7 +830,7 @@ package mx.ecosur.multigame.manantiales
             	   break;
             }
             
-            token.cell = move.destination;
+            token.cell = move.destinationCell;
             token.width = endSize;
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
@@ -911,7 +911,7 @@ package mx.ecosur.multigame.manantiales
         	}
             
             //define origin
-            var boardCell:BoardCell = _gameWindow.board.getBoardCell(move.destination.column, move.destination.row);
+            var boardCell:BoardCell = _gameWindow.board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
             var startPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
             var startSize:Number = _gameWindow.board.tokenSize;
             startPoint = boardCell.localToGlobal(startPoint);
@@ -926,7 +926,7 @@ package mx.ecosur.multigame.manantiales
             
             //create new token
             var token:ManantialesToken = new ManantialesToken();
-            token.cell = move.destination;
+            token.cell = move.destinationCell;
             token.width = endSize;
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);

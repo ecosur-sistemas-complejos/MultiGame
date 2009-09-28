@@ -103,8 +103,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		assertNotNull (next);
 		game.move(next);
 		/* Validate that the move was made */
-		assertEquals (next.getDestination(), game.getGrid().getLocation(
-				(GridCell) next.getDestination()));
+		assertEquals (next.getDestinationCell(), game.getGrid().getLocation(
+				(GridCell) next.getDestinationCell()));
 	}
 	
 	public void testRandomMoveOnEmptyBoard () throws InvalidMoveException {

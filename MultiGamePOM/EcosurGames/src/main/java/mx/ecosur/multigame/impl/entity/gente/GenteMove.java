@@ -154,8 +154,8 @@ public class GenteMove extends GridMove {
 		if (obj instanceof GenteMove) {
 			GenteMove comparator = (GenteMove) obj;
 			if (comparator.player == this.player 
-					&& comparator.getDestination() == this.getDestination() 
-					&& comparator.getCurrent() == this.getCurrent())
+					&& comparator.getDestinationCell() == this.getDestinationCell()
+					&& comparator.getCurrentCell() == this.getCurrentCell())
 				ret = true;
 		}
 		
@@ -216,8 +216,8 @@ public class GenteMove extends GridMove {
 	public String toString() {
 		StringBuffer ret = new StringBuffer();
 		ret.append("GenteMove: ");
-		ret.append("current=" + getCurrent() + ", ");		
-		ret.append("destination=" + getDestination() + ", ");
+		ret.append("current=" + getCurrentCell() + ", ");
+		ret.append("destination=" + getDestinationCell() + ", ");
 		ret.append("qualifier=" + getQualifier() + ", ");
 		ret.append("trias=" + getTrias().size() + ", ");
 		ret.append("tesseras=" + getTesseras().size() + ", ");

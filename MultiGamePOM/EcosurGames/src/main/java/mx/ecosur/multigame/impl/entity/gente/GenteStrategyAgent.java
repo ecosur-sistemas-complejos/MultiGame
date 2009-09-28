@@ -73,7 +73,6 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	}
 
 	@Enumerated (EnumType.STRING)
-	@OneToOne  (cascade={CascadeType.PERSIST})
 	public GenteStrategy getStrategy() {
 		return strategy;
 	}
@@ -189,7 +188,8 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	
 	/**
 	 * @param direction
-	 * @param candidate
+	 * @param cell
+     * @param factor
 	 * @return
 	 */
 	private GridCell createDestination(Direction direction, GridCell cell, int factor) {
@@ -249,9 +249,9 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
            * one available */
         GenteMove ret = (GenteMove) getNextMove();
         if (ret != null) {
-            GridCell destination = (GridCell) ret.getDestination();
+            GridCell destination = (GridCell) ret.getDestinationCell();
             destination.setColor(getColor());
-            ret.setDestination(destination);
+            ret.setDestinationCell(destination);
         }
 
         return ret;

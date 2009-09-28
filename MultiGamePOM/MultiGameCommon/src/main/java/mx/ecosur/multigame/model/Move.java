@@ -46,11 +46,11 @@ public class Move implements Model {
 	}
 	
 	public Cell getCurrent () {
-		return new Cell(moveImpl.getCurrent());
+		return new Cell(moveImpl.getCurrentCell());
 	}
 	
 	public Cell getDestination() {
-		return new Cell (moveImpl.getDestination());
+		return new Cell (moveImpl.getDestinationCell());
 	}
 	
 	public MoveImpl getImplementation() {

@@ -144,7 +144,7 @@ public class GenteSharedBoardTest {
 		Move mv = board.doMove(new Game (game), new Move (move));
 		move = (GenteMove) mv.getImplementation();
 		game = (GenteGame) board.getGame(gameId).getImplementation();
-		assertNotNull (game.getGrid().getLocation(move.getDestination()));
+		assertNotNull (game.getGrid().getLocation(move.getDestinationCell()));
 	}	
 
 	/**

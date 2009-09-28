@@ -182,7 +182,7 @@ package mx.ecosur.multigame.pente{
 			startSize = Color.getCellIconSize();
 						
 			//define destination
-			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+			var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
 			var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
 			var endSize:Number = _board.tokenSize;
 			endPoint = boardCell.localToGlobal(endPoint);
@@ -190,7 +190,7 @@ package mx.ecosur.multigame.pente{
 			
 			//create new token
 			var token:Token = new Token();
-			token.cell = move.destination;
+			token.cell = move.destinationCell;
 			token.width = endSize;
 			token.height = endSize;
 			_animateLayer.addChild(token);
@@ -241,7 +241,7 @@ package mx.ecosur.multigame.pente{
 		private function undoMove(move:Move):void{
 			
 			//define origin
-			var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+			var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
 			var startPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
 			var startSize:Number = _board.tokenSize;
 			startPoint = boardCell.localToGlobal(startPoint);
@@ -258,7 +258,7 @@ package mx.ecosur.multigame.pente{
 						
 			//create new token
 			var token:Token = new Token();
-			token.cell = move.destination;
+			token.cell = move.destinationCell;
 			token.width = endSize;
 			token.height = endSize;
 			boardCell.token = null;

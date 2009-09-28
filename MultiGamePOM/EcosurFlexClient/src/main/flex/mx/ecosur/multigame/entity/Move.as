@@ -52,19 +52,19 @@ package mx.ecosur.multigame.entity {
 			_player = player;
 		}
 		
-		public function get destination():Cell{
+		public function get destinationCell():Cell{
 			return _destination;
 		}
 		
-		public function set destination(destination:Cell):void{
+		public function set destinationCell(destination:Cell):void{
 			_destination = destination;
 		}
 		
-        public function get current():Cell{
+        public function get currentCell():Cell{
             return _current;
         }
         
-        public function set current(current:Cell):void{
+        public function set currentCell(current:Cell):void{
             _current = current;
         }		
 		

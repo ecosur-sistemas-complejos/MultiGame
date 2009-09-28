@@ -440,7 +440,7 @@ package mx.ecosur.multigame.pente{
         private function doMove(move:PenteMove):void{
             
             //check that destination is free
-            var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+            var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
             if (boardCell.token != null){
                 _moveViewer.selectedMove = move;
                 if (_winners){
@@ -475,7 +475,7 @@ package mx.ecosur.multigame.pente{
             
             //create new token
             var token:Token = new Token();
-            token.cell = move.destination;
+            token.cell = move.destinationCell;
             token.width = endSize;
             token.height = endSize;
             _animateLayer.addChild(token);
@@ -554,7 +554,7 @@ package mx.ecosur.multigame.pente{
         private function undoMove(move:PenteMove):void{
             
             //define origin
-            var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+            var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
             var startPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
             var startSize:Number = _board.tokenSize;
             startPoint = boardCell.localToGlobal(startPoint);
@@ -578,7 +578,7 @@ package mx.ecosur.multigame.pente{
             
             //create new token
             var token:Token = new Token();
-            token.cell = move.destination;
+            token.cell = move.destinationCell;
             token.width = endSize;
             token.height = endSize;
             boardCell.token = null;
@@ -684,7 +684,7 @@ package mx.ecosur.multigame.pente{
                 // if no winners then reset board cell and continue with the game
                 // else do the winning routine
                 if (!_winners){
-                    var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row); 
+                    var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row); 
                     boardCell.reset();
                 } else {
                     end();
@@ -692,7 +692,7 @@ package mx.ecosur.multigame.pente{
             }
             
             // select board cell and start blinking token
-            var boardCell:BoardCell = _board.getBoardCell(move.destination.column, move.destination.row);
+            var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
             boardCell.select(Color.getColorCode(move.player.color));
             
             // show qualify dialog
@@ -786,7 +786,7 @@ package mx.ecosur.multigame.pente{
                 // do move in backend
                 var move:PenteMove = new PenteMove();
                 move.player = _currentPlayer;
-                move.destination = destination;
+                move.destinationCell = destination;
                 move.status = Move.UNVERIFIED;
                 var call:Object = _gameService.doMove(move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;

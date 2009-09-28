@@ -28,8 +28,8 @@ public class PenteMoveComparator implements Comparator<GenteMove>, Serializable 
 	 * @param move1, move2
 	 */
 	public int compare(GenteMove move1, GenteMove move2) {
-		GridCell cell1 = (GridCell) move1.getDestination();
-		GridCell cell2 = (GridCell) move2.getDestination();
+		GridCell cell1 = (GridCell) move1.getDestinationCell();
+		GridCell cell2 = (GridCell) move2.getDestinationCell();
 		CellComparator comparator = new CellComparator();
 		return comparator.compare(cell1, cell2);
 	}

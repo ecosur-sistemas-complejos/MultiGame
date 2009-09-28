@@ -49,7 +49,7 @@ import mx.ecosur.multigame.impl.util.Direction;
 #    is in the center of the grid.
 function boolean isCenter (GenteGame game, GenteMove move) {
     Dimension size = game.getSize();
-    GridCell destination = (GridCell) move.getDestination ();
+    GridCell destination = (GridCell) move.getDestinationCell ();
     
     int centerWidth = (int) size.getWidth()/2;
     int centerHeight = (int) size.getHeight()/2;
@@ -64,7 +64,7 @@ function boolean isCenter (GenteGame game, GenteMove move) {
 #    Determines if the destination of the requested move is
 #    empty on the grid.
 function boolean isEmpty (GameGrid grid, GenteMove move) {
-    GridCell destination = (GridCell) move.getDestination();
+    GridCell destination = (GridCell) move.getDestinationCell();
     GridCell current = grid.getLocation (destination);
     boolean ret = (current == null);
     if (!ret)
@@ -194,10 +194,10 @@ when
     move  : GenteMove (player.turn == true, status == MoveStatus.VERIFIED)  
 then 
     GameGrid modifiedGrid = game.getGrid();   
-    modifiedGrid.updateCell ((GridCell) move.getDestination());
+    modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
     modify (game) { setGrid (modifiedGrid) }
     modify (move) { setStatus (MoveStatus.MOVED), setGame (game) }
-    insert (move.getDestination());
+    insert (move.getDestinationCell());
     Move model = new Move (move);
     MessageSender messageSender = new MessageSender();
     messageSender.sendMoveComplete(new Game(game), model);
@@ -208,7 +208,7 @@ rule "find-vertical-trias"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)    
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), column == $column1, $row3 : row, color == $color)
@@ -232,7 +232,7 @@ rule "find-horizontal-trias"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)    
     $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), row == $row1, $column3 : column, color == $color)
@@ -256,7 +256,7 @@ rule "find-right-diagonal-trias"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)    
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
@@ -282,7 +282,7 @@ rule "find-left-diagonal-trias"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED)    
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)    
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
@@ -307,7 +307,7 @@ rule "find-vertical-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
         $colors : teamColors)               
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
     $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, $color2 : color)
@@ -338,7 +338,7 @@ rule "find-horizontal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
         $colors : teamColors)               
     $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color1 : color)
     $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, $color2 : color)
@@ -369,7 +369,7 @@ rule "find-right-diagonal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
         $colors : teamColors)    
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
     $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, $color2 : color)
@@ -401,7 +401,7 @@ rule "find-left-diagonal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destination, status == MoveStatus.MOVED,
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
         $colors : teamColors)    
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row,  $color1 : color)
     $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row,  $color2 : color)

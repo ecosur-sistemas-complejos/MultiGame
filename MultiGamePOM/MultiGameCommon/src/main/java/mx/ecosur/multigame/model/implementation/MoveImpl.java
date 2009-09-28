@@ -38,7 +38,7 @@ public interface MoveImpl extends Implementation {
 	/**
 	 * @return
 	 */
-	public CellImpl getCurrent();
+	public CellImpl getCurrentCell();
 	
 	/**
 	 * Sets the current cell. Each class that implements
@@ -47,12 +47,12 @@ public interface MoveImpl extends Implementation {
 	 * 
 	 * @param cellImpl
 	 */
-	public void setCurrent(CellImpl cellImpl);
+	public void setCurrentCell(CellImpl cellImpl);
 
 	/**
 	 * @return
 	 */
-	public CellImpl getDestination();
+	public CellImpl getDestinationCell();
 	
 	/**
 	 * Sets the destination cell. Each class that implements
@@ -61,6 +61,6 @@ public interface MoveImpl extends Implementation {
 	 * 
 	 * @param cellImpl
 	 */
-	public void setDestination(CellImpl cellImpl);
+	public void setDestinationCell(CellImpl cellImpl);
 
 }
