@@ -39,22 +39,27 @@
 			</plugin>            
         </plugins>	
 		<resources>
-			<resource>
-				<directory>src/main/rules</directory>
-				<targetPath>mx/ecosur/multigame/impl/</targetPath>
-			</resource>
-			<resource>
-			     <directory>src/main/rules/solver</directory>
-			     <targetPath>mx/ecosur/multigame/impl/solver</targetPath>
-			</resource>
             <resource>
-                 <directory>src/main/rules/agent</directory>
-                 <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
+                <directory>src/main/rules</directory>
+                <targetPath>mx/ecosur/multigame/impl/</targetPath>
             </resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
+            <resource>
+                <directory>src/main/rules/solver</directory>
+                <targetPath>mx/ecosur/multigame/impl/solver</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/rules/agent</directory>
+                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/changesets</directory>
+                <targetPath>mx/ecosur/multigame/impl</targetPath>
+            </resource>
+        </resources>
 	</build>
 	<dependencies>
 	    <dependency>
@@ -137,5 +142,10 @@
 			<version>jdk1.5-j2ee1.3-0.4</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>3.4.0.GA</version>
+        </dependency>
 	</dependencies>
 </project>

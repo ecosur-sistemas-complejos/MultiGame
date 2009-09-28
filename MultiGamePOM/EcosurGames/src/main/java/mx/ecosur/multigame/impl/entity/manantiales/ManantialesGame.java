@@ -30,6 +30,11 @@ import javax.persistence.OneToMany;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.KnowledgeBase;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.io.ResourceFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 
@@ -40,6 +45,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.net.MalformedURLException;
 
 @Entity
 public class ManantialesGame extends GridGame {
@@ -49,6 +55,8 @@ public class ManantialesGame extends GridGame {
 	private Mode mode; 
 	
 	private Set<CheckCondition> checkConditions;
+
+    private transient KnowledgeAgent kagent;
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -101,98 +109,73 @@ public class ManantialesGame extends GridGame {
 		return facts;
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
-	 */
-	public void initialize() {
-		this.setGrid(new GameGrid());
-	    this.setState(GameState.BEGIN);
-	    this.setCreated(new Date());
-		this.setColumns(9);
-		this.setRows(9);
-		RuleBase ruleBase = null;
-		
-		if (ruleBase == null) {
-			PackageBuilder builder = new PackageBuilder();
-		    InputStreamReader reader = new InputStreamReader(
-		    		getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.drl"));
-		    try {
-				builder.addPackageFromDrl(reader);
-			} catch (DroolsParserException e) {
-				e.printStackTrace();
-				throw new RuntimeException (e);
-			} catch (IOException e) {			
-				e.printStackTrace();
-				throw new RuntimeException (e);
-			}
-		    ruleBase = RuleBaseFactory.newRuleBase();
-		    ruleBase.addPackage(builder.getPackage());
-		}
-		
-		StatefulSession session = ruleBase.newStatefulSession();
-		session.insert(this);
-		for (Object fact : getFacts()) {
-			session.insert(fact);
-		}
-		session.setFocus("initialize");
-		session.fireAllRules();
-		session.dispose();						
-	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
-	 */
-	@Override
-	public int getMaxPlayers() {
-		return 4;
-	}
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
+      */
+    public void initialize() throws MalformedURLException {
+        this.setGrid(new GameGrid());
+        this.setState(GameState.BEGIN);
+        this.setCreated(new Date());
+        this.setColumns(9);
+        this.setRows(9);
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
-	 */
-	@Override
-	public MoveImpl move(MoveImpl move) throws InvalidMoveException {
-		RuleBase ruleBase = null;
-		
-		try {
-			if (ruleBase == null) {
-				PackageBuilder builder = new PackageBuilder();
-			    InputStreamReader reader = new InputStreamReader(
-			    		getClass().getResourceAsStream(
-			    				"/mx/ecosur/multigame/impl/manantiales.drl"));
-			    builder.addPackageFromDrl(reader);
-			    ruleBase = RuleBaseFactory.newRuleBase();
-			    ruleBase.addPackage(builder.getPackage());
-			}
-			
-			/* Make the move */
-			StatefulSession session = ruleBase.newStatefulSession();
-			session.insert(this);
-			session.insert(move);
-			for (Implementation fact : getFacts()) {
-				session.insert(fact);
-			}
-			
-			session.setFocus("verify");
-		    session.fireAllRules();
-		    session.setFocus("move");
-		    session.fireAllRules();
-		    session.setFocus("evaluate");
-		    session.fireAllRules();
-		    session.dispose();	
-		    
-		    if (moves == null)
-		    	moves = new ArrayList<MoveImpl>();
-		    
-		    moves.add(move);		    
-		    
-		    return move;
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new InvalidMoveException (e.getMessage());
-		}			
-	}
+        /* Setup the knowledge agent */
+        kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                "ManantialesAgent");
+        kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
+
+        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        session.insert(this);
+        for (Object fact : getFacts()) {
+            session.insert(fact);
+        }
+
+        session.getAgenda().getAgendaGroup("initialize").setFocus();
+        session.fireAllRules();
+        session.dispose();
+    }
+
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
+      */
+    public int getMaxPlayers() {
+        return 4;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /* (non-Javadoc)
+      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+      */
+    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
+        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        session.insert(this);
+        session.insert(move);
+        for (Implementation fact : getFacts()) {
+            session.insert(fact);
+        }
+
+        session.getAgenda().getAgendaGroup("verify").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("move").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("evaluate").setFocus();
+        session.fireAllRules();
+        session.dispose();
+
+        if (moves == null)
+            moves = new HashSet<MoveImpl>();
+
+        moves.add(move);
+
+        return move;
+    }
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
 		ManantialesPlayer player = new ManantialesPlayer ();
@@ -211,9 +194,13 @@ public class ManantialesGame extends GridGame {
 		List<Color> colors = getAvailableColors();
 		player.setColor(colors.get(0));		
 		players.add(player);
-		
-		if (players.size() == getMaxPlayers())
-			initialize();
+
+        try {
+		    if (players.size() == getMaxPlayers())
+			    initialize();
+        } catch (MalformedURLException e) {
+            throw new InvalidRegistrationException (e);
+        }
 		
 		/* Be sure that the player has a good reference to this game */
 		player.setGame(this);
