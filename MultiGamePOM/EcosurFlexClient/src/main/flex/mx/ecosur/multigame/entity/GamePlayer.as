@@ -71,7 +71,7 @@ package mx.ecosur.multigame.entity {
 		
 		public function toString():String{
 			return "id = " + id + ", player = {" + registrant + "}, color = " + 
-			     color + ", turn = " + turn + ", game = {" + game + "}";
+			     color + ", turn = " + turn;
 		}
 	}
 }
