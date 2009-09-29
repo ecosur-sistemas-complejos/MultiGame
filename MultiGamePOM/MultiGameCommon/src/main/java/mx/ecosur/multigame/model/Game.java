@@ -13,6 +13,7 @@ package mx.ecosur.multigame.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
@@ -92,9 +93,9 @@ public class Game implements Model {
 	/**
 	 * @return
 	 */
-	public Collection<Move> getMoves() {
-		Collection<Move> collection = new HashSet<Move>();
-		Collection<MoveImpl> moves = gameImpl.getMoves();
+	public Set<Move> getMoves() {
+		Set<Move> collection = new HashSet<Move>();
+		Set<MoveImpl> moves = gameImpl.listMoves();
 		for (MoveImpl move : moves) {
 			collection.add(new Move(move));
 		}

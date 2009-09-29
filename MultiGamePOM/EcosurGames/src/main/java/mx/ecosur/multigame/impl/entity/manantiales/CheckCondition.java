@@ -81,7 +81,7 @@ public class CheckCondition implements ConditionImpl {
 	/**
 	 * @param player the player to set
 	 */
-	public void setPlayer (GridPlayer agent) {
+	public void setPlayer (GridPlayer player) {
 		this.agent = agent;
 	}
 
@@ -102,21 +102,6 @@ public class CheckCondition implements ConditionImpl {
 	@Transient
 	public ConditionType getType () {
 		return reason;
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		boolean ret = true;
-		if (obj instanceof CheckCondition) {
-			CheckCondition test = (CheckCondition) obj;
-			ret = ret && (test.getReason().equals(this.getReason()));				
-		}
-		
-		return ret;
 	}
 
 	/**
@@ -152,7 +137,22 @@ public class CheckCondition implements ConditionImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.ConditionImpl#getTriggers()
 	 */
+    @Transient
 	public Object[] getTriggers() {
 		return violators.toArray();
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		boolean ret = true;
+		if (obj instanceof CheckCondition) {
+			CheckCondition test = (CheckCondition) obj;
+			ret = ret && (test.getReason().equals(this.getReason()));
+		}
+
+		return ret;
+	}    
 }

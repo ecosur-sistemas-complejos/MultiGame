@@ -6,10 +6,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GridGame;
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -20,12 +17,7 @@ import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -102,6 +94,7 @@ public class ManantialesGame extends GridGame {
 	 * @see mx.ecosur.multigame.model.Game#getFacts()
 	 */
 	@Override
+    @Transient
 	public Set<Implementation> getFacts() {
 		Set<Implementation> facts = super.getFacts();
 		if (checkConditions != null)
@@ -138,9 +131,7 @@ public class ManantialesGame extends GridGame {
         session.dispose();
     }
 
-    /* (non-Javadoc)
-      * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
-      */
+    @Transient
     public int getMaxPlayers() {
         return 4;
     }
@@ -176,9 +167,9 @@ public class ManantialesGame extends GridGame {
         session.dispose();
 
         if (moves == null)
-            moves = new HashSet<MoveImpl>();
+            moves = new HashSet<GridMove>();
 
-        moves.add(move);
+        moves.add((ManantialesMove) move);
 
         return move;
     }
@@ -228,6 +219,7 @@ public class ManantialesGame extends GridGame {
 	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
 	 */
 	@Override
+    @Transient
 	public List<Color> getColors() {
 		List<Color> ret = new ArrayList<Color>();
 		for (Color color : Color.values()) {

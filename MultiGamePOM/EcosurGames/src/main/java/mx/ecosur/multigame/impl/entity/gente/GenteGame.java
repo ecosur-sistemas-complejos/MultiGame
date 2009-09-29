@@ -44,6 +44,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.impl.model.GridMove;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -90,10 +91,7 @@ public class GenteGame extends GridGame {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Game#getMaxPlayers()
-	 */
-	@Override
+    @Transient
 	public int getMaxPlayers() {
 		return 4;
 	}
@@ -155,8 +153,8 @@ public class GenteGame extends GridGame {
         session.dispose();
 
         if (moves == null)
-            moves = new HashSet<MoveImpl>();
-        moves.add(move);
+            moves = new HashSet<GridMove>();
+        moves.add((GenteMove) move);
 
         return move;
     }
@@ -237,6 +235,7 @@ public class GenteGame extends GridGame {
 	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
 	 */
 	@Override
+    @Transient
 	public List<Color> getColors() {
 		List<Color> ret = new ArrayList<Color>();
 		for (Color color : Color.values()) {

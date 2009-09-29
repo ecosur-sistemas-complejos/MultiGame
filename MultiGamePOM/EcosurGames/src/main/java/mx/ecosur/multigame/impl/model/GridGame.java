@@ -23,25 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Query;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.GameState;
@@ -93,7 +75,7 @@ public abstract class GridGame implements GameImpl {
 	/**
 	 * Moves from the game.
 	 */
-	protected Set<MoveImpl> moves;
+	protected Set<GridMove> moves;
 	
 	protected GameGrid grid;
 	
@@ -232,6 +214,7 @@ public abstract class GridGame implements GameImpl {
 	}
 	
 	/** Non bean methods **/
+    @Transient
 	public Dimension getSize() {
 		return new Dimension (rows, columns);
 	}
@@ -257,12 +240,30 @@ public abstract class GridGame implements GameImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.GameImpl#getMoves()
 	 */
-	public Collection<MoveImpl> getMoves() {
-		if (moves == null)
-			moves = new HashSet<MoveImpl>();
-		return moves;		
-	}	
-	
+    @Transient
+	public Set<MoveImpl> listMoves() {
+        Set<MoveImpl> ret = new HashSet<MoveImpl>();
+		Set<GridMove> moves = getMoves();
+        for (GridMove move : moves) {
+            ret.add(move);
+        }
+
+		return ret;	
+
+	}
+
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    public Set<GridMove> getMoves() {
+        if (moves == null)
+            moves = new HashSet<GridMove>();
+        return moves;
+    }
+
+    public void setMoves (Set<GridMove> moves) {
+        this.moves = moves;
+    }
+
+    @Transient
 	protected List<Color> getAvailableColors() {
 	    List<Color> colors = getColors();
 	    for (GamePlayerImpl player : players) {
@@ -287,10 +288,9 @@ public abstract class GridGame implements GameImpl {
 		
 		return ret;
 	}
-	
-	public abstract List<Color> getColors();	
-	
-	public abstract int getMaxPlayers ();
+
+    @Transient
+	public abstract List<Color> getColors();
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.GameImpl#move(mx.ecosur.multigame.model.implementation.MoveImpl)

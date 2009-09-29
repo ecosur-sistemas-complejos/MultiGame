@@ -10,8 +10,8 @@
  */
 package mx.ecosur.multigame.model.implementation;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
@@ -55,7 +55,7 @@ public interface GameImpl extends Implementation {
 	/**
 	 * @return
 	 */
-	public Collection<MoveImpl> getMoves();
+	public Set<MoveImpl> listMoves();
 
 	/**
 	 * @return
