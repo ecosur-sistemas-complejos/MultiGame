@@ -35,7 +35,7 @@ built and deployed.
 1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
 point to the top-level directory of glassfish-v2.1.
 2.  The environmental property "FLEX_SDK" must be set by the builder to point to the top-
-level directory of the FLEX3.4 SDK.
+level directory of the FLEX 3.4 SDK.
 
 For example, in BASH, you would do the following:
 

@@ -51,8 +51,8 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <glassfish>/Users/awater/util/glassfish-install/glassfish2.1</glassfish>
-        <flexSDK>/Users/awater/util/flex_sdk_3.4</flexSDK>
+        <glassfish>${env.GLASSFISH_HOME}</glassfish>
+        <flexSDK>${env.FLEX_SDK}</flexSDK>
         <multigame-server>multigame.ecosur.mx</multigame-server>
     </properties>
     <organization>

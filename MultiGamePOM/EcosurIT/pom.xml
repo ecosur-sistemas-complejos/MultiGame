@@ -44,10 +44,5 @@
             <artifactId>junit</artifactId>
             <version>4.0</version>
         </dependency>
-        <dependency>
-            <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-webservice-client</artifactId>
-            <version>${version}</version>
-        </dependency>        
-	</dependencies>
+    </dependencies>
 </project>
