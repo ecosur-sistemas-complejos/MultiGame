@@ -17,14 +17,21 @@ public interface CellImpl extends Implementation {
 	 */
 	public int getId();
 
+    public void setId(int id);
+
 	/**
 	 * @return
 	 */
 	public int getRow();
 
+    public void setRow (int row);
+
 	/**
 	 * @return
 	 */
 	public int getColumn();
+
+
+    public void setColumn (int column);
 
 }

@@ -34,6 +34,10 @@ public class Cell implements Model {
 		return cellImpl.getId();
 	}
 
+    public void setId (int id) {
+        cellImpl.setId (id);
+    }
+
 	/**
 	 * @return
 	 */
@@ -41,12 +45,20 @@ public class Cell implements Model {
 		return cellImpl.getRow();
 	}
 
+    public void setRow (int row) {
+        cellImpl.setRow(row);
+    }
+
 	/**
 	 * @return
 	 */
 	public int getColumn() {
 		return cellImpl.getColumn();
 	}
+
+    public void setColumn (int column) {
+        cellImpl.setColumn (column);
+    }
 
 	/**
 	 * @return

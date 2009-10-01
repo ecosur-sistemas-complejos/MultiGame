@@ -239,7 +239,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("Filter is: " + filter.size(), filter.size() == 1);
 		
 	}
-	
+
+    @SuppressWarnings("unchecked")
 	@Test
 	public void testManantialesCheckConstraintExpired () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
@@ -291,8 +292,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue (filter.size() > 0);	
 		
 	}
-	
-	
+
+    @SuppressWarnings("unchecked")
+	@Test
 	public void testManantialesCheckConstraintRelief() throws InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -323,6 +325,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	
 	@SuppressWarnings("unchecked")
+    @Test
 	public void testSouthernBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -353,6 +356,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@SuppressWarnings("unchecked")
+    @Test
 	public void testEasternBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -380,8 +384,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("Filter contains: " + filter.size(), filter.size() == 1);
 		
 	}
-	
+
 	@SuppressWarnings("unchecked")
+    @Test
 	public void testWesternBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -412,6 +417,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 	}
 	
 	@SuppressWarnings("unchecked")
+    @Test
 	public void testNorthernBorderDeforestedCheckConstraint () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -441,7 +447,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("Filter.size()==" + filter.size(), filter.size() == 1);
 		
 	}	
-	
+
+    @SuppressWarnings("unchecked")
 	@Test
 	public void testBadYear () throws InvalidMoveException {
 		alice.setTurn (true);
@@ -1040,7 +1047,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 //		
 //		assertEquals (GameState.PLAY, game.getState());
 //	}
-	
+
+    @SuppressWarnings("unchecked")
 	@Test
 	public void testWin () throws JMSException, InvalidMoveException {
 		
@@ -1080,7 +1088,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	/*
 	 * 
-	 */	
+	 */
+    @SuppressWarnings("unchecked")
 	@Test 
 	public void testReplaceModerateWithIntensiveOnManantial() throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
@@ -1111,7 +1120,9 @@ public class ManantialesRulesTest extends RulesTestBase {
 		
 		assertTrue ("CONDITION RAISED ON CONVERSION!", filter.size() == 0);
 	}
-	
+
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testReplaceModerateWithIntensiveOnBorder () throws JMSException, InvalidMoveException {
 		game.setState(GameState.PLAY);
 		
@@ -1139,6 +1150,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 		assertTrue ("CONDITION RAISED ON CONVERSION!", filter.size() == 0);		
 	}
 
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testReplaceModerateWithIntensiveOnBorderWithPopulatedBorders () 
 		throws JMSException, InvalidMoveException 
 	{

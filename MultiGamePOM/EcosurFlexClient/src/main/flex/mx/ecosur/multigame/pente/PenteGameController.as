@@ -342,7 +342,6 @@ package mx.ecosur.multigame.pente{
                 case GameEvent.END:
                     gameModel = GameModel (message.body);
                     game = PenteGame (gameModel.implementation);
-                     Alert.show(gameModel.toString()); 
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     _winners = game.winners;                
@@ -353,7 +352,6 @@ package mx.ecosur.multigame.pente{
                 case GameEvent.MOVE_COMPLETE:
                     var moveModel:MoveModel = MoveModel (message.body);                    
                     var move:PenteMove = PenteMove(moveModel.implementation);
-                     Alert.show(moveModel.toString()); 
                     if (move == null)
                         Alert.show ("Move from model [" + moveModel + "] is null!");
                     addMove(move);
@@ -361,7 +359,6 @@ package mx.ecosur.multigame.pente{
                 case GameEvent.PLAYER_CHANGE:
                     gameModel = GameModel (message.body);
                     game = PenteGame (gameModel.implementation);
-                     Alert.show(gameModel.toString()); 
                     if (game == null)
                         Alert.show ("Game from model [" + gameModel + "] is null!");
                     var players:ArrayCollection = PenteGame(gameModel.implementation).players;

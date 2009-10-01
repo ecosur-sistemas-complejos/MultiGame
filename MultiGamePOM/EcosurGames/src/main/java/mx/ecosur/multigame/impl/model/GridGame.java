@@ -16,12 +16,7 @@
 package mx.ecosur.multigame.impl.model;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -242,7 +237,7 @@ public abstract class GridGame implements GameImpl {
 	 */
     @Transient
 	public Set<MoveImpl> listMoves() {
-        Set<MoveImpl> ret = new HashSet<MoveImpl>();
+        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
 		Set<GridMove> moves = getMoves();
         for (GridMove move : moves) {
             ret.add(move);
@@ -255,7 +250,7 @@ public abstract class GridGame implements GameImpl {
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<GridMove> getMoves() {
         if (moves == null)
-            moves = new HashSet<GridMove>();
+            moves = new LinkedHashSet<GridMove>();
         return moves;
     }
 

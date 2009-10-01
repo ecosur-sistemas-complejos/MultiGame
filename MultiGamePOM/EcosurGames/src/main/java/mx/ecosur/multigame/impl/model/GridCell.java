@@ -85,6 +85,8 @@ public class GridCell implements CellImpl, Cloneable {
 	}
 
 	public Color getColor() {
+        if (color == null)
+            color = Color.UNKNOWN;
 		return color;
 	}
 
@@ -100,7 +102,7 @@ public class GridCell implements CellImpl, Cloneable {
 
 	public String toString() {
 		return "(Column, Row) Column = " + column + ", Row = " + row + 
-			", Color = " + color;
+			", Color = " + color  + ", comparator = " + comparator;
 	}
 
 	/* (non-Javadoc)
@@ -108,9 +110,8 @@ public class GridCell implements CellImpl, Cloneable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		boolean ret = false;
-		
-		if (obj instanceof GridCell) {
+        boolean ret = false;
+		if (obj instanceof GridCell && obj != null) {
 			GridCell comparison = (GridCell) obj;
 			if (comparator.compare(this, comparison) == 0 && 
 					comparison.getColor().equals(this.getColor()))

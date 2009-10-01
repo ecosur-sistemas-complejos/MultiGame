@@ -1,16 +1,23 @@
 package mx.ecosur.multigame.model
 {
 	import mx.ecosur.multigame.entity.Game;
+    import mx.ecosur.multigame.enum.GameState
 	
 	[RemoteClass (alias="mx.ecosur.multigame.model.Game")]
 	public class GameModel
 	{
 		private var _game:Game;
-		
+
+        private var _state:GameState;
+
 		public function GameModel()
 		{
 			super();
-		}
+        }
+
+        public function get id():int {
+            return _game.id;
+        }
 		
 		public function get implementation():Game {
 			return _game;
@@ -19,6 +26,14 @@ package mx.ecosur.multigame.model
 		public function set implementation(game:Game):void {
 			_game = game;
 		}
+
+        public function get state():GameState {
+            return _state;
+        }
+
+        public function set state (state:GameState):void {
+            _state = state;
+        }
 		
 		public function toString():String {
 			return new String ("GameModel.  Implementation:  " + this.implementation);

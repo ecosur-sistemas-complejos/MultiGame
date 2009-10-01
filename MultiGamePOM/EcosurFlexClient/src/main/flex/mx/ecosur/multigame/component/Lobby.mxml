@@ -14,12 +14,9 @@
 
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
-            import flash.events.MouseEvent;
             import flash.utils.Timer;
             import mx.controls.Alert;
-            import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.event.GamePlayerEvent;
+            import mx.ecosur.multigame.entity.Registrant;;
             
             [Bindable]
             public var player:Registrant;
@@ -27,15 +24,8 @@
     
             private function init(event:Event):void {
             	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
-            	timer = new Timer(500);
-            	timer.addEventListener(TimerEvent.TIMER, timeout);
-            	timer.start();
             }
-            
-            public function timeout (event:Event):void {
-            	pendingList.reload(event);
-            }
-            
+
             public function reload(event:Event):void {
             	gameList.reload(event);
             	pendingList.reload(event);
@@ -58,6 +48,7 @@
 		<component:JoinUnfinishedGame id="gameList" player="{player}" width="100%" gameChosen="dispatchEvent(event)"/>
 		<component:JoinPendingGame id="pendingList" player="{player}" width="100%" gameJoined="dispatchEvent(event)"/>
 		<component:StartNewGame player="{player}" width="100%" registered="dispatchEvent(event)"/>
+        <mx:Button id="updateBtn" label="Update" click="reload(event)" />
 	</mx:Panel>
 
 </mx:Box>

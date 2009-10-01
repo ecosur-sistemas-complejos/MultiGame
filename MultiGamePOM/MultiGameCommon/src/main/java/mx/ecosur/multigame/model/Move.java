@@ -36,6 +36,10 @@ public class Move implements Model {
 	public MoveStatus getStatus() {
 		return moveImpl.getStatus();
 	}
+
+    public void setStatus(MoveStatus status) {
+        moveImpl.setStatus(status);
+    }
 	
 	public GamePlayer getPlayer () {
 		return moveImpl.getPlayerModel();
@@ -48,18 +52,23 @@ public class Move implements Model {
 	public Cell getCurrent () {
 		return new Cell(moveImpl.getCurrentCell());
 	}
+
+    public void setCurrent (Cell current) {
+        moveImpl.setCurrentCell(current.getImplementation());
+    }
 	
 	public Cell getDestination() {
 		return new Cell (moveImpl.getDestinationCell());
 	}
+
+    public void setDestination (Cell destination) {
+        moveImpl.setDestinationCell (destination.getImplementation());
+    }
 	
 	public MoveImpl getImplementation() {
 		return moveImpl;
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Model#setImplementation(mx.ecosur.multigame.model.implementation.Implementation)
-	 */
 	public void setImplementation(Implementation impl) {
 		this.moveImpl = (MoveImpl) impl;
 	}

@@ -51,8 +51,8 @@
   </contributors>
     <properties>
         <test.skip>false</test.skip>
-        <glassfish>${env.GLASSFISH_HOME}</glassfish>
-        <flexSDK>${env.FLEX_SDK}</flexSDK>
+        <glassfish>/Users/awater/util/glassfish-install/glassfish2.1</glassfish>
+        <flexSDK>/Users/awater/util/flex_sdk_3.4</flexSDK>
         <multigame-server>multigame.ecosur.mx</multigame-server>
     </properties>
     <organization>
@@ -61,6 +61,7 @@
     </organization>
     <profiles>
         <profile>
+            <id>default</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -72,7 +73,7 @@
 		        <module>EcosurIT</module>
 		    </modules>
         </profile>
-    </profiles>
+    </profiles>    
     <!--  
         These repositories have been staged on our server as a convenience.  We
         have been using artifactory to manage dependencies, but in the spirit 

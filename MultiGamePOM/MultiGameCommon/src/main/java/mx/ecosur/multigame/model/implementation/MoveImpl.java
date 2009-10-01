@@ -28,7 +28,9 @@ public interface MoveImpl extends Implementation {
 	/**
 	 * @return
 	 */
-	public GamePlayer getPlayerModel();
+	public void setStatus(MoveStatus status);
+
+    public GamePlayer getPlayerModel ();
 
 	/**
 	 * @param player
@@ -62,5 +64,6 @@ public interface MoveImpl extends Implementation {
 	 * @param cellImpl
 	 */
 	public void setDestinationCell(CellImpl cellImpl);
+
 
 }

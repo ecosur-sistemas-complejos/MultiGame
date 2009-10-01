@@ -67,7 +67,7 @@
        </dependency>
   </dependencies>
   <build>
-   <finalName>${artifactId}</finalName>
+   <finalName>ecosur-flex-client</finalName>
    <!-- Commenting out for use with Exec plugin, for now, sonatype is used just
         to get IDE to validate as a Flex facet -->
    <!--
@@ -101,6 +101,7 @@
                     <executable>${flexSDK}/bin/mxmlc</executable>
                     <workingDirectory>src/main/flex</workingDirectory>
                     <arguments>
+                        <argument>-debug</argument>
                         <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
                         <argument>-compiler.strict=true</argument>
                         <argument>-compiler.context-root=${artifactId}</argument>
@@ -129,6 +130,7 @@
             </execution>
         </executions>
     </plugin>
+       
     </plugins>
   </build>
 </project>
