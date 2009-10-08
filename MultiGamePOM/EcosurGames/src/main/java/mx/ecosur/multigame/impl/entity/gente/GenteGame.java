@@ -41,10 +41,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GridGame;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.GridMove;
+import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -62,7 +59,13 @@ public class GenteGame extends GridGame {
 	
 	private Set<GentePlayer> winners;
 
-    private transient KnowledgeAgent kagent;
+    public GenteGame () {
+        super();
+    }
+
+    public GenteGame (KnowledgeAgent agent) {
+        super (agent);
+    }
 	
 	@OneToMany (fetch=FetchType.EAGER)
 	public Set <GentePlayer> getWinners () {
@@ -106,11 +109,12 @@ public class GenteGame extends GridGame {
         this.setColumns(19);
         this.setRows(19);
 
-        /* Setup the knowledge agent */
-        kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "GenteAgent");
-        kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+        if (kagent == null) {
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent("GenteAgent");
+            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
                 getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
+        }
+
         KnowledgeBase ruleBase = kagent.getKnowledgeBase();
 
         StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
@@ -187,9 +191,6 @@ public class GenteGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 		
-		/* Be sure that the player has a good reference to this game */
-		player.setGame(this);
-		
 		if (this.created == null)
 		    this.setCreated(new Date());
 		if (this.state == null)
@@ -213,7 +214,6 @@ public class GenteGame extends GridGame {
 		
 		List<Color> colors = getAvailableColors();
 		player.setColor(colors.get(0));
-		player.setGame(this);
 		players.add(player);
 		
 		if (players.size() == getMaxPlayers())
@@ -244,6 +244,43 @@ public class GenteGame extends GridGame {
 			if (color.equals(Color.UNKNOWN))
 				continue;
 			ret.add(color);
+		}
+		
+		return ret;
+	}		
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		GenteGame ret = new GenteGame ();
+		ret.grid = new GameGrid();
+        for (GridCell cell : getGrid().getCells()) {
+            ret.grid.updateCell((GridCell) cell.clone());
+        }
+
+        ret.kagent = this.kagent;
+		ret.created = new Date (System.currentTimeMillis());
+		ret.id = this.getId();
+		ret.moves = new LinkedHashSet<GridMove> ();
+		for (GridMove move : getMoves()) {
+            GenteMove gm = (GenteMove) move;
+			ret.moves.add((GridMove) gm.clone());
+		}
+		
+		ret.players = new ArrayList<GridPlayer>();
+		for (GridPlayer player : getPlayers()) {
+			ret.players.add((GentePlayer) ((GentePlayer) player).clone());
+		}
+		
+		ret.state = this.state;
+		ret.version = this.version;
+		ret.winners = new LinkedHashSet<GentePlayer>();
+		
+		for (GentePlayer winner : getWinners()) {
+			GentePlayer clone = (GentePlayer) winner.clone();
+			ret.winners.add(clone);
 		}
 		
 		return ret;

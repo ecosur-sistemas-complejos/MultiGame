@@ -49,9 +49,9 @@ when
     player : GenteStrategyAgent (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    TreeSet<GenteMove> possible = player.determineAvailableMoves();
+    TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
     if (possible.size() == 0) 
-        possible = player.determineAvailableMoves (player.oppositionColors());
+        possible = player.determineAvailableMoves (game, player.oppositionColors());
     GenteMove destination = null;
     Random random = new Random (System.currentTimeMillis());
     for (GenteMove move : possible) {

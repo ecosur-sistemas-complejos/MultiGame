@@ -34,7 +34,7 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class GridPlayer implements GamePlayerImpl {
+public class GridPlayer implements GamePlayerImpl, Cloneable {
 	
 	/**
 	 * 
@@ -44,8 +44,6 @@ public class GridPlayer implements GamePlayerImpl {
 	private int id;
 	
 	private GridRegistrant player;
-	
-	protected GridGame game;
 
 	private Color color;
 	
@@ -59,8 +57,7 @@ public class GridPlayer implements GamePlayerImpl {
 		super();
 	}
 	
-	public GridPlayer (GridGame game, GridRegistrant player, Color color) {
-		this.game = game;
+	public GridPlayer (GridRegistrant player, Color color) {
 		this.player = player;
 		this.color = color;
 	}
@@ -81,16 +78,6 @@ public class GridPlayer implements GamePlayerImpl {
 	
 	public void setRegistrant (GridRegistrant player) {
 		this.player = player;
-	}
-
-	@ManyToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-	@JoinColumn(name="GAME_ID")
-	public GridGame getGame() {
-		return game;
-	}
-
-	public void setGame(GridGame game) {
-		this.game = game;
 	}
 
 	@Enumerated (EnumType.STRING)
@@ -119,13 +106,6 @@ public class GridPlayer implements GamePlayerImpl {
 	}
 
 	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.GamePlayerImpl#setGame(mx.ecosur.multigame.model.implementation.GameImpl)
-	 */
-	public void setGame(GameImpl implementation) {
-		this.game = (GridGame) implementation;
-	}
-
-	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -141,4 +121,9 @@ public class GridPlayer implements GamePlayerImpl {
 		
 		return ret;
 	}
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+       throw new CloneNotSupportedException();
+    }
 }

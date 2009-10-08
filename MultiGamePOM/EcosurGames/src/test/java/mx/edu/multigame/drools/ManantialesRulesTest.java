@@ -43,19 +43,30 @@ import mx.ecosur.multigame.impl.solver.manantiales.SolverFicha;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.io.ResourceFactory;
 
 public class ManantialesRulesTest extends RulesTestBase {
 	
 	private ManantialesGame game;
 	
 	private ManantialesPlayer alice, bob, charlie, denise;
+
+    private KnowledgeAgent kagent;
 	
 	@Before
 	public void setUp() throws Exception {
 
 		super.setUp();
-		
-		game = new ManantialesGame();		
+
+        if (kagent == null) {
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent("ManantialesAgent");
+            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        }
+
+		game = new ManantialesGame(kagent);		
 		GridRegistrant[] players = {
 				new GridRegistrant ("alice"),
 				new GridRegistrant ("bob"),
@@ -70,6 +81,8 @@ public class ManantialesRulesTest extends RulesTestBase {
 					continue;
 			game.registerPlayer (players [ counter++ ]);
 		}
+
+        game.initialize();
 		
 		for (GridPlayer player : game.getPlayers()) {
 			if (player.getRegistrant().getName().equals("alice")) {
@@ -83,7 +96,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 			}
 		}
 	}
-	
+
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();

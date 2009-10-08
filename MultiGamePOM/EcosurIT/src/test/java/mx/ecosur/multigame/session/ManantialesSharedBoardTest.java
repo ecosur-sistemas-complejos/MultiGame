@@ -71,9 +71,7 @@ public class ManantialesSharedBoardTest {
 			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
 			GamePlayer player = registrar.registerPlayer(boardGame, registrant);
 			if (gameId == 0) {
-				GridPlayer gp = (GridPlayer) player.getImplementation();
-				gameId = gp.getGame().getId();
-				boardGame = player.getGame();
+				gameId = game.getId();
 			}
 		}
 		
@@ -133,32 +131,20 @@ public class ManantialesSharedBoardTest {
 		Game game = new Game (mg);
 		ManantialesMove move = new ManantialesMove (alice, ficha);
 		Move mv = board.doMove(game, new Move (move));
-		game = mv.getPlayer().getGame();
 		
 		
 		ficha = new Ficha (4,5, bob.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (bob, ficha);
 		mv = board.doMove(game, new Move (move));
-		game = mv.getPlayer().getGame();
 		
 		ficha = new Ficha (3,4, charlie.getColor(), 
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (charlie, ficha);
 		mv = board.doMove(game, new Move (move));
-		game = mv.getPlayer().getGame();
 		
 		mg = (ManantialesGame) game.getImplementation();
 		assertTrue ("CheckConstraint not fired!", mg.getCheckConditions() != null);
 		assertEquals (1, mg.getCheckConditions().size());
-		
-		mg = (ManantialesGame) board.getGame(gameId).getImplementation();
-		List<GridPlayer> players = mg.getPlayers();
-		for (GridPlayer player : players) {
-			ManantialesGame playerGame = (ManantialesGame) player.getGame();
-			assertTrue ("Registrant has no check constraints, while the game does.", 
-					playerGame.getCheckConditions() != null);
-			assertTrue (playerGame.getCheckConditions().size() == mg.getCheckConditions().size());
-		}
 	}
 }

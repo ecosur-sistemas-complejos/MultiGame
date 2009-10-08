@@ -23,7 +23,7 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.util.Direction;
 import mx.ecosur.multigame.impl.util.Vertice;
 
-public class BeadString implements Serializable {
+public class BeadString implements Serializable, Cloneable {
 	
 	/**
 	 * 
@@ -163,6 +163,18 @@ public class BeadString implements Serializable {
 		return ret;
 	}
 
+    public BeadString trim(GridCell destination, int stringlength) {
+		BeadString ret = new BeadString();
+		if (beads.first() == destination) {
+			ret.setBeads(new TreeSet<GridCell> (beads.tailSet(destination)));
+		} else if (beads.last() == destination) {
+			ret.setBeads(new TreeSet<GridCell>(beads.headSet(destination)));
+		}
+		if (!ret.contains(destination))
+			ret.add(destination);
+		return ret;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
@@ -184,16 +196,14 @@ public class BeadString implements Serializable {
 		buf.append (" ]");
 		return buf.toString();
 	}
+    
+    public Object clone() throws CloneNotSupportedException {
+        BeadString ret = new BeadString ();
+        for (GridCell cell : beads) {
+            ret.beads.add((GridCell) cell.clone());
+        }
 
-	public BeadString trim(GridCell destination, int stringlength) {
-		BeadString ret = new BeadString();
-		if (beads.first() == destination) {
-			ret.setBeads(new TreeSet<GridCell> (beads.tailSet(destination)));			
-		} else if (beads.last() == destination) {
-			ret.setBeads(new TreeSet<GridCell>(beads.headSet(destination)));
-		}
-		if (!ret.contains(destination))
-			ret.add(destination);
-		return ret;
-	}
+        return ret;
+
+    }
 }

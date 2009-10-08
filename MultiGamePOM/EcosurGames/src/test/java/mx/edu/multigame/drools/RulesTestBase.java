@@ -16,6 +16,7 @@ package mx.edu.multigame.drools;
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
+import mx.ecosur.multigame.impl.model.GridCell;
 
 public class RulesTestBase extends JMSTestCaseAdapter {
 
@@ -33,6 +34,13 @@ public class RulesTestBase extends JMSTestCaseAdapter {
 		//TODO: Externalize and change jndi name of topic
 		mockTopic = getDestinationManager().createTopic("MultiGame");
 		ejbModule.bindToContext("MultiGame", mockTopic);
+	}
+
+    protected void setIds(GridCell... cells) {
+		int counter = 1;
+		for (GridCell cell : cells) {
+			cell.setId(counter++);
+		}
 	}
 
 	protected void tearDown() throws Exception {

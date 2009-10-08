@@ -30,20 +30,31 @@ import mx.ecosur.multigame.impl.model.gente.BeadString;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.io.ResourceFactory;
 
 public class GenteRulesTest extends RulesTestBase {
 	
 	private GenteGame game;
 	
 	private GentePlayer alice;
+
+    private KnowledgeAgent kagent;
 	
 	
 	@Before
 	public void setUp() throws Exception {
 
 		super.setUp();
+
+        if (kagent == null) {
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent("GenteAgent");
+            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
+        }
 		
-		game = new GenteGame();
+		game = new GenteGame(kagent);
 		GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
 		b = new GridRegistrant ("bob");
@@ -54,19 +65,13 @@ public class GenteRulesTest extends RulesTestBase {
 		game.registerPlayer(b);
 		game.registerPlayer(c);
 		game.registerPlayer(d);
+        game.initialize();
 	}
 	
 	@After
 	public void tearDown() throws Exception {
 		super.tearDown();
 	}
-	
-	private void setIds(GridCell... cells) {
-		int counter = 1;
-		for (GridCell cell : cells) {
-			cell.setId(counter++);
-		}
-	}	
 	
 	@Test
 	public void testInitialize () {
@@ -141,6 +146,51 @@ public class GenteRulesTest extends RulesTestBase {
 		Set<BeadString> set = move.getTrias();
 		assertEquals (1, set.size());
 	}
+
+    @Test
+    public void testFindCentralVerticalTria () throws InvalidMoveException {
+        GridCell start = new GridCell (10,10,alice.getColor());
+		GridCell second = new GridCell (10,11,alice.getColor());
+		GridCell tria = new GridCell (10,9, alice.getColor());
+
+		setIds (start,second,tria);
+
+		game.getGrid().updateCell(start);
+		game.getGrid().updateCell(second);
+
+		GenteMove move = new GenteMove (alice, tria);
+		game.move(move);
+
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+		assertEquals (tria, game.getGrid().getLocation(tria));
+
+		Set<BeadString> set = move.getTrias();
+		assertEquals (1, set.size());
+    }
+
+@Test
+    public void testFindCentralVerticalTriaOnClone () throws InvalidMoveException, CloneNotSupportedException {
+        GridCell start = new GridCell (10,10,alice.getColor());
+		GridCell second = new GridCell (10,11,alice.getColor());
+		GridCell tria = new GridCell (10,9, alice.getColor());
+
+		setIds (start,second,tria);
+
+        GenteGame clone = (GenteGame) game.clone();
+
+		clone.getGrid().updateCell(start);
+		clone.getGrid().updateCell(second);
+
+		GenteMove move = new GenteMove (alice, tria);
+		clone.move(move);
+
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+		assertEquals (tria, clone.getGrid().getLocation(tria));
+        assertNull (game.getGrid().getLocation(tria));
+
+		Set<BeadString> set = move.getTrias();
+		assertEquals (1, set.size());
+    }
 
 	@Test
 	public void testFindTheHorizontalTrias () throws InvalidMoveException {
@@ -278,7 +328,7 @@ public class GenteRulesTest extends RulesTestBase {
 		game.getGrid().updateCell(ninth);
 		alice.setTurn(true);
 		move = new GenteMove (alice, thirdTessera);		
-		game.move(move);			
+		move = (GenteMove) game.move(move);			
 		
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (thirdTessera, game.getGrid().getLocation(thirdTessera));
@@ -294,8 +344,10 @@ public class GenteRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testDiagnolTessera () throws InvalidMoveException {
+        GentePlayer partner = alice.getPartner();
+
 		alice.setTurn(true);
-		GridCell invalid = new GridCell (8,8, alice.getColor());
+		GridCell invalid = new GridCell (8,8, partner.getColor());
 		GridCell first = new GridCell (9,9,alice.getColor());
 		GridCell second = new GridCell (11,11,alice.getColor());
 		GridCell tessera = new GridCell (10,10, alice.getColor());
@@ -373,16 +425,18 @@ public class GenteRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testMixedTessera () throws InvalidMoveException {
+        GentePlayer partner = alice.getPartner();
 		alice.setTurn(true);
-		GridCell invalid = new GridCell (8,8, alice.getColor().getCompliment());
-		GridCell first = new GridCell (8,9,alice.getColor());
-		GridCell second = new GridCell (8,11,alice.getColor());
+		GridCell first = new GridCell (8,8, partner.getColor());
+		GridCell second = new GridCell (8,9,alice.getColor());
 		GridCell tessera = new GridCell (8,10, alice.getColor());
-		setIds (invalid, first, second, tessera);
-		
-		game.getGrid().updateCell(invalid);
+        GridCell fourth = new GridCell (8,11,alice.getColor());
+
+        setIds (first, second, fourth, tessera);
+
 		game.getGrid().updateCell(first);
 		game.getGrid().updateCell(second);
+        game.getGrid().updateCell(fourth);
 		
 		game.setState(GameState.PLAY);
 		
@@ -429,14 +483,17 @@ public class GenteRulesTest extends RulesTestBase {
 	
 	@Test
 	public void testJoinedTesseras () throws InvalidMoveException {
+        GentePlayer partner = alice.getPartner();
 		alice.setTurn(true);
 
 		GridCell first = new GridCell (7,10,alice.getColor());
-		GridCell second = new GridCell (8,10,alice.getColor());
+		GridCell second = new GridCell (8,10,partner.getColor());
 		GridCell third = new GridCell (9,10, alice.getColor());
-		GridCell fourth = new GridCell (10,7,alice.getColor());
+
+		GridCell fourth = new GridCell (10,7,partner.getColor());
 		GridCell fifth = new GridCell (10,8, alice.getColor());
 		GridCell sixth = new GridCell (10,9, alice.getColor());
+
 		GridCell tess = new GridCell (10,10, alice.getColor());
 		
 		setIds (first, second, third, fourth, fifth, sixth, tess);
@@ -460,47 +517,70 @@ public class GenteRulesTest extends RulesTestBase {
 		assertEquals (2, tesseras.size());
 	}
 
-//	@Test
-//	public void testInlineJoinedTesseras () throws InvalidMoveException {
-//		System.out.println ("Start testInlineJoinedTesseras.");
-//		alice.setTurn(true);
-//
-//		GridCell first = new GridCell (7,10,alice.getColor());
-//		GridCell second = new GridCell (8,10,alice.getColor());
-//		GridCell third = new GridCell (9,10, alice.getColor());
-//		GridCell fourth = new GridCell (11,10,alice.getColor());
-//		GridCell fifth = new GridCell (12,10, alice.getColor());
-//		GridCell sixth = new GridCell (13,10, alice.getColor());
-//		GridCell tess = new GridCell (10,10, alice.getColor());
-//		setIds (first, second, third, fourth, fifth, sixth, tess);
-//		
-//		game.getGrid().updateCell(first);
-//		game.getGrid().updateCell(second);
-//		game.getGrid().updateCell(third);				
-//		game.getGrid().updateCell(fourth);
-//		game.getGrid().updateCell(fifth);
-//		game.getGrid().updateCell(sixth);
-//		
-//		game.setState(GameState.PLAY);
-//		
-//		GenteMove move = new GenteMove (alice, tess);		
-//		game.move (move);
-//		
-//		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-//		assertEquals (tess, game.getGrid().getLocation(tess));
-//		
-//		Set<BeadString> tesseras = move.getTesseras();
-//		assertEquals (2, tesseras.size());
-//		System.out.println("End testInlineJoinedTesseras");
-//	}
+	@Test
+	public void testInlineJoinedTesseras () throws InvalidMoveException {
+		GentePlayer partner = alice.getPartner();
+
+        int row = game.getRows() / 2;
+		int col = game.getColumns() / 2;
+		GridCell center = new GridCell (row, col, alice.getColor());
+		GridCell first = new GridCell (7,10,alice.getColor());
+		GridCell second = new GridCell (8,10,partner.getColor());
+		GridCell third = new GridCell (9,10, alice.getColor());
+		GridCell fourth = new GridCell (11,10,partner.getColor());
+		GridCell fifth = new GridCell (12,10, alice.getColor());
+		GridCell sixth = new GridCell (13,10,partner.getColor());
+		GridCell tess = new GridCell (10,10, alice.getColor());
+		setIds (center, first, second, third, fourth, fifth, sixth, tess);
+
+        GenteMove move = new GenteMove (alice, center);
+		game.move (move);
+
+		/* Place all cells on the board through moves */
+        alice.setTurn(true);
+        move = new GenteMove (alice, first);
+        game.move (move);
+
+        partner.setTurn(true);
+        move = new GenteMove (partner, second);
+        game.move (move);
+
+        alice.setTurn(true);
+        move = new GenteMove (alice, third);
+        game.move (move);
+
+        partner.setTurn (true);
+        move = new GenteMove (partner, fourth);
+        game.move (move);
+
+        alice.setTurn(true);
+        move = new GenteMove (alice, fifth);
+        game.move(move);
+
+        partner.setTurn(true);
+        move = new GenteMove (partner, sixth);
+        game.move (move);
+
+        /* Tessera move */
+        alice.setTurn(true);
+		move = new GenteMove (alice, tess);
+		move = (GenteMove) game.move (move);
+
+		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+		assertEquals (tess, game.getGrid().getLocation(tess));
+
+		Set<BeadString> tesseras = move.getTesseras();
+		assertEquals (2, tesseras.size());
+	}
 	
 	
 	@Test
 	public void testMixedTriaTessera () throws InvalidMoveException {
+        GentePlayer partner = alice.getPartner();
 		alice.setTurn(true);
-		GridCell first = new GridCell (10,8,alice.getColor().getCompliment());
-		GridCell second = new GridCell (10,9,alice.getColor().getCompliment());
-		GridCell third = new GridCell (10,11, alice.getColor().getCompliment());
+		GridCell first = new GridCell (10,8,alice.getColor());
+		GridCell second = new GridCell (10,9,partner.getColor());
+		GridCell third = new GridCell (10,11, alice.getColor());
 		GridCell tessera = new GridCell (10,10, alice.getColor());
 		setIds (first, second, third, tessera);
 		
@@ -509,7 +589,6 @@ public class GenteRulesTest extends RulesTestBase {
 		game.getGrid().updateCell(third);
 		
 		game.setState(GameState.PLAY);
-		alice.setGame(game);
 		
 		GenteMove move = new GenteMove (alice, tessera);
 		
@@ -525,7 +604,8 @@ public class GenteRulesTest extends RulesTestBase {
 		assertEquals (1, tesseras.size());
 		
 	}
-	
+
+    @Test
 	public void testTwoUnrelatedTrias () throws InvalidMoveException {
 		alice.setTurn(true);
 
@@ -536,8 +616,6 @@ public class GenteRulesTest extends RulesTestBase {
 		
 		game.getGrid().updateCell(first);
 		game.getGrid().updateCell(second);
-		game.setState(GameState.PLAY);
-		alice.setGame(game);
 		
 		GenteMove move = new GenteMove (alice, tria);
 		

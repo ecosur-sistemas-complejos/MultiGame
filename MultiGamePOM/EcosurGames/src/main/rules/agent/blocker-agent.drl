@@ -58,7 +58,8 @@ when
     eval (!$grid.getCells().isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();
-    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(player.oppositionColors());
+    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, 
+        player.oppositionColors());
     GenteMove nextMove = null;
     
     if (scoringMoves.size() > 0) {
@@ -71,9 +72,10 @@ then
     }
     else {
         # Use the random algorithm
-        TreeSet<GenteMove> possible = player.determineAvailableMoves();
+        TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
         if (possible.size() == 0) 
-            possible = player.determineAvailableMoves (player.oppositionColors());
+            possible = player.determineAvailableMoves (game, 
+                player.oppositionColors());
         Random random = new Random ();
         for (GenteMove move : possible) {
             if (random.nextBoolean()) { 

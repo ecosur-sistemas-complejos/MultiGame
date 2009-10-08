@@ -16,24 +16,19 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import mx.ecosur.multigame.MessageSender;
-
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
-
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.Move;
-
 import mx.ecosur.multigame.impl.Color;
-
-import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridMove
 import mx.ecosur.multigame.impl.model.GridPlayer;
-
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-
 import mx.ecosur.multigame.impl.util.Direction;
 
 #GENTE
@@ -72,6 +67,7 @@ function boolean isEmpty (GameGrid grid, GenteMove move) {
     return ret;
 }
 
+
 function int scorePlayer (GenteMove move) {
     int ret = 0;
     GentePlayer player = (GentePlayer) move.getPlayer();
@@ -95,10 +91,9 @@ function Set getWinners (GenteGame game) {
     return pente.getWinners();
 }
 
-function GridPlayer incrementTurn (GenteMove move) {
+function GridPlayer incrementTurn (GenteGame game, GenteMove move) {
     GridPlayer player = move.getPlayer();    
     player.setTurn(false);
-    GenteGame game = (GenteGame) player.getGame();
 
     # Find next player 
     List<GridPlayer> players = game.getPlayers();
@@ -138,6 +133,16 @@ function boolean hasTessera (GridCell cell1, GridCell cell2, GridCell cell3,
     return false;
 }
 
+#Determines if a group of cells is multi-colored
+function boolean hasMultipleColors (GridCell cell1, GridCell cell2, GridCell cell3, GridCell cell4) {
+    HashSet<Color> colors = new HashSet<Color>();
+    colors.add(cell1.getColor());
+    colors.add(cell2.getColor());
+    colors.add(cell3.getColor());
+    colors.add(cell4.getColor());
+    return (colors.size () > 1);
+}
+
 #Rules for the game of PENTE
 
 #Sets the players in the game so that Black has the first turn
@@ -153,6 +158,14 @@ then
             p.setTurn(true);
         else
             p.setTurn(false);
+        GentePlayer player = (GentePlayer) p;
+        if (player.getPartner() == null) {
+            for (GridPlayer potential : game.getPlayers()) {
+                if (potential.getColor() != p.getColor().getCompliment())
+                    continue;
+                player.setPartner((GentePlayer) potential);
+            }
+        }          
     }
     GameGrid grid = new GameGrid ();
     modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
@@ -195,8 +208,10 @@ when
 then 
     GameGrid modifiedGrid = game.getGrid();   
     modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
-    modify (game) { setGrid (modifiedGrid) }
-    modify (move) { setStatus (MoveStatus.MOVED), setGame (game) }
+    Set<GridMove> moves = game.getMoves();
+    moves.add(move);
+    modify (game) { setGrid (modifiedGrid), setMoves (moves) }
+    modify (move) { setStatus (MoveStatus.MOVED) }
     insert (move.getDestinationCell());
     Move model = new Move (move);
     MessageSender messageSender = new MessageSender();
@@ -229,16 +244,16 @@ end
 
 rule "find-horizontal-trias"
     agenda-group "evaluate"
-    no-loop true 
+    no-loop true
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)    
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)
     $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color : color)
     $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, color == $color)
     $cell3 : GridCell (id not in ($id1, $id2), row == $row1, $column3 : column, color == $color)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
     eval ($column2 == $column1 + 1 && $column3 == $column2 + 1)
-    eval (!hasTria ($cell1, $cell2, $cell3, $move))    
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
 then
     int searchCount = $move.getSearchCount() + 1;
     GentePlayer player = (GentePlayer) $move.getPlayer();
@@ -248,7 +263,7 @@ then
         modify ($move) { addTria (tria), setPlayer (player), setStatus(MoveStatus.EVALUATED),
             setSearchCount (searchCount) }
     else
-        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
+        modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }
 end
 
 rule "find-right-diagonal-trias"
@@ -304,20 +319,20 @@ end
 
 rule "find-vertical-tesseras"
     agenda-group "evaluate"
-    no-loop true 
+    no-loop true
+    salience -5
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
-        $colors : teamColors)               
-    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $row3 : row, $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), column == $column1, $row4 : row, $color4 : color)
-    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination) 
-        || $cell4.equals($destination))        
-    eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4))
-    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1 && $row4 == $row3 + 1)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $move.teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color memberOf $move.teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $row3 : row == ($row2 + 1),
+        color memberOf $move.teamColors)
+    $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), column == $column1, $row4 : row == ($row3 + 1),
+        color memberOf $move.teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
     eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
     int searchCount = $move.getSearchCount() + 1;
@@ -333,22 +348,21 @@ then
         modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount(searchCount) }  
 end
 
+
 rule "find-horizontal-tesseras"
     agenda-group "evaluate"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
-        $colors : teamColors)               
-    $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column, $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), row == $row1, $column4 : column, $color4 : color)
-    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination) 
-        || $cell4.equals($destination)) 
-    eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4)) 
-    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1 && $column4 == $column3 + 1)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column == ($column1 + 1), $color2 : color)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column == ($column2 + 1), $color3 : color)
+    $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), row == $row1, $column4 : column == ($column3 + 1),
+        color memberOf $move.teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
     eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))           
 then
     int searchCount = $move.getSearchCount() + 1;
@@ -369,18 +383,14 @@ rule "find-right-diagonal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
-        $colors : teamColors)    
-    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), $column3 : column, $row3 : row, $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), $column4 : column, $row4 : row, $color4 : color)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $move.teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, column == ($column1 + 1), row == ($row1 + 1), color memberOf $move.teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == ($column1 + 2), row == ($row1 + 2), color memberOf $move.teamColors)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), column == ($column1 + 3), row == ($row1 + 3), color memberOf $move.teamColors)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
         || $cell4.equals($destination))
-    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1 && $row4 == $row3 + 1)
-    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1 && $column4 == $column3 + 1)  
-    eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4)) 
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
     eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
     int searchCount = $move.getSearchCount() + 1;
@@ -412,7 +422,8 @@ when
     eval ($row2 == $row1 - 1 && $row3 == $row2 - 1 && $row4 == $row3 - 1)
     eval ($column2 == $column1 - 1 && $column3 == $column2 - 1 && $column4 == $column3 - 1)
     eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4))                    
+        && $colors.contains($color4))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
     eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
     int searchCount = $move.getSearchCount() + 1;
@@ -429,7 +440,7 @@ then
 end
 
 rule "evaluate-nonscoring-move"
-    agenda-group "evaluate"
+    agenda-group "evaluate"    
     no-loop true
     salience -10
 when
@@ -486,8 +497,8 @@ when
     game  : GenteGame (state == GameState.PLAY)
     move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
 then
-    GridPlayer player = incrementTurn (move);
-    Game model = new Game(player.getGame());
+    GridPlayer player = incrementTurn (game, move);
+    Game model = new Game(game);
     MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange(model);
 end

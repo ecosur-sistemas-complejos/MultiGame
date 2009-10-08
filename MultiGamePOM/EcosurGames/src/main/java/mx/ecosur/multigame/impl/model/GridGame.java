@@ -30,6 +30,7 @@ import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
+import org.drools.agent.KnowledgeAgent;
 
 /**
  * @author maxmil, awaterma
@@ -45,7 +46,7 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 			"gp.registrant = :player and gp.game.id = g.id)")})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class GridGame implements GameImpl {
+public abstract class GridGame implements GameImpl, Cloneable {
 	
 	/**
 	 * 
@@ -75,6 +76,8 @@ public abstract class GridGame implements GameImpl {
 	protected GameGrid grid;
 	
 	protected GameState state;
+
+    protected KnowledgeAgent kagent;
 	
 	protected long version;
 	
@@ -86,6 +89,12 @@ public abstract class GridGame implements GameImpl {
 		players = new ArrayList<GridPlayer> ();
 		grid = new GameGrid();
 	}
+
+    public GridGame (KnowledgeAgent agent) {
+        kagent = agent;
+        players = new ArrayList<GridPlayer> ();
+		grid = new GameGrid();	             
+    }
 	
 	/**
 	 * @return the id
@@ -283,7 +292,13 @@ public abstract class GridGame implements GameImpl {
 		
 		return ret;
 	}
-
+	
+	/* 
+	 * Clones a copy of the implemented sub-class
+	 */
+    @Override
+	protected abstract Object clone() throws CloneNotSupportedException;
+	
     @Transient
 	public abstract List<Color> getColors();
 

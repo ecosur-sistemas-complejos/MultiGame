@@ -28,7 +28,7 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 @NamedQueries( { 
 	@NamedQuery(name = "getMoves", query = "select m from GridMove m where m.player.game=:game order by m.id asc") 
 })
-public abstract class GridMove implements MoveImpl {
+public abstract class GridMove implements MoveImpl, Cloneable {
 
 	private static final long serialVersionUID = 8017901476308051472L;
 	private int id;
@@ -93,10 +93,6 @@ public abstract class GridMove implements MoveImpl {
 		return this.player;
 	}
 	
-	public void setGame (GridGame game) {
-		this.player.setGame(game);
-	}
-	
 	@Transient
 	public GamePlayer getPlayerModel () {
 		return new GamePlayer (player);
@@ -143,7 +139,10 @@ public abstract class GridMove implements MoveImpl {
 
 	public String toString() {
 		return "Registrant: " + player + "\nCurrent: " + current
-				+ "\nDestination: " + destination + "\nStatus: " + status
-				+ "\nGame: " + player.getGame();
+				+ "\nDestination: " + destination + "\nStatus: " + status;
 	}
+
+    @Override
+	protected abstract Object clone () throws CloneNotSupportedException;
+	
 }

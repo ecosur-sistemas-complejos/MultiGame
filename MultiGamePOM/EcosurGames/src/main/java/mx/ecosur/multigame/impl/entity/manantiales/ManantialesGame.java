@@ -48,7 +48,13 @@ public class ManantialesGame extends GridGame {
 	
 	private Set<CheckCondition> checkConditions;
 
-    private transient KnowledgeAgent kagent;
+    public ManantialesGame () {
+        super();
+    }
+
+    public ManantialesGame (KnowledgeAgent kagent) {
+        super (kagent);
+    }
     
     @Enumerated (EnumType.STRING)
     public Mode getMode() {
@@ -113,11 +119,11 @@ public class ManantialesGame extends GridGame {
         this.setColumns(9);
         this.setRows(9);
 
-        /* Setup the knowledge agent */
-        kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "ManantialesAgent");
-        kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+        if (kagent == null) {
+            kagent = KnowledgeAgentFactory.newKnowledgeAgent("ManantialesAgent");
+            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
                 getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        }
         KnowledgeBase ruleBase = kagent.getKnowledgeBase();
 
         StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
@@ -199,9 +205,6 @@ public class ManantialesGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 		
-		/* Be sure that the player has a good reference to this game */
-		player.setGame(this);
-		
 		if (this.created == null)
 		    this.setCreated(new Date());	
 		if (this.state == null)
@@ -231,5 +234,14 @@ public class ManantialesGame extends GridGame {
 		}
 		
 		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

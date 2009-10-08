@@ -97,6 +97,7 @@ public class GridCell implements CellImpl, Cloneable {
 	public GridCell clone() throws CloneNotSupportedException {
 		GridCell clone = new GridCell (this.column, this.row, Color
 				.valueOf(color.name()));
+        clone.setId(getId());
 		return clone;
 	}
 

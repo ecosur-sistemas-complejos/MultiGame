@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.jws.WebMethod;
-import javax.jws.WebService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -43,7 +41,6 @@ import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 
-@WebService
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
@@ -63,7 +60,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
 	 */
-	@WebMethod (operationName = "GetGame")
 	public Game getGame(int gameId) {
 		logger.fine ("Getting game with id: " + gameId);
 		
@@ -83,7 +79,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
 	 */
-	@WebMethod (operationName = "DoMove") 
 	public Move doMove(Game game, Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
 		
@@ -91,11 +86,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		GamePlayer player = move.getPlayer();
 		
 		/* Refresh a detached Game in GamePlayer */
-		if (!em.contains (player.getGame().getImplementation())) {
-			GameImpl impl = em.find (player.getGame().getImplementation().getClass(),
-					player.getGame().getId());
-			game = new Game (impl);
-			player.setGame(game);			
+		if (!em.contains (game.getImplementation())) {
+			GameImpl impl = em.find (game.getImplementation().getClass(),
+					game.getId());
+			game = new Game (impl);			
 		}
 		
 		if (!em.contains (player.getImplementation())) {
@@ -128,7 +122,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.SharedBoardRemote#getMoves(int)
 	 */
-	@WebMethod (operationName = "GetMoves")
 	public Collection<Move> getMoves(int gameId) {
 		Collection<Move> ret = null;
 		
@@ -138,8 +131,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		
 		return ret;
 	}
-	
-	@WebMethod (operationName = "AddMessage")
+
 	public void addMessage(ChatMessage chatMessage) {		
 		/* chat message sender may be detatched */
 		GamePlayer sender = chatMessage.getSender();
@@ -155,7 +147,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
 	 */
-	@WebMethod (operationName = "UpdateMove")
 	public Move updateMove(Move move) {
 		/* Refresh the GamePlayer impl reference and proceed to merge any changes in
 		 * the move back into the backend

@@ -123,4 +123,13 @@ public class ManantialesMove extends GridMove {
 	public void setPlayer(GamePlayerImpl player) {
 		this.player = (GridPlayer) player;
 	}
+
+    public GridPlayer getPlayer () {
+        return player;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+       throw new CloneNotSupportedException ();
+    }
 }

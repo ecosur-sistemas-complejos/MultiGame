@@ -69,14 +69,14 @@ public class Game implements Model {
 	}
 
 	/**
-	 * @param end
+	 * @param state
 	 */
 	public void setState(GameState state) {
 		gameImpl.setState(state);		
 	}
 
 	/**
-	 * @return
+	 * @return GameState
 	 */
 	public GameState getState() {
 		return gameImpl.getState();

@@ -15,6 +15,8 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,7 +47,7 @@ public class GenteMove extends GridMove {
 		COOPERATIVE, SELFISH, NEUTRAL
 	}
 	
-	private HashSet<BeadString> trias, tesseras;
+	private Set<BeadString> trias, tesseras;
 
 	private CooperationQualifier qualifier;
 	
@@ -57,9 +59,8 @@ public class GenteMove extends GridMove {
 		super ();
 	}
 	
-	
 	/**
-	 * @param genteStrategyAgent
+	 * @param player
 	 * @param cell
 	 */
 	public GenteMove(GridPlayer player, GridCell cell) {
@@ -84,16 +85,22 @@ public class GenteMove extends GridMove {
 			trias.add(t);
 	}
 
+    public void addTrias (BeadString... trias) {
+        for (BeadString tria : trias) {
+            addTria (tria);
+        }
+    }
+
 	/**
 	 * Gets the Trias that this move created.
 	 */
-	public HashSet<BeadString> getTrias () {
+	public Set<BeadString> getTrias () {
 		if (trias == null)
 			trias = new HashSet<BeadString> ();		
 		return trias;
 	}
 	
-	public void setTrias (HashSet<BeadString> new_trias) {
+	public void setTrias (Set<BeadString> new_trias) {
 		trias = new_trias;
 	}
 	
@@ -113,17 +120,41 @@ public class GenteMove extends GridMove {
 		if (!contained)
 			tesseras.add(t);
 	}
+
+    public void addTesseras (BeadString... tesseras) {
+        for (BeadString tessera : tesseras) {
+            addTessera (tessera);
+        }
+    }
+    
+    /**
+	 * @return the teamColors
+	 */
+	public ArrayList<Color> getTeamColors () {
+		if (teamColors == null) {
+			teamColors = new ArrayList<Color>();
+			GentePlayer player = (GentePlayer) this.player;
+            teamColors.add (player.getPartner().getColor());
+		    teamColors.add(this.player.getColor());
+		}
+		
+		return teamColors;
+	}
+
+    public void setTeamColors (ArrayList<Color> colors) {
+        teamColors = colors;
+    }
 	
 	/**
 	 * Gets the Tesseras that this move created.  
 	 */
-	public HashSet<BeadString> getTesseras () {	
+	public Set<BeadString> getTesseras () {	
 		if (tesseras == null)
 			tesseras = new HashSet<BeadString> ();		
 		return tesseras;
 	}
 	
-	public void setTesseras (HashSet<BeadString> new_tesseras) {
+	public void setTesseras (Set<BeadString> new_tesseras) {
 		tesseras = new_tesseras;
 	}
 	
@@ -166,32 +197,8 @@ public class GenteMove extends GridMove {
 	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
 	 */
 	public void setPlayer(GamePlayerImpl player) {
-		this.player = (GridPlayer) player;
+		this.player = (GentePlayer) player;
 	}
-
-
-	/**
-	 * @return the teamColors
-	 */
-	public ArrayList<Color> getTeamColors() {
-		if (teamColors == null) {
-			teamColors = new ArrayList<Color>();
-			GentePlayer player = (GentePlayer) this.player;
-			teamColors.add(this.player.getColor());
-			teamColors.add (player.getPartner().getColor());
-		}
-		
-		return teamColors;
-	}
-
-
-	/**
-	 * @param teamColors the teamColors to set
-	 */
-	public void setTeamColors(ArrayList<Color> teamColors) {
-		this.teamColors = teamColors;
-	}
-
 
 	/**
 	 * @return the searchCount
@@ -221,8 +228,37 @@ public class GenteMove extends GridMove {
 		ret.append("qualifier=" + getQualifier() + ", ");
 		ret.append("trias=" + getTrias().size() + ", ");
 		ret.append("tesseras=" + getTesseras().size() + ", ");
-		ret.append("teamColors=" + getTeamColors());
 		
 		return ret.toString();
 	}
+
+    @Override
+    protected Object clone() {
+       GenteMove ret = new GenteMove ();
+        try {
+            if (current != null)
+                ret.current = current.clone();
+            if (destination != null)
+                ret.destination = destination.clone();
+            GentePlayer p = (GentePlayer) this.player;
+            ret.player = (GridPlayer) p.clone();
+            ret.qualifier = this.qualifier;
+            ret.searchCount = this.searchCount;
+            ret.teamColors = new ArrayList<Color>();            
+            ret.tesseras = new LinkedHashSet<BeadString>();
+            for (BeadString string : getTesseras()) {
+                ret.tesseras.add((BeadString) string.clone());
+            }
+
+            ret.trias = new LinkedHashSet<BeadString>();
+            for (BeadString string : getTrias()) {
+                ret.trias.add((BeadString) string.clone());
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();  
+        }
+
+        return ret;
+    }
 }
+

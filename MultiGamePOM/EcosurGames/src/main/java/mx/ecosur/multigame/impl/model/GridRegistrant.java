@@ -35,7 +35,7 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 			query = "select gr from GridRegistrant as gr where gr.name = :name")
 })
 @Entity
-public class GridRegistrant implements RegistrantImpl {
+public class GridRegistrant implements RegistrantImpl, Cloneable {
 
 	private static final long serialVersionUID = 5230114393058543176L;
 
@@ -176,6 +176,7 @@ public class GridRegistrant implements RegistrantImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getAvailableGames()
 	 */
+    @SuppressWarnings("unchecked")
 	public List<GameImpl> getAvailableGames(EntityManager em) {
 		Query query = em.createNamedQuery("getAvailableGames");
 		query.setParameter("player", this);
@@ -186,10 +187,23 @@ public class GridRegistrant implements RegistrantImpl {
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getCurrentGames()
 	 */
+    @SuppressWarnings("unchecked")
 	public List<GameImpl> getCurrentGames(EntityManager em) {
 		Query query = em.createNamedQuery("getCurrentGames");
 		query.setParameter("player", this);
 		query.setParameter("state",GameState.ENDED);
 		return query.getResultList();
 	}
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        GridRegistrant ret = new GridRegistrant();
+        ret.id = this.id;
+        ret.gamecount = this.gamecount;
+        ret.lastRegistration = this.lastRegistration;
+        ret.name = this.name;
+        ret.password = this.password;
+        ret.wins = this.wins;
+        return ret;
+    }
 }

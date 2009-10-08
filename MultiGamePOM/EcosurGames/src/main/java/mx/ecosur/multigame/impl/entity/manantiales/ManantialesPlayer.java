@@ -28,8 +28,8 @@ public class ManantialesPlayer extends GridPlayer {
 		super();
 	}
 	
-	public ManantialesPlayer (GridGame game, GridRegistrant player, Color favoriteColor) {
-		super (game, player, favoriteColor);
+	public ManantialesPlayer (GridRegistrant player, Color favoriteColor) {
+		super (player, favoriteColor);
 		points = 0;
 	}
 

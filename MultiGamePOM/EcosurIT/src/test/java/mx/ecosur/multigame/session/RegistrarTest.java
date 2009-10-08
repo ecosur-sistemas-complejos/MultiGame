@@ -57,8 +57,7 @@ public class RegistrarTest {
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
 		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
-				new Registrant (player));		
-		game = (GridGame) gamePlayer.getGame().getImplementation();
+				new Registrant (player));
 		for (int i = 0; i < 3; i++) {
 			GridRegistrant registrant = new GridRegistrant (
 					"TEST" + "-" + (i + 1));
@@ -73,8 +72,7 @@ public class RegistrarTest {
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
 		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
-				new Registrant (player));		
-		game = (GridGame) gamePlayer.getGame().getImplementation();
+				new Registrant (player));
 		try {
 			for (int i = 0; i < 3; i++) {
 				GridRegistrant registrant = new GridRegistrant (
@@ -96,14 +94,12 @@ public class RegistrarTest {
 		GridGame game = new GenteGame ();	
 		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 				new Registrant (player));
-		game = (GridGame) gamePlayer.getGame().getImplementation();
 		for (int i = 0; i < 3; i++) {
 			GenteStrategy strategy = GenteStrategy.valueOf(
 					"SIMPLE");
 			GridRegistrant robot = new GridRegistrant (
 					strategy.name() + "-" + (i + 1));
-			GenteStrategyAgent agent = new GenteStrategyAgent (game, 
-					robot, Color.UNKNOWN, strategy);
+			GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
 			registrar.registerAgent (
 					new Game(game), new Agent (agent));
 		}

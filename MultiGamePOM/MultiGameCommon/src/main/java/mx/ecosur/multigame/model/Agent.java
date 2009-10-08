@@ -36,14 +36,9 @@ public class Agent extends GamePlayer {
 		implementation.initialize();
 	}
 
-	public Move determineNextMove() {
-		MoveImpl move = implementation.determineNextMove();
+	public Move determineNextMove(Game game) {
+		MoveImpl move = implementation.determineNextMove(game.getImplementation());
 		return new Move (move);
-	}
-	
-	public Game findGame () {
-		GameImpl gameImpl = implementation.findGame();
-		return new Game(gameImpl);
 	}
 	
 	public AgentImpl getImplementation() {

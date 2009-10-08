@@ -17,7 +17,7 @@ import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.model.GridCell;
 
-public class PenteMoveComparator implements Comparator<GenteMove>, Serializable {
+public class GenteMoveComparator implements Comparator<GenteMove>, Serializable {
 	
 	private static final long serialVersionUID = -2506716322565071451L;
 

@@ -29,14 +29,13 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 		GridRegistrant c = new GridRegistrant ("charlie");
 		GridRegistrant d = new GridRegistrant ("denise");
 		
-		alice = new GenteStrategyAgent (game, a, Color.YELLOW, GenteStrategy.RANDOM);
-		bob = new GenteStrategyAgent (game, b, Color.BLUE, GenteStrategy.BLOCKER);
-		charlie = new GenteStrategyAgent (game, c, Color.RED, GenteStrategy.SIMPLE);
-		
+		alice = new GenteStrategyAgent (a, Color.YELLOW, GenteStrategy.RANDOM);
+		bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.BLOCKER);
+		charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.SIMPLE);		
 		game.updatePlayer (alice);
 		game.updatePlayer(bob);
 		game.updatePlayer(charlie);
-		game.updatePlayer(new GentePlayer (game, d, Color.GREEN));
+		game.updatePlayer(new GentePlayer (d, Color.GREEN));
 		game.initialize();
 		
 		setupBoard(game);
@@ -52,25 +51,25 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 		GameGrid grid = game.getGrid();
 		
 		GridCell yellow1 = new GridCell (10,10, Color.YELLOW);
-		GridCell yellow2 = new GridCell (12,8, Color.YELLOW);
-		grid.updateCell(yellow1);
-		grid.updateCell(yellow2);
-		
+		GridCell yellow2 = new GridCell (10,11, Color.YELLOW);
 		GridCell blue1 = new GridCell (9,10, Color.BLUE);
 		GridCell blue2 = new GridCell (9,9, Color.BLUE);
-		grid.updateCell(blue1);
-		grid.updateCell(blue2);
-		
 		GridCell red1 = new GridCell (11,9, Color.RED);
 		GridCell red2 = new GridCell (11,8, Color.RED);
-		grid.updateCell(red1);
-		grid.updateCell(red2);
-		
-		GridCell green1 = new GridCell (8, 11, Color.GREEN);
+		GridCell green1 = new GridCell (7, 11, Color.GREEN);
 		GridCell green2 = new GridCell (7,12, Color.GREEN);
-		grid.updateCell(green1);
+
+        setIds (yellow1, yellow2, blue1, blue2, red1, red2, green1, green2);
+
+        grid.updateCell(yellow1);
+		grid.updateCell(yellow2);
+        grid.updateCell(blue1);
+		grid.updateCell(blue2);
+        grid.updateCell(red1);
+		grid.updateCell(red2);
+        grid.updateCell(green1);
 		grid.updateCell(green2);
-		
+
 		game.setGrid(grid);
 	}
 }

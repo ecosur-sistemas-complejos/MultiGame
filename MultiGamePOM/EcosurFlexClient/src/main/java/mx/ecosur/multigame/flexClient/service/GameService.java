@@ -131,11 +131,10 @@ public class GameService {
 		return ret;
 	}
 	
-	public boolean quitGame (GridPlayer player) {
+	public boolean quitGame (GridGame game, GridPlayer player) {
 		boolean ret = false;
 		try {
 			RegistrarRemote registrar = getRegistrar();
-			GridGame game = player.getGame();
 			registrar.unregister (new Game (game), new GamePlayer (player));
 			ret = true;
 		} catch (InvalidRegistrationException e) {
@@ -160,7 +159,6 @@ public class GameService {
 				GridGame game = new GenteGame ();	
 				GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
 						new Registrant (player));
-				game = (GridGame) gamePlayer.getGame().getImplementation();
 				for (int i = 0; i < strategies.length; i++) {
 					if (strategies [ i ].equals("HUMAN"))
 						continue;
@@ -168,8 +166,7 @@ public class GameService {
 							strategies [ i ]);
 					GridRegistrant robot = new GridRegistrant (
 							strategy.name() + "-" + (i + 1));
-					GenteStrategyAgent agent = new GenteStrategyAgent (game, 
-							robot, Color.UNKNOWN, strategy);
+					GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
 					registrar.registerAgent (
 							new Game(game), new Agent (agent));
 				}
@@ -231,12 +228,9 @@ public class GameService {
 		return gridGame.getPlayers();
 	}
 
-	public void doMove(GridMove move) {
-System.out.println("****************");
-System.out.println("Move: " + move);
+	public void doMove(GridGame game, GridMove move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();		
 		try {
-			GridGame game = move.getPlayer().getGame();
 			sharedBoard.doMove(new Game (game), new Move(move));
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();

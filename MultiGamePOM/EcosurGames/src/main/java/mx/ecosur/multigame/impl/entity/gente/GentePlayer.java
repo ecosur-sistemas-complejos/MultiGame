@@ -16,6 +16,7 @@ package mx.ecosur.multigame.impl.entity.gente;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
@@ -27,6 +28,8 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 public class GentePlayer extends GridPlayer {
@@ -45,12 +48,11 @@ public class GentePlayer extends GridPlayer {
 	}
 
 	/**
-	 * @param game
 	 * @param player
 	 * @param color
 	 */
-	public GentePlayer(GridGame game, GridRegistrant player, Color color) {
-		super (game, player, color);
+	public GentePlayer(GridRegistrant player, Color color) {
+		super (player, color);
 	}
 
 	public int getPoints() {
@@ -99,26 +101,14 @@ public class GentePlayer extends GridPlayer {
 			tesseras.add(tessera);
 	}
 	
-	@OneToOne (cascade={CascadeType.PERSIST, CascadeType.REMOVE})
-	public GentePlayer getPartner() {
-        if (partner == null) {
-            Color color = this.getColor().getCompliment();
-            GenteGame game = (GenteGame) getGame();
-            Collection<GridPlayer> players = game.getPlayers();
-            for (GamePlayerImpl p : players) {
-            	GentePlayer player = (GentePlayer) p;
-                if (player.getColor() != color)
-                    continue;
-                partner = player;
-                break;
-            }
-        }
-        return partner;
-    }
-
-    public void setPartner(GentePlayer partner) {
-        this.partner = partner;
-    }
+	public GentePlayer getPartner () {
+		return partner;
+	}
+	
+	public void setPartner (GentePlayer partner) {
+		this.partner = partner;		
+	}
+    
 	
 	public boolean containsString (BeadString comparison) {
 		for (BeadString string : getTrias()) {
@@ -132,4 +122,34 @@ public class GentePlayer extends GridPlayer {
 		}
 		return false;
 	}
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GentePlayer ret = new GentePlayer ();
+        ret.setId(getId());
+        ret.setPoints(getPoints());
+        HashSet<BeadString> clones = new HashSet<BeadString>();
+        for (BeadString tessera : getTesseras()) {
+            BeadString clone = (BeadString) tessera.clone();
+            clones.add(clone);
+        }
+        ret.setTesseras(clones);
+
+        clones = new HashSet<BeadString>();
+        for (BeadString tria : getTrias()) {
+            BeadString clone = (BeadString) tria.clone();
+            clones.add(clone);
+        }
+        ret.setTrias(clones);
+        ret.setColor(getColor());
+
+        /* TODO: Clone game in  GentePlayer.
+            Game is not set into clone as this would provoke an infinite loop */
+        GridRegistrant clone = (GridRegistrant) getRegistrant().clone();
+        ret.setRegistrant(clone);
+        ret.setTurn(isTurn());
+        ret.setPoints(getPoints());
+
+        return ret;
+    }
 }

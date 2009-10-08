@@ -18,8 +18,4 @@ public interface GamePlayerImpl extends Implementation {
 
 	public void setTurn(boolean bool);
 
-	public GameImpl getGame();
-
-	public void setGame(GameImpl implementation);
-
 }

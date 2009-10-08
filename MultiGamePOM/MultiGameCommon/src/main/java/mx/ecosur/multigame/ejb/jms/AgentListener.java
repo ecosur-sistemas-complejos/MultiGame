@@ -59,13 +59,13 @@ public class AgentListener implements MessageListener {
 				for (GamePlayer p : players) {
 					if (p instanceof Agent) {
 						Agent agent = (Agent) p;
-						if (agent.isTurn() && agent.findGame().getState() != GameState.ENDED) {
+						if (agent.isTurn() && game.getState() != GameState.ENDED) {
 							/* Simple 50ms sleep */
 							try {
 								Thread.sleep(250);					
-								Move move = agent.determineNextMove();		
+								Move move = agent.determineNextMove(game);		
 								logger.info("Agent moving: " + move);
-								sharedBoard.doMove(agent.findGame(), move);				
+								sharedBoard.doMove(game, move);				
 								message.acknowledge();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
