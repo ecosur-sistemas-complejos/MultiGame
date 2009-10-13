@@ -9,13 +9,13 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.pente {
+package mx.ecosur.multigame.gente {
 	
 	import mx.collections.ArrayCollection;
 	import mx.containers.Accordion;
 	import mx.controls.Button;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.pente.entity.PentePlayer;
+	import mx.ecosur.multigame.gente.entity.PentePlayer;
 	
 	/**
 	 * Visual component representing the players that are in the current

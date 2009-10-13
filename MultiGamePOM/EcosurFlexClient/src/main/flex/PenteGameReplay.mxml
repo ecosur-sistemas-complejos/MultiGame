@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:pente="mx.ecosur.multigame.pente.*"
+	xmlns:pente="mx.ecosur.multigame.gente.*"
 	xmlns:component="mx.ecosur.multigame.component.*"
 	layout="absolute" 
 	backgroundGradientColors="[#222222, #333333]" backgroundColor="#333333"
@@ -26,17 +26,17 @@
 		}
     </mx:Style>
     
-    <mx:Script> 
+    <mx:Script>
         <![CDATA[
-        	import mx.controls.Alert;
-        	import mx.ecosur.multigame.pente.PenteGameReplayController;
-            
-            private var _controller:PenteGameReplayController;
-             
-            public function init():void{
-            	var gameId:int = Application.application.parameters.gameId;
-                _controller = new PenteGameReplayController(gameId, board, playersViewer, moveViewer, animateLayer);
-            }
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.gente.PenteGameReplayController;
+
+        private var _controller:PenteGameReplayController;
+
+        public function init():void {
+            var gameId:int = Application.application.parameters.gameId;
+            _controller = new PenteGameReplayController(gameId, board, playersViewer, moveViewer, animateLayer);
+        }
                  
         ]]>
     </mx:Script>

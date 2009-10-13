@@ -81,6 +81,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	 */
 	public Move doMove(Game game, Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
+
+        if (game.getImplementation() == null || move.getImplementation() == null)
+                return move;
 		
 		/* Refresh a detached GamePlayer in the Move */
 		GamePlayer player = move.getPlayer();

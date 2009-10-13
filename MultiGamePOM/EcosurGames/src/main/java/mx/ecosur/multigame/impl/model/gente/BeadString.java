@@ -23,6 +23,9 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.util.Direction;
 import mx.ecosur.multigame.impl.util.Vertice;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class BeadString implements Serializable, Cloneable {
 	
 	/**

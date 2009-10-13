@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.pente {
+package mx.ecosur.multigame.gente {
     
     import flash.events.Event;
     

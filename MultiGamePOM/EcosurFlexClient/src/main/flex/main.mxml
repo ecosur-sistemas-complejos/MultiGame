@@ -1,71 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:pente="mx.ecosur.multigame.pente.*"
+	xmlns:pente="mx.ecosur.multigame.gente.*"
 	xmlns:manantiales="mx.ecosur.multigame.manantiales.*"
 	xmlns:component="mx.ecosur.multigame.component.*"
 	layout="absolute">
 	
 	<mx:Style source="~/style.css"/>
 	
-	<mx:Script> 
+	<mx:Script>
         <![CDATA[
-        	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-        	import mx.ecosur.multigame.pente.entity.PenteGame;
-            import mx.managers.CursorManager;
-        
-            import mx.ecosur.multigame.entity.Game;
-        	import mx.ecosur.multigame.entity.GamePlayer;
-        	import mx.ecosur.multigame.event.GamePlayerEvent;
-        	import mx.ecosur.multigame.event.PlayerEvent;
-        	import mx.ecosur.multigame.entity.Registrant;
-        	import mx.controls.Alert;
-        	import mx.ecosur.multigame.pente.PenteGameWindow;
-        	import mx.ecosur.multigame.manantiales.ManantialesWindow;
-        	
-        	private var _penteGameWindow:PenteGameWindow, 
-        	   _manantialesWindow:ManantialesWindow;
-        	
-        	private function gameComplete (event:Event):void {
-        		lobby.reload(event);
-        		vstack.selectedChild = lobby;
-        		lobby.setFocus();
-        	}
-        	
-        	private function loginDone(event:PlayerEvent):void{
-        		lobby.player = event.player;
-        		vstack.selectedChild = lobby;
-        	}
-        	
-        	private function lobbyDone(event:GamePlayerEvent):void{   
-        		setBusy ();	
-        		if (event.gamePlayer.game is PenteGame) {
-	        		//create new pente game window
-	        		_penteGameWindow = new PenteGameWindow();
-	        		_penteGameWindow.currentPlayer = event.gamePlayer;
-	        		_penteGameWindow.rows = event.gamePlayer.game.rows;
-	        		_penteGameWindow.columns = event.gamePlayer.game.columns;
-	        		_penteGameWindow.addEventListener("complete", gameComplete);
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.gente.entity.PenteGame;
+        import mx.managers.CursorManager;
 
-	        		vstack.addChild(_penteGameWindow);
-	        		vstack.selectedChild = _penteGameWindow;
-	        	} else if (event.gamePlayer.game is ManantialesGame) {
-                    _manantialesWindow = new ManantialesWindow();
-                    _manantialesWindow.currentPlayer = event.gamePlayer;                
-                    _manantialesWindow.addEventListener("complete", gameComplete);
+        import mx.ecosur.multigame.entity.Game;
+        import mx.ecosur.multigame.event.GameEvent;
+        import mx.ecosur.multigame.event.PlayerEvent;
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.gente.PenteGameWindow;
+        import mx.ecosur.multigame.manantiales.ManantialesWindow;
 
-                    vstack.addChild(_manantialesWindow);
-                    vstack.selectedChild = _manantialesWindow;	
-	        	} else {
-	        		var game:Game = event.gamePlayer.game;
-	        		Alert.show("Error!  Unknown GameType [" + event.gamePlayer.game + "]");
-	        		Alert.show("Game info" + game.id + "," + game.columns + ", " + game.rows);
-	        		CursorManager.removeBusyCursor();
-	        	}
-        	}
-        	
-        	private function setBusy():void {
-        		CursorManager.setBusyCursor();        
-        	}
+        private var _penteGameWindow:PenteGameWindow,
+                _manantialesWindow:ManantialesWindow;
+
+        private function gameComplete(event:Event):void {
+            lobby.reload(event);
+            vstack.selectedChild = lobby;
+            lobby.setFocus();
+        }
+
+        private function loginDone(event:PlayerEvent):void {
+            lobby.player = event.player;
+            vstack.selectedChild = lobby;
+        }
+
+        private function lobbyDone(event:GameEvent):void {
+            setBusy();
+            if (event.game is PenteGame) {
+                //create new pente game window
+                _penteGameWindow = new PenteGameWindow();
+                _penteGameWindow.currentPlayer = event.gamePlayer;
+                _penteGameWindow.currentGame = PenteGame(event.game);
+                _penteGameWindow.rows = event.game.rows;
+                _penteGameWindow.columns = event.game.columns;
+                _penteGameWindow.addEventListener("complete", gameComplete);
+
+                vstack.addChild(_penteGameWindow);
+                vstack.selectedChild = _penteGameWindow;
+            } else if (event.game is ManantialesGame) {
+                _manantialesWindow = new ManantialesWindow();
+                _manantialesWindow.currentPlayer = event.gamePlayer;
+                _manantialesWindow.currentGame = ManantialesGame(event.game);
+                _manantialesWindow.addEventListener("complete", gameComplete);
+
+                vstack.addChild(_manantialesWindow);
+                vstack.selectedChild = _manantialesWindow;
+            } else {
+                var game:Game = event.game;
+                Alert.show("Error!  Unknown GameType [" + game + "]");
+                Alert.show("Game info" + game.id + "," + game.columns + ", " + game.rows);
+                CursorManager.removeBusyCursor();
+            }
+        }
+
+        private function setBusy():void {
+            CursorManager.setBusyCursor();
+        }
         ]]>
     </mx:Script>
 	

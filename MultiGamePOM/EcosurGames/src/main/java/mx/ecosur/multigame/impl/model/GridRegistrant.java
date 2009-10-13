@@ -32,7 +32,14 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 @NamedQueries( {
 	@NamedQuery(name = "getRegistrantByName", 
-			query = "select gr from GridRegistrant as gr where gr.name = :name")
+			query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name"),
+	@NamedQuery(name = "getCurrentGames", query = "select gme from GridGame as gme, IN (gme.players) as players, " +
+            "GridPlayer as player where player.registrant = :player and player MEMBER OF gme.players " +
+            "and gme.state <> :state"),
+    @NamedQuery(name = "getAvailableGames", 
+	    query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
+            "GridPlayer as player where player.registrant = :player and gme.state = :state and player " +
+                "NOT MEMBER OF gme.players")
 })
 @Entity
 public class GridRegistrant implements RegistrantImpl, Cloneable {
@@ -194,6 +201,17 @@ public class GridRegistrant implements RegistrantImpl, Cloneable {
 		query.setParameter("state",GameState.ENDED);
 		return query.getResultList();
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = obj instanceof GridRegistrant;
+        if (ret) {
+            GridRegistrant comp = (GridRegistrant) obj;
+            ret = (comp.getId() == this.getId());
+        } else
+            ret = super.equals(obj);
+        return ret;
+    }
 
     @Override
     public Object clone() throws CloneNotSupportedException {

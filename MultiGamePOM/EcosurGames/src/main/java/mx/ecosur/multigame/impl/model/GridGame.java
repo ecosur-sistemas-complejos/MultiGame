@@ -33,17 +33,12 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 import org.drools.agent.KnowledgeAgent;
 
 /**
- * @author maxmil, awaterma
+ * @author awaterma, maxmil
  *
  */
 @NamedQueries( {
-	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
-	@NamedQuery(name = "getCurrentGames", query = "select gp.game from GridPlayer as gp "
-		+ "where gp.registrant=:player and gp.game.state <> :state"),
-    @NamedQuery(name = "getAvailableGames", 
-	query = "select g from GridGame as g where g.state = :state and not exists " +
-			"(select gp from GridPlayer as gp where " +
-			"gp.registrant = :player and gp.game.id = g.id)")})
+	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id")
+})
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class GridGame implements GameImpl, Cloneable {
@@ -77,7 +72,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	
 	protected GameState state;
 
-    protected KnowledgeAgent kagent;
+    protected transient KnowledgeAgent kagent;
 	
 	protected long version;
 	
@@ -121,8 +116,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	/**
 	 * @return the players
 	 */
-	@OneToMany (mappedBy="game", cascade={CascadeType.PERSIST},
-			fetch=FetchType.EAGER)
+	@OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
 	public List<GridPlayer> getPlayers() {
 		return players;
 	}

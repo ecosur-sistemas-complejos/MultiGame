@@ -2,93 +2,90 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" title="Rejoin unfinished game" creationComplete="init(event)">
 
 	<mx:Metadata>
-        [Event(name="gameChosen", type="mx.ecosur.multigame.event.GamePlayerEvent")]
+        [Event(name="gameChosen", type="mx.ecosur.multigame.event.GameEvent")]
     </mx:Metadata>
 
-	<mx:Script> 
+	<mx:Script>
         <![CDATA[
-        	import mx.ecosur.multigame.enum.GameState;
-        	import mx.formatters.DateFormatter;
-        	import mx.ecosur.multigame.enum.GameEvent;
-        	import mx.ecosur.multigame.event.GamePlayerEvent;
+        import mx.ecosur.multigame.enum.GameState;
+        import mx.formatters.DateFormatter;
+        import mx.ecosur.multigame.event.GameEvent;
 
-        	import mx.collections.ArrayCollection;
-        	import mx.rpc.events.FaultEvent;
-        	import mx.rpc.events.ResultEvent;
-            import flash.events.MouseEvent;
-            import mx.controls.Alert;
-            import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.entity.GamePlayer;
-            import mx.ecosur.multigame.entity.Game;
-            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-            import mx.ecosur.multigame.enum.Color;
-            import mx.ecosur.multigame.enum.PenteStrategy;
-            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-            import mx.ecosur.multigame.pente.entity.PenteGame;            
-            
-            public var player:Registrant;
-            private var _games:ArrayCollection;
-            
-            public function init(event:Event):void{
-            	gameService.getUnfinishedGames(player);
+        import mx.collections.ArrayCollection;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.entity.Registrant;
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.entity.Game;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.gente.entity.PenteGame;
+
+        public var player:Registrant;
+        private var _games:ArrayCollection;
+
+        public function init(event:Event):void {
+            gameService.getUnfinishedGames(player);
+        }
+
+        public function reload(event:Event):void {
+            gameService.getUnfinishedGames(player);
+        }
+
+        private function resultHandler(event:ResultEvent):void {
+            _games = ArrayCollection(event.result);
+            updateDataGrid();
+        }
+
+        private function faultHandler(event:FaultEvent):void {
+            Alert.show(event.fault.faultString,
+                    "Error getting unfinished games");
+        }
+
+        private function updateDataGrid():void {
+            var empty:ManantialesGame;
+            var game:Game;
+            var gamePlayer:GamePlayer;
+            var dataProvider:ArrayCollection = new ArrayCollection();
+            var dataItem:Object;
+            var df:DateFormatter = new DateFormatter();
+            df.formatString = "DD/MM/YYYY H:NN";
+            for (var i:Number = 0; i < _games.length; i++) {
+                game = Game(_games.getItemAt(i));
+                dataItem = new Object();
+                if (game.isPrototypeOf(PenteGame))
+                    dataItem.gameType = "Gente";
+                else if (game.isPrototypeOf(ManantialesGame))
+                    dataItem.gameType = "Manantiales";
+                dataItem.created = df.format(game.created);
+                dataItem.players = "";
+                for (var j:Number = 0; j < game.players.length; j++) {
+                    gamePlayer = GamePlayer(game.players[j]);
+                    dataItem.players += gamePlayer.registrant.name + " (" + gamePlayer.color + "), ";
+                }
+                if (dataItem.players.length > 2) {
+                    dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
+                }
+                dataItem.status = GameState.getDescription(game.state);
+                dataProvider.addItem(dataItem);
             }
-            
-            public function reload(event:Event):void {
-            	gameService.getUnfinishedGames(player);
+            gamesDataGrid.dataProvider = dataProvider;
+        }
+
+        private function joinGame():void {
+            var joinedGame:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
+            var gamePlayer:GamePlayer;
+            for (var i:Number = 0; i < joinedGame.players.length; i++) {
+                var gp:GamePlayer = joinedGame.players [ i ];
+                if (gp.registrant.id == this.player.id) {
+                    gamePlayer = gp;
+                    break;
+                }
             }
-            
-            private function resultHandler(event:ResultEvent):void{
-            	_games = ArrayCollection(event.result);
-            	updateDataGrid();
-            }   
-                        
-            private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, 
-            	   "Error getting unfinished games");
-            }
-            
-            private function updateDataGrid():void{
-            	var empty:ManantialesGame;
-            	var game:Game;
-            	var gamePlayer:GamePlayer;
-            	var dataProvider:ArrayCollection = new ArrayCollection();
-            	var dataItem:Object;
-            	var df:DateFormatter = new DateFormatter();
-        		df.formatString = "DD/MM/YYYY H:NN";
-            	for (var i:Number = 0; i < _games.length; i++){
-            		game = Game(_games.getItemAt(i));
-            		dataItem = new Object();
-            		if (game.isPrototypeOf(PenteGame))
-            		  dataItem.gameType = "Gente";
-            		else if (game.isPrototypeOf(ManantialesGame))
-            		  dataItem.gameType = "Manantiales";
-            		dataItem.created = df.format(game.created);
-            		dataItem.players = "";
-            		for (var j:Number = 0; j < game.players.length; j++){
-            			gamePlayer = GamePlayer(game.players[j]);
-            			dataItem.players += gamePlayer.registrant.name + " (" + gamePlayer.color + "), ";
-            		}
-            		if(dataItem.players.length > 2){
-            			dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
-            		}
-            		dataItem.status = GameState.getDescription(game.state);
-            		dataProvider.addItem(dataItem);
-            	}
-            	gamesDataGrid.dataProvider = dataProvider;
-            }
-            
-            private function joinGame():void{
-            	var gamePlayer:GamePlayer;
-            	var game:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
-            	for (var p:String in game.players){
-            		gamePlayer = GamePlayer(game.players[p]);
-            		if (gamePlayer.registrant.id == player.id){
-            			dispatchEvent(new GamePlayerEvent("gameChosen", gamePlayer));
-            			return;
-            		}
-            	}
-            }         
+
+            dispatchEvent(new GameEvent("gameChosen", joinedGame, gamePlayer));
+        }
             
         ]]>
     </mx:Script>

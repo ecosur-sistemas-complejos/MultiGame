@@ -23,12 +23,6 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
-@NamedQueries( { 
-	@NamedQuery(name = "getManantialesMoves", 
-			query = "select mm from ManantialesMove mm " +
-					"where mm.player.game=:game and mm.mode=:mode " +
-					"order by mm.id asc") 
-})
 public class ManantialesMove extends GridMove {
 	
 	private static final long serialVersionUID = 1L;

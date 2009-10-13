@@ -2,58 +2,68 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" title="Start Game">
 
 	<mx:Metadata>
-        [Event(name="registered", type="mx.ecosur.multigame.event.GamePlayerEvent")]
+        [Event(name="registered", type="mx.ecosur.multigame.event.GameEvent")]
     </mx:Metadata>
 
-	<mx:Script> 
+	<mx:Script>
         <![CDATA[
-        	import mx.ecosur.multigame.event.GamePlayerEvent;
+        import mx.ecosur.multigame.event.GameEvent;
 
-        	import mx.collections.ArrayCollection;
-        	import mx.rpc.events.FaultEvent;
-        	import mx.rpc.events.ResultEvent;
-            import flash.events.MouseEvent;
-            import mx.controls.Alert;
-            import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.entity.GamePlayer;
-            import mx.ecosur.multigame.entity.Game;
-            import mx.ecosur.multigame.enum.Color;
-            import mx.ecosur.multigame.enum.PenteStrategy;
-            
-            public var player:Registrant;
-    
-            private function doRegister(eventObj:MouseEvent):void {
-            		
-            	if (aiPlayers.visible) {
-                    var strategies:Array = [ player2.selectedItem.data, 
-                        player3.selectedItem.data, player4.selectedItem.data ];
-                   
-            	    gameService.startNewGameWithAI (player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
-            	       	
-            	} else {            	
-	            	gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
-	            }
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.event.ServiceGameEvent;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        import flash.events.MouseEvent;
+
+        import mx.controls.Alert;
+        import mx.utils.StringUtil;
+        import mx.ecosur.multigame.entity.Registrant;
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.entity.Game;
+        import mx.ecosur.multigame.enum.Color;
+        import mx.ecosur.multigame.enum.PenteStrategy;
+
+        public var player:Registrant;
+
+        private function doRegister(eventObj:MouseEvent):void {
+
+            if (aiPlayers.visible) {
+                var strategies:Array = [ player2.selectedItem.data,
+                    player3.selectedItem.data, player4.selectedItem.data ];
+
+                gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
+
+            } else {
+                gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
             }
-            
-            private function resultHandler(event:ResultEvent):void{
-            	var gamePlayer:GamePlayer = GamePlayer(event.result);
-            	dispatchEvent(new GamePlayerEvent("registered", gamePlayer));
-            }   
-                        
-            private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, "Error registering player for new game");
+        }
+
+        private function resultHandler(event:ResultEvent):void {
+            var sge:ServiceGameEvent = ServiceGameEvent (event.result);
+            var gamePlayer:GamePlayer;
+            for (var i:Number = 0; i < sge.game.players.length; i++) {
+                if (sge.game.players[i].registrant.id == player.id) {
+                    gamePlayer = sge.game.players [ i ];
+                    break;
+                }
             }
-            
-            private function showAIPlayers(show:Boolean):void{
-            	if (show){
-            		aiPlayers.visible = true;
-            		aiPlayers.percentHeight = 100; 
-            	}else{
-            		aiPlayers.visible = false;
-            		aiPlayers.height = 0;
-            	}
+            dispatchEvent(new GameEvent("registered", sge.game, gamePlayer));
+        }
+
+        private function faultHandler(event:FaultEvent):void {
+            Alert.show(event.fault.faultString, "Error registering player for new game");
+        }
+
+        private function showAIPlayers(show:Boolean):void {
+            if (show) {
+                aiPlayers.visible = true;
+                aiPlayers.percentHeight = 100;
+            } else {
+                aiPlayers.visible = false;
+                aiPlayers.height = 0;
             }
+        }
             
         ]]>
     </mx:Script>

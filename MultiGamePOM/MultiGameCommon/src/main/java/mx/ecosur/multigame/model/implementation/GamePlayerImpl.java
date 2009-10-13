@@ -13,9 +13,5 @@ package mx.ecosur.multigame.model.implementation;
 public interface GamePlayerImpl extends Implementation {
 	
 	public int getId();	
-	
-	public boolean isTurn();
-
-	public void setTurn(boolean bool);
 
 }

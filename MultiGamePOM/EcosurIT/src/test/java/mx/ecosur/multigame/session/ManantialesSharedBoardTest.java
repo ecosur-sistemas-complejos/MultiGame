@@ -69,9 +69,9 @@ public class ManantialesSharedBoardTest {
 		
 		for (int i = 0; i < 4; i++) {
 			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
-			GamePlayer player = registrar.registerPlayer(boardGame, registrant);
+			boardGame = registrar.registerPlayer(boardGame, registrant);
 			if (gameId == 0) {
-				gameId = game.getId();
+				gameId = boardGame.getId();
 			}
 		}
 		
@@ -124,14 +124,12 @@ public class ManantialesSharedBoardTest {
 	 * @throws InvalidMoveException */
 	@Test
 	public void testCheckConstraints () throws InvalidMoveException {
-		ManantialesGame mg = (ManantialesGame) board.getGame(gameId).getImplementation();
+		Game game = board.getGame(gameId);
 		Ficha ficha = new Ficha (4,3, alice.getColor(), 
 				TokenType.MODERATE_PASTURE);
-		
-		Game game = new Game (mg);
+
 		ManantialesMove move = new ManantialesMove (alice, ficha);
 		Move mv = board.doMove(game, new Move (move));
-		
 		
 		ficha = new Ficha (4,5, bob.getColor(), 
 				TokenType.MODERATE_PASTURE);
@@ -142,8 +140,9 @@ public class ManantialesSharedBoardTest {
 				TokenType.MODERATE_PASTURE);
 		move = new ManantialesMove (charlie, ficha);
 		mv = board.doMove(game, new Move (move));
-		
-		mg = (ManantialesGame) game.getImplementation();
+
+        game = board.getGame(gameId);
+		ManantialesGame mg = (ManantialesGame) game.getImplementation();
 		assertTrue ("CheckConstraint not fired!", mg.getCheckConditions() != null);
 		assertEquals (1, mg.getCheckConditions().size());
 	}

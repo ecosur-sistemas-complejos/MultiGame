@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.pente{
+package mx.ecosur.multigame.gente{
     
     import flash.events.MouseEvent;
     import flash.geom.Point;
@@ -28,6 +28,7 @@ package mx.ecosur.multigame.pente{
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.entity.ChatMessage;
+    import mx.ecosur.multigame.entity.Game;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.entity.Move;
@@ -37,11 +38,11 @@ package mx.ecosur.multigame.pente{
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.model.GameModel;
     import mx.ecosur.multigame.model.MoveModel;
-    import mx.ecosur.multigame.pente.entity.BeadString;
-    import mx.ecosur.multigame.pente.entity.PenteGame;
-    import mx.ecosur.multigame.pente.entity.PenteMove;
-    import mx.ecosur.multigame.pente.entity.PentePlayer;
-    import mx.ecosur.multigame.pente.entity.StrategyPlayer;
+    import mx.ecosur.multigame.gente.entity.BeadString;
+    import mx.ecosur.multigame.gente.entity.PenteGame;
+    import mx.ecosur.multigame.gente.entity.PenteMove;
+    import mx.ecosur.multigame.gente.entity.PentePlayer;
+    import mx.ecosur.multigame.gente.entity.StrategyPlayer;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.effects.AnimateProperty;
     import mx.events.CloseEvent;
@@ -56,7 +57,7 @@ package mx.ecosur.multigame.pente{
     import mx.rpc.remoting.RemoteObject;
 
     /**
-     * Represents a game of pente. Contains a pente board and cell store 
+     * Represents a game of gente. Contains a gente board and cell store
      * and controls the main flow of control for the game.
      */
     public class PenteGameController {
@@ -105,14 +106,14 @@ package mx.ecosur.multigame.pente{
         /**
          * Constructor 
          */
-        public function PenteGameController(currentPlayer:GamePlayer, 
+        public function PenteGameController(currentGame:Game, currentPlayer:GamePlayer, 
             board:PenteBoard, chatPanel:ChatPanel, playersViewer:PentePlayersViewer, 
             tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:PenteMoveViewer, animateLayer:UIComponent)
        {
             super();
             
             // set private references
-            _gameId = currentPlayer.game.id;
+            _gameId = currentGame.id;
             _currentPlayer = currentPlayer;
             _board = board;
             _chatPanel = chatPanel;
@@ -132,7 +133,7 @@ package mx.ecosur.multigame.pente{
             _gameService.addEventListener(FaultEvent.FAULT, gameServiceFaultHandler);
             
             // initialize message receiver
-            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _currentPlayer.game.id);
+            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _gameId);
             _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
             
             // initialize the board
@@ -181,18 +182,22 @@ package mx.ecosur.multigame.pente{
          *  
          * @param players the new list of players
          */
-        public function updatePlayers(players:ArrayCollection):void{
+        public function updatePlayers(game:PenteGame):void{                        
             /* Force compilation of StrategyPlayer in .swf file - ugly code */
             var strategyPlayer:StrategyPlayer;
-            
+
+            _game = game;
+
             var gamePlayer:GamePlayer;
-            for (var i:int = 0; i < players.length; i++){
-                gamePlayer = GamePlayer(players[i]); 
-                if (gamePlayer.id == _currentPlayer.id){
+            for (var i:int = 0; i < game.players.length; i++){
+                gamePlayer = GamePlayer(game.players[i]);
+                if (gamePlayer.registrant.id == _currentPlayer.registrant.id){
+                    Alert.show ("Changing player.  Turn.  Before: " + _currentPlayer.turn + ", Now: " + gamePlayer.turn);
                     _currentPlayer = gamePlayer;
                     _chatPanel.currentPlayer = _currentPlayer;
                     this.isTurn = _currentPlayer.turn;
                 }
+
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
                         _gameStatus.showMessage("Its your turn", Color.getColorCode(_currentPlayer.color));
@@ -202,8 +207,9 @@ package mx.ecosur.multigame.pente{
                     }
                 }
             }
-            _playersViewer.players = players;
-            _players = players;
+            
+            _playersViewer.players = game.players;
+            _players = game.players;
         }
         
         /*
@@ -285,16 +291,20 @@ package mx.ecosur.multigame.pente{
                     initGrid(GameGrid(event.result));
                     break;
                 case GAME_SERVICE_GET_PLAYERS_OP:
-                    updatePlayers(ArrayCollection(event.result));
+                    updatePlayers (PenteGame (event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
-                    _moves = ArrayCollection(event.result)
+                    _moves = ArrayCollection(event.result);
                     _moveViewer.initFromMoves(_moves);
                     _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
+                    /*var moveModel:MoveModel = MoveModel (event.result);
+                    _executingMove = PenteMove(moveModel.implementation);*/
                     _executingMove = null;
                     break;
+                default:
+                    Alert.show(call.operation + " was not handled.");
             }
         }
         
@@ -357,13 +367,13 @@ package mx.ecosur.multigame.pente{
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
-                    gameModel = GameModel (message.body);
-                    game = PenteGame (gameModel.implementation);
+                    game = PenteGame (message.body);
                     if (game == null)
                         Alert.show ("Game from model [" + gameModel + "] is null!");
-                    var players:ArrayCollection = PenteGame(gameModel.implementation).players;
-                    updatePlayers(players);
-                    break;
+                    var pentegame:PenteGame = PenteGame(gameModel.implementation)
+                    _game = pentegame;
+                    updatePlayers(pentegame);
+                    break;            
             }
         }
         
@@ -510,7 +520,7 @@ package mx.ecosur.multigame.pente{
         }
         
         public function quitGame (gamePlayer:GamePlayer):void {
-            var call:Object = _gameService.quitGame(gamePlayer);
+            var call:Object = _gameService.quitGame(_game, gamePlayer);
             call.operation = "quitGame";
             _isEnded = true;
         }        
@@ -785,7 +795,7 @@ package mx.ecosur.multigame.pente{
                 move.player = _currentPlayer;
                 move.destinationCell = destination;
                 move.status = Move.UNVERIFIED;
-                var call:Object = _gameService.doMove(move);
+                var call:Object = _gameService.doMove(_game, move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;
                 _executingMove = move; 
                 

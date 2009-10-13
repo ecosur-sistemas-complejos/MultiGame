@@ -79,9 +79,9 @@ public class GameService {
 		return registrar;
 	}
 	
-	public GridPlayer startNewGame(GridRegistrant player, Color preferedColor,
+	public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor,
 			String gameTypeStr) {
-		GridPlayer gamePlayer = null;
+		ServiceGameEvent ret = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();							
 			GridGame game = null;
@@ -95,11 +95,17 @@ public class GameService {
 				game = new ManantialesGame();
 				break;				
 			}
-			
-			GamePlayer playerModel = registrar.registerPlayer(new Game(game), 
-					new Registrant(player));
-			gamePlayer = (GridPlayer) playerModel.getImplementation();
-			
+
+            Game model = new Game (game);            
+			model = registrar.registerPlayer(model, new Registrant(player));
+            for (GamePlayer impl : model.listPlayers()) {
+                GridPlayer gridPlayer = (GridPlayer) impl.getImplementation();
+                if (gridPlayer.getRegistrant().equals(player)) {
+                    ret = new ServiceGameEvent ((GridGame) model.getImplementation(), gridPlayer);
+                    break;
+                }
+            }
+
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -110,19 +116,27 @@ public class GameService {
 		} catch (NoClassDefFoundError e) {
 			e.printStackTrace();
 		}
-		return gamePlayer;
+
+		return ret;
 	}
 	
-	public GridPlayer joinPendingGame (GridGame game, GridRegistrant player, 
+	public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
 			Color preferredColor) 
 	{
-		GridPlayer ret = null;
+		ServiceGameEvent ret = null;
 		RegistrarRemote registrar = getRegistrar();
 		try {
-			GamePlayer playerModel = registrar.registerPlayer (new Game(game), 
-					new Registrant(player));
-			ret = (GridPlayer) playerModel.getImplementation();
-			
+			Game model = new Game (game);
+            model = registrar.registerPlayer (new Game(game),
+					new Registrant(registrant));
+            for (GamePlayer gp : model.listPlayers()) {
+                GridPlayer player = (GridPlayer) gp.getImplementation();
+                if (player.getRegistrant().equals(registrant)) {
+                    ret = new ServiceGameEvent ((GridGame) model.getImplementation(), player);
+                    break;
+                }
+            }
+
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
 			throw new GameException (e);
@@ -148,17 +162,17 @@ public class GameService {
 	/*
 	 * Starts a new game with a given player and the number of selected AI robots. 
 	 */
-	public GridPlayer startNewGameWithAI (GridRegistrant player, Color preferredColor, 
+	public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
 			String gameTypeStr, String [] strategies)
 	{
-		GridPlayer ret = null;
+		ServiceGameEvent ret = null;
 		try {
 			RegistrarRemote registrar = getRegistrar();
 			GameType gameType = GameType.valueOf(gameTypeStr);
 			if (gameType.equals(GameType.PENTE)) {
-				GridGame game = new GenteGame ();	
-				GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
-						new Registrant (player));
+				GridGame game = new GenteGame ();
+                Game model = new Game (game);
+				model = registrar.registerPlayer(model, new Registrant (registrant));
 				for (int i = 0; i < strategies.length; i++) {
 					if (strategies [ i ].equals("HUMAN"))
 						continue;
@@ -167,14 +181,17 @@ public class GameService {
 					GridRegistrant robot = new GridRegistrant (
 							strategy.name() + "-" + (i + 1));
 					GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
-					registrar.registerAgent (
-							new Game(game), new Agent (agent));
+					model = registrar.registerAgent (model, new Agent (agent));
 				}
-				
-				ret = (GridPlayer) gamePlayer.getImplementation();
-				
-			} else 
-				ret = startNewGame(player, preferredColor, gameTypeStr);
+
+                for (GamePlayer player : model.listPlayers()) {
+                    GridPlayer gp = (GridPlayer) player.getImplementation();
+                    if (gp.getRegistrant().equals(registrant)) {
+                        ret = new ServiceGameEvent ((GridGame) model.getImplementation(), gp);
+                        break;
+                    }
+                }
+            }
 			
 		} catch (InvalidRegistrationException e) {
 			e.printStackTrace();
@@ -221,17 +238,16 @@ public class GameService {
 		return gridGame.getGrid();
 	}
 
-	public List<GridPlayer> getPlayers(int gameId) {
+	public GridGame getPlayers(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		Game game = sharedBoard.getGame(gameId);
-		GridGame gridGame = (GridGame) game.getImplementation();
-		return gridGame.getPlayers();
+        Game gameModel = sharedBoard.getGame(gameId);
+        return (GridGame) gameModel.getImplementation();
 	}
 
-	public void doMove(GridGame game, GridMove move) {
+	public Move doMove(GridGame game, GridMove move) {
 		SharedBoardRemote sharedBoard = getSharedBoard();		
 		try {
-			sharedBoard.doMove(new Game (game), new Move(move));
+			return sharedBoard.doMove(new Game (game), new Move(move));
 		} catch (InvalidMoveException e) {
 			e.printStackTrace();
 			throw new GameException(e);
@@ -240,11 +256,11 @@ public class GameService {
 
 	public List<GridMove> getMoves(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
-		List<GridMove> moves = new ArrayList<GridMove>();		
+		List<GridMove> moves = new ArrayList<GridMove>();
 		Collection<Move> boardMoves = sharedBoard.getMoves(gameId);
 		for (Move move : boardMoves) {
 			moves.add((GridMove) move.getImplementation());
-		}		
+		}
 		return moves;
 	}
 

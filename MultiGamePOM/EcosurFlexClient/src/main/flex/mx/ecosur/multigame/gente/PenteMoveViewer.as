@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.pente {
+package mx.ecosur.multigame.gente {
     
     import flash.events.MouseEvent;
     
@@ -21,7 +21,7 @@ package mx.ecosur.multigame.pente {
     import mx.controls.Spacer;
     import mx.ecosur.multigame.entity.*;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.pente.entity.*;
+    import mx.ecosur.multigame.gente.entity.*;
     import mx.events.DynamicEvent;
     
     /**

@@ -9,9 +9,9 @@
  * @author awaterma@ecosur.mx
 */
 
-package mx.ecosur.multigame.pente.entity {
+package mx.ecosur.multigame.gente.entity {
     
-    import mx.ecosur.multigame.pente.entity.PentePlayer;
+    import mx.ecosur.multigame.gente.entity.PentePlayer;
     
     /**
      * Represents a server side StrategyPlayer object

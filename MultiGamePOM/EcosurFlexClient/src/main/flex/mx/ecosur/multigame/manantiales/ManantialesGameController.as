@@ -93,9 +93,9 @@ package mx.ecosur.multigame.manantiales
         	// set private references
         	_gameWindow = gameWindow;
         	_currentPlayer = ManantialesPlayer (gameWindow.currentPlayer);
-            _gameId = _currentPlayer.game.id;
-            _game = ManantialesGame(_currentPlayer.game);
-            
+            _game = ManantialesGame(gameWindow.currentGame);
+            _gameId = _game.id; 
+
                 // instantiate collections 
             _moves = new ArrayCollection();
             _tokenStorePanels = new ArrayCollection();
@@ -110,10 +110,8 @@ package mx.ecosur.multigame.manantiales
                 gameServiceFaultHandler);
             
             // initialize message receiver
-            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, 
-                _currentPlayer.game.id);
-            _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, 
-                processMessage);           
+            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
+            _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);           
             
             // initialize game status
             _gameWindow.gameStatus.showMessage("Welcome to the game " + 
@@ -364,8 +362,7 @@ package mx.ecosur.multigame.manantiales
                     game = ManantialesGame(gameModel.implementation);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
-                    var players:ArrayCollection = game.players;
-                    updatePlayers(players);
+                    updatePlayers(game);
                     break;
                 case GameEvent.CONDITION_RAISED:
                     conditionModel = ConditionModel (message.body);
@@ -410,7 +407,7 @@ package mx.ecosur.multigame.manantiales
                     initGrid(GameGrid(event.result));
                     break;
                 case GAME_SERVICE_GET_PLAYERS_OP:
-                    updatePlayers(ArrayCollection(event.result));
+                    updatePlayers(ManantialesGame (event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
                     _moves = ArrayCollection(event.result)
@@ -641,13 +638,14 @@ package mx.ecosur.multigame.manantiales
          *  
          * @param players the new list of players
          */
-        public function updatePlayers(players:ArrayCollection):void{
-            var gamePlayer:ManantialesPlayer;           
+        public function updatePlayers(game:ManantialesGame):void{
+            this._game = game;
+
+            var gamePlayer:ManantialesPlayer;
             var i:int;
             
-            for (i = 0; i < players.length; i++){
-                gamePlayer = ManantialesPlayer(players[i]);
-                _game = ManantialesGame(gamePlayer.game); 
+            for (i = 0; i < game.players.length; i++){
+                gamePlayer = ManantialesPlayer(game.players[i]);
                 if (gamePlayer.id == _currentPlayer.id){
                     _currentPlayer = gamePlayer;
                     _gameWindow.chatPanel.currentPlayer = _currentPlayer;
@@ -665,12 +663,12 @@ package mx.ecosur.multigame.manantiales
                 }
             }           
                         
-            _gameWindow.playersViewer.players = players;
-            _players = players;
+            _gameWindow.playersViewer.players = _game.players;
+            _players = _game.players;
         }
         
         public function quitGame (gamePlayer:GamePlayer):void {
-        	var call:Object = _gameService.quitGame(gamePlayer);
+        	var call:Object = _gameService.quitGame(_game, gamePlayer);
             call.operation = "quitGame";
         }
         

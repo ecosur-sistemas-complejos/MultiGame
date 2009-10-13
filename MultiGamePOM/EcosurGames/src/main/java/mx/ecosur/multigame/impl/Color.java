@@ -11,6 +11,8 @@
 
 package mx.ecosur.multigame.impl;
 
+import javax.persistence.Embeddable;
+
 public enum Color {
 	YELLOW, BLUE, RED, GREEN, BLACK, UNKNOWN;
 

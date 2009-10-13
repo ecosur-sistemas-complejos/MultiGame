@@ -61,14 +61,6 @@ package mx.ecosur.multigame.entity {
 			_turn = turn;
 		}
 		
-		public function get game():Game{
-			return _game;
-		}
-		
-		public function set game(game:Game):void{
-			_game = game;
-		}
-		
 		public function toString():String{
 			return "id = " + id + ", player = {" + registrant + "}, color = " + 
 			     color + ", turn = " + turn;

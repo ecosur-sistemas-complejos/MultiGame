@@ -42,7 +42,7 @@ public class AgentListener implements MessageListener {
 	@EJB
 	private SharedBoardRemote sharedBoard;
 
-	private static Logger logger = Logger.getLogger(
+	private static final Logger logger = Logger.getLogger(
 			AgentListener.class.getCanonicalName());
 
 	private static final long serialVersionUID = -312450142866686545L;
@@ -59,14 +59,14 @@ public class AgentListener implements MessageListener {
 				for (GamePlayer p : players) {
 					if (p instanceof Agent) {
 						Agent agent = (Agent) p;
-						if (agent.isTurn() && game.getState() != GameState.ENDED) {
-							/* Simple 50ms sleep */
-							try {
-								Thread.sleep(250);					
-								Move move = agent.determineNextMove(game);		
-								logger.info("Agent moving: " + move);
-								sharedBoard.doMove(game, move);				
-								message.acknowledge();
+						if (game.getState() == GameState.PLAY) {
+							try {					
+								Thread.sleep(250);
+								Move move = agent.determineNextMove(game);
+                                if (move != null) {
+								    sharedBoard.doMove(game, move);
+								    message.acknowledge();
+                                }
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							} catch (InvalidMoveException e) {

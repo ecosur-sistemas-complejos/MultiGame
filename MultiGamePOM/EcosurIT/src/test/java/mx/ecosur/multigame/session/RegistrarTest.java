@@ -56,13 +56,13 @@ public class RegistrarTest {
 	public void testPlayerRegistration () throws InvalidRegistrationException {
 		GridRegistrant player = new GridRegistrant ("Alice");
 		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
+		Game model = registrar.registerPlayer(new Game(game),
 				new Registrant (player));
 		for (int i = 0; i < 3; i++) {
 			GridRegistrant registrant = new GridRegistrant (
 					"TEST" + "-" + (i + 1));
-			registrar.registerPlayer (
-					new Game(game), new Registrant (registrant));
+			model = registrar.registerPlayer (
+					model, new Registrant (registrant));
 		}		
 	}
 
@@ -70,15 +70,15 @@ public class RegistrarTest {
 	public void testDuplicatePlayerRegistration () throws InvalidRegistrationException {
 		Exception caught = null;
 		GridRegistrant player = new GridRegistrant ("Alice");
-		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
-				new Registrant (player));
+		GridGame game = new GenteGame ();
+        Game model = new Game (game);
+		model = registrar.registerPlayer(model, new Registrant (player));
 		try {
 			for (int i = 0; i < 3; i++) {
 				GridRegistrant registrant = new GridRegistrant (
 						"TEST");
-				registrar.registerPlayer (
-						new Game(game), new Registrant (registrant));
+				model = registrar.registerPlayer (
+						model, new Registrant (registrant));
 			}
 		} catch (Exception e) {
 			caught = e;
@@ -91,8 +91,9 @@ public class RegistrarTest {
 	@Test
 	public void testSimpleRobotRegistration () throws InvalidRegistrationException {
 		GridRegistrant player = new GridRegistrant ("Alice");
-		GridGame game = new GenteGame ();	
-		GamePlayer gamePlayer = registrar.registerPlayer(new Game(game), 
+		GridGame game = new GenteGame ();
+        Game model = new Game (game);
+		model = registrar.registerPlayer(model, 
 				new Registrant (player));
 		for (int i = 0; i < 3; i++) {
 			GenteStrategy strategy = GenteStrategy.valueOf(
@@ -100,8 +101,7 @@ public class RegistrarTest {
 			GridRegistrant robot = new GridRegistrant (
 					strategy.name() + "-" + (i + 1));
 			GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
-			registrar.registerAgent (
-					new Game(game), new Agent (agent));
+			registrar.registerAgent (model, new Agent (agent));
 		}
 	}	
 	

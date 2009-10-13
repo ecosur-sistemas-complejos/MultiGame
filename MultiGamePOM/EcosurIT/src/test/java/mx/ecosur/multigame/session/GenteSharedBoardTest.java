@@ -73,10 +73,10 @@ public class GenteSharedBoardTest {
 		
 		for (int i = 0; i < 4; i++) {
 			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
-			GamePlayer player = registrar.registerPlayer(boardGame, registrant);
+			boardGame = registrar.registerPlayer(boardGame, registrant);
 		}
 
-        gameId= game.getId();
+        gameId = boardGame.getId();
 		
 		/* Get the SharedBoard */
 		board = (SharedBoardRemote) ic.lookup(

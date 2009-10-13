@@ -24,22 +24,6 @@ package mx.ecosur.multigame.model
             _id = id;
         }
 
-        public function get turn ():Boolean {
-            return _turn;
-        }
-
-        public function set turn (turn:Boolean):void {
-            _turn = turn;
-        }
-
-        public function get game ():GameModel {
-            return _game;
-        }
-
-        public function set game (game:GameModel):void {
-            _game = game;
-        }
-
         public function get implementation ():GamePlayer {
             return _gamePlayer;
         }

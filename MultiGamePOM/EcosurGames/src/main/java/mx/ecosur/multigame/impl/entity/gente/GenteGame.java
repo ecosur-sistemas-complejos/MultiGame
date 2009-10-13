@@ -49,9 +49,6 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 
-@NamedQueries( {
-	@NamedQuery(name = "getPenteGame", query = "select g from GenteGame g where g.state =:state"),
-	@NamedQuery(name = "getPenteGameById", query = "select g from GenteGame g where g.id=:id ") })
 @Entity
 public class GenteGame extends GridGame {
 	

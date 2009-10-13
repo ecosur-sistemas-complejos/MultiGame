@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.pente{
+package mx.ecosur.multigame.gente{
 	
 	import flash.geom.Point;
 	
@@ -21,9 +21,9 @@ package mx.ecosur.multigame.pente{
 	import mx.ecosur.multigame.component.Token;
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.pente.entity.PenteGame;
-	import mx.ecosur.multigame.pente.entity.PenteMove;
-	import mx.ecosur.multigame.pente.entity.PentePlayer;
+	import mx.ecosur.multigame.gente.entity.PenteGame;
+	import mx.ecosur.multigame.gente.entity.PenteMove;
+	import mx.ecosur.multigame.gente.entity.PentePlayer;
 	import mx.effects.AnimateProperty;
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
@@ -34,7 +34,7 @@ package mx.ecosur.multigame.pente{
 	
 
 	/**
-	 * Replays a game of pente.
+	 * Replays a game of gente.
 	 */
 	public class PenteGameReplayController {
 		

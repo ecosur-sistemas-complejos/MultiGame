@@ -13,6 +13,7 @@
     <mx:Script> 
         <![CDATA[
             import mx.core.Application;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
             import mx.controls.Alert;
@@ -32,6 +33,7 @@
             
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
+            protected var _currentGame:ManantialesGame;
             private var _helpPanel:HelpPanel; 
         
             public function init():void {
@@ -43,6 +45,14 @@
             
             public function destroy():void{
             	_controller.destroy();
+            }
+
+            public function set currentGame (currentGame:ManantialesGame):void {
+                _currentGame = currentGame;
+            }
+
+            public function get currentGame ():ManantialesGame {
+                return _currentGame;
             }
             
             public function set currentPlayer(currentPlayer:GamePlayer):void{

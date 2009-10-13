@@ -87,7 +87,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * TODO:  Make this generic.
 	 * @throws InvalidRegistrationException 
 	 */
-	public GamePlayer registerPlayer (Game game, Registrant registrant) 
+	public Game registerPlayer (Game game, Registrant registrant)
 		throws InvalidRegistrationException 
 	{
 		if (!em.contains(game.getImplementation())) {
@@ -111,14 +111,14 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		GamePlayer player = game.registerPlayer (registrant);		
 		em.persist(player.getImplementation());			
 		messageSender.sendPlayerChange(game);		
-		return player;	
+		return game;
 	}
 	
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
 	 */
-	public Agent registerAgent(Game game, Agent agent) throws 
+	public Game registerAgent(Game game, Agent agent) throws
 		InvalidRegistrationException 
 	{		
 		if (!em.contains(game.getImplementation())) {
@@ -145,12 +145,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.merge(game.getImplementation());	
 		
 		messageSender.sendPlayerChange(game);		
-		return agent;		
+		return game;		
 	}		
 
-	public void unregister(Game game, GamePlayer player) 
-		throws 
-	InvalidRegistrationException {
+	public Game unregister(Game game, GamePlayer player) throws InvalidRegistrationException {
 
 		/* Remove the user from the Game */
 		if (!em.contains(game.getImplementation()))
@@ -160,6 +158,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.refresh (game.getImplementation());
 		game.removePlayer(player);
 		game.setState(GameState.ENDED);
+        messageSender.sendPlayerChange(game);	
+        return game;
 	}
 
 	/* (non-Javadoc)

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="Chat">
 
-	<mx:Script> 
+	<mx:Script>
         <![CDATA[
-        	import mx.utils.StringUtil;
+        import mx.ecosur.multigame.entity.Game;
+        import mx.utils.StringUtil;
         
         	import mx.controls.Alert;
         	import mx.controls.Text;
@@ -17,6 +18,7 @@
         	import mx.ecosur.multigame.enum.GameEvent;
 			
             public var currentPlayer:GamePlayer;
+            public var currentGame:Game;
 			
 			private function send():void {
 				if(StringUtil.trim(msg.text).length == 0){
@@ -28,7 +30,7 @@
 				chatMessage.body = msg.text;
 				chatMessage.dateSent = new Date();
 				message.body = chatMessage;
-				message.headers.GAME_ID = currentPlayer.game.id;
+				message.headers.GAME_ID = currentGame.id;
 				message.headers.GAME_EVENT = GameEvent.CHAT;
 				producer.send(message);
 				msg.text = "";

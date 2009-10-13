@@ -25,9 +25,6 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@NamedQueries( { 
-	@NamedQuery(name = "getMoves", query = "select m from GridMove m where m.player.game=:game order by m.id asc") 
-})
 public abstract class GridMove implements MoveImpl, Cloneable {
 
 	private static final long serialVersionUID = 8017901476308051472L;

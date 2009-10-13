@@ -30,6 +30,7 @@
             
             public function set text(text:String):void {
             	_text = text;
+                reason.text = _text;
             }
             
             public function get positive():Boolean {
@@ -57,7 +58,7 @@
 
 
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-        <mx:Text width="100%" id="reason" text="{_text}" />
+        <mx:Text width="100%" id="reason" />
         <mx:HBox width="100%">
             <mx:Image id="indicator" source="{imageSource}" />
         </mx:HBox>        

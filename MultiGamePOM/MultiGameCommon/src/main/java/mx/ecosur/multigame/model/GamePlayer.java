@@ -29,17 +29,7 @@ public class GamePlayer implements Model {
 	
 	public int getId() {
 		return implementation.getId();
-	}	
-
-	
-	public boolean isTurn () {
-		return implementation.isTurn();
 	}
-	
-	public void setTurn (boolean bool) {
-		implementation.setTurn(bool);
-	}
-
 	
 	public GamePlayerImpl getImplementation() {
 		return implementation;

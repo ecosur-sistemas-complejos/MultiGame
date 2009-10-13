@@ -16,13 +16,10 @@ package mx.ecosur.multigame.impl.entity.gente;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.Embedded;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
@@ -35,11 +32,8 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 
 @Entity
-@NamedQueries( { 
-	@NamedQuery(name = "getPenteMoves", 
-			query = "select pm from GenteMove pm where pm.player.game=:game order by pm.id asc") 
-})
-public class GenteMove extends GridMove {
+public class
+        GenteMove extends GridMove {
 	
 	private static final long serialVersionUID = -6635578671376146204L;
 
@@ -47,7 +41,7 @@ public class GenteMove extends GridMove {
 		COOPERATIVE, SELFISH, NEUTRAL
 	}
 	
-	private Set<BeadString> trias, tesseras;
+	private HashSet<BeadString> trias, tesseras;
 
 	private CooperationQualifier qualifier;
 	
@@ -94,13 +88,13 @@ public class GenteMove extends GridMove {
 	/**
 	 * Gets the Trias that this move created.
 	 */
-	public Set<BeadString> getTrias () {
+	public HashSet<BeadString> getTrias () {
 		if (trias == null)
 			trias = new HashSet<BeadString> ();		
 		return trias;
 	}
 	
-	public void setTrias (Set<BeadString> new_trias) {
+	public void setTrias (HashSet<BeadString> new_trias) {
 		trias = new_trias;
 	}
 	
@@ -148,13 +142,13 @@ public class GenteMove extends GridMove {
 	/**
 	 * Gets the Tesseras that this move created.  
 	 */
-	public Set<BeadString> getTesseras () {	
+	public HashSet<BeadString> getTesseras () {
 		if (tesseras == null)
 			tesseras = new HashSet<BeadString> ();		
 		return tesseras;
 	}
 	
-	public void setTesseras (Set<BeadString> new_tesseras) {
+	public void setTesseras (HashSet<BeadString> new_tesseras) {
 		tesseras = new_tesseras;
 	}
 	

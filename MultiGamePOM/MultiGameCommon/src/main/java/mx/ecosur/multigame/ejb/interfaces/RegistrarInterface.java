@@ -28,18 +28,19 @@ public interface RegistrarInterface {
 	public Registrant register (Registrant regsitrant);
 	
 	/**
-	 * Registers a player with the specified Game object.  Allows greater control
-	 * over player registration with specific games.
-	 * 
-	 * @param repository
-	 * 			  the persistent repository for the implemented game
-	 * @param gqme
-	 * 			 the game the agent is being registered to
+	 * Registers a player with the specified Game object.
+     * Returns the game wherein the player was registered
+     * (for retrieving persistancy information and updating
+     * state).
+     *
+	 * @param game
+	 * 		the game the agent is being registered to
 	 * @param player
-	 * @return
+     *      the registrant being registered
+	 * @return Game
 	 * @throws InvalidRegistrationException
 	 */
-	public GamePlayer registerPlayer(Game game, Registrant player) 
+	public Game registerPlayer(Game game, Registrant player)
 		throws 
 	InvalidRegistrationException;
 	
@@ -51,7 +52,7 @@ public interface RegistrarInterface {
 	 * @param agent
 	 * 		the agent being registered
 	 */
-	public GamePlayer registerAgent(Game game, Agent agent)
+	public Game registerAgent(Game game, Agent agent)
 		throws 
 	InvalidRegistrationException;
 
@@ -63,7 +64,7 @@ public interface RegistrarInterface {
 	 * @throws InvalidRegistrationException 
 	 * @throws RemoteException 
 	 */
-	public void unregister(Game game, GamePlayer player) 
+	public Game unregister(Game game, GamePlayer player) 
 		throws 
 	InvalidRegistrationException;
 
