@@ -13,13 +13,15 @@ package mx.ecosur.multigame.entity {
 	
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.enum.Color;
+	import mx.ecosur.multigame.model.implementation.CellImplementation;
 	
 	/**
 	 * Represents a server side cell object
 	 */
 	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridCell")]
-	public class Cell extends UIComponent{
+	public class Cell extends UIComponent implements CellImplementation {
 		
+		protected var _id:int;
 		protected var _row:int;
 		protected var _column:int;
 		protected var _color:String;

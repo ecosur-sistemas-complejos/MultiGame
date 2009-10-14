@@ -24,7 +24,7 @@
             public var timer:Timer;
     
             private function init(event:Event):void {
-            	introTxt.text = "Welcome!! " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
+            	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
             }
 
             public function reload(event:Event):void {
@@ -43,12 +43,13 @@
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-
 	<mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
 		<mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-		<component:JoinUnfinishedGame id="gameList" player="{player}" width="100%" gameChosen="dispatchEvent(event)"/>
-		<component:JoinPendingGame id="pendingList" player="{player}" width="100%" gameJoined="dispatchEvent(event)"/>
-		<component:StartNewGame player="{player}" width="100%" registered="dispatchEvent(event)"/>
+		<mx:TabNavigator width="100%" height="250">
+			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="dispatchEvent(event)"/>
+            <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="dispatchEvent(event)"/>
+            <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>
+		</mx:TabNavigator>				
         <mx:Button id="updateBtn" label="Update" click="reload(event)" />
 	</mx:Panel>
 

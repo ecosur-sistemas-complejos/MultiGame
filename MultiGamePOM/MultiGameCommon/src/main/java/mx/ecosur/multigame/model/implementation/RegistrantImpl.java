@@ -33,15 +33,4 @@ public interface RegistrantImpl extends Implementation {
 	 */
 	public String getName();
 
-	/**
-	 * @param em 
-	 * @return
-	 */
-	public List<GameImpl> getAvailableGames(EntityManager em);
-
-	/**
-	 * @return
-	 */
-	public List<GameImpl> getCurrentGames(EntityManager em);
-
 }

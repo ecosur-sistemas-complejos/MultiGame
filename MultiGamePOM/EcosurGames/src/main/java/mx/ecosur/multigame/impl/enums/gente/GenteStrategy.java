@@ -33,36 +33,41 @@ public enum GenteStrategy {
 	
 	private transient KnowledgeAgent kagent;
 
+    private KnowledgeBase kbase;
+
     private static Logger logger = Logger.getLogger(GenteStrategy.class
             .getCanonicalName());
 
     public KnowledgeBase getRuleBase() {
         /* Check that rule set has not already been created */
-        if (kagent == null) {
-            logger.fine("Initializing knowledge agent for type " + this);
-            /* Setup the knowledge agent */
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                    this + "Agent");
+        if (kbase == null) {
+            if (kagent == null) {
+                logger.fine("Initializing knowledge agent for type " + this);
+                /* Setup the knowledge agent */
+                kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                        this + "Agent");
+            }
+
+            switch (this) {
+                case BLOCKER:
+                    kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                            "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                    break;
+                case RANDOM:
+                    kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                            "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                    break;
+                case SIMPLE:
+                    kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
+                            "/mx/ecosur/multigame/impl/blocker-agent.xml")));
+                    break;
+                default:
+                    break;
+            }
+
+            kbase = kagent.getKnowledgeBase();
         }
 
-        switch (this) {
-            case BLOCKER:
-                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
-                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
-                break;
-            case RANDOM:
-                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
-                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
-                break;
-            case SIMPLE:
-                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(
-                        "/mx/ecosur/multigame/impl/blocker-agent.xml")));
-                break;
-            default:
-                break;
-        }
-
-        return kagent.getKnowledgeBase();
-
+        return kbase;
     }
 }

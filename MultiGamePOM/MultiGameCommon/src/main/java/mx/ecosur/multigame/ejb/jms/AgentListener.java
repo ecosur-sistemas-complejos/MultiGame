@@ -61,27 +61,21 @@ public class AgentListener implements MessageListener {
 						Agent agent = (Agent) p;
 						if (game.getState() == GameState.PLAY) {
 							try {					
-								Thread.sleep(250);
 								Move move = agent.determineNextMove(game);
-                                if (move != null) {
-								    sharedBoard.doMove(game, move);
-								    message.acknowledge();
-                                }
-							} catch (InterruptedException e) {
-								e.printStackTrace();
+                                if (move != null)
+								    sharedBoard.doMove(game, move);								                                    
+                                message.acknowledge();
 							} catch (InvalidMoveException e) {
 								logger.log(Level.SEVERE, "Invalid move suggested " +
 										"by agent!");
 								e.printStackTrace();
 							}
-							
 						}
 					}
 				}
 			}
 			
 		} catch (JMSException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 	}

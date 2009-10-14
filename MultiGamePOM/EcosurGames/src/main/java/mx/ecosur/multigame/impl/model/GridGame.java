@@ -31,13 +31,22 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import org.drools.agent.KnowledgeAgent;
+import org.drools.KnowledgeBase;
 
 /**
  * @author awaterma, maxmil
  *
  */
 @NamedQueries( {
-	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id")
+	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
+	@NamedQuery(name = "getCurrentGames",
+        query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
+            "GridPlayer as player where player.registrant = :registrant and player MEMBER OF gme.players " +
+            "and gme.state <> :state"),
+    @NamedQuery(name = "getAvailableGames",
+	    query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
+            "GridPlayer as player where player.registrant = :registrant and gme.state = :state and player " +
+                "NOT MEMBER OF gme.players")        
 })
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -73,6 +82,8 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	protected GameState state;
 
     protected transient KnowledgeAgent kagent;
+
+    protected KnowledgeBase kbase;
 	
 	protected long version;
 	

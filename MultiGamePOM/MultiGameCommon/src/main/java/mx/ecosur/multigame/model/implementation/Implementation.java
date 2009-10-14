@@ -14,7 +14,6 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 
-@Entity
 public interface Implementation extends Serializable {
 
 }

@@ -21,6 +21,7 @@ import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import org.drools.solver.core.solution.Solution;
+import org.drools.solver.core.score.Score;
 
 /**
  * The ManantialesSolution class is used for calculating the solution for the 
@@ -211,7 +212,13 @@ public class ManantialesSolution implements Solution {
 		distributionMap.put(distribution.color, distribution);
 	}
 
-	/* (non-Javadoc)
+    public Score getScore() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setScore(Score score) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }/* (non-Javadoc)
 	 * @see org.drools.solver.core.solution.Solution#getFacts()
 	 */
 	public Collection<? extends Object> getFacts() {

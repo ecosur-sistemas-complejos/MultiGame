@@ -124,9 +124,10 @@ public class ManantialesGame extends GridGame {
             kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
                 getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
         }
-        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
+        
+        kbase = kagent.getKnowledgeBase();
 
-        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
         for (Object fact : getFacts()) {
             session.insert(fact);
@@ -150,14 +151,18 @@ public class ManantialesGame extends GridGame {
       * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
-        if (kagent == null) {
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "ManantialesAgent");
-            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        if (kbase == null) {
+            if (kagent == null) {
+                kagent = KnowledgeAgentFactory.newKnowledgeAgent(
+                    "ManantialesAgent");
+                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
+                    getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+            }
+
+            kbase = kagent.getKnowledgeBase();
         }
-        KnowledgeBase ruleBase = kagent.getKnowledgeBase();
-        StatefulKnowledgeSession session = ruleBase.newStatefulKnowledgeSession();
+
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
         session.insert(move);
         for (Implementation fact : getFacts()) {

@@ -19,6 +19,11 @@ public interface MoveImpl extends Implementation {
 	 * @return
 	 */
 	public int getId();
+	
+	/**
+	 * 
+	 */
+	public void setId(int id);
 
 	/**
 	 * @return

@@ -11,26 +11,22 @@
 
 package mx.ecosur.multigame.entity {
 	
-	import mx.ecosur.multigame.entity.Cell;
-	import mx.ecosur.multigame.entity.GamePlayer;
-
+	import mx.ecosur.multigame.enum.MoveStatus;
+	import mx.ecosur.multigame.model.GamePlayerModel;
+	import mx.ecosur.multigame.model.implementation.MoveImplementation;
+	
 	/**
 	 * Represents a server side Player object.
 	 */
 	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridMove")]
-	public class Move {
+	public class Move implements MoveImplementation {
 		
-		private var _id:int;
-		private var _player:GamePlayer;
-		private var _current:Cell;
-		private var _destination:Cell;
-		private var _status:String;
-		
-		/* Enumeration of move status' */
-		public static const UNVERIFIED:String = "UNVERIFIED";
-		public static const VERIFIED:String = "VERIFIED";
-		public static const INVALID:String = "INVALID";
-		public static const MOVED:String = "MOVED";
+		protected var _id:int;
+		protected var _player:GamePlayer;
+		protected var _playerModel:GamePlayerModel;
+		protected var _current:Cell;
+		protected var _destination:Cell;
+		protected var _status:String;
 		
 		public function Move() {
 			super();
@@ -43,6 +39,38 @@ package mx.ecosur.multigame.entity {
 		public function set id(id:int):void{
 			_id = id;
 		}
+		        
+        public function get status():String{
+            return _status;
+        }
+        
+        public function set status(status:String):void{
+            _status = status;
+        }
+        
+        public function get playerModel ():GamePlayerModel {
+        	return _playerModel;
+        }
+        
+        public function set playerModel(playerModel:GamePlayerModel):void {
+        	_playerModel = playerModel;
+        }
+         
+        public function get currentCell():Cell{
+            return _current;
+        }
+        
+        public function set currentCell(current:Cell):void{
+            _current = current;
+        }
+        
+        public function get destinationCell():Cell{
+            return _destination;
+        }
+        
+        public function set destinationCell(destination:Cell):void{
+            _destination = destination;
+        }        		
 		
 		public function get player():GamePlayer{
 			return _player;
@@ -51,29 +79,6 @@ package mx.ecosur.multigame.entity {
 		public function set player(player:GamePlayer):void{
 			_player = player;
 		}
-		
-		public function get destinationCell():Cell{
-			return _destination;
-		}
-		
-		public function set destinationCell(destination:Cell):void{
-			_destination = destination;
-		}
-		
-        public function get currentCell():Cell{
-            return _current;
-        }
-        
-        public function set currentCell(current:Cell):void{
-            _current = current;
-        }		
-		
-		public function get status():String{
-			return _status;
-		}
-		
-		public function set status(status:String):void{
-			_status = status;
-		}
+			
 	}
 }

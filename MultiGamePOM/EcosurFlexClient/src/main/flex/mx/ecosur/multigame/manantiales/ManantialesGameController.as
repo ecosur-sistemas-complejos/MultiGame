@@ -18,6 +18,7 @@ package mx.ecosur.multigame.manantiales
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.enum.ExceptionType;
 	import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.enum.MoveStatus;	
 	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 	import mx.ecosur.multigame.manantiales.entity.Ficha;
 	import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
@@ -270,7 +271,7 @@ package mx.ecosur.multigame.manantiales
                 move.player = _currentPlayer;
                 move.currentCell = boardCell.token.cell;
                 move.destinationCell = token.ficha;
-                move.status = Move.UNVERIFIED;
+                move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _game.mode;
                 
                 var call:Object = _gameService.doMove(move);

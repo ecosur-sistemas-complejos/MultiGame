@@ -32,14 +32,7 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 @NamedQueries( {
 	@NamedQuery(name = "getRegistrantByName", 
-			query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name"),
-	@NamedQuery(name = "getCurrentGames", query = "select gme from GridGame as gme, IN (gme.players) as players, " +
-            "GridPlayer as player where player.registrant = :player and player MEMBER OF gme.players " +
-            "and gme.state <> :state"),
-    @NamedQuery(name = "getAvailableGames", 
-	    query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
-            "GridPlayer as player where player.registrant = :player and gme.state = :state and player " +
-                "NOT MEMBER OF gme.players")
+			query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name")
 })
 @Entity
 public class GridRegistrant implements RegistrantImpl, Cloneable {
@@ -179,29 +172,7 @@ public class GridRegistrant implements RegistrantImpl, Cloneable {
 				+ ", lastRegistration = " + lastRegistration + ", wins = "
 				+ wins;
 	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getAvailableGames()
-	 */
-    @SuppressWarnings("unchecked")
-	public List<GameImpl> getAvailableGames(EntityManager em) {
-		Query query = em.createNamedQuery("getAvailableGames");
-		query.setParameter("player", this);
-		query.setParameter("state", GameState.WAITING);
-		return query.getResultList();
-	}
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.RegistrantImpl#getCurrentGames()
-	 */
-    @SuppressWarnings("unchecked")
-	public List<GameImpl> getCurrentGames(EntityManager em) {
-		Query query = em.createNamedQuery("getCurrentGames");
-		query.setParameter("player", this);
-		query.setParameter("state",GameState.ENDED);
-		return query.getResultList();
-	}
-
+    
     @Override
     public boolean equals(Object obj) {
         boolean ret = obj instanceof GridRegistrant;

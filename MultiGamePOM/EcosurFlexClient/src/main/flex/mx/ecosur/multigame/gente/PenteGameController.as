@@ -36,6 +36,7 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.model.GameModel;
     import mx.ecosur.multigame.model.MoveModel;
     import mx.ecosur.multigame.gente.entity.BeadString;
@@ -192,7 +193,6 @@ package mx.ecosur.multigame.gente{
             for (var i:int = 0; i < game.players.length; i++){
                 gamePlayer = GamePlayer(game.players[i]);
                 if (gamePlayer.registrant.id == _currentPlayer.registrant.id){
-                    Alert.show ("Changing player.  Turn.  Before: " + _currentPlayer.turn + ", Now: " + gamePlayer.turn);
                     _currentPlayer = gamePlayer;
                     _chatPanel.currentPlayer = _currentPlayer;
                     this.isTurn = _currentPlayer.turn;
@@ -303,8 +303,6 @@ package mx.ecosur.multigame.gente{
                     _executingMove = PenteMove(moveModel.implementation);*/
                     _executingMove = null;
                     break;
-                default:
-                    Alert.show(call.operation + " was not handled.");
             }
         }
         
@@ -367,7 +365,8 @@ package mx.ecosur.multigame.gente{
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
-                    game = PenteGame (message.body);
+                    gameModel = GameModel (message.body);
+                    game = PenteGame (gameModel.implementation);
                     if (game == null)
                         Alert.show ("Game from model [" + gameModel + "] is null!");
                     var pentegame:PenteGame = PenteGame(gameModel.implementation)
@@ -794,7 +793,7 @@ package mx.ecosur.multigame.gente{
                 var move:PenteMove = new PenteMove();
                 move.player = _currentPlayer;
                 move.destinationCell = destination;
-                move.status = Move.UNVERIFIED;
+                move.status = String (MoveStatus.UNVERIFIED);
                 var call:Object = _gameService.doMove(_game, move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;
                 _executingMove = move; 

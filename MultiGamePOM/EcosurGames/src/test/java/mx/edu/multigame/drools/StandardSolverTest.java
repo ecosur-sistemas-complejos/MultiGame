@@ -46,6 +46,7 @@ import org.junit.Test;
  * The intention is to use 
  */
 
+/*
 public class StandardSolverTest {
 	
 	private static Logger logger = Logger.getLogger(
@@ -117,18 +118,17 @@ public class StandardSolverTest {
 		assertTrue ("MatrixGenerator.isViable() broken!", 
 				generator.isViable(matrix));
 	}
-	
+*/
 	/**
 	 * 	Tests all possible distributions with at least 12 tokens and a score
 	 *  greater than 24.
 	 * @throws UnconfigurableException 
 	 */
+/*
 	public void testGeneratedMatrices () throws UnconfigurableException {
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
 		MatrixGenerator generator = new MatrixGenerator();
-		/* Strange behavior from generator */
-		/* Hack to test "valid" matrices" */
 		Set<Matrix> matrices = generator.find();
 		while (matrices.size() == 0)
 			matrices = generator.find();
@@ -214,8 +214,7 @@ public class StandardSolverTest {
 		}
 		
 		reader.close();
-		
-		/* Summarize the results */
+
 		logger.info ("---------------------------------------------");
 		logger.info ("Unconfigurable matrices .....\n");
 		for (Matrix matrix : unconfigurable) {
@@ -245,12 +244,13 @@ public class StandardSolverTest {
 		logger.info ("Unsolvable matrices: " + bad);
 		logger.info ("Solvable matrices: " + good);	
 	}
-	
+*/
 	/**
 	 * @param reader
 	 * @return
 	 * @throws IOException 
 	 */
+/*
 	@SuppressWarnings("unchecked")
 	private Matrix readMatrix(BufferedReader reader) throws IOException {
 		CSV csv = new CSV();
@@ -263,7 +263,7 @@ public class StandardSolverTest {
 					line.indexOf("TOKENS") > 0 || line.equals(",,"))
 				continue;
 			List<String> distLine = csv.parse(line);
-			/* Create a distribution */
+
 			int forest = 0, managed = 0, intensive = 0, silvo = 0, counter = 0;
 			for (String str : distLine) {
 				if (counter == 0)
@@ -298,3 +298,4 @@ public class StandardSolverTest {
 		return ret;
 	}
 }
+*/

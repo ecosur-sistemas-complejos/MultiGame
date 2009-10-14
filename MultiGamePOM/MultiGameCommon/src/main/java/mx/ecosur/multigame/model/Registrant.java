@@ -47,24 +47,6 @@ public class Registrant implements Model {
 		playerImpl.setLastRegistration(currentTimeMillis);		
 	}
 	
-	public List<Game> getCurrentGames (EntityManager em) {
-		List<GameImpl> implementations = playerImpl.getCurrentGames(em);
-		List<Game> ret = new ArrayList<Game> ();
-		for (GameImpl imp : implementations) {
-			ret.add(new Game(imp));
-		}
-		return ret;
-	}
-	
-	public List<Game> getAvailableGames (EntityManager em) {
-		List<GameImpl> implementations = playerImpl.getAvailableGames(em);
-		List<Game> ret = new ArrayList<Game> ();
-		for (GameImpl imp : implementations) {
-			ret.add(new Game(imp));
-		}
-		return ret;
-	}
-	
 	
 	public RegistrantImpl getImplementation() {
 		return playerImpl;

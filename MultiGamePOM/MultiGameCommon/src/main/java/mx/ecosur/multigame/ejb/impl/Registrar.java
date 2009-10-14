@@ -16,6 +16,7 @@
 package mx.ecosur.multigame.ejb.impl;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -35,6 +36,7 @@ import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Registrant;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -166,13 +168,31 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.model.Registrant)
 	 */
 	public List<Game> getUnfinishedGames(Registrant player) {
-		return player.getCurrentGames(em);		
+        List<Game> ret = new ArrayList<Game>();
+        Query query = em.createNamedQuery("getCurrentGames");
+		query.setParameter("registrant", player.getImplementation());
+		query.setParameter("state",GameState.ENDED);
+		List<GameImpl> games = query.getResultList();
+        for (GameImpl impl : games) {
+            ret.add(new Game(impl));
+        }
+
+        return ret;
 	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
 	 */
 	public List<Game> getPendingGames(Registrant player) {
-		return player.getAvailableGames(em);
+        List<Game> ret = new ArrayList<Game>();        
+        Query query = em.createNamedQuery("getAvailableGames");
+		query.setParameter("registrant", player.getImplementation());
+		query.setParameter("state", GameState.WAITING);
+		List<GameImpl> games = query.getResultList();
+        for (GameImpl impl : games) {
+            ret.add(new Game(impl));
+        }
+
+        return ret;
 	}
 }

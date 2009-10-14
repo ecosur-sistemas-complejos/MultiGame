@@ -93,7 +93,8 @@
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 
     <mx:VBox width="100%">
-    	<mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
+    	<mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700" 
+    		doubleClick="joinGame()" doubleClickEnabled="true">
     		<mx:columns>
 				<mx:DataGridColumn headerText="Started" dataField="created" width="120"/>
 				<mx:DataGridColumn headerText="Game type" dataField="gameType" width="80"/>
@@ -101,9 +102,6 @@
 				<mx:DataGridColumn headerText="Status" dataField="status" width="120" wordWrap="true"/>
     		</mx:columns>
 		</mx:DataGrid>
-		<mx:ControlBar horizontalAlign="right" width="100%">
-			<mx:Button id="joinBtn" label="Join" click="joinGame()" />
-		</mx:ControlBar>
 	</mx:VBox>
     
 </mx:Panel>
