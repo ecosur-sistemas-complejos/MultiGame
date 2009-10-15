@@ -6,7 +6,7 @@ BrowserHistoryUtils = {
             return true;
         }
         else if (elm.attachEvent) {
-            var r = elm.attachEvent('on' + evType, fn);
+            return elm.attachEvent('on' + evType, fn);
             return r;
         }
         else {

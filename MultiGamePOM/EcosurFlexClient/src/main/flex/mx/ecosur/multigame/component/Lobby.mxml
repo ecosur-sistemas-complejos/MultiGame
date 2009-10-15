@@ -25,6 +25,13 @@
     
             private function init(event:Event):void {
             	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
+            	timer = new Timer(500);
+            	timer.addEventListener(TimerEvent.TIMER, timeout);
+            	timer.start();
+            }
+
+            public function timeout (event:Event):void {
+            	pendingList.reload(event);
             }
 
             public function reload(event:Event):void {
@@ -49,8 +56,7 @@
 			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="dispatchEvent(event)"/>
             <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="dispatchEvent(event)"/>
             <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>
-		</mx:TabNavigator>				
-        <mx:Button id="updateBtn" label="Update" click="reload(event)" />
+		</mx:TabNavigator>
 	</mx:Panel>
 
 </mx:Box>

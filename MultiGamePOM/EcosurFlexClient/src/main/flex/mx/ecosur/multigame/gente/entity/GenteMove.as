@@ -18,7 +18,7 @@ package mx.ecosur.multigame.gente.entity {
 	 * Represents a server side PenteMove object.
 	 */
 	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteMove")]
-	public class PenteMove extends Move {
+	public class GenteMove extends Move {
 		
 		private var _captures:ArrayCollection;
 		
@@ -32,7 +32,7 @@ package mx.ecosur.multigame.gente.entity {
 		
 		private var _qualifier:String;
 		
-		public function PenteMove() {
+		public function GenteMove() {
 			super();
 		}
 		

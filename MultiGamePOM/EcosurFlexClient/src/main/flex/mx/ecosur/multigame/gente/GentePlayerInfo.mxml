@@ -4,13 +4,13 @@
 	<mx:Script>
         <![CDATA[
         import mx.formatters.DateFormatter;
-        import mx.ecosur.multigame.gente.entity.PentePlayer;
+        import mx.ecosur.multigame.gente.entity.GentePlayer;
         import mx.ecosur.multigame.enum.Color;
         import mx.controls.Alert;
 
-        private var _pentePlayer:PentePlayer;
+        private var _pentePlayer:GentePlayer;
 
-        public function set pentePlayer(pentePlayer:PentePlayer):void {
+        public function set pentePlayer(pentePlayer:GentePlayer):void {
             playerTeam.text = Color.getTeamName(pentePlayer.color);
             var d:Date = new Date(pentePlayer.registrant.lastRegistration);
             var df:DateFormatter = new DateFormatter();
@@ -29,7 +29,7 @@
             _pentePlayer = pentePlayer;
         }
 
-        public function get pentePlayer():PentePlayer {
+        public function get pentePlayer():GentePlayer {
             return _pentePlayer;
         }
         	        

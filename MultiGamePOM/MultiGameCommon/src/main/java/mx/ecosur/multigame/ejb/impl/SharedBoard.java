@@ -24,10 +24,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
@@ -82,44 +79,47 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	public Move doMove(Game game, Move move) throws InvalidMoveException {		
 		logger.fine("Preparing to execute move " + move);
 
-        if (game.getImplementation() == null || move.getImplementation() == null)
-                return move;
+        if (game.getImplementation() == null)
+                throw new InvalidMoveException ("Null game implementation!");
+        else if (move.getImplementation() == null)
+                throw new InvalidMoveException ("Null move implementation!");
 		
 		/* Refresh a detached GamePlayer in the Move */
 		GamePlayer player = move.getPlayer();
-		
+
 		/* Refresh a detached Game in GamePlayer */
 		if (!em.contains (game.getImplementation())) {
 			GameImpl impl = em.find (game.getImplementation().getClass(),
 					game.getId());
-			game = new Game (impl);			
+			game = new Game (impl);
 		}
-		
+
 		if (!em.contains (player.getImplementation())) {
 			player = new GamePlayer (em.find(
 					player.getImplementation().getClass(), player.getId()));
-		}		
-		
+		}
+
 		move.setPlayer(player);
-		
-		if (!em.contains(move.getImplementation()))
-			em.persist(move.getImplementation());
+
+		if (!em.contains(move.getImplementation())) {
+            em.persist(move.getImplementation());            
+        }
 		else {
 			Move test = new Move (em.find (move.getImplementation().getClass(),
 					move.getImplementation().getId()));
 			if (test.getImplementation() != null)
 				move.setImplementation(test.getImplementation());
-		}			
-
-		/* Execute the move */
-		move = game.move (move);	
-		
-		if (move.getStatus().equals(MoveStatus.INVALID)) {
-			throw new InvalidMoveException ("INVALID Move.");
 		}
 
+		/* Execute the move */
+		move = game.move (move);
+
+		if (move.getStatus().equals(MoveStatus.INVALID)) {
+			throw new InvalidMoveException ("INVALID Move.");
+        }
+
 		return move;
-		
+
 	}
 
 	/* (non-Javadoc)

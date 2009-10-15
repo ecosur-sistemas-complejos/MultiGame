@@ -29,13 +29,13 @@
     <mx:Script>
         <![CDATA[
         import mx.controls.Alert;
-        import mx.ecosur.multigame.gente.PenteGameReplayController;
+        import mx.ecosur.multigame.gente.GenteGameReplayController;
 
-        private var _controller:PenteGameReplayController;
+        private var _controller:GenteGameReplayController;
 
         public function init():void {
             var gameId:int = Application.application.parameters.gameId;
-            _controller = new PenteGameReplayController(gameId, board, playersViewer, moveViewer, animateLayer);
+            _controller = new GenteGameReplayController(gameId, board, playersViewer, moveViewer, animateLayer);
         }
                  
         ]]>
@@ -49,11 +49,11 @@
 	<mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
 		<mx:VBox width="300" height="100%" >
 			<mx:Panel title="Players" width="100%" titleStyleName="panelTitle">
-            	<pente:PentePlayersViewer id="playersViewer" width="100%"/>
+            	<pente:GentePlayersViewer id="playersViewer" width="100%"/>
         	</mx:Panel>
-        	<pente:PenteMoveViewer id="moveViewer" titleStyleName="panelTitle" title="Moves" width="100%" height="100%"/>
+        	<pente:GenteMoveViewer id="moveViewer" titleStyleName="panelTitle" title="Moves" width="100%" height="100%"/>
         </mx:VBox>
-        <pente:PenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
+        <pente:GenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
     </mx:HBox>
     <mx:UIComponent id="animateLayer" />
 </mx:Application>

@@ -15,22 +15,22 @@ package mx.ecosur.multigame.gente {
 	import mx.containers.Accordion;
 	import mx.controls.Button;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.gente.entity.PentePlayer;
+	import mx.ecosur.multigame.gente.entity.GentePlayer;
 	
 	/**
 	 * Visual component representing the players that are in the current
 	 * game.
 	 * 
 	 */
-	public class PentePlayersViewer extends Accordion {
+	public class GentePlayersViewer extends Accordion {
 		
 		private var _players:ArrayCollection; 
-		private var _selectedPlayer:PentePlayerInfo;
+		private var _selectedPlayer:GentePlayerInfo;
 		
 		/**
 		 * Default constructor 
 		 */
-		public function PentePlayersViewer(){
+		public function GentePlayersViewer(){
 			super();
 		}
 		
@@ -44,10 +44,10 @@ package mx.ecosur.multigame.gente {
 			updatePlayers();
 		}
 		
-		public function setTurn(player:PentePlayer):void{
-			var ppi:PentePlayerInfo;
+		public function setTurn(player:GentePlayer):void{
+			var ppi:GentePlayerInfo;
 			for (var i:int = 0; i < getChildren().length; i++){
-				ppi = PentePlayerInfo(getChildAt(i))
+				ppi = GentePlayerInfo(getChildAt(i))
 				if (ppi.pentePlayer.id == player.id){
 					selectPlayer(ppi);
 					return;
@@ -61,12 +61,12 @@ package mx.ecosur.multigame.gente {
 		 * 
 		 * @param player
 		 */
-		public function getPlayerButton(player:PentePlayer):Button{
+		public function getPlayerButton(player:GentePlayer):Button{
 			
-			var ppi:PentePlayerInfo;
+			var ppi:GentePlayerInfo;
 			var btn:Button;
 			for (var i:int = 0; i < getChildren().length; i++){
-				ppi = PentePlayerInfo(getChildAt(i))
+				ppi = GentePlayerInfo(getChildAt(i))
 				if (ppi.pentePlayer.id == player.id){
 					btn = getHeaderAt(i);
 					return btn;
@@ -80,19 +80,19 @@ package mx.ecosur.multigame.gente {
 		 */
 		private function updatePlayers():void{
 			
-			var ppi:PentePlayerInfo;
+			var ppi:GentePlayerInfo;
 			var btn:Button;
-			var pentePlayer:PentePlayer;
+			var pentePlayer:GentePlayer;
 			var i:int;
 			
 			for (i = 0; i < _players.length; i++){
 				
 				// Create the player information
-				pentePlayer = PentePlayer(_players[i]);
+				pentePlayer = GentePlayer(_players[i]);
 				if (getChildren().length > i) {
-					ppi = PentePlayerInfo(getChildAt(i));
+					ppi = GentePlayerInfo(getChildAt(i));
 				}else{
-					ppi = new PentePlayerInfo();
+					ppi = new GentePlayerInfo();
 					addChild(ppi);
 				}
 				ppi.pentePlayer = pentePlayer;
@@ -117,7 +117,7 @@ package mx.ecosur.multigame.gente {
 			}
 		}
 		
-		private function selectPlayer(ppi:PentePlayerInfo):void{
+		private function selectPlayer(ppi:GentePlayerInfo):void{
 			
 			//deselect selected
 			if (_selectedPlayer){

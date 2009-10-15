@@ -40,9 +40,9 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.model.GameModel;
     import mx.ecosur.multigame.model.MoveModel;
     import mx.ecosur.multigame.gente.entity.BeadString;
-    import mx.ecosur.multigame.gente.entity.PenteGame;
-    import mx.ecosur.multigame.gente.entity.PenteMove;
-    import mx.ecosur.multigame.gente.entity.PentePlayer;
+    import mx.ecosur.multigame.gente.entity.GenteGame;
+    import mx.ecosur.multigame.gente.entity.GenteMove;
+    import mx.ecosur.multigame.gente.entity.GentePlayer;
     import mx.ecosur.multigame.gente.entity.StrategyPlayer;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.effects.AnimateProperty;
@@ -61,14 +61,14 @@ package mx.ecosur.multigame.gente{
      * Represents a game of gente. Contains a gente board and cell store
      * and controls the main flow of control for the game.
      */
-    public class PenteGameController {
+    public class GenteGameController {
         
         // visual components
-        private var _board:PenteBoard;
+        private var _board:GenteBoard;
         private var _chatPanel:ChatPanel;
-        private var _playersViewer:PentePlayersViewer;
+        private var _playersViewer:GentePlayersViewer;
         private var _tokenStore:TokenStore;
-        private var _moveViewer:PenteMoveViewer;
+        private var _moveViewer:GenteMoveViewer;
         private var _gameStatus:GameStatus;
         private var _animateLayer:UIComponent;
         
@@ -77,7 +77,7 @@ package mx.ecosur.multigame.gente{
         private var _currentPlayer:GamePlayer;
         private var _players:ArrayCollection;
         private var _gameGrid:GameGrid;
-        private var _game:PenteGame;
+        private var _game:GenteGame;
         private var _moves:ArrayCollection; //all moves made in the game
         private var _selectedMoveInd:Number; //index of selected move in _moves
         private var _winners:ArrayCollection;
@@ -89,7 +89,7 @@ package mx.ecosur.multigame.gente{
         // flags
         private var _isMoving:Boolean;
         private var _isTurn:Boolean;
-        private var _executingMove:PenteMove; // Reference to move that has been made by the client but not yet validated by the server.
+        private var _executingMove:GenteMove; // Reference to move that has been made by the client but not yet validated by the server.
         private var _isEnded:Boolean;
         
         // constants
@@ -107,9 +107,9 @@ package mx.ecosur.multigame.gente{
         /**
          * Constructor 
          */
-        public function PenteGameController(currentGame:Game, currentPlayer:GamePlayer, 
-            board:PenteBoard, chatPanel:ChatPanel, playersViewer:PentePlayersViewer, 
-            tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:PenteMoveViewer, animateLayer:UIComponent)
+        public function GenteGameController(currentGame:Game, currentPlayer:GamePlayer,
+            board:GenteBoard, chatPanel:ChatPanel, playersViewer:GentePlayersViewer,
+            tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:GenteMoveViewer, animateLayer:UIComponent)
        {
             super();
             
@@ -154,7 +154,7 @@ package mx.ecosur.multigame.gente{
                     Color.getColorCode(currentPlayer.color));
     
             // initialize the move viewer
-            _moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
+            _moveViewer.addEventListener(GenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
             _moveViewer.board = _board;
             
             // get the game grid, players and moves
@@ -183,7 +183,7 @@ package mx.ecosur.multigame.gente{
          *  
          * @param players the new list of players
          */
-        public function updatePlayers(game:PenteGame):void{                        
+        public function updatePlayers(game:GenteGame):void{
             /* Force compilation of StrategyPlayer in .swf file - ugly code */
             var strategyPlayer:StrategyPlayer;
 
@@ -234,7 +234,7 @@ package mx.ecosur.multigame.gente{
             // prepare message for winners
             var msg:String = "";
             var color:uint;
-            var pentePlayer:PentePlayer = PentePlayer(_winners[0]);
+            var pentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
                 msg = pentePlayer.registrant.name + " has won the game.";
@@ -291,7 +291,7 @@ package mx.ecosur.multigame.gente{
                     initGrid(GameGrid(event.result));
                     break;
                 case GAME_SERVICE_GET_PLAYERS_OP:
-                    updatePlayers (PenteGame (event.result));
+                    updatePlayers (GenteGame (event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
                     _moves = ArrayCollection(event.result);
@@ -300,7 +300,7 @@ package mx.ecosur.multigame.gente{
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
                     /*var moveModel:MoveModel = MoveModel (event.result);
-                    _executingMove = PenteMove(moveModel.implementation);*/
+                    _executingMove = GenteMove(moveModel.implementation);*/
                     _executingMove = null;
                     break;
             }
@@ -333,7 +333,7 @@ package mx.ecosur.multigame.gente{
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
             var gameModel:GameModel = null;
-            var game:PenteGame = null;
+            var game:GenteGame = null;
         
             switch (gameEvent){
                 case GameEvent.BEGIN:
@@ -349,7 +349,7 @@ package mx.ecosur.multigame.gente{
                     break;
                 case GameEvent.END:
                     gameModel = GameModel (message.body);
-                    game = PenteGame (gameModel.implementation);
+                    game = GenteGame (gameModel.implementation);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     _winners = game.winners;                
@@ -359,17 +359,17 @@ package mx.ecosur.multigame.gente{
                     break;
                 case GameEvent.MOVE_COMPLETE:
                     var moveModel:MoveModel = MoveModel (message.body);                    
-                    var move:PenteMove = PenteMove(moveModel.implementation);
+                    var move:GenteMove = GenteMove(moveModel.implementation);
                     if (move == null)
                         Alert.show ("Move from model [" + moveModel + "] is null!");
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
                     gameModel = GameModel (message.body);
-                    game = PenteGame (gameModel.implementation);
+                    game = GenteGame (gameModel.implementation);
                     if (game == null)
                         Alert.show ("Game from model [" + gameModel + "] is null!");
-                    var pentegame:PenteGame = PenteGame(gameModel.implementation)
+                    var pentegame:GenteGame = GenteGame(gameModel.implementation)
                     _game = pentegame;
                     updatePlayers(pentegame);
                     break;            
@@ -382,21 +382,21 @@ package mx.ecosur.multigame.gente{
          */
         private function gotoMove(event:DynamicEvent):void{
 
-            var move:PenteMove = PenteMove(event.move);
+            var move:GenteMove = GenteMove(event.move);
             
             // if move is before the currently selected move then iterate
             // back over the moves transforming the board
             // else iterate forward
-            if(move.id < PenteMove(_moves[_selectedMoveInd]).id){
+            if(move.id < GenteMove(_moves[_selectedMoveInd]).id){
                 do{
-                    undoMove(PenteMove(_moves[_selectedMoveInd]));
+                    undoMove(GenteMove(_moves[_selectedMoveInd]));
                     _selectedMoveInd --;                    
-                }while(move.id < PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > 0);
-            }else if (move.id > PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length){
+                }while(move.id < GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > 0);
+            }else if (move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length){
                 do{
-                    doMove(PenteMove(_moves[_selectedMoveInd + 1]));
+                    doMove(GenteMove(_moves[_selectedMoveInd + 1]));
                     _selectedMoveInd ++;
-                }while(move.id > PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
+                }while(move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
             }
         }
         
@@ -404,12 +404,12 @@ package mx.ecosur.multigame.gente{
          * Adds a move to the internal list of moves. If the move is not present on the board then
          * it is animated.  
          */
-        private function addMove(move:PenteMove):void{
+        private function addMove(move:GenteMove):void{
             
             //get last move in game
-            var lastMove:PenteMove = null;
+            var lastMove:GenteMove = null;
             if (_moves.length > 0){
-                lastMove = PenteMove(_moves[length - 1]);
+                lastMove = GenteMove(_moves[length - 1]);
             }
             
             //if move is after the last move then add moves
@@ -428,9 +428,9 @@ package mx.ecosur.multigame.gente{
             }else{
                 
                 // Search for move in reverse order because its most likely to be the last move
-                var oldMove:PenteMove;
+                var oldMove:GenteMove;
                 for (var i:Number = _moves.length - 1; i >= 0; i--){
-                    oldMove = PenteMove(_moves[i]);
+                    oldMove = GenteMove(_moves[i]);
                     if (oldMove.id == move.id){
                         _moves[i] = move;
                         _moveViewer.updateMove(move);
@@ -443,7 +443,7 @@ package mx.ecosur.multigame.gente{
         /*
          * Animates a move
          */
-        private function doMove(move:PenteMove):void{
+        private function doMove(move:GenteMove):void{
             
             //check that destination is free
             var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
@@ -466,7 +466,7 @@ package mx.ecosur.multigame.gente{
                 startPoint = _animateLayer.globalToLocal(startPoint);
                 startSize = _board.tokenSize;
             }else{
-                var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
+                var playerBtn:Button = _playersViewer.getPlayerButton(GentePlayer(move.player));
                 startPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
                 startPoint = _playersViewer.localToGlobal(startPoint);
                 startPoint = _animateLayer.globalToLocal(startPoint);
@@ -539,7 +539,7 @@ package mx.ecosur.multigame.gente{
             boardCell.token.blink(1);
             
             // Update move viewer
-            var move:PenteMove = PenteMove(_moves[_selectedMoveInd])
+            var move:GenteMove = GenteMove(_moves[_selectedMoveInd])
             _moveViewer.selectedMove = move;
             
             // if winners are not present or the move must be qualified
@@ -557,7 +557,7 @@ package mx.ecosur.multigame.gente{
             
         }
         
-        private function undoMove(move:PenteMove):void{
+        private function undoMove(move:GenteMove):void{
             
             //define origin
             var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
@@ -575,7 +575,7 @@ package mx.ecosur.multigame.gente{
                 endPoint = _animateLayer.globalToLocal(endPoint);
                 endSize = _board.tokenSize;
             }else{
-                var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
+                var playerBtn:Button = _playersViewer.getPlayerButton(GentePlayer(move.player));
                 endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
                 endPoint = _playersViewer.localToGlobal(endPoint);
                 endPoint = _animateLayer.globalToLocal(endPoint);
@@ -632,10 +632,10 @@ package mx.ecosur.multigame.gente{
             if(token.cell.color == _currentPlayer.color && _isTurn){
                 _tokenStore.addToken();
             }
-            _moveViewer.selectedMove = PenteMove(_moves[_selectedMoveInd]);
+            _moveViewer.selectedMove = GenteMove(_moves[_selectedMoveInd]);
         }
         
-        private function checkBeadStrings(move:PenteMove):void{
+        private function checkBeadStrings(move:GenteMove):void{
 
             // ifthe move contains trias or tesseras then blink them
             var beadString:BeadString;
@@ -669,7 +669,7 @@ package mx.ecosur.multigame.gente{
 
         }
         
-        private function qualifyMove(move:PenteMove):void{
+        private function qualifyMove(move:GenteMove):void{
             
             var fnc:Function = function(eventObj:CloseEvent):void{
                 
@@ -790,7 +790,7 @@ package mx.ecosur.multigame.gente{
                 destination.column = boardCell.column;
                 
                 // do move in backend
-                var move:PenteMove = new PenteMove();
+                var move:GenteMove = new GenteMove();
                 move.player = _currentPlayer;
                 move.destinationCell = destination;
                 move.status = String (MoveStatus.UNVERIFIED);

@@ -11,13 +11,13 @@
 
 package mx.ecosur.multigame.gente.entity {
     
-    import mx.ecosur.multigame.gente.entity.PentePlayer;
+    import mx.ecosur.multigame.gente.entity.GentePlayer;
     
     /**
      * Represents a server side StrategyPlayer object
      */
     [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent")]
-    public class StrategyPlayer extends PentePlayer {
+    public class StrategyPlayer extends GentePlayer {
    
     	private var _strategy:String;
     	

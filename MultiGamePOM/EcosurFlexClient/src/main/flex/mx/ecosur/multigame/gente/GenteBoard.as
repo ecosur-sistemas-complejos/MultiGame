@@ -25,7 +25,7 @@ package mx.ecosur.multigame.gente {
     [Style(name="cellBorderThickness", type="int", format="Length")]
     [Style(name="cellPadding", type="int", format="Length")]
     
-    public class PenteBoard extends UIComponent {
+    public class GenteBoard extends UIComponent {
         
         private var _nCols:int; //number of cells on X axis
         private var _nRows:int; //number of cells of Y axis
@@ -65,7 +65,7 @@ package mx.ecosur.multigame.gente {
          * @param dragExitHandler
          * 
          */
-        public function PenteBoard(){
+        public function GenteBoard(){
             super();
             _cellsCreated = false;
             addEventListener(Event.RESIZE, function():void{invalidateSize()});

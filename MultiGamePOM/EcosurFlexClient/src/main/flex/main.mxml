@@ -10,17 +10,17 @@
 	<mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-        import mx.ecosur.multigame.gente.entity.PenteGame;
+        import mx.ecosur.multigame.gente.entity.GenteGame;
         import mx.managers.CursorManager;
 
         import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.event.GameEvent;
         import mx.ecosur.multigame.event.PlayerEvent;
         import mx.controls.Alert;
-        import mx.ecosur.multigame.gente.PenteGameWindow;
+        import mx.ecosur.multigame.gente.GenteGameWindow;
         import mx.ecosur.multigame.manantiales.ManantialesWindow;
 
-        private var _penteGameWindow:PenteGameWindow,
+        private var _penteGameWindow:GenteGameWindow,
                 _manantialesWindow:ManantialesWindow;
 
         private function gameComplete(event:Event):void {
@@ -36,11 +36,11 @@
 
         private function lobbyDone(event:GameEvent):void {
             setBusy();
-            if (event.game is PenteGame) {
+            if (event.game is GenteGame) {
                 //create new pente game window
-                _penteGameWindow = new PenteGameWindow();
+                _penteGameWindow = new GenteGameWindow();
                 _penteGameWindow.currentPlayer = event.gamePlayer;
-                _penteGameWindow.currentGame = PenteGame(event.game);
+                _penteGameWindow.currentGame = GenteGame(event.game);
                 _penteGameWindow.rows = event.game.rows;
                 _penteGameWindow.columns = event.game.columns;
                 _penteGameWindow.addEventListener("complete", gameComplete);
@@ -72,7 +72,7 @@
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
     	<component:Login id="login" complete="loginDone(event)" />
     	<component:Lobby id="lobby" registered="lobbyDone(event)" gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
-		<pente:PenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
+		<pente:GenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
 		<manantiales:ManantialesWindow id="manantialesGameWindow" complete="gameComplete(event)" />
 	</mx:ViewStack>
 </mx:Application>

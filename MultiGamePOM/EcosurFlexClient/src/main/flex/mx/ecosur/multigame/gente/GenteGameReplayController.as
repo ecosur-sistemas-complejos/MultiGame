@@ -21,9 +21,9 @@ package mx.ecosur.multigame.gente{
 	import mx.ecosur.multigame.component.Token;
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.gente.entity.PenteGame;
-	import mx.ecosur.multigame.gente.entity.PenteMove;
-	import mx.ecosur.multigame.gente.entity.PentePlayer;
+	import mx.ecosur.multigame.gente.entity.GenteGame;
+	import mx.ecosur.multigame.gente.entity.GenteMove;
+	import mx.ecosur.multigame.gente.entity.GentePlayer;
 	import mx.effects.AnimateProperty;
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
@@ -36,17 +36,17 @@ package mx.ecosur.multigame.gente{
 	/**
 	 * Replays a game of gente.
 	 */
-	public class PenteGameReplayController {
+	public class GenteGameReplayController {
 		
 		// Visual components
-		private var _board:PenteBoard;
-		private var _playersViewer:PentePlayersViewer;
-		private var _moveViewer:PenteMoveViewer;
+		private var _board:GenteBoard;
+		private var _playersViewer:GentePlayersViewer;
+		private var _moveViewer:GenteMoveViewer;
 		private var _animateLayer:UIComponent;
 		
 		// Data objects
         private var _gameId:int;
-		private var _game:PenteGame;
+		private var _game:GenteGame;
 		private var _moves:ArrayCollection; //all moves made in the game
 		private var _selectedMoveInd:Number; //index of selected move in _moves
 		
@@ -64,7 +64,7 @@ package mx.ecosur.multigame.gente{
 		 * Default constructor. 
 		 * 
 		 */
-		public function PenteGameReplayController(gameId:int, board:PenteBoard, playersViewer:PentePlayersViewer, moveViewer:PenteMoveViewer, animateLayer:UIComponent){
+		public function GenteGameReplayController(gameId:int, board:GenteBoard, playersViewer:GentePlayersViewer, moveViewer:GenteMoveViewer, animateLayer:UIComponent){
 			super();
 			
 			//set private references
@@ -82,7 +82,7 @@ package mx.ecosur.multigame.gente{
 			_gameService.addEventListener(FaultEvent.FAULT, gameServiceFaultHandler);
 			
 			//initialize the move viewer
-			_moveViewer.addEventListener(PenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMoveHandler);
+			_moveViewer.addEventListener(GenteMoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMoveHandler);
 			_moveViewer.board = _board;
 			
 			//get the game
@@ -99,12 +99,12 @@ package mx.ecosur.multigame.gente{
 			var call:Object = event.token;
 			switch (call.operation){
 				case GAME_SERVICE_GET_GAME_OP:
-					_game = PenteGame(event.result);
+					_game = GenteGame(event.result);
 					var callPlayers:Object = _gameService.getPlayers(_gameId);
 					callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
 					break;
 				case GAME_SERVICE_GET_PLAYERS_OP:
-					var pentePlayer:PentePlayer = PentePlayer(ArrayCollection(event.result)[0]);
+					var pentePlayer:GentePlayer = GentePlayer(ArrayCollection(event.result)[0]);
 					_playersViewer.players = ArrayCollection(event.result);
 					var callMoves:Object = _gameService.getMoves(_gameId);
 					callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
@@ -113,7 +113,7 @@ package mx.ecosur.multigame.gente{
 					_moves = ArrayCollection(event.result)
 					_moveViewer.initFromMoves(_moves);
 					_selectedMoveInd = -1;
-					gotoMove(PenteMove(_moves[0]));
+					gotoMove(GenteMove(_moves[0]));
 					break;
 			}
 		}
@@ -128,43 +128,43 @@ package mx.ecosur.multigame.gente{
 		
 		private function gotoMoveHandler(event:DynamicEvent):void{
 			
-			var move:PenteMove = PenteMove(event.move);
+			var move:GenteMove = GenteMove(event.move);
 			gotoMove(move);
 		}
 		
-		private function gotoMove(move:PenteMove):void{
+		private function gotoMove(move:GenteMove):void{
 
-			if(_selectedMoveInd > -1 && move.id < PenteMove(_moves[_selectedMoveInd]).id){
+			if(_selectedMoveInd > -1 && move.id < GenteMove(_moves[_selectedMoveInd]).id){
 				do{
-					undoMove(PenteMove(_moves[_selectedMoveInd]));
+					undoMove(GenteMove(_moves[_selectedMoveInd]));
 					_selectedMoveInd --;					
-				}while(move.id < PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > -1);
-			}else if ((_selectedMoveInd < 0 || move.id > PenteMove(_moves[_selectedMoveInd]).id) && _selectedMoveInd < _moves.length){
+				}while(move.id < GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > -1);
+			}else if ((_selectedMoveInd < 0 || move.id > GenteMove(_moves[_selectedMoveInd]).id) && _selectedMoveInd < _moves.length){
 				do{
-					doMove(PenteMove(_moves[_selectedMoveInd + 1]));
+					doMove(GenteMove(_moves[_selectedMoveInd + 1]));
 					_selectedMoveInd ++;
-				}while(move.id > PenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
+				}while(move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
 			}
 		}
 		
 		public function gotoFirstMove():void{
-			gotoMove(PenteMove(_moves[0]));
+			gotoMove(GenteMove(_moves[0]));
 		}
 		
 		public function gotoPreviousMove():void{
 			if (_selectedMoveInd > 0){
-				gotoMove(PenteMove(_moves[_selectedMoveInd - 1]));
+				gotoMove(GenteMove(_moves[_selectedMoveInd - 1]));
 			}
 		}
 		
 		public function gotoNextMove():void{
 			if (_selectedMoveInd < _moves.length - 2){
-				gotoMove(PenteMove(_moves[_selectedMoveInd + 1]));
+				gotoMove(GenteMove(_moves[_selectedMoveInd + 1]));
 			}
 		}
 		
 		public function gotoLastMove():void{
-			gotoMove(PenteMove(_moves[_moves.length - 1]));
+			gotoMove(GenteMove(_moves[_moves.length - 1]));
 		}
 		
 		/*
@@ -175,7 +175,7 @@ package mx.ecosur.multigame.gente{
 			//define origin
 			var startPoint:Point;
 			var startSize:Number;
-			var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
+			var playerBtn:Button = _playersViewer.getPlayerButton(GentePlayer(move.player));
 			startPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 			startPoint = _playersViewer.localToGlobal(startPoint);
 			startPoint = _animateLayer.globalToLocal(startPoint);
@@ -231,11 +231,11 @@ package mx.ecosur.multigame.gente{
 			
 			var token:Token = Token(AnimateProperty(event.currentTarget).target);
 			var boardCell:BoardCell = _board.getBoardCell(token.cell.column, token.cell.row);
-			var move:PenteMove = PenteMove(_moves[_selectedMoveInd]);
+			var move:GenteMove = GenteMove(_moves[_selectedMoveInd]);
 			_animateLayer.removeChild(token);
 			boardCell.token = token;
 			_moveViewer.selectedMove = move;
-			_playersViewer.setTurn(PentePlayer(move.player));
+			_playersViewer.setTurn(GentePlayer(move.player));
 		}
 		
 		private function undoMove(move:Move):void{
@@ -250,7 +250,7 @@ package mx.ecosur.multigame.gente{
 			//define destination
 			var endPoint:Point;
 			var endSize:Number;
-			var playerBtn:Button = _playersViewer.getPlayerButton(PentePlayer(move.player));
+			var playerBtn:Button = _playersViewer.getPlayerButton(GentePlayer(move.player));
 			endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
 			endPoint = _playersViewer.localToGlobal(endPoint);
 			endPoint = _animateLayer.globalToLocal(endPoint);
@@ -299,10 +299,10 @@ package mx.ecosur.multigame.gente{
 		private function endUndoMove(event:EffectEvent):void{
 			
 			var token:Token = Token(AnimateProperty(event.currentTarget).target);
-			var move:PenteMove = PenteMove(_moves[_selectedMoveInd]);
+			var move:GenteMove = GenteMove(_moves[_selectedMoveInd]);
 			_animateLayer.removeChild(token);
 			_moveViewer.selectedMove = move;
-			_playersViewer.setTurn(PentePlayer(move.player));
+			_playersViewer.setTurn(GentePlayer(move.player));
 		}
 	}
 }

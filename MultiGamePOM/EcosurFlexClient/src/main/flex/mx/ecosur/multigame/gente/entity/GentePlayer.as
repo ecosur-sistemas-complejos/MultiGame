@@ -18,14 +18,14 @@ package mx.ecosur.multigame.gente.entity {
 	 * Represents a server side GamePlayer object
 	 */
 	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GentePlayer")]
-	public class PentePlayer extends GamePlayer{
+	public class GentePlayer extends GamePlayer{
 		
 		private var _points:int;
 		private var _trias:ArrayCollection;
 		private var _tesseras:ArrayCollection;
-		private var _partner:PentePlayer;
+		private var _partner:GentePlayer;
 		
-		public function PentePlayer(){
+		public function GentePlayer(){
 			super();
 		}
 		
@@ -53,11 +53,11 @@ package mx.ecosur.multigame.gente.entity {
 			_tesseras = tesseras;
 		}
 		
-		public function get partner():PentePlayer{
+		public function get partner():GentePlayer{
 			return _partner;
 		}
 		
-		public function set partner(partner:PentePlayer):void {
+		public function set partner(partner:GentePlayer):void {
 			_partner = partner;
 		}
 	}

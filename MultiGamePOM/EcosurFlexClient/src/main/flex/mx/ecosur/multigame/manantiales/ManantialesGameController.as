@@ -274,7 +274,7 @@ package mx.ecosur.multigame.manantiales
                 move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _game.mode;
                 
-                var call:Object = _gameService.doMove(move);
+                var call:Object = _gameService.doMove(_game, move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;
                 _executingMove = move;   
                               
@@ -579,7 +579,7 @@ package mx.ecosur.multigame.manantiales
         		move.badYear = true;
         		move.player = _currentPlayer;   
         		move.mode = _game.mode;     		
-        		var call:Object = _gameService.doMove(move);
+        		var call:Object = _gameService.doMove(_game, move);
         		call.operation = GAME_SERVICE_DO_MOVE_OP;
         	}
         }

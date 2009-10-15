@@ -40,13 +40,12 @@ import org.drools.KnowledgeBase;
 @NamedQueries( {
 	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
 	@NamedQuery(name = "getCurrentGames",
-        query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
-            "GridPlayer as player where player.registrant = :registrant and player MEMBER OF gme.players " +
-            "and gme.state <> :state"),
+        query = "SELECT DISTINCT gme FROM GridGame as gme, IN (gme.players) as players, " +
+            "GridPlayer AS player WHERE player.registrant = :registrant AND player MEMBER OF gme.players " +
+            "AND gme.state <> :state"),
     @NamedQuery(name = "getAvailableGames",
-	    query = "select DISTINCT gme from GridGame as gme, IN (gme.players) as players, " +
-            "GridPlayer as player where player.registrant = :registrant and gme.state = :state and player " +
-                "NOT MEMBER OF gme.players")        
+	    query = "SELECT DISTINCT gme FROM GridGame as gme, IN (gme.players) as players, GridPlayer as player " +
+                "WHERE gme.state = :state and player.registrant <> :registrant")
 })
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -193,7 +192,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	
 	/**
 	 * The number of columns in the grid contained by this game.
-	 * @return
+	 * @return number of columns
 	 */
 
 	@Column (name="nColumns")

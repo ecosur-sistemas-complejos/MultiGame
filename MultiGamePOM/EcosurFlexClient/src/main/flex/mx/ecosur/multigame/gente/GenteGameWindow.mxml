@@ -26,10 +26,10 @@
         import mx.ecosur.multigame.entity.Move;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.entity.ChatMessage;
-        import mx.ecosur.multigame.gente.entity.PenteGame;
+        import mx.ecosur.multigame.gente.entity.GenteGame;
 
-        private var _controller:PenteGameController;
-        private var _currentGame:PenteGame;
+        private var _controller:GenteGameController;
+        private var _currentGame:GenteGame;
         private var _currentPlayer:GamePlayer;
         private var _helpPanel:HelpPanel;
 
@@ -39,11 +39,11 @@
         [Bindable]
         public var columns:int;
 
-        public function set currentGame(currentGame:PenteGame):void {
+        public function set currentGame(currentGame:GenteGame):void {
             _currentGame = currentGame;
         }
 
-        public function get currentGame():PenteGame {
+        public function get currentGame():GenteGame {
             return _currentGame;
         }
 
@@ -62,7 +62,7 @@
         }
 
         public function init():void {
-            _controller = new PenteGameController(_currentGame, _currentPlayer, board, chatPanel, playersViewer,
+            _controller = new GenteGameController(_currentGame, _currentPlayer, board, chatPanel, playersViewer,
                     tokenStore, gameStatus, moveViewer, animateLayer);
         }
 
@@ -125,14 +125,14 @@
 	        <component:GameStatus id="gameStatus" width="100%" />   
 	        <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}" 
 	        	tokenSize="{board.tokenSize}" width="100%"/>
-	        <pente:PenteMoveViewer id="moveViewer" title="Move History" width="100%" height="100%"/>
+	        <pente:GenteMoveViewer id="moveViewer" title="Move History" width="100%" height="100%"/>
 	    </mx:VBox>
 	    <mx:VBox id="centerBox" width="100%" height="100%">
-	        <pente:PenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
+	        <pente:GenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
 	    </mx:VBox>
 	    <mx:VBox id="rightBox" height="100%" width="300">
 	        <mx:Panel title="Score" width="100%">
-	            <pente:PentePlayersViewer id="playersViewer" width="100%" />
+	            <pente:GentePlayersViewer id="playersViewer" width="100%" />
 	        </mx:Panel>
 	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />
 	    </mx:VBox>
