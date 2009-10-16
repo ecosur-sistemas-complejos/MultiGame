@@ -40,12 +40,13 @@ import org.drools.KnowledgeBase;
 @NamedQueries( {
 	@NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
 	@NamedQuery(name = "getCurrentGames",
-        query = "SELECT DISTINCT gme FROM GridGame as gme, IN (gme.players) as players, " +
-            "GridPlayer AS player WHERE player.registrant = :registrant AND player MEMBER OF gme.players " +
-            "AND gme.state <> :state"),
+        query = "SELECT gme FROM GridGame AS gme JOIN gme.players AS player " +
+            "WHERE gme.state <> :state AND player.registrant = :registrant AND " +
+                "player MEMBER OF gme.players"),
     @NamedQuery(name = "getAvailableGames",
-	    query = "SELECT DISTINCT gme FROM GridGame as gme, IN (gme.players) as players, GridPlayer as player " +
-                "WHERE gme.state = :state and player.registrant <> :registrant")
+	    query = "SELECT DISTINCT gme FROM GridGame AS gme LEFT JOIN gme.players as player " +
+                "WHERE gme.state = :state AND player.registrant <> :registrant AND " +
+                "player MEMBER OF gme.players")
 })
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -296,13 +297,18 @@ public abstract class GridGame implements GameImpl, Cloneable {
 		
 		return ret;
 	}
+
+
+    public abstract String getGameType ();
+
+    public abstract void setGameType (String str);
 	
 	/* 
 	 * Clones a copy of the implemented sub-class
 	 */
     @Override
 	protected abstract Object clone() throws CloneNotSupportedException;
-	
+
     @Transient
 	public abstract List<Color> getColors();
 

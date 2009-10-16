@@ -129,4 +129,16 @@ public class Game implements Model {
 	public void setImplementation(Implementation impl) {
 		this.gameImpl = (GameImpl) gameImpl;
 	}
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+
+        if (obj instanceof Game) {
+            Game game = (Game) obj;
+            ret = (game.getId() == getId());
+        }
+
+        return ret;
+    }
 }

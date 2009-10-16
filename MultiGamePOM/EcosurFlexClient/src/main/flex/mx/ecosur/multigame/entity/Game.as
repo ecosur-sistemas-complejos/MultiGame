@@ -36,6 +36,8 @@ package mx.ecosur.multigame.entity {
 		private var _state:String;
 		
 		private var _grid:GameGrid;
+
+        private var _type:String;
 		
 		public function Game() {
 			super();
@@ -95,7 +97,15 @@ package mx.ecosur.multigame.entity {
 		
 		public function set created(created:Date):void{
 			_created = created;
-		}		
+		}
+
+        public function get gameType ():String {
+            return _type;
+        }
+
+        public function set gameType(gameType:String):void {
+            _type = gameType;
+        }
 		
 		public function toString():String{
 			return "id = " + _id + ", rows = " + _rows + ", columns = " +  _columns + ", players = " + _players + ", created = " + _created + ", state = " + _state;

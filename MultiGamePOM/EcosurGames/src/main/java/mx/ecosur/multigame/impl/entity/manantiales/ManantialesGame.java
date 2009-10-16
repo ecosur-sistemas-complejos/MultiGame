@@ -19,24 +19,12 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 import javax.persistence.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.net.MalformedURLException;
 
 @Entity
@@ -178,7 +166,7 @@ public class ManantialesGame extends GridGame {
         session.dispose();
 
         if (moves == null)
-            moves = new HashSet<GridMove>();
+            moves = new LinkedHashSet<GridMove>();
 
         moves.add((ManantialesMove) move);
 
@@ -221,7 +209,7 @@ public class ManantialesGame extends GridGame {
 	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
 		throw new InvalidRegistrationException (
 				"Agents cannot be registered with a Manantiales Game!");
-	}	
+	}
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
@@ -240,6 +228,16 @@ public class ManantialesGame extends GridGame {
 		
 		return ret;
 	}
+
+
+    @Transient
+    public String getGameType() {
+        return "Manantiales";
+    }
+
+    public void setGameType (String type) {
+        // do nothing;
+    }    
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()

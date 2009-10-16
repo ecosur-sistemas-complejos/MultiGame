@@ -273,6 +273,7 @@ package mx.ecosur.multigame.manantiales
                 move.destinationCell = token.ficha;
                 move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _game.mode;
+                move.id = 0;
                 
                 var call:Object = _gameService.doMove(_game, move);
                 call.operation = GAME_SERVICE_DO_MOVE_OP;

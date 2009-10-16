@@ -243,7 +243,16 @@ public class GenteGame extends GridGame {
 		}
 		
 		return ret;
-	}		
+	}
+
+    @Transient
+    public String getGameType() {
+        return "Gente";
+    }
+
+    public void setGameType (String type) {
+        // do nothing;
+    }
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()

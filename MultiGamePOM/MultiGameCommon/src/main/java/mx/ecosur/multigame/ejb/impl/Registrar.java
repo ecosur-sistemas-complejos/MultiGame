@@ -188,9 +188,14 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         Query query = em.createNamedQuery("getAvailableGames");
 		query.setParameter("registrant", player.getImplementation());
 		query.setParameter("state", GameState.WAITING);
+        /* HACK:  hand narrow the lists of pending games against unfinished */
+        List<Game> joinedGames = getUnfinishedGames (player);        
 		List<GameImpl> games = query.getResultList();
         for (GameImpl impl : games) {
-            ret.add(new Game(impl));
+            Game game = new Game (impl);
+            if (joinedGames.contains(game))
+                continue;
+            ret.add(game);
         }
 
         return ret;
