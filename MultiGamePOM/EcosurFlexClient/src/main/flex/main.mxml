@@ -26,6 +26,7 @@
         private function gameComplete(event:Event):void {
             lobby.reload(event);
             vstack.selectedChild = lobby;
+            lobby.timer.start();
             lobby.setFocus();
         }
 
@@ -36,6 +37,7 @@
 
         private function lobbyDone(event:GameEvent):void {
             setBusy();
+            lobby.timer.stop();
             if (event.game is GenteGame) {
                 //create new pente game window
                 _penteGameWindow = new GenteGameWindow();

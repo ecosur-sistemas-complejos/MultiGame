@@ -711,9 +711,10 @@ package mx.ecosur.multigame.gente{
             Alert.cancelLabel = "NEUTRAL";
             Alert.buttonWidth = 120;
             var alert:Alert = Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _chatPanel, fnc, null, Alert.CANCEL);
+
             alert.validateDisplayList(); //necessary otherwise alert will not move (i think that this is a bug in the Alert control)
-            var x:Number = (Application.application.width - alert.width) / 2;
-            var y:Number = Application.application.height - alert.height - 10;              
+            var x:Number = ( (Application.application.width - alert.width) / 2);
+            var y:Number = Application.application.height - alert.height;
             alert.move(x, y);
         }
         

@@ -59,6 +59,9 @@
         }
 
         private function updateDataGrid():void {
+        	if (gamesDataGrid == null)
+        	   return
+        	
             var game:Game, selected:Game;
             var gamePlayer:GamePlayer;
             var dataProvider:ArrayCollection = new ArrayCollection();
