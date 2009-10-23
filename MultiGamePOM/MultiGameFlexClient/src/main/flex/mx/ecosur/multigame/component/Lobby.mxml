@@ -14,12 +14,10 @@
 
         	import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
-            import flash.events.MouseEvent;
             import flash.utils.Timer;
             import mx.controls.Alert;
-            import mx.utils.StringUtil;
             import mx.ecosur.multigame.entity.Player;
-            import mx.ecosur.multigame.event.GamePlayerEvent;
+            import mx.ecosur.multigame.event.*;
             
             [Bindable]
             public var player:Player;
@@ -31,11 +29,11 @@
             	timer.addEventListener(TimerEvent.TIMER, timeout);
             	timer.start();
             }
-            
+
             public function timeout (event:Event):void {
             	pendingList.reload(event);
             }
-            
+
             public function reload(event:Event):void {
             	gameList.reload(event);
             	pendingList.reload(event);
@@ -52,12 +50,13 @@
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-
 	<mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
 		<mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-		<component:JoinUnfinishedGame id="gameList" player="{player}" width="100%" gameChosen="dispatchEvent(event)"/>
-		<component:JoinPendingGame id="pendingList" player="{player}" width="100%" gameJoined="dispatchEvent(event)"/>
-		<component:StartNewGame player="{player}" width="100%" registered="dispatchEvent(event)"/>
+		<mx:TabNavigator width="100%" height="250">
+			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="dispatchEvent(event)"/>
+            <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="dispatchEvent(event)"/>
+            <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>
+		</mx:TabNavigator>
 	</mx:Panel>
 
 </mx:Box>
