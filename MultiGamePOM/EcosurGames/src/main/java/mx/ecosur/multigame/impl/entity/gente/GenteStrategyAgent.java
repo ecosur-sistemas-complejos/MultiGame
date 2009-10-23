@@ -54,9 +54,12 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	private GenteStrategy strategy;
 	
 	private GenteMove nextMove;
+
+    private MessageSender messageSender;
 	
 	public GenteStrategyAgent () {
 		super();
+        messageSender = new MessageSender ();
 		nextMove = null;
 	}
 	
@@ -206,13 +209,16 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
       * @see mx.ecosur.multigame.Agent#determineNextMove(mx.ecosur.multigame.model.Game)
       */
     public GenteMove determineNextMove(GameImpl game) {
-        KnowledgeBase kBase = strategy.getRuleBase();
-        StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
-        session.insert(this);
-        session.insert(game);
-        session.insert(new MessageSender());
-        session.fireAllRules();
-        session.dispose();
+        if (isTurn()) {
+            KnowledgeBase kBase = strategy.getRuleBase();
+            StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+            session.insert(this);
+            session.insert(game);
+            session.insert(messageSender);
+            session.fireAllRules();
+            session.dispose();
+        }
+
         /* Rules should have created the next Move into this player, if
            * one available */
         GenteMove ret = getNextMove();

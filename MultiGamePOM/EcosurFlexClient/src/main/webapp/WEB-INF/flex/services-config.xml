@@ -36,6 +36,7 @@
             <properties>
 	            <serialization>
 	                <log-property-errors>true</log-property-errors>
+                    <ignore-property-errors>true</ignore-property-errors>
 	            </serialization>
             </properties>
         </channel-definition>
@@ -85,7 +86,7 @@
     </channels>
 
     <logging>
-        <target class="flex.messaging.log.ConsoleTarget" level="Error">
+        <target class="flex.messaging.log.ConsoleTarget" level="Info">
             <properties>
                 <prefix>[BlazeDS] </prefix>
                 <includeDate>true</includeDate>

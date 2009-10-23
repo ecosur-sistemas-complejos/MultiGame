@@ -43,7 +43,7 @@ public class
 	
 	private HashSet<BeadString> trias, tesseras;
 
-	private CooperationQualifier qualifier;
+	private CooperationQualifier qualifier = null;
 	
 	private ArrayList<Color> teamColors;
 	
@@ -157,9 +157,10 @@ public class
 	 * 
 	 * @return the qualifier
 	 */
-	@Enumerated(EnumType.STRING)
-	public CooperationQualifier getQualifier() {
-		return qualifier;
+	public String getQualifier() {
+        if (qualifier == null)
+            qualifier = CooperationQualifier.NEUTRAL;
+		return qualifier.name();
 	}
 
 	/**
@@ -168,8 +169,9 @@ public class
 	 * @param qualifier
 	 *            the cooperation qualifier
 	 */
-	public void setQualifier(CooperationQualifier qualifier) {
-		this.qualifier = qualifier;
+	public void setQualifier(String qualifier) {
+        if (qualifier != null)
+		    this.qualifier = CooperationQualifier.valueOf(qualifier);
 	}
 
 	@Override

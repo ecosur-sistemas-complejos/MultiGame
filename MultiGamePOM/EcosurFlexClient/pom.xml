@@ -15,17 +15,17 @@
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-core</artifactId>
-       <version>3.2.0.3978</version>
+       <version>3.2.LATEST</version>
     </dependency>
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-common</artifactId>
-       <version>3.2.0.3978</version>
+       <version>3.2.LATEST</version>
     </dependency>
     <dependency>
        <groupId>com.adobe.blazeds</groupId>
        <artifactId>blazeds-remoting</artifactId>
-       <version>3.2.0.3978</version>
+       <version>3.2.LATEST</version>
     </dependency>
 	<dependency>
       <groupId>org.drools</groupId>

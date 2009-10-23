@@ -97,7 +97,8 @@ public abstract class GridMove implements MoveImpl, Cloneable {
 	
 	@Transient
 	public void setPlayerModel (GamePlayer model) {
-		this.player = (GridPlayer) model.getImplementation();
+        if (model != null && model.getImplementation() != null)
+		    this.player = (GridPlayer) model.getImplementation();
 	}
 
 	public void setPlayer(GridPlayer player) {

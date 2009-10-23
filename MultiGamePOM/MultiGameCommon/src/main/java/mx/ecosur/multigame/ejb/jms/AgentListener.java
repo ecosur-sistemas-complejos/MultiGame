@@ -62,7 +62,7 @@ public class AgentListener implements MessageListener {
 						if (game.getState() == GameState.PLAY) {
 							try {					
 								Move move = agent.determineNextMove(game);
-                                if (move != null)
+                                if (move.getImplementation() != null)
 								    sharedBoard.doMove(game, move);								                                    
                                 message.acknowledge();
 							} catch (InvalidMoveException e) {

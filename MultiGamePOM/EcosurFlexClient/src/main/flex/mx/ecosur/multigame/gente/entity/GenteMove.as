@@ -20,8 +20,6 @@ package mx.ecosur.multigame.gente.entity {
 	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteMove")]
 	public class GenteMove extends Move {
 		
-		private var _captures:ArrayCollection;
-		
 		private var _trias:ArrayCollection;
 		
 		private var _tesseras:ArrayCollection;
