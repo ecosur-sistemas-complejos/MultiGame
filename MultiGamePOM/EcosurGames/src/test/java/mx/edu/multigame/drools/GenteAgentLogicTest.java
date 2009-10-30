@@ -35,10 +35,10 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		assertEquals (7, unbound.size());
 	}
 	
-	@Test
-	/* Simple test to check the Scoring move logic in GenteStrategyAgent */
+/*	@Test
+	*//* Simple test to check the Scoring move logic in GenteStrategyAgent *//*
 	public void testScoringMoves () throws InvalidMoveException {
-		/* Setup a hash of valid move destinations to compare against */
+		*//* Setup a hash of valid move destinations to compare against *//*
 		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
 				new CellComparator());
 		validDestinations.add(new GridCell (10,9, Color.YELLOW));
@@ -94,12 +94,12 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 			assertTrue (destination + " is not valid!",
 					tail.contains(destination));
 		}
-	}
+	}*/
 	
 	@Test
 	public void testRandomNextMove () throws InvalidMoveException {
-		GenteMove next = alice.determineNextMove(game);
-		//GenteMove next = alice.nextMove();
+		alice.determineNextMove(game);
+		GenteMove next = alice.getNextMove();
 		assertNotNull (next);
 		game.move(next);
 		/* Validate that the move was made */

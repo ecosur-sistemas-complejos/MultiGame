@@ -62,32 +62,40 @@ then
         player.oppositionColors());
     GenteMove nextMove = null;
     
-    if (scoringMoves.size() > 0) {
-        for (GenteMove move : scoringMoves) {
-            GridCell destination = (GridCell) move.getDestinationCell();
-            destination.setColor(player.getColor());
-            nextMove = new GenteMove (player, destination);
+    for (GenteMove move : scoringMoves) {
+        GridCell destination = (GridCell) move.getDestinationCell();
+        destination.setColor(player.getColor());
+        nextMove = new GenteMove (player, destination);
+        break;
+    }
+    modify (player) { setNextMove (nextMove) }
+end
+
+rule "random-move"
+    no-loop true
+    salience -10
+when
+    game   : GenteGame (state == GameState.PLAY, $grid : grid)
+    player : GenteStrategyAgent (turn == true, nextMove == null)
+    eval (!$grid.getCells().isEmpty())
+then
+    GenteMove nextMove = null;
+    TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
+    if (possible.size() == 0)
+        possible = player.determineAvailableMoves (game,
+            player.oppositionColors());
+    Random random = new Random ();
+    for (GenteMove move : possible) {
+        if (random.nextBoolean()) {
+            nextMove = move;
             break;
         }
     }
-    else {
-        # Use the random algorithm
-        TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
-        if (possible.size() == 0) 
-            possible = player.determineAvailableMoves (game, 
-                player.oppositionColors());
-        Random random = new Random ();
+    if (nextMove == null) {
         for (GenteMove move : possible) {
-            if (random.nextBoolean()) { 
-                nextMove = move; 
-                break;
-            }
-        }
-        if (nextMove == null)
-            for (GenteMove move : possible) {
-                nextMove = move;
-                break;
-             }
+            nextMove = move;
+            break;
+         }
     }
     modify (player) { setNextMove (nextMove) }
 end

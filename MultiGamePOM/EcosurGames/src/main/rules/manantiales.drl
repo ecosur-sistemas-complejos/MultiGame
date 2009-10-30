@@ -251,11 +251,10 @@ then
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
-        setMode (mode) } 
-    Game model = new Game($game);
+        setMode (mode) }
     MessageSender messageSender = new MessageSender();
-    messageSender.sendPlayerChange(model);
-    messageSender.sendStartGame(model);
+    messageSender.sendPlayerChange($game);
+    messageSender.sendStartGame($game);
 end  
 
 
@@ -378,9 +377,7 @@ rule
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game ($game), move, condition);
+        messageSender.sendConditionRaised ($game, $move, constraint);
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -404,9 +401,7 @@ rule
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();         
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game ($game), move, condition);              
+        messageSender.sendConditionRaised ($game, $move, constraint);              
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -431,9 +426,7 @@ rule
         GridPlayer player = $move.getPlayer();
         modify ($move) { setPlayer (player) }                 
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game($game), move, condition);                     
+        messageSender.sendConditionRaised ($game, $move, constraint);                     
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -458,9 +451,7 @@ rule
         GridPlayer player = $move.getPlayer();
         modify ($move) { setPlayer (player) }             
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game($game), move, condition);                     
+        messageSender.sendConditionRaised ($game, $move, constraint);                     
 end
 
 #Enforces Manantiales constraint (only 2 developments around the manantiales
@@ -483,9 +474,7 @@ rule "manantiales"
             (Ficha) $move.getDestinationCell());
         $game.addCheckCondition(constraint);      
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game ($game), move, condition);                
+        messageSender.sendConditionRaised ($game, $move, constraint);                
 end
 
 #Enforces the constaint that no more than 32 sites can be deforested
@@ -508,9 +497,7 @@ rule "territory-deforested"
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
         $game.addCheckCondition(constraint);     
         MessageSender messageSender = new MessageSender ();
-        Condition condition = new Condition (constraint);
-        Move move = new Move ($move);
-        messageSender.sendConditionRaised (new Game($game), move, condition);               
+        messageSender.sendConditionRaised ($game, $move, constraint);               
 end
 
 # Executes a simple move
@@ -527,8 +514,7 @@ then
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.MOVED) }
     MessageSender messageSender = new MessageSender();
-    Move model = new Move ($move);
-    messageSender.sendMoveComplete (new Game($game), model);
+    messageSender.sendMoveComplete ($game, $move);
 end      
 
 # Resolved CheckConstraints 
@@ -549,10 +535,7 @@ then
     retract ($constraint);
     modify ($game) { setCheckConditions (constraints) };
     MessageSender messageSender = new MessageSender();
-    Condition condition = new Condition ($constraint);
-    Move move = new Move ($move);
-    messageSender.sendConditionResolved (new Game ($game), move, condition);    
-       
+    messageSender.sendConditionResolved ($game, $move, $constraint);
 end
 
 rule "remove-replaced-token-from-player"
@@ -638,10 +621,8 @@ then
     conditions.remove ($condition);
     retract ($condition);
     modify ($game) { setCheckConditions (conditions), setGrid (grid) };
-    Move model = new Move ($move);
-    Condition condition = new Condition ($condition);
     MessageSender messageSender = new MessageSender();
-    messageSender.sendConditionTriggered (new Game ($game), model, condition);    
+    messageSender.sendConditionTriggered ($game, $move, $condition);
 end  
 
 rule "expire-terminal-condition"
@@ -658,11 +639,8 @@ then
     $condition.setExpired(true);
     modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
     MessageSender messageSender = new MessageSender();
-    Game game = new Game($game);
-    Move move = new Move($move);
-    Condition condition = new Condition ($condition);
-    messageSender.sendConditionTriggered (new Game ($game), move, condition);
-    messageSender.sendEndGame (game);
+    messageSender.sendConditionTriggered ($game, $move, $condition);
+    messageSender.sendEndGame ($game);
 end 
 
 rule "blue-borders-deforested"
@@ -687,9 +665,7 @@ then
     retract ($constraint1);
     retract ($constraint2);
     MessageSender messageSender = new MessageSender();
-    Condition condition = new Condition ($constraint);
-    Move move = new Move ($move);
-    messageSender.sendConditionTriggered (new Game ($game), move, condition);        
+    messageSender.sendConditionTriggered ($game, $move, $constraint);        
 end
 
 rule "yellow-borders-deforested"
@@ -714,9 +690,7 @@ then
     retract ($constraint1);
     retract ($constraint2);
     MessageSender messageSender = new MessageSender();
-    Condition condition = new Condition ($constraint);
-    Move move = new Move ($move);
-    messageSender.sendConditionTriggered (new Game ($game), move, condition);           
+    messageSender.sendConditionTriggered ($game, $move, $constraint);
 end
 
 rule "black-borders-deforested"
@@ -741,9 +715,7 @@ then
     retract ($constraint1);
     retract ($constraint2);
     MessageSender messageSender = new MessageSender();
-    Condition condition = new Condition ($constraint);
-    Move move = new Move ($move);
-    messageSender.sendConditionTriggered (new Game ($game), move, condition);        
+    messageSender.sendConditionTriggered ($game, $move, $constraint);        
 end
 
 rule "red-borders-deforested"
@@ -768,9 +740,7 @@ then
     retract ($constraint1);
     retract ($constraint2);
     MessageSender messageSender = new MessageSender();
-    Condition condition = new Condition ($constraint);
-    Move move = new Move ($move);
-    messageSender.sendConditionTriggered (new Game ($game), move, condition);         
+    messageSender.sendConditionTriggered ($game, $move, $constraint);         
 end 
 
 # Determines if there is a winner 
@@ -795,8 +765,7 @@ then
     Mode mode = incrementMode($game.getMode());    
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) } 
     MessageSender messageSender = new MessageSender();
-    Game game = new Game ($game);
-    messageSender.sendStateChange(game);
+    messageSender.sendStateChange($game);
 end
 
 # Determines if there is a winner 
@@ -814,8 +783,7 @@ when
 then
     modify ($game) { setState (GameState.ENDED) };
     MessageSender messageSender = new MessageSender();
-    Game game = new Game($game);
-    messageSender.sendEndGame (game);
+    messageSender.sendEndGame ($game);
 end
 
 rule "increment-turn"
@@ -829,8 +797,7 @@ when
 then
     GridPlayer player = incrementTurn ($game, move);
     MessageSender messageSender = new MessageSender();
-    Game game = new Game ($game);
-    messageSender.sendPlayerChange(game);
+    messageSender.sendPlayerChange($game);
 end
 
 rule "skip-turn"
@@ -843,6 +810,5 @@ when
 then
     GridPlayer player = incrementTurn ($game, $move);
     MessageSender messageSender = new MessageSender();
-    Game game = new Game ($game);
-    messageSender.sendPlayerChange(game);
+    messageSender.sendPlayerChange($game);
 end

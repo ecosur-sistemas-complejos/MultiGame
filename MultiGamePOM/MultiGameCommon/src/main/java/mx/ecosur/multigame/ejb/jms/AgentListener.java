@@ -35,6 +35,7 @@ import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 
 @MessageDriven(mappedName = "MultiGame")
 public class AgentListener implements MessageListener {
@@ -54,16 +55,16 @@ public class AgentListener implements MessageListener {
 			ObjectMessage msg = (ObjectMessage) message;
 
 			if (gameEvent.equals(GameEvent.PLAYER_CHANGE)) {
-				Game game = (Game) msg.getObject();
+				GameImpl game = (GameImpl) msg.getObject();
 				List<GamePlayer> players = game.listPlayers();
 				for (GamePlayer p : players) {
 					if (p instanceof Agent) {
 						Agent agent = (Agent) p;
 						if (game.getState() == GameState.PLAY) {
 							try {					
-								Move move = agent.determineNextMove(game);
+								Move move = agent.determineNextMove(new Game (game));
                                 if (move.getImplementation() != null)
-								    sharedBoard.doMove(game, move);								                                    
+								    sharedBoard.doMove(new Game (game), move);								                                    
                                 message.acknowledge();
 							} catch (InvalidMoveException e) {
 								logger.log(Level.SEVERE, "Invalid move suggested " +

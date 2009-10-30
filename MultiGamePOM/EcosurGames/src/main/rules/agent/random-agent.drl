@@ -66,4 +66,23 @@ then
             break;
          }
     modify (player) { setNextMove (destination) }
+    System.out.println ("Setting destination: " + destination);
+end
+
+rule "log-move"
+    no-loop true
+    salience -10
+when
+    game   : GenteGame (state == GameState.PLAY, $grid : grid)
+    player : GenteStrategyAgent ()
+    eval (!$grid.getCells().isEmpty())
+then
+    System.out.println("Random-agent.  nextMove = " + player.getNextMove());
+end
+
+rule "test-log"
+when
+    game : GenteGame ()
+then
+    System.out.prinltn ("test");
 end

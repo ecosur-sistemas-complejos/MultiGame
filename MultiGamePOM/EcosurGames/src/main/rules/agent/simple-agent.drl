@@ -48,36 +48,40 @@ when
     player : GenteStrategyAgent (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    HashSet<Color> colors = new HashSet<Color>();
-    colors.add(player.getColor());
-    colors.add(player.getPartner().getColor());
-    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, colors);
+    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, player.getTeamColors());
     GenteMove nextMove = null;
-    if (scoringMoves.size() > 0) {
-        for (GenteMove move : scoringMoves) {
+    for (GenteMove move : scoringMoves) {
+            nextMove = move;
+            break;
+    }
+    modify (player) { setNextMove (nextMove) }
+end
+
+rule "random-move"
+    no-loop true
+    salience -10
+when
+    game   : GenteGame (state == GameState.PLAY, $grid : grid)
+    player : GenteStrategyAgent (turn == true, nextMove == null)
+    eval (!$grid.getCells().isEmpty())
+then
+    GenteMove nextMove = null;
+    TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
+    if (possible.size() == 0)
+        possible = player.determineAvailableMoves (game,
+            player.oppositionColors());
+    Random random = new Random ();
+    for (GenteMove move : possible) {
+        if (random.nextBoolean()) {
             nextMove = move;
             break;
         }
-    } else {
-        # Use the random algorithm 
-        TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
-        if (possible.size() == 0) 
-            possible = player.determineAvailableMoves (game, 
-                player.oppositionColors());
-        Random random = new Random ();
+    }
+    if (player.getNextMove == null) {
         for (GenteMove move : possible) {
-            if (random.nextBoolean()) { 
-                nextMove = move; 
-                break;
-            } 
-        }
-        
-        if (nextMove == null) {
-            for (GenteMove move : possible) {
-                nextMove = move;
-                break;
-             }
-        }
+            nextMove = move;
+            break;
+         }
     }
     modify (player) { setNextMove (nextMove) }
 end

@@ -55,7 +55,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	
 	private GenteMove nextMove;
 
-    private MessageSender messageSender;
+    private transient MessageSender messageSender;
 	
 	public GenteStrategyAgent () {
 		super();

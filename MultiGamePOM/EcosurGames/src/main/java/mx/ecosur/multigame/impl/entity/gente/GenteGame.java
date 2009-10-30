@@ -153,7 +153,7 @@ public class GenteGame extends GridGame {
         session.dispose();
 
         if (moves == null)
-            moves = new HashSet<GridMove>();
+            moves = new LinkedHashSet<GridMove>();
         moves.add((GenteMove) move);
 
         return move;

@@ -348,8 +348,7 @@ package mx.ecosur.multigame.gente{
                     }
                     break;
                 case GameEvent.END:
-                    gameModel = GameModel (message.body);
-                    game = GenteGame (gameModel.implementation);
+                    game = GenteGame (message.body);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     _winners = game.winners;                
@@ -358,20 +357,17 @@ package mx.ecosur.multigame.gente{
                     }
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var moveModel:MoveModel = MoveModel (message.body);                    
-                    var move:GenteMove = GenteMove(moveModel.implementation);
+                    var move:GenteMove = GenteMove(message.body);;
                     if (move == null)
-                        Alert.show ("Move from model [" + moveModel + "] is null!");
+                        Alert.show ("Move from model [" + move + "] is null!");
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
-                    gameModel = GameModel (message.body);
-                    game = GenteGame (gameModel.implementation);
+                    game = GenteGame (message.body);
                     if (game == null)
-                        Alert.show ("Game from model [" + gameModel + "] is null!");
-                    var pentegame:GenteGame = GenteGame(gameModel.implementation)
-                    _game = pentegame;
-                    updatePlayers(pentegame);
+                        Alert.show ("Game from model [" + game + "] is null!");
+                    _game = game;
+                    updatePlayers(_game);
                     break;            
             }
         }

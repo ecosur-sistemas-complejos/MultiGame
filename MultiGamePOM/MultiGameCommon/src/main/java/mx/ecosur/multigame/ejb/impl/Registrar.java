@@ -112,7 +112,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		registrant.setLastRegistration(System.currentTimeMillis());
 		GamePlayer player = game.registerPlayer (registrant);		
 		em.persist(player.getImplementation());			
-		messageSender.sendPlayerChange(game);		
+		messageSender.sendPlayerChange(game.getImplementation());		
 		return game;
 	}
 	
@@ -146,7 +146,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.merge(agent.getImplementation());
 		em.merge(game.getImplementation());	
 		
-		messageSender.sendPlayerChange(game);		
+		messageSender.sendPlayerChange(game.getImplementation());		
 		return game;		
 	}		
 
@@ -160,7 +160,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 		em.refresh (game.getImplementation());
 		game.removePlayer(player);
 		game.setState(GameState.ENDED);
-        messageSender.sendPlayerChange(game);	
+        messageSender.sendPlayerChange(game.getImplementation());	
         return game;
 	}
 
