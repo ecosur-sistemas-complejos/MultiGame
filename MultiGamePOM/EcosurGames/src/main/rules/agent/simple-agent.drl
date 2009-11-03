@@ -22,8 +22,8 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.impl.model.GridCell;
-
 import mx.ecosur.multigame.impl.Color;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.TreeSet;
@@ -48,7 +48,11 @@ when
     player : GenteStrategyAgent (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
-    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, player.getTeamColors());
+    HashSet<Color> teamColors = new HashSet<Color> ();
+    teamColors.add (player.getColor());
+    teamColors.add (player.getPartner().getColor());
+    
+    TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, teamColors);
     GenteMove nextMove = null;
     for (GenteMove move : scoringMoves) {
             nextMove = move;
@@ -77,11 +81,20 @@ then
             break;
         }
     }
-    if (player.getNextMove == null) {
+    if (player.getNextMove() == null) {
         for (GenteMove move : possible) {
             nextMove = move;
             break;
          }
     }
     modify (player) { setNextMove (nextMove) }
+end
+
+rule "log-move"
+    no-loop true
+    salience -10
+when
+    player : GenteStrategyAgent ()
+then
+    System.out.println("Simple-agent.  nextMove = " + player.getNextMove());
 end

@@ -16,10 +16,10 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.KnowledgeBase;
+import org.drools.*;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -57,8 +57,8 @@ public class GenteGame extends GridGame {
         super();
     }
 
-    public GenteGame (KnowledgeAgent agent) {
-        super (agent);
+    public GenteGame (KnowledgeBase kbase) {
+        this.kbase = kbase;
     }
 	
 	@OneToMany (fetch=FetchType.EAGER)
@@ -103,13 +103,13 @@ public class GenteGame extends GridGame {
         this.setColumns(19);
         this.setRows(19);
 
-        if (kagent == null) {
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent("GenteAgent");
-            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
+        if (kbase == null) {
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-
-        kbase = kagent.getKnowledgeBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
@@ -127,15 +127,12 @@ public class GenteGame extends GridGame {
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
         if (kbase == null) {
-            if (kagent == null) {
-                kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                    "GenteAgent");
-                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                    getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
-            }
-
-            kbase = kagent.getKnowledgeBase();
-        }
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        }                
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
@@ -265,7 +262,6 @@ public class GenteGame extends GridGame {
             ret.grid.updateCell((GridCell) cell.clone());
         }
 
-        ret.kagent = this.kagent;
 		ret.created = new Date (System.currentTimeMillis());
 		ret.id = this.getId();
 		ret.moves = new LinkedHashSet<GridMove> ();
@@ -282,7 +278,8 @@ public class GenteGame extends GridGame {
 		ret.state = this.state;
 		ret.version = this.version;
 		ret.winners = new LinkedHashSet<GentePlayer>();
-        ret.kbase = this.kbase;
+        ret.kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ret.kbase.addKnowledgePackages(kbase.getKnowledgePackages());
 		
 		for (GentePlayer winner : getWinners()) {
 			GentePlayer clone = (GentePlayer) winner.clone();

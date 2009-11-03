@@ -33,6 +33,11 @@ import org.junit.Test;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.io.ResourceFactory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 
 public class GenteRulesTest extends RulesTestBase {
 	
@@ -40,21 +45,24 @@ public class GenteRulesTest extends RulesTestBase {
 	
 	private GentePlayer alice;
 
-    private KnowledgeAgent kagent;
+    private static KnowledgeBase gente;
+
+    /* Setup gente kbase */
+    static {
+        gente = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(GenteGame.class.getResourceAsStream (
+            "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+        gente.addKnowledgePackages(kbuilder.getKnowledgePackages());
+    }
 	
 	
 	@Before
 	public void setUp() throws Exception {
-
 		super.setUp();
 
-        if (kagent == null) {
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent("GenteAgent");
-            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/gente.xml")));
-        }
-		
-		game = new GenteGame(kagent);
+        game = new GenteGame(gente);
+        
 		GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
 		b = new GridRegistrant ("bob");
@@ -65,7 +73,6 @@ public class GenteRulesTest extends RulesTestBase {
 		game.registerPlayer(b);
 		game.registerPlayer(c);
 		game.registerPlayer(d);
-        game.initialize();
 	}
 	
 	@After

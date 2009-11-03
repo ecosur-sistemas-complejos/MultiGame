@@ -45,4 +45,16 @@
             <version>4.0</version>
         </dependency>
     </dependencies>
+    <build>
+        <defaultGoal>test</defaultGoal>
+        <plugins>
+            <plugin>
+                <inherited>true</inherited>
+                <groupId>org.easyb</groupId>
+                <artifactId>maven-easyb-plugin</artifactId>
+                <version>0.9.5.2</version>
+              </plugin>
+        </plugins>
+    </build>
+
 </project>

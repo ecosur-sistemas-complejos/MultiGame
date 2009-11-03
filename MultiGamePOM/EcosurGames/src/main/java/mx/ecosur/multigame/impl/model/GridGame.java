@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman and Max Pimm
 * 
 * Licensed under the Academic Free License v. 3.0. 
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -30,8 +30,8 @@ import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
-import org.drools.agent.KnowledgeAgent;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 
 /**
  * @author awaterma, maxmil
@@ -81,8 +81,6 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	
 	protected GameState state;
 
-    protected transient KnowledgeAgent kagent;
-
     protected KnowledgeBase kbase;
 	
 	protected long version;
@@ -94,13 +92,8 @@ public abstract class GridGame implements GameImpl, Cloneable {
 		super();
 		players = new ArrayList<GridPlayer> ();
 		grid = new GameGrid();
+        kbase = null;
 	}
-
-    public GridGame (KnowledgeAgent agent) {
-        kagent = agent;
-        players = new ArrayList<GridPlayer> ();
-		grid = new GameGrid();	             
-    }
 	
 	/**
 	 * @return the id
@@ -297,7 +290,6 @@ public abstract class GridGame implements GameImpl, Cloneable {
 		
 		return ret;
 	}
-
 
     public abstract String getGameType ();
 

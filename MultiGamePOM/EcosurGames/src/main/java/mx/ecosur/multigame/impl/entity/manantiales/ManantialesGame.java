@@ -23,6 +23,11 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.KnowledgeBase;
 
 import java.util.*;
 import java.net.MalformedURLException;
@@ -40,8 +45,8 @@ public class ManantialesGame extends GridGame {
         super();
     }
 
-    public ManantialesGame (KnowledgeAgent kagent) {
-        super (kagent);
+    public ManantialesGame (KnowledgeBase kbase) {
+        this.kbase = kbase;
     }
     
     @Enumerated (EnumType.STRING)
@@ -107,13 +112,13 @@ public class ManantialesGame extends GridGame {
         this.setColumns(9);
         this.setRows(9);
 
-        if (kagent == null) {
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent("ManantialesAgent");
-            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
+        if (kbase == null) {
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-        
-        kbase = kagent.getKnowledgeBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
@@ -140,16 +145,12 @@ public class ManantialesGame extends GridGame {
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
         if (kbase == null) {
-            if (kagent == null) {
-                kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                    "ManantialesAgent");
-                kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                    getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
-            }
-
-            kbase = kagent.getKnowledgeBase();
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.insert(this);
         session.insert(move);

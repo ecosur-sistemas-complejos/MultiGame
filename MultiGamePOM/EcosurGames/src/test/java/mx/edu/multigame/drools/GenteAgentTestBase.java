@@ -18,7 +18,16 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 	protected GenteStrategyAgent alice, bob, charlie;
 	
 	protected GenteGame game;
-	
+
+    protected static GenteStrategy simple = GenteStrategy.SIMPLE, blocker = GenteStrategy.BLOCKER,
+        random = GenteStrategy.RANDOM;
+
+    static {
+        simple.getRuleBase();
+        blocker.getRuleBase();
+        random.getRuleBase();
+    }
+
 	@Before
 	public void setUp() throws Exception {
 		super.setUp();
@@ -31,7 +40,12 @@ public abstract class GenteAgentTestBase extends RulesTestBase {
 		
 		alice = new GenteStrategyAgent (a, Color.YELLOW, GenteStrategy.RANDOM);
 		bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.BLOCKER);
-		charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.SIMPLE);		
+		charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.SIMPLE);
+
+        alice.setStrategy(random);
+        bob.setStrategy (blocker);
+        charlie.setStrategy (simple);
+        
 		game.updatePlayer (alice);
 		game.updatePlayer(bob);
 		game.updatePlayer(charlie);

@@ -29,6 +29,7 @@ import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -46,6 +47,11 @@ import org.junit.Test;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.io.ResourceFactory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 
 public class ManantialesRulesTest extends RulesTestBase {
 	
@@ -53,20 +59,23 @@ public class ManantialesRulesTest extends RulesTestBase {
 	
 	private ManantialesPlayer alice, bob, charlie, denise;
 
-    private KnowledgeAgent kagent;
+    private static KnowledgeBase manantiales;
+
+    /* Setup gente kbase */
+    static {
+        manantiales = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(GenteGame.class.getResourceAsStream (
+            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+        manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
+    }
 	
 	@Before
 	public void setUp() throws Exception {
 
 		super.setUp();
 
-        if (kagent == null) {
-            kagent = KnowledgeAgentFactory.newKnowledgeAgent("ManantialesAgent");
-            kagent.applyChangeSet(ResourceFactory.newInputStreamResource(
-                getClass().getResourceAsStream("/mx/ecosur/multigame/impl/manantiales.xml")));
-        }
-
-		game = new ManantialesGame(kagent);		
+		game = new ManantialesGame(manantiales);
 		GridRegistrant[] players = {
 				new GridRegistrant ("alice"),
 				new GridRegistrant ("bob"),
@@ -80,9 +89,7 @@ public class ManantialesRulesTest extends RulesTestBase {
 			if (colors [ i ].equals(Color.UNKNOWN) || colors [ i ].equals(Color.GREEN))
 					continue;
 			game.registerPlayer (players [ counter++ ]);
-		}
-
-        game.initialize();
+		}       
 		
 		for (GridPlayer player : game.getPlayers()) {
 			if (player.getRegistrant().getName().equals("alice")) {

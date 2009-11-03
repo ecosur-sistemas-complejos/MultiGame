@@ -23,6 +23,8 @@ import java.beans.IntrospectionException;
 import java.util.List;
 import java.util.Date;
 
+import org.drools.KnowledgeBase;
+
 /**
  * Created by IntelliJ IDEA.
  * User: awater

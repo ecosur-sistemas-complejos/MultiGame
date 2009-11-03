@@ -34,10 +34,9 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		TreeSet<GenteMove> unbound = alice.determineAvailableMoves(game);
 		assertEquals (7, unbound.size());
 	}
-	
-/*	@Test
-	*//* Simple test to check the Scoring move logic in GenteStrategyAgent *//*
-	public void testScoringMoves () throws InvalidMoveException {
+
+
+/*	public void testScoringMoves () throws InvalidMoveException {
 		*//* Setup a hash of valid move destinations to compare against *//*
 		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
 				new CellComparator());
