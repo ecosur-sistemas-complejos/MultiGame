@@ -36,6 +36,8 @@ import mx.ecosur.multigame.impl.util.Direction;
 
 #GENTE
 
+global MessageSender messageSender;
+
 #These rules are for use in the modified game of Pente, GENTE,
 #invented by Dr. Luis Garcia Barrios at ECOSUR, in
 #San Cristobal de Las Casas, Chiapas, Mexico.
@@ -171,7 +173,6 @@ then
     }
     GameGrid grid = new GameGrid ();
     modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
-    MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange(game);
     messageSender.sendStartGame(game);
 end
@@ -214,7 +215,7 @@ then
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }
     insert (move.getDestinationCell());
-    MessageSender messageSender = new MessageSender();
+    
     messageSender.sendMoveComplete(game, move);
 end
  
@@ -455,7 +456,7 @@ when
 then
     Set<GentePlayer> winners = getWinners (game);
     modify (game) { setState (GameState.ENDED), setWinners (winners) }
-    MessageSender messageSender = new MessageSender();
+
 	messageSender.sendEndGame (game);
 end
 
@@ -468,6 +469,6 @@ when
     move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
 then
     GridPlayer player = incrementTurn (game, move);
-    MessageSender messageSender = new MessageSender();
+
     messageSender.sendPlayerChange(game);
 end

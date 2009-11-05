@@ -34,6 +34,15 @@ import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
+# Rules for Manantiales
+#
+# A COMMOD game developed in La Sepultura with the group efforts of:
+#
+# Luis Garc”a Barrios, Raul Garc”a Barrios, Andrew Waterman and Claudia Brunel.
+#
+
+global MessageSender messageSender;
+
 
 function boolean isValid (GameGrid grid, ManantialesMove move) {
     boolean ret = false;
@@ -123,7 +132,6 @@ function GridPlayer incrementTurn (ManantialesGame game, GridMove move) {
     } else {
         nextPlayer = players.get(playerNumber + 1);
     }
-    
     nextPlayer.setTurn (true);
     return nextPlayer;
 }
@@ -252,7 +260,6 @@ then
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
         setMode (mode) }
-    MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
 end  
@@ -376,7 +383,6 @@ rule
                 (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        MessageSender messageSender = new MessageSender ();
         messageSender.sendConditionRaised ($game, $move, constraint);
 end
 
@@ -399,8 +405,7 @@ rule
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
-        GridPlayer player = $move.getPlayer();         
-        MessageSender messageSender = new MessageSender ();
+        GridPlayer player = $move.getPlayer();
         messageSender.sendConditionRaised ($game, $move, constraint);              
 end
 
@@ -424,8 +429,7 @@ rule
             $tok1, $tok2, (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        modify ($move) { setPlayer (player) }                 
-        MessageSender messageSender = new MessageSender ();
+        modify ($move) { setPlayer (player) }
         messageSender.sendConditionRaised ($game, $move, constraint);                     
 end
 
@@ -449,8 +453,7 @@ rule
                 $tok1, $tok2, (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        modify ($move) { setPlayer (player) }             
-        MessageSender messageSender = new MessageSender ();
+        modify ($move) { setPlayer (player) }
         messageSender.sendConditionRaised ($game, $move, constraint);                     
 end
 
@@ -473,7 +476,6 @@ rule "manantiales"
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
             (Ficha) $move.getDestinationCell());
         $game.addCheckCondition(constraint);      
-        MessageSender messageSender = new MessageSender ();
         messageSender.sendConditionRaised ($game, $move, constraint);                
 end
 
@@ -495,8 +497,7 @@ rule "territory-deforested"
         Ficha [] cells = (Ficha []) $list.toArray(new Ficha [ 0 ]);
         CheckCondition constraint = new CheckCondition(
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
-        $game.addCheckCondition(constraint);     
-        MessageSender messageSender = new MessageSender ();
+        $game.addCheckCondition(constraint);
         messageSender.sendConditionRaised ($game, $move, constraint);               
 end
 
@@ -513,7 +514,6 @@ then
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.MOVED) }
-    MessageSender messageSender = new MessageSender();
     messageSender.sendMoveComplete ($game, $move);
 end      
 
@@ -534,7 +534,6 @@ then
     constraints.remove ($constraint);
     retract ($constraint);
     modify ($game) { setCheckConditions (constraints) };
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionResolved ($game, $move, $constraint);
 end
 
@@ -621,7 +620,6 @@ then
     conditions.remove ($condition);
     retract ($condition);
     modify ($game) { setCheckConditions (conditions), setGrid (grid) };
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionTriggered ($game, $move, $condition);
 end  
 
@@ -638,7 +636,6 @@ when
 then
     $condition.setExpired(true);
     modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionTriggered ($game, $move, $condition);
     messageSender.sendEndGame ($game);
 end 
@@ -664,8 +661,7 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    MessageSender messageSender = new MessageSender();
-    messageSender.sendConditionTriggered ($game, $move, $constraint);        
+    messageSender.sendConditionTriggered ($game, $move, $constraint);
 end
 
 rule "yellow-borders-deforested"
@@ -689,7 +685,6 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionTriggered ($game, $move, $constraint);
 end
 
@@ -714,7 +709,6 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionTriggered ($game, $move, $constraint);        
 end
 
@@ -739,7 +733,6 @@ then
     $game.setGrid (grid);    
     retract ($constraint1);
     retract ($constraint2);
-    MessageSender messageSender = new MessageSender();
     messageSender.sendConditionTriggered ($game, $move, $constraint);         
 end 
 
@@ -764,7 +757,6 @@ then
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());    
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) } 
-    MessageSender messageSender = new MessageSender();
     messageSender.sendStateChange($game);
 end
 
@@ -782,7 +774,6 @@ when
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
     modify ($game) { setState (GameState.ENDED) };
-    MessageSender messageSender = new MessageSender();
     messageSender.sendEndGame ($game);
 end
 
@@ -796,7 +787,6 @@ when
         badYear == false)
 then
     GridPlayer player = incrementTurn ($game, move);
-    MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
 end
 
@@ -809,6 +799,5 @@ when
     $move   : ManantialesMove (player.turn == true, badYear == true)
 then
     GridPlayer player = incrementTurn ($game, $move);
-    MessageSender messageSender = new MessageSender();
     messageSender.sendPlayerChange($game);
 end

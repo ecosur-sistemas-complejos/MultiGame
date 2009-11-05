@@ -32,11 +32,9 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 
-import mx.ecosur.multigame.model.ChatMessage;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.*;
 import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.implementation.CellImpl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -100,6 +98,33 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		}
 
 		move.setPlayer(player);
+
+
+        /* Refresh any detached GridCells */
+        Cell current = move.getCurrent();
+        Cell dest = move.getDestination();
+
+
+        if (current.getImplementation() != null) {
+            if (!em.contains (current.getImplementation())) {
+                CellImpl impl = (em.find (
+                        current.getImplementation().getClass(), current.getId()));
+                if (impl != null)
+                    current = new Cell (impl);
+            }
+
+            move.setCurrent (current);
+        }
+
+        if (dest.getImplementation() != null) {
+            if (!em.contains (dest.getImplementation())) {
+                CellImpl impl = (em.find (
+                        dest.getImplementation().getClass(), dest.getId()));
+                if (impl != null)
+                    dest = new Cell (impl);
+            }
+            move.setDestination (dest);
+        }
 
 		if (!em.contains(move.getImplementation())) {
             em.persist(move.getImplementation());            

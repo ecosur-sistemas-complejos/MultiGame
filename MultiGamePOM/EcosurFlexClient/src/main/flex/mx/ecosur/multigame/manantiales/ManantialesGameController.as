@@ -347,49 +347,42 @@ package mx.ecosur.multigame.manantiales
                     }
                     break;
                 case GameEvent.END:
-                    gameModel = GameModel (message.body);
-                    game = ManantialesGame(gameModel.implementation);
+                    game = ManantialesGame(message.body);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     handleGameEnd (game);
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var moveModel:MoveModel = MoveModel (message.body);                    
-                    var move:ManantialesMove = ManantialesMove(moveModel.implementation);
+                    var move:ManantialesMove = ManantialesMove(message.body);
                     _gameWindow.playersViewer.updatePlayers();
                     addMove(move);
                     break;                    
                 case GameEvent.PLAYER_CHANGE:
-                    gameModel = GameModel (message.body);
-                    game = ManantialesGame(gameModel.implementation);
+                    game = ManantialesGame(message.body);
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");
                     updatePlayers(game);
                     break;
                 case GameEvent.CONDITION_RAISED:
-                    conditionModel = ConditionModel (message.body);
-                    checkCondition = CheckCondition(conditionModel.implementation);
+                    checkCondition = CheckCondition(message.body);
                     if (checkCondition == null)
                         Alert.show ("Condition from model [" + conditionModel  + "] is null!");
                     handleCheckConstraint (checkCondition);
                     break;
                 case GameEvent.CONDITION_RESOLVED:
-                    conditionModel = ConditionModel (message.body);
-                    checkCondition = CheckCondition(conditionModel.implementation);
+                    checkCondition = CheckCondition(message.body);
                     if (checkCondition == null)
                         Alert.show ("Condition from model [" + conditionModel  + "] is null!");                    
                     handleCheckConstraintResolved (checkCondition);
                     break;
                 case GameEvent.CONDITION_TRIGGERED:
-                    conditionModel = ConditionModel (message.body);
-                    checkCondition = CheckCondition(conditionModel.implementation);
+                    checkCondition = CheckCondition(message.body);
                     if (checkCondition == null)
                         Alert.show ("Condition from model [" + conditionModel  + "] is null!");                    
                     handleCheckConstraintTriggered (checkCondition);
                     break;    
                 case GameEvent.STATE_CHANGE:
-                    gameModel = GameModel (message.body);
-                    game = ManantialesGame(gameModel.implementation);
+                    game = ManantialesGame(message.body);
                     Alert.show(gameModel.toString());                      
                     if (game == null)
                         Alert.show("Game from model [" + gameModel + "] is null!");                    

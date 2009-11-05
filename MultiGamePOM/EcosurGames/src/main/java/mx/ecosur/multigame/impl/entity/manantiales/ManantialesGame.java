@@ -16,6 +16,7 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
@@ -121,6 +122,7 @@ public class ManantialesGame extends GridGame {
         }
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal("messageSender", new MessageSender()); 
         session.insert(this);
         for (Object fact : getFacts()) {
             session.insert(fact);
@@ -152,6 +154,7 @@ public class ManantialesGame extends GridGame {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal("messageSender", new MessageSender()); 
         session.insert(this);
         session.insert(move);
         for (Implementation fact : getFacts()) {

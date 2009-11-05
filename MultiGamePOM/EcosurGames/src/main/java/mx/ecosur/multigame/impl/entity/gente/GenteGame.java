@@ -44,6 +44,7 @@ import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.MessageSender;
 
 
 @Entity
@@ -112,6 +113,7 @@ public class GenteGame extends GridGame {
         }
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal("messageSender", new MessageSender()); 
         session.insert(this);
         for (Object fact : getFacts()) {
             session.insert(fact);
@@ -135,6 +137,7 @@ public class GenteGame extends GridGame {
         }                
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal("messageSender", new MessageSender()); 
         session.insert(this);
         session.insert(move);
         for (Object fact : getFacts()) {

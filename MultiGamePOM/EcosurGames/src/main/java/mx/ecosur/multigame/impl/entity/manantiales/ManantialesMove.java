@@ -123,6 +123,32 @@ public class ManantialesMove extends GridMove {
     }
 
     @Override
+    public int hashCode() {
+       int curCode = 1, destCode = 1;
+       if (current != null)
+        curCode = curCode - current.hashCode();
+       if (destination != null)
+         destCode = destCode + destination.hashCode();
+       return 31 * curCode + destCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+        if (obj instanceof ManantialesMove) {
+            ManantialesMove comparison = (ManantialesMove) obj;
+            if (current != null && destination !=null) {
+                ret = current.equals( (comparison.getCurrentCell())) &&
+                      destination.equals(comparison.getDestinationCell());
+            } else if (destination != null) {
+                ret = destination.equals(comparison.getDestinationCell());
+              }
+        }
+
+        return ret;
+    }
+
+    @Override
     protected Object clone() throws CloneNotSupportedException {
        throw new CloneNotSupportedException ();
     }

@@ -32,8 +32,7 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 
 @Entity
-public class
-        GenteMove extends GridMove {
+public class GenteMove extends GridMove {
 	
 	private static final long serialVersionUID = -6635578671376146204L;
 
@@ -174,21 +173,6 @@ public class
 		    this.qualifier = CooperationQualifier.valueOf(qualifier);
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		boolean ret = false;
-		
-		if (obj instanceof GenteMove) {
-			GenteMove comparator = (GenteMove) obj;
-			if (comparator.player == this.player 
-					&& comparator.getDestinationCell() == this.getDestinationCell()
-					&& comparator.getCurrentCell() == this.getCurrentCell())
-				ret = true;
-		}
-		
-		return ret;
-	}
-
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
 	 */
@@ -227,6 +211,32 @@ public class
 		
 		return ret.toString();
 	}
+
+@Override
+    public int hashCode() {
+       int curCode = 1, destCode = 1;
+       if (current != null)
+        curCode = curCode - current.hashCode();
+       if (destination != null)
+         destCode = destCode + destination.hashCode();
+       return 31 * curCode + destCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+        if (obj instanceof GenteMove) {
+            GenteMove comparison = (GenteMove) obj;
+            if (current != null && destination !=null) {
+                ret = current.equals( (comparison.getCurrentCell())) &&
+                      destination.equals(comparison.getDestinationCell());
+            } else if (destination != null) {
+                ret = destination.equals(comparison.getDestinationCell());
+              }
+        }
+
+        return ret;
+    }
 
     @Override
     protected Object clone() {
