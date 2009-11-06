@@ -55,8 +55,6 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	private GenteStrategy strategy;
 	
 	private GenteMove nextMove;
-
-    private transient MessageSender messageSender;
 	
 	public GenteStrategyAgent () {
 		super();
@@ -212,7 +210,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
             StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
             session.insert(this);
             session.insert(game);
-            session.insert(messageSender);
+            session.insert(new DummyMessageSender());
             session.fireAllRules();
             session.dispose();
         }
@@ -224,6 +222,14 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
             GridCell destination = (GridCell) ret.getDestinationCell();
             destination.setColor(getColor());
             ret.setDestinationCell(destination);
+            ret.setPlayer(this);
+            if (!isTurn())
+                throw new RuntimeException ("Move generated but agent has lost turn!");
+
+        } else {
+            if (isTurn()) {
+                  throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
+            }
         }
 
         return ret;

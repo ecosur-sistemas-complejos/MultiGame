@@ -42,7 +42,7 @@ public class ManantialesGame extends GridGame {
 	
 	private Set<CheckCondition> checkConditions;
 
-    private MessageSender messageSender;
+    private transient MessageSender messageSender;
 
 
     public ManantialesGame () {
