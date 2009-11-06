@@ -92,6 +92,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	public Game registerPlayer (Game game, Registrant registrant)
 		throws InvalidRegistrationException 
 	{
+        /* Set messaging */
+        game.setMessageSender(messageSender);
+
 		if (!em.contains(game.getImplementation())) {
 			Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
 			if (test.getImplementation() == null) 
@@ -122,7 +125,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	 */
 	public Game registerAgent(Game game, Agent agent) throws
 		InvalidRegistrationException 
-	{		
+	{
+        /* Set messaging */
+        game.setMessageSender(messageSender);
+
 		if (!em.contains(game.getImplementation())) {
 			Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
 			if (test.getImplementation() == null) 
@@ -158,6 +164,10 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 		/* refresh the game object */
 		em.refresh (game.getImplementation());
+
+        /* Set messaging */
+        game.setMessageSender(messageSender);
+
 		game.removePlayer(player);
 		game.setState(GameState.ENDED);
         messageSender.sendPlayerChange(game.getImplementation());	

@@ -54,6 +54,8 @@ public class GenteGame extends GridGame {
 	
 	private Set<GentePlayer> winners;
 
+    private transient MessageSender messageSender;
+
     public GenteGame () {
         super();
     }
@@ -113,7 +115,7 @@ public class GenteGame extends GridGame {
         }
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", new MessageSender()); 
+        session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         for (Object fact : getFacts()) {
             session.insert(fact);
@@ -137,7 +139,7 @@ public class GenteGame extends GridGame {
         }                
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", new MessageSender()); 
+        session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
         for (Object fact : getFacts()) {
@@ -244,6 +246,17 @@ public class GenteGame extends GridGame {
 		
 		return ret;
 	}
+
+    @Transient
+    public MessageSender getMessageSender() {
+        if (messageSender == null)
+            messageSender = new MessageSender ();
+        return messageSender;
+    }
+
+    public void setMessageSender(MessageSender messageSender) {
+        this.messageSender = messageSender;
+    }
 
     @Transient
     public String getGameType() {

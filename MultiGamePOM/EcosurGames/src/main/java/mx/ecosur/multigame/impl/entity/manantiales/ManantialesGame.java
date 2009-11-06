@@ -42,6 +42,9 @@ public class ManantialesGame extends GridGame {
 	
 	private Set<CheckCondition> checkConditions;
 
+    private MessageSender messageSender;
+
+
     public ManantialesGame () {
         super();
     }
@@ -122,7 +125,7 @@ public class ManantialesGame extends GridGame {
         }
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", new MessageSender()); 
+        session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         for (Object fact : getFacts()) {
             session.insert(fact);
@@ -154,7 +157,7 @@ public class ManantialesGame extends GridGame {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", new MessageSender()); 
+        session.setGlobal("messageSender", getMessageSender()); 
         session.insert(this);
         session.insert(move);
         for (Implementation fact : getFacts()) {
@@ -232,6 +235,18 @@ public class ManantialesGame extends GridGame {
 		
 		return ret;
 	}
+
+
+    @Transient
+    public MessageSender getMessageSender() {
+        if (messageSender == null)  
+            messageSender = new MessageSender ();
+        return messageSender;
+    }
+
+    public void setMessageSender(MessageSender messageSender) {
+        this.messageSender = messageSender;
+    }    
 
 
     @Transient

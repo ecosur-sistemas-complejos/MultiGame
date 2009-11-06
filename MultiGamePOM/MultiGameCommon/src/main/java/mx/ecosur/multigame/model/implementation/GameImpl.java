@@ -17,6 +17,7 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.MessageSender;
 
 public interface GameImpl extends Implementation {
 
@@ -57,6 +58,17 @@ public interface GameImpl extends Implementation {
 	 */
 	public Set<MoveImpl> listMoves();
 
+    /**
+     * @param sender
+     */
+    public void setMessageSender (MessageSender sender);
+
+    /**
+     *
+     * @return
+     */
+    public MessageSender getMessageSender ();
+
 	/**
 	 * @return
 	 */
@@ -73,5 +85,6 @@ public interface GameImpl extends Implementation {
 	 * @throws InvalidRegistrationException 
 	 */
 	public AgentImpl registerAgent(AgentImpl implementation) throws InvalidRegistrationException;
+
 
 }

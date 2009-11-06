@@ -21,6 +21,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.MessageSender;
 
 public class Game implements Model {
 
@@ -101,6 +102,14 @@ public class Game implements Model {
 		}
 		return collection;
 	}
+
+    public void setMessageSender (MessageSender sender) {
+        gameImpl.setMessageSender (sender);
+    }
+
+    public MessageSender getMessageSender () {
+        return gameImpl.getMessageSender();
+    }
 	
 	/**
 	 * 

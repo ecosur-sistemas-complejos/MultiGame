@@ -26,6 +26,15 @@
         private function gameComplete(event:Event):void {
             lobby.reload(event);
             vstack.selectedChild = lobby;
+
+            /* Clear out any running games */
+            if (_penteGameWindow != null)
+                _penteGameWindow = null;
+            if (_manantialesWindow != null)
+                _manantialesWindow = null;
+
+            /* Restart the lobby timer to view any updates to
+             * system state ... */
             lobby.timer.start();
             lobby.setFocus();
         }
@@ -36,7 +45,6 @@
         }
 
         private function lobbyDone(event:GameEvent):void {
-            setBusy();
             lobby.timer.stop();
             if (event.game is GenteGame) {
                 //create new pente game window
@@ -63,10 +71,6 @@
                 Alert.show("Game info" + game.id + "," + game.columns + ", " + game.rows);
                 CursorManager.removeBusyCursor();
             }
-        }
-
-        private function setBusy():void {
-            CursorManager.setBusyCursor();
         }
         ]]>
     </mx:Script>

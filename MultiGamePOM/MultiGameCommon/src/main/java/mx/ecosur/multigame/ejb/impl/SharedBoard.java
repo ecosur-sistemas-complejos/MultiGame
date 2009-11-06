@@ -35,6 +35,7 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.*;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.CellImpl;
+import mx.ecosur.multigame.MessageSender;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -137,6 +138,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		}
 
 		/* Execute the move */
+        game.setMessageSender(new MessageSender());
 		move = game.move (move);
 
 		if (move.getStatus().equals(MoveStatus.INVALID)) {

@@ -51,7 +51,9 @@ package mx.ecosur.multigame.gente{
     import mx.events.DynamicEvent;
     import mx.events.EffectEvent;
     import mx.managers.DragManager;
-    import mx.messaging.messages.ErrorMessage;
+    import mx.messaging.Producer;
+import mx.messaging.messages.AsyncMessage;
+import mx.messaging.messages.ErrorMessage;
     import mx.messaging.messages.IMessage;
     import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
@@ -85,13 +87,14 @@ package mx.ecosur.multigame.gente{
         // server objects
         private var _gameService:RemoteObject;
         private var _msgReceiver:MessageReceiver;
+        private var _msgProducer:Producer;
         
         // flags
         private var _isMoving:Boolean;
         private var _isTurn:Boolean;
         private var _executingMove:GenteMove; // Reference to move that has been made by the client but not yet validated by the server.
         private var _isEnded:Boolean;
-        
+
         // constants
         private static const TOKEN_STORE_MIN_WIDTH:int = 150;
         private static const TOKEN_STORE_MAX_WIDTH:int = 300;
@@ -112,6 +115,9 @@ package mx.ecosur.multigame.gente{
             tokenStore:TokenStore, gameStatus:GameStatus, moveViewer:GenteMoveViewer, animateLayer:UIComponent)
        {
             super();
+
+            _msgProducer = new Producer();
+            _msgProducer.destination = "multigame-destination";           
             
             // set private references
             _gameId = currentGame.id;
@@ -164,6 +170,13 @@ package mx.ecosur.multigame.gente{
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
+
+           // send out a player change message to kick off any JMS
+           var playerchange:IMessage = new AsyncMessage();
+           playerchange.headers.GAME_ID = _gameId;
+	       playerchange.headers.GAME_EVENT = GameEvent.PLAYER_CHANGE;
+           playerchange.body = _game;
+           _msgProducer.send (playerchange)
         }
         
         public function set isTurn(isTurn:Boolean):void{

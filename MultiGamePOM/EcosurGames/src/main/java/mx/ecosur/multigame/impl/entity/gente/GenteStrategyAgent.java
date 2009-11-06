@@ -31,6 +31,7 @@ import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.DummyMessageSender;
 
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 
@@ -59,7 +60,6 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 	
 	public GenteStrategyAgent () {
 		super();
-        messageSender = new MessageSender ();
 		nextMove = null;
 	}
 	
@@ -146,18 +146,16 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
                 for (Color color : colors) {
                     this.setTurn(currentTurn);
                     GenteGame clone = (GenteGame) ((GenteGame) game).clone();
+                    clone.setMessageSender(new DummyMessageSender());
                     /* Disable UI message recpetion */
                     clone.setId(0);
                     cell.setColor(color);
                     cell.setId(getMaxId(clone) + 1);
                     GenteMove move = new GenteMove (this, cell);
                     move = (GenteMove) clone.move(move);
-                    /* Load trias and tesseras */
-                    Set<BeadString> tesseras = move.getTesseras();
-                    Set<BeadString> trias= move.getTrias();
-                    if (tesseras.size() >  0) {
+                    if (move.getTesseras().size() >  0) {
                         ret.add(move);
-                    } else if (trias.size() > 0) {
+                    } else if (move.getTrias().size() > 0) {
                         ret.add(move);
                     }
                 }

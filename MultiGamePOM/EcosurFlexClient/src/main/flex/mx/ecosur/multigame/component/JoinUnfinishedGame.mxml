@@ -7,7 +7,7 @@
 
 	<mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.enum.GameState;   
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.GameEvent;
 

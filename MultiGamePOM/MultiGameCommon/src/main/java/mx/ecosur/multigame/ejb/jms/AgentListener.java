@@ -53,7 +53,6 @@ public class AgentListener implements MessageListener {
 			GameEvent gameEvent = GameEvent.valueOf(message.getStringProperty(
 				"GAME_EVENT"));
 			ObjectMessage msg = (ObjectMessage) message;
-
 			if (gameEvent.equals(GameEvent.PLAYER_CHANGE)) {
 				GameImpl game = (GameImpl) msg.getObject();
 				List<GamePlayer> players = game.listPlayers();
@@ -62,10 +61,11 @@ public class AgentListener implements MessageListener {
 						Agent agent = (Agent) p;
 						if (game.getState() == GameState.PLAY) {
 							try {					
-								Move move = agent.determineNextMove(new Game (game));
-                                if (move.getImplementation() != null)
-								    sharedBoard.doMove(new Game (game), move);								                                    
-                                message.acknowledge();
+								Move move = agent.determineNextMove( new Game (game));
+                                if (move.getImplementation() != null) {                                    
+								    sharedBoard.doMove(new Game (game), move);
+                                    break;
+                                }
 							} catch (InvalidMoveException e) {
 								logger.log(Level.SEVERE, "Invalid move suggested " +
 										"by agent!");
@@ -75,9 +75,11 @@ public class AgentListener implements MessageListener {
 					}
 				}
 			}
+
+            message.acknowledge();
 			
 		} catch (JMSException e) {
 			e.printStackTrace();
 		} 
-	}
+    }
 }
