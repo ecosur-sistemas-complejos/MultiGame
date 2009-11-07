@@ -28,10 +28,14 @@
             vstack.selectedChild = lobby;
 
             /* Clear out any running games */
-            if (_penteGameWindow != null)
+            if (_penteGameWindow != null){
+                _penteGameWindow.destroy();
                 _penteGameWindow = null;
-            if (_manantialesWindow != null)
+            }
+            if (_manantialesWindow != null) {
+                _manantialesWindow.destroy();
                 _manantialesWindow = null;
+            }
 
             /* Restart the lobby timer to view any updates to
              * system state ... */
