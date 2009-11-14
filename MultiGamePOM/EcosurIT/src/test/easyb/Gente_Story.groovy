@@ -1,5 +1,4 @@
 import mx.ecosur.multigame.session.GenteSharedBoardTest
-import mx.ecosur.multigame.impl.entity.gente.GenteGame
 import mx.ecosur.multigame.impl.entity.gente.GenteMove
 import mx.ecosur.multigame.model.Game;
 import mx.ecosur.multigame.model.Move

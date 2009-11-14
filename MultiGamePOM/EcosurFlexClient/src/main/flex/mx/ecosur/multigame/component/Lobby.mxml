@@ -7,13 +7,12 @@
         [Event(name="registered", type="mx.ecosur.multigame.event.GameEvent")]
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.GameEvent")]
         [Event(name="gameJoined", type="mx.ecosur.multigame.event.GameEvent")]
+        [Event(name="rowSelected", type="mx.ecosur.multigame.event.GameEvent")]
     </mx:Metadata>
 
 	<mx:Script>
         <![CDATA[
-
-        import mx.managers.CursorManager;
-        import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
             import flash.utils.Timer;
             import mx.controls.Alert;
@@ -26,7 +25,9 @@
             public var timer:Timer;
     
             private function init(event:Event):void {
-            	introTxt.text = "Welcome " + player.name + ".\n\nYou may rejoin an unfinished game, join a pending game, or start a new game below.";
+            	introTxt.text = "Welcome " + player.name + 
+            	   ".\n\nYou may rejoin an unfinished game, join a pending game, " + 
+            	   "or start a new game below.";
             	timer = new Timer(1000);
             	timer.addEventListener(TimerEvent.TIMER, timeout);
             	timer.start();
@@ -42,7 +43,6 @@
             }
 
             private function choose (event:Event):void {
-                CursorManager.setBusyCursor(); 
                 dispatchEvent(event);
             }
             
@@ -59,7 +59,7 @@
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 	<mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
 		<mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-		<mx:TabNavigator width="100%" height="250">
+		<mx:TabNavigator width="100%" height="280">
 			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="choose(event)"/>
             <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="choose(event)"/>
             <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>

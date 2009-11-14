@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.impl.entity.manantiales;
+package mx.ecosur.multigame.impl.entity.oculto;
 
 import mx.ecosur.multigame.enums.GameState;
 
@@ -7,9 +7,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.*;
-
-import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
-import mx.ecosur.multigame.impl.enums.manantiales.Mode;
+import mx.ecosur.multigame.impl.enums.oculto.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -22,8 +20,6 @@ import javax.persistence.*;
 
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -34,33 +30,23 @@ import java.util.*;
 import java.net.MalformedURLException;
 
 @Entity
-public class ManantialesGame extends GridGame {
+public class OcultoGame extends GridGame {
 	
 	private static final long serialVersionUID = -8395074059039838349L;
-	
-	private Mode mode; 
+
+    private static final String ChangeSet = "/mx/ecosur/multigame/impl/oculto.xml";
 	
 	private Set<CheckCondition> checkConditions;
 
     private transient MessageSender messageSender;
 
 
-    public ManantialesGame () {
+    public OcultoGame() {
         super();
     }
 
-    public ManantialesGame (KnowledgeBase kbase) {
+    public OcultoGame(KnowledgeBase kbase) {
         this.kbase = kbase;
-    }
-    
-    @Enumerated (EnumType.STRING)
-    public Mode getMode() {
-        return mode;
-    }
-		
-    public void setMode (Mode mode) {
-    	this.checkConditions = null;
-        this.mode = mode;
     }
     
     public boolean hasCondition (ConditionType type) {
@@ -110,17 +96,12 @@ public class ManantialesGame extends GridGame {
       * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
       */
     public void initialize() throws MalformedURLException {
-        this.setGrid(new GameGrid());
         this.setState(GameState.BEGIN);
-        this.setCreated(new Date());
-        this.setColumns(9);
-        this.setRows(9);
-
         if (kbase == null) {
             kbase = KnowledgeBaseFactory.newKnowledgeBase();
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+                ChangeSet)), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
 
@@ -153,7 +134,7 @@ public class ManantialesGame extends GridGame {
             kbase = KnowledgeBaseFactory.newKnowledgeBase();
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+                ChangeSet)), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
@@ -175,13 +156,13 @@ public class ManantialesGame extends GridGame {
         if (moves == null)
             moves = new LinkedHashSet<GridMove>();
 
-        moves.add((ManantialesMove) move);
+        moves.add((OcultoMove) move);
 
         return move;
     }
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		ManantialesPlayer player = new ManantialesPlayer ();
+		OcultoPlayer player = new OcultoPlayer();
 		player.setRegistrant((GridRegistrant) registrant);
 		
 		for (GridPlayer p : this.getPlayers()) {
@@ -214,7 +195,7 @@ public class ManantialesGame extends GridGame {
 	
 	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
 		throw new InvalidRegistrationException (
-				"Agents cannot be registered with a Manantiales Game!");
+				"Agents cannot be registered with an Oculto Game!");
 	}
 
 	/* (non-Javadoc)
@@ -250,7 +231,7 @@ public class ManantialesGame extends GridGame {
 
     @Transient
     public String getGameType() {
-        return "Manantiales";
+        return "Oculto";
     }
 
     public void setGameType (String type) {

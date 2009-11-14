@@ -49,10 +49,17 @@
         <defaultGoal>test</defaultGoal>
         <plugins>
             <plugin>
-                <inherited>true</inherited>
                 <groupId>org.easyb</groupId>
                 <artifactId>maven-easyb-plugin</artifactId>
                 <version>0.9.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
               </plugin>
         </plugins>
     </build>

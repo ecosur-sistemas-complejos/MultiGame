@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.entity.manantiales;
+package mx.ecosur.multigame.impl.entity.oculto;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,11 +18,10 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
-import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.impl.enums.oculto.*;
 import mx.ecosur.multigame.impl.model.GridCell;
 
-@Entity (name="ManantialesFicha")
+@Entity (name="OcultoFicha")
 public class Ficha extends GridCell {
 
 	private static final long serialVersionUID = -8048552960014554186L;

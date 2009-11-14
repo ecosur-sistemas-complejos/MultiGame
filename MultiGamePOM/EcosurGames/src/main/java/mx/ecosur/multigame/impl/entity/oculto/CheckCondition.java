@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.entity.manantiales;
+package mx.ecosur.multigame.impl.entity.oculto;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,12 +21,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
+import mx.ecosur.multigame.impl.enums.oculto.ConditionType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
-@Entity (name="ManantialesCheckCondition")
+@Entity (name="OcultoCheckCondition")
 public class CheckCondition implements ConditionImpl {
 	
 	private static final long serialVersionUID = -9183594100309734640L;

@@ -19,6 +19,7 @@
 
         import mx.formatters.DateFormatter;
         import mx.collections.ArrayCollection;
+        import mx.managers.CursorManager;
         import mx.rpc.AsyncToken;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
@@ -103,6 +104,7 @@
         }
 
         private function joinPending():void {
+            CursorManager.setBusyCursor();
             var game:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
             var pendingToken:AsyncToken = gameService.joinPendingGame(game, player, Color.UNKNOWN);
             pendingToken.resultHandler = joinResultHandler;
@@ -116,15 +118,19 @@
     	result="event.token.resultHandler(event)" fault="event.token.faultHandler(event)"/>
 
     <mx:VBox width="100%">
-        <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700" 
-        	doubleClick="joinPending()" doubleClickEnabled="true">
+        <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
             <mx:columns>
                 <mx:DataGridColumn headerText="Started" dataField="created" width="120"/>
                 <mx:DataGridColumn headerText="Game type" dataField="gameType" width="80"/>
                 <mx:DataGridColumn headerText="Players" dataField="players" wordWrap="true" />
                 <mx:DataGridColumn headerText="Status" dataField="status" width="120" wordWrap="true"/>
             </mx:columns>
-        </mx:DataGrid>        
+        </mx:DataGrid>
+        <mx:Form width="100%">
+            <mx:FormItem horizontalAlign="right" width="100%">
+                <mx:Button click="joinPending()" label="Join"/>
+            </mx:FormItem>
+        </mx:Form>
     </mx:VBox>
     
 </mx:Panel>

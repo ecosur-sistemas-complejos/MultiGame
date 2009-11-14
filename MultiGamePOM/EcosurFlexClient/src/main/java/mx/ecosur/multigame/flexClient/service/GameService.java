@@ -29,6 +29,7 @@ import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.impl.entity.oculto.OcultoGame;
 import mx.ecosur.multigame.impl.enums.gente.*;
 
 import mx.ecosur.multigame.model.Agent;
@@ -93,7 +94,10 @@ public class GameService {
 				break;
 			case MANANTIALES:
 				game = new ManantialesGame();
-				break;				
+				break;
+            case OCULTO:
+                game = new OcultoGame();
+                break;                
 			}
 
             Game model = new Game (game);            

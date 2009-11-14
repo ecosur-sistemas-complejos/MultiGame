@@ -56,7 +56,7 @@
         }
 
         private function showAIPlayers(show:Boolean):void {
-            if (show) {
+            if (show && gameType.selectedItem.data == "PENTE") {
                 aiPlayers.visible = true;
                 aiPlayers.percentHeight = 100;
             } else {
@@ -78,6 +78,7 @@
     <mx:ArrayCollection id="gameList">
     	<mx:Object label="GENTE" data="PENTE"/>
     	<mx:Object label="MANANTIALES" data="MANANTIALES"/>
+    	<mx:Object label="OCULTO" data="OCULTO"/>
     </mx:ArrayCollection>
     
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />

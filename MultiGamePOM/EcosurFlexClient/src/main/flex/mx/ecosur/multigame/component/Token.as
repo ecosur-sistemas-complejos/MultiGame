@@ -91,7 +91,9 @@ package mx.ecosur.multigame.component {
 				var gradientBevel:GradientBevelFilter = new GradientBevelFilter();
 				gradientBevel.distance = 8;
 				gradientBevel.angle = 225; // opposite of 45 degrees
-				gradientBevel.colors = [Color.findIntermediateColor(0xffffff, cell.colorCode, 0.5), cell.colorCode, Color.findIntermediateColor(0x000000, cell.colorCode, 0.5)];
+				gradientBevel.colors = [Color.findIntermediateColor(
+				    0xffffff, cell.colorCode, 0.5), cell.colorCode, Color.findIntermediateColor(
+				    0x000000, cell.colorCode, 0.5)];
 				gradientBevel.alphas = [1, 0, 1];
 				gradientBevel.ratios = [0, 128, 255];
 				gradientBevel.blurX = 8;

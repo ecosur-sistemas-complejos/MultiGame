@@ -28,9 +28,6 @@ import mx.ecosur.multigame.model.implementation.CellImpl;
 @Entity
 public class GridCell implements CellImpl, Cloneable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7917786935353131901L;
 
 	protected int row, column;

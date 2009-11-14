@@ -44,7 +44,8 @@
             
             
             public function destroy():void{
-            	_controller.destroy();
+                if (_controller != null)
+            	    _controller.destroy();
             }
 
             public function set currentGame (currentGame:ManantialesGame):void {

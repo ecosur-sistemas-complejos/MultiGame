@@ -67,7 +67,8 @@
         }
 
         public function destroy():void {
-            _controller.destroy();
+            if (_controller != null)
+                _controller.destroy();
         }
 
         /* Only events that effect this container are handled, all others

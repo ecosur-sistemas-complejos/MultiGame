@@ -169,8 +169,7 @@ public class GenteGame extends GridGame {
 		
 		for (GridPlayer p : this.getPlayers()) {
 			if (p.equals (player))
-				throw new InvalidRegistrationException (
-						"Duplicate Registration! " + player.getRegistrant().getName());
+				return p;
 		}
 		
 		int max = getMaxPlayers();
