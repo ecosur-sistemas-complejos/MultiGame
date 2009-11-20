@@ -8,123 +8,117 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.entity.oculto;
+package mx.ecosur.multigame.impl.entity.tablon;
 
 import javax.persistence.Entity;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridGame;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
-public class OcultoPlayer extends GridPlayer {
+public class TablonMove extends GridMove {
 	
-	private static final long serialVersionUID = 2815240265995571202L;
+	private static final long serialVersionUID = 1L;
+
+	private TokenType type, replacementType;
 	
-	private int points, forested, moderate, intensive, vivero, silvo, cheatYears;
+	private boolean badYear, premium;
 	
-	public OcultoPlayer() {
+	public TablonMove() {
 		super();
+		badYear = false;
 	}
 	
-	public OcultoPlayer(GridRegistrant player, Color favoriteColor) {
-		super (player, favoriteColor);
-		points = 0;
+	public TablonMove(GridPlayer player, TablonFicha destination) {
+		super (player, destination);
+		type = destination.getType();
+	}
+	
+	public TablonMove(GridPlayer player, TablonFicha current, TablonFicha destination)
+	{
+		super (player, current, destination);
 	}
 
-    public int getCheatYears() {
-        return cheatYears;
+    public TokenType getType () {
+		if (getDestinationCell() == null)
+			type = TokenType.UNKNOWN;
+		else {
+			TablonFicha destination = (TablonFicha) getDestinationCell();
+			type = destination.getType();
+		}
+		
+		return type;
+	}
+	
+	public void setType (TokenType type) {
+		this.type = type;
+	}
+
+	public TokenType getReplacementType() {
+		if (replacementType == null) {
+			replacementType = TokenType.UNKNOWN;
+			if (getCurrentCell() instanceof TablonFicha) {
+					TablonFicha current = (TablonFicha) getCurrentCell();
+					replacementType = current.getType();
+			}
+		}
+
+		return replacementType;
+	}
+
+	public void setReplacementType(TokenType replacementType) {
+		this.replacementType = replacementType;
+	}
+	
+	public boolean isBadYear () {
+		return badYear;
+	}
+	
+	public void setBadYear (boolean year) {
+		badYear = year;
+	}
+
+	/* (non-Javadoc)
+	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
+	 */
+	public void setPlayer(GamePlayerImpl player) {
+		this.player = (GridPlayer) player;
+	}
+
+    public GridPlayer getPlayer () {
+        return player;
     }
 
-    public void setCheatYears(int cheatYears) {
-        this.cheatYears = cheatYears;
+    @Override
+    public int hashCode() {
+       int curCode = 1, destCode = 1;
+       if (current != null)
+        curCode = curCode - current.hashCode();
+       if (destination != null)
+         destCode = destCode + destination.hashCode();
+       return 31 * curCode + destCode;
     }
 
-    public int getScore() {
-		return points;
-	}
-	
-	public void setScore (int score) {
-		this.points = score;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+        if (obj instanceof TablonMove) {
+            TablonMove comparison = (TablonMove) obj;
+            if (current != null && destination !=null) {
+                ret = current.equals( (comparison.getCurrentCell())) &&
+                      destination.equals(comparison.getDestinationCell());
+            } else if (destination != null) {
+                ret = destination.equals(comparison.getDestinationCell());
+              }
+        }
 
-	/**
-	 * @return the forested
-	 */
-	public int getForested() {
-		return forested;
-	}
+        return ret;
+    }
 
-	/**
-	 * @return the moderate
-	 */
-	public int getModerate() {
-		return moderate;
-	}
-
-	/**
-	 * @return the intensive
-	 */
-	public int getIntensive() {
-		return intensive;
-	}
-
-	/**
-	 * @return the vivero
-	 */
-	public int getVivero() {
-		return vivero;
-	}
-
-	/**
-	 * @return the silvo
-	 */
-	public int getSilvo() {
-		return silvo;
-	}
-
-	/**
-	 * @param forested the forested to set
-	 */
-	public void setForested(int forested) {
-		this.forested = forested;
-	}
-
-	/**
-	 * @param moderate the moderate to set
-	 */
-	public void setModerate(int moderate) {
-		this.moderate = moderate;
-	}
-
-	/**
-	 * @param intensive the intensive to set
-	 */
-	public void setIntensive(int intensive) {
-		this.intensive = intensive;
-	}
-
-	/**
-	 * @param vivero the vivero to set
-	 */
-	public void setVivero(int vivero) {
-		this.vivero = vivero;
-	}
-
-	/**
-	 * @param silvo the silvo to set
-	 */
-	public void setSilvo(int silvo) {
-		this.silvo = silvo;
-	}
-	
-	public void reset() {
-		this.forested = 0;
-		this.intensive = 0;
-		this.moderate = 0;
-		this.silvo = 0;
-		this.vivero = 0;
-		this.points = 0;
-	}
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+       throw new CloneNotSupportedException ();
+    }
 }

@@ -26,6 +26,8 @@ public class CellComparator implements Comparator<CellImpl>, Serializable {
 
 	public int compare(CellImpl cell1, CellImpl cell2) {
 		int ret = -1;
+        if (cell1 == null || cell2 == null)
+                return ret;
 		
 		/* First, compare rows */
 		if (cell1.getRow () > cell2.getRow())

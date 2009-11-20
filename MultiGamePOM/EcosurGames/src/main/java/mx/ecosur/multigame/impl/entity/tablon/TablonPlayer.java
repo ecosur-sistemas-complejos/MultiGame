@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.entity.oculto;
+package mx.ecosur.multigame.impl.entity.tablon;
 
 import javax.persistence.Entity;
 
@@ -18,17 +18,17 @@ import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 @Entity
-public class OcultoPlayer extends GridPlayer {
+public class TablonPlayer extends GridPlayer {
 	
 	private static final long serialVersionUID = 2815240265995571202L;
 	
-	private int points, forested, moderate, intensive, vivero, silvo, cheatYears;
+	private int points, cheatYears;
 	
-	public OcultoPlayer() {
+	public TablonPlayer() {
 		super();
 	}
 	
-	public OcultoPlayer(GridRegistrant player, Color favoriteColor) {
+	public TablonPlayer(GridRegistrant player, Color favoriteColor) {
 		super (player, favoriteColor);
 		points = 0;
 	}
@@ -49,82 +49,8 @@ public class OcultoPlayer extends GridPlayer {
 		this.points = score;
 	}
 
-	/**
-	 * @return the forested
-	 */
-	public int getForested() {
-		return forested;
-	}
-
-	/**
-	 * @return the moderate
-	 */
-	public int getModerate() {
-		return moderate;
-	}
-
-	/**
-	 * @return the intensive
-	 */
-	public int getIntensive() {
-		return intensive;
-	}
-
-	/**
-	 * @return the vivero
-	 */
-	public int getVivero() {
-		return vivero;
-	}
-
-	/**
-	 * @return the silvo
-	 */
-	public int getSilvo() {
-		return silvo;
-	}
-
-	/**
-	 * @param forested the forested to set
-	 */
-	public void setForested(int forested) {
-		this.forested = forested;
-	}
-
-	/**
-	 * @param moderate the moderate to set
-	 */
-	public void setModerate(int moderate) {
-		this.moderate = moderate;
-	}
-
-	/**
-	 * @param intensive the intensive to set
-	 */
-	public void setIntensive(int intensive) {
-		this.intensive = intensive;
-	}
-
-	/**
-	 * @param vivero the vivero to set
-	 */
-	public void setVivero(int vivero) {
-		this.vivero = vivero;
-	}
-
-	/**
-	 * @param silvo the silvo to set
-	 */
-	public void setSilvo(int silvo) {
-		this.silvo = silvo;
-	}
-	
 	public void reset() {
-		this.forested = 0;
-		this.intensive = 0;
-		this.moderate = 0;
-		this.silvo = 0;
-		this.vivero = 0;
+		this.cheatYears = 0;
 		this.points = 0;
 	}
 }

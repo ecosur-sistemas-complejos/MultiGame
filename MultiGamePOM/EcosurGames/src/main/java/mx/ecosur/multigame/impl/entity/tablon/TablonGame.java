@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.impl.entity.oculto;
+package mx.ecosur.multigame.impl.entity.tablon;
 
 import mx.ecosur.multigame.enums.GameState;
 
@@ -7,7 +7,6 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.*;
-import mx.ecosur.multigame.impl.enums.oculto.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
@@ -25,71 +24,34 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
+import org.drools.audit.WorkingMemoryFileLogger;
 
 import java.util.*;
 import java.net.MalformedURLException;
 
 @Entity
-public class OcultoGame extends GridGame {
+public class TablonGame extends GridGame {
 	
 	private static final long serialVersionUID = -8395074059039838349L;
 
     private static final String ChangeSet = "/mx/ecosur/multigame/impl/oculto.xml";
+
+    private static final boolean DEBUG = false;
 	
-	private Set<CheckCondition> checkConditions;
+	private transient MessageSender messageSender;
 
-    private transient MessageSender messageSender;
+    private StatefulKnowledgeSession session;
+
+    private WorkingMemoryFileLogger logger;
 
 
-    public OcultoGame() {
+    public TablonGame() {
         super();
     }
 
-    public OcultoGame(KnowledgeBase kbase) {
+    public TablonGame(KnowledgeBase kbase) {
         this.kbase = kbase;
     }
-    
-    public boolean hasCondition (ConditionType type) {
-    	boolean ret = false;
-    	if (checkConditions != null) {
-	    	for (CheckCondition condition : checkConditions) {
-	    		if (condition.getType().equals(type)) {
-	    			ret = true;
-	    		}
-	    	}
-    	}
-	    	
-    	return ret;
-    }
-    @OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-    public Set<CheckCondition> getCheckConditions () {
-    	if (checkConditions == null)
-    		checkConditions = new HashSet<CheckCondition>();
-    	return checkConditions;
-    }
-    
-    public void setCheckConditions (Set<CheckCondition> checkConstraints) {
-    	this.checkConditions = checkConstraints;
-    }
-    
-    public void addCheckCondition (CheckCondition violation) {
-    	if (checkConditions == null) 
-    		checkConditions = new HashSet<CheckCondition>();
-    	if (!hasCondition (ConditionType.valueOf(violation.getReason())))
-    		checkConditions.add(violation);
-    }
-
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Game#getFacts()
-	 */
-	@Override
-    @Transient
-	public Set<Implementation> getFacts() {
-		Set<Implementation> facts = super.getFacts();
-		if (checkConditions != null)
-			facts.addAll(checkConditions);
-		return facts;
-	}
 
 
     /* (non-Javadoc)
@@ -105,14 +67,16 @@ public class OcultoGame extends GridGame {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", getMessageSender());
-        session.insert(this);
-        for (Object fact : getFacts()) {
-            session.insert(fact);
+        if (session == null) {
+            session = kbase.newStatefulKnowledgeSession();
+            session.setGlobal("messageSender", getMessageSender());
+            session.insert(this);
+            for (Implementation fact : getFacts()) {
+                session.insert(fact);
+            }
         }
 
-        session.getAgenda().getAgendaGroup("initialize").setFocus();
+        session.startProcess("tablon-flow");
         session.fireAllRules();
         session.dispose();
     }
@@ -137,37 +101,40 @@ public class OcultoGame extends GridGame {
                 ChangeSet)), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", getMessageSender()); 
-        session.insert(this);
-        session.insert(move);
-        for (Implementation fact : getFacts()) {
-            session.insert(fact);
+        
+        if (session == null) {
+            session = kbase.newStatefulKnowledgeSession();
+            session.setGlobal("messageSender", getMessageSender());
+            session.insert(this);            
         }
 
-        session.getAgenda().getAgendaGroup("verify").setFocus();
+        if (logger == null && DEBUG) {
+            logger = new WorkingMemoryFileLogger(session);
+            logger.setFileName("audit");
+        }
+
+        session.insert(move);
+        session.startProcess("tablon-flow");
         session.fireAllRules();
-        session.getAgenda().getAgendaGroup("move").setFocus();
-        session.fireAllRules();
-        session.getAgenda().getAgendaGroup("evaluate").setFocus();
-        session.fireAllRules();
+        if (logger != null)
+            logger.writeToDisk();
         session.dispose();
 
         if (moves == null)
             moves = new LinkedHashSet<GridMove>();
 
-        moves.add((OcultoMove) move);
+        moves.add((TablonMove) move);
 
         return move;
     }
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		OcultoPlayer player = new OcultoPlayer();
+		TablonPlayer player = new TablonPlayer();
 		player.setRegistrant((GridRegistrant) registrant);
 		
 		for (GridPlayer p : this.getPlayers()) {
 			if (p.equals (player))
-				return p;
+				throw new InvalidRegistrationException ("Duplicate Registraton!");
 		}		
 		
 		int max = getMaxPlayers();
@@ -231,7 +198,7 @@ public class OcultoGame extends GridGame {
 
     @Transient
     public String getGameType() {
-        return "Oculto";
+        return "Tablon";
     }
 
     public void setGameType (String type) {

@@ -167,7 +167,7 @@ public class OcultoGame extends GridGame {
 		
 		for (GridPlayer p : this.getPlayers()) {
 			if (p.equals (player))
-				return p;
+				throw new InvalidRegistrationException ("Duplicate Registraton!");
 		}		
 		
 		int max = getMaxPlayers();

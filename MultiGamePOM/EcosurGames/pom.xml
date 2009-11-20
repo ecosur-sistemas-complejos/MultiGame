@@ -48,6 +48,10 @@
                 <targetPath>mx/ecosur/multigame/impl/solver</targetPath>
             </resource>
             <resource>
+                <directory>src/main/rules/ruleflow</directory>
+                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
+            </resource>            
+            <resource>
                 <directory>src/main/rules/agent</directory>
                 <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
             </resource>

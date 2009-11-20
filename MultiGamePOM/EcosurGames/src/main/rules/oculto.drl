@@ -1,5 +1,12 @@
 package mx.ecosur.multigame.oculto;
 
+/*
+* Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
 import function mx.ecosur.multigame.impl.util.oculto.RuleFunctions.*;
 
 import mx.ecosur.multigame.MessageSender;
