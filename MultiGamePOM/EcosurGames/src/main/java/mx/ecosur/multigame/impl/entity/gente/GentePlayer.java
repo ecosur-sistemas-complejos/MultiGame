@@ -143,8 +143,6 @@ public class GentePlayer extends GridPlayer {
         ret.setTrias(clones);
         ret.setColor(getColor());
 
-        /* TODO: Clone game in  GentePlayer.
-            Game is not set into clone as this would provoke an infinite loop */
         GridRegistrant clone = (GridRegistrant) getRegistrant().clone();
         ret.setRegistrant(clone);
         ret.setTurn(isTurn());

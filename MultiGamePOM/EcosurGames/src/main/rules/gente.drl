@@ -31,8 +31,9 @@ import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.util.Direction;
 
-#mvel dialect
-#dialect "mvel"
+import function mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
+
+dialect "java"
 
 #GENTE
 
@@ -41,111 +42,6 @@ global MessageSender messageSender;
 #These rules are for use in the modified game of Pente, GENTE,
 #invented by Dr. Luis Garcia Barrios at ECOSUR, in
 #San Cristobal de Las Casas, Chiapas, Mexico.
-
-#Functions for the modified GridGame of PENTE, "GENTE"
-
-#    Determines if the destination of the requested move
-#    is in the center of the grid.
-function boolean isCenter (GenteGame game, GenteMove move) {
-    Dimension size = game.getSize();
-    GridCell destination = (GridCell) move.getDestinationCell ();
-    
-    int centerWidth = (int) size.getWidth()/2;
-    int centerHeight = (int) size.getHeight()/2;
-    
-    boolean ret = (destination.getRow () == centerHeight && 
-        destination.getColumn() == centerWidth);
-    if (!ret)
-        move.setStatus (MoveStatus.INVALID);
-    return ret;
-}
-
-#    Determines if the destination of the requested move is
-#    empty on the grid.
-function boolean isEmpty (GameGrid grid, GenteMove move) {
-    GridCell destination = (GridCell) move.getDestinationCell();
-    GridCell current = grid.getLocation (destination);
-    boolean ret = (current == null);
-    if (!ret)
-        move.setStatus (MoveStatus.INVALID);
-    return ret;
-}
-
-
-function int scorePlayer (GenteMove move) {
-    int ret = 0;
-    GentePlayer player = (GentePlayer) move.getPlayer();
-    if (player.getTrias().size() >= 2)
-        ret = 10;
-    else if (player.getTesseras().size() >= 3) 
-        ret = 5;
-    return ret;
-}
-
-#    Determines if the game has a winner.
-function boolean hasWinner (GenteGame game) {
-    return (game.getWinners().size() > 0);
-}
-
-#    Gets the winner from a specified game.  For more complicated payoff
-#    schemas, this function should return a PriorityQueue of Players 
-#    based upon positions on the board.
-function Set getWinners (GenteGame game) {   
-    GenteGame pente = (GenteGame) game;
-    return pente.getWinners();
-}
-
-function GridPlayer incrementTurn (GenteGame game, GenteMove move) {
-    GridPlayer player = move.getPlayer();    
-    player.setTurn(false);
-
-    # Find next player 
-    List<GridPlayer> players = game.getPlayers();
-    int playerNumber = players.indexOf(player);
-    GridPlayer nextPlayer = null;
-    if (playerNumber == players.size() - 1) {
-        nextPlayer = players.get(0);
-    } else {
-        nextPlayer = players.get(playerNumber + 1);
-    }
-    
-    nextPlayer.setTurn (true);
-    return nextPlayer;
-}
-
-#Determines if a Tria has already been scored
-function boolean hasTria (GridCell cell1, GridCell cell2, GridCell cell3, GenteMove move) {
-    BeadString tria = new BeadString (cell1, cell2, cell3);
-    for (BeadString test : move.getTrias()) {
-        if (test.equals(tria))
-            return true;
-    }
-    
-    return false;
-}
-
-#Determines if a Tessera has already been scored
-function boolean hasTessera (GridCell cell1, GridCell cell2, GridCell cell3, 
-    GridCell cell4, GenteMove move) 
-{
-    BeadString tessera = new BeadString (cell1, cell2, cell3, cell4);
-    for (BeadString test : move.getTesseras()) {
-        if (test.equals(tessera))
-            return true;
-    }
-    
-    return false;
-}
-
-#Determines if a group of cells is multi-colored
-function boolean hasMultipleColors (GridCell cell1, GridCell cell2, GridCell cell3, GridCell cell4) {
-    HashSet<Color> colors = new HashSet<Color>();
-    colors.add(cell1.getColor());
-    colors.add(cell2.getColor());
-    colors.add(cell3.getColor());
-    colors.add(cell4.getColor());
-    return (colors.size () > 1);
-}
 
 #Rules for the game of PENTE
 
@@ -215,7 +111,6 @@ then
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }
     insert (move.getDestinationCell());
-    
     messageSender.sendMoveComplete(game, move);
 end
  
@@ -469,6 +364,5 @@ when
     move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
 then
     GridPlayer player = incrementTurn (game, move);
-
     messageSender.sendPlayerChange(game);
 end
