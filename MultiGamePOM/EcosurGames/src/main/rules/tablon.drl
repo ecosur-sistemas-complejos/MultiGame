@@ -22,7 +22,6 @@ import mx.ecosur.multigame.impl.entity.tablon.*;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 
 import mx.ecosur.multigame.impl.util.tablon.MutationEvent;
-import mx.ecosur.multigame.impl.util.tablon.MutationEvent.MutationType;
 
 import function mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
 
@@ -130,7 +129,7 @@ then
     for (TablonFicha particle : mutation.getSquare()) {
         if (particle.getRow() == 1 || particle.getColumn() == 1 || particle.getRow () == 25 || particle.getColumn() == 25)
             continue;
-        MutationEvent event = new MutationEvent (particle, MutationType.NOTIFY);
+        MutationEvent event = new MutationEvent (particle);
         event.setSquare(tgrid.getSquare(particle));
         insert (event);
     }
@@ -139,7 +138,7 @@ then
             continue;
         if (forest.getRow() == 2 || forest.getColumn() == 2 || forest.getRow() == 24 || forest.getColumn() == 24)
             continue;
-        MutationEvent event = new MutationEvent (forest, MutationType.NOTIFY);
+        MutationEvent event = new MutationEvent (forest);
         event.setSquare(tgrid.getSquare(forest));
         event.setOctogon(tgrid.getOctogon(forest));
         insert (event);
@@ -153,16 +152,19 @@ rule "A single Potrero token cannot be supported by only one soil token"
 when
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square)
     eval (isUnary ($ficha, $square, TokenType.SOIL_PARTICLE))
-    $grid : TablonGrid ()    
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
 then
     modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
     retract ($event);
+    
     for (Object obj : $square) {
         TablonFicha ficha = (TablonFicha) obj;
         #Borders are ignored
         if (ficha.getRow () == 1 || ficha.getColumn() == 1)
             continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha, MutationType.RETRACT);
+        MutationEvent MutationEvent = new MutationEvent (ficha);
         MutationEvent.setSquare ($grid.getSquare(ficha));
         MutationEvent.setOctogon ($grid.getOctogon(ficha));
         insert (MutationEvent);
@@ -175,17 +177,21 @@ when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square)
     eval (isUnary ($ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
 then
     modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
     retract ($event);
     for (Object obj : $square) {
         TablonFicha ficha = (TablonFicha) obj;
         #Borders are ignored
         if (ficha.getRow () == 1 || ficha.getColumn() == 1)
             continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha, MutationType.RETRACT);
-        MutationEvent.setSquare ($grid.getSquare(ficha));
-        MutationEvent.setOctogon ($grid.getOctogon(ficha));
+        MutationEvent MutationEvent = new MutationEvent (ficha);
+        SortedSet square = $grid.getSquare(ficha);
+        MutationEvent.setSquare (square);
+        SortedSet octo = $grid.getOctogon(ficha);
+        MutationEvent.setOctogon (octo);
         insert (MutationEvent);
     }
 end
@@ -196,15 +202,17 @@ when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square)
     eval (isUnary ($ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
 then
     modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
     retract ($event);
     for (Object obj : $square) {
         TablonFicha ficha = (TablonFicha) obj;
         #Borders are ignored
         if (ficha.getRow () == 1 || ficha.getColumn() == 1)
             continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha, MutationType.RETRACT);
+        MutationEvent MutationEvent = new MutationEvent (ficha);
         MutationEvent.setSquare ($grid.getSquare(ficha));
         MutationEvent.setOctogon ($grid.getOctogon(ficha));
         insert (MutationEvent);
@@ -218,15 +226,17 @@ when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octogon : octogon)
     eval (isUnary ($ficha, $octogon, TokenType.FOREST))
     $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
 then
     modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
     retract ($event);
     for (Object obj : $square) {
         TablonFicha ficha = (TablonFicha) obj;
         #Borders are ignored
         if (ficha.getRow () == 1 || ficha.getColumn() == 1)
             continue;        
-        MutationEvent MutationEvent = new MutationEvent (ficha, MutationType.RETRACT);
+        MutationEvent MutationEvent = new MutationEvent (ficha);
         MutationEvent.setSquare ($grid.getSquare(ficha));
         MutationEvent.setOctogon ($grid.getOctogon(ficha));
         insert (MutationEvent);
@@ -234,7 +244,7 @@ then
 end
 
 rule "Consume events after processing"
-    ruleflow-group "evaluate"
+    ruleflow-group "confirm"
     salience -10
 when
     $event : MutationEvent ()

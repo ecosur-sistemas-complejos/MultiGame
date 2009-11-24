@@ -51,4 +51,16 @@ public class RuleFunctions {
         nextPlayer.setTurn (true);
         return nextPlayer;
     }
+
+    public static boolean isBorder (TablonFicha ficha, int [] edges) {
+        boolean ret = false;
+        for (int i = 0; i < edges.length; i++) {
+            if (ficha.getRow() == edges [ i ] || ficha.getColumn() == edges [ i ]) {
+                ret = true;
+                break;
+            }
+        }
+
+        return ret;        
+    }
 }

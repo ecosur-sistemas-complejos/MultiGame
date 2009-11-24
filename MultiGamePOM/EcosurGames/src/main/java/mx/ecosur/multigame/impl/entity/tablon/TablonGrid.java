@@ -42,6 +42,7 @@ public class TablonGrid extends GameGrid {
     public SortedSet<TablonFicha> getSquare (TablonFicha ficha) {
         SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
 
+
         // x - 1, y -1
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
@@ -58,14 +59,14 @@ public class TablonGrid extends GameGrid {
 
         // x - 1, y +1
         if ( this.getLocation (new GridCell (
-                ficha.getColumn() - 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
+                ficha.getColumn() + 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
             ret.add ((TablonFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() - 1, Color.UNKNOWN)));
         }
 
         // x + 1, y + 1
         if ( this.getLocation (new GridCell (
-                ficha.getColumn() - 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
+                ficha.getColumn() + 1, ficha.getRow() + 1, Color.UNKNOWN)) != null) {
             ret.add ((TablonFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() + 1, Color.UNKNOWN)));
         }
@@ -99,7 +100,7 @@ public class TablonGrid extends GameGrid {
         }
 
         if ( this.getLocation (new GridCell (
-                ficha.getColumn() - 2, ficha.getRow() + 2, Color.UNKNOWN)) != null) {
+                ficha.getColumn() + 2, ficha.getRow() - 2, Color.UNKNOWN)) != null) {
             ret.add((TablonFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow() - 2, Color.UNKNOWN)));
         }
@@ -150,5 +151,42 @@ public class TablonGrid extends GameGrid {
         }
 
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
+        for (int y = 0; y < 26; y++) {
+            for (int x = 0; x < 26; x++) {
+                GridCell cell = getLocation (new GridCell (y,x,Color.UNKNOWN));
+                if (cell != null) {
+                    TablonFicha ficha = (TablonFicha) cell;
+                    switch (ficha.getType()) {
+                        case SOIL_PARTICLE:
+                            ret.append("S");
+                            break;
+                        case FOREST:
+                            ret.append("F");
+                            break;
+                        case POTRERO:
+                            ret.append("P");
+                            break;
+                        case SILVOPASTORAL:
+                            ret.append("S");
+                            break;
+                        case WATER_PARTICLE:
+                            ret.append("W");
+                            break;
+                        default:
+                            assert (false);
+                    }
+                } else {
+                    ret.append(" ");
+                }
+            }
+            ret.append("\n");
+        }
+
+        return ret.toString();
     }
 }

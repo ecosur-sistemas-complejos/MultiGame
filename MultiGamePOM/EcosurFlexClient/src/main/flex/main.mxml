@@ -10,9 +10,6 @@
 	
 	<mx:Script>
         <![CDATA[
-        
-        import mx.ecosur.multigame.oculto.entity.OcultoGame;
-        import mx.ecosur.multigame.oculto.OcultoWindow;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.gente.entity.GenteGame;
         import mx.managers.CursorManager;
@@ -25,8 +22,7 @@
         import mx.ecosur.multigame.manantiales.ManantialesWindow;
 
         private var _penteGameWindow:GenteGameWindow,
-                _manantialesWindow:ManantialesWindow,
-                _ocultoWindow:OcultoWindow;
+                _manantialesWindow:ManantialesWindow;
 
         private function gameComplete(event:Event):void {
             lobby.reload(event);
@@ -42,12 +38,7 @@
                 _manantialesWindow.destroy();
                 vstack.removeChild(_manantialesWindow);
                 _manantialesWindow = null;                
-            }
-            if (_ocultoWindow != null) {
-            	_ocultoWindow.destroy();
-                vstack.removeChild(_ocultoWindow);
-            	_ocultoWindow = null;
-            }            
+            }                     
 
             /* Restart the lobby timer to view any updates to
              * system state ... */
@@ -79,13 +70,6 @@
                 _manantialesWindow.addEventListener("complete", gameComplete);
                 vstack.addChild(_manantialesWindow);
                 vstack.selectedChild = _manantialesWindow;
-            } else if (event.game is OcultoGame) {
-            	_ocultoWindow = new OcultoWindow();
-            	_ocultoWindow.currentPlayer = event.gamePlayer;
-            	_ocultoWindow.currentGame = OcultoGame (event.game);
-            	_ocultoWindow.addEventListener("complete", gameComplete);            	
-            	vstack.addChild(_ocultoWindow);
-            	vstack.selectedChild = _ocultoWindow;	
             } else {
                 var game:Game = event.game;
                 Alert.show("Error!  Unknown GameType [" + game + "]");
@@ -101,6 +85,5 @@
     	<component:Lobby id="lobby" registered="lobbyDone(event)" gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
 		<pente:GenteGameWindow id="penteGameWindow" complete="gameComplete(event)" />
 		<manantiales:ManantialesWindow id="manantialesWindow" complete="gameComplete(event)" />
-		<oculto:OcultoWindow id="ocultoWindow" complete="gameComplete(event)"/>
 	</mx:ViewStack>
 </mx:Application>

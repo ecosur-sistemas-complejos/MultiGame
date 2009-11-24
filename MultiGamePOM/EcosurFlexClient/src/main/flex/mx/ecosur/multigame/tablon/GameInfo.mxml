@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+    <mx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.formatters.DateFormatter;
+        import mx.ecosur.multigame.enum.Color;
+        import mx.ecosur.multigame.oculto.entity.OcultoPlayer;
+
+        private static const TERRITORY:int = 48;
+
+        private var _players:ArrayCollection;
+        private var _deforested:int, _undeveloped:int;
+
+
+        public function set players(players:ArrayCollection):void {
+            _players = players;
+            updatePlayers();
+        }
+
+        public function get player():ArrayCollection {
+            return _players;
+        }
+
+        private function updatePlayers():void {
+            _deforested = 0,_undeveloped = TERRITORY;
+            for (var i:int = 0; i < _players.length; i++) {
+                var player:TablonPlayer = TablonPlayer(_players.getItemAt(i));
+                var forested:int = player.forested;
+                var moderate:int = player.moderate;
+                var intensive:int = player.intensive;
+                var vivero:int = player.vivero;
+                var silvo:int = player.silvo;
+
+                _undeveloped = _undeveloped - (forested + moderate + intensive
+                        + vivero + silvo);
+                _deforested = _deforested + (moderate + intensive);
+                if (i == 0) {
+                    player1.text = player.registrant.name;
+                    player1Pts.text = "" + player.score;
+                    player1Tks.text = "" + player.tokens;
+                    player1Pr.text = "" + player.premiums;
+                } else if (i == 1) {
+                    player2.text = player.registrant.name;
+                    player2Pts.text = "" + player.score;
+                    player2Tks.text = "" + player.tokens;
+                    player2Pr.text = "" + player.premiums;
+                } else if (i == 2) {
+                    player3.text = player.registrant.name;
+                    player3Pts.text = "" + player.score;
+                    player3Tks.text = "" + player.tokens;
+                    player3Pr.text = "" + player.premiums;
+                } else if (i == 3) {
+                    player4.text = player.registrant.name;
+                    player4Pts.text = "" + player.score;
+                    player4Tks.text = "" + player.tokens;
+                    player4Pr.text = "" + player.premiums;
+                }
+            }
+
+            undeveloped.text = "" + _undeveloped;
+            deforested.text = "" + _deforested;
+        }
+                    
+        ]]>
+    </mx:Script>
+    
+    <mx:Grid>
+        <mx:GridRow>
+            <mx:GridItem/>
+            <mx:GridItem>
+                <mx:Label id="player1" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player2" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player3" styleName="fieldLit"/>
+            </mx:GridItem> 
+            <mx:GridItem>
+                <mx:Label id="player4" styleName="fieldLit"/>
+            </mx:GridItem>                                   
+        </mx:GridRow>
+        <mx:GridRow>
+        	<mx:GridItem>
+        		<mx:Label text="Points" styleName="fieldLit"/>
+        	</mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player1Pts" styleName="field"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player2Pts" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player3Pts" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player4Pts" styleName="field"/>
+            </mx:GridItem>                                                 	
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Tokens" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player1Tks" styleName="field"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player2Tks" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player3Tks" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player4Tks" styleName="field"/>
+            </mx:GridItem>                                                  
+        </mx:GridRow>        
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Premiums" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player1Pr" styleName="field"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="player2Pr" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player3Pr" styleName="field"/>
+            </mx:GridItem>   
+            <mx:GridItem>
+                <mx:Label id="player4Pr" styleName="field"/>
+            </mx:GridItem>                                                  
+        </mx:GridRow>         
+        <mx:GridRow/>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Deforested" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="deforested" styleName="field"/>
+            </mx:GridItem>                                                 
+        </mx:GridRow>     
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Undeveloped" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="undeveloped" styleName="field"/>
+            </mx:GridItem>                                                 
+        </mx:GridRow>               
+    </mx:Grid>
+</mx:Canvas>

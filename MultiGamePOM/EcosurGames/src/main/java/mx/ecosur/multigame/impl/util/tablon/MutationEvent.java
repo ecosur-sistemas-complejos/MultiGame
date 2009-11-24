@@ -26,18 +26,12 @@ import java.util.TreeSet;
 
 public class MutationEvent implements ConditionImpl {
 
-    public enum MutationType {
-        MODIFY, RETRACT, NOTIFY;
-    }
-
     SortedSet<TablonFicha> square, octogon;
     TablonFicha ficha;
-    MutationType type;
 
     public MutationEvent() {
         square = new TreeSet<TablonFicha>(new CellComparator());
         octogon = new TreeSet<TablonFicha>(new CellComparator());
-        type = MutationType.MODIFY;
     }
 
     public MutationEvent(TablonFicha ficha) {
@@ -45,26 +39,10 @@ public class MutationEvent implements ConditionImpl {
         this.ficha = ficha;
     }
 
-    public MutationEvent(TablonFicha ficha, MutationType type) {
-        this ();
-        this.ficha = ficha;
-        this.type = type;
-    }
-
     public MutationEvent(TablonFicha ficha, SortedSet<TablonFicha> square, SortedSet<TablonFicha> octogon) {
         this.ficha = ficha;
         this.square = square;
         this.octogon = octogon;
-        this.type = MutationType.MODIFY;
-    }
-
-    public MutationEvent(TablonFicha ficha, SortedSet<TablonFicha> square, SortedSet<TablonFicha> octogon,
-                         MutationType type)
-    {
-        this.ficha = ficha;
-        this.square = square;
-        this.octogon = octogon;
-        this.type = type;
     }
 
     public TablonFicha getFicha() {
@@ -91,16 +69,8 @@ public class MutationEvent implements ConditionImpl {
         this.octogon = octogon;
     }
 
-    public MutationType getType() {
-        return type;
-    }
-
-    public void setType(MutationType type) {
-        this.type = type;
-    }
-
     public String getReason() {
-        return type.name();
+        return "Mutation of " + ficha;
     }
 
     public Object[] getTriggers() {

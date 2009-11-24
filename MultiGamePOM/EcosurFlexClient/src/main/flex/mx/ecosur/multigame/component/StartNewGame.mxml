@@ -64,12 +64,16 @@
                 aiPlayers.height = 0;
             }
         }
+
+        private function evaluateAiPlayers():void {
+            showAIPlayers (robots.selected);                                           
+        }
             
         ]]>
     </mx:Script>
     
     <mx:ArrayCollection id="agentList">
-        <mx:Object label="Simple" data="SIMPLE"/>
+        <!--<mx:Object label="Simple" data="SIMPLE"/>-->
         <mx:Object label="Blocker" data="BLOCKER"/>
         <mx:Object label="Random" data="RANDOM"/>   
         <mx:Object label="Human" data="HUMAN"/>                  
@@ -78,14 +82,13 @@
     <mx:ArrayCollection id="gameList">
     	<mx:Object label="GENTE" data="PENTE"/>
     	<mx:Object label="MANANTIALES" data="MANANTIALES"/>
-    	<mx:Object label="OCULTO" data="OCULTO"/>
     </mx:ArrayCollection>
     
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 
     <mx:Form x="0" y="0" defaultButton="{startBtn}" id="form" width="100%">
         <mx:FormItem label="Game">
-        	<mx:ComboBox id="gameType" dataProvider="{gameList}"/>
+        	<mx:ComboBox id="gameType" dataProvider="{gameList}" change="evaluateAiPlayers()"/>
         </mx:FormItem>
         <mx:FormItem label="Setup">
         	<mx:HBox>

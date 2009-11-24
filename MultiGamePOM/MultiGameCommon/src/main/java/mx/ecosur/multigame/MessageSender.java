@@ -146,7 +146,8 @@ public class MessageSender {
 
 	/**
 	 * Sends the GameEvent.MOVE_COMPLETE message with the move completed.
-	 * 
+	 *
+     * @param game
 	 * @param move
 	 */
 	public void sendMoveComplete(GameImpl game, MoveImpl move) {
@@ -156,25 +157,32 @@ public class MessageSender {
 	/**
 	 * Sends the GameEvent.CONDITION_RAISED message with the raised condition.
 	 * 
-	 * @param move
+	 * @param  game
+     * @param condition
 	 */
-	public void sendConditionRaised (GameImpl game, MoveImpl move, ConditionImpl condition) {
+	public void sendConditionRaised (GameImpl game, ConditionImpl condition) {
 		sendMessage(game.getId(), GameEvent.CONDITION_RAISED, condition);		
 	}
 	
 	/**
 	 * Sends  the GameEvent.CHECK_CONSTRAINT_RESOLVED message with the 
 	 * resolved condition.
+     *
+     * @param game
+     * @param condition
 	 */
-	public void sendConditionResolved (GameImpl game, MoveImpl move, ConditionImpl condition) {
+	public void sendConditionResolved (GameImpl game, ConditionImpl condition) {
 		sendMessage (game.getId(), GameEvent.CONDITION_RESOLVED, condition);
 	}
 	
 	/** 
 	 * Sends the GameEvent.CONDITION_TRIGGERED message with the triggered
 	 * condition.
+     *
+     * @param game
+     * @param condition
 	 */
-	public void sendConditionTriggered (GameImpl game, MoveImpl move, ConditionImpl condition) {
+	public void sendConditionTriggered (GameImpl game, ConditionImpl condition) {
 		sendMessage (game.getId(), GameEvent.CONDITION_TRIGGERED, condition);		
 	}
 	

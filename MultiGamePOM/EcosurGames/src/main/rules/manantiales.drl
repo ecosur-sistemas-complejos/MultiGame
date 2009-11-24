@@ -376,7 +376,7 @@ rule
                 (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        messageSender.sendConditionRaised ($game, $move, constraint);
+        messageSender.sendConditionRaised ($game, constraint);
 end
 
 rule
@@ -398,7 +398,7 @@ rule
             $tok1, $tok2, (Ficha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
-        messageSender.sendConditionRaised ($game, $move, constraint);              
+        messageSender.sendConditionRaised ($game, constraint);
 end
 
 rule
@@ -421,7 +421,7 @@ rule
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
         modify ($move) { setPlayer (player) }
-        messageSender.sendConditionRaised ($game, $move, constraint);                     
+        messageSender.sendConditionRaised ($game, constraint);
 end
 
 #Enforces the arroyo constraint (only 2 developments that deforest on the border)
@@ -445,7 +445,7 @@ rule
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
         modify ($move) { setPlayer (player) }
-        messageSender.sendConditionRaised ($game, $move, constraint);                     
+        messageSender.sendConditionRaised ($game, constraint);
 end
 
 rule "manantiales"
@@ -465,7 +465,7 @@ rule "manantiales"
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
             (Ficha) $move.getDestinationCell());
         $game.addCheckCondition(constraint);      
-        messageSender.sendConditionRaised ($game, $move, constraint);                
+        messageSender.sendConditionRaised ($game, constraint);
 end
 
 rule "territory-deforested"
@@ -486,7 +486,7 @@ rule "territory-deforested"
         CheckCondition constraint = new CheckCondition(
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
         $game.addCheckCondition(constraint);
-        messageSender.sendConditionRaised ($game, $move, constraint);               
+        messageSender.sendConditionRaised ($game, constraint);               
 end
 
 rule "execute-move"
@@ -519,7 +519,7 @@ then
     constraints.remove ($constraint);
     retract ($constraint);
     modify ($game) { setCheckConditions (constraints) };
-    messageSender.sendConditionResolved ($game, $move, $constraint);
+    messageSender.sendConditionResolved ($game, $constraint);
 end
 
 rule "remove-replaced-token-from-player"
@@ -601,7 +601,7 @@ then
     conditions.remove ($condition);
     $game.setCheckConditions (conditions);
     $game.setGrid (grid);
-    messageSender.sendConditionTriggered ($game, $move, $condition);
+    messageSender.sendConditionTriggered ($game, $condition);
     retract ($condition);
     modify ($game) { setCheckConditions (conditions), setGrid (grid) };    
 end  
@@ -619,7 +619,7 @@ when
 then
     $condition.setExpired(true);
     modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
-    messageSender.sendConditionTriggered ($game, $move, $condition);
+    messageSender.sendConditionTriggered ($game, $condition);
     messageSender.sendEndGame ($game);
 end 
 
@@ -644,7 +644,7 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    messageSender.sendConditionTriggered ($game, $move, $constraint);
+    messageSender.sendConditionTriggered ($game, $constraint);
 end
 
 rule "yellow-borders-deforested"
@@ -668,7 +668,7 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    messageSender.sendConditionTriggered ($game, $move, $constraint);
+    messageSender.sendConditionTriggered ($game, $constraint);
 end
 
 rule "black-borders-deforested"
@@ -692,7 +692,7 @@ then
     $game.setGrid (grid);
     retract ($constraint1);
     retract ($constraint2);
-    messageSender.sendConditionTriggered ($game, $move, $constraint);        
+    messageSender.sendConditionTriggered ($game, $constraint);        
 end
 
 rule "red-borders-deforested"
@@ -716,7 +716,7 @@ then
     $game.setGrid (grid);    
     retract ($constraint1);
     retract ($constraint2);
-    messageSender.sendConditionTriggered ($game, $move, $constraint);         
+    messageSender.sendConditionTriggered ($game, $constraint);         
 end 
 
 rule "stage-won"

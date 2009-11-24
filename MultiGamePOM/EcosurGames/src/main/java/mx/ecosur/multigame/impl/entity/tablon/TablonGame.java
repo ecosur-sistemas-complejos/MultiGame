@@ -36,7 +36,7 @@ public class TablonGame extends GridGame {
 
     private static final String ChangeSet = "/mx/ecosur/multigame/impl/oculto.xml";
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 	
 	private transient MessageSender messageSender;
 
@@ -202,7 +202,7 @@ public class TablonGame extends GridGame {
     }
 
     public void setGameType (String type) {
-        // do nothing;
+       type = type;
     }    
 
 	/* (non-Javadoc)
