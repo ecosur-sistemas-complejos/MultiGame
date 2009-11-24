@@ -35,9 +35,9 @@ import function mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
 
 dialect "java"
 
-#GENTE
-
 global MessageSender messageSender;
+
+#GENTE
 
 #These rules are for use in the modified game of Pente, GENTE,
 #invented by Dr. Luis Garcia Barrios at ECOSUR, in
@@ -203,13 +203,14 @@ rule "find-vertical-tesseras"
     salience -5
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
-    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $move.teamColors)
-    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color memberOf $move.teamColors)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color memberOf $teamColors)
     $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $row3 : row == ($row2 + 1),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), column == $column1, $row4 : row == ($row3 + 1),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
         || $cell4.equals($destination))
     eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
@@ -230,12 +231,13 @@ rule "find-horizontal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
-    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column == ($column1 + 1), $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column == ($column2 + 1), $color3 : color)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column == ($column1 + 1), color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column == ($column2 + 1), color memberOf $teamColors)
     $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), row == $row1, $column4 : column == ($column3 + 1),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
         || $cell4.equals($destination))
     eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
@@ -255,14 +257,15 @@ rule "find-right-diagonal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
     $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $move.teamColors)
     $cell2 : GridCell ($id2 : id != $id1, column == ($column1 + 1), row == ($row1 + 1),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == ($column1 + 2), row == ($row1 + 2),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     $cell4 : GridCell (id not in ($id1, $id2, $id3), column == ($column1 + 3), row == ($row1 + 3),
-        color memberOf $move.teamColors)
+        color memberOf $teamColors)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
         || $cell4.equals($destination))
     eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
@@ -282,18 +285,16 @@ rule "find-left-diagonal-tesseras"
     no-loop true 
 when
     $game  : GenteGame (state == GameState.PLAY)
-    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED,
-        $colors : teamColors, searchCount < 9)
-    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row,  $color1 : color)
-    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row,  $color2 : color)
-    $cell3 : GridCell ($id3 : id not in ($id1, $id2), $column3 : column, $row3 : row,  $color3 : color)
-    $cell4 : GridCell (id not in ($id1, $id2, $id3), $column4 : column, $row4 : row,  $color4 : color)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row,  color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row,  color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), $column3 : column, $row3 : row,  color memberOf $teamColors)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), $column4 : column, $row4 : row,  color memberOf $teamColors)
     eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
         || $cell4.equals($destination))
     eval ($row2 == $row1 - 1 && $row3 == $row2 - 1 && $row4 == $row3 - 1)
     eval ($column2 == $column1 - 1 && $column3 == $column2 - 1 && $column4 == $column3 - 1)
-    eval ($colors.contains($color1) && $colors.contains($color2) && $colors.contains($color3)
-        && $colors.contains($color4))
     eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
     eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
 then
