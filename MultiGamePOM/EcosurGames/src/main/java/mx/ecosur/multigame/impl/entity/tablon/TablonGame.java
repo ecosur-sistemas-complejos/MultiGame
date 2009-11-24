@@ -34,9 +34,9 @@ public class TablonGame extends GridGame {
 	
 	private static final long serialVersionUID = -8395074059039838349L;
 
-    private static final String ChangeSet = "/mx/ecosur/multigame/impl/oculto.xml";
+    private static final String ChangeSet = "/mx/ecosur/multigame/impl/tablon.xml";
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 	
 	private transient MessageSender messageSender;
 
@@ -78,7 +78,6 @@ public class TablonGame extends GridGame {
 
         session.startProcess("tablon-flow");
         session.fireAllRules();
-        session.dispose();
     }
 
     @Transient
@@ -118,7 +117,6 @@ public class TablonGame extends GridGame {
         session.fireAllRules();
         if (logger != null)
             logger.writeToDisk();
-        session.dispose();
 
         if (moves == null)
             moves = new LinkedHashSet<GridMove>();
@@ -213,4 +211,9 @@ public class TablonGame extends GridGame {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    public void finalize() {
+        if (this.session != null)
+            session.dispose();
+    }
 }

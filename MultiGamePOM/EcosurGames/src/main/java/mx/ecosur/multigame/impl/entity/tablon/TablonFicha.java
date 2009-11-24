@@ -62,7 +62,17 @@ public class TablonFicha extends GridCell {
 		return ret;
 	}
 
-	/* (non-Javadoc)
+    @Override
+    public TablonFicha clone() throws CloneNotSupportedException {
+        GridCell clone = super.clone();
+        TablonFicha ret = new TablonFicha ();
+        ret.setRow(clone.getRow());
+        ret.setColumn(clone.getColumn());
+        ret.setColor(clone.getColor());
+        ret.setType(TokenType.UNKNOWN);
+        return ret;
+        
+    }/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

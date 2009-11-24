@@ -71,6 +71,7 @@
 		        <module>EcosurFlexClient</module>
 		        <module>EcosurEAR</module>		        		        
 		        <module>EcosurIT</module>
+                <module>EcosurTablonExperiments</module>
 		    </modules>
         </profile>
     </profiles>    

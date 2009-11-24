@@ -7,6 +7,7 @@ package mx.ecosur.multigame.tablon;
 * http://www.opensource.org/licenses/afl-3.0.php
 */
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.SortedSet;
 import java.util.List;
@@ -150,7 +151,7 @@ end
 rule "A single Potrero token cannot be supported by only one soil token"
     ruleflow-group "evaluate"
 when
-    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square)
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon)
     eval (isUnary ($ficha, $square, TokenType.SOIL_PARTICLE))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
@@ -158,23 +159,17 @@ then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
     retract ($event);
-    
-    for (Object obj : $square) {
-        TablonFicha ficha = (TablonFicha) obj;
-        #Borders are ignored
-        if (ficha.getRow () == 1 || ficha.getColumn() == 1)
-            continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha);
-        MutationEvent.setSquare ($grid.getSquare(ficha));
-        MutationEvent.setOctogon ($grid.getOctogon(ficha));
-        insert (MutationEvent);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
     }
 end
 
 rule "A single soil token cannot be supported by only one forest token"
     ruleflow-group "evaluate"
 when
-    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square)
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square, $octo : octogon)
     eval (isUnary ($ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
@@ -182,24 +177,17 @@ then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
     retract ($event);
-    for (Object obj : $square) {
-        TablonFicha ficha = (TablonFicha) obj;
-        #Borders are ignored
-        if (ficha.getRow () == 1 || ficha.getColumn() == 1)
-            continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha);
-        SortedSet square = $grid.getSquare(ficha);
-        MutationEvent.setSquare (square);
-        SortedSet octo = $grid.getOctogon(ficha);
-        MutationEvent.setOctogon (octo);
-        insert (MutationEvent);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
     }
 end
 
 rule "A single water token cannot be supported by only one forest token"
     ruleflow-group "evaluate"
 when
-    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square)
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square, $octo : octogon)
     eval (isUnary ($ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
@@ -207,15 +195,10 @@ then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
     retract ($event);
-    for (Object obj : $square) {
-        TablonFicha ficha = (TablonFicha) obj;
-        #Borders are ignored
-        if (ficha.getRow () == 1 || ficha.getColumn() == 1)
-            continue;
-        MutationEvent MutationEvent = new MutationEvent (ficha);
-        MutationEvent.setSquare ($grid.getSquare(ficha));
-        MutationEvent.setOctogon ($grid.getOctogon(ficha));
-        insert (MutationEvent);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
     }
 end
 
@@ -223,29 +206,23 @@ end
 rule "A forest token cannot be supported by only one forest token"
     ruleflow-group "evaluate"
 when
-    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octogon : octogon)
-    eval (isUnary ($ficha, $octogon, TokenType.FOREST))
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
+    eval (isUnary ($ficha, $octo, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
     retract ($event);
-    for (Object obj : $square) {
-        TablonFicha ficha = (TablonFicha) obj;
-        #Borders are ignored
-        if (ficha.getRow () == 1 || ficha.getColumn() == 1)
-            continue;        
-        MutationEvent MutationEvent = new MutationEvent (ficha);
-        MutationEvent.setSquare ($grid.getSquare(ficha));
-        MutationEvent.setOctogon ($grid.getOctogon(ficha));
-        insert (MutationEvent);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
     }
 end
 
 rule "Consume events after processing"
     ruleflow-group "confirm"
-    salience -10
 when
     $event : MutationEvent ()
 then
@@ -263,6 +240,7 @@ then
     retract ($grid);  
     messageSender.sendEndGame ($game);    
 end
+
 
 rule "publish move complete"
     ruleflow-group "confirm"

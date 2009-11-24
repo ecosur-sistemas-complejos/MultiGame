@@ -1,15 +1,10 @@
 package mx.ecosur.multigame.impl.util.tablon;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
-import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
+import mx.ecosur.multigame.impl.entity.tablon.*;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 
-import java.util.SortedSet;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -62,5 +57,22 @@ public class RuleFunctions {
         }
 
         return ret;        
+    }
+
+    public static ArrayList<MutationEvent> findImplications (TablonGrid grid, Set implications) {
+        ArrayList<MutationEvent> ret = new ArrayList<MutationEvent>();
+        for (Object obj : implications) {
+            TablonFicha ficha = (TablonFicha) obj;
+            /* Borders are ignored */
+            if (ficha.getRow () == 1 || ficha.getColumn() == 1)
+                continue;
+            MutationEvent event = new MutationEvent (ficha);
+            SortedSet square = grid.getSquare(ficha);
+            event.setSquare (square);
+            SortedSet octo = grid.getOctogon(ficha);
+            event.setOctogon (octo);
+            ret.add(event);
+        }
+        return ret;
     }
 }
