@@ -35,10 +35,14 @@ import function mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
     Game implementation:  Andrew Glenn Waterman
 */
 
+#globals
 global MessageSender messageSender;
+global Integer dimension;
 
+#dialect
 dialect "java"
 
+#rules
 rule "setup"
     ruleflow-group "initialize"
     no-loop true
@@ -46,8 +50,8 @@ when
     $game : TablonGame (state == GameState.BEGIN);
 then
     $game.setCreated(new Date());
-    $game.setColumns(25);
-    $game.setRows(25);   
+    $game.setColumns(dimension);
+    $game.setRows(dimension);
     List<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
         if (p.getColor() == Color.YELLOW)
@@ -56,17 +60,18 @@ then
             p.setTurn(false);
     }
     TablonGrid grid = new TablonGrid ();
+    int lower = (dimension / 2) - 2;
+    int upper = (dimension / 2)  + 2;
     /* Populate the grid */
-    for (int col = 1; col < 26; col++) {
-        for (int row = 1; row < 26; row++) {
-            if ( (col == 13 && row == 1) || (col == 1 && row == 13) || (col == 13 && row == 25) || (col == 25 && row == 13))
-                continue;
-            else if ( (col + row) % 2 != 0)
+    for (int col = 1; col <= dimension; col++) {
+        for (int row = 1; row <= dimension; row++) {
+            if ( (col + row) % 2 != 0)
                 continue;
 
             if ( row % 2 == 1 || col % 2 == 1) {
                 /* soil or water */
-                if ( (col > 11 && col < 15) || (row > 11 && row < 15)) {
+                /* TODO:  Dynamically determine the location of rivers on the map */
+                if ( (col > lower && col < upper) || (row > lower && row < upper)) {
                     TablonFicha waterParticle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
                     grid.updateCell (waterParticle);
 
@@ -123,38 +128,75 @@ then
     MutationEvent mutation = new MutationEvent (ficha);
     mutation.setSquare (tgrid.getSquare(ficha));
     mutation.setOctogon (tgrid.getOctogon(ficha));
+    mutation.setCross (tgrid.getCross(ficha));
     incrementTurn ($game, $move);
     modify ($move) { setStatus (MoveStatus.MOVED) }
     insert (tgrid);
     insert (mutation);
     for (TablonFicha particle : mutation.getSquare()) {
-        if (particle.getRow() == 1 || particle.getColumn() == 1 || particle.getRow () == 25 || particle.getColumn() == 25)
+        if (particle.getRow() == 1 || particle.getRow() == ($game.getRows() ) || particle.getColumn() == 1
+            || particle.getColumn() == ($game.getColumns()))
             continue;
         MutationEvent event = new MutationEvent (particle);
         event.setSquare(tgrid.getSquare(particle));
         insert (event);
     }
+    /* Cross does not need to be walked seperately and inserted as it is covered in octogon */
     for (TablonFicha forest : mutation.getOctogon()) {
-        if (forest == null)
-            continue;
-        if (forest.getRow() == 2 || forest.getColumn() == 2 || forest.getRow() == 24 || forest.getColumn() == 24)
+        if (forest.getRow () == 1 || forest.getRow() == ($game.getRows() -1 )|| forest.getColumn() == 1
+            || forest.getColumn() == ($game.getColumns() - 1))
             continue;
         MutationEvent event = new MutationEvent (forest);
         event.setSquare(tgrid.getSquare(forest));
         event.setOctogon(tgrid.getOctogon(forest));
+        event.setCross (tgrid.getCross(forest));
         insert (event);
     }
+
 end
 
 # Environmental constraints
 
-rule "A single Potrero token cannot be supported by only one soil token"
+rule "Edges must not be effected"
+    ruleflow-group "evaluate"
+    salience 10
+when
+    $game  : TablonGame (state == GameState.PLAY)
+    $event : MutationEvent (ficha.column == 1 || ficha.row == 1 ||
+        ficha.column == ($game.columns - 1) ||ficha.row == ($game.rows - 1))
+then
+    retract ($event);
+end
+
+rule "A Potrero token must be supported by 2 soil tokens in the SQUARE"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon)
-    eval (isUnary ($ficha, $square, TokenType.SOIL_PARTICLE))
+    eval (isUnsupported (2, $ficha, $square, TokenType.SOIL_PARTICLE))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    /* Cross based implications are included in the octogon */
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A Potrero token must be supported by 1 forest token in the CROSS"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon,
+        $cross : cross)
+    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
@@ -166,13 +208,14 @@ then
     }
 end
 
-rule "A single soil token cannot be supported by only one forest token"
+rule "A soil token must be supported by 2 forest tokens in the SQUARE"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square, $octo : octogon)
-    eval (isUnary ($ficha, $square, TokenType.FOREST))
+    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
@@ -184,13 +227,14 @@ then
     }
 end
 
-rule "A single water token cannot be supported by only one forest token"
+rule "A water token must be supported by 2 forest tokens in the SQUARE"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square, $octo : octogon)
-    eval (isUnary ($ficha, $square, TokenType.FOREST))
+    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
@@ -203,13 +247,14 @@ then
 end
 
 
-rule "A forest token cannot be supported by only one forest token"
+rule "A forest token must be suported by 2 forest tokens in the OCTOGON"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
-    eval (isUnary ($ficha, $octo, TokenType.FOREST))
+    eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);
@@ -228,7 +273,7 @@ when
 then
     retract ($event);
 end
-
+/*
 rule "At least ten water tokens are required for sustainability"
     ruleflow-group "confirm"
 when
@@ -240,7 +285,7 @@ then
     retract ($grid);  
     messageSender.sendEndGame ($game);    
 end
-
+*/
 
 rule "publish move complete"
     ruleflow-group "confirm"

@@ -44,15 +44,21 @@ public class TablonGame extends GridGame {
 
     private WorkingMemoryFileLogger logger;
 
-
-    public TablonGame() {
+    public  TablonGame () {
         super();
     }
 
-    public TablonGame(KnowledgeBase kbase) {
-        this.kbase = kbase;
+
+    public TablonGame(int columns, int rows) {
+        super();
+        setColumns(columns);
+        setRows(rows);        
     }
 
+    public TablonGame(int columns, int rows, KnowledgeBase kbase) {
+        this(columns, rows);
+        this.kbase = kbase;
+    }
 
     /* (non-Javadoc)
       * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
@@ -70,6 +76,7 @@ public class TablonGame extends GridGame {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
+            session.setGlobal("dimension", new Integer(this.getColumns()));
             session.insert(this);
             for (Implementation fact : getFacts()) {
                 session.insert(fact);
@@ -104,6 +111,7 @@ public class TablonGame extends GridGame {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
+            session.setGlobal("dimension", new Integer(getColumns()));
             session.insert(this);            
         }
 
@@ -211,6 +219,46 @@ public class TablonGame extends GridGame {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+    @Override
+    public String toString() {
+        StringBuffer ret = new StringBuffer("TablonGame (id=" + id + ")\n");
+        for (int y = 0; y < getColumns(); y++) {
+            for (int x = 0; x < getRows(); x++) {
+                GridCell cell = grid.getLocation (new GridCell (y,x, Color.UNKNOWN));
+                if (cell != null) {
+                    TablonFicha ficha = (TablonFicha) cell;
+                    switch (ficha.getType()) {
+                        case SOIL_PARTICLE:
+                            ret.append("S");
+                            break;
+                        case FOREST:
+                            ret.append("F");
+                            break;
+                        case POTRERO:
+                            ret.append("P");
+                            break;
+                        case SILVOPASTORAL:
+                            ret.append("S");
+                            break;
+                        case WATER_PARTICLE:
+                            ret.append("W");
+                            break;
+                        default:
+                            assert (false);
+                    }
+                } else {
+                    ret.append(" ");
+                }
+
+                /* space out the cells */
+                ret.append (" ");
+            }
+            ret.append("\n");
+        }
+
+        return ret.toString();
+    }
 
     public void finalize() {
         if (this.session != null)

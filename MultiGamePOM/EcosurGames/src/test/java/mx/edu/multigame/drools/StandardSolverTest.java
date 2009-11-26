@@ -46,19 +46,19 @@ import org.junit.Test;
  * The intention is to use 
  */
 
-/*
+
 public class StandardSolverTest {
 	
 	private static Logger logger = Logger.getLogger(
 			StandardSolverTest.class.getCanonicalName());
 	private static String configPath = 
-		"/mx/ecosur/multigame/impl/solver/manantiales-standard-solver.xml";
+		"/mx/ecosur/multigame/impl/solver/manantiales/manantiales-standard-solver.xml";
 	private static String testModelPath = 
-		"/mx/ecosur/multigame/impl/solver/data/testSolution.xml";
+		"/mx/ecosur/multigame/impl/solver/manantiales/data/testSolution.xml";
 	private static String asymmetricPath = 
-		"/mx/ecosur/multigame/impl/solver/data/distribution.xml";
+		"/mx/ecosur/multigame/impl/solver/manantiales/data/distribution.xml";
 	private static String csvPath = 
-		"/mx/ecosur/multigame/impl/solver/data/matrices.csv";
+		"/mx/ecosur/multigame/impl/solver/manantiales/data/matrices.csv";
 	
 	private XmlSolverConfigurer configurer;
 	private Solution startingSolution;
@@ -72,7 +72,6 @@ public class StandardSolverTest {
 				ManantialesSolution.Threshold.SIMPLE);
 	}
 	
-	@Test
 	public void testSolver () throws JDOMException, IOException, 
 		UnconfigurableException 
 	{
@@ -84,7 +83,7 @@ public class StandardSolverTest {
 		solver.setStartingSolution(startingSolution);
 		solver.solve();
 		ManantialesSolution solution = (ManantialesSolution) solver.getBestSolution();
-		assertEquals (0.0, solver.getBestScore());
+		assertEquals (0.0, solution.getScore());
 	}
 	
 	public void testDistribution () throws JDOMException, IOException, 
@@ -105,10 +104,9 @@ public class StandardSolverTest {
 		logger.info (getDistributions(solution));
 		logger.info (solution.toString());
 		logger.info ("Solved in: " + solver.getTimeMillisSpend() + " ms.");
-		assertEquals (0.0, solver.getBestScore());
+		assertEquals (0.0, solution.getScore());
 	}
-	
-	@Test
+
 	public void testMatrixValidator () {
 		MatrixGenerator generator = new MatrixGenerator ();
 		Matrix matrix = new Matrix (new Distribution (Color.BLUE, 6,0,6),
@@ -118,13 +116,12 @@ public class StandardSolverTest {
 		assertTrue ("MatrixGenerator.isViable() broken!", 
 				generator.isViable(matrix));
 	}
-*/
 	/**
 	 * 	Tests all possible distributions with at least 12 tokens and a score
 	 *  greater than 24.
 	 * @throws UnconfigurableException 
 	 */
-/*
+
 	public void testGeneratedMatrices () throws UnconfigurableException {
 		SolutionConfigurer solcon = new SolutionConfigurer(
 				(ManantialesSolution) startingSolution);
@@ -152,13 +149,13 @@ public class StandardSolverTest {
 				log = log.delete(0, log.length());
 				log.append("Final distribution:\n" + getDistributions(solution));
 				log.append(solution.toString());
-				log.append("Best score = " + solver.getBestScore() + " in " + 
+				log.append("Best score = " + solution.getScore() + " in " + 
 						solver.getTimeMillisSpend() + " ms");
 				logger.info (log.toString());
-				if (!solver.getBestScore().equals(0.0)) {
-					badMatrices.put(matrix, solver.getBestScore());
+				if (!solution.getScore().equals(0.0)) {
+					badMatrices.put(matrix, solution.getScore());
 				} else 
-					goodMatrices.put(matrix, solver.getBestScore());
+					goodMatrices.put(matrix, solution.getScore());
 			} catch (RuntimeException e) {
 				badMatrices.put(matrix, null);
 			}
@@ -198,14 +195,14 @@ public class StandardSolverTest {
 				logger.info ("Matrix:\n" + matrix.toString());
 				solver.solve();		
 				solution = (ManantialesSolution) solver.getBestSolution();
-				logger.info ("Best score = " + solver.getBestScore() + " in " + 
+				logger.info ("Best score = " + solution.getScore() + " in " + 
 						solver.getTimeMillisSpend() + " ms");
 				logger.info ("-------------\n" + solution.toString() + 
 						"\n-------------\n");
-				if (!solver.getBestScore().equals(0.0)) {
-					badMatrices.put(matrix, solver.getBestScore());
+				if (!solution.getScore().equals(0.0)) {
+					badMatrices.put(matrix, solution.getScore());
 				} else 
-					goodMatrices.put(matrix, solver.getBestScore());
+					goodMatrices.put(matrix, solution.getScore());
 			} catch (UnconfigurableException e) {
 				unconfigurable.add(matrix);
 			} catch (Exception e) {
@@ -244,13 +241,11 @@ public class StandardSolverTest {
 		logger.info ("Unsolvable matrices: " + bad);
 		logger.info ("Solvable matrices: " + good);	
 	}
-*/
 	/**
 	 * @param reader
 	 * @return
 	 * @throws IOException 
 	 */
-/*
 	@SuppressWarnings("unchecked")
 	private Matrix readMatrix(BufferedReader reader) throws IOException {
 		CSV csv = new CSV();
@@ -298,4 +293,3 @@ public class StandardSolverTest {
 		return ret;
 	}
 }
-*/

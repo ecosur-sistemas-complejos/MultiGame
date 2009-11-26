@@ -26,12 +26,13 @@ import java.util.TreeSet;
 
 public class MutationEvent implements ConditionImpl {
 
-    SortedSet<TablonFicha> square, octogon;
+    SortedSet<TablonFicha> square, octogon, cross;
     TablonFicha ficha;
 
     public MutationEvent() {
         square = new TreeSet<TablonFicha>(new CellComparator());
         octogon = new TreeSet<TablonFicha>(new CellComparator());
+        cross = new TreeSet<TablonFicha>(new CellComparator());
     }
 
     public MutationEvent(TablonFicha ficha) {
@@ -39,10 +40,11 @@ public class MutationEvent implements ConditionImpl {
         this.ficha = ficha;
     }
 
-    public MutationEvent(TablonFicha ficha, SortedSet<TablonFicha> square, SortedSet<TablonFicha> octogon) {
+    public MutationEvent(TablonFicha ficha, SortedSet<TablonFicha> square, SortedSet<TablonFicha> octogon, SortedSet<TablonFicha> cross) {
         this.ficha = ficha;
         this.square = square;
         this.octogon = octogon;
+        this.cross = cross;
     }
 
     public TablonFicha getFicha() {
@@ -51,6 +53,14 @@ public class MutationEvent implements ConditionImpl {
 
     public void setFicha(TablonFicha ficha) {
         this.ficha = ficha;
+    }
+
+    public SortedSet<TablonFicha> getCross() {
+        return cross;
+    }
+
+    public void setCross(SortedSet<TablonFicha> cross) {
+        this.cross = cross;
     }
 
     public SortedSet<TablonFicha> getSquare() {

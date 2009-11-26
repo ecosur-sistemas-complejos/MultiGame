@@ -69,7 +69,25 @@
 		        <module>MultiGameCommon</module>		        
 			    <module>EcosurGames</module>
 		        <module>EcosurFlexClient</module>
-		        <module>EcosurEAR</module>		        		        
+		        <module>EcosurEAR</module>
+                <module>EcosurIT</module>                 
+		    </modules>
+        </profile>
+         <profile>
+            <id>experiment</id>
+            <modules>
+		        <module>MultiGameCommon</module>
+			    <module>EcosurGames</module>
+                <module>EcosurTablonExperiments</module>
+		    </modules>
+        </profile>
+        <profile>
+            <id>complete</id>
+            <modules>
+		        <module>MultiGameCommon</module>
+			    <module>EcosurGames</module>
+		        <module>EcosurFlexClient</module>
+		        <module>EcosurEAR</module>
 		        <module>EcosurIT</module>
                 <module>EcosurTablonExperiments</module>
 		    </modules>

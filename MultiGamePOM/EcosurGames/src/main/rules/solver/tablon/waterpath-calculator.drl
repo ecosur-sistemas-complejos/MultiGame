@@ -1,0 +1,27 @@
+# Copyright (C) 2009 ECOSUR, Andrew Waterman
+#
+# Licensed under the Academic Free License v. 3.2.
+# http://www.opensource.org/licenses/afl-3.0.php
+ 
+package mx.ecosur.multigame.impl.entity.tablon
+
+import java.util.ArrayList;
+
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+
+global SimpleScoreCalculator scoreCalculator;
+
+
+
+
+#Constraint calculator update
+rule "ConstraintsBroken"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
+end

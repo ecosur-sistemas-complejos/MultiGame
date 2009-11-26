@@ -140,6 +140,41 @@ public class TablonGrid extends GameGrid {
     }
 
     @Transient
+    public SortedSet<TablonFicha> getCross (TablonFicha ficha) {
+        SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
+
+        /* y, x -2 */
+        if ( this.getLocation (new GridCell (
+                ficha.getColumn(), ficha.getRow() -2, Color.UNKNOWN)) != null) {
+             ret.add ((TablonFicha) this.getLocation (new GridCell (
+                ficha.getColumn(), ficha.getRow() - 2, Color.UNKNOWN)));
+        }
+
+        /* y, x + 2 */
+        if ( this.getLocation (new GridCell (
+                ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)) != null) {
+            ret.add ((TablonFicha) this.getLocation (new GridCell (
+                ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)));
+        }
+
+        /* y + 2, x */
+        if ( this.getLocation (new GridCell (
+                ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)) != null) {
+            ret.add ((TablonFicha) this.getLocation (new GridCell (
+                ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)));
+        }
+
+        /* y - 2, x */
+        if ( this.getLocation (new GridCell (
+                ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)) != null) {
+            ret.add((TablonFicha) this.getLocation (new GridCell (
+                ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)));
+        }
+
+        return ret;
+    }
+
+    @Transient
     public SortedSet<TablonFicha> getWaterTokens () {
         SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
         for (GridCell cell : this.getCells()) {
@@ -151,42 +186,5 @@ public class TablonGrid extends GameGrid {
         }
 
         return ret;
-    }
-
-    @Override
-    public String toString() {
-        StringBuffer ret = new StringBuffer();
-        for (int y = 0; y < 26; y++) {
-            for (int x = 0; x < 26; x++) {
-                GridCell cell = getLocation (new GridCell (y,x,Color.UNKNOWN));
-                if (cell != null) {
-                    TablonFicha ficha = (TablonFicha) cell;
-                    switch (ficha.getType()) {
-                        case SOIL_PARTICLE:
-                            ret.append("S");
-                            break;
-                        case FOREST:
-                            ret.append("F");
-                            break;
-                        case POTRERO:
-                            ret.append("P");
-                            break;
-                        case SILVOPASTORAL:
-                            ret.append("S");
-                            break;
-                        case WATER_PARTICLE:
-                            ret.append("W");
-                            break;
-                        default:
-                            assert (false);
-                    }
-                } else {
-                    ret.append(" ");
-                }
-            }
-            ret.append("\n");
-        }
-
-        return ret.toString();
     }
 }

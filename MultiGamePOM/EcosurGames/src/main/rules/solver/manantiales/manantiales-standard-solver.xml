@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <scoreDrl>/mx/ecosur/multigame/impl/solver/manantiales-standard-score-calculator.drl</scoreDrl>
-    <scoreCalculator>
-        <scoreCalculatorType>SIMPLE</scoreCalculatorType>
-    </scoreCalculator>
+    <scoreDrl>/mx/ecosur/multigame/impl/solver/manantiales/manantiales-standard-score-calculator.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
     <selector>
         <selector>
             <moveFactoryClass>mx.ecosur.multigame.impl.solver.manantiales.RotateMoveFactory</moveFactoryClass>
@@ -12,7 +12,7 @@
         <selector>
             <moveFactoryClass>mx.ecosur.multigame.impl.solver.manantiales.SwapMoveFactory</moveFactoryClass>
             <relativeSelection>0.99</relativeSelection>
-        </selector>        
+        </selector>
     </selector>
     <accepter>
          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
@@ -20,9 +20,8 @@
     <forager>
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
-    <finish>
-        <finishCompositionStyle>OR</finishCompositionStyle> 
-        <feasableScore>0.0</feasableScore>
-        <maximumMinutesSpend>5</maximumMinutesSpend> 
-    </finish>
+    <termination>
+        <terminationCompositionStyle>AND</terminationCompositionStyle>
+        <maximumMinutesSpend>1</maximumMinutesSpend> 
+    </termination>
 </localSearchSolver>

@@ -7,7 +7,6 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;
-import mx.ecosur.multigame.enums.MoveStatus;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
@@ -16,7 +15,6 @@ import org.drools.builder.*;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 import java.io.File;
 import java.io.FileWriter;
 
@@ -33,9 +31,13 @@ import javax.jms.ObjectMessage;
  */
 public class ExperimentRunner extends JMSTestCaseAdapter {
 
+    private static final int dimension = 18;
+
     private static String dataFolder = "target/data";
 
-    private static final int executions = 30;
+    private static final int executions = 1;
+
+    private static final char separator = '\t';
 
     private static KnowledgeBase tablon;
 
@@ -50,7 +52,8 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
     private int retractions;
 
 
-    /* Setup gente kbase */
+    /* Setup gen
+    te kbase */
     static {
         tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -76,11 +79,11 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
 		ejbModule = createEJBTestModule();
 		ejbModule.bindToContext("jms/TopicConnectionFactory",
 				getJMSMockObjectFactory().getMockTopicConnectionFactory());
-		//TODO: Externalize and change jndi name of topic
+		/* TODO: Externalize and change jndi name of topic */
 		topic = getDestinationManager().createTopic("MultiGame");
 		ejbModule.bindToContext("MultiGame", topic);
 
-        game = new TablonGame(tablon);
+        game = new TablonGame(dimension, dimension, tablon);
         GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
 		b = new GridRegistrant ("bob");
@@ -163,7 +166,7 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
     }
 
     public static void main (String[] args) throws InvalidRegistrationException, Exception {
-        File file = new File (dataFolder + File.separator + "tablon-experiment.csv");
+        File file = new File (dataFolder + File.separator + "tablon-experiment.txt");
         file.mkdirs();
         if (file.exists())
             file.delete();
@@ -172,51 +175,68 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
 
         FileWriter writer = new FileWriter(file);
         writer.append ("Experiment No.");
-        writer.append (",");
-        writer.append ("Total Starting Tokens");
-        writer.append (",");
-        writer.append ("Elapsed Time");
-        writer.append (",");
-        writer.append ("Retraction Events");
-        writer.append (",");
-        writer.append ("Remaining Tokens");
-        writer.append (",");
-        writer.append ("Deduced Retractions");
-        writer.append ("\n");
+        writer.append (separator);
+        writer.append ("Step No.");
+        writer.append (separator);
+        writer.append ("Elapsed Time (ms)");
+        writer.append (separator);
+        writer.append ("Starting Tokens");
+        writer.append (separator);
+        writer.append ("Total Retractions");
+        writer.append (separator);
+        for (int i = 1; i <= executions; i++) {
+            writer.append ("Retractions Experiment-" + i);
+            if (i <= executions)
+                writer.append (separator);
+            if (i == executions)
+                writer.append ("\n");
+        }
         writer.flush();
 
         long start = System.currentTimeMillis();
 
         for (int i = 1; i <= executions; i++) {
+            String tabs = "";
             long localStart = System.currentTimeMillis();
             System.out.println ("Run time(ms) = " + (System.currentTimeMillis () - start));
             System.out.println("Running iteration " + i);
             ExperimentRunner runner = new ExperimentRunner();
             runner.initialize();
             int startingTokens = runner.game.getGrid().getCells().size();
+            int counter = 0;
             while (runner.game.getState().equals(GameState.PLAY)) {
+                counter++;
                 runner.runExperiment();
                 long elapsed = System.currentTimeMillis() - localStart;
+                /* One execution is streamed to the console change by change */
+                if (executions == 1) {
+                    System.out.println ("Step No. " + counter);
+                    System.out.println (runner.game);
+                }
                 /* Serialize the data */
                 writer.append ("" + i);
-                writer.append (",");
-                writer.append ("" + startingTokens);
-                writer.append (",");
+                writer.append (separator);
+                writer.append ("" + counter);
+                writer.append (separator);
                 writer.append ("" + elapsed);
-                writer.append (",");
-                writer.append ("" + runner.retractions);
-                writer.append (",");
-                writer.append ("" + runner.game.getGrid().getCells().size());
-                writer.append (",");
+                writer.append (separator);
+                writer.append ("" + startingTokens);
+                writer.append (separator);
                 writer.append ("" + (startingTokens - runner.game.getGrid().getCells().size()));
-                writer.append ("\n");
-                writer.flush(); 
+                writer.append (separator);
+                for (int j = 1; j <= executions; j++) {
+                    if (j == i)
+                        writer.append ("" + (startingTokens - runner.game.getGrid().getCells().size()));
+                    else if (j < executions)
+                        writer.append (separator);
+                    else if (j == executions)
+                        writer.append ("\n");
+                }
+                writer.flush();
             }
             TablonGrid grid = (TablonGrid) runner.game.getGrid();
-            System.out.println ("Water tokens: " + grid.getWaterTokens().size());
-            System.out.println ("End configuration:\n" + grid.toString() + "\n");
         }
         /* close the data file */
         writer.close();
-    }
+    }    
 }

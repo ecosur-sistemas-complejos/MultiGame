@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class RuleFunctions {
 
-    public static boolean isUnary (TablonFicha center, SortedSet<TablonFicha> set, TokenType type) {
+    public static boolean isUnsupported (int supportSize, TablonFicha center, SortedSet<TablonFicha> set, TokenType type) {
         HashSet<TablonFicha> test = new HashSet<TablonFicha>();
         for (TablonFicha ficha : set) {
             if (ficha == null)
@@ -24,11 +24,11 @@ public class RuleFunctions {
                 continue;
             if (ficha.getType().equals(type))
                 test.add(ficha);
-            if (test.size() > 1)
+            if (test.size() >= supportSize)
             	break;
         }
 
-        return test.size() == 1;
+        return test.size() < supportSize;
     }
 
     public static TablonPlayer incrementTurn (TablonGame game, TablonMove move) {
@@ -71,8 +71,15 @@ public class RuleFunctions {
             event.setSquare (square);
             SortedSet octo = grid.getOctogon(ficha);
             event.setOctogon (octo);
+            SortedSet cross = grid.getCross(ficha);
+            event.setCross (cross);
             ret.add(event);
         }
         return ret;
+    }
+
+    public static int[] dimension (TablonGrid grid) {
+        double size = Math.sqrt(grid.getCells().size());
+        return new int [] { ((int) size / 2), ((int) size / 2) };
     }
 }
