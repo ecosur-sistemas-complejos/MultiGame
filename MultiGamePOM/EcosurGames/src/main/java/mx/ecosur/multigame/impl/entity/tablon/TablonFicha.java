@@ -20,11 +20,14 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.enums.tablon.*;
 
+import java.util.Set;
+
 @Entity ()
 public class TablonFicha extends GridCell {
 
 	private static final long serialVersionUID = -8048552960014554186L;
 	private TokenType type;
+    private Color[] passThroughColors;
 	
 	public TablonFicha () {
 		super(); 
@@ -33,6 +36,8 @@ public class TablonFicha extends GridCell {
 	public TablonFicha (int column, int row, Color color, TokenType type) {
 		super(column, row, color);
 		this.type = type;
+        passThroughColors = Color.values();
+        //passThroughColors = new Color [] { color };
 	}
 
 	@Enumerated (EnumType.STRING)
@@ -44,8 +49,15 @@ public class TablonFicha extends GridCell {
 	public void setType(TokenType type) {
 		this.type = type;
 	}
-	
-	/* (non-Javadoc)
+    public Color[] getPassThroughColors() {
+        return passThroughColors;
+    }
+
+    public void setPassThroughColors(Color[] passThroughColors) {
+        this.passThroughColors = passThroughColors;
+    }
+
+    /* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

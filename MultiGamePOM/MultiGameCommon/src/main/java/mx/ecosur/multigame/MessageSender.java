@@ -44,10 +44,10 @@ public class MessageSender {
 	private static final String TOPIC_JNDI_NAME = "MultiGame";
 
 	@Resource(mappedName = CONNECTION_FACTORY_JNDI_NAME)
-	private ConnectionFactory connectionFactory;
+	protected ConnectionFactory connectionFactory;
 	
 	@Resource (mappedName = TOPIC_JNDI_NAME)
-	private Topic topic;
+	protected Topic topic;
 	
 	private static Map<Integer, Long> msgIdCount = new HashMap<Integer, Long>();
 
@@ -56,28 +56,30 @@ public class MessageSender {
 	 */
 	public MessageSender() {
 		super();
-		if (connectionFactory == null || topic == null) 
-		{
-			InitialContext ic;
-			try {
-				ic = new InitialContext();
-				if (connectionFactory == null)
-					connectionFactory = (ConnectionFactory) ic
-						.lookup(CONNECTION_FACTORY_JNDI_NAME);
-				if (topic == null)
-					topic = (Topic) ic.lookup(TOPIC_JNDI_NAME);
-			} catch (Exception e) {
-				logger
-						.severe("Unable to get JMS connection and topic from " +
-								"connection factory " + CONNECTION_FACTORY_JNDI_NAME
-								+ " and topic " + TOPIC_JNDI_NAME);
-				e.printStackTrace();
-			}
-		}
+    }
 
-	}
-	
-	public MessageSender (Context context) {
+    public void initialize() {
+        if (connectionFactory == null || topic == null)
+        {
+            InitialContext ic;
+            try {
+                ic = new InitialContext();
+                if (connectionFactory == null)
+                    connectionFactory = (ConnectionFactory) ic
+                        .lookup(CONNECTION_FACTORY_JNDI_NAME);
+                if (topic == null)
+                    topic = (Topic) ic.lookup(TOPIC_JNDI_NAME);
+            } catch (Exception e) {
+                logger
+                        .severe("Unable to get JMS connection and topic from " +
+                                "connection factory " + CONNECTION_FACTORY_JNDI_NAME
+                                + " and topic " + TOPIC_JNDI_NAME);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public MessageSender (Context context) {
 		try {
 			if (connectionFactory == null)
 				connectionFactory = (ConnectionFactory) context

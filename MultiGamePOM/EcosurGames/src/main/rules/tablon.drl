@@ -72,8 +72,14 @@ then
                 /* soil or water */
                 /* TODO:  Dynamically determine the location of rivers on the map */
                 if ( (col > lower && col < upper) || (row > lower && row < upper)) {
-                    TablonFicha waterParticle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
-                    grid.updateCell (waterParticle);
+                    TablonFicha particle = null;
+                    if ( (col == 1 || col == upper) || (row == 1 || row == upper) ) {
+                       particle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    } else {
+                        particle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                    }
+
+                    grid.updateCell(particle);
 
                 } else {
                     TablonFicha soilParticle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
@@ -98,6 +104,7 @@ rule "verify-move"
 when
     $game  : TablonGame (state == GameState.PLAY, $grid : grid)
     $move  : TablonMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    eval (hasPathToWater((TablonFicha) $move.getDestinationCell(), (TablonGrid) $grid))
     eval ( ((TablonFicha) $grid.getLocation ($move.getDestinationCell())).getType ().equals (TokenType.FOREST))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
@@ -188,12 +195,32 @@ then
     }
 end
 
-rule "A Potrero token must be supported by 1 forest token in the CROSS"
+rule "A Silvopastoral token must be supported by 1 soil tokens in the SQUARE"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon)
+    eval (isUnsupported (1, $ficha, $square, TokenType.SOIL_PARTICLE))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    /* Cross based implications are included in the octogon */
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A Potrero token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon,
         $cross : cross)
-    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST))
+    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported (2, $ficha, $cross, TokenType.SILVOPASTORAL))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
@@ -208,11 +235,31 @@ then
     }
 end
 
-rule "A soil token must be supported by 2 forest tokens in the SQUARE"
+rule "A Silvopastoral token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon,
+        $cross : cross)
+    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A soil token must be supported by 1 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square, $octo : octogon)
-    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST))
+    eval (isUnsupported (1, $ficha, $square, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
@@ -227,11 +274,11 @@ then
     }
 end
 
-rule "A water token must be supported by 2 forest tokens in the SQUARE"
+rule "A water token must be supported by 2 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square, $octo : octogon)
-    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST))
+    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST) && isUnsupported(4, $ficha,$square,TokenType.SILVOPASTORAL))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
@@ -247,14 +294,51 @@ then
 end
 
 
-rule "A forest token must be suported by 2 forest tokens in the OCTOGON"
+rule "A forest token must be suported by 2 forest tokens in the OCTOGON (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
-    eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST))
+    eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST) && isUnsupported(4, $ficha, $octo, TokenType.SILVOPASTORAL))
     $grid : TablonGrid ()
     $game : TablonGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A potrero token must have a path to water in the CROSS"
+    ruleflow-group "evaluate"
+when
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO,  $square : square, $octo : octogon)
+        $game : TablonGame (state == GameState.PLAY)
+        $grid  : TablonGrid()
+        eval (!hasPathToWater ($ficha, $grid));
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+
+rule "A silvopastoral token must have a path to water in the CROSS"
+    ruleflow-group "evaluate"
+when
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL,  $square : square, $octo : octogon)
+        $game : TablonGame (state == GameState.PLAY)
+        $grid  : TablonGrid()
+        eval (!hasPathToWater ($ficha, $grid));
 then
     modify ($grid) { removeCell($ficha) }
     messageSender.sendConditionTriggered($game, $event);

@@ -5,6 +5,7 @@ import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.DummyMessageSender;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;
 import org.drools.KnowledgeBase;
@@ -12,15 +13,9 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
 
-import java.util.Random;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.io.File;
 import java.io.FileWriter;
-
-import com.mockrunner.jms.JMSTestCaseAdapter;
-import com.mockrunner.ejb.EJBTestModule;
-import com.mockrunner.mock.jms.MockTopic;
 
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
@@ -29,9 +24,9 @@ import javax.jms.ObjectMessage;
  * The Experiment runner runs a tablon experiment a certain number
  * of times (default 30) creating 
  */
-public class ExperimentRunner extends JMSTestCaseAdapter {
+public class ExperimentRunner {
 
-    private static final int dimension = 18;
+    private static final int dimension = 26;
 
     private static String dataFolder = "target/data";
 
@@ -45,11 +40,9 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
 
     private TablonGame game;
 
-    private EJBTestModule ejbModule;
-
-	private MockTopic topic;
-
     private int retractions;
+
+    private int moves;
 
 
     /* Setup gen
@@ -74,16 +67,8 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
     }
 
     public void initialize () throws InvalidRegistrationException, Exception {
-        super.setUp();
-        /* Set up mock JMS destination for message sender */
-		ejbModule = createEJBTestModule();
-		ejbModule.bindToContext("jms/TopicConnectionFactory",
-				getJMSMockObjectFactory().getMockTopicConnectionFactory());
-		/* TODO: Externalize and change jndi name of topic */
-		topic = getDestinationManager().createTopic("MultiGame");
-		ejbModule.bindToContext("MultiGame", topic);
-
         game = new TablonGame(dimension, dimension, tablon);
+        game.setMessageSender (new DummyMessageSender());
         GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
 		b = new GridRegistrant ("bob");
@@ -95,20 +80,21 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
 		game.registerPlayer(c);
 		game.registerPlayer(d);
 
-        /* Ensure that we recieved appropriate messages */
-        List<Message> messageList = topic.getCurrentMessageList();
-        if (messageList.size() == 0) {
-            System.out.println ("No messages received from initialize!");
-            System.exit (1);
-        }
-
         retractions = 0;
+        moves = 0;
     }
 
     public void runExperiment () {
         try {
             TablonFicha candidate = null;
             boolean remainingMoves = false;
+            TablonGrid tgrid = (TablonGrid) game.getGrid();
+
+            /* Search for 5 times the number of cells in the grid */
+            if (moves > (5 * game.getGrid().getCells().size())) {
+                game.setState(GameState.ENDED);
+                return;
+            }
 
             for (GridCell cell : game.getGrid().getCells()) {
                 TablonFicha ficha = (TablonFicha) cell;
@@ -123,15 +109,47 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
                 return;
             }
 
-            /* Pick a random Forest token */
+            /* Pick a potrero and extend it, otherwise,
+               pick a random Forest token */
             while (candidate == null) {
-                int rand = random.nextInt(game.getGrid().getCells().size());
-                GridCell cell = (GridCell) game.getGrid().getCells().toArray() [ rand ];
-                TablonFicha ficha = (TablonFicha) cell;
-                if (!ficha.getType().equals(TokenType.FOREST))
-                    continue;
-                else
-                    candidate = ficha.clone();
+                Set<TablonFicha> potreros = new HashSet<TablonFicha> ();
+                for (GridCell cell : game.getGrid().getCells()) {
+                    TablonFicha ficha = (TablonFicha) cell;
+                    if (ficha.getType().equals(TokenType.POTRERO))
+                        potreros.add(ficha);
+                }
+
+                if (potreros.size() > 0) {
+                    Object[] set = potreros.toArray();
+                    TablonFicha potrero = (TablonFicha) set [ random.nextInt(set.length) ];
+                    if (random.nextBoolean()) {
+                        for (TablonFicha ficha : tgrid.getSquare(potrero)) {
+                            if (ficha.getType().equals(TokenType.FOREST)) {
+                                candidate = ficha.clone();
+                                candidate.setType (TokenType.POTRERO);
+                                break;
+                            }
+                        }
+                    } else {
+                        candidate = potrero.clone();
+                        candidate.setType(TokenType.SILVOPASTORAL);
+                    }
+                }
+
+                if (candidate == null) {
+                    int rand = random.nextInt(game.getGrid().getCells().size());
+                    GridCell cell = (GridCell) game.getGrid().getCells().toArray() [ rand ];
+                    TablonFicha ficha = (TablonFicha) cell;
+                    if (ficha.getType().equals(TokenType.FOREST)) {
+                        candidate = ficha.clone();
+                        candidate.setType (TokenType.POTRERO);
+                        break;
+                    } else if (ficha.getType().equals(TokenType.POTRERO)) {
+                        candidate = ficha.clone();
+                        candidate.setType (TokenType.SILVOPASTORAL);
+                        break;
+                    }
+                }
             }
 
             /* If the candiate is still null; there are no moves left to make
@@ -145,20 +163,11 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
                     break;
                 }
             }
-            candidate.setType(TokenType.POTRERO);
+
             candidate.setColor(player.getColor());
             TablonMove move = new TablonMove (player, candidate);
             move = (TablonMove) game.move(move);
-
-            ArrayList<Message> filter = new ArrayList<Message>();
-            List<Message> messageList = topic.getCurrentMessageList();
-            for (Message  message : messageList) {
-                ObjectMessage msg = (ObjectMessage) message;
-                if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED")) {
-                        this.retractions++;
-                }
-            }
-            topic.clear();
+            moves++;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,7 +175,7 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
     }
 
     public static void main (String[] args) throws InvalidRegistrationException, Exception {
-        File file = new File (dataFolder + File.separator + "tablon-experiment.txt");
+        File file = new File (dataFolder + File.separator + "tablon-experiment.csv");
         file.mkdirs();
         if (file.exists())
             file.delete();
@@ -234,7 +243,6 @@ public class ExperimentRunner extends JMSTestCaseAdapter {
                 }
                 writer.flush();
             }
-            TablonGrid grid = (TablonGrid) runner.game.getGrid();
         }
         /* close the data file */
         writer.close();

@@ -107,7 +107,7 @@ public class TablonRulesTest extends RulesTestBase {
 
 @Test
 	public void testExecuteMove () throws InvalidMoveException {
-		TablonFicha token = new TablonFicha(2, 2, alice.getColor(), TokenType.POTRERO);		
+		TablonFicha token = new TablonFicha(2, 10, alice.getColor(), TokenType.POTRERO);		
 		TablonMove move = new TablonMove(alice, token);
 		game.move (move);
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -115,11 +115,9 @@ public class TablonRulesTest extends RulesTestBase {
         assertTrue (alice.isTurn() == false);
 	}
 
-    /* Deeper tests commented out until rules stabilize */
-
- /*   @Test
+    @Test
     public void testSoilConsequence () throws InvalidMoveException, JMSException {
-        TablonFicha token = new TablonFicha(2, 2, alice.getColor(), TokenType.POTRERO);
+        TablonFicha token = new TablonFicha(2, 10, alice.getColor(), TokenType.POTRERO);
 		TablonMove move = new TablonMove(alice, token);
 		game.move (move);
 
@@ -134,7 +132,7 @@ public class TablonRulesTest extends RulesTestBase {
         
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (2,4, bob.getColor(), TokenType.POTRERO);
+        token = new TablonFicha (4,10, bob.getColor(), TokenType.POTRERO);
         move = new TablonMove(bob, token);
 		game.move (move);
 
@@ -149,8 +147,24 @@ public class TablonRulesTest extends RulesTestBase {
 
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (4,2, charlie.getColor(), TokenType.POTRERO);
+        token = new TablonFicha (4,8, charlie.getColor(), TokenType.POTRERO);
         move = new TablonMove(charlie, token);
+		game.move (move);
+
+        filter = new ArrayList<Message>();
+		messageList = messageList = mockTopic.getCurrentMessageList();
+		for (Message  message : messageList) {
+			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+					filter.add(message);
+		}
+        mockTopic.clear();
+		assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0);
+
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (token, game.getGrid().getLocation(token));
+        token = new TablonFicha (2,8, denise.getColor(), TokenType.POTRERO);
+        move = new TablonMove(denise, token);
 		game.move (move);
 
         filter = new ArrayList<Message>();
@@ -165,112 +179,9 @@ public class TablonRulesTest extends RulesTestBase {
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
 
-        *//* Check for consequences *//*
-        *//* We should have lost the soil particle at 3,3 *//*
-        GridCell cell = game.getGrid().getLocation(new TablonFicha (3,3, Color.UNKNOWN, TokenType.SOIL_PARTICLE)); 
+        /* Check for consequences *//*
+        /* We should have lost the soil particle at 3,3 */
+        GridCell cell = game.getGrid().getLocation(new TablonFicha (3,9, Color.UNKNOWN, TokenType.SOIL_PARTICLE)); 
         assertNull (game.getGrid().toString(), cell);
     }
-
-    public void testConsequences () throws InvalidMoveException, JMSException {
-        TablonFicha token = new TablonFicha(2, 2, alice.getColor(), TokenType.POTRERO);
-		TablonMove move = new TablonMove(alice, token);
-		game.move (move);
-
-        ArrayList<Message> filter = new ArrayList<Message>();
-		List<Message> messageList = mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-		assertTrue ("Unexpected event(s) intercepted! " + filter, filter.size() == 0);
-
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (2,4, bob.getColor(), TokenType.POTRERO);
-        move = new TablonMove(bob, token);
-		game.move (move);
-
-        filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-		assertTrue ("Unexpected event(s) intercepted! " + filter, filter.size() == 0);
-
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (4,2, charlie.getColor(), TokenType.POTRERO);
-        move = new TablonMove(charlie, token);
-		game.move (move);
-
-        filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-		assertTrue ("Filter size is " + filter.size(), filter.size() == 2);
-
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (token, game.getGrid().getLocation(token));
-
-        *//* Check for consequences *//*
-        *//* We should have lost the soil particle at 3,3 *//*
-        GridCell cell = game.getGrid().getLocation(new TablonFicha (3,3, Color.UNKNOWN, TokenType.SOIL_PARTICLE));
-        assertNull (game.getGrid().toString(), cell);
-
-        token = new TablonFicha (4,4, denise.getColor(), TokenType.FOREST);
-        assertNotNull (game.getGrid().toString(), game.getGrid().getLocation(token));
-        move = new TablonMove(denise, token);
-		game.move (move);
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (game.getGrid().toString(), token, game.getGrid().getLocation(token));
-
-        filter = new ArrayList<Message>();
-		messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-		assertTrue ("Unexpected event(s) intercepted! " + filter, filter.size() == 0);
-
-        token = new TablonFicha (4,6, alice.getColor(), TokenType.POTRERO);
-        move = new TablonMove(alice, token);
-		game.move (move);
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (game.getGrid().toString(), token, game.getGrid().getLocation(token));
-
-        filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-        assertTrue ("Unexpected event(s) intercepted! " + filter, filter.size() == 0);
-
-        token = new TablonFicha (2,6, bob.getColor(), TokenType.POTRERO);
-        move = new TablonMove(bob, token);
-		game.move (move);
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (game.getGrid().toString(), token, game.getGrid().getLocation(token));
-
-        filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
-        mockTopic.clear();
-
-		assertTrue ("Filter size==" + filter.size() + "\n" + game.getGrid().toString(), filter.size() > 0);
-
-        cell = game.getGrid().getLocation(new TablonFicha (3,5, Color.UNKNOWN, TokenType.SOIL_PARTICLE));
-        assertNull (game.getGrid().toString(), cell);
-    }*/
 }

@@ -15,7 +15,9 @@ import javax.persistence.Entity;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.GamePlayer;
+
+import java.util.*;
 
 @Entity
 public class TablonMove extends GridMove {
@@ -25,6 +27,8 @@ public class TablonMove extends GridMove {
 	private TokenType type, replacementType;
 	
 	private boolean badYear, premium;
+
+    private Stack<TablonFicha> path;
 	
 	public TablonMove() {
 		super();
@@ -80,16 +84,6 @@ public class TablonMove extends GridMove {
 		badYear = year;
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
-	 */
-	public void setPlayer(GamePlayerImpl player) {
-		this.player = (GridPlayer) player;
-	}
-
-    public GridPlayer getPlayer () {
-        return player;
-    }
 
     @Override
     public int hashCode() {
@@ -118,7 +112,15 @@ public class TablonMove extends GridMove {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-       throw new CloneNotSupportedException ();
+    public Object clone() throws CloneNotSupportedException {
+        TablonMove ret = new TablonMove();
+        ret.setBadYear(this.badYear);
+        ret.setPlayer(this.getPlayer());
+        ret.setReplacementType(this.getReplacementType());
+        ret.setCurrentCell(this.getCurrentCell());
+        ret.setDestinationCell(this.getDestinationCell());
+        ret.setStatus(this.getStatus());
+        ret.setPlayerModel(new GamePlayer(this.getPlayer()));
+        return ret;
     }
 }

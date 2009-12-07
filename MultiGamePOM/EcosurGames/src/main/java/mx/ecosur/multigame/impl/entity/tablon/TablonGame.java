@@ -13,6 +13,7 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
 import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
@@ -192,8 +193,10 @@ public class TablonGame extends GridGame {
 
     @Transient
     public MessageSender getMessageSender() {
-        if (messageSender == null)  
+        if (messageSender == null) {
             messageSender = new MessageSender ();
+            messageSender.initialize();
+        }
         return messageSender;
     }
 
@@ -222,6 +225,7 @@ public class TablonGame extends GridGame {
 
     @Override
     public String toString() {
+        TablonGrid tgrid = (TablonGrid) getGrid();
         StringBuffer ret = new StringBuffer("TablonGame (id=" + id + ")\n");
         for (int y = 0; y < getColumns(); y++) {
             for (int x = 0; x < getRows(); x++) {
@@ -233,13 +237,16 @@ public class TablonGame extends GridGame {
                             ret.append("S");
                             break;
                         case FOREST:
-                            ret.append("F");
+                            if (isDirectlyConnectedToWater(ficha, tgrid.getSquare(ficha)))
+                                ret.append("R");
+                            else
+                                ret.append("F");
                             break;
                         case POTRERO:
                             ret.append("P");
                             break;
                         case SILVOPASTORAL:
-                            ret.append("S");
+                            ret.append("V");
                             break;
                         case WATER_PARTICLE:
                             ret.append("W");

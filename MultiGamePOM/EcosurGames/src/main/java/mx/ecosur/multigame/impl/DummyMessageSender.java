@@ -26,7 +26,7 @@ import java.io.Serializable;
 public class DummyMessageSender extends MessageSender {
 
     public DummyMessageSender () {
-        //
+        super ();
     }
 
     @Override

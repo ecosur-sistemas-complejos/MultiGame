@@ -248,8 +248,10 @@ public class GenteGame extends GridGame {
 
     @Transient
     public MessageSender getMessageSender() {
-        if (messageSender == null)
+        if (messageSender == null) {
             messageSender = new MessageSender ();
+            messageSender.initialize();
+        }
         return messageSender;
     }
 

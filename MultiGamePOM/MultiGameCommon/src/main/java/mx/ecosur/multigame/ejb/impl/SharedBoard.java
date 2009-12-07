@@ -43,6 +43,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	
 	private static Logger logger = Logger.getLogger(SharedBoard.class
 			.getCanonicalName());
+
+    private MessageSender messageSender;
 	
 	@PersistenceContext (unitName="MultiGame")
 	EntityManager em;
@@ -51,6 +53,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		ClassNotFoundException 
 	{
 		super();
+		messageSender = new MessageSender();
+        messageSender.initialize();
 	}	
 	
 	/* (non-Javadoc)
@@ -68,8 +72,11 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		} catch (NoResultException e) {
 			throw new RuntimeException ("UNABLE TO FIND GAME WITH ID: " + gameId);
 		}
+
+        Game game = new Game (impl);
+        game.setMessageSender(messageSender);
 		
-		return new Game (impl); 
+		return game; 
 	}
 
 	/* (non-Javadoc)
@@ -138,7 +145,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 		}
 
 		/* Execute the move */
-        game.setMessageSender(new MessageSender());
+        game.setMessageSender(messageSender);
 		move = game.move (move);
 
 		if (move.getStatus().equals(MoveStatus.INVALID)) {

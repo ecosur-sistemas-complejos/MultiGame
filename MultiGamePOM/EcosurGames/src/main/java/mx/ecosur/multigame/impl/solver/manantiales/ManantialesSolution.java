@@ -54,17 +54,20 @@ public class ManantialesSolution implements Solution {
 	private SortedSet<SolverFicha> tokens;
 	private Threshold umbra;
 	private HashMap<Color, Distribution> distributionMap;
+    private Score score;
 	
-	public ManantialesSolution (Threshold umbra, SortedSet<SolverFicha> tokens) {
+	public ManantialesSolution (Threshold umbra, SortedSet<SolverFicha> tokens, Score score) {
 		this (umbra);
 		for (SolverFicha tok : tokens) {
 			replaceToken(tok);
 		}
+        this.score = score;
 	}
 	
 	public ManantialesSolution (Threshold umbra) {
 		this.umbra = umbra;
 		tokens = new TreeSet<SolverFicha> (new CellComparator());
+        score = null;
 		initialize();
 	}	
 	
@@ -119,7 +122,8 @@ public class ManantialesSolution implements Solution {
 				clones.add(tok.clone());
 			}
 			
-			ret = new ManantialesSolution(umbra, clones);
+			ret = new ManantialesSolution(umbra, clones, score);
+            
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -213,11 +217,11 @@ public class ManantialesSolution implements Solution {
 	}
 
     public Score getScore() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return score;
     }
 
     public void setScore(Score score) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.score = score;
     }/* (non-Javadoc)
 	 * @see org.drools.solver.core.solution.Solution#getFacts()
 	 */

@@ -78,7 +78,7 @@
             <modules>
 		        <module>MultiGameCommon</module>
 			    <module>EcosurGames</module>
-                <module>EcosurTablonExperiments</module>
+                <module>EcosurExperiments</module>
 		    </modules>
         </profile>
         <profile>
@@ -89,7 +89,7 @@
 		        <module>EcosurFlexClient</module>
 		        <module>EcosurEAR</module>
 		        <module>EcosurIT</module>
-                <module>EcosurTablonExperiments</module>
+                <module>EcosurExperiments</module>
 		    </modules>
         </profile>
     </profiles>    

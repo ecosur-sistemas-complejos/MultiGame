@@ -58,6 +58,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 	{
 		super();
 		messageSender = new MessageSender();
+        messageSender.initialize();
 	}
 	
 	/* (non-Javadoc)

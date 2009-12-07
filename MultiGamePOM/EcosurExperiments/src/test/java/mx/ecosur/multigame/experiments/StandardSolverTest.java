@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.edu.multigame.drools;
+package mx.ecosur.multigame.experiments;
 
 import static org.junit.Assert.*;
 
@@ -35,6 +35,7 @@ import mx.ecosur.multigame.impl.util.CSV;
 import org.drools.solver.config.XmlSolverConfigurer;
 import org.drools.solver.core.Solver;
 import org.drools.solver.core.score.Score;
+import org.drools.solver.core.score.SimpleScore;
 import org.drools.solver.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
@@ -71,7 +72,8 @@ public class StandardSolverTest {
 		startingSolution = new ManantialesSolution(
 				ManantialesSolution.Threshold.SIMPLE);
 	}
-	
+
+    @Test
 	public void testSolver () throws JDOMException, IOException, 
 		UnconfigurableException 
 	{
@@ -83,7 +85,8 @@ public class StandardSolverTest {
 		solver.setStartingSolution(startingSolution);
 		solver.solve();
 		ManantialesSolution solution = (ManantialesSolution) solver.getBestSolution();
-		assertEquals (0.0, solution.getScore());
+        SimpleScore score = (SimpleScore) solution.getScore();
+		assertEquals (0, score.getScore());
 	}
 	
 	public void testDistribution () throws JDOMException, IOException, 
@@ -104,7 +107,8 @@ public class StandardSolverTest {
 		logger.info (getDistributions(solution));
 		logger.info (solution.toString());
 		logger.info ("Solved in: " + solver.getTimeMillisSpend() + " ms.");
-		assertEquals (0.0, solution.getScore());
+        SimpleScore score = (SimpleScore) solution.getScore();
+		assertEquals (0, score.getScore());
 	}
 
 	public void testMatrixValidator () {
