@@ -140,36 +140,6 @@
 				<enabled>false</enabled>
 			</releases>
 		</repository>
-    	<repository>
-    		<id>codehause-cache</id>
-    		<name>code-hause-cache</name>
-    		<url>http://${multigame-server}/m2/codehause-repo-cache</url>
-    	</repository>
-    	<repository>
-    		<id>internet2-cache</id>
-    		<name>internet2-cache</name>
-    		<url>http://${multigame-server}/m2/internet2-cache</url>
-    	</repository>
-    	<repository>
-    		<id>java.net-cache</id>
-    		<name>java.net-cache</name>
-    		<url>http://${multigame-server}/m2/java.net-cache</url>
-    	</repository>
-    	<repository>
-    		<id>jboss-cache</id>
-    		<name>jboss-cache</name>
-    		<url>http://${multigame-server}/m2/jboss-cache</url>
-    	</repository>
-    	<repository>
-    		<id>artifactory-libs-releases</id>
-    		<name>artifactory-libs-releases</name>
-    		<url>http://${multigame-server}/m2/libs-releases</url>
-    	</repository>
-    	<repository>
-    		<id>repo1-cache</id>
-    		<name>repo1-cache</name>
-    		<url>http://${multigame-server}/m2/repo1-cache</url>
-    	</repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

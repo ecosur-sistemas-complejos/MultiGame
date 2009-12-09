@@ -9,24 +9,6 @@
 
     <security>
         <login-command class="flex.messaging.security.TomcatLoginCommand" server="Tomcat"/>
-        <!-- Uncomment the correct app server
-        <login-command class="flex.messaging.security.TomcatLoginCommand" server="JBoss">
-		<login-command class="flex.messaging.security.JRunLoginCommand" server="JRun"/>        
-        <login-command class="flex.messaging.security.WeblogicLoginCommand" server="Weblogic"/>
-        <login-command class="flex.messaging.security.WebSphereLoginCommand" server="WebSphere"/>
-        -->
-
-        <!-- 
-        <security-constraint id="basic-read-access">
-            <auth-method>Basic</auth-method>
-            <roles>
-                <role>guests</role>
-                <role>accountants</role>
-                <role>employees</role>
-                <role>managers</role>
-            </roles>
-        </security-constraint>
-         -->
     </security>
 
     <channels>
@@ -88,7 +70,7 @@
     <logging>
         <target class="flex.messaging.log.ConsoleTarget" level="Info">
             <properties>
-                <prefix>[BlazeDS] </prefix>
+                <prefix>[FLEX] </prefix>
                 <includeDate>true</includeDate>
                 <includeTime>true</includeTime>
                 <includeLevel>true</includeLevel>
