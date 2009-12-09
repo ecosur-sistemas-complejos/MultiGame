@@ -43,10 +43,10 @@ import org.junit.Test;
  */
 
 
-public class StandardSolverTest {
+public class ManantialesSolverTest {
 	
 	private static Logger logger = Logger.getLogger(
-			StandardSolverTest.class.getCanonicalName());
+			ManantialesSolverTest.class.getCanonicalName());
 	private static String configPath = 
 		"/mx/ecosur/experiment/multigame/solver/manantiales/manantiales-standard-solver.xml";
 	private static String testModelPath = 
