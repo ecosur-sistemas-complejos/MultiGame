@@ -8,6 +8,7 @@ import java.util.Collection;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
 import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,26 +21,17 @@ public class TablonSolution implements Solution {
 
     private Score score;
 
-    private TablonGrid grid;
-
-    private TablonMove move;
-
-    private TablonPlayer player;
+    private TablonGame game;
 
 
     /**
-     * Constructs a new TablonSoltion based on a TablonMove, move, and the TablonGrid, grid.
+     * Constructs a new TablonSolution based on a TablonGame game.
      *
-     * @param move
-     * @param grid
+     * @param game
      */
-    public TablonSolution (TablonMove move, TablonGrid grid) {
+    public TablonSolution (TablonGame game) {
         this.score = null;
-        try {
-            this.grid = (TablonGrid) grid.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException (e);
-        }
+        this.game = game;
     }
 
     /**
@@ -68,7 +60,7 @@ public class TablonSolution implements Solution {
      * @return never null (although an empty collection is allowed), all the facts of this solution
      */
     public Collection<? extends Object> getFacts() {
-        return grid.getCells();
+        return game.getFacts();
     }
 
     /**
@@ -82,7 +74,7 @@ public class TablonSolution implements Solution {
     public Solution cloneSolution() {
         TablonSolution ret = null;
         try {
-            ret = new TablonSolution((TablonMove) move.clone(), (TablonGrid) grid.clone());
+            ret = new TablonSolution((TablonGame) game.clone());
             ret.setScore (score);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -91,11 +83,23 @@ public class TablonSolution implements Solution {
         return ret;
     }
 
-    public TablonGrid getGrid() {
-        return grid;
+    public TablonGrid getGrid () {
+        TablonGrid grid = null;
+        try {
+            grid = (TablonGrid) game.getGrid().clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return grid;       
     }
 
-    public void setGrid(TablonGrid grid) {
-        this.grid = grid;
+    public TablonGame getGame() {
+        TablonGame ret = null;
+        try {
+            ret = (TablonGame) game.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return ret;
     }
 }

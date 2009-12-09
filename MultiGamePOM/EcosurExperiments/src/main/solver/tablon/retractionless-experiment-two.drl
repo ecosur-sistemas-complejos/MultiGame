@@ -19,7 +19,25 @@ global SimpleScoreCalculator scoreCalculator;
 # Evaluates moves suggested by the WaterPathSuggestor.
 
 # Hard constraints
+rule "No retractions"
+    when
+    then
+end
 
+rule "40 Potreros"
+    when
+    then
+end
+
+rule "24 Forests"
+    when
+    then
+end
+
+rule "16 directly connected potreros"
+    when
+    then
+end
 
 #Constraint calculator update
 rule "Constraints broken"

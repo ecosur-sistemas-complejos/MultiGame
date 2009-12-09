@@ -1,6 +1,9 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.Color;
 
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
@@ -13,8 +16,11 @@ public class PotreroMove implements Move {
 
     private TablonFicha ficha;
 
-    public PotreroMove(TablonFicha ficha) {
+    private TablonGrid grid;
+
+    public PotreroMove(TablonFicha ficha, TablonGrid grid) {
         this.ficha = ficha;
+        this.grid = grid;
     }
 
     /**
@@ -31,7 +37,9 @@ public class PotreroMove implements Move {
      * @return true if the move achieves a change in the solution and the move is possible to do on the solution.
      */
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return false;
+        TablonFicha location = (TablonFicha) grid.getLocation(ficha);
+        return (location.getType().equals(TokenType.FOREST) && (location.getColor()).equals(Color.UNKNOWN) ||
+                location.getColor().equals(ficha.getColor()));
     }
 
     /**
@@ -42,16 +50,8 @@ public class PotreroMove implements Move {
      * @return an undoMove which does the exact opposite of this move.
      */
     public Move createUndoMove(WorkingMemory workingMemory) {
-        PotreroMove ret = null;
-
-/*        if (move != null) {
-            moveHandle = workingMemory.insert(move);
-            workingMemory.retract(moveHandle);
-            moveHandle = null;
-            ret = new PotreroMove(move);*/
-        
-
-        return ret;
+        TablonFicha location = (TablonFicha) grid.getLocation(ficha);
+        return new UndoMove (location, ficha, grid);
     }
 
     /**
@@ -62,10 +62,7 @@ public class PotreroMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {
-/*        if (moveHandle != null) {
-            workingMemory.retract(moveHandle);
-        } else {
-            moveHandle = workingMemory.insert(move);*/
+        
 
     }
 }

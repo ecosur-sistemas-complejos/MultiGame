@@ -19,7 +19,30 @@ global SimpleScoreCalculator scoreCalculator;
 # Evaluates moves suggested by the WaterPathSuggestor.
 
 # Hard constraints
+rule "Board must be 4 x 4"
+    when
+    then
+end
 
+rule "No retractions"
+    when
+    then
+end
+
+rule "10 potreros per quadrant"
+    when
+    then
+end
+
+rule "2 forests per quadrant"
+    when
+    then
+end
+
+rule "4 riparians per quadrant"
+    when
+    then
+end
 
 #Constraint calculator update
 rule "Constraints broken"
@@ -31,4 +54,3 @@ rule "Constraints broken"
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue() );
 end
-
