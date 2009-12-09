@@ -23,11 +23,9 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.gente.BeadString;
-import mx.ecosur.multigame.impl.entity.oculto.*;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
-import mx.ecosur.multigame.impl.enums.oculto.*;
 import mx.ecosur.multigame.impl.Color;
 
 import java.util.List;

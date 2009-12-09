@@ -17,8 +17,7 @@ import java.util.*;
 import java.io.File;
 import java.io.FileWriter;
 
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
+import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
 
 /**
  * The Experiment runner runs a tablon experiment a certain number
@@ -115,22 +114,22 @@ public class ExperimentRunner {
                 Set<TablonFicha> potreros = new HashSet<TablonFicha> ();
                 for (GridCell cell : game.getGrid().getCells()) {
                     TablonFicha ficha = (TablonFicha) cell;
-                    if (ficha.getType().equals(TokenType.POTRERO))
+                    if (ficha.getType().equals(TokenType.POTRERO) || ficha.getType().equals(TokenType.SILVOPASTORAL))
                         potreros.add(ficha);
                 }
 
                 if (potreros.size() > 0) {
                     Object[] set = potreros.toArray();
                     TablonFicha potrero = (TablonFicha) set [ random.nextInt(set.length) ];
-                    if (random.nextBoolean()) {
+                    if (random.nextInt(6) > 4) {
                         for (TablonFicha ficha : tgrid.getSquare(potrero)) {
-                            if (ficha.getType().equals(TokenType.FOREST)) {
+                            if (ficha.getType().equals(TokenType.FOREST) && extendsPotrero (ficha, potrero)) {
                                 candidate = ficha.clone();
                                 candidate.setType (TokenType.POTRERO);
                                 break;
                             }
                         }
-                    } else {
+                    } else if (!potrero.getType().equals(TokenType.SILVOPASTORAL)) {
                         candidate = potrero.clone();
                         candidate.setType(TokenType.SILVOPASTORAL);
                     }
@@ -172,6 +171,25 @@ public class ExperimentRunner {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean extendsPotrero (TablonFicha ficha, TablonFicha potrero) {
+        boolean ret = false;
+
+        int middle = dimension/2;
+            /* 4 quadrants */
+        if (potrero.getColumn() < middle && potrero.getRow() < middle) {
+            ret = (ficha.getColumn () < potrero.getColumn() && ficha.getRow () < potrero.getRow());
+        } else if (potrero.getColumn() > middle && potrero.getRow() < middle) {
+            ret = (ficha.getColumn() > potrero.getColumn() && ficha.getRow() < potrero.getRow());
+        } else if (potrero.getColumn() < middle && potrero.getRow () > middle) {
+            ret = (ficha.getColumn() < potrero.getColumn() && ficha.getRow() > potrero.getRow());
+        } else if (potrero.getColumn() > middle && potrero.getRow () > middle) {
+            ret = (ficha.getColumn() > potrero.getColumn() && ficha.getRow () > potrero.getRow());
+        }
+
+        return ret;
+
     }
 
     public static void main (String[] args) throws InvalidRegistrationException, Exception {

@@ -24,12 +24,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.solver.manantiales.Distribution;
-import mx.ecosur.multigame.impl.solver.manantiales.ManantialesSolution;
-import mx.ecosur.multigame.impl.solver.manantiales.Matrix;
-import mx.ecosur.multigame.impl.solver.manantiales.MatrixGenerator;
-import mx.ecosur.multigame.impl.solver.manantiales.SolutionConfigurer;
-import mx.ecosur.multigame.impl.solver.manantiales.UnconfigurableException;
+import mx.ecosur.experiment.multigame.solver.manantiales.*;
 import mx.ecosur.multigame.impl.util.CSV;
 
 import org.drools.solver.config.XmlSolverConfigurer;
@@ -53,13 +48,13 @@ public class StandardSolverTest {
 	private static Logger logger = Logger.getLogger(
 			StandardSolverTest.class.getCanonicalName());
 	private static String configPath = 
-		"/mx/ecosur/multigame/impl/solver/manantiales/manantiales-standard-solver.xml";
+		"/mx/ecosur/experiment/multigame/solver/manantiales/manantiales-standard-solver.xml";
 	private static String testModelPath = 
-		"/mx/ecosur/multigame/impl/solver/manantiales/data/testSolution.xml";
+		"/mx/ecosur/experiment/multigame/solver/manantiales/data/testSolution.xml";
 	private static String asymmetricPath = 
-		"/mx/ecosur/multigame/impl/solver/manantiales/data/distribution.xml";
+		"/mx/ecosur/experiment/multigame/solver/manantiales/data/distribution.xml";
 	private static String csvPath = 
-		"/mx/ecosur/multigame/impl/solver/manantiales/data/matrices.csv";
+		"/mx/ecosur/experiment/multigame/solver/manantiales/data/matrices.csv";
 	
 	private XmlSolverConfigurer configurer;
 	private Solution startingSolution;
