@@ -19,13 +19,7 @@ global SimpleScoreCalculator scoreCalculator;
 # Evaluates moves suggested by the WaterPathSuggestor.
 
 # Hard constraints
-rule "Player must have approval for all Potreros on path"
-    when
-        TablonMove ($player : player)
-        forAll ($ficha : TablonFicha ($player.color not memberOf (passThroughColor)))
-    then
-        insertLogical (new UnweightedConstraintOccurrence("Unpermitted passage", $ficha))
-end
+
 
 #Constraint calculator update
 rule "Constraints broken"

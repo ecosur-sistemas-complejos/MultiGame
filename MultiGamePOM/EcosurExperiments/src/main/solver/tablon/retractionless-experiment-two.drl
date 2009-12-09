@@ -1,0 +1,34 @@
+# Copyright (C) 2009 ECOSUR, Andrew Waterman
+#
+# Licensed under the Academic Free License v. 3.2.
+# http://www.opensource.org/licenses/afl-3.0.php
+ 
+package mx.ecosur.multigame.impl.entity.tablon
+
+import java.util.ArrayList;
+import java.util.Set;
+
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+
+dialect "java"
+
+global SimpleScoreCalculator scoreCalculator;
+
+
+# Evaluates moves suggested by the WaterPathSuggestor.
+
+# Hard constraints
+
+
+#Constraint calculator update
+rule "Constraints broken"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(type == ConstraintType.NEGATIVE_HARD),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setScore(- $occurrenceCount.intValue() );
+end
+

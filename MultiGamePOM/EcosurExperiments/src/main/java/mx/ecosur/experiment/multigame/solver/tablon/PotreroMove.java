@@ -1,23 +1,19 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
-
-import java.util.Stack;
 
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 
 /**
  * A CarefulMove is a move that shouldn't elicit retractions from the game.
  *  
  */
-public class CarefulMove implements Move {
+public class PotreroMove implements Move {
 
     private TablonFicha ficha;
 
-    public CarefulMove(TablonFicha ficha) {
+    public PotreroMove(TablonFicha ficha) {
         this.ficha = ficha;
     }
 
@@ -46,13 +42,13 @@ public class CarefulMove implements Move {
      * @return an undoMove which does the exact opposite of this move.
      */
     public Move createUndoMove(WorkingMemory workingMemory) {
-        CarefulMove ret = null;
+        PotreroMove ret = null;
 
 /*        if (move != null) {
             moveHandle = workingMemory.insert(move);
             workingMemory.retract(moveHandle);
             moveHandle = null;
-            ret = new CarefulMove(move);*/
+            ret = new PotreroMove(move);*/
         
 
         return ret;

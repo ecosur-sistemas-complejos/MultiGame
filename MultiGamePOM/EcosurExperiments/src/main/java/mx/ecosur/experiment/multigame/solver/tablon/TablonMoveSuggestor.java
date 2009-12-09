@@ -15,7 +15,7 @@ import mx.ecosur.multigame.impl.enums.tablon.TokenType;
  * The CarefulMoveSuggestor is an implmentation of AbstractMoveFactory
  * that seeks to suggest "CarefulMoves" to the solver.
  */
-public class CarefulMoveSuggestor extends AbstractMoveFactory {
+public class TablonMoveSuggestor extends AbstractMoveFactory {
 
 
     public List<Move> createMoveList(Solution solution) {
@@ -27,7 +27,7 @@ public class CarefulMoveSuggestor extends AbstractMoveFactory {
                 Set<Stack<TablonFicha>> pathways = getAllPathsToWater (ficha, tsol.getGrid());
                 for (Stack<TablonFicha> moveStack : pathways) {
                     while (!moveStack.isEmpty()) {
-                        moves.add(new CarefulMove(moveStack.pop()));
+                        moves.add(new PotreroMove(moveStack.pop()));
                     }
                 }
             }
