@@ -2,8 +2,10 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
+import org.drools.runtime.rule.FactHandle;
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 
 /**
@@ -21,9 +23,10 @@ public class UndoMove implements Move {
     /* The move to be undone */
     private TablonFicha current;
 
-    private TablonGrid grid;
+    private TablonGame game;
 
-    public UndoMove (TablonFicha previousFicha, TablonFicha currentFicha, TablonGrid grid) {
+    public UndoMove (TablonGame game, TablonFicha previousFicha, TablonFicha currentFicha) {
+        this.game = game;
         this.previous = previousFicha;
         this.current = currentFicha;
     }
@@ -63,7 +66,7 @@ public class UndoMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            ret = new UndoMove (current, previous, (TablonGrid) grid.clone());
+            ret = new UndoMove ((TablonGame) game.clone(), current, previous);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -78,6 +81,24 @@ public class UndoMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {
+        TablonGame game = null;
+        FactHandle handle = null;
 
+        for (Object obj : workingMemory.getObjects()) {
+            if (obj instanceof TablonGame) {
+                game = (TablonGame) obj;
+                handle =workingMemory.getFactHandle(game);
+                break;
+            }
+        }
+
+        /* Must have a game in memory */
+        assert (game != null);
+        assert (handle != null);
+        TablonGrid grid = (TablonGrid) game.getGrid();
+        grid.removeCell(current);
+        grid.updateCell(previous);
+        workingMemory.retract(handle);
+        workingMemory.insert(game);        
     }
 }

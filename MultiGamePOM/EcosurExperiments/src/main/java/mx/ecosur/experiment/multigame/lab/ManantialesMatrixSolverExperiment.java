@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.experiments;
+package mx.ecosur.experiment.multigame.lab;
 
 import static org.junit.Assert.*;
 
@@ -34,8 +34,6 @@ import org.drools.solver.core.score.SimpleScore;
 import org.drools.solver.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * This test ensures that the solver is configured and working correctly.
@@ -43,10 +41,10 @@ import org.junit.Test;
  */
 
 
-public class ManantialesSolverTest {
+public class ManantialesMatrixSolverExperiment {
 	
 	private static Logger logger = Logger.getLogger(
-			ManantialesSolverTest.class.getCanonicalName());
+			ManantialesMatrixSolverExperiment.class.getCanonicalName());
 	private static String configPath = 
 		"/mx/ecosur/experiment/multigame/solver/manantiales/manantiales-standard-solver.xml";
 	private static String testModelPath = 
@@ -58,9 +56,19 @@ public class ManantialesSolverTest {
 	
 	private XmlSolverConfigurer configurer;
 	private Solution startingSolution;
-	
-	@Before
+    private ManantialesSolution solution;
+
+    public static void main (String... args) throws UnconfigurableException, JDOMException, IOException {
+        ManantialesMatrixSolverExperiment experiment = new ManantialesMatrixSolverExperiment();
+        experiment.setUp();
+        System.out.println ("Starting solver...");
+        experiment.testSolver();
+        System.out.println ("Solution complete.");
+        System.out.println ("Matrix:\n " + experiment.getDistributions(experiment.solution));
+    }
+
 	public void setUp () {
+        solution = null;
 		configurer = new XmlSolverConfigurer();
 		configurer.configure(new InputStreamReader(this.getClass()
 				.getResourceAsStream(configPath)));
@@ -68,7 +76,6 @@ public class ManantialesSolverTest {
 				ManantialesSolution.Threshold.SIMPLE);
 	}
 
-    @Test
 	public void testSolver () throws JDOMException, IOException, 
 		UnconfigurableException 
 	{
@@ -79,7 +86,7 @@ public class ManantialesSolverTest {
 		Solver solver = configurer.buildSolver();
 		solver.setStartingSolution(startingSolution);
 		solver.solve();
-		ManantialesSolution solution = (ManantialesSolution) solver.getBestSolution();
+		solution = (ManantialesSolution) solver.getBestSolution();
         SimpleScore score = (SimpleScore) solution.getScore();
 		assertEquals (0, score.getScore());
 	}

@@ -26,13 +26,11 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.util.tablon.MutationEvent;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import javax.jms.Message;
 import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +67,7 @@ public class TablonRulesTest extends RulesTestBase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-        game = new TablonGame(26, 26, tablon);
+        game = new TablonGame(26, 26, tablon);        
 
 		GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");

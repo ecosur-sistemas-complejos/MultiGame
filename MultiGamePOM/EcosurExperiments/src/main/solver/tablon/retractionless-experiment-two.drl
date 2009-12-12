@@ -6,47 +6,92 @@
 package mx.ecosur.multigame.impl.entity.tablon
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
 import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+
+import function mx.ecosur.experiment.multigame.solver.tablon.SolutionFunctions.*;
 
 dialect "java"
 
 global SimpleScoreCalculator scoreCalculator;
 
 
-# Evaluates moves suggested by the WaterPathSuggestor.
+rule "insert all fichas into working memory"
+    lock-on-active true
+    when
+        not (TablonFicha ())
+        TablonGame ($grid : grid)
+    then
+        for (GridCell cell : $grid.getCells()) {
+            TablonFicha ficha = (TablonFicha) cell;
+            insert (ficha);
+        }
+end
+
 
 # Hard constraints
-rule "No retractions"
+
+# 40 tokens over an entire 4x4 board must be Potreros (40/(16 * 4) = Potrero)
+rule "62.5% Potreros"
+    no-loop true
     when
+        TablonGame ($grid :  grid)
+        $potreros : ArrayList (size != (size * 0.625)) from
+            collect ( TablonFicha (type == TokenType.POTRERO)
+                )
     then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 62.5% Potrero", $potreros));
 end
 
-rule "40 Potreros"
+#24 Forest tokens over a 4x4 board (24/(16 * 4) = Forest)
+rule "37.5% Forests"
     when
+        TablonGame ($size : grid.cells.size)
+        $forests : ArrayList (size != (size * 0.375)) from
+            collect (
+                TablonFicha (type == TokenType.FOREST))
     then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 37.5% Forest", $forests));
 end
 
-rule "24 Forests"
-    when
+#16 of the 40 potreros must be directly connected to  water (16/40 = directly connected)
+rule "25% Potreros directly connected to water"
+     when
+        TablonGame ($grid : grid, $size : grid.cells.size)
+        $potreros : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.POTRERO))
+        eval (percentageDirectlyConnected ((TablonGrid) $grid, (Collection) $potreros, 0.25))
     then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 25% Potreros directly connected to water", $potreros));
 end
 
-rule "16 directly connected potreros"
-    when
+# cleanup
+rule "Retract all fichas"
+    salience -10
+    lock-on-active true
+    when        
+        $ficha : TablonFicha ()
     then
+        retract ($ficha);
 end
 
 #Constraint calculator update
 rule "Constraints broken"
     when
-        $occurrenceCount : Number() from accumulate(
-            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(type == ConstraintType.NEGATIVE_HARD),
+        $occurrenceCount : Number() from accumulate (
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
             count($unweightedConstraintOccurrence)
         );
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue() );
 end
-

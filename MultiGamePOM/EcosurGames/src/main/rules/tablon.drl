@@ -357,19 +357,6 @@ when
 then
     retract ($event);
 end
-/*
-rule "At least ten water tokens are required for sustainability"
-    ruleflow-group "confirm"
-when
-    $game : TablonGame (state == GameState.PLAY)
-    $grid : TablonGrid ($tokens : waterTokens)
-    eval ($tokens.size () < 10)
-then
-    modify ($game) { setGrid ($grid), setState (GameState.ENDED) }
-    retract ($grid);  
-    messageSender.sendEndGame ($game);    
-end
-*/
 
 rule "publish move complete"
     ruleflow-group "confirm"

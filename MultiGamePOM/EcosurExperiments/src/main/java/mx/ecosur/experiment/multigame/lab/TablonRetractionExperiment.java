@@ -1,4 +1,4 @@
-package mx.ecosur.experiment.multigame.tablon;
+package mx.ecosur.experiment.multigame.lab;
 
 import mx.ecosur.multigame.impl.entity.tablon.*;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
@@ -17,13 +17,11 @@ import java.util.*;
 import java.io.File;
 import java.io.FileWriter;
 
-import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
-
 /**
  * The Experiment runner runs a tablon experiment a certain number
  * of times (default 30) creating 
  */
-public class ExperimentRunner {
+public class TablonRetractionExperiment {
 
     private static final int dimension = 26;
 
@@ -192,8 +190,8 @@ public class ExperimentRunner {
 
     }
 
-    public static void main (String[] args) throws InvalidRegistrationException, Exception {
-        File file = new File (dataFolder + File.separator + "tablon-experiment.csv");
+    public static void main (String... args) throws InvalidRegistrationException, Exception {
+        File file = new File (dataFolder + File.separator + "lab-experiment.csv");
         file.mkdirs();
         if (file.exists())
             file.delete();
@@ -227,18 +225,18 @@ public class ExperimentRunner {
             long localStart = System.currentTimeMillis();
             System.out.println ("Run time(ms) = " + (System.currentTimeMillis () - start));
             System.out.println("Running iteration " + i);
-            ExperimentRunner runner = new ExperimentRunner();
-            runner.initialize();
-            int startingTokens = runner.game.getGrid().getCells().size();
+            TablonRetractionExperiment tablonRetraction = new TablonRetractionExperiment();
+            tablonRetraction.initialize();
+            int startingTokens = tablonRetraction.game.getGrid().getCells().size();
             int counter = 0;
-            while (runner.game.getState().equals(GameState.PLAY)) {
+            while (tablonRetraction.game.getState().equals(GameState.PLAY)) {
                 counter++;
-                runner.runExperiment();
+                tablonRetraction.runExperiment();
                 long elapsed = System.currentTimeMillis() - localStart;
                 /* One execution is streamed to the console change by change */
                 if (executions == 1) {
                     System.out.println ("Step No. " + counter);
-                    System.out.println (runner.game);
+                    System.out.println (tablonRetraction.game);
                 }
                 /* Serialize the data */
                 writer.append ("" + i);
@@ -249,11 +247,11 @@ public class ExperimentRunner {
                 writer.append (separator);
                 writer.append ("" + startingTokens);
                 writer.append (separator);
-                writer.append ("" + (startingTokens - runner.game.getGrid().getCells().size()));
+                writer.append ("" + (startingTokens - tablonRetraction.game.getGrid().getCells().size()));
                 writer.append (separator);
                 for (int j = 1; j <= executions; j++) {
                     if (j == i)
-                        writer.append ("" + (startingTokens - runner.game.getGrid().getCells().size()));
+                        writer.append ("" + (startingTokens - tablonRetraction.game.getGrid().getCells().size()));
                     else if (j < executions)
                         writer.append (separator);
                     else if (j == executions)

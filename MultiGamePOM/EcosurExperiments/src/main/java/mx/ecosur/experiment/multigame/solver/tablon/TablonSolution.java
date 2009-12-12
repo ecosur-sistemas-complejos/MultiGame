@@ -2,13 +2,19 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.io.ResourceFactory;
+import org.drools.builder.*;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.awt.*;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
-import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
+import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +29,41 @@ public class TablonSolution implements Solution {
 
     private TablonGame game;
 
+    public enum Quadrant {
+        TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT;
+
+
+        public boolean contains (Dimension dimension, Point point) {
+            boolean ret = false;
+
+            int row = dimension.height / 2;
+            int col = dimension.width / 2;
+
+            switch (this) {
+                case TOPLEFT:
+                    ret = (point.getX() < row && point.getY() < col);
+                    break;
+                case TOPRIGHT:
+                    ret = (point.getX() < row && point.getY() > col);
+                    break;
+                case BOTTOMLEFT:
+                    ret = (point.getX() > row && point.getY() < col);
+                    break;
+                case BOTTOMRIGHT:
+                    ret = (point.getX() > row && point.getY() > col);
+                    break;
+                default:
+                    assert (false);
+            }
+
+            return ret;
+        }
+    }
+
+    public TablonSolution () {
+        super();
+    }
+
 
     /**
      * Constructs a new TablonSolution based on a TablonGame game.
@@ -30,8 +71,7 @@ public class TablonSolution implements Solution {
      * @param game
      */
     public TablonSolution (TablonGame game) {
-        this.score = null;
-        this.game = game;
+        this.game = game;        
     }
 
     /**
@@ -60,7 +100,9 @@ public class TablonSolution implements Solution {
      * @return never null (although an empty collection is allowed), all the facts of this solution
      */
     public Collection<? extends Object> getFacts() {
-        return game.getFacts();
+        LinkedList facts = new LinkedList();
+        facts.add(game);
+        return facts;        
     }
 
     /**
@@ -83,23 +125,11 @@ public class TablonSolution implements Solution {
         return ret;
     }
 
-    public TablonGrid getGrid () {
-        TablonGrid grid = null;
-        try {
-            grid = (TablonGrid) game.getGrid().clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return grid;       
+    public TablonGame getGame() {
+        return game;
     }
 
-    public TablonGame getGame() {
-        TablonGame ret = null;
-        try {
-            ret = (TablonGame) game.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        return ret;
-    }
+    public void setGame (TablonGame game) {
+        this.game = game;
+    }    
 }

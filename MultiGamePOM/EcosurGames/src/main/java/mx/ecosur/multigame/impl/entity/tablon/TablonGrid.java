@@ -187,4 +187,13 @@ public class TablonGrid extends GameGrid {
 
         return ret;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        GameGrid grid = (GameGrid) super.clone();
+        TablonGrid ret = new TablonGrid();
+        for (GridCell cell : grid.getCells()) {
+            ret.updateCell((TablonFicha) cell);
+        }
+    }
 }

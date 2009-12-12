@@ -28,7 +28,9 @@ import org.drools.KnowledgeBase;
 import org.drools.audit.WorkingMemoryFileLogger;
 
 import java.util.*;
+import java.util.List;
 import java.net.MalformedURLException;
+import java.awt.*;
 
 @Entity
 public class TablonGame extends GridGame {
@@ -61,6 +63,11 @@ public class TablonGame extends GridGame {
         this.kbase = kbase;
     }
 
+    @Transient
+    public Dimension getDimensions() {
+        return new Dimension (getColumns(), getRows());
+    }
+
     /* (non-Javadoc)
       * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
       */
@@ -87,6 +94,8 @@ public class TablonGame extends GridGame {
         session.startProcess("tablon-flow");
         session.fireAllRules();
     }
+
+
 
     @Transient
     public int getMaxPlayers() {
@@ -219,8 +228,20 @@ public class TablonGame extends GridGame {
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
+		TablonGame ret = new TablonGame ();
+        ret.setPlayers (this.getPlayers());
+        ret.setGrid((GameGrid) grid.clone());
+        ret.setColumns(this.getColumns());
+        ret.setRows (this.getRows());
+        ret.setGameType(this.getGameType());
+        ret.setState(this.getState());
+        ret.setMessageSender(this.getMessageSender());
+        ret.setCreated(new Date (System.currentTimeMillis()));
+        ret.setId(this.getId());
+        ret.setMoves(this.getMoves());
+        ret.setVersion(this.getVersion());
+        ret.setKbase(this.getKbase());
+        return ret;
 	}
 
     @Override
