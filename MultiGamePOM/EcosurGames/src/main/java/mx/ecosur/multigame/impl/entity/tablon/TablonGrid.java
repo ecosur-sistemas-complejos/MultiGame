@@ -195,5 +195,6 @@ public class TablonGrid extends GameGrid {
         for (GridCell cell : grid.getCells()) {
             ret.updateCell((TablonFicha) cell);
         }
+        return ret;        
     }
 }
