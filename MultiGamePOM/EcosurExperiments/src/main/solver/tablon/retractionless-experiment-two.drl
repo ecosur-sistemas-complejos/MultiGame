@@ -23,20 +23,7 @@ dialect "java"
 global SimpleScoreCalculator scoreCalculator;
 
 
-rule "insert all fichas into working memory"
-    lock-on-active true
-    when
-        not (TablonFicha ())
-        TablonGame ($grid : grid)
-    then
-        for (GridCell cell : $grid.getCells()) {
-            TablonFicha ficha = (TablonFicha) cell;
-            insert (ficha);
-        }
-end
-
-
-# Hard constraints
+# Soft constraints
 
 # 40 tokens over an entire 4x4 board must be Potreros (40/(16 * 4) = Potrero)
 rule "62.5% Potreros"
@@ -75,16 +62,6 @@ rule "25% Potreros directly connected to water"
             new UnweightedConstraintOccurrence("Not 25% Potreros directly connected to water", $potreros));
 end
 
-# cleanup
-rule "Retract all fichas"
-    salience -10
-    lock-on-active true
-    when        
-        $ficha : TablonFicha ()
-    then
-        retract ($ficha);
-end
-
 #Constraint calculator update
 rule "Constraints broken"
     when
@@ -94,4 +71,5 @@ rule "Constraints broken"
         );
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue() );
+        System.out.println ("Score: " + $occurrenceCount.intValue());
 end

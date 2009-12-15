@@ -22,7 +22,7 @@ public class SolverFicha extends Ficha {
 	 * @param col
 	 * @param row
 	 * @param color
-	 * @param undeveloped
+	 * @param type
 	 */
 	public SolverFicha(int col, int row, Color color, TokenType type) {
 		super (col, row, color, type);

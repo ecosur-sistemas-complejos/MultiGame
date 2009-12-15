@@ -273,7 +273,8 @@ public class TablonGame extends GridGame {
                             ret.append("W");
                             break;
                         default:
-                            assert (false);
+                            ret.append ("U");
+                            break;
                     }
                 } else {
                     ret.append(" ");

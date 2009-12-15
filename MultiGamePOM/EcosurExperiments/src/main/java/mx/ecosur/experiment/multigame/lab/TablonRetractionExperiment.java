@@ -23,11 +23,11 @@ import java.io.FileWriter;
  */
 public class TablonRetractionExperiment {
 
-    private static final int dimension = 26;
+    private static final int dimension = 42;
 
     private static String dataFolder = "target/data";
 
-    private static final int executions = 1;
+    private static final int executions = 30;
 
     private static final char separator = '\t';
 
@@ -119,8 +119,8 @@ public class TablonRetractionExperiment {
                 if (potreros.size() > 0) {
                     Object[] set = potreros.toArray();
                     TablonFicha potrero = (TablonFicha) set [ random.nextInt(set.length) ];
-                    if (random.nextInt(6) > 4) {
-                        for (TablonFicha ficha : tgrid.getSquare(potrero)) {
+                    if (true || random.nextInt(6) < 4) {
+                        for (TablonFicha ficha : tgrid.getCross(potrero)) {
                             if (ficha.getType().equals(TokenType.FOREST) && extendsPotrero (ficha, potrero)) {
                                 candidate = ficha.clone();
                                 candidate.setType (TokenType.POTRERO);

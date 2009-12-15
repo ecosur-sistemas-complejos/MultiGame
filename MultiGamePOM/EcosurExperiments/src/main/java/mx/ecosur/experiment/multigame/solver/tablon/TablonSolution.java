@@ -1,5 +1,12 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
+import mx.ecosur.multigame.impl.*;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridCell;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
 import org.drools.KnowledgeBase;
@@ -8,13 +15,17 @@ import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.awt.*;
+import java.util.Set;
 
 import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+
+import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.isDirectlyConnectedToWater;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +37,8 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 public class TablonSolution implements Solution {
 
     private Score score;
+
+    private Set<TablonFicha> workingFacts;
 
     private TablonGame game;
 
@@ -60,10 +73,11 @@ public class TablonSolution implements Solution {
         }
     }
 
+
     public TablonSolution () {
         super();
+        workingFacts = new LinkedHashSet<TablonFicha>();
     }
-
 
     /**
      * Constructs a new TablonSolution based on a TablonGame game.
@@ -71,7 +85,13 @@ public class TablonSolution implements Solution {
      * @param game
      */
     public TablonSolution (TablonGame game) {
-        this.game = game;        
+        this();
+        for (Object obj : game.getFacts()) {
+            if (obj instanceof TablonFicha) {
+                workingFacts.add((TablonFicha) obj);
+            }
+        }
+        this.game = game;
     }
 
     /**
@@ -100,9 +120,15 @@ public class TablonSolution implements Solution {
      * @return never null (although an empty collection is allowed), all the facts of this solution
      */
     public Collection<? extends Object> getFacts() {
-        LinkedList facts = new LinkedList();
-        facts.add(game);
-        return facts;        
+        if (workingFacts.size() == 0) {
+            for (Object obj : game.getFacts()) {
+                if (obj instanceof TablonFicha) {
+                    workingFacts.add((TablonFicha) obj);
+                }
+            }
+        }
+
+       return this.workingFacts;  
     }
 
     /**
@@ -114,22 +140,109 @@ public class TablonSolution implements Solution {
      * @return never null, a clone of which the properties that change during solving are deep cloned
      */
     public Solution cloneSolution() {
-        TablonSolution ret = null;
-        try {
-            ret = new TablonSolution((TablonGame) game.clone());
-            ret.setScore (score);
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        TablonSolution ret = new TablonSolution ((TablonGame) getGame());  
+        ret.setScore (score);
+        return ret;
+    }
+
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
+        ret.append (summary(getGame()) + "\n");
+        for (int y = 0; y < game.getDimensions().getWidth(); y++) {
+            for (int x = 0; x < game.getDimensions().getHeight(); x++) {
+                TablonFicha ficha = findCell (x,y);
+                if (ficha != null) {
+                    switch (ficha.getType()) {
+                        case SOIL_PARTICLE:
+                            ret.append("S");
+                            break;
+                        case FOREST:
+                            ret.append("F");
+                            break;
+                        case POTRERO:
+                            ret.append("P");
+                            break;
+                        case SILVOPASTORAL:
+                            ret.append("V");
+                            break;
+                        case WATER_PARTICLE:
+                            ret.append("W");
+                            break;
+                        default:
+                            ret.append ("U");
+                            break;
+                    }
+                } else {
+                    ret.append(" ");
+                }
+
+                /* space out the cells */
+                ret.append (" ");
+            }
+            ret.append("\n");
+        }
+
+        return ret.toString();
+    }
+
+    public TablonGame getGame () {
+        game.setGrid(getGrid());
+        return game;
+    }
+
+    public void setGame(TablonGame game) {
+        this.game = game;
+        game.setGrid(getGrid());
+    }
+        
+    private TablonGrid getGrid() {
+        TablonGrid ret = new TablonGrid ();
+        for (TablonFicha ficha : this.workingFacts) {
+            ret.updateCell(ficha);
+        }
+        return ret;
+    }
+
+
+    private TablonFicha findCell (int y, int x) {
+        TablonFicha ret = null;
+        for (TablonFicha ficha : this.workingFacts) {
+            if (ficha.getRow() == x && ficha.getColumn() == y) {
+                ret = ficha;
+                break;
+            }
         }
 
         return ret;
     }
 
-    public TablonGame getGame() {
-        return game;
+    private String summary (TablonGame game) {
+        int size = workingFacts.size();
+
+        /* count forest */
+        int forest = count (TokenType.FOREST);
+        /* count potrero */
+        int potrero = count (TokenType.POTRERO);
+        /* count silvopastoral */
+        int silvopastoral = count (TokenType.SILVOPASTORAL);
+
+        float forestPercent = (forest/size);
+        float potreroPercent = (potrero/size);
+        float silvoPercent = (silvopastoral/size);
+
+        StringBuffer buf = new StringBuffer ();
+        buf.append ("Forest = " + forest + "/" + size + ", potrero = " + potrero + "/" + size + ", " +
+                "silvo = " + silvopastoral + "/" + size);
+        return buf.toString();
     }
 
-    public void setGame (TablonGame game) {
-        this.game = game;
-    }    
+    private int count (TokenType type) {
+        int count = 0;
+        for (TablonFicha ficha : workingFacts) {
+            if (ficha.getType().equals(type))
+                count++;
+        }
+
+        return count;
+    }
 }

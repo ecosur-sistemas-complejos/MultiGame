@@ -16,7 +16,6 @@
         <foragerType>MAX_SCORE_OF_ALL</foragerType>
     </forager>
     <termination>
-        <terminationCompositionStyle>AND</terminationCompositionStyle>
         <maximumMinutesSpend>1</maximumMinutesSpend> 
     </termination>
 </localSearchSolver>

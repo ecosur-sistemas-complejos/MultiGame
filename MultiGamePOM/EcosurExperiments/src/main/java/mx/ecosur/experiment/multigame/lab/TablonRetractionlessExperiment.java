@@ -40,7 +40,7 @@ private static Logger logger = Logger.getLogger(
         Score score = experiment.solve();
         System.out.println ("Solution found.");
         System.out.println ("Score: " + score);
-        System.out.println ("Configuration:\n " + experiment.solution.getGame().toString());
+        System.out.println ("Configuration:\n " + experiment.solution);
     }
 
 	public void setUp () {

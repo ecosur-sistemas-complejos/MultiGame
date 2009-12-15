@@ -111,8 +111,8 @@
         <!--  Use slf4j-jcl to show solver logging -->
 		<dependency>
 		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-nop</artifactId>
-		    <version>1.4.2</version>
+		    <artifactId>slf4j-jcl</artifactId>
+		    <version>1.5.8</version>
 		</dependency> 
 		<dependency>
 			<groupId>commons-collections</groupId>

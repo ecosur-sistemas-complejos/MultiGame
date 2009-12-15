@@ -21,27 +21,15 @@ dialect "java"
 
 global SimpleScoreCalculator scoreCalculator;
 
-rule "insert all fichas into working memory"
-    lock-on-active true
-    when
-        TablonGame ($grid : grid)
-        not (TablonFicha ())
-    then
-        for (GridCell cell : $grid.getCells()) {
-            TablonFicha ficha = (TablonFicha) cell;
-            insert (ficha);
-        }
-end
-
 # Hard constraints
 
 #10 (62.5%) potereros per quadrant on a 4 x 4 (10/16 = potreros)
 rule "10 potreros per quadrant"
 no-loop true
     when
-        $game : TablonGame ($size : grid.getCells().size())
-        $potreros : ArrayList (size != (size > 0)) from
-            collect ( TablonFicha (type = TokenType.POTRERO))
+        $game : TablonGame ($size : grid.cells.size)
+        $potreros : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.POTRERO))
         eval (!percentagePerQuadrant ($game.getDimensions(), $potreros, 0.625));
     then
         insertLogical (
@@ -51,9 +39,9 @@ end
 #2 (12.5%) forests per quadrant on a 4 x 4 (2/16 = forest)
 rule "2 forests per quadrant"
     when
-        $game : TablonGame ($size : grid.getCells().size())
-        $forests : ArrayList (size != (size > 0)) from
-            collect ( TablonFicha (type = TokenType.FOREST))
+        $game : TablonGame ($size : grid.cells.size)
+        $forests : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.FOREST))
         eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.125));
     then
         insertLogical (
@@ -64,23 +52,13 @@ end
 # TODO: Check for only riparian forest in all forest
 rule "4/16 riparians per quadrant"
     when
-        $game : TablonGame ($size : grid.getCells().size())
-        $forests : ArrayList (size != (size > 0)) from
-            collect ( TablonFicha (type = TokenType.FOREST))
+        $game : TablonGame ($size : grid.cells.size)
+        $forests : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.FOREST))
         eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.25));
     then
         insertLogical (
             new UnweightedConstraintOccurrence("Not 25% Riparian forest", $forests));
-end
-
-# cleanup
-rule "Retract all fichas"
-    salience -10
-    lock-on-active true
-    when
-        forall ($ficha : TablonFicha ())
-    then
-        retract ($ficha);
 end
 
 #Constraint calculator update
@@ -88,7 +66,7 @@ rule "Constraints broken"
     salience -10
     when
         $occurrenceCount : Number() from accumulate(
-            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(type == ConstraintType.NEGATIVE_HARD),
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
             count($unweightedConstraintOccurrence)
         );
     then

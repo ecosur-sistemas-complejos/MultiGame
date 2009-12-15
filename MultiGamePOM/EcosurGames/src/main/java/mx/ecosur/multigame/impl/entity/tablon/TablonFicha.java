@@ -81,7 +81,7 @@ public class TablonFicha extends GridCell {
         ret.setRow(clone.getRow());
         ret.setColumn(clone.getColumn());
         ret.setColor(clone.getColor());
-        ret.setType(TokenType.UNKNOWN);
+        ret.setType(this.type);
         return ret;
         
     }/* (non-Javadoc)

@@ -20,15 +20,14 @@ import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
  */
 public class TablonMoveSuggestor extends AbstractMoveFactory {
 
-
     public List<Move> createMoveList(Solution solution) {
         List<Move> moves = new ArrayList<Move>();        
         TablonSolution tsol = (TablonSolution) solution;
         TablonGame game = tsol.getGame();
-        for (GridCell cell : game.getGrid().getCells()) {
+        for (GridCell cell : tsol.getGame().getGrid().getCells()) {
             TablonFicha ficha = (TablonFicha) cell;
             if (ficha.getType().equals(TokenType.FOREST) || ficha.getType().equals(TokenType.POTRERO)) {
-                Set<Stack<TablonFicha>> pathways = getAllPathsToWater (ficha, (TablonGrid) tsol.getGame().getGrid());
+                Set<Stack<TablonFicha>> pathways = getAllPathsToWater (ficha, (TablonGrid) game.getGrid());
                 for (Stack<TablonFicha> moveStack : pathways) {
                     while (!moveStack.isEmpty()) {
                         TablonGame clone = null;

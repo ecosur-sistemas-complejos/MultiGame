@@ -10,6 +10,8 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
 
+import java.awt.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: awaterma
@@ -44,7 +46,7 @@ public class SolutionConfigurer {
             throw new RuntimeException ("Unable to load rule base!");
         }
 
-        TablonGame game = new TablonGame(26, 26, tablon);
+        TablonGame game = new TablonGame(18,18, tablon);
         game.setMessageSender(new DummyMessageSender());
 
 		GridRegistrant a, b, c, d;
@@ -58,7 +60,8 @@ public class SolutionConfigurer {
 		game.registerPlayer(c);
 		game.registerPlayer(d);
 
-        solution.setGame(game);
+        /* Reset solution to use constructed game */
+        solution = new TablonSolution (game);
 
         return solution;
     }
