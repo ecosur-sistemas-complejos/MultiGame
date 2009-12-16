@@ -27,7 +27,7 @@ public class TablonRetractionExperiment {
 
     private static String dataFolder = "target/data";
 
-    private static final int executions = 30;
+    private static final int executions = 1;
 
     private static final char separator = '\t';
 

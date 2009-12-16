@@ -135,7 +135,8 @@
 	        <mx:Panel title="Score" width="100%">
 	            <pente:GentePlayersViewer id="playersViewer" width="100%" />
 	        </mx:Panel>
-	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" />
+	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}"
+                    currentGame="{currentGame}"/>
 	    </mx:VBox>
 	    <mx:UIComponent id="animateLayer" />
 	</mx:HBox>

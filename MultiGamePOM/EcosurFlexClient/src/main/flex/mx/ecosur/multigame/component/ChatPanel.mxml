@@ -12,6 +12,7 @@
 			import mx.messaging.messages.AsyncMessage;
 			import mx.messaging.messages.IMessage;
 			import mx.messaging.events.MessageFaultEvent;
+            import mx.messaging.events.MessageAckEvent;
 			
 			import mx.ecosur.multigame.entity.GamePlayer;
 			import mx.ecosur.multigame.entity.ChatMessage;
@@ -40,6 +41,10 @@
 				log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
 				callLater(updateScroll);
 			}
+
+            private function acknowledgeHandler (event:MessageAckEvent) {
+                Alert.show("Ack recieved: " + event);
+            }
 			
 			private function faultHandler(event:MessageFaultEvent):void {
 				Alert.show("fault in message " + event.faultString);

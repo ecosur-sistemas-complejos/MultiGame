@@ -175,7 +175,7 @@
                 	  currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>        
            <component:ChatPanel id="chatPanel" width="100%" height="100%" 
-                currentPlayer="{currentPlayer}" />  
+                currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />
     </mx:HBox>
