@@ -111,15 +111,6 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	}
 
     @Transient
-    public KnowledgeBase getKbase() {
-        return kbase;
-    }
-
-    public void setKbase(KnowledgeBase kbase) {
-        this.kbase = kbase;
-    }
-
-    @Transient
 	public Set<Implementation> getFacts () {
 		Set<Implementation> ret = new HashSet<Implementation>();
 		ret.addAll(grid.getCells());

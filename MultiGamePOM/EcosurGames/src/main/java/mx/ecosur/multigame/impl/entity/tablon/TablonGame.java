@@ -240,7 +240,7 @@ public class TablonGame extends GridGame {
         ret.setId(this.getId());
         ret.setMoves(this.getMoves());
         ret.setVersion(this.getVersion());
-        ret.setKbase(this.getKbase());
+        ret.kbase = this.kbase;
         return ret;
 	}
 
