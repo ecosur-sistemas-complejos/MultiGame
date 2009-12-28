@@ -67,7 +67,10 @@
             </activation>
             <modules>
 		        <module>MultiGameCommon</module>		        
-			    <module>EcosurGames</module>
+			    <module>EcosurCommon</module>
+                <module>Gente</module>
+                <module>Manantiales</module>
+                <module>Tablon</module>
 		        <module>EcosurFlexClient</module>
 		        <module>EcosurEAR</module>
                 <module>EcosurIT</module>                 
@@ -78,20 +81,26 @@
             <modules>
 		        <module>MultiGameCommon</module>
 			    <module>EcosurGames</module>
+                <module>Manantiales</module>
+                <module>Tablon</module>
                 <module>EcosurExperiments</module>
 		    </modules>
         </profile>
         <profile>
-            <id>complete</id>
+            <id>all</id>
             <modules>
-		        <module>MultiGameCommon</module>
-			    <module>EcosurGames</module>
+		        <module>MultiGameCommon</module>		        
+			    <module>EcosurCommon</module>
+                <module>Gente</module>
+                <module>Manantiales</module>
+                <module>Tablon</module>
 		        <module>EcosurFlexClient</module>
 		        <module>EcosurEAR</module>
-		        <module>EcosurIT</module>
-                <module>EcosurExperiments</module>
+                <module>EcosurIT</module> 
+                <module>EcosurExperiments</module>                
 		    </modules>
         </profile>
+        
     </profiles>    
     <!--  
         These repositories have been staged on our server as a convenience.  We

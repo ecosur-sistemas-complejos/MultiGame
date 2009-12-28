@@ -16,7 +16,17 @@
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>ecosur-games</artifactId>
+            <artifactId>ecosur-common</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>gente</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>manantiales</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
@@ -96,9 +106,19 @@
                             </ejbModule>
                             <jarModule>
                                 <groupId>mx.ecosur</groupId>
-                                <artifactId>ecosur-games</artifactId>  
-                                <bundleDir>lib</bundleDir>                       
-                            </jarModule>                                
+                                <artifactId>ecosur-common</artifactId>
+                                <bundleDir>lib</bundleDir>
+                            </jarModule>
+                            <jarModule>
+                                <groupId>mx.ecosur</groupId>
+                                <artifactId>gente</artifactId>
+                                <bundleDir>lib</bundleDir>
+                            </jarModule>
+                            <jarModule>
+                                <groupId>mx.ecosur</groupId>
+                                <artifactId>manantiales</artifactId>
+                                <bundleDir>lib</bundleDir>
+                            </jarModule>
                             <webModule>
                                <groupId>mx.ecosur</groupId>
                                <artifactId>ecosur-flex-client</artifactId>
