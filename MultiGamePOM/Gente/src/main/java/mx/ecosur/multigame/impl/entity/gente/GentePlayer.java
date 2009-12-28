@@ -13,23 +13,14 @@
  */
 package mx.ecosur.multigame.impl.entity.gente;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.gente.BeadString;
+import mx.ecosur.multigame.impl.util.BeadString;
 
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 public class GentePlayer extends GridPlayer {

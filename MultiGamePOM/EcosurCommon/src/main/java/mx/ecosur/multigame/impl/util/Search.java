@@ -23,7 +23,6 @@ import mx.ecosur.multigame.impl.Color;
 
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.gente.BeadString;
 
 public class Search implements Serializable {
 	

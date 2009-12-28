@@ -17,16 +17,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Embedded;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridMove;
 
-import mx.ecosur.multigame.impl.model.gente.BeadString;
+import mx.ecosur.multigame.impl.util.BeadString;
 
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 

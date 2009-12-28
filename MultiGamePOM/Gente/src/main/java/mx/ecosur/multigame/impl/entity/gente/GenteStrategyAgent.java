@@ -14,19 +14,13 @@ import java.util.HashSet;
 import java.util.TreeSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
-
-import mx.ecosur.multigame.MessageSender;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.CellComparator;
@@ -38,7 +32,6 @@ import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.gente.BeadString;
 import mx.ecosur.multigame.impl.model.gente.GenteMoveComparator;
 
 import mx.ecosur.multigame.impl.util.Direction;

@@ -25,13 +25,11 @@ import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.gente.BeadString;
+import mx.ecosur.multigame.impl.util.BeadString;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.agent.KnowledgeAgent;
 import org.drools.io.ResourceFactory;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
