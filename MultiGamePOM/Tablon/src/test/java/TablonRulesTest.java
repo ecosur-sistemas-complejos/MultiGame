@@ -8,8 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.edu.multigame.drools;
-
+import mx.ecosur.multigame.test.RulesTestBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;

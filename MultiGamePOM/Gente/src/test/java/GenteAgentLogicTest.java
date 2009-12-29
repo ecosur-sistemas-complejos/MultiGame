@@ -8,7 +8,6 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.edu.multigame.drools;
 
 import java.util.HashSet;
 import java.util.SortedSet;

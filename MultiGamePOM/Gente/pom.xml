@@ -40,15 +40,15 @@
         </plugins>	
 		<resources>
             <resource>
-                <directory>src/main/rules</directory>
+                <directory>src/main/resources</directory>
                 <targetPath>mx/ecosur/multigame/impl/</targetPath>
             </resource>            
             <resource>
-                <directory>src/main/rules/ruleflow</directory>
+                <directory>src/main/resources/ruleflow</directory>
                 <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
             </resource>            
             <resource>
-                <directory>src/main/rules/agent</directory>
+                <directory>src/main/resources/agent</directory>
                 <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
             </resource>
             <resource>
@@ -68,7 +68,14 @@
 	        <groupId>mx.ecosur</groupId>
 	        <artifactId>ecosur-common</artifactId>
 	        <version>${version}</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+	        <groupId>mx.ecosur</groupId>
+	        <artifactId>ecosur-common</artifactId>
+	        <version>${version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>

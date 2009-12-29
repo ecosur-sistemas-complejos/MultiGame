@@ -8,8 +8,6 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.edu.multigame.drools;
-
 import java.awt.Point;
 import java.util.*;
 
@@ -27,7 +25,6 @@ import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -38,6 +35,7 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
+import mx.ecosur.multigame.test.RulesTestBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +58,7 @@ public class ManantialesRulesTest extends RulesTestBase {
     static {
         manantiales = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(GenteGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(ManantialesGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
         manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
     }

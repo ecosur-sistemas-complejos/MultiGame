@@ -11,7 +11,7 @@
  * @author max@alwayssunny.com
  */
 
-package mx.edu.multigame.drools;
+package mx.ecosur.multigame.test;
 
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;

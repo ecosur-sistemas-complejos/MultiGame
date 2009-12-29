@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.edu.multigame.drools;
+package mx.ecosur.multigame.test;
 
 import java.util.logging.Logger;
 

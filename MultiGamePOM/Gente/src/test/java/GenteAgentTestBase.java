@@ -1,7 +1,3 @@
-package mx.edu.multigame.drools;
-
-import mx.ecosur.multigame.enums.GameState;
-
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
@@ -11,6 +7,7 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.GameGrid;
 
+import mx.ecosur.multigame.test.RulesTestBase;
 import org.junit.Before;
 
 public abstract class GenteAgentTestBase extends RulesTestBase {

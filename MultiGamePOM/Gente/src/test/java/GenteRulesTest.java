@@ -9,8 +9,6 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.edu.multigame.drools;
-
 import java.util.Collection;
 import java.util.Set;
 
@@ -27,6 +25,7 @@ import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.util.BeadString;
 
+import mx.ecosur.multigame.test.RulesTestBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
