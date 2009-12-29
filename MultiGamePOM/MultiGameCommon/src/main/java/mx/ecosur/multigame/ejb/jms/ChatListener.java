@@ -31,7 +31,7 @@ import mx.ecosur.multigame.model.implementation.ChatMessageImpl;
 @MessageDriven(mappedName = "MultiGame")
 public class ChatListener implements MessageListener {
 
-	private static Logger logger = Logger.getLogger(ChatListener.class
+	private static final Logger logger = Logger.getLogger(ChatListener.class
 			.getCanonicalName());
 	@EJB
 	private SharedBoardLocal sharedBoard;

@@ -24,8 +24,7 @@ import mx.ecosur.multigame.model.implementation.CellImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class GridMove implements MoveImpl, Cloneable {
+public class GridMove implements MoveImpl, Cloneable {
 
 	private static final long serialVersionUID = 8017901476308051472L;
 	private int id;
@@ -141,6 +140,8 @@ public abstract class GridMove implements MoveImpl, Cloneable {
 	}
 
     @Override
-	protected abstract Object clone () throws CloneNotSupportedException;
+	protected Object clone () throws CloneNotSupportedException {
+        return super.clone();
+    }
 	
 }

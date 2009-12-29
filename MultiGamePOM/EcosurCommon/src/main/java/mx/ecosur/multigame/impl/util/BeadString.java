@@ -20,20 +20,18 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.util.Direction;
-import mx.ecosur.multigame.impl.util.Vertice;
 
 import javax.persistence.Embeddable;
 
-@Embeddable
 public class BeadString implements Serializable, Cloneable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5360218565926616845L;
+
 	private TreeSet<GridCell> beads;
-	
+ 	
 	public BeadString () {
 		this.beads = new TreeSet<GridCell>(new CellComparator());
 	}

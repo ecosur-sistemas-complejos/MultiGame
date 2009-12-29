@@ -41,7 +41,7 @@ import mx.ecosur.multigame.MessageSender;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 	
-	private static Logger logger = Logger.getLogger(SharedBoard.class
+	private static final Logger logger = Logger.getLogger(SharedBoard.class
 			.getCanonicalName());
 
     private MessageSender messageSender;

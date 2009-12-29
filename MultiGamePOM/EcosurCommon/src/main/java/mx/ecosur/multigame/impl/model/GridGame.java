@@ -20,16 +20,14 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.model.Agent;
 import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GameImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.Implementation;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.implementation.*;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 
@@ -49,8 +47,7 @@ import org.drools.KnowledgeBaseFactory;
                 "player MEMBER OF gme.players")
 })
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class GridGame implements GameImpl, Cloneable {
+public class GridGame implements GameImpl, Cloneable {
 	
 	/**
 	 * 
@@ -87,8 +84,12 @@ public abstract class GridGame implements GameImpl, Cloneable {
 	
 	/* Dimensioning for storage */
 	private int rows, columns;
-	
-	public GridGame () {
+    
+    private String gameType;
+
+    private MessageSender messageSender;
+
+    public GridGame () {
 		super();
 		players = new ArrayList<GridPlayer> ();
 		grid = new GameGrid();
@@ -103,7 +104,17 @@ public abstract class GridGame implements GameImpl, Cloneable {
 		return id;
 	}
 
-	/**
+    /**
+     * @param registrant
+     * @return
+     * @throws mx.ecosur.multigame.exception.InvalidRegistrationException
+     *
+     */
+    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException {
+        return new GridPlayer();
+    }
+
+    /**
 	 * @param id the id to set
 	 */
 	public void setId(int id) {
@@ -254,6 +265,21 @@ public abstract class GridGame implements GameImpl, Cloneable {
 
 	}
 
+    /**
+     * @param sender
+     */
+    public void setMessageSender(MessageSender sender) {
+        this.messageSender = sender;
+    }
+
+    /**
+     * @return
+     */
+    @Transient
+    public MessageSender getMessageSender() {
+        return messageSender;
+    }
+
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<GridMove> getMoves() {
         if (moves == null)
@@ -291,22 +317,48 @@ public abstract class GridGame implements GameImpl, Cloneable {
 		return ret;
 	}
 
-    public abstract String getGameType ();
+    /**
+     * @return
+     */
+    public int getMaxPlayers() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-    public abstract void setGameType (String str);
+    /**
+     * @param implementation
+     * @return
+     * @throws mx.ecosur.multigame.exception.InvalidRegistrationException
+     *
+     */
+    public AgentImpl registerAgent(AgentImpl implementation) throws InvalidRegistrationException {
+        return implementation;
+    }
+
+    public String getGameType () {
+        return gameType;
+    }
+
+    public void setGameType (String gameType) {
+        this.gameType = gameType;
+    }
 	
 	/* 
 	 * Clones a copy of the implemented sub-class
 	 */
     @Override
-	protected abstract Object clone() throws CloneNotSupportedException;
+	protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     @Transient
-	public abstract List<Color> getColors();
+	public List<Color> getColors() {
+        return (List<Color>) Collections.EMPTY_LIST;
+    }
 
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.model.implementation.GameImpl#move(mx.ecosur.multigame.model.implementation.MoveImpl)
 	 */
-	public abstract MoveImpl move(MoveImpl move) throws InvalidMoveException;
-
+	public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+        return move;
+    }
 }
