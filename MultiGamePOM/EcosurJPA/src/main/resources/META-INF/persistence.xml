@@ -37,7 +37,7 @@
         <class>mx.ecosur.multigame.impl.entity.tablon.TablonMove</class>
         <class>mx.ecosur.multigame.impl.entity.tablon.TablonPlayer</class>
         <class>mx.ecosur.multigame.impl.enums.tablon.TokenType</class>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <!-- Provider meta-data -->
 		<properties>
             <!--property name="hibernate.hbm2ddl.auto" value="create-drop"/-->
