@@ -5,7 +5,9 @@
 	<groupId>mx.ecosur</groupId>
 	<artifactId>ecosur-jpa</artifactId>
 	<name>EcosurJPA</name>
-	<description>Common configuration data for MultiGame JPA implementations</description>
+	<description>
+        Common database mapping configuration for MultiGame Entity implementations. (JPA)
+    </description>
 	<parent>
 		<artifactId>multi-game</artifactId>
 		<groupId>mx.ecosur</groupId>
@@ -40,6 +42,11 @@
             <artifactId>manantiales</artifactId>
             <version>${version}</version>
         </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>tablon</artifactId>
+            <version>${version}</version>
+        </dependency>
 	    <dependency>
 	        <groupId>mx.ecosur</groupId>
 	        <artifactId>multi-game-common</artifactId>
@@ -51,10 +58,10 @@
 			<artifactId>persistence-api</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
+		<!--dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>3.4.0.GA</version>
-        </dependency>
+        </dependency-->
 	</dependencies>
 </project>

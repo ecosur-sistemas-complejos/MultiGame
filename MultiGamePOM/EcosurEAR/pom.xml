@@ -31,6 +31,11 @@
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
+            <artifactId>tablon</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
             <artifactId>ecosur-jpa</artifactId>
             <version>${version}</version>
         </dependency>        
@@ -122,6 +127,11 @@
                             <jarModule>
                                 <groupId>mx.ecosur</groupId>
                                 <artifactId>manantiales</artifactId>
+                                <bundleDir>lib</bundleDir>
+                            </jarModule>
+                            <jarModule>
+                                <groupId>mx.ecosur</groupId>
+                                <artifactId>tablon</artifactId>
                                 <bundleDir>lib</bundleDir>
                             </jarModule>
                             <jarModule>

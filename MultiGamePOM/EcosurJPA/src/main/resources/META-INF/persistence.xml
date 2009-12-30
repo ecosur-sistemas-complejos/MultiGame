@@ -5,6 +5,7 @@
     <persistence-unit name="MultiGame">
         <!--provider>org.hibernate.ejb.HibernatePersistence</provider-->
 		<jta-data-source>jdbc/__default</jta-data-source>
+        <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>
         <class>mx.ecosur.multigame.impl.model.GridCell</class>
         <class>mx.ecosur.multigame.impl.model.GridChatMessage</class>
@@ -13,12 +14,30 @@
         <class>mx.ecosur.multigame.impl.model.GridPlayer</class>
         <class>mx.ecosur.multigame.impl.model.GridRegistrant</class>
         <class>mx.ecosur.multigame.impl.util.BeadString</class>
-        <!-- Game specific entities -->
+        <!-- Game entities -->
+        <!-- Gente -->
         <class>mx.ecosur.multigame.impl.entity.gente.GenteGame</class>
         <class>mx.ecosur.multigame.impl.entity.gente.GenteMove</class>
         <class>mx.ecosur.multigame.impl.entity.gente.GentePlayer</class>
         <class>mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent</class>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>mx.ecosur.multigame.impl.enums.gente.GenteStrategy</class>
+        <!-- Manantiales -->
+        <class>mx.ecosur.multigame.impl.entity.manantiales.CheckCondition</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.Ficha</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.ConditionType</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.Mode</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.TokenType</class>
+        <!-- Tablon -->
+        <class>mx.ecosur.multigame.impl.entity.tablon.TablonFicha</class>
+        <class>mx.ecosur.multigame.impl.entity.tablon.TablonGame</class>
+        <class>mx.ecosur.multigame.impl.entity.tablon.TablonGrid</class>
+        <class>mx.ecosur.multigame.impl.entity.tablon.TablonMove</class>
+        <class>mx.ecosur.multigame.impl.entity.tablon.TablonPlayer</class>
+        <class>mx.ecosur.multigame.impl.enums.tablon.TokenType</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <!-- Provider meta-data -->
 		<properties>
             <!--property name="hibernate.hbm2ddl.auto" value="create-drop"/-->

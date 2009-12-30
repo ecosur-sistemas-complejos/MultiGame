@@ -36,7 +36,22 @@
         </dependency>
 	    <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>ecosur-games</artifactId>
+            <artifactId>ecosur-common</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>gente</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>manantiales</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>tablon</artifactId>
             <version>${version}</version>
         </dependency>
 		<dependency>
