@@ -17,7 +17,12 @@
     <dependencies>
 	    <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>ecosur-games</artifactId>
+            <artifactId>manantiales</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>tablon</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
