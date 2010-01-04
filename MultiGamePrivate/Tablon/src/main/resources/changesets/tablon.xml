@@ -1,0 +1,11 @@
+<change-set xmlns='http://drools.org/drools-5.0/change-set'
+             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+             xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
+
+    <add>
+        <resource source="classpath:mx/ecosur/multigame/impl/tablon.drl" type="DRL"/>
+    </add>
+    <add>
+        <resource source="classpath:mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf" type="DRF"/>
+    </add>
+</change-set>

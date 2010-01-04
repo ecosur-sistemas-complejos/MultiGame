@@ -1,0 +1,372 @@
+package mx.ecosur.multigame.tablon;
+
+/*
+* Copyright (C) 2009 ECOSUR, Andrew Waterman
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.SortedSet;
+import java.util.List;
+
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.enums.MoveStatus;
+
+import mx.ecosur.multigame.MessageSender;
+
+import mx.ecosur.multigame.impl.model.*;
+import mx.ecosur.multigame.impl.entity.tablon.*;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+
+import mx.ecosur.multigame.impl.util.tablon.MutationEvent;
+
+import function mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
+
+/**
+    Tablon is a meta-game built with the purpose of players adding in their own rules to control
+    resource usage.  The game has a set of environmental constraints, which, under the right
+    circumstances will create a catastrophic failure.
+
+    Game design:  Luis Garc’a Barrios
+    Game implementation:  Andrew Glenn Waterman
+*/
+
+#globals
+global MessageSender messageSender;
+global Integer dimension;
+
+#dialect
+dialect "java"
+
+#rules
+rule "setup"
+    ruleflow-group "initialize"
+    no-loop true
+when
+    $game : TablonGame (state == GameState.BEGIN);
+then
+    $game.setCreated(new Date());
+    $game.setColumns(dimension);
+    $game.setRows(dimension);
+    List<GridPlayer> players = $game.getPlayers();
+    for (GridPlayer p : players) {
+        if (p.getColor() == Color.YELLOW)
+            p.setTurn(true);
+        else
+            p.setTurn(false);
+    }
+    TablonGrid grid = new TablonGrid ();
+    int lower = (dimension / 2) - 2;
+    int upper = (dimension / 2)  + 2;
+    /* Populate the grid */
+    for (int col = 1; col <= dimension; col++) {
+        for (int row = 1; row <= dimension; row++) {
+            if ( (col + row) % 2 != 0)
+                continue;
+
+            if ( row % 2 == 1 || col % 2 == 1) {
+                /* soil or water */
+                /* TODO:  Dynamically determine the location of rivers on the map */
+                if ( (col > lower && col < upper) || (row > lower && row < upper)) {
+                    TablonFicha particle = null;
+                    if ( (col == 1 || col == upper) || (row == 1 || row == upper) ) {
+                       particle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    } else {
+                        particle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                    }
+
+                    grid.updateCell(particle);
+
+                } else {
+                    TablonFicha soilParticle = new TablonFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    grid.updateCell (soilParticle);
+                }
+
+            } else {
+                TablonFicha forest = new TablonFicha (col, row, Color.UNKNOWN, TokenType.FOREST);
+                grid.updateCell (forest);
+            }
+        }
+    }
+    
+    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players)}
+    messageSender.sendPlayerChange($game);
+    messageSender.sendStartGame($game);
+end
+
+
+rule "verify-move"
+    ruleflow-group "verify"
+when
+    $game  : TablonGame (state == GameState.PLAY, $grid : grid)
+    $move  : TablonMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    eval (hasPathToWater((TablonFicha) $move.getDestinationCell(), (TablonGrid) $grid))
+    eval ( ((TablonFicha) $grid.getLocation ($move.getDestinationCell())).getType ().equals (TokenType.FOREST))
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+
+rule "verify-update-move"
+    ruleflow-group "verify"
+when
+    $game  : TablonGame (state == GameState.PLAY, $grid : grid)
+    $move  : TablonMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    eval ( ( (TablonFicha) $move.getDestinationCell() ).getType().equals (TokenType.SILVOPASTORAL) )
+    eval ( ( (TablonFicha) $grid.getLocation ($move.getDestinationCell()) ).getType().equals (TokenType.POTRERO))
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+rule "do-move"
+   ruleflow-group "move"
+when
+    $game  : TablonGame  (state == GameState.PLAY, $grid : grid)
+    $move  : TablonMove  (badYear == false, status == MoveStatus.VERIFIED, player.turn == true)
+then
+    TablonFicha ficha = (TablonFicha) $move.getDestinationCell();
+    GridCell cell =$grid.getLocation(ficha);
+    $grid.updateCell (ficha);        
+    TablonGrid tgrid = (TablonGrid) $grid;
+    MutationEvent mutation = new MutationEvent (ficha);
+    mutation.setSquare (tgrid.getSquare(ficha));
+    mutation.setOctogon (tgrid.getOctogon(ficha));
+    mutation.setCross (tgrid.getCross(ficha));
+    incrementTurn ($game, $move);
+    modify ($move) { setStatus (MoveStatus.MOVED) }
+    insert (tgrid);
+    insert (mutation);
+    for (TablonFicha particle : mutation.getSquare()) {
+        if (particle.getRow() == 1 || particle.getRow() == ($game.getRows() ) || particle.getColumn() == 1
+            || particle.getColumn() == ($game.getColumns()))
+            continue;
+        MutationEvent event = new MutationEvent (particle);
+        event.setSquare(tgrid.getSquare(particle));
+        insert (event);
+    }
+    /* Cross does not need to be walked seperately and inserted as it is covered in octogon */
+    for (TablonFicha forest : mutation.getOctogon()) {
+        if (forest.getRow () == 1 || forest.getRow() == ($game.getRows() -1 )|| forest.getColumn() == 1
+            || forest.getColumn() == ($game.getColumns() - 1))
+            continue;
+        MutationEvent event = new MutationEvent (forest);
+        event.setSquare(tgrid.getSquare(forest));
+        event.setOctogon(tgrid.getOctogon(forest));
+        event.setCross (tgrid.getCross(forest));
+        insert (event);
+    }
+
+end
+
+# Environmental constraints
+
+rule "Edges must not be effected"
+    ruleflow-group "evaluate"
+    salience 10
+when
+    $game  : TablonGame (state == GameState.PLAY)
+    $event : MutationEvent (ficha.column == 1 || ficha.row == 1 ||
+        ficha.column == ($game.columns - 1) ||ficha.row == ($game.rows - 1))
+then
+    retract ($event);
+end
+
+rule "A Potrero token must be supported by 2 soil tokens in the SQUARE"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon)
+    eval (isUnsupported (2, $ficha, $square, TokenType.SOIL_PARTICLE))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    /* Cross based implications are included in the octogon */
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A Silvopastoral token must be supported by 1 soil tokens in the SQUARE"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon)
+    eval (isUnsupported (1, $ficha, $square, TokenType.SOIL_PARTICLE))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    /* Cross based implications are included in the octogon */
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A Potrero token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon,
+        $cross : cross)
+    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported (2, $ficha, $cross, TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A Silvopastoral token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon,
+        $cross : cross)
+    eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A soil token must be supported by 1 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square, $octo : octogon)
+    eval (isUnsupported (1, $ficha, $square, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A water token must be supported by 2 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square, $octo : octogon)
+    eval (isUnsupported (2, $ficha, $square, TokenType.FOREST) && isUnsupported(4, $ficha,$square,TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+
+rule "A forest token must be suported by 2 forest tokens in the OCTOGON (Silvopastoral counts as 1/2 a Forest token)"
+    ruleflow-group "evaluate"
+when
+    $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
+    eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST) && isUnsupported(4, $ficha, $octo, TokenType.SILVOPASTORAL))
+    $grid : TablonGrid ()
+    $game : TablonGame (state == GameState.PLAY)
+    eval ($grid.getLocation($ficha) != null)
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "A potrero token must have a path to water in the CROSS"
+    ruleflow-group "evaluate"
+when
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO,  $square : square, $octo : octogon)
+        $game : TablonGame (state == GameState.PLAY)
+        $grid  : TablonGrid()
+        eval (!hasPathToWater ($ficha, $grid));
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+
+rule "A silvopastoral token must have a path to water in the CROSS"
+    ruleflow-group "evaluate"
+when
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL,  $square : square, $octo : octogon)
+        $game : TablonGame (state == GameState.PLAY)
+        $grid  : TablonGrid()
+        eval (!hasPathToWater ($ficha, $grid));
+then
+    modify ($grid) { removeCell($ficha) }
+    messageSender.sendConditionTriggered($game, $event);
+    retract ($event);
+    ArrayList<MutationEvent> implications = findImplications ($grid, $square);
+    implications.addAll(findImplications($grid, $octo));
+    for (MutationEvent event : implications) {
+        insert (event);
+    }
+end
+
+rule "Consume events after processing"
+    ruleflow-group "confirm"
+when
+    $event : MutationEvent ()
+then
+    retract ($event);
+end
+
+rule "publish move complete"
+    ruleflow-group "confirm"
+when
+    $game : TablonGame (state == GameState.PLAY)
+    $move : TablonMove (status == MoveStatus.MOVED)
+    $grid : TablonGrid()    
+then
+    modify ($game) { setGrid ($grid) }
+    modify ($move) { setStatus (MoveStatus.EVALUATED) }
+    messageSender.sendMoveComplete ($game, $move);
+    retract ($move);    
+end

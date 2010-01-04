@@ -1,0 +1,370 @@
+package mx.ecosur.multigame.impl.model.gente;
+
+/*
+* Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman and Max Pimm
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+
+import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridMove
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.entity.gente.GenteGame;
+import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
+import mx.ecosur.multigame.impl.entity.gente.GenteMove;
+import mx.ecosur.multigame.impl.util.BeadString;
+import mx.ecosur.multigame.impl.util.Direction;
+
+import function mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
+
+dialect "java"
+
+global MessageSender messageSender;
+
+#GENTE
+
+#These rules are for use in the modified game of Pente, GENTE,
+#invented by Dr. Luis Garcia Barrios at ECOSUR, in
+#San Cristobal de Las Casas, Chiapas, Mexico.
+
+#Rules for the game of PENTE
+
+#Sets the players in the game so that Black has the first turn
+#Sets up the empty game grid and sets thate game into the PLAY state
+rule "setup"
+    agenda-group "initialize"
+when
+    game : GenteGame (state == GameState.BEGIN)
+then
+    List<GridPlayer> players = game.getPlayers();
+    for (GridPlayer p : players) {
+        if (p.getColor() == Color.YELLOW)
+            p.setTurn(true);
+        else
+            p.setTurn(false);
+        GentePlayer player = (GentePlayer) p;
+        if (player.getPartner() == null) {
+            for (GridPlayer potential : game.getPlayers()) {
+                if (potential.getColor() != p.getColor().getCompliment())
+                    continue;
+                player.setPartner((GentePlayer) potential);
+            }
+        }          
+    }
+    GameGrid grid = new GameGrid ();
+    modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
+    messageSender.sendPlayerChange(game);
+    messageSender.sendStartGame(game);
+end
+
+#Yellow must move first, and that move can only be at the center of the board
+rule "evaluate-first-move"
+    agenda-group "verify"
+when
+    game  : GenteGame (state == GameState.PLAY, $grid : grid)
+    move  : GenteMove (status != MoveStatus.VERIFIED, player.turn == true, player.color == Color.YELLOW)
+    eval ($grid.getCells().isEmpty())
+    eval (isCenter (game, move))    
+then
+    modify (move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+#Subsequent moves must occur on a non-empty board, on empty locations
+rule "evaluate-move"
+    agenda-group "verify"
+when
+    game  : GenteGame (state == GameState.PLAY, $grid : grid)
+    move  : GenteMove (status == MoveStatus.UNVERIFIED, player.turn == true)
+    eval (!$grid.getCells().isEmpty())
+    eval (isEmpty (game.getGrid(), move))   
+then
+    modify (move) { setStatus (MoveStatus.VERIFIED) }
+end   
+
+# Executes a simple move
+rule "execute-move"
+    agenda-group "move"
+when 
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.VERIFIED)  
+then 
+    GameGrid modifiedGrid = game.getGrid();   
+    modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
+    Set<GridMove> moves = game.getMoves();
+    moves.add(move);
+    modify (game) { setGrid (modifiedGrid), setMoves (moves) }
+    modify (move) { setStatus (MoveStatus.MOVED) }
+    insert (move.getDestinationCell());
+    messageSender.sendMoveComplete(game, move);
+end
+ 
+rule "find-vertical-trias"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), column == $column1, $row3 : row, color == $color)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1)
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))   
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tria = new BeadString ($cell1, $cell2, $cell3);
+    player.addTria(tria);
+    modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }
+end
+
+rule "find-horizontal-trias"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
+    $cell1 : GridCell ($id1 : id, $row1 : row, $column1 : column, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), row == $row1, $column3 : column, color == $color)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1)
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tria = new BeadString ($cell1, $cell2, $cell3);
+    player.addTria(tria);
+    modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }
+end
+
+rule "find-right-diagonal-trias"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($row2 == $row1 + 1 && $row3 == $row2 + 1) 
+    eval ($column2 == $column1 + 1 && $column3 == $column2 + 1)    
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tria = new BeadString ($cell1, $cell2, $cell3);
+    player.addTria(tria);
+    modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
+end
+
+rule "find-left-diagonal-trias"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, $color : color)
+    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row, color == $color)
+    $cell3 : GridCell (id not in ($id1, $id2), $column3 : column, $row3 : row, color == $color) 
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination))
+    eval ($row2 == $row1 - 1 && $row3 == $row2 - 1) 
+    eval ($column2 == $column1 - 1 && $column3 == $column2 - 1)   
+    eval (!hasTria ($cell1, $cell2, $cell3, $move))      
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tria = new BeadString ($cell1, $cell2, $cell3);
+    player.addTria(tria);
+    modify ($move) { addTria (tria), setPlayer (player), setSearchCount (searchCount) }  
+end
+
+rule "find-vertical-tesseras"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, column == $column1, $row2 : row, color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == $column1, $row3 : row == ($row2 + 1),
+        color memberOf $teamColors)
+    $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), column == $column1, $row4 : row == ($row3 + 1),
+        color memberOf $teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
+    player.addTessera(tessera);
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);
+    modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount(searchCount) }  
+end
+
+
+rule "find-horizontal-tesseras"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, row == $row1, $column2 : column == ($column1 + 1), color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), row == $row1, $column3 : column == ($column2 + 1), color memberOf $teamColors)
+    $cell4 : GridCell ($id4 : id not in ($id1, $id2, $id3), row == $row1, $column4 : column == ($column3 + 1),
+        color memberOf $teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))           
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
+    player.addTessera(tessera);
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount (searchCount) }  
+end
+
+rule "find-right-diagonal-tesseras"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row, color memberOf $move.teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, column == ($column1 + 1), row == ($row1 + 1),
+        color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), column == ($column1 + 2), row == ($row1 + 2),
+        color memberOf $teamColors)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), column == ($column1 + 3), row == ($row1 + 3),
+        color memberOf $teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
+    player.addTessera(tessera);
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount (searchCount) }  
+end
+
+rule "find-left-diagonal-tesseras"
+    agenda-group "evaluate"
+    no-loop true 
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove ($destination : destinationCell, status == MoveStatus.MOVED, searchCount < 9,
+        $teamColors : teamColors)
+    $cell1 : GridCell ($id1 : id, $column1 : column, $row1 : row,  color memberOf $teamColors)
+    $cell2 : GridCell ($id2 : id != $id1, $column2 : column, $row2 : row,  color memberOf $teamColors)
+    $cell3 : GridCell ($id3 : id not in ($id1, $id2), $column3 : column, $row3 : row,  color memberOf $teamColors)
+    $cell4 : GridCell (id not in ($id1, $id2, $id3), $column4 : column, $row4 : row,  color memberOf $teamColors)
+    eval ($cell1.equals($destination) || $cell2.equals($destination) || $cell3.equals($destination)
+        || $cell4.equals($destination))
+    eval ($row2 == $row1 - 1 && $row3 == $row2 - 1 && $row4 == $row3 - 1)
+    eval ($column2 == $column1 - 1 && $column3 == $column2 - 1 && $column4 == $column3 - 1)
+    eval (hasMultipleColors ($cell1, $cell2, $cell3, $cell4))
+    eval (!hasTessera ($cell1, $cell2, $cell3, $cell4, $move))    
+then
+    int searchCount = $move.getSearchCount() + 1;
+    GentePlayer player = (GentePlayer) $move.getPlayer();
+    BeadString tessera = new BeadString ($cell1, $cell2, $cell3, $cell4);
+    player.addTessera(tessera);
+    GentePlayer partner = (GentePlayer) player.getPartner();
+    partner.addTessera(tessera);    
+    modify ($move) { addTessera (tessera), setPlayer (player), setSearchCount(searchCount) }
+end
+
+rule "evaluate-unmatched"
+    agenda-group "evaluate"
+    salience -10
+when
+    GenteGame (state == GameState.PLAY)
+    $move : GenteMove (player.turn == true, status == MoveStatus.MOVED)
+then
+    modify ($move) { setStatus (MoveStatus.EVALUATED)}
+end
+
+
+rule "score"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+then
+    int score = scorePlayer (move);
+    GentePlayer player = (GentePlayer) move.getPlayer ();
+    if (score > 0) {
+        Set<GentePlayer> winners = new HashSet<GentePlayer>();
+        if (score == 5) {
+            GentePlayer teammate = player.getPartner();
+            teammate.setPoints (score);
+            winners.add(teammate);
+        }
+        player.setPoints (score);
+        winners.add(player);
+        modify (move) { setPlayer (player) }
+        modify (game) { setWinners (winners) }
+    }
+end
+
+# Finds the winner 
+rule "find-the-winner"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+    eval (hasWinner(game))
+then
+    Set<GentePlayer> winners = getWinners (game);
+    modify (game) { setState (GameState.ENDED), setWinners (winners) }
+
+	messageSender.sendEndGame (game);
+end
+
+rule "increment-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -1
+when
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+then
+    GridPlayer player = incrementTurn (game, move);
+    messageSender.sendPlayerChange(game);
+end

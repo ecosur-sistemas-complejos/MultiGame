@@ -1,0 +1,57 @@
+GETTING STARTED
+BETA
+
+This README requires you to have installed the following products:
+
+1.  Sun's opensource Application Server, GLASSFISH.
+    * available from:  https://glassfish.dev.java.net/public/downloadsindex.html
+    * We have been using version 2.1 during development.
+2.  Adobe's open source FLEX3.4 SDK
+    * available from:  http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK
+3.  MultiGamePublic
+    * available from:  http://awaterma.github.com/MultiGame
+
+MultiGamePublic must be built and installed with maven before attempting to install
+this set of private code due to public dependencies.
+
+All other dependencies are managed by means of Maven.
+
+GLASSFISH CONFIGURATION
+
+The following configuration changes must be made on the Glassfish server to which
+the EAR file is being deployed:
+
+1.  A JMS connection factory must be created with the following details:
+    a) "Name" set to "jms/TopicConnectionFactory"
+    b) "Transaction Support" set to "NoTransaction"
+    c) Remove the username and password properties from "Additional Properties" 
+    d) All other fields may remain in default state.
+
+2.  A new JMS "destination resource" must be created with the following details:
+    a) "Name" set to "MultiGame"
+    b) "Resource Type" set to "javax.jms.Topic"
+    c) All other fields may remain in default state.
+ 
+ 
+ MAVEN CONFIGURATION
+ 
+This prototype requires the following environmental changes be made, before being
+built and deployed.
+
+1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
+point to the top-level directory of glassfish-v2.1.
+2.  The environmental property "FLEX_SDK" must be set by the builder to point to the top-
+level directory of the FLEX 3.4 SDK.
+
+For example, in BASH, you would do the following:
+
+export GLASSFISH_HOME=/home/myuser/glassfish
+export FLEX_SDK=/home/myuser/flex_sdk
+    
+ **** IMPORTANT ****
+ 
+ Before deployment, the local Glassfish Derby database must be up and running:
+ 
+ %> asadmin start-database
+ 
+ 

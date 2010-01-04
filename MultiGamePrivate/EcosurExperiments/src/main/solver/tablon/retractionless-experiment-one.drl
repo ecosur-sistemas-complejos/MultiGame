@@ -1,0 +1,74 @@
+# Copyright (C) 2009 ECOSUR, Andrew Waterman
+#
+# Licensed under the Academic Free License v. 3.2.
+# http://www.opensource.org/licenses/afl-3.0.php
+ 
+package mx.ecosur.multigame.impl.entity.tablon
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
+import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+
+import function mx.ecosur.experiment.multigame.solver.tablon.SolutionFunctions.*;
+
+dialect "java"
+
+global SimpleScoreCalculator scoreCalculator;
+
+# Hard constraints
+
+#10 (62.5%) potereros per quadrant on a 4 x 4 (10/16 = potreros)
+rule "10 potreros per quadrant"
+no-loop true
+    when
+        $game : TablonGame ($size : grid.cells.size)
+        $potreros : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.POTRERO))
+        eval (!percentagePerQuadrant ($game.getDimensions(), $potreros, 0.625));
+    then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 62.5% Potrero per quadrant", $potreros));
+end
+
+#2 (12.5%) forests per quadrant on a 4 x 4 (2/16 = forest)
+rule "2 forests per quadrant"
+    when
+        $game : TablonGame ($size : grid.cells.size)
+        $forests : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.FOREST))
+        eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.125));
+    then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 12.5% Forest per quadrant", $forests));
+end
+
+#4 (25%) riparians per quadrant on a 4 x 4 (4/16 = riparian)
+# TODO: Check for only riparian forest in all forest
+rule "4/16 riparians per quadrant"
+    when
+        $game : TablonGame ($size : grid.cells.size)
+        $forests : ArrayList (size > 0) from
+            collect ( TablonFicha (type == TokenType.FOREST))
+        eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.25));
+    then
+        insertLogical (
+            new UnweightedConstraintOccurrence("Not 25% Riparian forest", $forests));
+end
+
+#Constraint calculator update
+rule "Constraints broken"
+    salience -10
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setScore(- $occurrenceCount.intValue() );
+end
