@@ -7,6 +7,11 @@ This README requires you to have installed the following products:
     * We have been using version 2.1 during development.
 2.  Adobe's open source FLEX3.4 SDK
     * available from:  http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK
+3.  MultiGamePublic
+    * available from:  http://awaterma.github.com/MultiGame
+
+MultiGamePublic must be built and installed with maven before attempting to install
+this set of private code due to public dependencies.
 
 All other dependencies are managed by means of Maven.
 
