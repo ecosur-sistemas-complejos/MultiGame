@@ -5,6 +5,9 @@
     <persistence-unit name="MultiGame">
         <!--provider>org.hibernate.ejb.HibernatePersistence</provider-->
 		<jta-data-source>jdbc/__default</jta-data-source>
+        <class>mx.ecosur.multigame.enums.GameEvent</class>
+        <class>mx.ecosur.multigame.enums.GameState</class>
+        <class>mx.ecosur.multigame.enums.MoveStatus</class>
         <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>
         <class>mx.ecosur.multigame.impl.model.GridCell</class>
@@ -25,6 +28,7 @@
         <class>mx.ecosur.multigame.impl.entity.manantiales.CheckCondition</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.Ficha</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.ConditionType</class>
