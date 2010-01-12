@@ -117,9 +117,6 @@ public class GenteGame extends GridGame {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
-        for (Object fact : getFacts()) {
-            session.insert(fact);
-        }
 
         session.getAgenda().getAgendaGroup("initialize").setFocus();
         session.fireAllRules();
@@ -142,9 +139,6 @@ public class GenteGame extends GridGame {
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
-        for (Object fact : getFacts()) {
-            session.insert(fact);
-        }
 
         session.getAgenda().getAgendaGroup("verify").setFocus();
         session.fireAllRules();
@@ -188,7 +182,7 @@ public class GenteGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 		
-		if (this.created == null)
+		if (this.created == 0)
 		    this.setCreated(new Date());
 		if (this.state == null)
 			this.state = GameState.WAITING;
@@ -220,7 +214,7 @@ public class GenteGame extends GridGame {
                 throw new InvalidRegistrationException (e);
             }
 
-        if (this.created == null)
+        if (this.created == 0)
 		    this.setCreated(new Date());
 		if (this.state == null)
 			this.state = GameState.WAITING;
@@ -279,7 +273,7 @@ public class GenteGame extends GridGame {
             ret.grid.updateCell((GridCell) cell.clone());
         }
 
-		ret.created = new Date (System.currentTimeMillis());
+		ret.created = System.currentTimeMillis();
 		ret.id = this.getId();
 		ret.moves = new LinkedHashSet<GridMove> ();
 		for (GridMove move : getMoves()) {
@@ -296,6 +290,13 @@ public class GenteGame extends GridGame {
 		ret.version = this.version;
 		ret.winners = new LinkedHashSet<GentePlayer>();
         ret.kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        if (kbase == null) {
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        }    
         ret.kbase.addKnowledgePackages(kbase.getKnowledgePackages());
 		
 		for (GentePlayer winner : getWinners()) {
@@ -305,4 +306,47 @@ public class GenteGame extends GridGame {
 		
 		return ret;
 	}
+
+
+    /**
+     * Returns a string representation of the object. In general, the
+     * <code>toString</code> method returns a string that
+     * "textually represents" this object. The result should
+     * be a concise but informative representation that is easy for a
+     * person to read.
+     * It is recommended that all subclasses override this method.
+     * <p/>
+     * The <code>toString</code> method for class <code>Object</code>
+     * returns a string consisting of the name of the class of which the
+     * object is an instance, the at-sign character `<code>@</code>', and
+     * the unsigned hexadecimal representation of the hash code of the
+     * object. In other words, this method returns a string equal to the
+     * value of:
+     * <blockquote>
+     * <pre>
+     * getClass().getName() + '@' + Integer.toHexString(hashCode())
+     * </pre></blockquote>
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer ("GenteGame\n");
+        for (int row = 0; row < this.getRows(); row++) {
+            for (int col = 0; col < this.getColumns(); col++) {
+                GridCell test = new GridCell (col, row, Color.UNKNOWN);
+                GridCell loc = grid.getLocation(test);
+                if (loc != null) {
+                    buf.append (loc.getColor());
+                } else {
+                    buf.append ("x");
+                }
+
+                buf.append (" ");
+            }
+            buf.append ("\n");
+        }
+
+        return buf.toString();
+    }
 }

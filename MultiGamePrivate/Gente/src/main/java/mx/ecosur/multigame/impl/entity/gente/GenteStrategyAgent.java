@@ -19,6 +19,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
+import mx.ecosur.multigame.impl.util.gente.GenteMoveComparator;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -32,9 +33,8 @@ import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.gente.GenteMoveComparator;
 
-import mx.ecosur.multigame.impl.util.Direction;
+import mx.ecosur.multigame.impl.enums.Direction;
 import mx.ecosur.multigame.impl.util.Search;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;

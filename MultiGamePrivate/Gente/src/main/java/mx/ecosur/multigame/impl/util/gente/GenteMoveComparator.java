@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.model.gente;
+package mx.ecosur.multigame.impl.util.gente;
 
 import java.io.Serializable;
 import java.util.Comparator;

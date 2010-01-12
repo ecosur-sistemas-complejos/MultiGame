@@ -1,13 +1,12 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 
 /**
  * Created by IntelliJ IDEA.

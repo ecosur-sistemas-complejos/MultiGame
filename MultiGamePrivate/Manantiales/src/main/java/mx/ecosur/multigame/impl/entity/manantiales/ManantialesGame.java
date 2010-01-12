@@ -204,7 +204,7 @@ public class ManantialesGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 		
-		if (this.created == null)
+		if (this.created == 0)
 		    this.setCreated(new Date());	
 		if (this.state == null)
 			this.state = GameState.WAITING;

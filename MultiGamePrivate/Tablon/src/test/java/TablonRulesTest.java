@@ -8,6 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.test.RulesTestBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -23,7 +24,6 @@ import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;

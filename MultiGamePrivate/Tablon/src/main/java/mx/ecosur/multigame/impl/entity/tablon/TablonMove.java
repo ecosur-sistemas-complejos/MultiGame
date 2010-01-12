@@ -12,9 +12,9 @@ package mx.ecosur.multigame.impl.entity.tablon;
 
 import javax.persistence.Entity;
 
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import mx.ecosur.multigame.model.GamePlayer;
 
 import java.util.*;

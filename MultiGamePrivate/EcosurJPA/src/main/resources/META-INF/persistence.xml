@@ -5,9 +5,6 @@
     <persistence-unit name="MultiGame">
         <!--provider>org.hibernate.ejb.HibernatePersistence</provider-->
 		<jta-data-source>jdbc/__default</jta-data-source>
-        <class>mx.ecosur.multigame.enums.GameEvent</class>
-        <class>mx.ecosur.multigame.enums.GameState</class>
-        <class>mx.ecosur.multigame.enums.MoveStatus</class>
         <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>
         <class>mx.ecosur.multigame.impl.model.GridCell</class>

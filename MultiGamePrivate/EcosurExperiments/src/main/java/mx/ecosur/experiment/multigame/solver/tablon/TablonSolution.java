@@ -1,31 +1,17 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import mx.ecosur.multigame.impl.*;
-import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridCell;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.builder.*;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.awt.*;
 import java.util.Set;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.exception.InvalidRegistrationException;
-
-import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.isDirectlyConnectedToWater;
 
 /**
  * Created by IntelliJ IDEA.

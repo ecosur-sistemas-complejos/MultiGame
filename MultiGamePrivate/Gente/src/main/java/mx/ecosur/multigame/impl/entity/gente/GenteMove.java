@@ -43,8 +43,6 @@ public class GenteMove extends GridMove {
 	
 	private ArrayList<Color> teamColors;
 	
-	private int searchCount;
-	
 	public GenteMove () {
 		super ();
 	}
@@ -177,22 +175,6 @@ public class GenteMove extends GridMove {
 		this.player = (GentePlayer) player;
 	}
 
-	/**
-	 * @return the searchCount
-	 */
-	public int getSearchCount() {
-		return searchCount;
-	}
-
-
-	/**
-	 * @param searchCount the searchCount to set
-	 */
-	public void setSearchCount(int searchCount) {
-		this.searchCount = searchCount;
-	}
-
-
 	/* (non-Javadoc)
 	 * @see mx.ecosur.multigame.impl.model.GridMove#toString()
 	 */
@@ -246,7 +228,6 @@ public class GenteMove extends GridMove {
             GentePlayer p = (GentePlayer) this.player;
             ret.player = (GridPlayer) p.clone();
             ret.qualifier = this.qualifier;
-            ret.searchCount = this.searchCount;
             ret.teamColors = new ArrayList<Color>();            
             ret.tesseras = new LinkedHashSet<BeadString>();
             for (BeadString string : getTesseras()) {

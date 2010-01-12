@@ -1,11 +1,9 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
-import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
@@ -96,7 +94,7 @@ public class PotreroMove implements Move {
     public void doMove(WorkingMemory workingMemory) {
         FactHandle handle = workingMemory.getFactHandle((TablonFicha) game.getGrid().getLocation(ficha));
         workingMemory.modifyRetract(handle);
-        ficha.setType(TokenType.POTRERO); 
+        ficha.setType(TokenType.POTRERO);
         workingMemory.modifyInsert(handle,ficha);
     }
 

@@ -1,5 +1,6 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
+import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 import org.drools.solver.core.move.factory.AbstractMoveFactory;
 import org.drools.solver.core.move.Move;
 import org.drools.solver.core.solution.Solution;
@@ -10,7 +11,6 @@ import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
 
 import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
 
