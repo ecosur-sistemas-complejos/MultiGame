@@ -232,20 +232,20 @@ public class RuleFunctions {
     public static Set<MoveEvent> getPermutations (GridCell origin, BeadString string, int length) {
         Set<MoveEvent> ret = new HashSet<MoveEvent>();
         Set<BeadString> sets = new HashSet<BeadString>();
-        string.add(origin);
 
         if (string.getBeads().size() > length) {
             int counter = 0;
             BeadString plane = new BeadString ();
+            sets.add(plane);
             for (GridCell cell : string.getBeads()) {
-                if (plane.getBeads().size() < length) {
-                    plane.add(cell);
-                }
                 if (plane.getBeads().size() == length) {
-                    sets.add(plane);
+                    GridCell last = plane.getBeads().last();
                     plane = new BeadString();
-                    plane.add(origin);
+                    plane.add(last);
+                    sets.add(plane);
                 }
+
+                plane.add(cell);
             }
         } else {
             sets.add(string);

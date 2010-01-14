@@ -4,6 +4,7 @@ import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.enums.Direction;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.util.BeadString;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.Set;
 import java.util.SortedSet;
@@ -122,5 +123,25 @@ public class MoveEvent {
         }
 
         return ret;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+
+        if (obj instanceof MoveEvent) {
+            MoveEvent comparison = (MoveEvent) obj;
+            if (comparison.getSize() == this.getSize()) {
+                ret = comparison.getOrigin().equals(this.origin) &&
+                    comparison.getAdjacentCells().equals(this.getAdjacentCells());
+            }
+        }
+
+        return ret;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(origin).append(adjacentCells).toHashCode();
     }
 }
