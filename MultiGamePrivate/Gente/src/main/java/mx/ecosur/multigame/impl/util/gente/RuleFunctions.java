@@ -74,19 +74,6 @@ public class RuleFunctions {
         return ret;
     }
 
-    /*    Determines if the game has a winner.  */
-    public static boolean hasWinner (GenteGame game) {
-        return (game.getWinners().size() > 0);
-    }
-
-    /*    Gets the winner from a specified game.  For more complicated payoff
-        schemas, this function should return a PriorityQueue of Players
-        based upon positions on the board.*/
-    public static Set getWinners (GenteGame game) {
-        GenteGame pente = (GenteGame) game;
-        return pente.getWinners();
-    }
-
     public static GridPlayer incrementTurn (GenteGame game, GenteMove move) {
         GridPlayer player = move.getPlayer();
         player.setTurn(false);
@@ -106,9 +93,9 @@ public class RuleFunctions {
     }
 
     /* Determines if a Tria has already been scored*/
-    public static boolean hasTria (BeadString tria, GenteMove move) {
-        for (BeadString test : move.getTrias()) {
-            if (test.equals(tria))
+    public static boolean hasTria (BeadString test, GenteMove move) {
+        for (BeadString string : move.getTrias()) {
+            if (string.equals(test))
                 return true;
         }
 
@@ -116,23 +103,13 @@ public class RuleFunctions {
     }
 
     /* Determines if a Tessera has already been scored*/
-    public static boolean hasTessera (BeadString tessera, GenteMove move) {
-        for (BeadString test : move.getTesseras()) {
-            if (test.equals(tessera))
+    public static boolean hasTessera (BeadString test, GenteMove move) {
+        for (BeadString string : move.getTesseras()) {
+            if (string.equals(test))
                 return true;
         }
 
         return false;
-    }
-
-    /* Determines if a group of cells is multi-colored*/
-    public static boolean hasMultipleColors (GridCell cell1, GridCell cell2, GridCell cell3, GridCell cell4) {
-        HashSet<Color> colors = new HashSet<Color>();
-        colors.add(cell1.getColor());
-        colors.add(cell2.getColor());
-        colors.add(cell3.getColor());
-        colors.add(cell4.getColor());
-        return (colors.size () > 1);
     }
 
     public static boolean hasMultipleColors (MoveEvent event) {
@@ -181,7 +158,7 @@ public class RuleFunctions {
         switch (vertice) {
             case VERTICAL:
                 BeadString beadPlane = new BeadString ();
-                for (int i = -1 * (length); i <= length; i++) {
+                for (int i = -1 * (length); i < length; i++) {
                     GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow(),
                             Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
@@ -191,7 +168,7 @@ public class RuleFunctions {
                 break;
             case HORIZONTAL:
                 beadPlane = new BeadString ();
-                for (int i = -1 * (length); i <= length; i++) {
+                for (int i = -1 * (length); i < length; i++) {
                     GridCell location = grid.getLocation(new GridCell (origin.getColumn(), origin.getRow() + i,
                             Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
@@ -201,7 +178,7 @@ public class RuleFunctions {
                 break;
             case FORWARD:
                 beadPlane = new BeadString ();
-                for (int i = -1 * (length); i <= length; i++) {
+                for (int i = -1 * (length); i < length; i++) {
                     for (int j = -1 * (length); j <= length; j++) {
                         GridCell location = grid.getLocation(new GridCell (origin.getColumn() + j, origin.getRow() - i,
                                 Color.UNKNOWN));
@@ -213,7 +190,7 @@ public class RuleFunctions {
                 break;
             case REVERSE:
                 beadPlane = new BeadString ();
-                for (int i = -1 * (length); i <= length; i++) {
+                for (int i = -1 * (length); i < length; i++) {
                     for (int j = -1 * (length); j <= length; j++) {
                         GridCell location = grid.getLocation(new GridCell (origin.getColumn() + j, origin.getRow() + i,
                                 Color.UNKNOWN));
@@ -226,6 +203,13 @@ public class RuleFunctions {
             default:
                 break;
         }
+
+        for (MoveEvent event : ret) {
+            System.out.println ("MoveEvent [size: " + event.getSize() + "], origin : " + event.getOrigin() +
+                    "], adjacentCells [" + event.getAdjacentCells() + "]");
+        }
+
+
         return ret;
     }
 

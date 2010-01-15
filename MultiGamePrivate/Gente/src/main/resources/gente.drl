@@ -202,13 +202,10 @@ rule "find-the-winner"
     agenda-group "evaluate"
     no-loop true
 when
-    game  : GenteGame (state == GameState.PLAY)
+    game  : GenteGame (state == GameState.PLAY, winners.size >0)
     move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
-    eval (hasWinner(game))
 then
-    Set<GentePlayer> winners = getWinners (game);
-    modify (game) { setState (GameState.ENDED), setWinners (winners) }
-
+    modify (game) { setState (GameState.ENDED) }
 	messageSender.sendEndGame (game);
 end
 

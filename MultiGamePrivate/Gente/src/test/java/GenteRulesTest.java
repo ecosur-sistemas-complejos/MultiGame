@@ -624,4 +624,46 @@ public class GenteRulesTest extends RulesTestBase {
         assertEquals (0, move.getTesseras().size());
         assertTrue (game.getState().equals(GameState.PLAY));
     }
+
+    @Test
+    public void testDiagonalTessera2 () throws Exception {
+        GridCell a = new GridCell (8,10,Color.RED);
+        GridCell b = new GridCell (9,11,Color.YELLOW);
+        GridCell c = new GridCell (10,12,Color.YELLOW);
+        GridCell d = new GridCell (11,13,Color.RED);
+
+        game.getGrid().updateCell(a);
+        game.getGrid().updateCell(b);
+        game.getGrid().updateCell(c);
+
+        charlie.setTurn(true);
+        GenteMove move = new GenteMove (charlie, d);
+        game.move(move);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (1, move.getTesseras().size());
+        assertEquals (0, move.getTrias().size());
+
+    }
+
+    @Test
+    public void testDiagonalTessera3 () throws Exception {
+        GridCell a = new GridCell (12,13,Color.YELLOW);
+        GridCell b = new GridCell (13,12,Color.YELLOW);
+        GridCell c = new GridCell (14,11,Color.RED);
+        GridCell d = new GridCell (15,10,Color.RED);
+
+        game.getGrid().updateCell(a);
+        game.getGrid().updateCell(b);
+        game.getGrid().updateCell(c);
+
+        charlie.setTurn(true);
+        GenteMove move = new GenteMove (charlie, d);
+        game.move(move);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (1, move.getTesseras().size());
+        assertEquals (0, move.getTrias().size());
+
+    }
 }
