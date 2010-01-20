@@ -61,7 +61,7 @@ package mx.ecosur.multigame.component {
 		 * @param borderThickness the thickness, in pixels, of the border
 		 * 
 		 */
-		public function BoardCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number){
+		public function BoardCell(column:int, row:int, bgColor:uint, borderColor:uint, borderThickness:Number){
 			super();
 			
 			//define position in board

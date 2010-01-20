@@ -14,7 +14,6 @@
         import mx.core.Application;
         import mx.managers.CursorManager;
         import mx.managers.PopUpManager;
-        import mx.ecosur.multigame.component.HelpPanel;
         import mx.controls.Alert;
         import mx.events.ResizeEvent;
         import mx.events.MenuEvent;
@@ -22,6 +21,7 @@
 
         import flash.net.URLLoader;
 
+        import mx.ecosur.multigame.component.HelpPanel;
         import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.entity.Move;
         import mx.ecosur.multigame.entity.GamePlayer;
@@ -64,6 +64,7 @@
         public function init():void {
             _controller = new GenteGameController(_currentGame, _currentPlayer, board, chatPanel, playersViewer,
                     tokenStore, gameStatus, moveViewer, animateLayer);
+
         }
 
         public function destroy():void {

@@ -112,7 +112,6 @@ then
     moves.add(move);
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }
-    messageSender.sendMoveComplete(game, move);
 end
 
 rule "insert-events"
@@ -168,10 +167,11 @@ rule "mark-evaluated-move"
     agenda-group "evaluate"
     salience -10
 when
-    GenteGame (state == GameState.PLAY)
+    $game : GenteGame (state == GameState.PLAY)
     $move : GenteMove (player.turn == true, status == MoveStatus.MOVED)
 then
     modify ($move) { setStatus (MoveStatus.EVALUATED)}
+    messageSender.sendMoveComplete($game, $move);    
 end
 
 rule "score"

@@ -12,8 +12,12 @@
 package mx.ecosur.multigame.gente {
     
     import flash.events.Event;
-    
-    import mx.controls.Image;
+
+import flash.text.TextField;
+
+import flash.text.TextFormat;
+
+import mx.controls.Image;
     import mx.core.UIComponent;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.Token;
@@ -168,12 +172,12 @@ package mx.ecosur.multigame.gente {
             // Create all cells
             var boardCell:BoardCell;
             _boardCells = new Array();
-            for (var i:Number = 0; i < _nCols; i++){
-                _boardCells[i] = new Array();
-                for (var j:Number = 0; j < _nRows; j++){
-                    boardCell = new BoardCell(j, i, cellBgColor, cellBorderColor, cellBorderThickness);
-                    _boardCells[i][j] = boardCell;
-                    addChild(boardCell);
+            for (var col:Number = 0; col< _nCols; col++){
+                _boardCells[col] = new Array();
+                for (var row:Number = 0; row < _nRows; row++){
+                    boardCell = new BoardCell(col,row, cellBgColor, cellBorderColor, cellBorderThickness);
+                    _boardCells[col][row] = boardCell;
+                    super.addChild(boardCell);
                     boardCell.setStyle("padding", cellPadding);
                 }
             }
@@ -182,30 +186,7 @@ package mx.ecosur.multigame.gente {
             var centerCell:BoardCell = _boardCells[Math.floor(_nCols / 2)][Math.floor(_nRows / 2)];
             var img:Image = new Image();
             img.source = centerBgSource;
-            centerCell.bgImage = img;
-            
-            // Create text format for labels
-            /*
-            var txtFormat:TextFormat = new TextFormat();
-            txtFormat.font = "Verdana";
-            txtFormat.size = 10;
-            txtFormat.bold = true;
-            txtFormat.color = 0xFFFFFF;
-            */
-            
-            // Create column labels
-            /*
-            var textField:TextField;
-            var colLabelLetters:Array = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-            for (var i:Number = 0; i < nCols; i++){
-                textField = new TextField();
-                textField.text = colLabelLetters[i];
-                textField.defaultTextFormat = txtFormat;
-                _columnLabels[i] = textField;
-                addChild(textField);
-            }*/
-            
-            
+            centerCell.bgImage = img;                                   
             _cellsCreated = true;
         }
         
@@ -243,13 +224,13 @@ package mx.ecosur.multigame.gente {
             var boardCellSize:Number = (measuredWidth - LABEL_SIZE) / _nCols;
             var baseX:Number = (unscaledWidth - measuredWidth + LABEL_SIZE) / 2;
             tokenSize = boardCellSize - 2 * cellPadding;
-            for (var i:Number = 0; i < _nCols; i++){
-                for (var j:Number = 0; j < _nRows; j++){
-                    boardCell = getBoardCell(i, j);
+            for (var col:Number = 0; col < _nCols; col++){
+                for (var row:Number = 0; row < _nRows; row++){
+                    boardCell = getBoardCell(col, row);
                     boardCell.width = boardCellSize;
                     boardCell.height = boardCellSize;
-                    boardCell.x = baseX + LABEL_SIZE + boardCellSize * i;
-                    boardCell.y = boardCellSize * j;
+                    boardCell.x = baseX + LABEL_SIZE + boardCellSize * col;
+                    boardCell.y = boardCellSize * row;
                 }
             }
         }

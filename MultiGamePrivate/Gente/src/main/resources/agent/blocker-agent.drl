@@ -40,6 +40,7 @@ import java.util.UUID;
 
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
+    lock-on-active true
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
@@ -51,7 +52,7 @@ then
 end
 
 rule "blocker-move"
-    no-loop true
+    lock-on-active true
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
@@ -72,7 +73,7 @@ then
 end
 
 rule "random-move"
-    no-loop true
+    lock-on-active true
     salience -10
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)

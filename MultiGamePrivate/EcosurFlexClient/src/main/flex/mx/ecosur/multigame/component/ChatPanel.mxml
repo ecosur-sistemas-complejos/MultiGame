@@ -42,7 +42,7 @@
 				callLater(updateScroll);
 			}
 
-            private function acknowledgeHandler (event:MessageAckEvent) {
+            private function acknowledgeHandler (event:MessageAckEvent):void {
                 Alert.show("Ack recieved: " + event);
             }
 			

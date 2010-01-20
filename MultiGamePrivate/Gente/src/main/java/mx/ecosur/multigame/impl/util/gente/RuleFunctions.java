@@ -159,7 +159,7 @@ public class RuleFunctions {
             case VERTICAL:
                 BeadString beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
-                    GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow(),
+                    GridCell location = grid.getLocation(new GridCell (origin.getColumn(), origin.getRow() + i,
                             Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
@@ -169,7 +169,7 @@ public class RuleFunctions {
             case HORIZONTAL:
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
-                    GridCell location = grid.getLocation(new GridCell (origin.getColumn(), origin.getRow() + i,
+                    GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow(),
                             Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
@@ -179,24 +179,20 @@ public class RuleFunctions {
             case FORWARD:
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
-                    for (int j = -1 * (length); j <= length; j++) {
-                        GridCell location = grid.getLocation(new GridCell (origin.getColumn() + j, origin.getRow() - i,
-                                Color.UNKNOWN));
-                        if (location != null && teamColors.contains(location.getColor()))
-                            beadPlane.add(location);
-                    }
+                    GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow() - i,
+                            Color.UNKNOWN));
+                    if (location != null && teamColors.contains(location.getColor()))
+                        beadPlane.add(location);
                 }
                 ret.addAll (getPermutations (origin, beadPlane, length));
                 break;
             case REVERSE:
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
-                    for (int j = -1 * (length); j <= length; j++) {
-                        GridCell location = grid.getLocation(new GridCell (origin.getColumn() + j, origin.getRow() + i,
-                                Color.UNKNOWN));
-                        if (location != null && teamColors.contains(location.getColor()))
-                            beadPlane.add(location);
-                    }
+                    GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow() + i,
+                            Color.UNKNOWN));
+                    if (location != null && teamColors.contains(location.getColor()))
+                        beadPlane.add(location);
                 }
                 ret.addAll (getPermutations (origin, beadPlane, length));
                 break;
@@ -204,10 +200,10 @@ public class RuleFunctions {
                 break;
         }
 
-        for (MoveEvent event : ret) {
+/*        for (MoveEvent event : ret) {
             System.out.println ("MoveEvent [size: " + event.getSize() + "], origin : " + event.getOrigin() +
                     "], adjacentCells [" + event.getAdjacentCells() + "]");
-        }
+        }*/
 
 
         return ret;

@@ -80,8 +80,8 @@ import mx.messaging.messages.ErrorMessage;
         private var _players:ArrayCollection;
         private var _gameGrid:GameGrid;
         private var _game:GenteGame;
-        private var _moves:ArrayCollection; //all moves made in the game
-        private var _selectedMoveInd:Number; //index of selected move in _moves
+        private var _moves:ArrayCollection; 
+        private var _selectedMoveInd:Number;
         private var _winners:ArrayCollection;
         
         // server objects
@@ -92,7 +92,7 @@ import mx.messaging.messages.ErrorMessage;
         // flags
         private var _isMoving:Boolean;
         private var _isTurn:Boolean;
-        private var _executingMove:GenteMove; // Reference to move that has been made by the client but not yet validated by the server.
+        private var _executingMove:GenteMove;
         private var _isEnded:Boolean;
 
         // constants
@@ -247,17 +247,17 @@ import mx.messaging.messages.ErrorMessage;
             // prepare message for winners
             var msg:String = "";
             var color:uint;
-            var pentePlayer:GentePlayer = GentePlayer(_winners[0]);
+            var gentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = pentePlayer.registrant.name + " has won the game.";
-                color = Color.getColorCode(pentePlayer.color);
+                msg = gentePlayer.registrant.name + " has won the game.";
+                color = Color.getColorCode(gentePlayer.color);
             }else{
                 /*
                 for (var i:int = 0; i < _winners.length; i++){
-                    msg += PentePlayer(_winners[0]).player.name + " and ";
+                    msg += gentePlayer(_winners[0]).player.name + " and ";
                 }*/
-                msg = "The " + Color.getTeamName(pentePlayer.color) + " team has won the game."
+                msg = "The " + Color.getTeamName(gentePlayer.color) + " team has won the game."
                 color = 0x000000;
             }
             _gameStatus.showMessage(msg, 0x00000);
@@ -268,8 +268,8 @@ import mx.messaging.messages.ErrorMessage;
             var cell:Cell;
             var boardCell:BoardCell;
             if (_isSoloWin){
-                for (var j:int = 0; j < pentePlayer.trias.length; j++){
-                    beadString = BeadString(pentePlayer.trias[j]);
+                for (var j:int = 0; j < gentePlayer.trias.length; j++){
+                    beadString = BeadString(gentePlayer.trias[j]);
                     for (var k:Number = 0; k < beadString.beads.length; k++){
                         cell = Cell(beadString.beads[k]);
                         boardCell = _board.getBoardCell(cell.column, cell.row); 
@@ -278,8 +278,8 @@ import mx.messaging.messages.ErrorMessage;
                     }
                 }
             }else{
-                for (var m:int = 0; m < pentePlayer.tesseras.length; m++){
-                    beadString = BeadString(pentePlayer.tesseras[m]);
+                for (var m:int = 0; m < gentePlayer.tesseras.length; m++){
+                    beadString = BeadString(gentePlayer.tesseras[m]);
                     for (var n:Number = 0; n < beadString.beads.length; n++){
                         cell = Cell(beadString.beads[n]);
                         boardCell = _board.getBoardCell(cell.column, cell.row); 
@@ -370,7 +370,8 @@ import mx.messaging.messages.ErrorMessage;
                     }
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var move:GenteMove = GenteMove(message.body);;
+                    var move:GenteMove = GenteMove(message.body);
+                    //Alert.show ("Status: " + move.status + ", Trias: " + move.trias + ", Tesseras: " + move.tesseras);
                     if (move == null)
                         Alert.show ("Move from model [" + move + "] is null!");
                     addMove(move);

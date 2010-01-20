@@ -68,7 +68,11 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
 		nextMove = null;
 	}
 
-	@Enumerated (EnumType.STRING)
+    public boolean ready() {
+        return isTurn();
+    }
+
+    @Enumerated (EnumType.STRING)
 	public GenteStrategy getStrategy() {
 		return strategy;
 	}
@@ -198,6 +202,8 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
       * @see mx.ecosur.multigame.Agent#determineNextMove(mx.ecosur.multigame.model.Game)
       */
     public GenteMove determineNextMove(GameImpl game) {
+        GenteMove ret = null;
+
         if (isTurn()) {
             KnowledgeBase kBase = strategy.getRuleBase();
             StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
@@ -206,22 +212,21 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
             session.insert(new DummyMessageSender());
             session.fireAllRules();
             session.dispose();
-        }
 
-        /* Rules should have created the next Move into this player, if
-           * one available */
-        GenteMove ret = getNextMove();
-        if (ret != null) {
-            GridCell destination = (GridCell) ret.getDestinationCell();
-            destination.setColor(getColor());
-            ret.setDestinationCell(destination);
-            ret.setPlayer(this);
-            if (!isTurn())
-                throw new RuntimeException ("Move generated but agent has lost turn!");
+            /* Rules should have created the next Move into this player, if
+             * one available */
+            ret = getNextMove();
 
-        } else {
-            if (isTurn()) {
-                  throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
+            if (ret != null) {
+                GridCell destination = (GridCell) ret.getDestinationCell();
+                destination.setColor(getColor());
+                ret.setDestinationCell(destination);
+                ret.setPlayer(this);
+                if (!isTurn())
+                    throw new RuntimeException ("Move generated but agent has lost turn!");
+
+            } else {
+              throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
             }
         }
 
@@ -294,5 +299,12 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
         }
 
         return max;
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer ret = new StringBuffer ();
+        ret.append ("Agent strategy: " + this.strategy.toString());
+        return ret.toString();
     }
 }

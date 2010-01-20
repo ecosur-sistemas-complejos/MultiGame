@@ -653,6 +653,8 @@ public class GenteRulesTest extends RulesTestBase {
         GridCell c = new GridCell (14,11,Color.RED);
         GridCell d = new GridCell (15,10,Color.RED);
 
+        this.setIds(a,b,c,d);
+
         game.getGrid().updateCell(a);
         game.getGrid().updateCell(b);
         game.getGrid().updateCell(c);
@@ -665,5 +667,103 @@ public class GenteRulesTest extends RulesTestBase {
         assertEquals (1, move.getTesseras().size());
         assertEquals (0, move.getTrias().size());
 
+    }
+
+    @Test
+    public void testMissingTessera () throws InvalidMoveException {
+        game.setRows(20);
+        game.setColumns(20);
+        GridCell[] cells = new GridCell [] {
+                new GridCell (10,10,alice.getColor()),
+                new GridCell (9,11,bob.getColor()),
+                new GridCell (8,12,charlie.getColor()),
+                new GridCell (7,13,denise.getColor()),
+                new GridCell (9,10,alice.getColor()),
+                new GridCell (8,10, bob.getColor()),
+                new GridCell (10,12, charlie.getColor()),
+                new GridCell (9,12, denise.getColor()),
+                new GridCell (10,11,alice.getColor()),
+                new GridCell (10,13, bob.getColor()),
+                new GridCell (7,9, charlie.getColor()),
+                new GridCell (11,12, denise.getColor()),
+                new GridCell (10,9, alice.getColor()),
+                new GridCell (11,10, bob.getColor()),
+                new GridCell (9,13, charlie.getColor()),
+                new GridCell (10,14, denise.getColor()),
+                new GridCell (7,11,alice.getColor()),
+                new GridCell (7,14,bob.getColor()),
+                new GridCell (7,8,charlie.getColor()),
+                new GridCell (7,15,denise.getColor()),
+                new GridCell (6,10,alice.getColor())
+        };
+
+        this.setIds (cells);
+        for (int i = 0; i < cells.length; i++) {
+            if (cells [ i ].equals(new GridCell (10,9,alice.getColor())))
+                break;
+            GentePlayer player = determinePlayer (cells [ i ].getColor());
+            GenteMove move = new GenteMove (player, cells [ i ]);
+            game.move (move);
+            assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        }
+
+        GenteMove move = new GenteMove (alice, cells [ 12 ]);
+        game.move (move);
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (1, move.getTrias().size());
+        assertEquals (1, move.getTesseras().size());
+
+        for (int i = 13; i < cells.length; i++) {
+            if (cells [ i ].equals(new GridCell (7,11,alice.getColor())))
+                break;
+            GentePlayer player = determinePlayer (cells [ i ].getColor());
+            move = new GenteMove (player, cells [ i ]);
+            game.move (move);
+            assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        }
+
+        move = new GenteMove (alice, cells [ 16 ]);
+        game.move (move);
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (0, move.getTesseras().size());
+        assertEquals (0, move.getTrias().size());
+
+        for (int i = 17; i < cells.length; i++) {
+            if (cells [ i ].equals(new GridCell (6,10,alice.getColor())))
+                break;
+            GentePlayer player = determinePlayer (cells [ i ].getColor());
+            move = new GenteMove (player, cells [ i ]);
+            game.move (move);
+            assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        }
+
+        move = new GenteMove (alice, cells [20]);
+        game.move(move);
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (0, move.getTrias().size());
+        assertEquals (1, move.getTesseras().size());         
+    }
+
+    private GentePlayer determinePlayer (Color color) {
+        GentePlayer ret = null;
+
+        switch (color) {
+            case YELLOW:
+                ret = alice;
+                break;
+            case BLUE:
+                ret = bob;
+                break;
+            case RED:
+                ret = charlie;
+                break;
+            case GREEN:
+                ret = denise;
+                break;
+            default:
+                break;
+        }
+        
+        return ret;
     }
 }

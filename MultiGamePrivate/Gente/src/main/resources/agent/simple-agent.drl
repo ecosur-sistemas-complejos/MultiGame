@@ -30,6 +30,7 @@ import java.util.TreeSet;
 
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
+    lock-on-active true
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
@@ -42,7 +43,7 @@ end
 
 
 rule "simple-move"
-    no-loop true
+    lock-on-active true
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
@@ -62,7 +63,7 @@ then
 end
 
 rule "random-move"
-    no-loop true
+    lock-on-active true
     salience -10
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
@@ -81,20 +82,11 @@ then
             break;
         }
     }
-    if (player.getNextMove() == null) {
+    if (nextMove == null) {
         for (GenteMove move : possible) {
             nextMove = move;
             break;
          }
     }
     modify (player) { setNextMove (nextMove) }
-end
-
-rule "log-move"
-    no-loop true
-    salience -10
-when
-    player : GenteStrategyAgent ()
-then
-    System.out.println("Simple-agent.  nextMove = " + player.getNextMove());
 end

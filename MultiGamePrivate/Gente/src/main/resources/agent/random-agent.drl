@@ -32,6 +32,7 @@ import java.util.Random;
 
 #Yellow must move first, and that move can only be at the center of the board
 rule "first-move"
+    lock-on-active true
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
@@ -43,37 +44,30 @@ then
 end
 
 rule "random-move"
-    no-loop true
+    lock-on-active true
+    salience -10
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
     eval (!$grid.getCells().isEmpty())
 then
+    GenteMove nextMove = null;
     TreeSet<GenteMove> possible = player.determineAvailableMoves(game);
-    if (possible.size() == 0) 
-        possible = player.determineAvailableMoves (game, player.oppositionColors());
-    GenteMove destination = null;
-    Random random = new Random (System.currentTimeMillis());
+    if (possible.size() == 0)
+        possible = player.determineAvailableMoves (game,
+            player.oppositionColors());
+    Random random = new Random ();
     for (GenteMove move : possible) {
-        if (random.nextBoolean()) { 
-            destination = move; 
+        if (random.nextBoolean()) {
+            nextMove = move;
             break;
         }
     }
-    if (destination == null)
+    if (nextMove == null) {
         for (GenteMove move : possible) {
-            destination = move;
+            nextMove = move;
             break;
          }
-    modify (player) { setNextMove (destination) }
-    System.out.println ("Setting destination: " + destination);
-end
-
-rule "log-move"
-    no-loop true
-    salience -10
-when
-    player : GenteStrategyAgent ()
-then
-    System.out.println("Random-agent.  nextMove = " + player.getNextMove());
+    }
+    modify (player) { setNextMove (nextMove) }
 end

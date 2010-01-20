@@ -76,4 +76,9 @@ public enum GenteStrategy {
 
         return kbase;
     }
+
+    @Override
+    public String toString () {
+        return this.name() + " kabase loaded? " + (kbase != null);
+    }
 }

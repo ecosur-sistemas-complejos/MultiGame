@@ -35,18 +35,18 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	}
 
 
-/*	public void testScoringMoves () throws InvalidMoveException {
-		*//* Setup a hash of valid move destinations to compare against *//*
+	public void testScoringMoves () throws InvalidMoveException {
 		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
 				new CellComparator());
-		validDestinations.add(new GridCell (10,9, Color.YELLOW));
-		validDestinations.add(new GridCell (10,12, Color.YELLOW));
+		validDestinations.add(new GridCell (8,12, Color.YELLOW));
+        validDestinations.add(new GridCell (10,9, Color.YELLOW));
+        validDestinations.add(new GridCell (10,12,Color.YELLOW));
 		validDestinations.add(new GridCell (11,10,Color.RED));
 		validDestinations.add(new GridCell (11,7, Color.RED));
-		validDestinations.add(new GridCell (9,11, Color.BLUE));
 		validDestinations.add(new GridCell (9,8, Color.BLUE));
-		validDestinations.add(new GridCell (10,9, Color.BLUE));
-		validDestinations.add(new GridCell (6,13, Color.GREEN));
+        validDestinations.add(new GridCell (9,11,Color.BLUE));
+		validDestinations.add(new GridCell (7,13, Color.GREEN));
+        validDestinations.add(new GridCell (7,10,Color.GREEN));
 
 		TreeSet<GenteMove> scoringMoves = alice.determineScoringMoves(game, Color.YELLOW);
 		assertEquals (2, scoringMoves.size());
@@ -66,7 +66,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		}
 
 		scoringMoves = alice.determineScoringMoves(game, Color.BLUE);
-		assertEquals (3, scoringMoves.size());
+		assertEquals (2, scoringMoves.size());
 		for (GenteMove move : scoringMoves) {
 			GridCell destination = (GridCell) move.getDestinationCell();
 			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
@@ -75,7 +75,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		}
 
 		scoringMoves = alice.determineScoringMoves(game, Color.GREEN);
-		assertEquals (1, scoringMoves.size());
+		assertEquals (2, scoringMoves.size());
 		for (GenteMove move : scoringMoves) {
 			GridCell destination = (GridCell) move.getDestinationCell();
 			SortedSet<GridCell> tail = validDestinations.tailSet(destination);
@@ -92,7 +92,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 			assertTrue (destination + " is not valid!",
 					tail.contains(destination));
 		}
-	}*/
+	}
 	
 	@Test
 	public void testRandomNextMove () throws InvalidMoveException {
