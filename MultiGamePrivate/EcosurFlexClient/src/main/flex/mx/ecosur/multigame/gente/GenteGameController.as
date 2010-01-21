@@ -312,9 +312,8 @@ import mx.messaging.messages.ErrorMessage;
                     _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
-                    /*var moveModel:MoveModel = MoveModel (event.result);
-                    _executingMove = GenteMove(moveModel.implementation);*/
-                    _executingMove = null;
+                    var moveModel:MoveModel = MoveModel (event.result);
+                    _executingMove = GenteMove(moveModel.implementation);
                     break;
             }
         }
@@ -371,9 +370,9 @@ import mx.messaging.messages.ErrorMessage;
                     break;
                 case GameEvent.MOVE_COMPLETE:
                     var move:GenteMove = GenteMove(message.body);
-                    //Alert.show ("Status: " + move.status + ", Trias: " + move.trias + ", Tesseras: " + move.tesseras);
-                    if (move == null)
+                     if (move == null)
                         Alert.show ("Move from model [" + move + "] is null!");
+                    _executingMove = move;
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
@@ -553,18 +552,17 @@ import mx.messaging.messages.ErrorMessage;
             _moveViewer.selectedMove = move;
             
             // if winners are not present or the move must be qualified
-            if (!_winners || (move.player.id == getTeamMate().id && move.qualifier == null)){
-                
+            if (!_winners || (move.player.id == getTeamMate().id)) {
                 checkBeadStrings(move);
-                
-                // if the current player is the team mate of the player that moved then qualify the move
-                if (move.player.id == getTeamMate().id && move.qualifier == null){
-                    qualifyMove(move);  
+
+                if (move == _executingMove){
+                    if (move.player.id == getTeamMate().id){
+                        qualifyMove(move);
+                    }
                 }
-            }else{
+            } else{
                 end();
-            }
-            
+            }            
         }
         
         private function undoMove(move:GenteMove):void{
@@ -680,7 +678,6 @@ import mx.messaging.messages.ErrorMessage;
         }
         
         private function qualifyMove(move:GenteMove):void{
-            
             var fnc:Function = function(eventObj:CloseEvent):void{
                 
                 switch (eventObj.detail){
@@ -720,12 +717,7 @@ import mx.messaging.messages.ErrorMessage;
             Alert.noLabel = "SELFISH";
             Alert.cancelLabel = "NEUTRAL";
             Alert.buttonWidth = 120;
-            var alert:Alert = Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _chatPanel, fnc, null, Alert.CANCEL);
-
-            alert.validateDisplayList(); //necessary otherwise alert will not move (i think that this is a bug in the Alert control)
-            var x:Number = ( (Application.application.width - alert.width) / 2);
-            var y:Number = Application.application.height - alert.height;
-            alert.move(x, y);
+            Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _board, fnc, null, Alert.CANCEL);
         }
         
         private function getGrid():void{
