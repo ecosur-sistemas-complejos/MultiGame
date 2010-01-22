@@ -73,7 +73,7 @@
     </mx:Script>
     
     <mx:ArrayCollection id="agentList">
-        <!--mx:Object label="Simple" data="SIMPLE"/-->
+        <mx:Object label="Simple" data="SIMPLE"/>
         <mx:Object label="Blocker" data="BLOCKER"/>
         <!--mx:Object label="Random" data="RANDOM"/-->   
         <mx:Object label="Human" data="HUMAN"/>                  
