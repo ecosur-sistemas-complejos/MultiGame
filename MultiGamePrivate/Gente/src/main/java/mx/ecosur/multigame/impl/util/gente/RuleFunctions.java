@@ -93,9 +93,9 @@ public class RuleFunctions {
     }
 
     /* Determines if a Tria has already been scored*/
-    public static boolean hasTria (BeadString test, GenteMove move) {
-        for (BeadString string : move.getTrias()) {
-            if (string.equals(test))
+    public static boolean hasTria (GentePlayer player, BeadString test) {
+        for (BeadString string : player.getTrias()) {
+            if (string.contains(test))
                 return true;
         }
 
@@ -103,9 +103,9 @@ public class RuleFunctions {
     }
 
     /* Determines if a Tessera has already been scored*/
-    public static boolean hasTessera (BeadString test, GenteMove move) {
-        for (BeadString string : move.getTesseras()) {
-            if (string.equals(test))
+    public static boolean hasTessera (GentePlayer player, BeadString test) {
+        for (BeadString string : player.getTesseras()) {
+            if (string.contains(test))
                 return true;
         }
 

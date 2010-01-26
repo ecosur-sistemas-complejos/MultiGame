@@ -107,7 +107,7 @@ public class GenteAgentTest extends RulesTestBase {
         }
     }
 
-/*    public void testRandomAgent () throws Exception {        
+    public void testRandomAgent () throws Exception {
         int counter = Ticks;
         alice = new GenteStrategyAgent (a, Color.YELLOW, GenteStrategy.RANDOM);
         bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.RANDOM);
@@ -125,7 +125,7 @@ public class GenteAgentTest extends RulesTestBase {
                 if (player.isTurn()) {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
                     GenteMove move = agent.determineNextMove(game);
-                    System.out.println ("Move: " + move);
+                    game.move(move);
                     assertEquals (MoveStatus.EVALUATED, move.getStatus());
                     moved = true;
                     System.out.println (Ticks - counter + ":" + move);
@@ -136,5 +136,5 @@ public class GenteAgentTest extends RulesTestBase {
                 fail();
         }
 
-    }*/
+    }
 }

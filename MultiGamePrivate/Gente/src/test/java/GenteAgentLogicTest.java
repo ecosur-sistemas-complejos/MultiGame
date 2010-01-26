@@ -35,7 +35,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	}
 
 
-	public void testScoringMoves () throws InvalidMoveException {
+/*	public void testScoringMoves () throws InvalidMoveException {
 		TreeSet<GridCell> validDestinations = new TreeSet<GridCell> (
 				new CellComparator());
 		validDestinations.add(new GridCell (8,12, Color.YELLOW));
@@ -92,7 +92,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 			assertTrue (destination + " is not valid!",
 					tail.contains(destination));
 		}
-	}
+	}*/
 	
 	@Test
 	public void testRandomNextMove () throws InvalidMoveException {
@@ -101,6 +101,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 		assertNotNull (next);
 		game.move(next);
 		/* Validate that the move was made */
+        assertEquals (MoveStatus.EVALUATED, next.getStatus());
 		assertEquals (next.getDestinationCell(), game.getGrid().getLocation(
 				(GridCell) next.getDestinationCell()));
 	}
@@ -108,7 +109,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 	public void testRandomMoveOnEmptyBoard () throws InvalidMoveException {
 		/* Reset the Grid */
 		game.setGrid(new GameGrid());
-		game.setState(GameState.PLAY);
+       	game.setState(GameState.PLAY);
 		
 		/* Run the same code in test GridMove but on a simpler board */
 		testRandomNextMove ();

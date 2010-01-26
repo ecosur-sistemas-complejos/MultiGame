@@ -272,6 +272,8 @@ public class GenteGame extends GridGame {
         for (GridCell cell : getGrid().getCells()) {
             ret.grid.updateCell((GridCell) cell.clone());
         }
+        ret.setColumns (this.getColumns());
+        ret.setRows (this.getRows());
 
 		ret.created = System.currentTimeMillis();
 		ret.id = this.getId();

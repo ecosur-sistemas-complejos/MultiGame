@@ -209,14 +209,11 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
             if (isTurn()) {
                 KnowledgeBase kBase = strategy.getRuleBase();
                 StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
-                logger = KnowledgeRuntimeLoggerFactory.newFileLogger(session,
-                        "/Users/awaterma/Desktop/agent-logs/audit" + counter++);
                 session.insert(this);
                 session.insert(game.clone());
                 session.insert(new DummyMessageSender());
                 session.fireAllRules();
                 session.dispose();
-                logger.close();
 
                 /* Rules should have created the next Move into this player, if
                  * one available */

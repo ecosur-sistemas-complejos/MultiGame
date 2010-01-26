@@ -121,20 +121,23 @@ when
     GenteGame (grid : grid)
     move : GenteMove (status == MoveStatus.MOVED)
 then
+    #Generates inference events for parsing 
     for (MoveEvent event : GenerateEvents (grid, move)) {
         insert (event);
     }    
 end
 
-
 rule "find-tesseras"
+    agenda-group "evaluate"
     no-loop true
+    
 when
     $event : MoveEvent (size == 4)
     eval (hasMultipleColors ($event))    
     $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
     eval (!$move.getTesseras().contains($event.toBeadString()))
-    eval (!hasTessera($event.toBeadString(), $move))
+    eval (!hasTria((GentePlayer) $player, $event.toBeadString()))
+    eval (!hasTessera((GentePlayer) $player, $event.toBeadString()))
 then
     BeadString tessera = $event.toBeadString();
     GentePlayer player = (GentePlayer) $player;
@@ -147,13 +150,15 @@ then
 end
 
 rule "find-trias"
-    no-loop true
+    agenda-group "evaluate"
+    no-loop true    
 when
 
     $event : MoveEvent (size == 3)
     $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
     eval (!hasMultipleColors ($event))
-    eval (!hasTria($event.toBeadString(), $move))
+    eval (!hasTessera((GentePlayer) $player, $event.toBeadString()))
+    eval (!hasTria((GentePlayer) $player, $event.toBeadString()))    
 then
     BeadString tria = $event.toBeadString();
     GentePlayer player = (GentePlayer) $player;    
