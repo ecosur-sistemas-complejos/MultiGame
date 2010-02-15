@@ -37,12 +37,12 @@
 	    <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>ecosur-common</artifactId>
-            <version>${version}</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>gente</artifactId>
-            <version>${version}</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>

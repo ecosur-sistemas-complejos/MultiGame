@@ -64,11 +64,11 @@ public class RuleFunctions {
         for (Object obj : implications) {
             TablonFicha ficha = (TablonFicha) obj;
             MutationEvent event = new MutationEvent (ficha);
-            SortedSet square = grid.getSquare(ficha);
+            SortedSet<TablonFicha> square = grid.getSquare(ficha);
             event.setSquare (square);
-            SortedSet octo = grid.getOctogon(ficha);
+            SortedSet<TablonFicha> octo = grid.getOctogon(ficha);
             event.setOctogon (octo);
-            SortedSet cross = grid.getCross(ficha);
+            SortedSet<TablonFicha> cross = grid.getCross(ficha);
             event.setCross (cross);
             ret.add(event);
         }

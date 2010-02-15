@@ -30,213 +30,23 @@ import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
 
+import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
+
 global MessageSender messageSender;
 
-function boolean isValid (GameGrid grid, ManantialesMove move) {
-    boolean ret = false;
-    if (move.getDestinationCell() != null) {
-	    Ficha destination = (Ficha) move.getDestinationCell();
-	    Ficha current = (Ficha) grid.getLocation (destination);
-	    if (current != null) {
-	       switch (current.getType()) {
-	           case MANAGED_FOREST:
-	               ret = !destination.getType().equals(TokenType.SILVOPASTORAL) &&
-	                   !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
-	               break;
-	           case MODERATE_PASTURE:
-                   ret = !destination.getType().equals(TokenType.SILVOPASTORAL);
-                   break;               
-	           case VIVERO:
-	               ret = !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
-	               break;
-	           case SILVOPASTORAL:
-	               ret = true;
-	                break;
-	           default:
-	               ret = false;
-	               break;
-	       }
-	    } else {
-	       ret = true;
-	    }
-	}
-	
-    if (!ret) {
-        move.setStatus (MoveStatus.INVALID);            
-    }
-    
-    return ret;
-}
-
-function int score (ManantialesPlayer player, ManantialesMove move) {
-    switch (move.getType()) {
-        case MANAGED_FOREST:
-            player.setForested(player.getForested() +  1);
-            break;
-        case MODERATE_PASTURE:
-            player.setModerate(player.getModerate() + 1);
-            break;
-        case INTENSIVE_PASTURE:
-            player.setIntensive(player.getIntensive() + 1);
-            break;
-        case VIVERO:
-            player.setVivero(player.getVivero() + 1);
-            break;
-        case SILVOPASTORAL:
-            player.setSilvo(player.getSilvo() + 1);
-            break;    
-        default:
-            break;
-    }
-
-    int forested = player.getForested() * 1;
-    int moderate = player.getModerate() * 2;
-    int intensive = player.getIntensive() * 3;
-    int silvo = player.getSilvo() * 4;
-    
-    return forested + moderate + intensive + silvo;
-}
-
-function boolean isWinner (Mode mode, ManantialesPlayer gamePlayer) {
-    ManantialesPlayer player = (ManantialesPlayer) gamePlayer;
-    return player.getScore() >= mode.getWinningScore();
-}
-
-function boolean isBorder (GridCell cell) {
-    return (cell.getColumn () == 4 || cell.getRow () == 4);       
-}
-
-function GridPlayer incrementTurn (ManantialesGame game, GridMove move) {
-    GridPlayer player = move.getPlayer();    
-    player.setTurn(false);
-
-    List<GridPlayer> players = game.getPlayers();
-    int playerNumber = players.indexOf(player);
-    GridPlayer nextPlayer = null;
-    if (playerNumber == players.size() - 1) {
-        nextPlayer = players.get(0);
-    } else {
-        nextPlayer = players.get(playerNumber + 1);
-    }
-    nextPlayer.setTurn (true);
-    return nextPlayer;
-}
-
-function boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
-    boolean ret = false;
-    if (!first.equals(second)) {
-        List<GridPlayer> players = game.getPlayers();
-        int playerNumber = players.indexOf(first);
-	    GridPlayer nextPlayer = null;
-	    if (playerNumber == players.size() - 1) {
-	        nextPlayer = players.get(0);
-	    } else {
-	        nextPlayer = players.get(playerNumber + 1);
-	    }
-	    ret = nextPlayer.equals(second);   
-    }
-    return ret;    
-}
-
-
-function GameGrid clearPlayer (ManantialesGame game, ManantialesPlayer player) {
-    GameGrid grid = game.getGrid();
-    
-    for (GridCell cell : game.getGrid().getCells()) {
-        if (cell.getColor().equals(player.getColor())) 
-            grid.removeCell(cell);
-    }
-    
-    return grid;        
-}
-
-function GameGrid clearBorder (ManantialesGame game, ConditionType violation) {
-    GameGrid ret = game.getGrid();
-    HashSet<Ficha> deletions = new HashSet<Ficha>();
-
-    switch (violation) {
-        case NORTHERN_BORDER_DEFORESTED:
-            for (GridCell cell : ret.getCells()) {
-                Ficha ficha = (Ficha) cell;
-                if (ficha.getBorder().equals(BorderType.NORTH))
-                    deletions.add(ficha);
-            }        
-            break;
-        case WESTERN_BORDER_DEFORESTED:
-            for (GridCell cell : ret.getCells()) {
-                Ficha ficha = (Ficha) cell;
-                if (ficha.getBorder().equals(BorderType.WEST))
-                    deletions.add(ficha);
-            }          
-            break;
-        case SOUTHERN_BORDER_DEFORESTED:
-            for (GridCell cell : ret.getCells()) {
-                Ficha ficha = (Ficha) cell;
-                if (ficha.getBorder().equals(BorderType.SOUTH))
-                    deletions.add(ficha);
-            }          
-            break;
-        case EASTERN_BORDER_DEFORESTED:
-            for (GridCell cell : ret.getCells()) {
-                Ficha ficha = (Ficha) cell;
-                if (ficha.getBorder().equals(BorderType.EAST))
-                    deletions.add(ficha);
-            }
-            break;
-        default:
-            break;
-    }
-    
-    for (Ficha ficha : deletions) {
-        ret.removeCell(ficha);
-    }
-
-    return ret;
-}
-
-function GameGrid clearTerritory (ManantialesGame game, Color color) {
-    GameGrid ret = game.getGrid();
-    HashSet<Ficha> deletions = new HashSet<Ficha>();
-    
-    for (GridCell cell : ret.getCells()) {
-        if (cell.getColor().equals(color)) {
-            Ficha ficha = (Ficha) cell;
-            if (ficha.getType().equals(TokenType.MANAGED_FOREST))
-                continue;
-            deletions.add(ficha);
-        }
-    }
-    
-    for (Ficha ficha : deletions) {
-        ret.removeCell (ficha);
-    }
-    
-    return ret;
-}
-
-function Mode incrementMode (Mode mode) {
-    if (mode == null) {
-        mode = Mode.CLASSIC;
-    } else {
-	    switch (mode) {
-	        case CLASSIC:
-	            mode = Mode.SILVOPASTORAL;
-	            break;	             
-	    }
-    }
-    return mode;
-}
 
 rule "setup"
     agenda-group "initialize"
@@ -257,7 +67,18 @@ then
         setMode (mode) }
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
-end  
+end
+
+rule "evaluate-suggestion"
+    agenda-group "verify"
+    no-loop true
+when
+    $game  : GridGame (state == GameState.PLAY, $grid : grid)
+    $suggestion : Suggestion ($move : move, status == SuggestionStatus.UNEVALUATED)
+    eval (isValid ($grid, $move))
+then
+    modify ($suggestion) { setStatus (SuggestionStatus.EVALUATED) }
+end
 
 
 rule "evaluate-move"
@@ -489,6 +310,16 @@ rule "territory-deforested"
         messageSender.sendConditionRaised ($game, constraint);               
 end
 
+rule "notify-players-of-suggestion"
+    agenda-group "move"
+    no-loop true
+when
+    $game  : GridGame (state == GameState.PLAY)
+    $suggestion : Suggestion (status == SuggestionStatus.EVALUATED)
+then
+    messageSender.sendConditionTriggered ($game, $suggestion);
+end
+
 rule "execute-move"
     agenda-group "move"
     no-loop true
@@ -496,7 +327,6 @@ when
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (player.turn == true, status == MoveStatus.VERIFIED)  
 then
-    #Modify gamegrid 
     GameGrid modifiedGrid = $game.getGrid();   
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
     modify ($game) { setGrid (modifiedGrid) }
@@ -580,7 +410,8 @@ when
     $move  : ManantialesMove (player.turn == true, status == MoveStatus.MOVED)
 then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
-    player.setScore(score (player, $move));
+    int ps = score (player, $move);
+    player.setScore(ps);
     modify ($move) { setPlayer (player), setStatus (MoveStatus.EVALUATED) };
 end
 
@@ -724,7 +555,7 @@ rule "stage-won"
     no-loop true
     salience -5
 when
-    $game  : ManantialesGame (state == GameState.PLAY, mode != Mode.SILVOPASTORAL)
+    $game  : ManantialesGame (state == GameState.PLAY, mode != Mode.SILVO_PUZZLE)
     $move  : ManantialesMove ($player : player, player.turn == true, 
         status == MoveStatus.EVALUATED)
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
@@ -745,13 +576,26 @@ rule "game-won"
     no-loop true
     salience -10
 when
-    $game  : ManantialesGame (state == GameState.PLAY, mode == Mode.SILVOPASTORAL)
+    $game  : ManantialesGame (state == GameState.PLAY, mode == Mode.SILVO_PUZZLE)
     $move  : ManantialesMove ($player : player, player.turn == true, 
         status == MoveStatus.EVALUATED)
-    eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (isSolved (Mode.SILVO_PUZZLE, $game))    
 then
     modify ($game) { setState (GameState.ENDED) };
     messageSender.sendEndGame ($game);
+end
+
+rule "puzzle-solved"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    eval (isSolved (Mode.BASIC_PUZZLE, $game))
+then
+    Mode mode = incrementMode ($game.getMode());
+    modify ($game) { setMode (mode) }
+    messageSender.sendStateChange ($game);
 end
 
 rule "increment-turn"

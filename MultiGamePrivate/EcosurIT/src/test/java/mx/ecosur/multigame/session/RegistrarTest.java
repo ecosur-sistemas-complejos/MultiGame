@@ -85,6 +85,9 @@ public class RegistrarTest {
 		}
 		
 		assertNotNull ("Expected exception not caught!", caught);
+
+        /* Register remainder of players in order to close out game */
+        
 		
 	}	
 	

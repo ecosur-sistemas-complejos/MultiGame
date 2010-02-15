@@ -12,15 +12,17 @@
 package mx.ecosur.multigame.manantiales
 {	
 	import flash.display.Shape;
-	import flash.geom.Point;
-	
-	import mx.ecosur.multigame.component.AbstractBoard;
+    import flash.geom.Point;
+
+    import mx.controls.Alert;
+    import mx.ecosur.multigame.component.AbstractBoard;
 	import mx.ecosur.multigame.entity.GamePlayer;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.states.State;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    import mx.states.State;
     
     /**	
-    * A ManantialesBoard is similar to the PenteBoard implementation,
+    * A ManantialesBoard is similar to the GenteBoard implementation,
     * but cells are spaced in a much different manner, and not all
     * iumns and rows are filled in with actionable BoardCells.  
     * 
@@ -98,13 +100,13 @@ package mx.ecosur.multigame.manantiales
     	            } else if (j == 4) {
     	            	this.setStyle("cellBgColor", 0xA0A0A0);
     	            } else if (i < 4 && j < 4) {
-                    	this.setStyle("cellBgColor", Color.getColorCode(Color.BLUE));
+                    	this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
                     } else if (i < 4 && j > 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.BLUE));
                     } else if (i > 4 && j < 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.BLACK));
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
                     } else if (i > 4 && j > 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.BLACK));
                     }
     	            
     	            if (i == 4 && j == 4) {
@@ -283,12 +285,13 @@ package mx.ecosur.multigame.manantiales
             _vl.graphics.drawRect(centerX, 0, boardCell.width/3, endY);
             _vl.graphics.endFill();  
 
-            /* Flip the board to the player's perspective */          
+            /* Flip the board to the player's perspective */
+           /*
             this.rotation = boardRotation;            
             var destPos:Point = findDestination();
             this.move(destPos.x, destPos.y);
             _centerX = centerX;
-            _centerY = centerY;
+            _centerY = centerY;*/
         }
         
        protected function get boardRotation():int {
@@ -318,6 +321,7 @@ package mx.ecosur.multigame.manantiales
             }           
             
             return ret;
-        }    		
+        }       
+
 	}
 }

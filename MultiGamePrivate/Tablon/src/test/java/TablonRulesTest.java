@@ -1,21 +1,22 @@
 /*
-* Copyright (C) 2009 ECOSUR, Andrew Waterman and Max Pimm
-*
-* Licensed under the Academic Free License v. 3.2.
-* http://www.opensource.org/licenses/afl-3.0.php
-*/
+ * Copyright (C) 2010 ECOSUR, Andrew Waterman
+ *
+ * Licensed under the Academic Free License v. 3.2.
+ * http://www.opensource.org/licenses/afl-3.0.php
+ */
 
 /**
  * @author awaterma@ecosur.mx
  */
+import com.mockrunner.ejb.EJBTestModule;
+import com.mockrunner.jms.JMSTestCaseAdapter;
+import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.impl.enums.tablon.TokenType;
-import mx.ecosur.multigame.test.RulesTestBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
 import org.junit.Before;
-import org.junit.After;
 import org.junit.Test;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
 import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
@@ -34,9 +35,13 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TablonRulesTest extends RulesTestBase {
+public class TablonRulesTest extends JMSTestCaseAdapter {
 
     private static KnowledgeBase tablon;
+
+    protected EJBTestModule ejbModule;
+
+    private MockTopic mockTopic;
 
     /* Setup gente kbase */
     static {
@@ -64,9 +69,16 @@ public class TablonRulesTest extends RulesTestBase {
 
     @Before
 	public void setUp() throws Exception {
-		super.setUp();
+        super.setUp();
 
-        game = new TablonGame(26, 26, tablon);        
+        /* Set up mock JMS destination for message sender */
+        ejbModule = createEJBTestModule();
+        ejbModule.bindToContext("jms/TopicConnectionFactory",
+                getJMSMockObjectFactory().getMockTopicConnectionFactory());
+        mockTopic = getDestinationManager().createTopic("MultiGame");
+        ejbModule.bindToContext("MultiGame", mockTopic);
+
+		game = new TablonGame(26, 26, tablon);        
 
 		GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
@@ -78,11 +90,6 @@ public class TablonRulesTest extends RulesTestBase {
 		bob = (TablonPlayer) game.registerPlayer(b);
 		charlie = (TablonPlayer) game.registerPlayer(c);
 		denise = (TablonPlayer) game.registerPlayer(d);
-	}
-
-	@After
-	public void tearDown() throws Exception {
-		super.tearDown();
 	}
 
     @Test
@@ -118,14 +125,14 @@ public class TablonRulesTest extends RulesTestBase {
 		TablonMove move = new TablonMove(alice, token);
 		game.move (move);
 
-        ArrayList<Message> filter = new ArrayList<Message>();
+        ArrayList<Message> filter = new ArrayList<Message>();        
 		List<Message> messageList = mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
 			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
 					filter.add(message);
 		}
         mockTopic.clear();
-		assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0);
+		assertTrue ("Unexpected event(s) interecpted! " + filter, filter.size() == 0);
         
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));

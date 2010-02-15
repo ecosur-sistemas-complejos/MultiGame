@@ -40,7 +40,7 @@
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>ecosur-common</artifactId>
-        <version>${version}</version>
+        <version>1.0.0</version>
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
@@ -55,7 +55,7 @@
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>multi-game-common</artifactId>
-        <version>${version}</version>
+        <version>1.0.0</version>
         <type>ejb-client</type>
     </dependency>    
     <dependency>

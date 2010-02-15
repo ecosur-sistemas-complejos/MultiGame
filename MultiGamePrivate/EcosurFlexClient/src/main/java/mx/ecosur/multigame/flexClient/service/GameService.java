@@ -21,6 +21,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridMove;
@@ -126,8 +127,7 @@ public class GameService {
 		ServiceGameEvent ret = null;
 		RegistrarRemote registrar = getRegistrar();
 		try {
-			Game model = new Game (game);
-            model = registrar.registerPlayer (new Game(game),
+            Game model = registrar.registerPlayer (new Game(game),
 					new Registrant(registrant));
             for (GamePlayer gp : model.listPlayers()) {
                 GridPlayer player = (GridPlayer) gp.getImplementation();
@@ -253,6 +253,15 @@ public class GameService {
 			throw new GameException(e);
 		}
 	}
+
+    public Suggestion makeSuggestion (GridGame game, Suggestion suggestion) {
+        if (game instanceof ManantialesGame) {
+            ManantialesGame mg = (ManantialesGame) game;
+            suggestion = mg.suggest(suggestion);
+        }
+
+        return suggestion;
+    }
 
 	public List<GridMove> getMoves(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();

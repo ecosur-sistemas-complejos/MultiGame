@@ -5,4 +5,7 @@
     <add>
         <resource source="classpath:mx/ecosur/multigame/impl/manantiales.drl" type="DRL"/>
     </add>
+    <!--add>
+        <resource source="classpath:mx/ecosur/multigame/impl/ruleflow/manantiales-flow.rf" type="DRF"/>
+    </add-->
 </change-set>

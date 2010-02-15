@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2010 ECOSUR, Andrew Waterman
+ *
+ * Licensed under the Academic Free License v. 3.2.
+ * http://www.opensource.org/licenses/afl-3.0.php
+ */
+
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
@@ -22,8 +29,6 @@ import javax.persistence.*;
 
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -35,14 +40,16 @@ import java.net.MalformedURLException;
 
 @Entity
 public class ManantialesGame extends GridGame {
-	
-	private static final long serialVersionUID = -8395074059039838349L;
-	
-	private Mode mode; 
-	
-	private Set<CheckCondition> checkConditions;
+        
+    private static final long serialVersionUID = -8395074059039838349L;
+        
+    private Mode mode;
+        
+    private Set<CheckCondition> checkConditions;
 
     private transient MessageSender messageSender;
+
+    private Set<Suggestion> suggestions;
 
 
     public ManantialesGame () {
@@ -57,58 +64,59 @@ public class ManantialesGame extends GridGame {
     public Mode getMode() {
         return mode;
     }
-		
+
     public void setMode (Mode mode) {
-    	this.checkConditions = null;
+        this.checkConditions = null;
         this.mode = mode;
     }
     
     public boolean hasCondition (ConditionType type) {
-    	boolean ret = false;
-    	if (checkConditions != null) {
-	    	for (CheckCondition condition : checkConditions) {
-	    		if (condition.getType().equals(type)) {
-	    			ret = true;
-	    		}
-	    	}
-    	}
-	    	
-    	return ret;
+        boolean ret = false;
+        if (checkConditions != null) {
+            for (CheckCondition condition : checkConditions) {
+                if (condition.getType().equals(type)) {
+                    ret = true;
+                }
+            }
+        }
+
+        return ret;
     }
+
     @OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
-    	if (checkConditions == null)
-    		checkConditions = new HashSet<CheckCondition>();
-    	return checkConditions;
+        if (checkConditions == null)
+                checkConditions = new HashSet<CheckCondition>();
+        return checkConditions;
     }
     
     public void setCheckConditions (Set<CheckCondition> checkConstraints) {
-    	this.checkConditions = checkConstraints;
+        this.checkConditions = checkConstraints;
     }
     
     public void addCheckCondition (CheckCondition violation) {
-    	if (checkConditions == null) 
-    		checkConditions = new HashSet<CheckCondition>();
-    	if (!hasCondition (ConditionType.valueOf(violation.getReason())))
-    		checkConditions.add(violation);
+        if (checkConditions == null) 
+                checkConditions = new HashSet<CheckCondition>();
+        if (!hasCondition (ConditionType.valueOf(violation.getReason())))
+                checkConditions.add(violation);
     }
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Game#getFacts()
-	 */
-	@Override
+        /* (non-Javadoc)
+         * @see mx.ecosur.multigame.model.Game#getFacts()
+         */
+    @Override
     @Transient
-	public Set<Implementation> getFacts() {
-		Set<Implementation> facts = super.getFacts();
-		if (checkConditions != null)
-			facts.addAll(checkConditions);
-		return facts;
-	}
+    public Set<Implementation> getFacts() {
+        Set<Implementation> facts = super.getFacts();
+        if (checkConditions != null)
+            facts.addAll(checkConditions);
+        return facts;
+    }
 
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
-      */
+     * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
+     */
     public void initialize() throws MalformedURLException {
         this.setGrid(new GameGrid());
         this.setState(GameState.BEGIN);
@@ -179,61 +187,93 @@ public class ManantialesGame extends GridGame {
 
         return move;
     }
-	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		ManantialesPlayer player = new ManantialesPlayer ();
-		player.setRegistrant((GridRegistrant) registrant);
-		
-		for (GridPlayer p : this.getPlayers()) {
-			if (p.equals (player))
-				throw new InvalidRegistrationException ("Duplicate Registraton!");
-		}		
-		
-		int max = getMaxPlayers();
-		if (players.size() == max)
-			throw new RuntimeException ("Maximum Players reached!");
-		
-		List<Color> colors = getAvailableColors();
-		player.setColor(colors.get(0));		
-		players.add(player);
+
+    public Suggestion suggest (Suggestion suggestion) {
+        if (kbase == null) {
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        }
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        session.setGlobal("messageSender", getMessageSender());
+        session.insert(this);
+        session.insert(suggestion);
+        for (Implementation fact : getFacts()) {
+            session.insert(fact);
+        }
+
+        session.getAgenda().getAgendaGroup("verify").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("move").setFocus();
+        session.fireAllRules();
+        session.getAgenda().getAgendaGroup("evaluate").setFocus();
+        session.fireAllRules();
+        session.dispose();
+
+        if (suggestions == null)
+            suggestions = new LinkedHashSet<Suggestion>();
+
+        suggestions.add(suggestion);
+
+        return suggestion;
+    }
+        
+    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {
+        ManantialesPlayer player = new ManantialesPlayer ();
+        player.setRegistrant((GridRegistrant) registrant);
+
+        for (GridPlayer p : this.getPlayers()) {
+            if (p.equals (player))
+                throw new InvalidRegistrationException ("Duplicate Registraton!");
+        }
+
+        int max = getMaxPlayers();
+        if (players.size() == max)
+            throw new RuntimeException ("Maximum Players reached!");
+
+        List<Color> colors = getAvailableColors();
+        player.setColor(colors.get(0));
+        players.add(player);
 
         try {
-		    if (players.size() == getMaxPlayers())
-			    initialize();
+            if (players.size() == getMaxPlayers())
+                initialize();
         } catch (MalformedURLException e) {
-            throw new InvalidRegistrationException (e);
+                throw new InvalidRegistrationException (e);
         }
-		
-		if (this.created == 0)
-		    this.setCreated(new Date());	
-		if (this.state == null)
-			this.state = GameState.WAITING;
-		
-		return player;
-	}
-	
-	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
-		throw new InvalidRegistrationException (
-				"Agents cannot be registered with a Manantiales Game!");
-	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
-	 */
-	@Override
+        if (this.created == 0)
+            this.setCreated(new Date());
+        if (this.state == null)
+                this.state = GameState.WAITING;
+
+        return player;
+    }
+        
+    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+        throw new InvalidRegistrationException (
+            "Agents cannot be registered with a Manantiales Game!");
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     */
+    @Override
     @Transient
-	public List<Color> getColors() {
-		List<Color> ret = new ArrayList<Color>();
-		for (Color color : Color.values()) {
-			if (color.equals(Color.UNKNOWN))
-				continue;
-			if (color.equals(Color.GREEN))
-				continue;
-			ret.add(color);
-		}
-		
-		return ret;
-	}
+    public List<Color> getColors() {
+        List<Color> ret = new ArrayList<Color>();
+        for (Color color : Color.values()) {
+            if (color.equals(Color.UNKNOWN))
+                continue;
+            if (color.equals(Color.GREEN))
+                continue;
+            ret.add(color);
+        }
+                
+        return ret;
+    }
 
 
     @Transient
@@ -259,12 +299,12 @@ public class ManantialesGame extends GridGame {
         // do nothing;
     }    
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()
-	 */
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

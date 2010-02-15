@@ -9,26 +9,23 @@ package mx.ecosur.multigame.manantiales
 	{		
 		public function RoundCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number)
 		{
-			super(row, column, bgColor, borderColor, borderThickness);
+			super(column, row, bgColor, borderColor, borderThickness);
 			this.filters.concat(new DropShadowFilter());
 		}
 		
 		public function get color ():String {
 			var ret:String;
-			
-            if (column == 4) {
+
+		    if (column < 4 && row < 4)
+                 ret = Color.YELLOW;
+            else if (column < 4 && row > 4)
+                 ret = Color.BLUE;
+            else if (column > 4 && row < 4)
+                 ret = Color.RED;
+            else if (column > 4 && row > 4)
+                 ret = Color.BLACK;
+            else
                 ret = Color.UNKNOWN;
-            } else if (row == 4) {
-                ret = Color.UNKNOWN;
-            } else if (column < 4 && row < 4) {
-                ret = Color.BLUE;
-            } else if (column < 4 && row > 4) {
-                ret = Color.RED;
-            } else if (column > 4 && row < 4) {
-                ret = Color.BLACK;
-            } else if (column > 4 && row > 4) {
-                ret = Color.YELLOW;
-            }			
             
             return ret;
 		}

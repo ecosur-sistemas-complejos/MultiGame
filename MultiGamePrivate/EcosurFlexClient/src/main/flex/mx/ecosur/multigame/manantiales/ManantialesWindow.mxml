@@ -12,24 +12,14 @@
     
     <mx:Script> 
         <![CDATA[
-            import mx.core.Application;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
-            import mx.controls.Alert;
-            import mx.events.ResizeEvent;
-            import mx.events.MenuEvent; 
-            import mx.collections.ArrayCollection;
-            import flash.net.URLLoader;
-            import mx.ecosur.multigame.enum.Color;
-            import mx.ecosur.multigame.component.HelpPanel;       
-            import mx.ecosur.multigame.manantiales.enum.TokenType;
-            import mx.ecosur.multigame.manantiales.MoveViewer;
-            import mx.ecosur.multigame.entity.Game;
-            import mx.ecosur.multigame.entity.Move;
+            import mx.events.MenuEvent;
+
+            import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
-            import mx.ecosur.multigame.entity.ChatMessage;
-            import mx.ecosur.multigame.manantiales.ManantialesBoard;
             
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
@@ -40,6 +30,7 @@
             	if (_controller == null)
                     _controller = new ManantialesGameController(this);
                 CursorManager.removeBusyCursor();
+
             }
             
             
@@ -91,8 +82,8 @@
             
             private function closeHelp(event:Event):void{
                 PopUpManager.removePopUp(_helpPanel);
-            } 
-            
+            }
+
             private function quitGame():void {
                 _controller.quitGame(currentPlayer);                 
             }
@@ -139,9 +130,9 @@
                     currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
                     width="100%"/>
                </mx:Panel>
-		    </mx:AddChild>                     	
-        </mx:State>    
-    	<mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
+		    </mx:AddChild>
+        </mx:State>
+        <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
     	   <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
                <token:ViveroTokenStore id="viveroStore" 
@@ -156,7 +147,7 @@
                 width="100%"/>   
             </mx:Panel>                        
            </mx:AddChild>    	   
-    	</mx:State> 	
+    	</mx:State>
     </mx:states>
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" 
     	paddingLeft="10" paddingRight="10" id="hbox">
@@ -167,7 +158,7 @@
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"
-                    currentPlayer="{currentPlayer}"/>            	    	
+                    currentPlayer="{currentPlayer}"/>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
             <mx:Panel title="Score" width="100%">

@@ -1,7 +1,11 @@
 package mx.ecosur.multigame.manantiales
 {
+    import flash.utils.Dictionary;
+
     import mx.collections.ArrayCollection;
+    import mx.collections.ArrayList;
     import mx.containers.Accordion;
+    import mx.controls.Alert;
     import mx.controls.Button;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.entity.GamePlayer;
@@ -14,6 +18,7 @@ package mx.ecosur.multigame.manantiales
         private var _players:ArrayCollection;         
         private var _selectedPlayer:PlayerInfo;
         private var _gi:GameInfo;
+        private var _map:Dictionary;
         
         /**
          * Default constructor 
@@ -76,32 +81,33 @@ package mx.ecosur.multigame.manantiales
          * Updates the players and opens the player whose turn it is. 
          */
         public function updatePlayers():void{
-        	/* Set the game players into the game info */
-            _gi.players = _players;                                
+            /* Set the game players into the game info */
+            _gi.players = _players; 
             
             /* Setup all player info tabs */
             for (var i:int = 0; i < _players.length; i++){
                 var pi:PlayerInfo = null;
                 var btn:Button = null;
-                var manPlayer:ManantialesPlayer = null;            	            	
-            	
-                manPlayer = ManantialesPlayer(_players[i]);
+                var manPlayer:ManantialesPlayer = ManantialesPlayer(_players[i]);
+
+                /* Ghost updates are ignored */
+                if (manPlayer.id == 0)
+                    continue;
                 
                 for (var j:int = 0; j < getChildren().length; j++) {
-                	if (getChildAt(j) is PlayerInfo) {
-                		var info:PlayerInfo = PlayerInfo(getChildAt(j));
-                		if (info.manantialesPlayer.id == manPlayer.id) {
-                		  pi = info;
-                		  break;
-                		}
-                	}
+                    if (getChildAt(j) is PlayerInfo) {
+                        var info:PlayerInfo = PlayerInfo(getChildAt(j));
+                        if (info.manantialesPlayer.id == manPlayer.id) {
+                          pi = info;
+                          break;
+                        }
+                    }
                 }                
                 
                 // Create the player information if necessary 
                 if (pi == null) {
                     pi = new PlayerInfo();                    
                     addChild(pi);
-                    pi.manantialesPlayer = manPlayer;                       
                 }
                 
                 pi.manantialesPlayer = manPlayer;
@@ -113,23 +119,24 @@ package mx.ecosur.multigame.manantiales
                     if (getChildAt(j) is PlayerInfo) {
                         info = PlayerInfo(getChildAt(j));
                         if (info.manantialesPlayer.id == manPlayer.id) {
-			                // Create button header if required
-			                btn = getHeaderAt(j)
-			                label = manPlayer.registrant.name; 
-			                btn.label = label;
-			                btn.setStyle("icon", Color.getCellIcon(manPlayer.color));
-			                btn.setStyle("paddingBottom", 5);
-			                btn.setStyle("paddingTop", 5);                           	
+                            // Create button header if required
+                            btn = getHeaderAt(j);
+                           label = manPlayer.registrant.name;
+                            btn.label = label;
+                            btn.setStyle("icon", Color.getCellIcon(manPlayer.color));
+                            btn.setStyle("paddingBottom", 5);
+                            btn.setStyle("paddingTop", 5);
                         }
                     } else {
                         btn = getHeaderAt(j)
-				        label = "Game Info";
-				        btn.label = label;
-				        btn.setStyle("icon", Color.getCellIcon(Color.BLACK));
-				        btn.setStyle("paddingBottom", 5);
-				        btn.setStyle("paddingTop", 5);                         	
+                        label = "Game Info";
+                        btn.label = label;
+                        btn.setStyle("icon", Color.getCellIcon(Color.BLACK));
+                        btn.setStyle("paddingBottom", 5);
+                        btn.setStyle("paddingTop", 5);
                     }
-                }                                 
+                }
+
                 
                 // If player has turn highlight and select its info
                 if (manPlayer.turn) {
