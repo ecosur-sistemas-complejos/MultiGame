@@ -20,6 +20,7 @@
 
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.manantiales.enum.Mode;
             
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
@@ -87,6 +88,13 @@
             private function quitGame():void {
                 _controller.quitGame(currentPlayer);                 
             }
+
+            private function getMode():String {
+                var ret:String = _currentGame.mode;
+                if (ret == null)
+                    ret = Mode.CLASSIC;
+                return ret;
+            }
          ]]>       
     </mx:Script> 
 
@@ -98,13 +106,22 @@
         <menuitem label="Help">
             <menuitem label="How to Play"/>
         </menuitem>
+        <menuitem label="Mode" select="">
+            <menuitem label="Classic" value="CLASSIC" selected="true" type="radio" groupName="mode" />
+            <menuitem label="Classic Puzzle" value="BASIC_PUZZLE" selected="false"
+                      type="radio" groupName="mode" />
+            <menuitem label="Silvopastoral Innovative" value="SILOPASTORAL" selected="false"
+                       type="radio" groupName="mode" />
+            <menuitem label="Innovative Puzzle" value="SILVO_PUZZLE" selected="false"
+                       type="radio" groupName="mode" />
+        </menuitem>
     </mx:XMLList>
 
     <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
         <mx:MenuBar height="100%" 
             dataProvider="{menuXML}" 
             labelField="@label" 
-            showRoot="true"
+            showRoot="true"            
             itemClick="handleMenuItemClick(event)"/>
     </mx:ApplicationControlBar>    
     <mx:states>

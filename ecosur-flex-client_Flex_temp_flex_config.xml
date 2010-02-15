@@ -3,9 +3,9 @@
   <compiler>
     <debug>true</debug>
     <source-path>
+      <path-element>MultiGamePrivate/EcosurFlexClient/src/main/flex</path-element>
       <path-element>MultiGamePrivate/EcosurFlexClient/src/main/java</path-element>
       <path-element>MultiGamePrivate/EcosurFlexClient/src/main/resources</path-element>
-      <path-element>MultiGamePrivate/EcosurFlexClient/src/main/flex</path-element>
     </source-path>
   </compiler>
   <file-specs>

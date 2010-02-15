@@ -1,11 +1,17 @@
+/*
+ * Copyright (C) 2010 ECOSUR, Andrew Waterman
+ *
+ * Licensed under the Academic Free License v. 3.2.
+ * http://www.opensource.org/licenses/afl-3.0.php
+ */
+
 package mx.ecosur.multigame.impl.enums.manantiales;
 
 /**
- * Created by IntelliJ IDEA.
- * User: awaterma
- * Date: Feb 9, 2010
- * Time: 11:12:41 AM
- * To change this template use File | Settings | File Templates.
+ * @author awaterma@ecosur.mx
  */
 public enum SuggestionStatus {
+
+    UNEVALUATED, EVALUATED, ACCEPT, REJECT;
+
 }

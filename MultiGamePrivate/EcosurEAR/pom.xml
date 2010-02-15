@@ -11,18 +11,18 @@
     <parent>
         <artifactId>multi-game-private</artifactId>
         <groupId>mx.ecosur</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>ecosur-common</artifactId>
-            <version>1.0.0</version>
+            <artifactId>grid-common</artifactId>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>gente</artifactId>
-            <version>1.0.0</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
@@ -47,7 +47,7 @@
         </dependency>       
         <dependency>
               <groupId>mx.ecosur</groupId>
-              <artifactId>ecosur-flex-client</artifactId>
+              <artifactId>flex-client</artifactId>
               <version>${version}</version>
               <type>war</type>
         </dependency>   
@@ -116,7 +116,7 @@
                             </ejbModule>
                             <jarModule>
                                 <groupId>mx.ecosur</groupId>
-                                <artifactId>ecosur-common</artifactId>
+                                <artifactId>grid-common</artifactId>
                                 <bundleDir>lib</bundleDir>
                             </jarModule>
                             <jarModule>
@@ -141,7 +141,7 @@
                             </jarModule>                            
                             <webModule>
                                <groupId>mx.ecosur</groupId>
-                               <artifactId>ecosur-flex-client</artifactId>
+                               <artifactId>flex-client</artifactId>
                             </webModule>
                         </modules>
                     </configuration>

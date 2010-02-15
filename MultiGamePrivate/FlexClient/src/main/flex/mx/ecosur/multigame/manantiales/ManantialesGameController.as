@@ -129,7 +129,6 @@ package mx.ecosur.multigame.manantiales
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
-
         }
         
         public function initializeTokenStorePanel (tokenStorePanel:Panel):void {

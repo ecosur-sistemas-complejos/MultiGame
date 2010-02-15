@@ -263,6 +263,8 @@ public class GameService {
         return suggestion;
     }
 
+    
+
 	public List<GridMove> getMoves(int gameId) {
 		SharedBoardRemote sharedBoard = getSharedBoard();
 		List<GridMove> moves = new ArrayList<GridMove>();
@@ -285,4 +287,6 @@ public class GameService {
 		Registrant registrant = registrar.register(new Registrant (gr));
 		return (GridRegistrant) registrant.getImplementation();
 	}
+
+    
 }

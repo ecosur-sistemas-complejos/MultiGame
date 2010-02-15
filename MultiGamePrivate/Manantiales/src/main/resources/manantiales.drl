@@ -64,7 +64,7 @@ then
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
-        setMode (mode) }
+        setMode ( mode) }
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
 end
