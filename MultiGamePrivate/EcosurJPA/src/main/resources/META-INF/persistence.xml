@@ -1,10 +1,10 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
-	version="1.0">
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
     <persistence-unit name="MultiGame">
         <!--provider>org.hibernate.ejb.HibernatePersistence</provider-->
-		<jta-data-source>jdbc/__default</jta-data-source>
+        <jta-data-source>jdbc/__default</jta-data-source>
         <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>
         <class>mx.ecosur.multigame.impl.model.GridCell</class>
@@ -27,6 +27,7 @@
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.Suggestion</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.ConditionType</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.Mode</class>

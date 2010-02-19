@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>mx.ecosur</groupId>
-	<artifactId>ecosur-it</artifactId>
-	<name>Ecosur Integration Tests</name>
-	<description>Integration Tests for ECOSUR implementation of MultiGame.</description>
-	<parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>mx.ecosur</groupId>
+    <artifactId>ecosur-it</artifactId>
+    <name>Ecosur Integration Tests</name>
+    <description>Integration Tests for ECOSUR implementation of MultiGame.</description>
+    <parent>
         <artifactId>multi-game-private</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
-	<dependencies>
-	   <dependency>
+    <dependencies>
+        <dependency>
             <groupId>javax.ejb</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>
@@ -34,7 +34,7 @@
             <scope>system</scope>
             <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
         </dependency>
-	    <dependency>
+        <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${version}</version>
@@ -54,13 +54,13 @@
             <artifactId>tablon</artifactId>
             <version>${version}</version>
         </dependency>
-		<dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.0</version>
         </dependency>
     </dependencies>
-    <build>
+    <!--<build>
         <defaultGoal>test</defaultGoal>
         <plugins>
             <plugin>
@@ -77,6 +77,5 @@
                 </executions>
               </plugin>
         </plugins>
-    </build>
-
+    </build>-->
 </project>

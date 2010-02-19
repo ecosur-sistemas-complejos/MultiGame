@@ -195,8 +195,8 @@ package mx.ecosur.multigame.component {
 			}
         }
         
-		/*override public function toString():String{
+		override public function toString():String{
 			return "cell = {" + cell + "}"; 
-		}*/
+		}
 	}
 }

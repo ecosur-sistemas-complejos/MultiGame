@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 @Entity

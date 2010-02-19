@@ -24,6 +24,23 @@ public class Suggestion implements ConditionImpl {
 
     private SuggestionStatus status;
 
+    private int id;
+
+    /**
+    * @return the id
+    */
+    @Id @GeneratedValue
+    public int getId() {
+        return id;
+    }
+
+    /**
+    * @param id the id to set
+    */
+    public void setId(int id) {
+        this.id = id;
+    }    
+
     @OneToOne
     public ManantialesMove getMove() {
         return move;

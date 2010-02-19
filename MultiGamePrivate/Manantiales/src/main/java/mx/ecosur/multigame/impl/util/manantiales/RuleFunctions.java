@@ -233,7 +233,15 @@ public class RuleFunctions {
         } else {
             switch (mode) {
                 case CLASSIC:
+                    mode = Mode.BASIC_PUZZLE;
+                    break;
+                case BASIC_PUZZLE:
                     mode = Mode.SILVOPASTORAL;
+                    break;
+                case SILVOPASTORAL:
+                    mode = Mode.SILVO_PUZZLE;
+                    break;
+                default:
                     break;
             }
         }

@@ -18,6 +18,7 @@ import mx.ecosur.multigame.impl.model.*;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
+import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
@@ -47,13 +48,16 @@ public class ManantialesGame extends GridGame {
         
     private Set<CheckCondition> checkConditions;
 
-    private transient MessageSender messageSender;
+    private transient ManantialesMessageSender messageSender;
 
     private Set<Suggestion> suggestions;
 
 
     public ManantialesGame () {
         super();
+        // todo: remove
+        // initializes to Puzzle 
+        setMode (Mode.CLASSIC);
     }
 
     public ManantialesGame (KnowledgeBase kbase) {
@@ -279,14 +283,15 @@ public class ManantialesGame extends GridGame {
     @Transient
     public MessageSender getMessageSender() {
         if (messageSender == null) {
-            messageSender = new MessageSender ();
+            messageSender = new ManantialesMessageSender ();
             messageSender.initialize();
         }
         return messageSender;
     }
 
     public void setMessageSender(MessageSender messageSender) {
-        this.messageSender = messageSender;
+        if (messageSender instanceof ManantialesMessageSender)
+            this.messageSender = (ManantialesMessageSender) messageSender;
     }    
 
 

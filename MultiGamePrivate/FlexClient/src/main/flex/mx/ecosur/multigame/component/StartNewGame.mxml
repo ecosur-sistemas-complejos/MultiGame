@@ -8,21 +8,13 @@
 	<mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.event.GameEvent;
-
-        import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.event.ServiceGameEvent;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
-
-        import flash.events.MouseEvent;
-
         import mx.controls.Alert;
-        import mx.utils.StringUtil;
         import mx.ecosur.multigame.entity.Registrant;
         import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.enum.Color;
-        import mx.ecosur.multigame.enum.PenteStrategy;
 
         public var player:Registrant;
 
@@ -75,7 +67,6 @@
     <mx:ArrayCollection id="agentList">
         <mx:Object label="Simple" data="SIMPLE"/>
         <mx:Object label="Blocker" data="BLOCKER"/>
-        <!--mx:Object label="Random" data="RANDOM"/-->   
         <mx:Object label="Human" data="HUMAN"/>                  
     </mx:ArrayCollection>
     

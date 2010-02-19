@@ -31,6 +31,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import javax.jms.Message;
 import javax.jms.JMSException;
+import java.lang.annotation.ElementType;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,17 +117,18 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 		game.move (move);
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (token, game.getGrid().getLocation(token));
-        assertTrue (alice.isTurn() == false);
+        assertTrue (!alice.isTurn());
 	}
 
+    @SuppressWarnings (value= "unchecked")
     @Test
     public void testSoilConsequence () throws InvalidMoveException, JMSException {
         TablonFicha token = new TablonFicha(2, 10, alice.getColor(), TokenType.POTRERO);
 		TablonMove move = new TablonMove(alice, token);
 		game.move (move);
 
-        ArrayList<Message> filter = new ArrayList<Message>();        
-		List<Message> messageList = mockTopic.getReceivedMessageList();
+        ArrayList<Message> filter = new ArrayList<Message>();
+		List<Message> messageList = (List<Message>) mockTopic.getReceivedMessageList();
 		for (Message  message : messageList) {
 			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
 					filter.add(message);
@@ -141,7 +143,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 		game.move (move);
 
         filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
+
+        messageList = mockTopic.getCurrentMessageList();
 		for (Message  message : messageList) {
 			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
 					filter.add(message);
@@ -156,7 +159,7 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 		game.move (move);
 
         filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
+		messageList = mockTopic.getCurrentMessageList();
 		for (Message  message : messageList) {
 			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
 					filter.add(message);
@@ -172,7 +175,7 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 		game.move (move);
 
         filter = new ArrayList<Message>();
-		messageList = messageList = mockTopic.getCurrentMessageList();
+		messageList = mockTopic.getCurrentMessageList();
 		for (Message  message : messageList) {
 			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
 					filter.add(message);

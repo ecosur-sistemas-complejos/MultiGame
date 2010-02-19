@@ -28,16 +28,15 @@
             private var _helpPanel:HelpPanel; 
         
             public function init():void {
-            	if (_controller == null)
+                if (_controller == null)
                     _controller = new ManantialesGameController(this);
                 CursorManager.removeBusyCursor();
 
             }
             
-            
             public function destroy():void{
                 if (_controller != null)
-            	    _controller.destroy();
+                    _controller.destroy();
             }
 
             public function set currentGame (currentGame:ManantialesGame):void {
@@ -58,7 +57,7 @@
             }
             
             public function dispatchCompletion ():void {
-            	this.dispatchEvent(new Event("complete"));
+                this.dispatchEvent(new Event("complete"));
             }
             
             /* Only events that effect this container are handled, all others
@@ -79,21 +78,35 @@
                 	quitGame();
                 	dispatchCompletion(); 
                 }
-            }                       
+            }
             
             private function closeHelp(event:Event):void{
                 PopUpManager.removePopUp(_helpPanel);
             }
 
-            private function quitGame():void {
-                _controller.quitGame(currentPlayer);                 
+            public function get state():String {
+                var ret:String;
+                if (_currentGame.mode == null)
+                    ret = "Setup";
+                else if (_currentGame.mode == Mode.CLASSIC)
+                    ret = "Classic";
+                else if (_currentGame.mode == Mode.BASIC_PUZZLE)
+                    ret = "Puzzle";
+                else if (_currentGame.mode == Mode.SILVOPASTORAL)
+                    ret = "Silvopastoral";
+                else if (_currentGame.mode == Mode.SILVO_PUZZLE)
+                    ret = "Advanced Puzzle";
+                
+                return ret;
             }
 
-            private function getMode():String {
-                var ret:String = _currentGame.mode;
-                if (ret == null)
-                    ret = Mode.CLASSIC;
-                return ret;
+            private function stateMenu():XML {
+                var xml:XML = <menuitem label={state} />;
+                return xml;
+            }
+
+            private function quitGame():void {
+                _controller.quitGame(currentPlayer);                 
             }
          ]]>       
     </mx:Script> 
@@ -106,15 +119,6 @@
         <menuitem label="Help">
             <menuitem label="How to Play"/>
         </menuitem>
-        <menuitem label="Mode" select="">
-            <menuitem label="Classic" value="CLASSIC" selected="true" type="radio" groupName="mode" />
-            <menuitem label="Classic Puzzle" value="BASIC_PUZZLE" selected="false"
-                      type="radio" groupName="mode" />
-            <menuitem label="Silvopastoral Innovative" value="SILOPASTORAL" selected="false"
-                       type="radio" groupName="mode" />
-            <menuitem label="Innovative Puzzle" value="SILVO_PUZZLE" selected="false"
-                       type="radio" groupName="mode" />
-        </menuitem>
     </mx:XMLList>
 
     <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
@@ -123,55 +127,60 @@
             labelField="@label" 
             showRoot="true"            
             itemClick="handleMenuItemClick(event)"/>
+        <mx:MenuBar dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
     </mx:ApplicationControlBar>    
     <mx:states>
+        <mx:State name="WAIT"/>
         <mx:State name="CLASSIC">
-			<mx:RemoveChild target="{moveViewer}"/>
-			<mx:AddChild relativeTo="{leftBox}">
-				<mx:Panel title="Managed Forest" width="100%" id="mfp">
-                    <token:ForestTokenStore id="forestStore" 
-                        currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+            <mx:RemoveChild  target="{moveViewer}"/>
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Managed Forest" width="100%" id="mfp">
+                    <token:ForestTokenStore id="forestStore"
+                        currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                         width="100%"/>
-                </mx:Panel>  
-			</mx:AddChild>
-		    <mx:AddChild relativeTo="{leftBox}">
-	            <mx:Panel title="Moderate Grazing" width="100%" id="mgp">
-	               <token:ModerateTokenStore id="moderateStore" 
-	                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
-	                width="100%"/>
-	            </mx:Panel>		                
-		    </mx:AddChild> 
-		    <mx:AddChild relativeTo="{leftBox}">
-		       <mx:Panel title="Intensive Grazing" width="100%" id="igp">
-                <token:IntensiveTokenStore id="intensiveStore" 
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Moderate Grazing" width="100%" id="mgp">
+                   <token:ModerateTokenStore id="moderateStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
+                    width="100%"/>
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+               <mx:Panel title="Intensive Grazing" width="100%" id="igp">
+                <token:IntensiveTokenStore id="intensiveStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                     width="100%"/>
                </mx:Panel>
-		    </mx:AddChild>
+            </mx:AddChild>
         </mx:State>
+        <mx:State name="BASIC_PUZZLE"  basedOn="CLASSIC"/>
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
-    	   <mx:AddChild relativeTo="{leftBox}">
+           <mx:RemoveChild  target="{moveViewer}"/> 
+           <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
-               <token:ViveroTokenStore id="viveroStore" 
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
-                width="100%"/>                
-            </mx:Panel>     	   	    	   	
-    	   </mx:AddChild>
+               <token:ViveroTokenStore id="viveroStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
+                width="100%"/>
+            </mx:Panel>
+           </mx:AddChild>
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Active" width="100%" id="sap">
-               <token:SilvopastoralTokenStore id="silvoStore" 
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" 
-                width="100%"/>   
-            </mx:Panel>                        
-           </mx:AddChild>    	   
-    	</mx:State>
+               <token:SilvopastoralTokenStore id="silvoStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
+                width="100%"/>
+            </mx:Panel>
+           </mx:AddChild>
+        </mx:State>
+        <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL"/>
     </mx:states>
-    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" 
-    	paddingLeft="10" paddingRight="10" id="hbox">
+    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
+        paddingLeft="10" paddingRight="10" id="hbox">
         <mx:VBox id="leftBox" width="200" height="100%">
-            <component:GameStatus id="gameStatus" width="100%" />  
-            <manantiales:MoveViewer id="moveViewer" title="Move History" 
-                height="100%" width="100%"/>               
+            <component:GameStatus id="gameStatus" width="100%" />
+            <manantiales:MoveViewer id="moveViewer" title="Move History"
+                    height="100%" width="100%"/>
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"
@@ -180,7 +189,7 @@
         <mx:VBox id="rightBox" height="100%" width="300">
             <mx:Panel title="Score" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
-                	  currentPlayer="{currentPlayer}" width="100%"/>
+                      currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>        
            <component:ChatPanel id="chatPanel" width="100%" height="100%" 
                 currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  

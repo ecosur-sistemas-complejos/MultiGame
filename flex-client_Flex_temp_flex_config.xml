@@ -1,0 +1,15 @@
+<flex-config xmlns="http://www.adobe.com/2006/flex-config">
+  <target-player>9.0.124</target-player>
+  <compiler>
+    <debug>true</debug>
+    <source-path>
+      <path-element>MultiGamePrivate/FlexClient/src/main/java</path-element>
+      <path-element>MultiGamePrivate/FlexClient/src/main/resources</path-element>
+      <path-element>MultiGamePrivate/FlexClient/src/main/flex</path-element>
+    </source-path>
+  </compiler>
+  <file-specs>
+    <path-element>MultiGamePrivate/FlexClient/src/main/flex/main.mxml</path-element>
+  </file-specs>
+  <output>/Users/awaterma/Sherwood/repository/multigame.private.git/MultiGamePrivate/FlexClient/target/classes/main.swf</output>
+</flex-config>
