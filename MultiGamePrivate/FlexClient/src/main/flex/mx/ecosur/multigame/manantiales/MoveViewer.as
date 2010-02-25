@@ -13,7 +13,6 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.enum.Color;
     
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-    import mx.ecosur.multigame.manantiales.entity.Ficha;
     
     import mx.events.DynamicEvent;
 	
@@ -43,7 +42,7 @@ package mx.ecosur.multigame.manantiales
         public function set selectedMove(move:ManantialesMove):void{
             var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
-                mi = MoveInfo(_moves.getChildAt(i))
+                mi = MoveInfo(_moves.getChildAt(i));
                 if (move != null && move.id == mi.gameMove.id){                	
                     
                     //deselect currently selected button

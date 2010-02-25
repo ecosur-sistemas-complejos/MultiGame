@@ -10,6 +10,7 @@ package mx.ecosur.multigame.flexClient.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -22,6 +23,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.model.GameGrid;
@@ -43,6 +45,7 @@ import mx.ecosur.multigame.model.Registrant;
 
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
+import mx.ecosur.multigame.model.implementation.GameImpl;
 
 public class GameService {
 
@@ -78,6 +81,13 @@ public class GameService {
         return registrar;
     }
 
+    public GridRegistrant login (String name) {
+        GridRegistrant gr = new GridRegistrant (name);
+        RegistrarRemote registrar = this.getRegistrar();
+        Registrant registrant = registrar.register(new Registrant (gr));
+        return (GridRegistrant) registrant.getImplementation();
+    }    
+
     public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr)
     {
         ServiceGameEvent ret = null;
@@ -87,11 +97,13 @@ public class GameService {
             GameType type = GameType.valueOf(gameTypeStr);
 
             switch (type) {
-                case PENTE:
+                case GENTE:
                     game = new GenteGame();
                     break;
                 case MANANTIALES:
                     game = new ManantialesGame();
+                    //TODO: fix hack for testing puzzle mode 
+                    ((ManantialesGame) game).setMode (Mode.CLASSIC);
                     break;
             }
 
@@ -167,7 +179,7 @@ public class GameService {
         try {
             RegistrarRemote registrar = getRegistrar();
             GameType gameType = GameType.valueOf(gameTypeStr);
-            if (gameType.equals(GameType.PENTE)) {
+            if (gameType.equals(GameType.GENTE)) {
                 GridGame game = new GenteGame ();
                 Game model = new Game (game);
                 model = registrar.registerPlayer(model, new Registrant (registrant));
@@ -251,51 +263,6 @@ public class GameService {
         }
     }
 
-    /** Manantiales Specific
-     *  Todo:  Consider separate Java service code for Manantiales? */
-    public Suggestion makeSuggestion (GridGame game, Suggestion suggestion) {
-        SharedBoardRemote sharedBoard = getSharedBoard();
-
-        if (game instanceof ManantialesGame) {
-            ManantialesGame mg = (ManantialesGame) game;
-            suggestion = mg.suggest(suggestion);
-        }
-
-        //sharedBoard.shareGame (new Game(game));
-
-        return suggestion;
-    }
-
-    /** Manantiales Specific
-     *  Todo:  Consider separate Java code for Manantiales? */
-    public Game changeMode (int gameId, Mode mode) {
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        Game game = sharedBoard.getGame(gameId);
-        if (game.getImplementation() == null)
-            throw new RuntimeException ("Null implementation for Game Id: " + gameId);
-
-        ManantialesGame impl = (ManantialesGame) game.getImplementation();
-        try {
-            impl.setMode(mode);
-            impl.setMoves (null);
-            impl.setGrid (new GameGrid());
-            impl.initialize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        /* Store change in game into backend */
-        Game ret = new Game (impl);
-        sharedBoard.shareGame(ret);
-
-
-        /* Send change */
-        MessageSender sender = game.getMessageSender();
-        sender.sendStateChange(impl);
-
-        return ret;
-
-    }
 
     public List<GridMove> getMoves(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
@@ -313,10 +280,62 @@ public class GameService {
         return (GridMove) moveModel.getImplementation();
     }
 
-    public GridRegistrant login (String name) {
-        GridRegistrant gr = new GridRegistrant (name);
-        RegistrarRemote registrar = this.getRegistrar();
-        Registrant registrant = registrar.register(new Registrant (gr));
-        return (GridRegistrant) registrant.getImplementation();
+    /* Manantiales Specific Methods */
+
+    
+    /**
+     *  Todo:  Consider separate Java service code for Manantiales? */
+    public Suggestion makeSuggestion (GridGame game, Suggestion suggestion) {
+        SharedBoardRemote sharedBoard = getSharedBoard();
+
+        if (game instanceof ManantialesGame) {
+            ManantialesGame mg = (ManantialesGame) game;
+            suggestion = mg.suggest(suggestion);
+        }
+
+        sharedBoard.shareGame (game);
+        return suggestion;
+    }
+
+    /** Todo:  Consider separate Java code for Manantiales? */
+    public GameImpl changeMode (int gameId, Mode mode) {
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        Game game = sharedBoard.getGame(gameId);
+        if (game.getImplementation() == null)
+            throw new RuntimeException ("Null implementation for Game Id: " + gameId);
+
+        ManantialesGame impl = (ManantialesGame) game.getImplementation();
+        try {
+            impl.setMode(mode);
+            impl.setMoves (null);
+            impl.setGrid (new GameGrid());
+            impl.initialize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /* Store change in game into backend */
+        sharedBoard.shareGame(impl);
+
+
+        /* Send change */
+        MessageSender sender = game.getMessageSender();
+        sender.sendStateChange(impl);
+
+        return impl;
+
+    }
+
+    /**
+     * Todo:  consdier seperate Java code for Manantiales?
+     */
+    public Set<Suggestion> getSuggestions (int gameId, ManantialesMove move) {
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        Game game = sharedBoard.getGame(gameId);
+        if (game.getImplementation() == null)
+            throw new RuntimeException ("Null implementation for Game Id: " + gameId);
+
+        ManantialesGame impl = (ManantialesGame) game.getImplementation();
+        return impl.findSuggestion(move);
     }
 }

@@ -3,7 +3,6 @@
     <mx:Script> 
         <![CDATA[
             import mx.events.DynamicEvent;
-            import mx.controls.Alert;
             import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
             
             public static const GOTO_MOVE_EVENT:String = "gotoMove";

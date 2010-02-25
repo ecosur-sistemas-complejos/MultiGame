@@ -1,14 +1,19 @@
+//copyright
+
 package mx.ecosur.multigame.manantiales.entity
 {
-	import mx.collections.ArrayCollection;
+    import flash.utils.Dictionary;
+
+    import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Game;
-	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame")]                       
 	public class ManantialesGame extends Game
 	{
 		private var _mode:String;
+
+        private var _suggestions:ArrayCollection;
 		
 		private var _checkConditions:ArrayCollection;
 		
@@ -34,5 +39,13 @@ package mx.ecosur.multigame.manantiales.entity
 			     _checkConditions = new ArrayCollection();
 			_checkConditions.addItem(violation); 
 		}
+
+        public function getSuggestions():ArrayCollection {
+            return _suggestions;
+        }
+
+        public function setSuggestions(suggestions:ArrayCollection):void {
+            _suggestions = suggestions;
+        }                        
 	}
 }

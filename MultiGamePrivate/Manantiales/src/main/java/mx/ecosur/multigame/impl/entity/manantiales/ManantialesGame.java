@@ -39,6 +39,8 @@ import org.drools.KnowledgeBase;
 import java.util.*;
 import java.net.MalformedURLException;
 
+import static java.util.Collections.*;
+
 @Entity
 public class ManantialesGame extends GridGame {
         
@@ -55,9 +57,6 @@ public class ManantialesGame extends GridGame {
 
     public ManantialesGame () {
         super();
-        // todo: remove
-        // initializes to Puzzle 
-        setMode (Mode.CLASSIC);
     }
 
     public ManantialesGame (KnowledgeBase kbase) {
@@ -220,7 +219,6 @@ public class ManantialesGame extends GridGame {
             suggestions = new LinkedHashSet<Suggestion>();
 
         suggestions.add(suggestion);
-
         return suggestion;
     }
         
@@ -292,7 +290,30 @@ public class ManantialesGame extends GridGame {
     public void setMessageSender(MessageSender messageSender) {
         if (messageSender instanceof ManantialesMessageSender)
             this.messageSender = (ManantialesMessageSender) messageSender;
-    }    
+    }
+
+    @OneToMany (fetch=FetchType.EAGER)
+    public Set<Suggestion> getSuggestions () {
+        return suggestions;
+
+    }
+
+    public void setSuggestions (Set<Suggestion> suggestions) {
+        this.suggestions = suggestions;
+    }
+
+
+    @Transient
+    public Set<Suggestion> findSuggestion (ManantialesMove move) {
+        Set<Suggestion> ret = new LinkedHashSet<Suggestion>();
+        for (Suggestion suggestion : suggestions) {
+            if (suggestion.getMove().equals(move))
+                ret.add(suggestion);
+        }
+
+
+        return ret;
+    }
 
 
     @Transient

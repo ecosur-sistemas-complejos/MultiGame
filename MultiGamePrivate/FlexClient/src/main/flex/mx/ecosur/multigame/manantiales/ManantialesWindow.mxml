@@ -13,11 +13,10 @@
     <mx:Script> 
         <![CDATA[
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-
+            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
             import mx.events.MenuEvent;
-
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.manantiales.enum.Mode;
@@ -55,6 +54,19 @@
             public function get currentPlayer():GamePlayer{
                 return _currentPlayer;
             }
+
+            public function get activePlayer ():ManantialesPlayer {
+                var ret:ManantialesPlayer;
+                for (var i:int = 0; i < _currentGame.players.length; i++) {
+                    var p:GamePlayer = _currentGame.players [ i ];
+                    if (p.turn) {
+                        ret = ManantialesPlayer(p);
+                        break;
+                    }
+                }
+
+                return ret;
+            }
             
             public function dispatchCompletion ():void {
                 this.dispatchEvent(new Event("complete"));
@@ -75,8 +87,8 @@
                 } else if (evt.label=='Lobby') {
                     dispatchCompletion();
                 } else if (evt.label == 'Quit') {
-                	quitGame();
-                	dispatchCompletion(); 
+                    quitGame();
+                    dispatchCompletion();
                 }
             }
             
@@ -100,10 +112,23 @@
                 return ret;
             }
 
-            private function stateMenu():XML {
+            public function stateMenu():XML {
                 var xml:XML = <menuitem label={state} />;
                 return xml;
             }
+
+            /*
+            public function stateMenu():XML {
+                var xml:XML = <menuitem label="States">
+                    <menuitem label="Setup" type="radio" groupName="states" toggled="{state} == 'Setup'"/>
+                    <menuitem label="Classic" type="radio" groupName="states" toggled="{state} == 'Classic'"/>
+                    <menuitem label="Puzzle" type="radio" groupName="states" toggled="{state} == 'Puzzle'"/>
+                    <menuitem label="Silvopastoral" type="radio" groupName="states" toggled="{state} == 'Silvopastoral'"/>
+                    <menuitem label="Advanced Puzzle" type="radio" groupName="states" toggled="{state} == 'Advanced Puzzle'"/>
+                    </menuitem>;
+                
+                return xml;
+            }*/
 
             private function quitGame():void {
                 _controller.quitGame(currentPlayer);                 
@@ -127,12 +152,13 @@
             labelField="@label" 
             showRoot="true"            
             itemClick="handleMenuItemClick(event)"/>
-        <mx:MenuBar dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
+        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
     </mx:ApplicationControlBar>    
     <mx:states>
-        <mx:State name="WAIT"/>
-        <mx:State name="CLASSIC">
+        <mx:State name="WAIT">
             <mx:RemoveChild  target="{moveViewer}"/>
+        </mx:State>
+        <mx:State name="CLASSIC" basedOn="WAIT">
             <mx:AddChild relativeTo="{leftBox}">
                 <mx:Panel title="Managed Forest" width="100%" id="mfp">
                     <token:ForestTokenStore id="forestStore"
@@ -155,9 +181,44 @@
                </mx:Panel>
             </mx:AddChild>
         </mx:State>
-        <mx:State name="BASIC_PUZZLE"  basedOn="CLASSIC"/>
+        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC" />
+        <mx:State name="BASIC_PUZZLE_SOLICIT" basedOn="BASIC_PUZZLE">
+            <!-- Solicits suggestions from other players -->
+            <mx:RemoveChild target="{mfp}"/>
+            <mx:RemoveChild target="{mgp}"/>
+            <mx:RemoveChild target="{igp}"/>
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Managed Forest" width="100%" id="SBmfp">
+                    <token:ForestTokenStore id="SforestStore"
+                        currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                        width="100%"/>
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Moderate Grazing" width="100%" id="SBmgp">
+                   <token:ModerateTokenStore id="SmoderateStore"
+                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                    width="100%"/>
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+               <mx:Panel title="Intensive Grazing" width="100%" id="SBigp">
+                <token:IntensiveTokenStore id="SintensiveStore"
+                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                    width="100%"/>
+               </mx:Panel>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="BASIC_PUZZLE_RESPONSE" basedOn="BASIC_PUZZLE">
+            <!-- Allows current player to respond to suggestions -->
+            <!--
+            <mx:AddChild relativeTo="{leftBox}">
+                <manantiales:SuggestionViewer id="basicSuggestionViewer" title="Suggested Moves"
+                    height="100%" width="100%"/>
+            </mx:AddChild>-->
+        </mx:State>
+
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
-           <mx:RemoveChild  target="{moveViewer}"/> 
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
                <token:ViveroTokenStore id="viveroStore"
@@ -174,6 +235,59 @@
            </mx:AddChild>
         </mx:State>
         <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL"/>
+        <mx:State name="SILVO_PUZZLE_SOLICIT" basedOn="SILVO_PUZZLE">
+            <mx:RemoveChild target="{mfp}"/>
+            <mx:RemoveChild target="{mgp}"/>
+            <mx:RemoveChild target="{igp}"/>
+            <mx:RemoveChild target="{sep}"/>
+            <mx:RemoveChild target="{sap}"/>            
+
+            <!-- Solicits suggestions from other players -->
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Managed Forest" width="100%" id="SVmfp">
+                    <token:ForestTokenStore id="SVforestStore"
+                        currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                        width="100%"/>
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+                <mx:Panel title="Moderate Grazing" width="100%" id="SVmgp">
+                   <token:ModerateTokenStore id="SVmoderateStore"
+                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                    width="100%"/>
+                </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+               <mx:Panel title="Intensive Grazing" width="100%" id="SVigp">
+                <token:IntensiveTokenStore id="SVintensiveStore"
+                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
+                    width="100%"/>
+               </mx:Panel>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+            <mx:Panel title="Silvopastoral Establishment" width="100%" id="SVsep">
+               <token:ViveroTokenStore id="SVviveroStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
+                width="100%"/>
+            </mx:Panel>
+           </mx:AddChild>
+           <mx:AddChild relativeTo="{leftBox}">
+            <mx:Panel title="Silvopastoral Active" width="100%" id="SVsap">
+               <token:SilvopastoralTokenStore id="SVsilvoStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
+                width="100%"/>
+            </mx:Panel>
+           </mx:AddChild>
+        </mx:State>
+        <mx:State name="SILVO_PUZZLE_RESPONSE" basedOn="SILVO_PUZZLE">
+            <!-- Allows current player to respond to suggestions -->
+            <!--
+            <mx:AddChild relativeTo="{leftBox}">
+                <manantiales:SuggestionViewer id="silvoSuggestionViewer" title="Suggested Moves"
+                    height="100%" width="100%"/>
+            </mx:AddChild>
+            -->
+        </mx:State>
     </mx:states>
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
         paddingLeft="10" paddingRight="10" id="hbox">

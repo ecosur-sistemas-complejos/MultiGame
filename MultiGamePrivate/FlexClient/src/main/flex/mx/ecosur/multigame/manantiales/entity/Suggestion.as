@@ -61,7 +61,11 @@ package mx.ecosur.multigame.manantiales.entity
         }
 
         public function setTriggers (triggers:ArrayCollection):void {
-            // do nothing 
+            
+        }
+
+        public function toString():String {
+            return "Suggestor [" + _suggestor.toString() + "], Move [" + _move.toString() + "]";
         }
     }
 }

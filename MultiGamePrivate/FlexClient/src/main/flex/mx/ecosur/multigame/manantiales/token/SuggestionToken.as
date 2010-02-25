@@ -2,32 +2,71 @@
 
 package mx.ecosur.multigame.manantiales.token
 {
-    import mx.ecosur.multigame.manantiales.entity.*;
-    import flash.events.Event;
+    import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
 
-    import mx.controls.Alert;
-    import mx.controls.Menu;
-    import mx.controls.PopUpButton;
+    public class SuggestionToken extends ManantialesToken {
 
-    public class SuggestionToken extends Ficha {
+        public function SuggestionToken (type:String) {
+            _type = type;
 
-        var button:PopUpButton;
+            switch (type) {
+            case TokenType.FOREST:
+                   _tooltip = "Suggestion (Managed Forest)";
+                    _label = "F";
+                   break;
+                case TokenType.INTENSIVE:
+                    _tooltip = "Suggestion (Intensive Grazing)";
+                    _label = "I";
+                   break;
+                case TokenType.MODERATE:
+                   _tooltip = "Suggestion (Moderate Grazing)";
+                    _label = "M";
+                   break;
+                case TokenType.SILVOPASTORAL:
+                   _tooltip = "Suggestion (SilvoPastoral)";
+                    _label = "S";
+                   break;
+                case TokenType.VIVERO:
+                   _tooltip = "Suggestion (Vivero)";
+                    _label = "V";
+                   break;
+                default:
+                   break;
+            }
 
-        public function suggestionHandler(event:Event) :void {
-            Alert.show("Suggestion handled!");
+            alpha = .5;
+
+         }
+
+        public override function get colorCode():uint {
+            var ret:uint = _cell.colorCode;
+
+            switch (_cell.color) {
+                case Color.BLUE:
+                    ret = 0x0000BB;
+                    break;
+                case Color.GREEN:
+                    ret = 0x00BB00;
+                    break;
+                case Color.RED:
+                    ret = 0xBB0000;
+                    break;
+                case Color.YELLOW:
+                    ret = 0xFFCC00;
+                    break;
+                default:
+                    break;
+            }
+
+            return ret;
         }
 
-        public function activateSuggestions (menu:Menu):void {
-            button = new PopUpButton();
-            Alert.show ("Adding suggestion menu to ficha");
-            menu.addEventListener("itemClick", suggestionHandler);
-            button.popUp = menu;
-            addChild(button);
-        }
-
-        public function deactivateSuggestions ():void {
-            removeChild (button);
-            button = null;
+        public override function stopBlink():void{
+            if(_blinkAnim.isPlaying){
+                _blinkAnim.stop();
+            }
+            this.alpha = 0.5;
         }
     }
 }

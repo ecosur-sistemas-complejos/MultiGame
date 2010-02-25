@@ -12,6 +12,6 @@ package mx.ecosur.multigame.flexClient.service;
 
 public enum GameType {
 	
-	PENTE, MANANTIALES, OCULTO;
+	GENTE, MANANTIALES;
 
 }

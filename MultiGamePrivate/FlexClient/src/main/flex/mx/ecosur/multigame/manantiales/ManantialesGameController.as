@@ -59,16 +59,16 @@ package mx.ecosur.multigame.manantiales
         private var _suggestionHandler:SuggestionHandler;
 
         // data objects
-        private var _gameId:int;
         public var _currentPlayer:ManantialesPlayer;
+        public var _game:ManantialesGame;
         private var _players:ArrayCollection;
-        private var _game:ManantialesGame;
+        private var _gameId:int;
         private var _moves:ArrayCollection;
         private var _selectedMoveInd:Number;
         private var _gameGrid:GameGrid;
 
         // server objects
-        private var _gameService:RemoteObject;
+        public var _gameService:RemoteObject;
         private var _msgReceiver:MessageReceiver;
 
         // flags
@@ -128,6 +128,7 @@ package mx.ecosur.multigame.manantiales
             // initialize the move viewer
             _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
             _gameWindow.moveViewer.board = _gameWindow.board;
+
 
             // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
@@ -204,7 +205,7 @@ package mx.ecosur.multigame.manantiales
             return ret;
         }
 
-        private function startMove(evt:MouseEvent):void{
+        public function startMove(evt:MouseEvent):void{
 
             if (!_isMoving && _isTurn){
 
@@ -221,7 +222,7 @@ package mx.ecosur.multigame.manantiales
             }
         }
 
-        private function endMove(evt:DragEvent):void{
+        public function endMove(evt:DragEvent):void{
 
             if (evt.dragSource.hasFormat("token")){
                 _isMoving = false;
@@ -278,16 +279,18 @@ package mx.ecosur.multigame.manantiales
                 move.mode = _game.mode;
                 move.id = 0;
 
+                var call:Object;
+
                 // do move in backend or make suggestion (based on modality)
                 if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
-                    var call:Object = _gameService.doMove(_game, move);
+                    call = _gameService.doMove(_game, move);
                     call.operation = GAME_SERVICE_DO_MOVE_OP;
                 } else if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
                     var suggestion:Suggestion = new Suggestion();
                     suggestion.move = move;
                     suggestion.suggestor = _currentPlayer;
                     suggestion.status = SuggestionStatus.UNEVALUATED;
-                    var call:Object = _gameService.makeSuggestion(_game, suggestion);
+                    call = _gameService.makeSuggestion(_game, suggestion);
                     call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
                 }
 
@@ -654,7 +657,11 @@ package mx.ecosur.multigame.manantiales
             }
 
             _gameWindow.playersViewer.players = _game.players;
+            _gameWindow.currentGame = game;
             _players = _game.players;
+
+            _gameWindow.stateMenuBar.dataProvider = _gameWindow.stateMenu;
+            _gameWindow.stateMenuBar.executeBindings();
 
         }
 
@@ -718,6 +725,16 @@ package mx.ecosur.multigame.manantiales
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
             }
+        }
+
+        private function acceptSuggestion(event:DynamicEvent):void {
+            var suggestion:Suggestion = Suggestion(event.suggestion);
+            _suggestionHandler.accept (suggestion);
+        }
+
+        private function rejectSuggestion(event:DynamicEvent):void {
+            var suggestion:Suggestion = Suggestion(event.suggestion);            
+            _suggestionHandler.reject(suggestion);
         }
 
         /*
@@ -1051,21 +1068,20 @@ package mx.ecosur.multigame.manantiales
 
         private function handleStateChange (game:ManantialesGame):void {
             Alert.show("handleStatechange");
-            trace(this);
             if (_stageChangeAlert == null) {
-                    _stageChangeAlert = new GraphicAlert();
-                    if (_isTurn) {
-                      _stageChangeAlert.text = "Stage complete.  You have won! Progressing to next stage, '" +
-                          game.mode + "'";
-                      _stageChangeAlert.positive = true;
+                _stageChangeAlert = new GraphicAlert();
+                if (_isTurn) {
+                  _stageChangeAlert.text = "Stage complete.  You have won! Progressing to next stage, '" +
+                      game.mode + "'";
+                  _stageChangeAlert.positive = true;
                 } else {
-                      _stageChangeAlert.text = "Stage complete.  You have lost. Progressing to next stage, '" +
-                          game.mode + "'";
-                      _stageChangeAlert.positive = false;
-                    }
-                    _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
-                    PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
-                    PopUpManager.centerPopUp(_stageChangeAlert);
+                  _stageChangeAlert.text = "Stage complete.  You have lost. Progressing to next stage, '" +
+                      game.mode + "'";
+                  _stageChangeAlert.positive = false;
+                }
+                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
+                PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(_stageChangeAlert);
             }
 
             this._game = game;
