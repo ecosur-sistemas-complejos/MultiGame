@@ -194,7 +194,7 @@ package mx.ecosur.multigame.manantiales
         }
 
         /* Drag/drop handlers for making suggestions on other player's boards */
-        public function startSuggestion(evt:DragEvent):void 
+        public function startSuggestion(evt:MouseEvent):void
         {
             Alert.show("Start suggestion.");
 
@@ -207,11 +207,11 @@ package mx.ecosur.multigame.manantiales
             DragManager.doDrag(token, ds, evt, dragImage);
         }
 
-        public function endSuggestion(evt:DragEvent):void {
+        public function endSuggestion(evt:MouseEvent):void {
             var token:ManantialesToken = ManantialesToken(evt.target);
             var move:ManantialesMove = new ManantialesMove();
             move.currentCell = token.cell;
-            move.destinationCell = ManantialesToken(evt.dragSource).cell;
+            move.destinationCell = ManantialesToken(evt.target).cell;
 
             var suggestion:Suggestion = new Suggestion();
             suggestion.move = move;
