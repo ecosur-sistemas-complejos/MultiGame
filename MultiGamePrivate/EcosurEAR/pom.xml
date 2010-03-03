@@ -79,9 +79,9 @@
     </dependencies>
     <profiles>
        <profile>
-           <id>internal</id>
+           <id>deploy</id>
            <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
             <plugins>

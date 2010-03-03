@@ -26,7 +26,6 @@
         <version>${flex-version}</version>
         <type>swc</type>
     </dependency>
-      
   </dependencies>
   <build>
    <sourceDirectory>src/main/flex</sourceDirectory>
@@ -40,9 +39,9 @@
       <configuration>
           <sourceFile>main.mxml</sourceFile>
           <contextRoot>multi-game</contextRoot>
-          <configurationReport>true</configurationReport>          
+          <configurationReport>true</configurationReport>
       </configuration>
-        <dependencies>
+      <dependencies>
         <dependency>
           <groupId>com.adobe.flex</groupId>
           <artifactId>compiler</artifactId>
@@ -55,6 +54,11 @@
           <version>${flex-version}</version>
           <classifier>template</classifier>
           <type>zip</type>
+        </dependency>
+        <dependency>
+          <groupId>com.adobe.flex</groupId>
+          <artifactId>license</artifactId>
+          <version>${flex-version}</version>
         </dependency>
       </dependencies>
       <executions>

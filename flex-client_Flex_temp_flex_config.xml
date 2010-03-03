@@ -7,6 +7,8 @@
     </locale>
     <source-path>
       <path-element>MultiGamePrivate/FlexClient/src/main/flex</path-element>
+      <path-element>MultiGamePrivate/FlexClient/src/main/resources</path-element>
+      <path-element>MultiGamePrivate/FlexClient/src/test/flex</path-element>
     </source-path>
     <library-path append="true">
       <path-element>/Users/awaterma/.m2/repository/com/adobe/flex/framework/flex/3.2.0.3958/flex-3.2.0.3958.swc</path-element>
