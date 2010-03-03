@@ -10,9 +10,10 @@
         [Event(name="complete")]
     </mx:Metadata>
     
-    <mx:Script> 
+    <mx:Script>
         <![CDATA[
-            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
@@ -112,23 +113,60 @@
                 return ret;
             }
 
-            public function stateMenu():XML {
-                var xml:XML = <menuitem label={state} />;
+            /*public function stateMenu():XML {
+                var xml:XML = <menuitem label={state}/>;
                 return xml;
-            }
+            }*/
 
-            /*
+
             public function stateMenu():XML {
                 var xml:XML = <menuitem label="States">
-                    <menuitem label="Setup" type="radio" groupName="states" toggled="{state} == 'Setup'"/>
-                    <menuitem label="Classic" type="radio" groupName="states" toggled="{state} == 'Classic'"/>
-                    <menuitem label="Puzzle" type="radio" groupName="states" toggled="{state} == 'Puzzle'"/>
-                    <menuitem label="Silvopastoral" type="radio" groupName="states" toggled="{state} == 'Silvopastoral'"/>
-                    <menuitem label="Advanced Puzzle" type="radio" groupName="states" toggled="{state} == 'Advanced Puzzle'"/>
+                    <menuitem label="Classic" type="radio" groupName="states" toggled="checkState('BASIC')"/>
+                    <menuitem label="Puzzle" type="radio" groupName="states" toggled="checkState('BASIC_PUZZLE')"/>
+                    <menuitem label="Silvopastoral" type="radio" groupName="states" toggled="checkState('SILVOPASTORAL')"/>
+                    <menuitem label="Advanced Puzzle" type="radio" groupName="states" toggled="checkState('SILVO_PUZZLE')"/>
                     </menuitem>;
                 
                 return xml;
-            }*/
+            }
+
+            private function checkState (compare:String):Boolean {
+                return (this._currentGame.mode == compare);
+            }
+
+            private function initMenu (event:Event):void {
+                for (var i:int = 0; i < stateMenu.length; i++) {
+                    Alert.show (stateMenu [ i ].data);
+                    if (stateMenu [ i ].data.label == _currentGame.mode) {
+                        stateMenu [ i ].data.toggled = true;
+                        Alert.show ("Toggled: " + stateMenu [ i ].data.label);
+                        break;
+                    }
+                }
+
+            }
+
+            private function handleStateMenuClick(event:MenuEvent):void {
+                /* Change game state */
+                var state:String;
+                switch (event.label) {
+                    case "Classic":
+                        state = Mode.CLASSIC;
+                        break;
+                    case "Puzzle":
+                        state = Mode.BASIC_PUZZLE;
+                        break;
+                    case "Silvopastoral":
+                        state = Mode.SILVOPASTORAL;
+                        break;
+                    case "Advanced Puzzle":
+                        state = Mode.SILVO_PUZZLE;
+                        break;
+                    default:                        
+                        break;
+                }
+                _controller.changeState(state);
+            }
 
             private function quitGame():void {
                 _controller.quitGame(currentPlayer);                 
@@ -152,13 +190,12 @@
             labelField="@label" 
             showRoot="true"            
             itemClick="handleMenuItemClick(event)"/>
-        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
+        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"
+                    creationComplete="initMenu(event)" itemClick="handleStateMenuClick(event)"/>
     </mx:ApplicationControlBar>    
     <mx:states>
-        <mx:State name="WAIT">
+        <mx:State name="CLASSIC">
             <mx:RemoveChild  target="{moveViewer}"/>
-        </mx:State>
-        <mx:State name="CLASSIC" basedOn="WAIT">
             <mx:AddChild relativeTo="{leftBox}">
                 <mx:Panel title="Managed Forest" width="100%" id="mfp">
                     <token:ForestTokenStore id="forestStore"
@@ -182,42 +219,6 @@
             </mx:AddChild>
         </mx:State>
         <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC" />
-        <mx:State name="BASIC_PUZZLE_SOLICIT" basedOn="BASIC_PUZZLE">
-            <!-- Solicits suggestions from other players -->
-            <mx:RemoveChild target="{mfp}"/>
-            <mx:RemoveChild target="{mgp}"/>
-            <mx:RemoveChild target="{igp}"/>
-            <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Managed Forest" width="100%" id="SBmfp">
-                    <token:ForestTokenStore id="SforestStore"
-                        currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                        width="100%"/>
-                </mx:Panel>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Moderate Grazing" width="100%" id="SBmgp">
-                   <token:ModerateTokenStore id="SmoderateStore"
-                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                    width="100%"/>
-                </mx:Panel>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
-               <mx:Panel title="Intensive Grazing" width="100%" id="SBigp">
-                <token:IntensiveTokenStore id="SintensiveStore"
-                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                    width="100%"/>
-               </mx:Panel>
-            </mx:AddChild>
-        </mx:State>
-        <mx:State name="BASIC_PUZZLE_RESPONSE" basedOn="BASIC_PUZZLE">
-            <!-- Allows current player to respond to suggestions -->
-            <!--
-            <mx:AddChild relativeTo="{leftBox}">
-                <manantiales:SuggestionViewer id="basicSuggestionViewer" title="Suggested Moves"
-                    height="100%" width="100%"/>
-            </mx:AddChild>-->
-        </mx:State>
-
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
@@ -235,59 +236,6 @@
            </mx:AddChild>
         </mx:State>
         <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL"/>
-        <mx:State name="SILVO_PUZZLE_SOLICIT" basedOn="SILVO_PUZZLE">
-            <mx:RemoveChild target="{mfp}"/>
-            <mx:RemoveChild target="{mgp}"/>
-            <mx:RemoveChild target="{igp}"/>
-            <mx:RemoveChild target="{sep}"/>
-            <mx:RemoveChild target="{sap}"/>            
-
-            <!-- Solicits suggestions from other players -->
-            <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Managed Forest" width="100%" id="SVmfp">
-                    <token:ForestTokenStore id="SVforestStore"
-                        currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                        width="100%"/>
-                </mx:Panel>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Moderate Grazing" width="100%" id="SVmgp">
-                   <token:ModerateTokenStore id="SVmoderateStore"
-                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                    width="100%"/>
-                </mx:Panel>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
-               <mx:Panel title="Intensive Grazing" width="100%" id="SVigp">
-                <token:IntensiveTokenStore id="SVintensiveStore"
-                    currentPlayer="{activePlayer}" tokenSize="{board.tokenSize}"
-                    width="100%"/>
-               </mx:Panel>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
-            <mx:Panel title="Silvopastoral Establishment" width="100%" id="SVsep">
-               <token:ViveroTokenStore id="SVviveroStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
-                width="100%"/>
-            </mx:Panel>
-           </mx:AddChild>
-           <mx:AddChild relativeTo="{leftBox}">
-            <mx:Panel title="Silvopastoral Active" width="100%" id="SVsap">
-               <token:SilvopastoralTokenStore id="SVsilvoStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
-                width="100%"/>
-            </mx:Panel>
-           </mx:AddChild>
-        </mx:State>
-        <mx:State name="SILVO_PUZZLE_RESPONSE" basedOn="SILVO_PUZZLE">
-            <!-- Allows current player to respond to suggestions -->
-            <!--
-            <mx:AddChild relativeTo="{leftBox}">
-                <manantiales:SuggestionViewer id="silvoSuggestionViewer" title="Suggested Moves"
-                    height="100%" width="100%"/>
-            </mx:AddChild>
-            -->
-        </mx:State>
     </mx:states>
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
         paddingLeft="10" paddingRight="10" id="hbox">

@@ -3,14 +3,19 @@
 package mx.ecosur.multigame.manantiales.token
 {
     import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
 
     public class SuggestionToken extends ManantialesToken {
 
-        public function SuggestionToken (type:String) {
-            _type = type;
+        private var _suggestion:Suggestion;
 
-            switch (type) {
+        public function SuggestionToken (suggestion:Suggestion) {
+            _suggestion = suggestion;
+            var destination:Ficha = Ficha(suggestion.move.destinationCell);
+
+            switch (destination.type) {
             case TokenType.FOREST:
                    _tooltip = "Suggestion (Managed Forest)";
                     _label = "F";
@@ -42,7 +47,7 @@ package mx.ecosur.multigame.manantiales.token
         public override function get colorCode():uint {
             var ret:uint = _cell.colorCode;
 
-            switch (_cell.color) {
+            switch (_suggestion.suggestor.color) {
                 case Color.BLUE:
                     ret = 0x0000BB;
                     break;

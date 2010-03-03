@@ -28,7 +28,6 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.Mode;
-    import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
     import mx.ecosur.multigame.util.MessageReceiver;
@@ -85,8 +84,7 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
-        private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
-       //private static const GAME_SERVICE_CHANGE_MODE_OP:String = "changeMode";  // Game model, mode
+        private static const GAME_SERVICE_CHANGE_MODE_OP:String = "changeMode";  // Game model, mode
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
         {
@@ -282,17 +280,8 @@ package mx.ecosur.multigame.manantiales
                 var call:Object;
 
                 // do move in backend or make suggestion (based on modality)
-                if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
-                    call = _gameService.doMove(_game, move);
-                    call.operation = GAME_SERVICE_DO_MOVE_OP;
-                } else if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
-                    var suggestion:Suggestion = new Suggestion();
-                    suggestion.move = move;
-                    suggestion.suggestor = _currentPlayer;
-                    suggestion.status = SuggestionStatus.UNEVALUATED;
-                    call = _gameService.makeSuggestion(_game, suggestion);
-                    call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
-                }
+                call = _gameService.doMove(_game, move);
+                call.operation = GAME_SERVICE_DO_MOVE_OP;
 
                 _executingMove = move;
 
@@ -302,31 +291,25 @@ package mx.ecosur.multigame.manantiales
 
                 var newToken:ManantialesToken;
 
-                if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
-                    if (token is ForestToken) {
-                        _gameWindow.forestStore.removeToken();
-                        newToken = new ForestToken();
-                    }
-                    else if (token is IntensiveToken) {
-                        _gameWindow.intensiveStore.removeToken();
-                        newToken = new IntensiveToken();
-                    }
-                    else if (token is ModerateToken) {
-                        _gameWindow.moderateStore.removeToken();
-                        newToken = new ModerateToken();
-                    }
-                    else if (token is ViveroToken) {
-                            _gameWindow.viveroStore.removeToken();
-                            newToken = new ViveroToken();
-                    }
-                    else if (token is SilvopastoralToken) {
-                            _gameWindow.silvoStore.removeToken();
-                            newToken = new SilvopastoralToken();
-                    }
-                } else {
-                    newToken = new SuggestionToken (token.ficha.type);
-                    /* Change to waiting mode */
-                    _gameWindow.currentState = "WAIT";
+                if (token is ForestToken) {
+                    _gameWindow.forestStore.removeToken();
+                    newToken = new ForestToken();
+                }
+                else if (token is IntensiveToken) {
+                    _gameWindow.intensiveStore.removeToken();
+                    newToken = new IntensiveToken();
+                }
+                else if (token is ModerateToken) {
+                    _gameWindow.moderateStore.removeToken();
+                    newToken = new ModerateToken();
+                }
+                else if (token is ViveroToken) {
+                        _gameWindow.viveroStore.removeToken();
+                        newToken = new ViveroToken();
+                }
+                else if (token is SilvopastoralToken) {
+                        _gameWindow.silvoStore.removeToken();
+                        newToken = new SilvopastoralToken();
                 }
                 
                 newToken.cell = destination;
@@ -341,6 +324,18 @@ package mx.ecosur.multigame.manantiales
                 var boardCell:BoardCell = BoardCell(evt.currentTarget);
                 boardCell.reset();
             }
+        }
+
+        /**
+         * Changes GameState
+         */
+        public function changeState (state:String) {
+            //if (_game.players.length == 4) {
+                var callGrid:Object = _gameService.changeMode(this._gameId, state);
+                callGrid.operation = GAME_SERVICE_CHANGE_MODE_OP;
+            //} else {
+            //    Alert.show("Mode can only be changed in a full game!");
+            //}
         }
 
         /*
@@ -581,7 +576,7 @@ package mx.ecosur.multigame.manantiales
 
                 for (var i:int = 0; i < _alerts.length; i++) {
                         var condition:CheckConstraintAlert = CheckConstraintAlert(_alerts.getItemAt(i));
-                        if (condition.acknowledged == true) {
+                        if (condition.acknowledged) {
                                 idx = i;
                                 break;
                         }
@@ -594,13 +589,19 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChangeResult (event:DynamicEvent):void {
-           PopUpManager.removePopUp(this._stageChangeAlert);
+           PopUpManager.removePopUp(_stageChangeAlert);
            _stageChangeAlert = null;
 
            /* Reinitialize the grid in case a move was picked from the previous
            state change */
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+
+            var callPlayers:Object = _gameService.getPlayers(_gameId);
+            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+
+            var callMoves:Object = _gameService.getMoves(_gameId);
+            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
         }
 
         private function handleEndResult (event:DynamicEvent):void {
@@ -611,7 +612,7 @@ package mx.ecosur.multigame.manantiales
 
         private function endTurn():void{
                    /* return the window to the default state */
-                _gameWindow.currentState = "WAIT";
+                _gameWindow.currentState = "";
         }
 
         public function set isTurn(isTurn:Boolean):void{
@@ -671,8 +672,8 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function addMove(move:ManantialesMove):void{
-            if (move.mode == _game.mode) {
 
+            if (move.mode == _game.mode) {
                 _gameWindow.currentState = "";
 
                 //get last move in game
@@ -694,7 +695,7 @@ package mx.ecosur.multigame.manantiales
                         _selectedMoveInd ++;
                         doMove(move);
                     }
-                }else{
+                } else {
 
                     // Search for move in reverse order because its most likely to be the last move
                     var oldMove:ManantialesMove;
@@ -705,6 +706,48 @@ package mx.ecosur.multigame.manantiales
                             _gameWindow.moveViewer.updateMove(move);
                             break;
                         }
+                    }
+                }
+
+
+                /* Finally, if game is in puzzle mode, add suggestion handlers to move */
+                if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
+                    /* find the token associated with the move */
+                    var suggestable:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
+                        move.destinationCell.column, move.destinationCell.row));
+                    if (suggestable != null) {
+                        var ficha:Ficha = Ficha (move.destinationCell);
+                             //create new token
+                        var token:ManantialesToken;
+
+                        switch (ficha.type) {
+                            case TokenType.FOREST:
+                               token = new ForestToken();
+                               break;
+                            case TokenType.INTENSIVE:
+                               token = new IntensiveToken();
+                               break;
+                            case TokenType.MODERATE:
+                               token = new ModerateToken();
+                               break;
+                            case TokenType.SILVOPASTORAL:
+                               token = new SilvopastoralToken();
+                               break;
+                            case TokenType.VIVERO:
+                               token = new ViveroToken();
+                               break;
+                            default:
+                               Alert.show("Unable to determine type of ficha:" + ficha.toString());
+                               break;
+                        }
+
+                        token.cell = move.destinationCell;
+                        token.ficha = ficha;
+                        token.mouseEnabled = true;                        
+                        token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+                        token.addEventListener(MouseEvent.MOUSE_UP, _suggestionHandler.endSuggestion);
+                        suggestable.token = token;
+
                     }
                 }
             }
@@ -725,16 +768,6 @@ package mx.ecosur.multigame.manantiales
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
             }
-        }
-
-        private function acceptSuggestion(event:DynamicEvent):void {
-            var suggestion:Suggestion = Suggestion(event.suggestion);
-            _suggestionHandler.accept (suggestion);
-        }
-
-        private function rejectSuggestion(event:DynamicEvent):void {
-            var suggestion:Suggestion = Suggestion(event.suggestion);            
-            _suggestionHandler.reject(suggestion);
         }
 
         /*
@@ -1067,34 +1100,19 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChange (game:ManantialesGame):void {
-            Alert.show("handleStatechange");
             if (_stageChangeAlert == null) {
                 _stageChangeAlert = new GraphicAlert();
-                if (_isTurn) {
-                  _stageChangeAlert.text = "Stage complete.  You have won! Progressing to next stage, '" +
+                _stageChangeAlert.text = "Stage complete. Progressing to next stage, '" +
                       game.mode + "'";
-                  _stageChangeAlert.positive = true;
-                } else {
-                  _stageChangeAlert.text = "Stage complete.  You have lost. Progressing to next stage, '" +
-                      game.mode + "'";
-                  _stageChangeAlert.positive = false;
-                }
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
+
+                this._game = game;
+                this._gameGrid = game.grid;
+                this._moves = new ArrayCollection();
+                this._gameWindow.currentState =  _game.mode;
             }
-
-            this._game = game;
-            this._gameGrid = game.grid;
-            this._moves = new ArrayCollection();
-
-            // get the game grid, players and moves
-            var callGrid:Object = _gameService.getGameGrid(_gameId);
-            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-            var callPlayers:Object = _gameService.getPlayers(_gameId);
-            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
-            var callMoves:Object = _gameService.getMoves(_gameId);
-            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
         }
 
         private function handleGameEnd (game:ManantialesGame):void {

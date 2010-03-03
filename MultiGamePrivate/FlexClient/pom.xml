@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mx.ecosur</groupId>
   <artifactId>flex-client</artifactId>
-  <packaging>war</packaging>
+  <packaging>swf</packaging>
   <name>Flex Client</name>
   <description>Flex UI implementation for our participatory modeling games.</description>
   <parent>
@@ -13,77 +13,20 @@
     </parent>
   <dependencies>
     <dependency>
-       <groupId>com.adobe.blazeds</groupId>
-       <artifactId>blazeds-core</artifactId>
-       <version>3.2.0.3978</version>
-    </dependency>
-    <dependency>
-       <groupId>com.adobe.blazeds</groupId>
-       <artifactId>blazeds-common</artifactId>
-       <version>3.2.0.3978</version>
-    </dependency>
-    <dependency>
-       <groupId>com.adobe.blazeds</groupId>
-       <artifactId>blazeds-remoting</artifactId>
-       <version>3.2.0.3978</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <version>5.1.0.M1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <version>5.1.0.M1</version>
-    </dependency>
-    <dependency>
         <groupId>mx.ecosur</groupId>
-        <artifactId>multi-game-common</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
-        <type>ejb-client</type>
-    </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>grid-common</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>gente</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>manantiales</artifactId>
+        <artifactId>flex-ds</artifactId>
         <version>${version}</version>
-    </dependency>
+    </dependency>    
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>3.2.0.3958</version>
+        <type>pom</type>
     </dependency>
-    <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <version>1.0</version>
-    </dependency>
-      <dependency>
-       <groupId>com.adobe.flex.framework</groupId>
-         <artifactId>flex-framework</artifactId>
-         <version>3.2.0.3958</version>
-         <type>pom</type>
-       </dependency>
   </dependencies>
   <build>
-   <finalName>ecosur-flex-client</finalName>
-   <!-- Commenting out for use with Exec plugin, for now, sonatype is used just
-        to get IDE to validate as a Flex facet -->
-   <!--
    <sourceDirectory>src/main/flex</sourceDirectory>
    <testSourceDirectory>src/test/flex</testSourceDirectory>
-   -->
    <plugins>
     <plugin>
       <groupId>org.sonatype.flexmojos</groupId>
@@ -91,56 +34,16 @@
       <version>3.2.0</version>
       <extensions>true</extensions>
       <configuration>
-        <!-- put your configuration options here -->
-        <debug>true</debug>
-        <allowSourcePathOverlap>true</allowSourcePathOverlap>
+          <sourceFile>main.mxml</sourceFile>
+          <contextRoot>multi-game</contextRoot>
+          <configurationReport>true</configurationReport>          
       </configuration>
+      <executions>
+        <execution>
+            <goals><goal>optimize</goal></goals>
+        </execution>
+      </executions>
     </plugin>
-    <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-            <execution>
-                <id>compile-main</id>
-                <phase>compile</phase>
-                <goals>
-                    <goal>exec</goal>
-                </goals>
-                <configuration>
-                    <executable>${flexSDK}/bin/mxmlc</executable>
-                    <workingDirectory>src/main/flex</workingDirectory>
-                    <arguments>
-                        <argument>-debug</argument>
-                        <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
-                        <argument>-compiler.strict=true</argument>
-                        <argument>-compiler.context-root=${artifactId}</argument>
-                        <argument>-output=../webapp/main.swf</argument>
-                        <argument>main.mxml</argument>
-                    </arguments>
-                </configuration>
-            </execution>
-            <execution>
-                <id>compile-replay</id>
-                <phase>compile</phase>
-                <goals>
-                    <goal>exec</goal>
-                </goals>
-                <configuration>
-                    <executable>${flexSDK}/bin/mxmlc</executable>
-                    <workingDirectory>src/main/flex</workingDirectory>
-                    <arguments>
-                        <argument>-compiler.services=../webapp/WEB-INF/flex/services-config.xml</argument>
-                        <argument>-compiler.strict=true</argument>
-                        <argument>-compiler.context-root=${artifactId}</argument>
-                        <argument>-output=../webapp/PenteGameReplay.swf</argument>
-                        <argument>PenteGameReplay.mxml</argument>
-                    </arguments>
-                </configuration>
-            </execution>
-        </executions>
-    </plugin>
-       
     </plugins>
   </build>
 </project>

@@ -18,104 +18,104 @@ import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 @Entity
 public class ManantialesPlayer extends GridPlayer {
-	
-	private static final long serialVersionUID = 2815240265995571202L;
-	
-	private int points, forested, moderate, intensive, vivero, silvo;
-	
-	public ManantialesPlayer () {
-		super();
-	}
-	
-	public ManantialesPlayer (GridRegistrant player, Color favoriteColor) {
-		super (player, favoriteColor);
-		points = 0;
-	}
 
-	public int getScore() {
-		return points;
-	}
-	
-	public void setScore (int score) {
-		this.points = score;
-	}
+    private static final long serialVersionUID = 2815240265995571202L;
 
-	/**
-	 * @return the forested
-	 */
-	public int getForested() {
-		return forested;
-	}
+    private int points, forested, moderate, intensive, vivero, silvo;
 
-	/**
-	 * @return the moderate
-	 */
-	public int getModerate() {
-		return moderate;
-	}
+    public ManantialesPlayer () {
+        super();
+    }
 
-	/**
-	 * @return the intensive
-	 */
-	public int getIntensive() {
-		return intensive;
-	}
+    public ManantialesPlayer (GridRegistrant player, Color favoriteColor) {
+        super (player, favoriteColor);
+        points = 0;
+    }
 
-	/**
-	 * @return the vivero
-	 */
-	public int getVivero() {
-		return vivero;
-	}
+    public int getScore() {
+        return points;
+    }
 
-	/**
-	 * @return the silvo
-	 */
-	public int getSilvo() {
-		return silvo;
-	}
+    public void setScore (int score) {
+        this.points = score;
+    }
 
-	/**
-	 * @param forested the forested to set
-	 */
-	public void setForested(int forested) {
-		this.forested = forested;
-	}
+    /**
+     * @return the forested
+     */
+    public int getForested() {
+        return forested;
+    }
 
-	/**
-	 * @param moderate the moderate to set
-	 */
-	public void setModerate(int moderate) {
-		this.moderate = moderate;
-	}
+    /**
+     * @return the moderate
+     */
+    public int getModerate() {
+        return moderate;
+    }
 
-	/**
-	 * @param intensive the intensive to set
-	 */
-	public void setIntensive(int intensive) {
-		this.intensive = intensive;
-	}
+    /**
+     * @return the intensive
+     */
+    public int getIntensive() {
+        return intensive;
+    }
 
-	/**
-	 * @param vivero the vivero to set
-	 */
-	public void setVivero(int vivero) {
-		this.vivero = vivero;
-	}
+    /**
+     * @return the vivero
+     */
+    public int getVivero() {
+        return vivero;
+    }
 
-	/**
-	 * @param silvo the silvo to set
-	 */
-	public void setSilvo(int silvo) {
-		this.silvo = silvo;
-	}
-	
-	public void reset() {
-		this.forested = 0;
-		this.intensive = 0;
-		this.moderate = 0;
-		this.silvo = 0;
-		this.vivero = 0;
-		this.points = 0;
-	}
+    /**
+     * @return the silvo
+     */
+    public int getSilvo() {
+        return silvo;
+    }
+
+    /**
+     * @param forested the forested to set
+     */
+    public void setForested(int forested) {
+        this.forested = forested;
+    }
+
+    /**
+     * @param moderate the moderate to set
+     */
+    public void setModerate(int moderate) {
+        this.moderate = moderate;
+    }
+
+    /**
+     * @param intensive the intensive to set
+     */
+    public void setIntensive(int intensive) {
+        this.intensive = intensive;
+    }
+
+    /**
+     * @param vivero the vivero to set
+     */
+    public void setVivero(int vivero) {
+        this.vivero = vivero;
+    }
+
+    /**
+     * @param silvo the silvo to set
+     */
+    public void setSilvo(int silvo) {
+        this.silvo = silvo;
+    }
+
+    public void reset() {
+        this.forested = 0;
+        this.intensive = 0;
+        this.moderate = 0;
+        this.silvo = 0;
+        this.vivero = 0;
+        this.points = 0;
+    }
 }

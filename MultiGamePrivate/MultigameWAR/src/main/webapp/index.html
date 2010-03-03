@@ -25,7 +25,7 @@ body { margin: 0px; overflow:hidden }
 var requiredMajorVersion = 9;
 // Minor version of Flash required
 var requiredMinorVersion = 0;
-// Minor version of Flash required
+// Revision of Flash required
 var requiredRevision = 28;
 // -----------------------------------------------------------------------------
 // -->
@@ -55,10 +55,10 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 		"width", "100%",
 		"height", "100%",
 		"align", "middle",
-		"id", "main",
+		"id", "flex-client-1.1.0-SNAPSHOT",
 		"quality", "high",
 		"bgcolor", "#333333",
-		"name", "main",
+		"name", "flex-client-1.1.0-SNAPSHOT",
 		"allowScriptAccess","sameDomain",
 		"type", "application/x-shockwave-flash",
 		"pluginspage", "http://www.adobe.com/go/getflashplayer"
@@ -67,14 +67,14 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 	// if we've detected an acceptable version
 	// embed the Flash Content SWF when all tests are passed
 	AC_FL_RunContent(
-			"src", "main",
+			"src", "flex-client-1.1.0-SNAPSHOT",
 			"width", "100%",
 			"height", "100%",
 			"align", "middle",
-			"id", "main",
+			"id", "flex-client-1.1.0-SNAPSHOT",
 			"quality", "high",
 			"bgcolor", "#333333",
-			"name", "main",
+			"name", "flex-client-1.1.0-SNAPSHOT",
 			"allowScriptAccess","sameDomain",
 			"type", "application/x-shockwave-flash",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
@@ -91,7 +91,7 @@ if ( hasProductInstall && !hasRequestedVersion ) {
   	<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 			id="main" width="100%" height="100%"
 			codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">
-			<param name="movie" value="main.swf" />
+			<param name="movie" value="flex-client-1.1.0-SNAPSHOT.swf" />
 			<param name="quality" value="high" />
 			<param name="bgcolor" value="#333333" />
 			<param name="allowScriptAccess" value="sameDomain" />

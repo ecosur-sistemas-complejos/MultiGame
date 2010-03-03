@@ -24,6 +24,7 @@ import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
 import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.model.GameGrid;
@@ -102,8 +103,6 @@ public class GameService {
                     break;
                 case MANANTIALES:
                     game = new ManantialesGame();
-                    //TODO: fix hack for testing puzzle mode 
-                    ((ManantialesGame) game).setMode (Mode.CLASSIC);
                     break;
             }
 
@@ -200,6 +199,15 @@ public class GameService {
                         ret = new ServiceGameEvent ((GridGame) model.getImplementation(), gp);
                         break;
                     }
+                }
+            } else if (gameType.equals(GameType.MANANTIALES)) {
+                GridGame game = new ManantialesGame ();
+                Game model = new Game (game);
+                model = registrar.registerPlayer(model, new Registrant (registrant));
+                for (int i = 0; i < strategies.length; i++) {
+                    GridRegistrant robot = new GridRegistrant (strategies [ i ] + "-" + (i + 1));
+                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN);
+                    model = registrar.registerAgent (model, new Agent (agent));
                 }
             }
 
@@ -299,6 +307,25 @@ public class GameService {
 
     /** Todo:  Consider separate Java code for Manantiales? */
     public GameImpl changeMode (int gameId, Mode mode) {
+        /* Rules shift mode on initialize; so mode needs to be stepped to previous "mode"
+           in order to re-initialize game.
+         */
+        switch (mode) {
+            case CLASSIC:
+                mode = null;
+                break;
+            case BASIC_PUZZLE:
+                mode = Mode.CLASSIC;
+                break;
+            case SILVOPASTORAL:
+                mode = Mode.BASIC_PUZZLE;
+                break;
+            case SILVO_PUZZLE:
+                mode = Mode.SILVOPASTORAL;
+                break;
+        }
+
+
         SharedBoardRemote sharedBoard = getSharedBoard();
         Game game = sharedBoard.getGame(gameId);
         if (game.getImplementation() == null)
@@ -316,7 +343,6 @@ public class GameService {
 
         /* Store change in game into backend */
         sharedBoard.shareGame(impl);
-
 
         /* Send change */
         MessageSender sender = game.getMessageSender();

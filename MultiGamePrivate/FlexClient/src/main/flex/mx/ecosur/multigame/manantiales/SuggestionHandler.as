@@ -3,28 +3,36 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.geom.Point;
+    import flash.events.MouseEvent;    
 
     import mx.controls.Alert;
     import mx.controls.Button;
-    import mx.containers.Panel;
-    import mx.collections.ArrayCollection;
+    import mx.core.DragSource;
+    import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
     import mx.ecosur.multigame.manantiales.entity.Suggestion;
+    import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
+    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.SuggestionToken;
     import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
-    import mx.ecosur.multigame.manantiales.token.ManantialesTokenStore;
     import mx.effects.AnimateProperty;
+    import mx.events.DragEvent;
+    import mx.managers.DragManager;
 
     public class SuggestionHandler {
 
         private var _controller:ManantialesGameController;
 
         private var _player:ManantialesPlayer;
+
+        public var _isMoving:Boolean;
+
+        private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";        
 
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
@@ -97,7 +105,7 @@ package mx.ecosur.multigame.manantiales
             endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
 
             //create new token
-            var token:SuggestionToken = new SuggestionToken (destination.type);
+            var token:SuggestionToken = new SuggestionToken (suggestion);
 
             token.cell = move.destinationCell;
             token.width = endSize;
@@ -134,18 +142,8 @@ package mx.ecosur.multigame.manantiales
             apXScale.play();
             apYScale.play();
 
-            /* Add to suggestion viewer */
-            /*
-            if (_controller._game.mode == "BASIC_PUZZLE")
-                _controller._gameWindow.basicSuggestionViewer.addSuggestion(suggestion);
-            else if (_controller._game.mode == "SILVO_PUZZLE")
-                _controller._gameWindow.silvoSuggestionViewer.addSuggestion(suggestion);
-            */
-
             if (suggestion.suggestor.id != _player.id) {               
                 activateSolicitation(_controller._game.mode);
-            } else {
-                activateResponse(_controller._game.mode);
             }
         }
 
@@ -153,52 +151,11 @@ package mx.ecosur.multigame.manantiales
         public function activateSolicitation (mode:String):void {
             if (mode == "BASIC_PUZZLE") {
                 mode = "BASIC_PUZZLE_SOLICIT";
+
             } else if (mode == "SILvO_PUZZLE") {
                 mode = "SILVO_PUZZLE_SOLICIT";
             }
             _controller._gameWindow.currentState = mode;
-            initializePanels(mode);
-        }
-
-        public function activateResponse (mode:String):void {
-            if (mode == "BASIC_PUZZLE") {
-                mode = "BASIC_PUZZLE_RESPONSE";
-                //_controller._gameWindow.basicSuggestionViewer.board = _controller._gameWindow.board;
-            } else if (mode == "SILvO_PUZZLE") {
-                mode = "SILVO_PUZZLE_RESPONSE";
-                //_controller._gameWindow.silvoSuggestionViewer.board = _controller._gameWindow.board;
-            }
-            _controller._gameWindow.currentState = mode;
-            initializePanels(mode);
-        }
-
-        private function initializePanels (mode:String):void {
-            if (mode == "BASIC_PUZZLE_SOLICIT") {
-                var panels:ArrayCollection = new ArrayCollection();
-
-                // setup token store panels for hiding
-                panels.addItem(_controller._gameWindow.SBmfp);
-                panels.addItem(_controller._gameWindow.SBmgp);
-                panels.addItem(_controller._gameWindow.SBigp);
-            } else if (mode == "SILVO_PUZZLE_SOLICIT") {
-                panels.addItem(_controller._gameWindow.SVmfp);
-                panels.addItem(_controller._gameWindow.SVmgp);
-                panels.addItem(_controller._gameWindow.SVigp);
-                panels.addItem(_controller._gameWindow.SVsep);
-                panels.addItem(_controller._gameWindow.SVsap);
-            }
-
-            // initialize token stores
-            for (var i:int = 0; i < panels.length; i++) {
-                var p:Panel = Panel(panels.getItemAt(i));
-                var store:ManantialesTokenStore = ManantialesTokenStore(p.getChildAt(0));
-                store.startMoveHandler = _controller.startMove;
-                store.endMoveHandler = _controller.endMove;
-                store.currentPlayer = _controller._gameWindow.activePlayer;
-                store.reset();
-                store.visible=true;
-                store.active=true;
-            }
         }
 
         public function accept(suggestion:Suggestion):void {
@@ -236,5 +193,33 @@ package mx.ecosur.multigame.manantiales
             }
         }
 
+        /* Drag/drop handlers for making suggestions on other player's boards */
+        public function startSuggestion(evt:DragEvent):void 
+        {
+            Alert.show("Start suggestion.");
+
+            var token:ManantialesToken = ManantialesToken(evt.currentTarget);
+            var ds:DragSource = new DragSource();
+            ds.addData(token, "token");
+
+            // create proxy image and start drag
+            var dragImage:IFlexDisplayObject = token.createDragImage();
+            DragManager.doDrag(token, ds, evt, dragImage);
+        }
+
+        public function endSuggestion(evt:DragEvent):void {
+            var token:ManantialesToken = ManantialesToken(evt.target);
+            var move:ManantialesMove = new ManantialesMove();
+            move.currentCell = token.cell;
+            move.destinationCell = ManantialesToken(evt.dragSource).cell;
+
+            var suggestion:Suggestion = new Suggestion();
+            suggestion.move = move;
+            suggestion.suggestor = this._controller._currentPlayer;
+            suggestion.status = SuggestionStatus.UNEVALUATED;
+            var call:Object = new Object();
+            call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
+            call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
+        }
     }
 }

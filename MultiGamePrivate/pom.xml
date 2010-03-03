@@ -21,7 +21,9 @@
             <modules>
                 <module>Manantiales</module>
                 <module>Tablon</module>
+                <module>FlexDS</module>
                 <module>FlexClient</module>
+                <module>MultigameWAR</module>
                 <module>EcosurJPA</module>
                 <module>EcosurEAR</module>
                 <module>EcosurIT</module>                 
@@ -34,18 +36,6 @@
                 <module>Tablon</module>
                 <module>EcosurExperiments</module>
             </modules>
-        </profile>
-        <profile>
-            <id>all</id>
-            <modules>
-                <module>Manantiales</module>
-                <module>Tablon</module>
-                <module>FlexClient</module>
-                <module>EcosurJPA</module>
-                <module>EcosurEAR</module>
-                <module>EcosurIT</module> 
-                <module>EcosurExperiments</module>                
-            </modules>
-        </profile>   
+        </profile>  
     </profiles>
 </project>

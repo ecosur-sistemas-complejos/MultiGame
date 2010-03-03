@@ -11,21 +11,12 @@
     
     <mx:Script>
         <![CDATA[
-        import mx.core.Application;
         import mx.managers.CursorManager;
         import mx.managers.PopUpManager;
-        import mx.controls.Alert;
-        import mx.events.ResizeEvent;
         import mx.events.MenuEvent;
-        import mx.collections.ArrayCollection;
-
-        import flash.net.URLLoader;
 
         import mx.ecosur.multigame.component.HelpPanel;
-        import mx.ecosur.multigame.entity.Game;
-        import mx.ecosur.multigame.entity.Move;
         import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.entity.ChatMessage;
         import mx.ecosur.multigame.gente.entity.GenteGame;
 
         private var _controller:GenteGameController;
