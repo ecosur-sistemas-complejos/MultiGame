@@ -20,15 +20,10 @@
 
     private function doRegister(eventObj:MouseEvent):void {
         var strategies:Array;
-
-        if (this.currentState == "GenteAI") {
-            strategies = [ gentePlayer2.selectedItem.data,
-                gentePlayer3.selectedItem.data, gentePlayer4.selectedItem.data ];
-          gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
-        } else if (this.currentState == "ManantialesAI") {
-            strategies = [ gentePlayer2.selectedItem.data,
-                gentePlayer3.selectedItem.data, gentePlayer4.selectedItem.data ];
-          gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
+        if (robots.selected) {
+            strategies = [ player2.selectedItem.data,
+                player3.selectedItem.data, player4.selectedItem.data ];
+            gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
         } else {
             gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
         }
@@ -52,17 +47,23 @@
 
     private function showAIPlayers(show:Boolean):void {
         if (show) {
+            var i:int;
             if (gameType.selectedItem.data == "GENTE") {
-                this.currentState = "GenteAI";
-                invalidateProperties();
-            } else if (gameType.selectedItem.data =="MANANTIALES") {
-                this.currentState = "ManantialesAI";
-                invalidateProperties();
-            }
-            
-            Alert.show("Switched state to '" + this.currentState + "'");
+                agentList.removeAll();
+                for (i = 0; i < genteAgentList.length; i++) {
+                    agentList.addItem(genteAgentList [ i ]);
+                }
+            } else if (gameType.selectedItem.data == "MANANTIALES") {
+                agentList.removeAll();
+                for (i = 0; i < manAgentList.length; i++) {
+                    agentList.addItem(manAgentList[ i ]);
+                }
+            }                                    
+            aiPlayers.visible = true;
+            aiPlayers.percentHeight = 100;
         } else {
-            this.currentState = null;           
+            aiPlayers.visible = false;
+            aiPlayers.height = 0;
         }
     }
 
@@ -72,44 +73,14 @@
 
     ]]>
 </mx:Script>
-<mx:states>
-    <mx:State name="GenteAI">
-        <mx:AddChild relativeTo="{form}" position="lastChild" creationPolicy="all">
-            <mx:HBox id="GenteAiPlayers" height="0">
-                <mx:FormItem label="Player 2">
-                    <mx:ComboBox id="gentePlayer2" dataProvider="{genteAgentList}"/>
-                </mx:FormItem>
-                <mx:FormItem label="Player 3">
-                    <mx:ComboBox id="gentePlayer3" dataProvider="{genteAgentList}"/>
-                </mx:FormItem>
-                <mx:FormItem label="Player 4">
-                    <mx:ComboBox id="gentePlayer4" dataProvider="{genteAgentList}"/>
-                </mx:FormItem>
-            </mx:HBox>
-        </mx:AddChild>
-    </mx:State>
-    <mx:State name="ManantialesAI">
-        <mx:AddChild relativeTo="{form}" position="lastChild" creationPolicy="all">
-            <mx:HBox id="ManantialesAiPlayers" height="0">
-                <mx:FormItem label="Player 2">
-                    <mx:ComboBox id="manPlayer2" dataProvider="{manAgentList}"/>
-                </mx:FormItem>
-                <mx:FormItem label="Player 3">
-                    <mx:ComboBox id="manPlayer3" dataProvider="{manAgentList}"/>
-                </mx:FormItem>
-                <mx:FormItem label="Player 4">
-                    <mx:ComboBox id="manPlayer4" dataProvider="{manAgentList}"/>
-                </mx:FormItem>
-            </mx:HBox>
-        </mx:AddChild>
-    </mx:State>
-</mx:states>
-
+<mx:ArrayCollection id="agentList"/>
+<!-- Gente agents -->
 <mx:ArrayCollection id="genteAgentList">
     <mx:Object label="Simple" data="SIMPLE"/>
     <mx:Object label="Blocker" data="BLOCKER"/>
     <mx:Object label="Human" data="HUMAN"/>
 </mx:ArrayCollection>
+<!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">
     <mx:Object label="Simple" data="SIMPLE"/>
 </mx:ArrayCollection>
@@ -131,6 +102,17 @@
             <mx:RadioButton label="Robot" id="robots" selected="false" click="showAIPlayers(true)" />
         </mx:HBox>
     </mx:FormItem>
+        <mx:HBox id="aiPlayers" visible="false" height="0">
+            <mx:FormItem label="Player 2">
+                <mx:ComboBox id="player2" dataProvider="{agentList}"/>
+            </mx:FormItem>
+            <mx:FormItem label="Player 3">
+                <mx:ComboBox id="player3" dataProvider ="{agentList}"/>
+            </mx:FormItem>
+            <mx:FormItem label="Player 4">
+                <mx:ComboBox id="player4" dataProvider ="{agentList}"/>
+            </mx:FormItem>
+        </mx:HBox>
     <mx:FormItem horizontalAlign="right" width="100%">
             <mx:Button id="startBtn" label="Start" click="doRegister(event)" />
     </mx:FormItem>

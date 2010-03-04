@@ -25,8 +25,20 @@
                 <module>FlexClient</module>
                 <module>MultigameWAR</module>
                 <module>EcosurJPA</module>
+                <module>EcosurEAR</module>               
+            </modules>
+        </profile>
+        <profile>
+            <id>deploy</id>
+            <modules>
+                <module>Manantiales</module>
+                <module>Tablon</module>
+                <module>FlexDS</module>
+                <module>FlexClient</module>
+                <module>MultigameWAR</module>
+                <module>EcosurJPA</module>
                 <module>EcosurEAR</module>
-                <module>EcosurIT</module>                 
+                <module>EcosurIT</module>
             </modules>
         </profile>
          <profile>

@@ -11,20 +11,27 @@
         <groupId>mx.ecosur</groupId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
-    <properties>
-        <flex-version>3.5.0.12683</flex-version>
-    </properties>
+  <properties>
+      <flex-version>3.2.0.3958</flex-version>
+      <flexmojos-version>3.2.0</flexmojos-version>
+  </properties>
   <dependencies>
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-ds</artifactId>
         <version>${version}</version>
-    </dependency>
+    </dependency>    
     <dependency>
         <groupId>com.adobe.flex.framework</groupId>
-        <artifactId>framework</artifactId>
+        <artifactId>flex-framework</artifactId>
         <version>${flex-version}</version>
+        <type>pom</type>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flexunit</groupId>
+        <artifactId>flexunit</artifactId>
         <type>swc</type>
+        <version>0.90</version>
     </dependency>
   </dependencies>
   <build>
@@ -34,38 +41,13 @@
     <plugin>
       <groupId>org.sonatype.flexmojos</groupId>
       <artifactId>flexmojos-maven-plugin</artifactId>
-      <version>3.5.0</version>
+      <version>${flexmojos-version}</version>
       <extensions>true</extensions>
       <configuration>
           <sourceFile>main.mxml</sourceFile>
           <contextRoot>multi-game</contextRoot>
-          <configurationReport>true</configurationReport>
+          <services>src/main/resources/services-config.xml</services>
       </configuration>
-      <dependencies>
-        <dependency>
-          <groupId>com.adobe.flex</groupId>
-          <artifactId>compiler</artifactId>
-          <version>${flex-version}</version>
-          <type>pom</type>
-        </dependency>
-        <dependency>
-          <groupId>com.adobe.flex.compiler</groupId>
-          <artifactId>asdoc</artifactId>
-          <version>${flex-version}</version>
-          <classifier>template</classifier>
-          <type>zip</type>
-        </dependency>
-        <dependency>
-          <groupId>com.adobe.flex</groupId>
-          <artifactId>license</artifactId>
-          <version>${flex-version}</version>
-        </dependency>
-      </dependencies>
-      <executions>
-        <execution>
-            <goals><goal>optimize</goal></goals>
-        </execution>
-      </executions>
     </plugin>
     </plugins>
   </build>

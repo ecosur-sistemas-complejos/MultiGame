@@ -32,8 +32,8 @@ the EAR file is being deployed:
     b) "Resource Type" set to "javax.jms.Topic"
     c) All other fields may remain in default state.
  
- 
- MAVEN CONFIGURATION
+
+MAVEN CONFIGURATION
  
 This prototype requires the following environmental changes be made, before being
 built and deployed.
@@ -53,5 +53,13 @@ export FLEX_SDK=/home/myuser/flex_sdk
  Before deployment, the local Glassfish Derby database must be up and running:
  
  %> asadmin start-database
+
+
+ DEPLOYMENT
+
+ In order to deploy the private build to a running Glassfish server, you need to
+ execute with the deploy profile from the toplevel:
+
+ %> mvn -P deploy clean install
  
  

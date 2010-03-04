@@ -14,10 +14,8 @@
         <![CDATA[
             import mx.rpc.events.FaultEvent;
         	import mx.rpc.events.ResultEvent;
-            import flash.utils.Timer;
             import mx.controls.Alert;
             import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.event.*;
             
             [Bindable]
             public var player:Registrant;
@@ -58,7 +56,7 @@
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 	<mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
 		<mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-        <mx:TabNavigator width="100%" height="280">
+        <mx:TabNavigator width="750" height="280">
 			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="choose(event)"/>
             <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="choose(event)"/>
             <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>

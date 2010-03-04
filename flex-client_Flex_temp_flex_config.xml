@@ -17,6 +17,7 @@
       <path-element>/Users/awaterma/.m2/repository/com/adobe/flex/framework/utilities/3.2.0.3958/utilities-3.2.0.3958.swc</path-element>
       <path-element>/Users/awaterma/.m2/repository/com/adobe/flex/framework/framework/3.2.0.3958/framework-3.2.0.3958-en_US.rb.swc</path-element>
       <path-element>/Users/awaterma/.m2/repository/com/adobe/flex/framework/rpc/3.2.0.3958/rpc-3.2.0.3958-en_US.rb.swc</path-element>
+      <path-element>/Users/awaterma/.m2/repository/com/adobe/flexunit/flexunit/0.90/flexunit-0.90.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
