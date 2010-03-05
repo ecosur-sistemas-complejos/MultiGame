@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Check Constraint"
+    creationComplete="init()">
+    <mx:Metadata>
+        [Event(name="result")]
+    </mx:Metadata>
+
+    <mx:Script>
+        <![CDATA[
+        import mx.ecosur.multigame.manantiales.entity.Suggestion;
+        import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
+        import mx.events.DynamicEvent;
+
+            private var _suggestion:Suggestion;
+
+            [Embed(source='/assets/icons.swf#thumbsUp')]
+            private var thumbsUp:Class
+
+            public function set suggestion (suggestion:Suggestion):void {
+                _suggestion = suggestion;
+            }
+
+            public function get suggestion ():Suggestion {
+                return _suggestion;
+            }
+
+            private function accept (event:MouseEvent):void{
+                _suggestion.status = SuggestionStatus.ACCEPT;
+                var dEvent:DynamicEvent = new DynamicEvent("accept");
+                dEvent.data = _suggestion;
+                dispatchEvent(dEvent);
+            }
+
+            private function reject (event:MouseEvent):void {
+                _suggestion.status = SuggestionStatus.REJECT;
+                var dEvent:DynamicEvent = new DynamicEvent("reject");
+                dEvent.data = _suggestion;
+                dispatchEvent(dEvent);
+            }
+
+        ]]>
+    </mx:Script>
+
+
+    <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+        <mx:Text width="100%" id="reason" />
+        <mx:HBox width="100%">
+            <mx:Image id="indicator" source="{thumbsUp}" />
+        </mx:HBox>
+        <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+            <mx:Button id="acpt" label="Accept" click="accept(event)"/>
+            <mx:Button id="rjct" label="Reject" click="reject(event)"/>"
+        </mx:HBox>
+    </mx:VBox>
+</mx:Panel>

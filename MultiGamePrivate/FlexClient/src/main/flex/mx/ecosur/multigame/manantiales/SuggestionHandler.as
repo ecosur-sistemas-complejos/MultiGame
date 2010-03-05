@@ -23,6 +23,7 @@ package mx.ecosur.multigame.manantiales
     import mx.effects.AnimateProperty;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
+    import mx.managers.PopUpManager;
 
     public class SuggestionHandler {
 
@@ -32,7 +33,9 @@ package mx.ecosur.multigame.manantiales
 
         public var _isMoving:Boolean;
 
-        private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";        
+        private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
+
+        private var _alert:SuggestionAlert;
 
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
@@ -142,20 +145,14 @@ package mx.ecosur.multigame.manantiales
             apXScale.play();
             apYScale.play();
 
-            if (suggestion.suggestor.id != _player.id) {               
-                activateSolicitation(_controller._game.mode);
-            }
-        }
+            /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
+            
+            if (_alert == null)
+                _alert = new SuggestionAlert();
+            _alert.suggestion = suggestion;
 
-
-        public function activateSolicitation (mode:String):void {
-            if (mode == "BASIC_PUZZLE") {
-                mode = "BASIC_PUZZLE_SOLICIT";
-
-            } else if (mode == "SILvO_PUZZLE") {
-                mode = "SILVO_PUZZLE_SOLICIT";
-            }
-            _controller._gameWindow.currentState = mode;
+            PopUpManager.addPopUp(_alert, _controller._gameWindow, true);
+                    PopUpManager.centerPopUp(_alert);            
         }
 
         public function accept(suggestion:Suggestion):void {
