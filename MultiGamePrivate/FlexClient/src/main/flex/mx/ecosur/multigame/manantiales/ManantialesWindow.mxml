@@ -12,7 +12,6 @@
     
     <mx:Script>
         <![CDATA[
-        import mx.controls.Alert;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
@@ -113,59 +112,9 @@
                 return ret;
             }
 
-            /*public function stateMenu():XML {
+            public function stateMenu():XML {
                 var xml:XML = <menuitem label={state}/>;
                 return xml;
-            }*/
-
-
-            public function stateMenu():XML {
-                var xml:XML = <menuitem label="States">
-                    <menuitem label="Classic" type="radio" groupName="states" toggled="checkState('BASIC')"/>
-                    <menuitem label="Puzzle" type="radio" groupName="states" toggled="checkState('BASIC_PUZZLE')"/>
-                    <menuitem label="Silvopastoral" type="radio" groupName="states" toggled="checkState('SILVOPASTORAL')"/>
-                    <menuitem label="Advanced Puzzle" type="radio" groupName="states" toggled="checkState('SILVO_PUZZLE')"/>
-                    </menuitem>;
-                
-                return xml;
-            }
-
-            private function checkState (compare:String):Boolean {
-                return (this._currentGame.mode == compare);
-            }
-
-            private function initMenu (event:Event):void {
-                for (var i:int = 0; i < stateMenu.length; i++) {
-                    Alert.show (stateMenu [ i ].data);
-                    if (stateMenu [ i ].data.label == _currentGame.mode) {
-                        stateMenu [ i ].data.toggled = true;
-                        Alert.show ("Toggled: " + stateMenu [ i ].data.label);
-                        break;
-                    }
-                }
-
-            }
-
-            private function handleStateMenuClick(event:MenuEvent):void {
-                /* Change game state */
-                var state:String;
-                switch (event.label) {
-                    case "Classic":
-                        state = Mode.CLASSIC;
-                        break;
-                    case "Puzzle":
-                        state = Mode.BASIC_PUZZLE;
-                        break;
-                    case "Silvopastoral":
-                        state = Mode.SILVOPASTORAL;
-                        break;
-                    case "Advanced Puzzle":
-                        state = Mode.SILVO_PUZZLE;
-                        break;
-                    default:                        
-                        break;
-                }
-                _controller.changeState(state);
             }
 
             private function quitGame():void {
@@ -190,9 +139,8 @@
             labelField="@label" 
             showRoot="true"            
             itemClick="handleMenuItemClick(event)"/>
-        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"
-                    creationComplete="initMenu(event)" itemClick="handleStateMenuClick(event)"/>
-    </mx:ApplicationControlBar>    
+        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
+    </mx:ApplicationControlBar>
     <mx:states>
         <mx:State name="CLASSIC">
             <mx:RemoveChild  target="{moveViewer}"/>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Check Constraint"
-    creationComplete="init()">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Check Constraint">
     <mx:Metadata>
         [Event(name="result")]
     </mx:Metadata>
@@ -49,7 +48,7 @@
         </mx:HBox>
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
             <mx:Button id="acpt" label="Accept" click="accept(event)"/>
-            <mx:Button id="rjct" label="Reject" click="reject(event)"/>"
+            <mx:Button id="rjct" label="Reject" click="reject(event)"/>
         </mx:HBox>
     </mx:VBox>
 </mx:Panel>

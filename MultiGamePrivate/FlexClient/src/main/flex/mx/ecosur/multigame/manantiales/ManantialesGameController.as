@@ -84,7 +84,6 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
-        private static const GAME_SERVICE_CHANGE_MODE_OP:String = "changeMode";  // Game model, mode
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
         {
@@ -324,18 +323,6 @@ package mx.ecosur.multigame.manantiales
                 var boardCell:BoardCell = BoardCell(evt.currentTarget);
                 boardCell.reset();
             }
-        }
-
-        /**
-         * Changes GameState
-         */
-        public function changeState (state:String) {
-            //if (_game.players.length == 4) {
-                var callGrid:Object = _gameService.changeMode(this._gameId, state);
-                callGrid.operation = GAME_SERVICE_CHANGE_MODE_OP;
-            //} else {
-            //    Alert.show("Mode can only be changed in a full game!");
-            //}
         }
 
         /*
@@ -747,7 +734,6 @@ package mx.ecosur.multigame.manantiales
                         token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
                         token.addEventListener(MouseEvent.MOUSE_UP, _suggestionHandler.endSuggestion);
                         suggestable.token = token;
-
                     }
                 }
             }
@@ -974,7 +960,6 @@ package mx.ecosur.multigame.manantiales
                 var possible:ManantialesMove = _moves [ _moves.length - i];
                 if (possible.destinationCell == move.currentCell)
                     var ficha:Ficha = Ficha (possible.destinationCell);
-                    Alert.show("UndoMove: " +  ficha.toString());
                     switch (ficha.type) {
                         case TokenType.INTENSIVE:
                             boardCell.token = new IntensiveToken();
@@ -1102,6 +1087,10 @@ package mx.ecosur.multigame.manantiales
         private function handleStateChange (game:ManantialesGame):void {
             if (_stageChangeAlert == null) {
                 _stageChangeAlert = new GraphicAlert();
+                if (game == null) {
+                    Alert.show("Null game passed in.");
+                    game = _game;
+                }
                 _stageChangeAlert.text = "Stage complete. Progressing to next stage, '" +
                       game.mode + "'";
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);

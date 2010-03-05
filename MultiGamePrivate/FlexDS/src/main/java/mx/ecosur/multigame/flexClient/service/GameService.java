@@ -130,6 +130,22 @@ public class GameService {
         return ret;
     }
 
+    public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr, String mode) {
+        ServiceGameEvent ret = startNewGame (player, preferedColor, gameTypeStr);
+        GridGame game = ret.getGame();
+        if (game instanceof ManantialesGame) {
+            ManantialesGame m = (ManantialesGame) game;
+            m.setMode(Mode.valueOf(mode));
+            ret.setGame(game);
+        }
+
+        /* Publish modified game */
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        sharedBoard.shareGame(game);
+
+        return ret;
+    }
+
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
                     Color preferredColor)
     {
@@ -177,11 +193,11 @@ public class GameService {
         ServiceGameEvent ret = null;
         try {
             RegistrarRemote registrar = getRegistrar();
+            Game model = null;
             GameType gameType = GameType.valueOf(gameTypeStr);
             if (gameType.equals(GameType.GENTE)) {
                 GridGame game = new GenteGame ();
-                Game model = new Game (game);
-                model = registrar.registerPlayer(model, new Registrant (registrant));
+                model = registrar.registerPlayer(new Game(game), new Registrant (registrant));
                 for (int i = 0; i < strategies.length; i++) {
                     if (strategies [ i ].equals("HUMAN"))
                         continue;
@@ -192,22 +208,23 @@ public class GameService {
                     GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
                     model = registrar.registerAgent (model, new Agent (agent));
                 }
+            } else if (gameType.equals(GameType.MANANTIALES)) {
+                GridGame game = new ManantialesGame ();
+                model = registrar.registerPlayer(new Game(game), new Registrant (registrant));
+                for (int i = 0; i < strategies.length; i++) {
+                    GridRegistrant robot = new GridRegistrant (strategies [ i ] + "-" + (i + 1));
+                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN);
+                    model = registrar.registerAgent (model, new Agent (agent));
+                }
+            }
 
+            if (model != null) {
                 for (GamePlayer player : model.listPlayers()) {
                     GridPlayer gp = (GridPlayer) player.getImplementation();
                     if (gp.getRegistrant().equals(registrant)) {
                         ret = new ServiceGameEvent ((GridGame) model.getImplementation(), gp);
                         break;
                     }
-                }
-            } else if (gameType.equals(GameType.MANANTIALES)) {
-                GridGame game = new ManantialesGame ();
-                Game model = new Game (game);
-                model = registrar.registerPlayer(model, new Registrant (registrant));
-                for (int i = 0; i < strategies.length; i++) {
-                    GridRegistrant robot = new GridRegistrant (strategies [ i ] + "-" + (i + 1));
-                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN);
-                    model = registrar.registerAgent (model, new Agent (agent));
                 }
             }
 
@@ -217,6 +234,25 @@ public class GameService {
         }
 
         return ret;
+    }
+
+    public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
+        String gameTypeStr, String [] strategies, String mode)
+    {
+
+        ServiceGameEvent ret = startNewGameWithAI (registrant, preferredColor, gameTypeStr, strategies);
+        GridGame game = ret.getGame();
+        if (game instanceof ManantialesGame) {
+            ManantialesGame m = (ManantialesGame) game;
+            m.setMode(Mode.valueOf(mode));
+            ret.setGame(game);
+        }
+
+        /* Publish modified game */
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        sharedBoard.shareGame(game);        
+
+        return ret;                                
     }
 
 

@@ -23,9 +23,15 @@
         if (robots.selected) {
             strategies = [ player2.selectedItem.data,
                 player3.selectedItem.data, player4.selectedItem.data ];
-            gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
+            if (gameType.selectedItem.data == "MANANTIALES")
+                gameService.startNewGameWithAI (player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data);
+            else
+                gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
         } else {
-            gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
+            if (gameType.selectedItem.data == "MANANTIALES")
+                gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data);
+            else
+                gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
         }
     }
 
@@ -69,6 +75,10 @@
 
     private function evaluateAiPlayers():void {
         showAIPlayers (robots.selected);
+        if (gameType.selectedItem.data == "MANANTIALES")
+            modalities.visible = true;
+        else
+            modalities.visible = false;
     }
 
     ]]>
@@ -83,6 +93,13 @@
 <!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">
     <mx:Object label="Simple" data="SIMPLE"/>
+</mx:ArrayCollection>
+<!-- Manantiales Modalities -->
+<mx:ArrayCollection id="manModes">
+    <mx:Object label="Classic" data=""/>
+    <mx:Object label="Puzzle" data="CLASSIC"/>
+    <mx:Object label="Silvopastoral" data="BASIC_PUZZLE"/>
+    <mx:Object label="Advanced Puzzle" data="SILVOPASTORAL"/>
 </mx:ArrayCollection>
 
 <mx:ArrayCollection id="gameList">
@@ -113,6 +130,9 @@
                 <mx:ComboBox id="player4" dataProvider ="{agentList}"/>
             </mx:FormItem>
         </mx:HBox>
+    <mx:FormItem label="Modality" id="modalities" visible="false">
+        <mx:ComboBox id="mode" dataProvider="{manModes}"/>
+    </mx:FormItem>    
     <mx:FormItem horizontalAlign="right" width="100%">
             <mx:Button id="startBtn" label="Start" click="doRegister(event)" />
     </mx:FormItem>

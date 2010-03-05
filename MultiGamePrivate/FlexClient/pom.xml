@@ -43,6 +43,7 @@
 				<sourceFile>main.mxml</sourceFile>
 				<contextRoot>multi-game</contextRoot>
 				<services>src/main/resources/services-config.xml</services>
+                <configurationReport>true</configurationReport>
 			</configuration>
 		</plugin>
     </plugins>

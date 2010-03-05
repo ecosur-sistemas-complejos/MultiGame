@@ -255,8 +255,35 @@ public class ManantialesGame extends GridGame {
     }
         
     public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
-        throw new InvalidRegistrationException (
-            "Agents cannot be registered with a Manantiales Game!");
+        SimpleAgent player = (SimpleAgent) agent;
+
+        for (GridPlayer p : this.getPlayers()) {
+            if (p.equals (player))
+                throw new InvalidRegistrationException (
+                    "Duplicate Registration! " + player.getRegistrant().getName());
+        }
+
+        int max = getMaxPlayers();
+        if (players.size() == max)
+            throw new RuntimeException ("Maximum Players reached!");
+
+        List<Color> colors = getAvailableColors();
+        player.setColor(colors.get(0));
+        players.add(player);
+
+        if (players.size() == getMaxPlayers())
+        try {
+            initialize();
+        } catch (MalformedURLException e) {
+            throw new InvalidRegistrationException (e);
+        }
+
+        if (this.created == 0)
+            this.setCreated(new Date());
+        if (this.state == null)
+            this.state = GameState.WAITING;
+
+        return player;        
     }
 
     /* (non-Javadoc)
@@ -330,7 +357,9 @@ public class ManantialesGame extends GridGame {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        // TODO Auto-generated method stub
-        return null;
+        ManantialesGame ret = new ManantialesGame();
+        ret.setGrid((GameGrid) grid.clone());
+        ret.setMode(this.getMode());
+        return ret;
     }
 }
