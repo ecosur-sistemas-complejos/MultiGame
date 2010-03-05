@@ -28,19 +28,20 @@
    <finalName>MultiGame</finalName>
    <plugins>
         <plugin>
-            <groupId>org.sonatype.flexmojos</groupId>
-            <artifactId>flexmojos-maven-plugin</artifactId>
-            <version>3.2.0</version>
-            <extensions>true</extensions>
-            <configuration>
-                <debug>true</debug>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals><goal>copy-flex-resources</goal></goals>
-                </execution>
-            </executions>
-        </plugin>
+			<groupId>org.sonatype.flexmojos</groupId>
+			<artifactId>flexmojos-maven-plugin</artifactId>
+			<version>3.5.0</version>
+			<executions>
+				<execution>
+					<goals>
+						<goal>copy-flex-resources</goal>
+					</goals>
+					<configuration>
+						<stripVersion>true</stripVersion>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
     </plugins>
   </build>
 </project>
