@@ -13,14 +13,9 @@
     </parent>
   <properties>
       <flex-version>3.2.0.3958</flex-version>
-      <flexmojos-version>3.2.0</flexmojos-version>
+      <flexmojos-version>3.5.0</flexmojos-version>
   </properties>
   <dependencies>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>flex-ds</artifactId>
-        <version>${version}</version>
-    </dependency>    
     <dependency>
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>flex-framework</artifactId>
@@ -37,18 +32,19 @@
   <build>
    <sourceDirectory>src/main/flex</sourceDirectory>
    <testSourceDirectory>src/test/flex</testSourceDirectory>
+   <finalName>main</finalName>
    <plugins>
-    <plugin>
-      <groupId>org.sonatype.flexmojos</groupId>
-      <artifactId>flexmojos-maven-plugin</artifactId>
-      <version>${flexmojos-version}</version>
-      <extensions>true</extensions>
-      <configuration>
-          <sourceFile>main.mxml</sourceFile>
-          <contextRoot>multi-game</contextRoot>
-          <services>src/main/resources/services-config.xml</services>
-      </configuration>
-    </plugin>
+		<plugin>
+			<groupId>org.sonatype.flexmojos</groupId>
+			<artifactId>flexmojos-maven-plugin</artifactId>
+			<version>${flexmojos-version}</version>
+			<extensions>true</extensions>
+			<configuration>
+				<sourceFile>main.mxml</sourceFile>
+				<contextRoot>multi-game</contextRoot>
+				<services>src/main/resources/services-config.xml</services>
+			</configuration>
+		</plugin>
     </plugins>
   </build>
 </project>
