@@ -494,31 +494,31 @@ package mx.ecosur.multigame.manantiales
                         case TokenType.FOREST:
                            token = new ForestToken();
                            token.ficha = ficha;
-                           if (token.ficha.color == this._currentPlayer.color)
+                           if (this._gameWindow.forestStore && token.ficha.color == this._currentPlayer.color)
                                this._gameWindow.forestStore.removeToken();
                            break;
                         case TokenType.MODERATE:
                            token = new ModerateToken();
                            token.ficha = ficha;
-                           if (token.ficha.color == this._currentPlayer.color)
+                           if (this._gameWindow.moderateStore && token.ficha.color == this._currentPlayer.color)
                                this._gameWindow.moderateStore.removeToken();
                            break;
                         case TokenType.INTENSIVE:
                            token = new IntensiveToken();
                            token.ficha = ficha;
-                           if (token.ficha.color == this._currentPlayer.color)
+                           if (this._gameWindow.intensiveStore && token.ficha.color == this._currentPlayer.color)
                                 this._gameWindow.intensiveStore.removeToken();
                            break;
                         case TokenType.VIVERO:
                            token = new ViveroToken();
                            token.ficha = ficha;
-                           if (token.ficha.color == this._currentPlayer.color)
+                           if (this._gameWindow.viveroStore && token.ficha.color == this._currentPlayer.color)
                                 this._gameWindow.viveroStore.removeToken();
                            break;
                         case TokenType.SILVOPASTORAL:
                            token = new SilvopastoralToken();
                            token.ficha = ficha;
-                           if (token.ficha.color == this._currentPlayer.color)
+                           if (this._gameWindow.silvoStore && token.ficha.color == this._currentPlayer.color)
                                 this._gameWindow.silvoStore.removeToken();
                            break;
                         default:
@@ -691,7 +691,7 @@ package mx.ecosur.multigame.manantiales
                     _gameWindow.moveViewer.addMove(move);
 
                     //if current move is the last move then animate
-                    if (_selectedMoveInd == _moves.length - 2){
+                    if (_selectedMoveInd == _moves.length - 2 && !_isTurn){
                         _selectedMoveInd ++;
                         doMove(move);
                     }
