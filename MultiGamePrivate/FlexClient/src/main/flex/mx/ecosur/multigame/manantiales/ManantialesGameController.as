@@ -258,8 +258,8 @@ package mx.ecosur.multigame.manantiales
 
         public function dragDropCell(evt:DragEvent):void{
 
-            if (evt.dragSource.hasFormat("token")){
-
+            if (evt.dragSource.hasFormat("token"))
+            {
                 // define cell and destination
                 var token:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("token"));
                 var boardCell:BoardCell = BoardCell(evt.currentTarget);
@@ -269,21 +269,33 @@ package mx.ecosur.multigame.manantiales
                 destination.type = token.ficha.type;
 
                 var move:ManantialesMove = new ManantialesMove();
-                move.player = _currentPlayer;
                 move.currentCell = boardCell.token.cell;
                 move.destinationCell = token.ficha;
                 move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _game.mode;
                 move.id = 0;
 
-                var call:Object;
+                if (_currentPlayer.turn && token.cell.color == _currentPlayer.color) {
+                    move.player = _currentPlayer;
+                    var call:Object;
+                    call = _gameService.doMove(_game, move);
+                    call.operation = GAME_SERVICE_DO_MOVE_OP;
+                    _executingMove = move;
+                } else if (_currentPlayer.turn && token.cell.color != _currentPlayer.color) {
+                    /* It can't be a move, so make a suggestion */
+                    /* Find the move's player based upon destination cell color */
+                    var players:ArrayCollection = _game.players;
 
-                // do move in backend or make suggestion (based on modality)
-                call = _gameService.doMove(_game, move);
-                call.operation = GAME_SERVICE_DO_MOVE_OP;
+                    for (var i:int = 0; i < players.length; i++) {
+                        var player:ManantialesPlayer = ManantialesPlayer (players [ i ]);
+                        if (player.color == token.cell.color) {
+                            move.player = player;
+                            break;
+                        }
+                    }
 
-                _executingMove = move;
-
+                    _suggestionHandler.makeSuggestion(move);
+                }
 
                 // do move in interface
                 boardCell.reset();
@@ -312,6 +324,10 @@ package mx.ecosur.multigame.manantiales
                 }
                 
                 newToken.cell = destination;
+
+                newToken.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+                newToken.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.makeSuggestion);                                                
+
                 _gameWindow.board.addToken(newToken);
             }
         }
@@ -732,7 +748,6 @@ package mx.ecosur.multigame.manantiales
                         token.ficha = ficha;
                         token.mouseEnabled = true;                        
                         token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
-                        token.addEventListener(MouseEvent.MOUSE_UP, _suggestionHandler.endSuggestion);
                         suggestable.token = token;
                     }
                 }
@@ -856,6 +871,10 @@ package mx.ecosur.multigame.manantiales
             token.width = endSize;
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
+
+            if (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE") {
+                token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+            }
 
             //define motion animation
             var apX:AnimateProperty = new AnimateProperty(token);

@@ -8,8 +8,6 @@
     <mx:Script>
         <![CDATA[
             import mx.events.DynamicEvent;
-            import mx.containers.Box;
-            import mx.controls.Image;
             
             private var _text:String;
             private var _positive:Boolean;
