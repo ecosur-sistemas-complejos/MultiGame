@@ -310,7 +310,7 @@ rule "territory-deforested"
         messageSender.sendConditionRaised ($game, constraint);               
 end
 
-rule "notify-players-of-suggestion"
+rule "evaluated-suggestion-notify"
     agenda-group "move"
     no-loop true
 when
@@ -318,6 +318,33 @@ when
     $suggestion : Suggestion (status == SuggestionStatus.EVALUATED)
 then
     messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
+end
+
+rule "rejected-suggestion-notify"
+    agenda-group "move"
+    no-loop true
+when
+    $game : GridGame (state == GameState.PLAY)
+    $suggestion : Suggestion (status == SuggestionStatus.REJECT)
+then
+    messageSender.sendSuggestionEvaluated (new Game ($game), $suggestion);
+    retract ($suggestion);
+end
+
+rule "execute-suggestion"
+    agenda-group "move"
+    no-loop true
+when
+    $game : GridGame (state == GameState.PLAY)
+    $suggestion : Suggestion (status == SuggestionStatus.ACCEPT, $move : move)
+then
+    /* Make the move on the grid */
+    GameGrid modifiedGrid = $game.getGrid();
+    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
+    modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
+    modify ($game) { setGrid (modifiedGrid) }
+    messageSender.sendSuggestionEvaluated(new Game ($game), $suggestion);
+    retract ($suggestion);
 end
 
 rule "execute-move"

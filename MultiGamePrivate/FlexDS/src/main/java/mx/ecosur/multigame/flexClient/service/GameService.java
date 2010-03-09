@@ -333,8 +333,9 @@ public class GameService {
         SharedBoardRemote sharedBoard = getSharedBoard();
 
         if (game instanceof ManantialesGame) {
-            ManantialesGame mg = (ManantialesGame) game;
+            ManantialesGame mg = (ManantialesGame) getGame(game.getId());
             suggestion = mg.suggest(suggestion);
+            game = mg;
         }
 
         sharedBoard.shareGame (game);

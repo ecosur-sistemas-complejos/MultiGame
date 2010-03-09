@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.oculto.entity
+package mx.ecosur.multigame.tablon.entity
 {
 	import mx.ecosur.multigame.entity.Cell;
 

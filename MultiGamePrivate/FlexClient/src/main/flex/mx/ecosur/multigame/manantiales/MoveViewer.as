@@ -15,14 +15,13 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     
     import mx.events.DynamicEvent;
-	
 
-	public class MoveViewer extends Panel
-	{
+    public class MoveViewer extends Panel
+    {
         private var _moves:Accordion; 
         private var _controlBar:ControlBar;
         private var _selectedMove:MoveInfo;
-        private var _board:AbstractBoard;
+        private var _board:ManantialesBoard;
         
         // Define navigation events that this component dispatches
         public static const MOVE_EVENT_GOTO_MOVE:String = "gotoMove";
@@ -36,7 +35,7 @@ package mx.ecosur.multigame.manantiales
         }
         
         public function set board(board:AbstractBoard):void{
-            _board = board;
+            _board = ManantialesBoard(board);
         }
         
         public function set selectedMove(move:ManantialesMove):void{
@@ -199,6 +198,6 @@ package mx.ecosur.multigame.manantiales
             addChild(_controlBar)
             
         } 
-		
-	}
+
+    }
 }

@@ -60,9 +60,9 @@ package mx.ecosur.multigame.manantiales
         // data objects
         public var _currentPlayer:ManantialesPlayer;
         public var _game:ManantialesGame;
+        public var _moves:ArrayCollection;        
         private var _players:ArrayCollection;
         private var _gameId:int;
-        private var _moves:ArrayCollection;
         private var _selectedMoveInd:Number;
         private var _gameGrid:GameGrid;
 
@@ -84,6 +84,7 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+        
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
         {
