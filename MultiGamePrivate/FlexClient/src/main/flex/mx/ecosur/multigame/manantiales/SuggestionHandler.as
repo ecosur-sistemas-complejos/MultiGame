@@ -163,6 +163,8 @@ package mx.ecosur.multigame.manantiales
                     apXScale.play();
                     apYScale.play();
 
+                    token.blink();
+
                     /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
 
                     if (_alert == null)
@@ -199,40 +201,42 @@ package mx.ecosur.multigame.manantiales
             token.cell = suggestion.move.destinationCell;
             token.width = endSize;
             token.height = endSize;
+            token.visible = false;
             _controller._gameWindow.animateLayer.addChild(token);
 
             // restore previous token
             for (var i:int = 0; i < _controller._moves.length; i++) {
-                var possible:ManantialesMove = _controller._moves [ _controller._moves.length - i];
-                if (possible.destinationCell == suggestion.move.currentCell) {
-                    var ficha:Ficha = Ficha (possible.destinationCell);
-                    switch (ficha.type) {
-                        case TokenType.INTENSIVE:
-                            boardCell.token = new IntensiveToken();
-                            break;
-                        case TokenType.MODERATE:
-                            boardCell.token = new ModerateToken();
-                            break;
-                        case TokenType.FOREST:
-                            boardCell.token = new ForestToken();
-                            break;
-                        case TokenType.VIVERO:
-                            boardCell.token = new ViveroToken();
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            boardCell.token = new SilvopastoralToken();
-                            break;
-                        default:
-                            boardCell.token = new UndevelopedToken(ficha.column, ficha.row);
+                if (_controller._moves.length > 0) {
+                    var possible:ManantialesMove = _controller._moves [ _controller._moves.length - i];
+                    if (possible.destinationCell == suggestion.move.currentCell) {
+                        var ficha:Ficha = Ficha (possible.destinationCell);
+                        switch (ficha.type) {
+                            case TokenType.INTENSIVE:
+                                boardCell.token = new IntensiveToken();
+                                break;
+                            case TokenType.MODERATE:
+                                boardCell.token = new ModerateToken();
+                                break;
+                            case TokenType.FOREST:
+                                boardCell.token = new ForestToken();
+                                break;
+                            case TokenType.VIVERO:
+                                boardCell.token = new ViveroToken();
+                                break;
+                            case TokenType.SILVOPASTORAL:
+                                boardCell.token = new SilvopastoralToken();
+                                break;
+                            default:
+                                boardCell.token = new UndevelopedToken(ficha.column, ficha.row);
 
+                        }
                     }
-                } else {
-                    boardCell.token = new UndevelopedToken (suggestion.move.destinationCell.column,
-                            suggestion.move.destinationCell.row);
                 }
             }
-
-            Alert.show ("boardCell.token [ " + boardCell.token + "]");
+            
+            if (boardCell.token == null)
+                 boardCell.token = new UndevelopedToken (suggestion.move.destinationCell.column,
+                            suggestion.move.destinationCell.row);
             boardCell.reset();
 
             //define motion animation
@@ -260,13 +264,14 @@ package mx.ecosur.multigame.manantiales
             apYScale.toValue = 1;
             apYScale.duration = 1000;
 
+            // make the animation token visible
+            token.visible = true;
+
             //start effect
             apX.play();
             apY.play();
             apXScale.play();
             apYScale.play();
-
-            Alert.show ("removeSuggestion complete.");
         }
 
         public function endRemoveSuggestion (event:EffectEvent) {

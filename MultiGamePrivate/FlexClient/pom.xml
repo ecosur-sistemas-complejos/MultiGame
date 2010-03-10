@@ -40,8 +40,24 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <sourceFile>main.mxml</sourceFile>
             <contextRoot>multi-game</contextRoot>
             <services>src/main/resources/services-config.xml</services>
+            <debug>${debug}</debug>
             <configurationReport>true</configurationReport>
         </configuration>
+        <dependencies>
+            <dependency>
+              <groupId>com.adobe.flex</groupId>
+              <artifactId>compiler</artifactId>
+              <version>${flex-version}</version>
+              <type>pom</type>
+            </dependency>
+            <dependency>
+              <groupId>com.adobe.flex.compiler</groupId>
+              <artifactId>asdoc</artifactId>
+              <version>${flex-version}</version>
+              <classifier>template</classifier>
+              <type>zip</type>
+            </dependency>
+        </dependencies>
     </plugin>
 </plugins>
 </build>
