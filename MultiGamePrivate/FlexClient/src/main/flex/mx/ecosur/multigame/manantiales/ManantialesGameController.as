@@ -677,8 +677,10 @@ package mx.ecosur.multigame.manantiales
 
         private function addMove(move:ManantialesMove):void{
 
-            if (move.mode == _game.mode) {
+            if (move.mode == _game.mode && !_isTurn)
                 _gameWindow.currentState = "";
+
+            if (move.mode == _game.mode) {
 
                 //get last move in game
                 var lastMove:ManantialesMove = null;
