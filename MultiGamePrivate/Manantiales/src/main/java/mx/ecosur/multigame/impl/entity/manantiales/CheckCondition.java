@@ -82,7 +82,7 @@ public class CheckCondition implements ConditionImpl {
 	 * @param player the player to set
 	 */
 	public void setPlayer (GridPlayer player) {
-		this.agent = agent;
+		this.agent = player;
 	}
 
 	/**

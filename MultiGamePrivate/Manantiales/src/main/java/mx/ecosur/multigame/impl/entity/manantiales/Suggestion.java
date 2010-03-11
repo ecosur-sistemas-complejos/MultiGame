@@ -18,7 +18,9 @@ import javax.persistence.*;
 @Entity
 public class Suggestion implements ConditionImpl {
 
-    private ManantialesMove move;
+	private static final long serialVersionUID = -1649014283342618955L;
+
+	private ManantialesMove move;
 
     private ManantialesPlayer suggestor;
 

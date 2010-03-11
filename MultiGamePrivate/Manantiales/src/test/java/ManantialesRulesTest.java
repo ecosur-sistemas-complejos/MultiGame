@@ -17,19 +17,17 @@ import javax.jms.Message;
 
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
+import com.mockrunner.mock.jms.MockObjectMessage;
 import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 
-import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.entity.manantiales.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
+import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import mx.ecosur.multigame.impl.model.GameGrid;
@@ -45,6 +43,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.mockejb.jms.ObjectMessageImpl;
 
 public class ManantialesRulesTest extends JMSTestCaseAdapter {
         
@@ -332,7 +331,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testManantialesCheckConstraintRelief() throws InvalidMoveException {
         game.setState(GameState.PLAY);
@@ -497,7 +495,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testBadYear () throws InvalidMoveException {
         alice.setTurn (true);
@@ -1254,6 +1251,100 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue ("CONDITION(S) RAISED ON CONVERSION!  Conditions Raised: " + filter.size(),
                         filter.size() == 0);
     }
+
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        setIds(play);
+        ManantialesMove move = new ManantialesMove (alice, play);
+        game.move (move);
+
+        /* Now, make the suggestion to move 5,4 to 4,0 */
+        Suggestion suggestion = new Suggestion();
+        suggestion.setSuggestor(bob);
+        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        move = new ManantialesMove (alice, play, change);
+        suggestion.setMove (move);
+        suggestion = game.suggest(suggestion);
+
+        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+
+        suggestion.setStatus(SuggestionStatus.ACCEPT);
+        mockTopic.clear();
+        suggestion = game.suggest(suggestion);
+
+        ArrayList filter = new ArrayList();
+        List<Message> messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("MOVE_COMPLETE")) {
+                MockObjectMessage objMessage = (MockObjectMessage) message;
+                ManantialesMove temp = (ManantialesMove) objMessage.getObject();
+                if (temp.getDestinationCell().equals(change)) {
+                    move = temp;
+                    filter.add(message);
+                    break;
+                }
+            }
+        }
+
+        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.VERIFIED));
+        assertTrue(filter.size() > 0);
+
+        GameGrid grid = game.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination not populated!", location != null);
+        assertTrue ("Destination not populated!", location.equals(change));        
+        assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSuggestionRejected () throws InvalidMoveException, JMSException {
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        setIds(play);
+        ManantialesMove move = new ManantialesMove (alice, play);
+        game.move (move);
+
+        /* Now, make the suggestion to move 5,4 to 4,0 */
+        Suggestion suggestion = new Suggestion();
+        suggestion.setSuggestor(bob);
+        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        move = new ManantialesMove (alice, play, change);
+        suggestion.setMove (move);
+        mockTopic.clear();
+        suggestion = game.suggest(suggestion);
+
+        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+
+        suggestion.setStatus(SuggestionStatus.REJECT);
+        suggestion = game.suggest(suggestion);
+        
+        ArrayList filter = new ArrayList();
+        List<Message> messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("MOVE_COMPLETE")) {
+                MockObjectMessage objMessage = (MockObjectMessage) message;
+                ManantialesMove temp = (ManantialesMove) objMessage.getObject();
+                if (temp.getDestinationCell().equals(change)) {
+                    filter.add(message);
+                    move = temp;
+                }
+            }
+        }
+
+        assertTrue (filter.size() == 0);
+        assertTrue (move.getStatus().equals(MoveStatus.UNVERIFIED));
+
+        GameGrid grid = game.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination populated!", location == null);
+        assertTrue ("Location does not remain!", grid.getLocation(move.getCurrentCell()) != null);
+    }
         
     /**
     * @param borderType
@@ -1269,5 +1360,5 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
             }
         }
         return ret;
-    }       
+    }
 }

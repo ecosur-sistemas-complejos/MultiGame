@@ -333,23 +333,25 @@ end
 
 rule "execute-suggestion"
     agenda-group "move"
-    no-loop true
+    lock-on-active
 when
+    not (ManantialesMove ())
     $game : GridGame (state == GameState.PLAY)
     $suggestion : Suggestion (status == SuggestionStatus.ACCEPT, $move : move)
+    eval (isValid($game.getGrid(), $move))
 then
-    /* Make the move on the grid */
-    GameGrid modifiedGrid = $game.getGrid();
+    $move.setStatus (MoveStatus.VERIFIED);
+    GameGrid modifiedGrid = $game.getGrid();   
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
     modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
     modify ($game) { setGrid (modifiedGrid) }
-    messageSender.sendSuggestionEvaluated(new Game ($game), $suggestion);
     retract ($suggestion);
+    messageSender.sendMoveComplete ($game, $move);    
 end
 
 rule "execute-move"
     agenda-group "move"
-    no-loop true
+    lock-on-active
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (player.turn == true, status == MoveStatus.VERIFIED)  
@@ -359,7 +361,7 @@ then
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.MOVED) }
     messageSender.sendMoveComplete ($game, $move);
-end      
+end
 
 rule "resolve-check-constraint"
     agenda-group "evaluate"
@@ -406,14 +408,14 @@ then
             break;    
         default:
             break;
-    }        
+    }
     modify ($move) { setPlayer (player) };
 end
 
 rule "reward-premium"
     agenda-group "evaluate"
     no-loop true
-when      
+when
     $move : ManantialesMove ($player : player, premium == false, player.turn == true,
         status == MoveStatus.MOVED, type in (TokenType.INTENSIVE_PASTURE, 
             TokenType.MANAGED_FOREST))

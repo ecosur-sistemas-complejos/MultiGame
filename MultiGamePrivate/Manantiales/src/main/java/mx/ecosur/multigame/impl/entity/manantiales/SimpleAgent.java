@@ -32,7 +32,9 @@ import java.util.logging.Logger;
 @Entity
 public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
-    @EJB
+	private static final long serialVersionUID = 8878695200931762776L;
+
+	@EJB
     private SharedBoardLocal sharedBoard;
 
     private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());

@@ -39,8 +39,6 @@ import org.drools.KnowledgeBase;
 import java.util.*;
 import java.net.MalformedURLException;
 
-import static java.util.Collections.*;
-
 @Entity
 public class ManantialesGame extends GridGame {
         
