@@ -320,7 +320,25 @@ then
     messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
 end
 
-rule "rejected-suggestion-notify"
+rule "accept-suggestion"
+    agenda-group "move"
+    lock-on-active
+when
+    $game : GridGame (state == GameState.PLAY)
+    $suggestion : Suggestion (status == SuggestionStatus.ACCEPT)
+    $move : ManantialesMove (status == MoveStatus.UNVERIFIED)
+    eval (isValid($game.getGrid(), $move))
+then
+    GameGrid modifiedGrid = $game.getGrid();   
+    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
+    modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
+    modify ($game) { setGrid (modifiedGrid) }
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+    retract ($suggestion);
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "reject-suggestion"
     agenda-group "move"
     no-loop true
 when
@@ -329,24 +347,6 @@ when
 then
     messageSender.sendSuggestionEvaluated (new Game ($game), $suggestion);
     retract ($suggestion);
-end
-
-rule "execute-suggestion"
-    agenda-group "move"
-    lock-on-active
-when
-    not (ManantialesMove ())
-    $game : GridGame (state == GameState.PLAY)
-    $suggestion : Suggestion (status == SuggestionStatus.ACCEPT, $move : move)
-    eval (isValid($game.getGrid(), $move))
-then
-    $move.setStatus (MoveStatus.VERIFIED);
-    GameGrid modifiedGrid = $game.getGrid();   
-    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
-    modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
-    modify ($game) { setGrid (modifiedGrid) }
-    retract ($suggestion);
-    messageSender.sendMoveComplete ($game, $move);    
 end
 
 rule "execute-move"
@@ -416,7 +416,7 @@ rule "reward-premium"
     agenda-group "evaluate"
     no-loop true
 when
-    $move : ManantialesMove ($player : player, premium == false, player.turn == true,
+    $move : ManantialesMove (premium == false, $player : player, player.turn == true,
         status == MoveStatus.MOVED, type in (TokenType.INTENSIVE_PASTURE, 
             TokenType.MANAGED_FOREST))
     $manPlayer : ManantialesPlayer (forested == 5 || intensive == 5) from $player

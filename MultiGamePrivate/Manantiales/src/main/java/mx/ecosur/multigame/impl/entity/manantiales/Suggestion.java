@@ -89,4 +89,24 @@ public class Suggestion implements ConditionImpl {
         suggestor = (ManantialesPlayer) triggers [  0 ];
         move = (ManantialesMove) triggers [ 1 ];
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret;
+
+        if (obj instanceof Suggestion) {
+            Suggestion comparison = (Suggestion) obj;
+
+            ret = (this.getSuggestor().equals(comparison.getSuggestor()))
+                    && (this.getMove()).equals(comparison.getMove());
+            if (comparison.getId() > 0) {
+                ret = ret && this.getId() == comparison.getId();
+            }
+
+        } else {
+            ret = super.equals(obj);
+        }
+        
+        return ret;
+    }
 }

@@ -52,6 +52,7 @@ package mx.ecosur.multigame.manantiales
 
 
         public function addSuggestion (suggestion:Suggestion):void {
+            Alert.show ("Suggestion Status=" + suggestion.status);            
             if (suggestion.status == SuggestionStatus.ACCEPT || suggestion.status == SuggestionStatus.REJECT) {
                 removeSuggestion (suggestion);
                 // initFromGrid(); 
@@ -286,9 +287,11 @@ package mx.ecosur.multigame.manantiales
         public function accept(event:DynamicEvent):void {
             var suggestion:Suggestion = Suggestion (event.data);
             suggestion.status = SuggestionStatus.ACCEPT;
+            this._controller._game.addSuggestion(suggestion);
+            
             /* Do move on back end */
-            var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
-            call.operation = "makeSuggestion";
+            var call:Object = _controller._gameService.doSuggestedMove (this._controller._game, suggestion);
+            call.operation = "doSuggestedMove";
             PopUpManager.removePopUp(_alert);
             
         }

@@ -102,15 +102,34 @@ public class ManantialesGame extends GridGame {
                 checkConditions.add(violation);
     }
 
-        /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.Game#getFacts()
-         */
+    public void addSuggestion (Suggestion suggestion) {
+        /* Adds or UPDATES a suggestion to the list of suggstions */
+        if (suggestions == null)
+            suggestions = new LinkedHashSet<Suggestion>();
+        suggestions.add(suggestion);       
+    }
+
+    public void updateSuggestion (Suggestion suggestion) {
+        if (suggestions != null) {
+            for (Suggestion possible : suggestions) {
+                if (possible.equals(suggestion)) {
+                    possible.setStatus(suggestion.getStatus());
+                }
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.Game#getFacts()
+     */
     @Override
     @Transient
     public Set<Implementation> getFacts() {
         Set<Implementation> facts = super.getFacts();
         if (checkConditions != null)
             facts.addAll(checkConditions);
+        if (suggestions != null)
+            facts.addAll(suggestions);
         return facts;
     }
 
@@ -197,10 +216,12 @@ public class ManantialesGame extends GridGame {
                 "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
+
+        addSuggestion (suggestion);
+
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
-        session.insert(suggestion);
         for (Implementation fact : getFacts()) {
             session.insert(fact);
         }
@@ -213,10 +234,6 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.dispose();
 
-        if (suggestions == null)
-            suggestions = new LinkedHashSet<Suggestion>();
-
-        suggestions.add(suggestion);
         return suggestion;
     }
         

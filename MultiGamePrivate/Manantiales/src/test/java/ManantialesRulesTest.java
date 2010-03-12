@@ -43,7 +43,6 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.mockejb.jms.ObjectMessageImpl;
 
 public class ManantialesRulesTest extends JMSTestCaseAdapter {
         
@@ -1273,8 +1272,9 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
 
         suggestion.setStatus(SuggestionStatus.ACCEPT);
+        game.addSuggestion(suggestion);
         mockTopic.clear();
-        suggestion = game.suggest(suggestion);
+        game.move(suggestion.getMove());
 
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();

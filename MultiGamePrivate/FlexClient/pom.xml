@@ -13,7 +13,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </parent>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
-    <!-- Test directory commented out pending resolution of Runtime FlashPlayer issue -->
     <testSourceDirectory>src/test/flex</testSourceDirectory>
     <finalName>main</finalName>
     <plugins>

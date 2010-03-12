@@ -48,7 +48,7 @@ import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 
-public class GameService {
+public class GameService {  
 
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
@@ -307,6 +307,15 @@ public class GameService {
         }
     }
 
+    public Move doSuggestedMove (GridGame game, Suggestion suggestion) {
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        Game model = sharedBoard.getGame(game.getId());
+        ManantialesGame mg = (ManantialesGame) model.getImplementation();
+        mg.updateSuggestion(suggestion);
+        sharedBoard.shareGame(mg);
+        return doMove (mg, suggestion.getMove());
+    }
+
 
     public List<GridMove> getMoves(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
@@ -331,7 +340,6 @@ public class GameService {
      *  Todo:  Consider separate Java service code for Manantiales? */
     public Suggestion makeSuggestion (GridGame game, Suggestion suggestion) {
         SharedBoardRemote sharedBoard = getSharedBoard();
-
         if (game instanceof ManantialesGame) {
             ManantialesGame mg = (ManantialesGame) getGame(game.getId());
             suggestion = mg.suggest(suggestion);

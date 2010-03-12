@@ -2,7 +2,9 @@
 
 package mx.ecosur.multigame.manantiales
 {
+
     import flash.events.MouseEvent;
+
     import flash.geom.Point;
 
     import mx.collections.ArrayCollection;
@@ -563,33 +565,33 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleAnnCondResult(event:DynamicEvent):void{
-                PopUpManager.removePopUp(_annCondGen);
-                _annCondGen = null;
-                if(!event.isGoodYear){
-                        var move:ManantialesMove = new ManantialesMove ();
-                        move.badYear = true;
-                        move.player = _currentPlayer;
-                        move.mode = _game.mode;
-                        var call:Object = _gameService.doMove(_game, move);
-                        call.operation = GAME_SERVICE_DO_MOVE_OP;
-                }
+            PopUpManager.removePopUp(_annCondGen);
+            _annCondGen = null;
+            if(!event.isGoodYear){
+                var move:ManantialesMove = new ManantialesMove ();
+                move.badYear = true;
+                move.player = _currentPlayer;
+                move.mode = _game.mode;
+                var call:Object = _gameService.doMove(_game, move);
+                call.operation = GAME_SERVICE_DO_MOVE_OP;
+            }
         }
 
         private function handleCheckResult(event:DynamicEvent):void {
-                var idx:int = -1;
+            var idx:int = -1;
 
-                for (var i:int = 0; i < _alerts.length; i++) {
-                        var condition:CheckConstraintAlert = CheckConstraintAlert(_alerts.getItemAt(i));
-                        if (condition.acknowledged) {
-                                idx = i;
-                                break;
-                        }
+            for (var i:int = 0; i < _alerts.length; i++) {
+                var condition:CheckConstraintAlert = CheckConstraintAlert(_alerts.getItemAt(i));
+                if (condition.acknowledged) {
+                        idx = i;
+                        break;
                 }
+            }
 
-                if (idx > -1) {
-                var alert:CheckConstraintAlert = CheckConstraintAlert (_alerts.removeItemAt(idx));
-                   PopUpManager.removePopUp(alert);
-                }
+            if (idx > -1) {
+            var alert:CheckConstraintAlert = CheckConstraintAlert (_alerts.removeItemAt(idx));
+               PopUpManager.removePopUp(alert);
+            }
         }
 
         private function handleStateChangeResult (event:DynamicEvent):void {
@@ -697,7 +699,7 @@ package mx.ecosur.multigame.manantiales
                     _gameWindow.moveViewer.addMove(move);
 
                     //if current move is the last move then animate
-                    if (_selectedMoveInd == _moves.length - 2 && !_isTurn){
+                    if (_selectedMoveInd == _moves.length - 2){
                         _selectedMoveInd ++;
                         doMove(move);
                     }
@@ -781,8 +783,8 @@ package mx.ecosur.multigame.manantiales
 
             // if was a bad year then nothing to do
             if(move.badYear){
-                    _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd + 1]);
-                    return
+                _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd + 1]);
+                return
             }
 
             //check that destination is free
@@ -795,6 +797,9 @@ package mx.ecosur.multigame.manantiales
                 return;
             }
 
+            var current:Ficha;
+            if (move.currentCell != null && move.currentCell is Ficha)
+                current = Ficha (move.currentCell);
             var destination:Ficha = Ficha(move.destinationCell);
 
             //define origin
@@ -830,7 +835,7 @@ package mx.ecosur.multigame.manantiales
                 startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
                 startSize = _gameWindow.board.tokenSize;
 
-            } else{
+            } else {
                 var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(
                     ManantialesPlayer(move.player));
                 startPoint = new Point(
