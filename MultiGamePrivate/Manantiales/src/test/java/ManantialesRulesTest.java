@@ -1256,7 +1256,9 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     @Test
     public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
         Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        setIds(play);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+
+        setIds(play, change);
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
@@ -1264,7 +1266,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         Suggestion suggestion = new Suggestion();
         suggestion.setSuggestor(bob);
         suggestion.setStatus(SuggestionStatus.UNEVALUATED);
-        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
         move = new ManantialesMove (alice, play, change);
         suggestion.setMove (move);
         suggestion = game.suggest(suggestion);
@@ -1290,7 +1291,8 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
             }
         }
 
-        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.VERIFIED));
+        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
+                MoveStatus.VERIFIED));
         assertTrue(filter.size() > 0);
 
         GameGrid grid = game.getGrid();
@@ -1298,6 +1300,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue ("Destination not populated!", location != null);
         assertTrue ("Destination not populated!", location.equals(change));        
         assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
+        assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
     }
 
 

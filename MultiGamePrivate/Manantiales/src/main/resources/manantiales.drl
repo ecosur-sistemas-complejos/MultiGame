@@ -332,10 +332,12 @@ then
     GameGrid modifiedGrid = $game.getGrid();   
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
     modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
+    $game.setGrid (modifiedGrid);
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
-    retract ($suggestion);
+    messageSender.sendSuggestionApplied (new Game ($game), $suggestion);
     messageSender.sendMoveComplete ($game, $move);
+    retract ($suggestion);         
 end
 
 rule "reject-suggestion"
@@ -345,7 +347,7 @@ when
     $game : GridGame (state == GameState.PLAY)
     $suggestion : Suggestion (status == SuggestionStatus.REJECT)
 then
-    messageSender.sendSuggestionEvaluated (new Game ($game), $suggestion);
+    messageSender.sendSuggestionApplied (new Game ($game), $suggestion);
     retract ($suggestion);
 end
 

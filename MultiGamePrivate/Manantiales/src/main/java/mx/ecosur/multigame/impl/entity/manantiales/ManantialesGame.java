@@ -103,7 +103,6 @@ public class ManantialesGame extends GridGame {
     }
 
     public void addSuggestion (Suggestion suggestion) {
-        /* Adds or UPDATES a suggestion to the list of suggstions */
         if (suggestions == null)
             suggestions = new LinkedHashSet<Suggestion>();
         suggestions.add(suggestion);       
@@ -114,9 +113,9 @@ public class ManantialesGame extends GridGame {
             for (Suggestion possible : suggestions) {
                 if (possible.equals(suggestion)) {
                     possible.setStatus(suggestion.getStatus());
-                }
+                } 
             }
-        }
+        } 
     }
 
     /* (non-Javadoc)
@@ -334,7 +333,7 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    @OneToMany (fetch=FetchType.EAGER)
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<Suggestion> getSuggestions () {
         return suggestions;
 

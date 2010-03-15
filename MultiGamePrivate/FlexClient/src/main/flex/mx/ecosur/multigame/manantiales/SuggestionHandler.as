@@ -3,8 +3,9 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.geom.Point;
-    import flash.events.MouseEvent;    
+    import flash.events.MouseEvent;
 
+    import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.controls.Button;
     import mx.core.DragSource;
@@ -39,7 +40,11 @@ package mx.ecosur.multigame.manantiales
 
         private var _player:ManantialesPlayer;
 
-        public var _isMoving:Boolean;
+        private var _isMoving:Boolean;
+
+        private var _suggestions:ArrayCollection;
+
+        private var _rejections:ArrayCollection;
 
         private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
 
@@ -48,139 +53,148 @@ package mx.ecosur.multigame.manantiales
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
             _player = controller._currentPlayer;
+            _suggestions = new ArrayCollection();
+            _rejections = new ArrayCollection();
         }
 
 
         public function addSuggestion (suggestion:Suggestion):void {
-            Alert.show ("Suggestion Status=" + suggestion.status);            
-            if (suggestion.status == SuggestionStatus.ACCEPT || suggestion.status == SuggestionStatus.REJECT) {
-                removeSuggestion (suggestion);
-                // initFromGrid(); 
-            } else {
-                var move:ManantialesMove = suggestion.move;
-    
-                if (move.player.color == _player.color) {
-                    var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
-                        move.destinationCell.column, move.destinationCell.row));
-                    if (!boardCell.token is UndevelopedToken ||
-                        boardCell.token is IntensiveToken)
-                    {
-                        _controller._gameWindow.moveViewer.selectedMove = move;
-                        return;
-                    }
+            if (_suggestions.contains(suggestion) || _rejections.contains(suggestion))
+                return;
+            _suggestions.addItem(suggestion);
 
-                    var destination:Ficha = Ficha(move.destinationCell);
+            var move:ManantialesMove = suggestion.move;
 
-                    //define origin
-                    var startPoint:Point;
-                    var startSize:Number;
-
-                    if(move.player.id == _controller._currentPlayer.id && _controller._currentPlayer.turn){
-                        switch (destination.type) {
-                            case TokenType.FOREST:
-                               startPoint = new Point(_controller._gameWindow.forestStore.width,
-                                       _controller._gameWindow.forestStore.height);
-                               startPoint = _controller._gameWindow.forestStore.localToGlobal(startPoint);
-                               break;
-                            case TokenType.INTENSIVE:
-                                startPoint = new Point(_controller._gameWindow.intensiveStore.width,
-                                        _controller._gameWindow.intensiveStore.height);
-                                startPoint = _controller._gameWindow.intensiveStore.localToGlobal(startPoint);
-                                break;
-                            case TokenType.MODERATE:
-                                startPoint = new Point(_controller._gameWindow.moderateStore.width,
-                                        _controller._gameWindow.moderateStore.height);
-                                startPoint = _controller._gameWindow.moderateStore.localToGlobal(startPoint);
-                                break;
-                            case TokenType.SILVOPASTORAL:
-                                startPoint = new Point(_controller._gameWindow.silvoStore.width,
-                                        _controller._gameWindow.silvoStore.height);
-                                startPoint = _controller._gameWindow.silvoStore.localToGlobal(startPoint);
-                                break;
-                            case TokenType.VIVERO:
-                                startPoint = new Point(_controller._gameWindow.viveroStore.width,
-                                        _controller._gameWindow.viveroStore.height);
-                                startPoint = _controller._gameWindow.viveroStore.localToGlobal(startPoint);
-                                break;
-                           default:
-                                break;
-                        }
-
-                        startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
-                        startSize = _controller._gameWindow.board.tokenSize;
-
-                    } else{
-                        var playerBtn:Button = _controller._gameWindow.playersViewer.getPlayerButton(
-                            ManantialesPlayer(move.player));
-                        startPoint = new Point(
-                            playerBtn.x + Color.getCellIconSize() / 2 + 5,
-                            playerBtn.y + Color.getCellIconSize() / 2 + 5);
-                        startPoint = _controller._gameWindow.playersViewer.localToGlobal(startPoint);
-                        startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
-                        startSize = Color.getCellIconSize();
-                    }
-
-                    //define destination
-                    var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
-                    var endSize:Number = _controller._gameWindow.board.tokenSize;
-                    endPoint = boardCell.localToGlobal(endPoint);
-                    endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
-
-                    //create new token
-                    var token:SuggestionToken = new SuggestionToken (suggestion);
-
-                    token.cell = move.destinationCell;
-                    token.width = endSize;
-                    token.height = endSize;
-                    _controller._gameWindow.animateLayer.addChild(token);
-
-                    //define motion animation
-                    var apX:AnimateProperty = new AnimateProperty(token);
-                    apX.fromValue = startPoint.x;
-                    apX.toValue = endPoint.x;
-                    apX.duration = 1000;
-                    apX.property = "x";
-                    var apY:AnimateProperty = new AnimateProperty(token);
-                    apY.fromValue = startPoint.y;
-                    apY.toValue = endPoint.y;
-                    apY.duration = 1000;
-                    apY.property = "y";
-
-                    //define size animation
-                    var apXScale:AnimateProperty = new AnimateProperty(token);
-                    apXScale.property = "scaleX";
-                    apXScale.fromValue = startSize / endSize;
-                    apXScale.toValue = 1;
-                    apXScale.duration = 1000;
-                    var apYScale:AnimateProperty = new AnimateProperty(token);
-                    apYScale.property = "scaleY";
-                    apYScale.fromValue = startSize / endSize;
-                    apYScale.toValue = 1;
-                    apYScale.duration = 1000;
-
-                    //start effect
-                    apX.play();
-                    apY.play();
-                    apXScale.play();
-                    apYScale.play();
-
-                    token.blink();
-
-                    /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
-
-                    if (_alert == null)
-                        _alert = new SuggestionAlert();
-                    _alert.suggestion = suggestion;
-                    _alert.addEventListener("accept", accept);
-                    _alert.addEventListener("reject", reject);
-
-                    PopUpManager.addPopUp(_alert, _controller._gameWindow, true);
-                            PopUpManager.centerPopUp(_alert);
+            if (move.player.color == _player.color) {
+                var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
+                    move.destinationCell.column, move.destinationCell.row));
+                if (!boardCell.token is UndevelopedToken ||
+                    boardCell.token is IntensiveToken)
+                {
+                    _controller._gameWindow.moveViewer.selectedMove = move;
+                    return;
                 }
+
+                var destination:Ficha = Ficha(move.destinationCell);
+
+                //define origin
+                var startPoint:Point;
+                var startSize:Number;
+
+                if(move.player.id == _controller._currentPlayer.id && _controller._currentPlayer.turn){
+                    switch (destination.type) {
+                        case TokenType.FOREST:
+                           startPoint = new Point(_controller._gameWindow.forestStore.width,
+                                   _controller._gameWindow.forestStore.height);
+                           startPoint = _controller._gameWindow.forestStore.localToGlobal(startPoint);
+                           break;
+                        case TokenType.INTENSIVE:
+                            startPoint = new Point(_controller._gameWindow.intensiveStore.width,
+                                    _controller._gameWindow.intensiveStore.height);
+                            startPoint = _controller._gameWindow.intensiveStore.localToGlobal(startPoint);
+                            break;
+                        case TokenType.MODERATE:
+                            startPoint = new Point(_controller._gameWindow.moderateStore.width,
+                                    _controller._gameWindow.moderateStore.height);
+                            startPoint = _controller._gameWindow.moderateStore.localToGlobal(startPoint);
+                            break;
+                        case TokenType.SILVOPASTORAL:
+                            startPoint = new Point(_controller._gameWindow.silvoStore.width,
+                                    _controller._gameWindow.silvoStore.height);
+                            startPoint = _controller._gameWindow.silvoStore.localToGlobal(startPoint);
+                            break;
+                        case TokenType.VIVERO:
+                            startPoint = new Point(_controller._gameWindow.viveroStore.width,
+                                    _controller._gameWindow.viveroStore.height);
+                            startPoint = _controller._gameWindow.viveroStore.localToGlobal(startPoint);
+                            break;
+                       default:
+                            break;
+                    }
+
+                    startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
+                    startSize = _controller._gameWindow.board.tokenSize;
+
+                } else{
+                    var playerBtn:Button = _controller._gameWindow.playersViewer.getPlayerButton(
+                        ManantialesPlayer(move.player));
+                    startPoint = new Point(
+                        playerBtn.x + Color.getCellIconSize() / 2 + 5,
+                        playerBtn.y + Color.getCellIconSize() / 2 + 5);
+                    startPoint = _controller._gameWindow.playersViewer.localToGlobal(startPoint);
+                    startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
+                    startSize = Color.getCellIconSize();
+                }
+
+                //define destination
+                var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
+                var endSize:Number = _controller._gameWindow.board.tokenSize;
+                endPoint = boardCell.localToGlobal(endPoint);
+                endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
+
+                //create new token
+                var token:SuggestionToken = new SuggestionToken (suggestion);
+
+                token.cell = move.destinationCell;
+                token.width = endSize;
+                token.height = endSize;
+                _controller._gameWindow.animateLayer.addChild(token);
+
+                //define motion animation
+                var apX:AnimateProperty = new AnimateProperty(token);
+                apX.fromValue = startPoint.x;
+                apX.toValue = endPoint.x;
+                apX.duration = 1000;
+                apX.property = "x";
+                var apY:AnimateProperty = new AnimateProperty(token);
+                apY.fromValue = startPoint.y;
+                apY.toValue = endPoint.y;
+                apY.duration = 1000;
+                apY.property = "y";
+
+                //define size animation
+                var apXScale:AnimateProperty = new AnimateProperty(token);
+                apXScale.property = "scaleX";
+                apXScale.fromValue = startSize / endSize;
+                apXScale.toValue = 1;
+                apXScale.duration = 1000;
+                var apYScale:AnimateProperty = new AnimateProperty(token);
+                apYScale.property = "scaleY";
+                apYScale.fromValue = startSize / endSize;
+                apYScale.toValue = 1;
+                apYScale.duration = 1000;
+
+                //start effect
+                apX.play();
+                apY.play();
+                apXScale.play();
+                apYScale.play();
+
+                token.blink();
+
+                /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
+
+                if (_alert == null)
+                    _alert = new SuggestionAlert();
+                _alert.suggestion = suggestion;
+                _alert.addEventListener("accept", accept);
+                _alert.addEventListener("reject", reject);
+
+                PopUpManager.addPopUp(_alert, _controller._gameWindow, true);
+                        PopUpManager.centerPopUp(_alert);
             }
         }
 
         public function removeSuggestion (suggestion:Suggestion):void {
+            Alert.show("removeSuggestion");
+
+            var idx:int = _suggestions.getItemIndex(suggestion);
+            if (idx <= 0)
+                return;
+
+            _suggestions.removeItemAt(idx);
+            _rejections.addItem(suggestion);            
+
            //define origin
             var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(suggestion.move.destinationCell.column,
                     suggestion.move.destinationCell.row);
@@ -204,6 +218,8 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             token.visible = false;
             _controller._gameWindow.animateLayer.addChild(token);
+
+            /*
 
             // restore previous token
             for (var i:int = 0; i < _controller._moves.length; i++) {
@@ -233,7 +249,7 @@ package mx.ecosur.multigame.manantiales
                         }
                     }
                 }
-            }
+            } */
             
             if (boardCell.token == null)
                  boardCell.token = new UndevelopedToken (suggestion.move.destinationCell.column,
@@ -287,7 +303,6 @@ package mx.ecosur.multigame.manantiales
         public function accept(event:DynamicEvent):void {
             var suggestion:Suggestion = Suggestion (event.data);
             suggestion.status = SuggestionStatus.ACCEPT;
-            this._controller._game.addSuggestion(suggestion);
             
             /* Do move on back end */
             var call:Object = _controller._gameService.doSuggestedMove (this._controller._game, suggestion);
