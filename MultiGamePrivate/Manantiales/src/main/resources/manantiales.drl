@@ -10,6 +10,7 @@ package mx.ecosur.multigame.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.enums.SuggestionStatus;
 
 import mx.ecosur.multigame.model.Condition;
 import mx.ecosur.multigame.model.Game;
@@ -28,13 +29,12 @@ import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
-import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
+import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
 import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 
 import java.util.HashSet;
@@ -73,7 +73,7 @@ rule "evaluate-suggestion"
     no-loop true
 when
     $game  : GridGame (state == GameState.PLAY, $grid : grid)
-    $suggestion : Suggestion ($suggestor : suggestor, status == SuggestionStatus.UNEVALUATED, $move : move)
+    $suggestion : PuzzleSuggestion ($suggestor : suggestor, status == SuggestionStatus.UNEVALUATED, $move : move)
     eval ((ManantialesPlayer) $suggestor != (ManantialesPlayer) $move.getPlayer())
     eval (isValid ($grid, $move))
 then
@@ -315,7 +315,7 @@ rule "evaluated-suggestion-notify"
     no-loop true
 when
     $game  : GridGame (state == GameState.PLAY)
-    $suggestion : Suggestion (status == SuggestionStatus.EVALUATED)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.EVALUATED)
 then
     messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
 end
@@ -324,20 +324,18 @@ rule "accept-suggestion"
     agenda-group "move"
     lock-on-active
 when
-    $game : GridGame (state == GameState.PLAY)
-    $suggestion : Suggestion (status == SuggestionStatus.ACCEPT)
-    $move : ManantialesMove (status == MoveStatus.UNVERIFIED)
-    eval (isValid($game.getGrid(), $move))
+    $game : ManantialesGame (state == GameState.PLAY, $grid : grid)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.ACCEPT, $move : move)
+    eval (isValid($game.getGrid(), $suggestion.getMove()))
 then
-    GameGrid modifiedGrid = $game.getGrid();   
-    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
-    modifiedGrid.removeCell ((GridCell) $move.getCurrentCell());
-    $game.setGrid (modifiedGrid);
-    modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+    $grid.updateCell ((GridCell) $move.getDestinationCell());
+    $grid.removeCell ((GridCell) $move.getCurrentCell());
+    $move.setStatus (MoveStatus.MOVED);    
+    modify ($game) { setGrid ($grid), addMove ($move) }
     messageSender.sendSuggestionApplied (new Game ($game), $suggestion);
-    messageSender.sendMoveComplete ($game, $move);
-    retract ($suggestion);         
+    retract ($suggestion);
+    insert ($move);
+    messageSender.sendMoveComplete ($game, $move);    
 end
 
 rule "reject-suggestion"
@@ -345,7 +343,7 @@ rule "reject-suggestion"
     no-loop true
 when
     $game : GridGame (state == GameState.PLAY)
-    $suggestion : Suggestion (status == SuggestionStatus.REJECT)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.REJECT)
 then
     messageSender.sendSuggestionApplied (new Game ($game), $suggestion);
     retract ($suggestion);

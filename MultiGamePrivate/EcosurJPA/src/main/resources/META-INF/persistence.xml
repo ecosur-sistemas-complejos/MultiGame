@@ -28,7 +28,7 @@
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent</class>
-        <class>mx.ecosur.multigame.impl.entity.manantiales.Suggestion</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.ConditionType</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.Mode</class>

@@ -6,8 +6,8 @@
 */
 
 /**
- * @author awaterma@ecosur.mx
- */
+* @author awaterma@ecosur.mx
+*/
 package mx.ecosur.multigame.session;
 
 import static org.junit.Assert.*;
@@ -23,10 +23,7 @@ import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
@@ -41,109 +38,178 @@ import org.junit.Test;
 
 public class ManantialesSharedBoardTest {
 
-	
-	private RegistrarRemote registrar;
-	
-	private SharedBoardRemote board;
-	
-	private int gameId;
-	
-	private ManantialesPlayer alice, bob, charlie, denise;
-	
 
-	@Before
-	public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException {
-		InitialContext ic = new InitialContext();
-		
-		registrar = (RegistrarRemote) ic.lookup(
-			"mx.ecosur.multigame.ejb.interfaces.RegistrarRemote");
-		
-		GridRegistrant[] registrants = {
-			new GridRegistrant ("alice"),
-			new GridRegistrant ("bob"),
-			new GridRegistrant ("charlie"),
-			new GridRegistrant ("denise")};
-		
-		ManantialesGame game = new ManantialesGame ();
-		Game boardGame = new Game (game);
-		
-		for (int i = 0; i < 4; i++) {
-			Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
-			boardGame = registrar.registerPlayer(boardGame, registrant);
-			if (gameId == 0) {
-				gameId = boardGame.getId();
-			}
-		}
-		
-		/* Get the SharedBoard */
-		board = (SharedBoardRemote) ic.lookup(
-				"mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote");
-		game = (ManantialesGame) board.getGame(gameId).getImplementation();
+    private RegistrarRemote registrar;
 
-		/* Set the GamePlayers from the SharedBoard */
-		List<GridPlayer> players = game.getPlayers();
-		for (GridPlayer p : players) {
-			if (p.getRegistrant().getName().equals("alice"))
-				alice = (ManantialesPlayer) p;
-			else if (p.getRegistrant().getName().equals("bob"))
-				bob = (ManantialesPlayer) p;
-			else if (p.getRegistrant().getName().equals("charlie"))
-				charlie = (ManantialesPlayer) p;
-			else if (p.getRegistrant().getName().equals("denise"))
-				denise = (ManantialesPlayer) p;
-		}
-		
-		assertNotNull ("Alice not found in game!", alice);
-		assertNotNull ("Bob not found in game!", bob);
-		assertNotNull ("Charlie not found in game!", charlie);
-		assertNotNull ("Denise not found in game!", denise);
-	}
-	
-	@After
-	public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
-		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
-		registrar.unregister(new Game (game), new GamePlayer (alice));
-		registrar.unregister(new Game (game), new GamePlayer (bob));
-		registrar.unregister(new Game (game), new GamePlayer (charlie));
-		registrar.unregister(new Game (game), new GamePlayer (denise));
-	}	
-	
-	
-	/**
-	 * Simple test to determine if there are the correct number of squares
-	 * after the game state is set to BEGIN.
-	 * @throws RemoteException
-	 */
-	@Test
-	public void testGetGameGrid() throws RemoteException {
-		ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
-		assertTrue (game.getGrid().getCells().size() == 0);
-	}	
-	
-	/** Test on ManantialesGame for setting check constraints 
-	 * @throws InvalidMoveException */
-	@Test
-	public void testCheckConstraints () throws InvalidMoveException {
-		Game game = board.getGame(gameId);
-		Ficha ficha = new Ficha (4,3, alice.getColor(), 
-				TokenType.MODERATE_PASTURE);
+    private SharedBoardRemote board;
 
-		ManantialesMove move = new ManantialesMove (alice, ficha);
-		Move mv = board.doMove(game, new Move (move));
-		
-		ficha = new Ficha (4,5, bob.getColor(), 
-				TokenType.MODERATE_PASTURE);
-		move = new ManantialesMove (bob, ficha);
-		mv = board.doMove(game, new Move (move));
-		
-		ficha = new Ficha (3,4, charlie.getColor(), 
-				TokenType.MODERATE_PASTURE);
-		move = new ManantialesMove (charlie, ficha);
-		mv = board.doMove(game, new Move (move));
+    private int gameId;
+
+    private ManantialesPlayer alice, bob, charlie, denise;
+
+
+    @Before
+    public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException {
+        InitialContext ic = new InitialContext();
+
+        registrar = (RegistrarRemote) ic.lookup(
+            "mx.ecosur.multigame.ejb.interfaces.RegistrarRemote");
+
+        GridRegistrant[] registrants = {
+            new GridRegistrant ("alice"),
+            new GridRegistrant ("bob"),
+            new GridRegistrant ("charlie"),
+            new GridRegistrant ("denise")};
+
+        ManantialesGame game = new ManantialesGame ();
+        Game boardGame = new Game (game);
+
+        for (int i = 0; i < 4; i++) {
+            Registrant registrant = registrar.register(new Registrant (registrants [ i ]));
+            boardGame = registrar.registerPlayer(boardGame, registrant);
+            if (gameId == 0) {
+                gameId = boardGame.getId();
+            }
+        }
+
+        /* Get the SharedBoard */
+        board = (SharedBoardRemote) ic.lookup(
+                "mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote");
+        game = (ManantialesGame) board.getGame(gameId).getImplementation();
+
+        /* Set the GamePlayers from the SharedBoard */
+        List<GridPlayer> players = game.getPlayers();
+        for (GridPlayer p : players) {
+            if (p.getRegistrant().getName().equals("alice"))
+                alice = (ManantialesPlayer) p;
+            else if (p.getRegistrant().getName().equals("bob"))
+                bob = (ManantialesPlayer) p;
+            else if (p.getRegistrant().getName().equals("charlie"))
+                charlie = (ManantialesPlayer) p;
+            else if (p.getRegistrant().getName().equals("denise"))
+                denise = (ManantialesPlayer) p;
+        }
+
+        assertNotNull ("Alice not found in game!", alice);
+        assertNotNull ("Bob not found in game!", bob);
+        assertNotNull ("Charlie not found in game!", charlie);
+        assertNotNull ("Denise not found in game!", denise);
+    }
+
+    @After
+    public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
+        ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
+        registrar.unregister(new Game (game), new GamePlayer (alice));
+        registrar.unregister(new Game (game), new GamePlayer (bob));
+        registrar.unregister(new Game (game), new GamePlayer (charlie));
+        registrar.unregister(new Game (game), new GamePlayer (denise));
+    }
+
+
+    /**
+     * Simple test to determine if there are the correct number of squares
+     * after the game state is set to BEGIN.
+     * @throws RemoteException
+     */
+    @Test
+    public void testGetGameGrid() throws RemoteException {
+        ManantialesGame game = (ManantialesGame) board.getGame(gameId).getImplementation();
+        assertTrue (game.getGrid().getCells().size() == 0);
+    }
+
+    /** Test on ManantialesGame for setting check constraints
+     * @throws InvalidMoveException */
+    @Test
+    public void testCheckConstraints () throws InvalidMoveException {
+        Game game = board.getGame(gameId);
+        Ficha ficha = new Ficha (4,3, alice.getColor(),
+                TokenType.MODERATE_PASTURE);
+
+        ManantialesMove move = new ManantialesMove (alice, ficha);
+        Move mv = board.doMove(game, new Move (move));
+
+        ficha = new Ficha (4,5, bob.getColor(),
+                TokenType.MODERATE_PASTURE);
+        move = new ManantialesMove (bob, ficha);
+        mv = board.doMove(game, new Move (move));
+
+        ficha = new Ficha (3,4, charlie.getColor(),
+                TokenType.MODERATE_PASTURE);
+        move = new ManantialesMove (charlie, ficha);
+        mv = board.doMove(game, new Move (move));
 
         game = board.getGame(gameId);
-		ManantialesGame mg = (ManantialesGame) game.getImplementation();
-		assertTrue ("CheckConstraint not fired!", mg.getCheckConditions() != null);
-		assertEquals (1, mg.getCheckConditions().size());
-	}
+        ManantialesGame mg = (ManantialesGame) game.getImplementation();
+        assertTrue ("CheckConstraint not fired!", mg.getCheckConditions() != null);
+        assertEquals (1, mg.getCheckConditions().size());
+    }
+
+    /*
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
+        Game game = board.getGame(gameId);
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+
+        ManantialesMove move = new ManantialesMove (alice, play);
+        board.doMove (game, new Move(move));
+
+        PuzzleSuggestion suggestion = new PuzzleSuggestion();
+        suggestion.setSuggestor(bob);
+        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
+        move = new ManantialesMove (alice, play, change);
+        suggestion.setMove (move);
+        suggestion = game.suggest(suggestion);
+
+        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+
+        suggestion.setStatus(SuggestionStatus.ACCEPT);
+        game.addSuggestion(suggestion);
+        game.move(suggestion.getMove());
+
+        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
+                MoveStatus.VERIFIED));
+        assertTrue(filter.size() > 0);
+
+        GameGrid grid = game.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination not populated!", location != null);
+        assertTrue ("Destination not populated!", location.equals(change));
+        assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
+        assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSuggestionRejected () throws InvalidMoveException, JMSException {
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        ManantialesMove move = new ManantialesMove (alice, play);
+        game.move (move);
+
+        PuzzleSuggestion suggestion = new PuzzleSuggestion();
+        suggestion.setSuggestor(bob);
+        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        move = new ManantialesMove (alice, play, change);
+        suggestion.setMove (move);
+        mockTopic.clear();
+        suggestion = game.suggest(suggestion);
+
+        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+
+        suggestion.setStatus(SuggestionStatus.REJECT);
+        suggestion = game.suggest(suggestion);
+
+        assertTrue (move.getStatus().equals(MoveStatus.UNVERIFIED));
+
+        GameGrid grid = game.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination populated!", location == null);
+        assertTrue ("Location does not remain!", grid.getLocation(move.getCurrentCell()) != null);
+    }
+
+    */
 }

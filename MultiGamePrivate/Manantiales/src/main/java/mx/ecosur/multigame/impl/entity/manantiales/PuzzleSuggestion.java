@@ -16,7 +16,7 @@ import javax.persistence.*;
  * @author awaterma@ecosur.mx
  */
 @Entity
-public class Suggestion implements ConditionImpl {
+public class PuzzleSuggestion implements ConditionImpl {
 
 	private static final long serialVersionUID = -1649014283342618955L;
 
@@ -94,8 +94,8 @@ public class Suggestion implements ConditionImpl {
     public boolean equals(Object obj) {
         boolean ret;
 
-        if (obj instanceof Suggestion) {
-            Suggestion comparison = (Suggestion) obj;
+        if (obj instanceof PuzzleSuggestion) {
+            PuzzleSuggestion comparison = (PuzzleSuggestion) obj;
 
             ret = (this.getSuggestor().equals(comparison.getSuggestor()))
                     && (this.getMove()).equals(comparison.getMove());

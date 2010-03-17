@@ -21,13 +21,13 @@ import com.mockrunner.mock.jms.MockObjectMessage;
 import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
-import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import mx.ecosur.multigame.impl.model.GameGrid;
@@ -1251,7 +1251,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         filter.size() == 0);
     }
 
-
     @SuppressWarnings("unchecked")
     @Test
     public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
@@ -1262,20 +1261,17 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
-        /* Now, make the suggestion to move 5,4 to 4,0 */
-        Suggestion suggestion = new Suggestion();
+        PuzzleSuggestion suggestion = new PuzzleSuggestion();
         suggestion.setSuggestor(bob);
         suggestion.setStatus(SuggestionStatus.UNEVALUATED);
         move = new ManantialesMove (alice, play, change);
         suggestion.setMove (move);
-        suggestion = game.suggest(suggestion);
+        suggestion = (PuzzleSuggestion) game.suggest(suggestion);
 
         assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
 
         suggestion.setStatus(SuggestionStatus.ACCEPT);
-        game.addSuggestion(suggestion);
-        mockTopic.clear();
-        game.move(suggestion.getMove());
+        suggestion = (PuzzleSuggestion) game.suggest (suggestion);
 
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();
@@ -1292,7 +1288,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
         assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.VERIFIED));
+                MoveStatus.MOVED));
         assertTrue(filter.size() > 0);
 
         GameGrid grid = game.getGrid();
@@ -1312,20 +1308,19 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
-        /* Now, make the suggestion to move 5,4 to 4,0 */
-        Suggestion suggestion = new Suggestion();
+        PuzzleSuggestion suggestion = new PuzzleSuggestion();
         suggestion.setSuggestor(bob);
         suggestion.setStatus(SuggestionStatus.UNEVALUATED);
         Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
         move = new ManantialesMove (alice, play, change);
         suggestion.setMove (move);
         mockTopic.clear();
-        suggestion = game.suggest(suggestion);
+        suggestion = (PuzzleSuggestion) game.suggest(suggestion);
 
         assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
 
         suggestion.setStatus(SuggestionStatus.REJECT);
-        suggestion = game.suggest(suggestion);
+        suggestion = (PuzzleSuggestion) game.suggest(suggestion);
         
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();

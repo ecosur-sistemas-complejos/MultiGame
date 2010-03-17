@@ -11,8 +11,6 @@ package mx.ecosur.multigame.manantiales.entity
     {
         protected var _type:String;
 
-        private var popup:PopUpButton;
-
         public function Ficha()
         {
             super();

@@ -5,10 +5,10 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
-import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
@@ -62,8 +62,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
                 /* All unacknowledged suggestions addressed to this player are acknowledged */
                 ManantialesGame game = (ManantialesGame) msg.getObject();
                 if (game.getMode().equals(Mode.BASIC_PUZZLE) || game.getMode().equals(Mode.SILVO_PUZZLE)) {
-                    Set<Suggestion> suggestions = game.getSuggestions();
-                    for (Suggestion suggestion : suggestions) {
+                    Set<PuzzleSuggestion> suggestions = game.getSuggestions();
+                    for (PuzzleSuggestion suggestion : suggestions) {
                         if (suggestion.getStatus().equals(SuggestionStatus.EVALUATED)) {
                             if (suggestion.getMove().getPlayer().equals(this)) {
                                 suggestion.setStatus(SuggestionStatus.ACCEPT);

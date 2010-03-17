@@ -19,11 +19,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
 import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.Implementation;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.implementation.*;
 import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
@@ -50,7 +46,7 @@ public class ManantialesGame extends GridGame {
 
     private transient ManantialesMessageSender messageSender;
 
-    private Set<Suggestion> suggestions;
+    private Set<PuzzleSuggestion> suggestions;
 
 
     public ManantialesGame () {
@@ -102,20 +98,29 @@ public class ManantialesGame extends GridGame {
                 checkConditions.add(violation);
     }
 
-    public void addSuggestion (Suggestion suggestion) {
+    public void addSuggestion (PuzzleSuggestion suggestion) {
         if (suggestions == null)
-            suggestions = new LinkedHashSet<Suggestion>();
-        suggestions.add(suggestion);       
+            suggestions = new LinkedHashSet<PuzzleSuggestion>();
+        
+        if (suggestions.contains (suggestion))
+            updateSuggestion(suggestion);
+        else
+            suggestions.add(suggestion);
     }
 
-    public void updateSuggestion (Suggestion suggestion) {
+    public void updateSuggestion (PuzzleSuggestion suggestion) {
         if (suggestions != null) {
-            for (Suggestion possible : suggestions) {
+            for (PuzzleSuggestion possible : suggestions) {
                 if (possible.equals(suggestion)) {
                     possible.setStatus(suggestion.getStatus());
                 } 
             }
         } 
+    }
+
+    public void addMove (ManantialesMove move) {
+        if (moves != null)
+            moves.add(move);
     }
 
     /* (non-Javadoc)
@@ -175,6 +180,7 @@ public class ManantialesGame extends GridGame {
     /* (non-Javadoc)
       * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
       */
+    @Override
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
         if (kbase == null) {
             kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -207,7 +213,8 @@ public class ManantialesGame extends GridGame {
         return move;
     }
 
-    public Suggestion suggest (Suggestion suggestion) {
+    @Override
+    public SuggestionImpl suggest (SuggestionImpl suggestion) {
         if (kbase == null) {
             kbase = KnowledgeBaseFactory.newKnowledgeBase();
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -216,7 +223,7 @@ public class ManantialesGame extends GridGame {
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
 
-        addSuggestion (suggestion);
+        addSuggestion ((PuzzleSuggestion) suggestion);
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
@@ -333,21 +340,21 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    public Set<Suggestion> getSuggestions () {
+    @OneToMany (cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
+    public Set<PuzzleSuggestion> getSuggestions () {
         return suggestions;
 
     }
 
-    public void setSuggestions (Set<Suggestion> suggestions) {
+    public void setSuggestions (Set<PuzzleSuggestion> suggestions) {
         this.suggestions = suggestions;
     }
 
 
     @Transient
-    public Set<Suggestion> findSuggestion (ManantialesMove move) {
-        Set<Suggestion> ret = new LinkedHashSet<Suggestion>();
-        for (Suggestion suggestion : suggestions) {
+    public Set<PuzzleSuggestion> findSuggestion (ManantialesMove move) {
+        Set<PuzzleSuggestion> ret = new LinkedHashSet<PuzzleSuggestion>();
+        for (PuzzleSuggestion suggestion : suggestions) {
             if (suggestion.getMove().equals(move))
                 ret.add(suggestion);
         }

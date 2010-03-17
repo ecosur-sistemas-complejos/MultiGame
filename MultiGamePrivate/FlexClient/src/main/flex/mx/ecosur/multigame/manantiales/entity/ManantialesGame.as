@@ -2,8 +2,6 @@
 
 package mx.ecosur.multigame.manantiales.entity
 {
-    import flash.utils.Dictionary;
-
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.entity.Game;
 

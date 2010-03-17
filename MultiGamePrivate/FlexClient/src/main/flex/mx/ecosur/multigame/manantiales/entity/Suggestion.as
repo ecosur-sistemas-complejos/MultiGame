@@ -12,7 +12,7 @@ package mx.ecosur.multigame.manantiales.entity
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
     import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
 
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.Suggestion")]
+    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion")]
     public class Suggestion {
 
         private var _move:ManantialesMove;

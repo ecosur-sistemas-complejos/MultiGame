@@ -20,12 +20,13 @@ import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
-import mx.ecosur.multigame.impl.entity.manantiales.Suggestion;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridGame;
@@ -37,11 +38,7 @@ import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.enums.gente.*;
 
-import mx.ecosur.multigame.model.Agent;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.model.Registrant;
+import mx.ecosur.multigame.model.*;
 
 
 import flex.messaging.FlexContext;
@@ -307,15 +304,6 @@ public class GameService {
         }
     }
 
-    public Move doSuggestedMove (GridGame game, Suggestion suggestion) {
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        Game model = sharedBoard.getGame(game.getId());
-        ManantialesGame mg = (ManantialesGame) model.getImplementation();
-        mg.updateSuggestion(suggestion);
-        sharedBoard.shareGame(mg);
-        return doMove (mg, suggestion.getMove());
-    }
-
 
     public List<GridMove> getMoves(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
@@ -338,69 +326,18 @@ public class GameService {
     
     /**
      *  Todo:  Consider separate Java service code for Manantiales? */
-    public Suggestion makeSuggestion (GridGame game, Suggestion suggestion) {
+    public PuzzleSuggestion makeSuggestion (GridGame game, PuzzleSuggestion suggestion) throws
+            InvalidSuggestionException
+    {
         SharedBoardRemote sharedBoard = getSharedBoard();
-        if (game instanceof ManantialesGame) {
-            ManantialesGame mg = (ManantialesGame) getGame(game.getId());
-            suggestion = mg.suggest(suggestion);
-            game = mg;
-        }
-
-        sharedBoard.shareGame (game);
-        return suggestion;
-    }
-
-    /** Todo:  Consider separate Java code for Manantiales? */
-    public GameImpl changeMode (int gameId, Mode mode) {
-        /* Rules shift mode on initialize; so mode needs to be stepped to previous "mode"
-           in order to re-initialize game.
-         */
-        switch (mode) {
-            case CLASSIC:
-                mode = null;
-                break;
-            case BASIC_PUZZLE:
-                mode = Mode.CLASSIC;
-                break;
-            case SILVOPASTORAL:
-                mode = Mode.BASIC_PUZZLE;
-                break;
-            case SILVO_PUZZLE:
-                mode = Mode.SILVOPASTORAL;
-                break;
-        }
-
-
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        Game game = sharedBoard.getGame(gameId);
-        if (game.getImplementation() == null)
-            throw new RuntimeException ("Null implementation for Game Id: " + gameId);
-
-        ManantialesGame impl = (ManantialesGame) game.getImplementation();
-        try {
-            impl.setMode(mode);
-            impl.setMoves (null);
-            impl.setGrid (new GameGrid());
-            impl.initialize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        /* Store change in game into backend */
-        sharedBoard.shareGame(impl);
-
-        /* Send change */
-        MessageSender sender = game.getMessageSender();
-        sender.sendStateChange(impl);
-
-        return impl;
-
+        Suggestion ret = sharedBoard.makeSuggestion (new Game(game), new Suggestion(suggestion));
+        return (PuzzleSuggestion) ret.getImplementation();
     }
 
     /**
      * Todo:  consdier seperate Java code for Manantiales?
      */
-    public Set<Suggestion> getSuggestions (int gameId, ManantialesMove move) {
+    public Set<PuzzleSuggestion> getSuggestions (int gameId, ManantialesMove move) {
         SharedBoardRemote sharedBoard = getSharedBoard();
         Game game = sharedBoard.getGame(gameId);
         if (game.getImplementation() == null)

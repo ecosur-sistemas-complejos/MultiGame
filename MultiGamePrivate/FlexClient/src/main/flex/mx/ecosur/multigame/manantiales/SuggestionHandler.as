@@ -68,63 +68,22 @@ package mx.ecosur.multigame.manantiales
             if (move.player.color == _player.color) {
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                     move.destinationCell.column, move.destinationCell.row));
-                if (!boardCell.token is UndevelopedToken ||
-                    boardCell.token is IntensiveToken)
-                {
-                    _controller._gameWindow.moveViewer.selectedMove = move;
-                    return;
-                }
 
-                var destination:Ficha = Ficha(move.destinationCell);
+                //var destination:Ficha = Ficha(move.destinationCell);
+                var current:Ficha = new Ficha();
+                current.row = move.currentCell.row;
+                current.column = move.currentCell.column;
+                current.color = move.currentCell.color;
+                current.type = TokenType.UNDEVELOPED;                                
 
                 //define origin
                 var startPoint:Point;
-                var startSize:Number;
+                var startSize:Number;                
 
-                if(move.player.id == _controller._currentPlayer.id && _controller._currentPlayer.turn){
-                    switch (destination.type) {
-                        case TokenType.FOREST:
-                           startPoint = new Point(_controller._gameWindow.forestStore.width,
-                                   _controller._gameWindow.forestStore.height);
-                           startPoint = _controller._gameWindow.forestStore.localToGlobal(startPoint);
-                           break;
-                        case TokenType.INTENSIVE:
-                            startPoint = new Point(_controller._gameWindow.intensiveStore.width,
-                                    _controller._gameWindow.intensiveStore.height);
-                            startPoint = _controller._gameWindow.intensiveStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.MODERATE:
-                            startPoint = new Point(_controller._gameWindow.moderateStore.width,
-                                    _controller._gameWindow.moderateStore.height);
-                            startPoint = _controller._gameWindow.moderateStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            startPoint = new Point(_controller._gameWindow.silvoStore.width,
-                                    _controller._gameWindow.silvoStore.height);
-                            startPoint = _controller._gameWindow.silvoStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.VIVERO:
-                            startPoint = new Point(_controller._gameWindow.viveroStore.width,
-                                    _controller._gameWindow.viveroStore.height);
-                            startPoint = _controller._gameWindow.viveroStore.localToGlobal(startPoint);
-                            break;
-                       default:
-                            break;
-                    }
-
-                    startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
-                    startSize = _controller._gameWindow.board.tokenSize;
-
-                } else{
-                    var playerBtn:Button = _controller._gameWindow.playersViewer.getPlayerButton(
-                        ManantialesPlayer(move.player));
-                    startPoint = new Point(
-                        playerBtn.x + Color.getCellIconSize() / 2 + 5,
-                        playerBtn.y + Color.getCellIconSize() / 2 + 5);
-                    startPoint = _controller._gameWindow.playersViewer.localToGlobal(startPoint);
-                    startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
-                    startSize = Color.getCellIconSize();
-                }
+                startPoint = new Point(current.width, current.height);
+                startPoint = current.localToGlobal(startPoint);
+                startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
+                startSize = _controller._gameWindow.board.tokenSize;
 
                 //define destination
                 var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
@@ -172,6 +131,7 @@ package mx.ecosur.multigame.manantiales
 
                 token.blink();
 
+
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
 
                 if (_alert == null)
@@ -186,18 +146,19 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function removeSuggestion (suggestion:Suggestion):void {
-            Alert.show("removeSuggestion");
+            var boardCell:BoardCell;
+            var column:int, row:int;
 
-            var idx:int = _suggestions.getItemIndex(suggestion);
-            if (idx <= 0)
-                return;
+            if (suggestion.status == SuggestionStatus.ACCEPT) {
+                column = suggestion.move.currentCell.column
+                row = suggestion.move.currentCell.row;
+            } else {
+                column = suggestion.move.destinationCell.column
+                row = suggestion.move.destinationCell.row;
+            }
 
-            _suggestions.removeItemAt(idx);
-            _rejections.addItem(suggestion);            
+            boardCell = _controller._gameWindow.board.getBoardCell(column, row);
 
-           //define origin
-            var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(suggestion.move.destinationCell.column,
-                    suggestion.move.destinationCell.row);
             var startPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
             var startSize:Number = _controller._gameWindow.board.tokenSize;
             startPoint = boardCell.localToGlobal(startPoint);
@@ -207,6 +168,7 @@ package mx.ecosur.multigame.manantiales
             var playerBtn:Button = _controller._gameWindow.playersViewer.getPlayerButton(ManantialesPlayer(suggestion.suggestor));
             var endPoint:Point = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y +
                     Color.getCellIconSize() / 2 + 5);
+
             endPoint = _controller._gameWindow.playersViewer.localToGlobal(endPoint);
             endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
             var endSize:Number = Color.getCellIconSize();
@@ -220,7 +182,6 @@ package mx.ecosur.multigame.manantiales
             _controller._gameWindow.animateLayer.addChild(token);
 
             /*
-
             // restore previous token
             for (var i:int = 0; i < _controller._moves.length; i++) {
                 if (_controller._moves.length > 0) {
@@ -251,9 +212,8 @@ package mx.ecosur.multigame.manantiales
                 }
             } */
             
-            if (boardCell.token == null)
-                 boardCell.token = new UndevelopedToken (suggestion.move.destinationCell.column,
-                            suggestion.move.destinationCell.row);
+            //boardCell.token = new UndevelopedToken (column, row);
+            boardCell.token = null;
             boardCell.reset();
 
             //define motion animation
@@ -297,18 +257,15 @@ package mx.ecosur.multigame.manantiales
                 _controller._gameWindow.animateLayer.removeChild(token);
 
             boardCell.token = token;
-            boardCell.token.blink(1);
+            //boardCell.token.blink(1);
         }
 
         public function accept(event:DynamicEvent):void {
             var suggestion:Suggestion = Suggestion (event.data);
-            suggestion.status = SuggestionStatus.ACCEPT;
-            
-            /* Do move on back end */
-            var call:Object = _controller._gameService.doSuggestedMove (this._controller._game, suggestion);
-            call.operation = "doSuggestedMove";
+            suggestion.status = SuggestionStatus.ACCEPT;            
+            var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
+            call.operation = "makeSuggestion";
             PopUpManager.removePopUp(_alert);
-            
         }
 
         public function reject(event:DynamicEvent):void {
