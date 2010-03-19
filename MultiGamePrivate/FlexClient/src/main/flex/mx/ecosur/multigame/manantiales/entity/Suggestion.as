@@ -7,10 +7,6 @@
 
 package mx.ecosur.multigame.manantiales.entity
 {
-    import mx.collections.ArrayCollection;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-    import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
 
     [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion")]
     public class Suggestion {
@@ -21,7 +17,17 @@ package mx.ecosur.multigame.manantiales.entity
 
         private var _status:String;
 
-       public function get move():ManantialesMove {
+        private var _id:int
+
+        public function get id():int {
+            return _id;
+        }
+
+        public function set id(id:int) {
+            _id = id;
+        }
+
+        public function get move():ManantialesMove {
             return _move;
         }
 
@@ -43,25 +49,6 @@ package mx.ecosur.multigame.manantiales.entity
 
         public function set status(status:String):void {
             this._status = status;
-        }
-
-        public function get reason():String {
-            return _status;
-        }
-
-        public function set reason (reason:String):void {
-            _status = reason;
-        }
-
-        public function getTriggers():ArrayCollection {
-            var ret:ArrayCollection = new ArrayCollection();
-            ret.addItem(_suggestor);
-            ret.addItem(_move);
-            return ret;
-        }
-
-        public function setTriggers (triggers:ArrayCollection):void {
-            
         }
 
         public function toString():String {

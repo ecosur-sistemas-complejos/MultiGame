@@ -16,21 +16,21 @@ import java.rmi.RemoteException;
 
 import java.util.List;
 
+import javax.jms.JMSException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
+import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.model.Registrant;
+import mx.ecosur.multigame.impl.model.*;
+import mx.ecosur.multigame.model.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -144,11 +144,60 @@ public class ManantialesSharedBoardTest {
         assertEquals (1, mg.getCheckConditions().size());
     }
 
-    /*
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSuggestionAccepted () throws InvalidMoveException, JMSException, InvalidSuggestionException {
+        Game game = board.getGame(gameId);
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+
+        ManantialesMove move = new ManantialesMove (alice, play);
+        Move mve  = board.doMove (game, new Move(move));
+        move = (ManantialesMove) mve.getImplementation();
+
+        System.out.println ("Move: [" + move.getId() + "] =" + move);
+
+        PuzzleSuggestion pzs = new PuzzleSuggestion();
+        pzs.setSuggestor(bob);
+        pzs.setStatus(SuggestionStatus.UNEVALUATED);
+        move = new ManantialesMove (alice,play,change);
+        pzs.setMove (move);
+
+        Suggestion suggestion = board.makeSuggestion(game, new Suggestion(pzs));
+        pzs = (PuzzleSuggestion) suggestion.getImplementation();
+        move = pzs.getMove();
+
+        System.out.println ("Suggestion [" + pzs.getStatus() + "]: " + pzs);
+        System.out.println ("Move: [" + move.getId() + "] =" + move);
+
+        assertTrue (pzs.getStatus() == SuggestionStatus.EVALUATED);
+        System.out.println ("Suggestion [" + pzs.getStatus() + "]: " + pzs);
+
+        pzs.setStatus(SuggestionStatus.ACCEPT);
+        suggestion = board.makeSuggestion(game, new Suggestion(pzs));
+        pzs = (PuzzleSuggestion) suggestion.getImplementation();
+        move = pzs.getMove();
+
+        System.out.println ("Suggestion [" + pzs.getStatus() + "]: " + pzs);
+        System.out.println ("Move: [" + move.getId() + "] =" + move);
+
+        assertTrue ("Move not moved.  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.MOVED));
+
+        game = board.getGame(gameId);
+        GridGame gridGame = (GridGame) game.getImplementation();
+        GameGrid grid = gridGame.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination not populated!", location != null);
+        assertTrue ("Destination not populated!", location.equals(change));
+        assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
+        assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
+
+        System.out.println ("GameGrid: " + grid);
+    }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
+    public void testSuggestionRejected () throws InvalidMoveException, JMSException, InvalidSuggestionException {
         Game game = board.getGame(gameId);
         Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
         Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
@@ -156,60 +205,30 @@ public class ManantialesSharedBoardTest {
         ManantialesMove move = new ManantialesMove (alice, play);
         board.doMove (game, new Move(move));
 
-        PuzzleSuggestion suggestion = new PuzzleSuggestion();
-        suggestion.setSuggestor(bob);
-        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
-        move = new ManantialesMove (alice, play, change);
-        suggestion.setMove (move);
-        suggestion = game.suggest(suggestion);
+        PuzzleSuggestion pzs = new PuzzleSuggestion();
+        pzs.setSuggestor(bob);
+        pzs.setStatus(SuggestionStatus.UNEVALUATED);
+        move = new ManantialesMove (alice,play,change);
+        pzs.setMove (move);
 
-        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+        Suggestion suggestion = board.makeSuggestion(game, new Suggestion(pzs));
+        pzs = (PuzzleSuggestion) suggestion.getImplementation();
+        move = pzs.getMove();
 
-        suggestion.setStatus(SuggestionStatus.ACCEPT);
-        game.addSuggestion(suggestion);
-        game.move(suggestion.getMove());
+        assertTrue (pzs.getStatus() == SuggestionStatus.EVALUATED);
 
-        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.VERIFIED));
-        assertTrue(filter.size() > 0);
+        pzs.setStatus(SuggestionStatus.REJECT);
+        suggestion = board.makeSuggestion(game, new Suggestion(pzs));
+        pzs = (PuzzleSuggestion) suggestion.getImplementation();
+        move = pzs.getMove();
+        assertTrue ("Move evaluted!  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.UNVERIFIED));
 
-        GameGrid grid = game.getGrid();
-        GridCell location =  grid.getLocation(move.getDestinationCell());
-        assertTrue ("Destination not populated!", location != null);
-        assertTrue ("Destination not populated!", location.equals(change));
-        assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
-        assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testSuggestionRejected () throws InvalidMoveException, JMSException {
-        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        ManantialesMove move = new ManantialesMove (alice, play);
-        game.move (move);
-
-        PuzzleSuggestion suggestion = new PuzzleSuggestion();
-        suggestion.setSuggestor(bob);
-        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
-        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
-        move = new ManantialesMove (alice, play, change);
-        suggestion.setMove (move);
-        mockTopic.clear();
-        suggestion = game.suggest(suggestion);
-
-        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
-
-        suggestion.setStatus(SuggestionStatus.REJECT);
-        suggestion = game.suggest(suggestion);
-
-        assertTrue (move.getStatus().equals(MoveStatus.UNVERIFIED));
-
-        GameGrid grid = game.getGrid();
+        game = board.getGame(gameId);
+        GridGame gridGame = (GridGame) game.getImplementation();
+        GameGrid grid = gridGame.getGrid();
         GridCell location =  grid.getLocation(move.getDestinationCell());
         assertTrue ("Destination populated!", location == null);
         assertTrue ("Location does not remain!", grid.getLocation(move.getCurrentCell()) != null);
+        assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
     }
-
-    */
 }

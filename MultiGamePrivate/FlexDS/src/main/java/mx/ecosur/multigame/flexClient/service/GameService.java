@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.exception.InvalidMoveException;
@@ -43,7 +42,6 @@ import mx.ecosur.multigame.model.*;
 
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
-import mx.ecosur.multigame.model.implementation.GameImpl;
 
 public class GameService {  
 

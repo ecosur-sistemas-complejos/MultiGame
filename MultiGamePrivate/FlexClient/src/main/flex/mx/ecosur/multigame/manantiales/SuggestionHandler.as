@@ -69,8 +69,8 @@ package mx.ecosur.multigame.manantiales
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                     move.destinationCell.column, move.destinationCell.row));
 
-                //var destination:Ficha = Ficha(move.destinationCell);
                 var current:Ficha = new Ficha();
+
                 current.row = move.currentCell.row;
                 current.column = move.currentCell.column;
                 current.color = move.currentCell.color;
@@ -129,7 +129,7 @@ package mx.ecosur.multigame.manantiales
                 apXScale.play();
                 apYScale.play();
 
-                token.blink();
+                token.blink(0);
 
 
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
@@ -254,25 +254,24 @@ package mx.ecosur.multigame.manantiales
         public function endRemoveSuggestion (event:EffectEvent) {
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
             var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(token.cell.column, token.cell.row);
-                _controller._gameWindow.animateLayer.removeChild(token);
-
+                _controller._gameWindow.animateLayer.removeChild(token);                                   
             boardCell.token = token;
-            //boardCell.token.blink(1);
+            boardCell.token.blink(0);
         }
 
         public function accept(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_alert);
             var suggestion:Suggestion = Suggestion (event.data);
-            suggestion.status = SuggestionStatus.ACCEPT;            
+            suggestion.status = SuggestionStatus.ACCEPT;
             var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
             call.operation = "makeSuggestion";
-            PopUpManager.removePopUp(_alert);
         }
 
         public function reject(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_alert);            
             var suggestion:Suggestion = Suggestion (event.data);
             var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
             call.operation = "makeSuggestion";
-            PopUpManager.removePopUp(_alert);
         }
 
         /* Start and end move handlers for Suggestion token stores */
@@ -289,7 +288,6 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function endMove(evt:DragEvent):void{
-
             if (evt.dragSource.hasFormat("token")){
                 _isMoving = false;
                 var token:ManantialesToken = ManantialesToken(evt.currentTarget);
@@ -314,7 +312,6 @@ package mx.ecosur.multigame.manantiales
         public function makeSuggestion (move:ManantialesMove):void {          
             move.status = String (MoveStatus.UNVERIFIED);
             move.mode = _controller._game.mode;
-            move.id = 0;
 
             var suggestion:Suggestion = new Suggestion();
             suggestion.move = move;

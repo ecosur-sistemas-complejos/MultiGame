@@ -7,8 +7,10 @@
 
 package mx.ecosur.multigame.impl.entity.manantiales;
 
-import mx.ecosur.multigame.impl.enums.manantiales.SuggestionStatus;
-import mx.ecosur.multigame.model.implementation.ConditionImpl;
+import mx.ecosur.multigame.enums.SuggestionStatus;
+import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.implementation.SuggestionImpl;
 
 import javax.persistence.*;
 
@@ -16,11 +18,11 @@ import javax.persistence.*;
  * @author awaterma@ecosur.mx
  */
 @Entity
-public class PuzzleSuggestion implements ConditionImpl {
+public class PuzzleSuggestion implements SuggestionImpl {
 
-	private static final long serialVersionUID = -1649014283342618955L;
+    private static final long serialVersionUID = -1649014283342618955L;
 
-	private ManantialesMove move;
+    private ManantialesMove move;
 
     private ManantialesPlayer suggestor;
 
@@ -41,9 +43,17 @@ public class PuzzleSuggestion implements ConditionImpl {
     */
     public void setId(int id) {
         this.id = id;
-    }    
+    }
 
-    @OneToOne
+    public MoveImpl listMove() {
+        return getMove();
+    }
+
+    public void attachMove(MoveImpl move) {
+        setMove ((ManantialesMove) move);
+    }
+
+    @OneToOne (cascade = CascadeType.PERSIST)
     public ManantialesMove getMove() {
         return move;
     }
@@ -52,12 +62,20 @@ public class PuzzleSuggestion implements ConditionImpl {
         this.move = move;
     }
 
-    @OneToOne
+    public void attachSuggestor(GamePlayerImpl gamePlayer) {
+        setSuggestor ((ManantialesPlayer) gamePlayer);
+    }
+
+    public GamePlayerImpl listSuggestor() {
+        return getSuggestor();
+    }
+
+    @OneToOne (cascade = CascadeType.PERSIST)
     public ManantialesPlayer getSuggestor() {
         return suggestor;
     }
 
-    public void setSuggestor(ManantialesPlayer suggestor) {
+    public void setSuggestor (ManantialesPlayer suggestor) {
         this.suggestor = suggestor;
     }
 
@@ -68,26 +86,6 @@ public class PuzzleSuggestion implements ConditionImpl {
 
     public void setStatus(SuggestionStatus status) {
         this.status = status;
-    }
-
-    @Transient
-    public String getReason() {
-        return status.toString();
-    }
-
-    public void setReason (String reason) {
-        status = SuggestionStatus.valueOf(reason);
-    }
-
-    @Transient
-    public Object[] getTriggers() {
-        return new Object[] { suggestor, move }; 
-    }
-
-    public void setTriggers (Object[] triggers) {
-        if (triggers.length != 2) { throw new RuntimeException ("Invalid trigger length!"); }
-        suggestor = (ManantialesPlayer) triggers [  0 ];
-        move = (ManantialesMove) triggers [ 1 ];
     }
 
     @Override

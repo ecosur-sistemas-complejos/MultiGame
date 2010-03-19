@@ -18,6 +18,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
+import mx.ecosur.multigame.model.GamePlayer;
+import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,10 +59,9 @@ public class RegistrarTest {
     }
 
     @After
-    public void tearDown () {
-        if (game != null) {
-            game.setState(GameState.ENDED);
-            board.shareGame(game);
+    public void tearDown () throws NamingException, RemoteException, InvalidRegistrationException {
+        for (GamePlayer player : game.listPlayers()) {
+            registrar.unregister(new Game (game), player);    
         }
     }
 
