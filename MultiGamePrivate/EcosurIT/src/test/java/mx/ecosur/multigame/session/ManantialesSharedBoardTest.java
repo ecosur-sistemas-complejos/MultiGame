@@ -171,6 +171,8 @@ public class ManantialesSharedBoardTest {
         System.out.println ("Move: [" + move.getId() + "] =" + move);
 
         assertTrue (pzs.getStatus() == SuggestionStatus.EVALUATED);
+        assertTrue ("Move status incorrect!  Status [" + move.getStatus() + "]", move.getStatus().equals(
+                MoveStatus.UNVERIFIED));
         System.out.println ("Suggestion [" + pzs.getStatus() + "]: " + pzs);
 
         pzs.setStatus(SuggestionStatus.ACCEPT);
@@ -181,7 +183,8 @@ public class ManantialesSharedBoardTest {
         System.out.println ("Suggestion [" + pzs.getStatus() + "]: " + pzs);
         System.out.println ("Move: [" + move.getId() + "] =" + move);
 
-        assertTrue ("Move not moved.  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.MOVED));
+        assertTrue ("Move not evaluated@!  Status [" + move.getStatus() + "]", move.getStatus().equals(
+                MoveStatus.EVALUATED));
 
         game = board.getGame(gameId);
         GridGame gridGame = (GridGame) game.getImplementation();
@@ -221,7 +224,7 @@ public class ManantialesSharedBoardTest {
         suggestion = board.makeSuggestion(game, new Suggestion(pzs));
         pzs = (PuzzleSuggestion) suggestion.getImplementation();
         move = pzs.getMove();
-        assertTrue ("Move evaluted!  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.UNVERIFIED));
+        assertTrue ("Move evaluated!  Status [" + move.getStatus() + "]", move.getStatus().equals(MoveStatus.UNVERIFIED));
 
         game = board.getGame(gameId);
         GridGame gridGame = (GridGame) game.getImplementation();

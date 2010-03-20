@@ -89,6 +89,11 @@ public class PuzzleSuggestion implements SuggestionImpl {
     }
 
     @Override
+    public String toString() {
+        return move.toString();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         boolean ret;
 

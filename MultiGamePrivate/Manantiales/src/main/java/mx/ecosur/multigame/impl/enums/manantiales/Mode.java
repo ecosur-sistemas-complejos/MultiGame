@@ -12,7 +12,7 @@ package mx.ecosur.multigame.impl.enums.manantiales;
  */
 public enum Mode {
 
-    CLASSIC, BASIC_PUZZLE, SILVOPASTORAL, SILVO_PUZZLE, RELOADED;
+    CLASSIC, BASIC_PUZZLE, SILVOPASTORAL, SILVO_PUZZLE;
     
     public int getWinningScore() {
         int ret = 0;
@@ -28,9 +28,6 @@ public enum Mode {
                 ret = 32;
                 break;
             case SILVO_PUZZLE:
-                ret = 32;
-                break;
-            case RELOADED:
                 ret = 32;
                 break;
         }

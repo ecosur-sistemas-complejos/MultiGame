@@ -42,10 +42,6 @@ package mx.ecosur.multigame.manantiales
 
         private var _isMoving:Boolean;
 
-        private var _suggestions:ArrayCollection;
-
-        private var _rejections:ArrayCollection;
-
         private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
 
         private var _alert:SuggestionAlert;
@@ -53,16 +49,10 @@ package mx.ecosur.multigame.manantiales
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
             _player = controller._currentPlayer;
-            _suggestions = new ArrayCollection();
-            _rejections = new ArrayCollection();
         }
 
 
         public function addSuggestion (suggestion:Suggestion):void {
-            if (_suggestions.contains(suggestion) || _rejections.contains(suggestion))
-                return;
-            _suggestions.addItem(suggestion);
-
             var move:ManantialesMove = suggestion.move;
 
             if (move.player.color == _player.color) {
@@ -134,8 +124,7 @@ package mx.ecosur.multigame.manantiales
 
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
 
-                if (_alert == null)
-                    _alert = new SuggestionAlert();
+                _alert = new SuggestionAlert();
                 _alert.suggestion = suggestion;
                 _alert.addEventListener("accept", accept);
                 _alert.addEventListener("reject", reject);
@@ -181,39 +170,36 @@ package mx.ecosur.multigame.manantiales
             token.visible = false;
             _controller._gameWindow.animateLayer.addChild(token);
 
-            /*
             // restore previous token
             for (var i:int = 0; i < _controller._moves.length; i++) {
-                if (_controller._moves.length > 0) {
-                    var possible:ManantialesMove = _controller._moves [ _controller._moves.length - i];
-                    if (possible.destinationCell == suggestion.move.currentCell) {
-                        var ficha:Ficha = Ficha (possible.destinationCell);
-                        switch (ficha.type) {
-                            case TokenType.INTENSIVE:
-                                boardCell.token = new IntensiveToken();
-                                break;
-                            case TokenType.MODERATE:
-                                boardCell.token = new ModerateToken();
-                                break;
-                            case TokenType.FOREST:
-                                boardCell.token = new ForestToken();
-                                break;
-                            case TokenType.VIVERO:
-                                boardCell.token = new ViveroToken();
-                                break;
-                            case TokenType.SILVOPASTORAL:
-                                boardCell.token = new SilvopastoralToken();
-                                break;
-                            default:
-                                boardCell.token = new UndevelopedToken(ficha.column, ficha.row);
-
-                        }
+                var possible:ManantialesMove = _controller._moves [ i ];
+                if (possible.destinationCell.column == column && possible.destinationCell.row == row)
+                var ficha:Ficha = Ficha (possible.destinationCell);
+                if (ficha.type != null) {
+                    switch (ficha.type) {
+                        case TokenType.INTENSIVE:
+                            boardCell.token = new IntensiveToken();
+                            break;
+                        case TokenType.MODERATE:
+                            boardCell.token = new ModerateToken();
+                            break;
+                        case TokenType.FOREST:
+                            boardCell.token = new ForestToken();
+                            break;
+                        case TokenType.VIVERO:
+                            boardCell.token = new ViveroToken();
+                            break;
+                        case TokenType.SILVOPASTORAL:
+                            boardCell.token = new SilvopastoralToken();
+                            break;
+                        default:
+                            boardCell.token = new UndevelopedToken(column, row);
                     }
+                } else {
+                    boardCell.token = new UndevelopedToken (column, row);
                 }
-            } */
-            
-            //boardCell.token = new UndevelopedToken (column, row);
-            boardCell.token = null;
+            }
+
             boardCell.reset();
 
             //define motion animation

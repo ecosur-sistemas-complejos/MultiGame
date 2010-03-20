@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2008, 2009 ECOSUR, Andrew Waterman
+* Copyright (C) 2010 ECOSUR, Andrew Waterman
 *
 * Licensed under the Academic Free License v. 3.2.
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -1261,6 +1261,8 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
+        mockTopic.clear();
+
         PuzzleSuggestion suggestion = new PuzzleSuggestion();
         suggestion.setSuggestor(bob);
         suggestion.setStatus(SuggestionStatus.UNEVALUATED);
@@ -1269,6 +1271,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         suggestion = (PuzzleSuggestion) game.suggest(suggestion);
 
         assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+        assertTrue (move.getStatus () == MoveStatus.UNVERIFIED);
 
         suggestion.setStatus(SuggestionStatus.ACCEPT);
         suggestion = (PuzzleSuggestion) game.suggest (suggestion);
@@ -1288,7 +1291,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
         assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.MOVED));
+                MoveStatus.EVALUATED));
         assertTrue(filter.size() > 0);
 
         GameGrid grid = game.getGrid();

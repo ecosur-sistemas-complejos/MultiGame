@@ -14,7 +14,8 @@ import java.io.Serializable;
 public class ManantialesMessageSender extends MessageSender {
 
 
-    public void sendMessage(int gameId, Enum event, Serializable body)
+    @SuppressWarnings("unchecked")
+	public void sendMessage(int gameId, Enum event, Serializable body)
     {
         try {
             Connection connection = connectionFactory.createConnection();

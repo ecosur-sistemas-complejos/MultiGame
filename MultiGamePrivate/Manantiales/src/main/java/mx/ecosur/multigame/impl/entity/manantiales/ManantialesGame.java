@@ -371,9 +371,12 @@ public class ManantialesGame extends GridGame {
 
     public void setGameType (String type) {
         // do nothing;
-    }    
+    }
 
-    /* (non-Javadoc)
+    @Override
+    public String toString() {
+        return getGrid().toString();
+    }/* (non-Javadoc)
      * @see mx.ecosur.multigame.impl.model.GridGame#clone()
      */
     @Override
