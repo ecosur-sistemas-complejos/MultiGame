@@ -6,6 +6,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.MoveComparator;
 import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
@@ -137,7 +138,7 @@ public class TablonGame extends GridGame {
             logger.writeToDisk();
 
         if (moves == null)
-            moves = new LinkedHashSet<GridMove>();
+            moves = new TreeSet<GridMove>(new MoveComparator());
 
         moves.add((TablonMove) move);
 

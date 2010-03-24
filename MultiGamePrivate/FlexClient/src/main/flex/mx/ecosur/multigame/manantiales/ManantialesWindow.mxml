@@ -12,7 +12,9 @@
     
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+            import mx.ecosur.multigame.manantiales.token.SuggestionToken;
+            import mx.ecosur.multigame.manantiales.entity.Ficha;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
@@ -42,6 +44,7 @@
                 _currentGame = currentGame;
             }
 
+            [Bindable]
             public function get currentGame ():ManantialesGame {
                 return _currentGame;
             }
@@ -166,7 +169,7 @@
                </mx:Panel>
             </mx:AddChild>
         </mx:State>
-        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC" />
+        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC"/>
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
@@ -201,8 +204,7 @@
                 <manantiales:PlayersViewer id="playersViewer" 
                       currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>        
-           <component:ChatPanel id="chatPanel" width="100%" height="100%" 
-                currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  
+           <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />
     </mx:HBox>

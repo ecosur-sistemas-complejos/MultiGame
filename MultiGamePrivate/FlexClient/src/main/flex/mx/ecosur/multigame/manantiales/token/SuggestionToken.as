@@ -2,6 +2,8 @@
 
 package mx.ecosur.multigame.manantiales.token
 {
+    import flash.events.MouseEvent;
+
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.Suggestion;
@@ -44,7 +46,7 @@ package mx.ecosur.multigame.manantiales.token
 
          }
 
-        public override function get colorCode():uint {
+        override public function get colorCode():uint {
             var ret:uint = _cell.colorCode;
 
             switch (_suggestion.suggestor.color) {
@@ -67,7 +69,7 @@ package mx.ecosur.multigame.manantiales.token
             return ret;
         }
 
-        public override function stopBlink():void{
+        override public function stopBlink():void{
             if(_blinkAnim.isPlaying){
                 _blinkAnim.stop();
             }

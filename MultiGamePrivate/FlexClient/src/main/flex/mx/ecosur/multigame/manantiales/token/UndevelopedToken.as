@@ -1,22 +1,15 @@
-package mx.ecosur.multigame.manantiales.token
-{
-	import mx.ecosur.multigame.component.Token;
-	import mx.ecosur.multigame.entity.Cell;
-
-	public class UndevelopedToken extends Token
-	{	
-		public function UndevelopedToken (col:int, row:int) {
-		  this.cell = new Cell ();
-		  this.cell.column = col;
-		  this.cell.row = row;
-		  this.toolTip = "Undeveloped";
-		  this.alpha = 1.0;
-		}
-				
-        public function get colorCode():uint {
+package mx.ecosur.multigame.manantiales.token {
+    
+    public class UndevelopedToken extends ManantialesToken {
+        
+        public function UndevelopedToken () {
+            super ();
+        }
+        
+        override public function get colorCode():uint {
             return 0x00bb00;
-        }                	
-		
+        }
+
         override protected function updateDisplayList(unscaledWidth:Number,
             unscaledHeight:Number):void 
        {
@@ -37,5 +30,5 @@ package mx.ecosur.multigame.manantiales.token
                 _bg.filters = _deselectedFilters;
             }           
         } 
-	}
+    }
 }

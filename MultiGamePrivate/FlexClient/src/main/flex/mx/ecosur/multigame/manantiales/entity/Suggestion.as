@@ -23,7 +23,7 @@ package mx.ecosur.multigame.manantiales.entity
             return _id;
         }
 
-        public function set id(id:int) {
+        public function set id(id:int):void {
             _id = id;
         }
 

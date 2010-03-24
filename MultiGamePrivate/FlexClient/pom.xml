@@ -11,6 +11,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <groupId>mx.ecosur</groupId>
     <version>1.1.0-SNAPSHOT</version>
 </parent>
+<properties>
+    <debug>true</debug>
+    <player>9.0.0</player>
+    <classifier>9</classifier>
+</properties>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <testSourceDirectory>src/test/flex</testSourceDirectory>
@@ -27,7 +32,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <contextRoot>multi-game</contextRoot>
                 <services>src/main/resources/services-config.xml</services>
                 <configurationReport>true</configurationReport>
-                <targetPlayer>10.0.0</targetPlayer>
+                <targetPlayer>${player}</targetPlayer>
             </configuration>
             <dependencies>
                 <dependency>
@@ -71,8 +76,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>playerglobal</artifactId>
         <version>3.3.0.4852</version>
-        <classifier>10</classifier>
+        <classifier>${classifier}</classifier>
         <type>swc</type>
-    </dependency>    
+    </dependency>
 </dependencies>    
 </project>

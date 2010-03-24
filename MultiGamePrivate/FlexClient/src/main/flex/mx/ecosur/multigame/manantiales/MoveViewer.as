@@ -100,9 +100,13 @@ package mx.ecosur.multigame.manantiales
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(mi));
             if (move.badYear) {
                 btn.label = " no move due to bad year condition.";	
-            } else {
+            } else if (move.currentCell == null) {
                 btn.label = " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
+            } else if (move.currentCell != null) {
+                btn.label = " from " + _board.getCellDescription (move.currentCell.column, move.currentCell.row) + 
+                    " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             }
+            
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);
             btn.setStyle("paddingTop", 5);

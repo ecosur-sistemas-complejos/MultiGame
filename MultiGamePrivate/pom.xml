@@ -15,7 +15,7 @@
     <properties>
         <flex-version>3.5.0.12683</flex-version>
         <flexmojos-version>3.5.0</flexmojos-version>
-        <debug>true</debug>
+        <debug>false</debug>
     </properties>
     <profiles>
         <profile>

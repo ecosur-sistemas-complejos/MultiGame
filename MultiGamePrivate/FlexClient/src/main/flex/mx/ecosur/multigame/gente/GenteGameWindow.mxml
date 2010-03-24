@@ -30,12 +30,13 @@
         [Bindable]
         public var columns:int;
 
-        public function set currentGame(currentGame:GenteGame):void {
-            _currentGame = currentGame;
-        }
-
+        [Bindable]
         public function get currentGame():GenteGame {
             return _currentGame;
+        }
+
+        public function set currentGame(currentGame:GenteGame):void {
+            _currentGame = currentGame;
         }
 
         public function set currentPlayer(currentPlayer:GamePlayer):void {
@@ -127,8 +128,7 @@
 	        <mx:Panel title="Score" width="100%">
 	            <pente:GentePlayersViewer id="playersViewer" width="100%" />
 	        </mx:Panel>
-	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}"
-                    currentGame="{currentGame}"/>
+	        <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>
 	    </mx:VBox>
 	    <mx:UIComponent id="animateLayer" />
 	</mx:HBox>
