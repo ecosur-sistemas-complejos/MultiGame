@@ -12,8 +12,6 @@
     
     <mx:Script>
         <![CDATA[
-            import mx.ecosur.multigame.manantiales.token.SuggestionToken;
-            import mx.ecosur.multigame.manantiales.entity.Ficha;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
@@ -27,26 +25,36 @@
             protected var _currentPlayer:GamePlayer;
             protected var _currentGame:ManantialesGame;
             private var _helpPanel:HelpPanel; 
-        
+            private var _suggestionHandler:SuggestionHandler;
+            
             public function init():void {
                 if (_controller == null)
                     _controller = new ManantialesGameController(this);
                 CursorManager.removeBusyCursor();
-
             }
             
             public function destroy():void{
                 if (_controller != null)
                     _controller.destroy();
             }
-
-            public function set currentGame (currentGame:ManantialesGame):void {
-                _currentGame = currentGame;
+            
+            [Bindable]
+            public function get suggestionHandler ():SuggestionHandler {
+                return _suggestionHandler;
             }
-
+            
+            public function set suggestionHandler (suggestionHandler:SuggestionHandler):void {
+                _suggestionHandler = suggestionHandler;
+            }
+            
             [Bindable]
             public function get currentGame ():ManantialesGame {
                 return _currentGame;
+            }
+            
+            
+            public function set currentGame (currentGame:ManantialesGame):void {
+                _currentGame = currentGame;
             }
             
             public function set currentPlayer(currentPlayer:GamePlayer):void{
@@ -57,7 +65,7 @@
             public function get currentPlayer():GamePlayer{
                 return _currentPlayer;
             }
-
+            
             public function get activePlayer ():ManantialesPlayer {
                 var ret:ManantialesPlayer;
                 for (var i:int = 0; i < _currentGame.players.length; i++) {
@@ -98,7 +106,7 @@
             private function closeHelp(event:Event):void{
                 PopUpManager.removePopUp(_helpPanel);
             }
-
+            
             public function get state():String {
                 var ret:String;
                 if (_currentGame.mode == null)
@@ -114,18 +122,18 @@
                 
                 return ret;
             }
-
+            
             public function stateMenu():XML {
                 var xml:XML = <menuitem label={state}/>;
                 return xml;
             }
-
+            
             private function quitGame():void {
-                _controller.quitGame(currentPlayer);                 
+                _controller.quitGame(currentPlayer);
             }
          ]]>       
     </mx:Script> 
-
+    
     <mx:XMLList id="menuXML">
         <menuitem label="Game">
             <menuitem label="Lobby"/>
@@ -135,7 +143,7 @@
             <menuitem label="How to Play"/>
         </menuitem>
     </mx:XMLList>
-
+    
     <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
         <mx:MenuBar height="100%" 
             dataProvider="{menuXML}" 
@@ -169,7 +177,9 @@
                </mx:Panel>
             </mx:AddChild>
         </mx:State>
-        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC"/>
+        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC">
+            <!-- Add Check Constraint viewer here, active on turn -->
+        </mx:State>
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">

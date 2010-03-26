@@ -137,7 +137,7 @@ package mx.ecosur.multigame.manantiales
 
             _suggestionHandler = new SuggestionHandler (this);
         }
-
+        
         public function initializeTokenStorePanel (tokenStorePanel:Panel):void {
             var _store:ManantialesTokenStore = ManantialesTokenStore(tokenStorePanel.getChildAt(0));
             _store.startMoveHandler = startMove;
@@ -430,10 +430,10 @@ package mx.ecosur.multigame.manantiales
                     updatePlayers(ManantialesGame (event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
-                    _moves = ArrayCollection(event.result)
-                    _gameWindow.moveViewer.board = _gameWindow.board;
-                    _gameWindow.moveViewer.initFromMoves(_moves);
-                    _selectedMoveInd = _moves.length - 1;
+                        _moves = ArrayCollection(event.result)
+                        _gameWindow.moveViewer.board = _gameWindow.board;
+                        _gameWindow.moveViewer.initFromMoves(_moves);
+                        _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
                     _executingMove = null;
@@ -630,8 +630,8 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function endTurn():void{
-                   /* return the window to the default state */
-                _gameWindow.currentState = "";
+               /* return the window to the default state */
+            _gameWindow.currentState = "";
         }
 
         public function set isTurn(isTurn:Boolean):void{

@@ -15,34 +15,34 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
     import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
     import mx.effects.AnimateProperty;
+    import mx.events.DragEvent;
     import mx.events.DynamicEvent;
     import mx.events.EffectEvent;
     import mx.managers.DragManager;
-import mx.managers.PopUpManager;
+    import mx.managers.PopUpManager;
 
-public class SuggestionHandler {
+    public class SuggestionHandler {
 
         private var _controller:ManantialesGameController;
 
         private var _player:ManantialesPlayer;
 
         private var _isMoving:Boolean;
-        
-        private var _suggestionAlert:SuggestionAlert;
 
         private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
+        
+        private var _alert:SuggestionAlert;
 
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
             _player = controller._currentPlayer;
         }
 
-
         public function addSuggestion (suggestion:Suggestion):void {
             var move:ManantialesMove = suggestion.move;
-
             if (move.player.color == _player.color) {
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                     move.destinationCell.column, move.destinationCell.row));
@@ -112,17 +112,17 @@ public class SuggestionHandler {
                 apYScale.play();
                 
                 token.blink(0);
-                
-                if (_suggestionAlert == null) {
-                    _suggestionAlert = new SuggestionAlert();
-                    _suggestionAlert.suggestionViewer = new SuggestionViewer();
-                    _suggestionAlert.suggestionViewer.board = _controller._gameWindow.board;
-                    _suggestionAlert.suggestionViewer.handler = this;
-                    PopUpManager.addPopUp(_suggestionAlert, _controller._gameWindow, true);
-                        PopUpManager.centerPopUp(_suggestionAlert);
-                }
-                
-                _suggestionAlert.addSuggestion(suggestion);
+
+
+                /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
+
+                _alert = new SuggestionAlert();
+                _alert.suggestion = suggestion;
+                _alert.addEventListener("accept", accept);
+                _alert.addEventListener("reject", reject);
+
+                PopUpManager.addPopUp(_alert, _controller._gameWindow, true);
+                        PopUpManager.centerPopUp(_alert);
             }
         }
 
@@ -140,7 +140,53 @@ public class SuggestionHandler {
                     }
                 }
             }
-            
+
+            /* if the suggestion was rejected, remove the "destination" piece from the board, 
+                retrieve the "current" piece from the move and add it to the board
+             */
+            if (suggestion.status == "REJECT") {
+                var token:ManantialesToken = new ManantialesToken();
+                ficha = Ficha (suggestion.move.currentCell);
+                var destination:Ficha = Ficha (suggestion.move.destinationCell);
+                switch (destination.type) {
+                    case TokenType.INTENSIVE:
+                            token = new IntensiveToken();
+                            break;
+                        case TokenType.MODERATE:
+                            token = new ModerateToken();
+                            break;
+                        case TokenType.FOREST:
+                            token = new ForestToken();
+                            break;
+                        case TokenType.VIVERO:
+                            token = new ViveroToken();
+                            break;
+                        case TokenType.SILVOPASTORAL:
+                            token = new SilvopastoralToken();
+                            break;
+                        default:
+                            token = new UndevelopedToken();
+                }
+                
+                token.cell = ficha;
+                if (! token is UndevelopedToken) {
+                    token.addEventListener(MouseEvent.MOUSE_DOWN, startSuggestion);
+                    token.addEventListener(DragEvent.DRAG_COMPLETE, makeSuggestion);
+                }
+                var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(
+                        ficha.column, ficha.row);
+                boardCell.token = token;
+                boardCell.reset();
+                
+                /* Now remove the destination (only in the case of the suggestor) */
+                if (_controller._currentPlayer.color == suggestion.suggestor.color) {
+                    boardCell =  _controller._gameWindow.board.getBoardCell(destination.column, destination.row);
+                    token = new UndevelopedToken();
+                    token.cell = destination;
+                    boardCell.token = token;
+                    boardCell.reset();
+                }
+            }
         }
 
         public function endRemoveSuggestion (event:EffectEvent):void {
@@ -150,23 +196,16 @@ public class SuggestionHandler {
         }
 
         public function accept(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_alert);
             var suggestion:Suggestion = Suggestion (event.data);
-            if (_suggestionAlert != null) 
-                _suggestionAlert.suggestionViewer.removeSuggestion(suggestion);
             suggestion.status = SuggestionStatus.ACCEPT;
             var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
             call.operation = "makeSuggestion";
         }
 
         public function reject(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_alert);
             var suggestion:Suggestion = Suggestion (event.data);
-            if (_suggestionAlert != null) {
-                _suggestionAlert.suggestionViewer.removeSuggestion(suggestion);
-                if (_suggestionAlert.suggestionViewer.length == 0) {
-                    PopUpManager.removePopUp(_suggestionAlert);
-                    _suggestionAlert = null;
-                }           
-            }
             var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
             call.operation = "makeSuggestion";
         }

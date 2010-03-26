@@ -7,16 +7,14 @@
 
 package mx.ecosur.multigame.flexClient.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
+import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
@@ -302,7 +300,6 @@ public class GameService {
         }
     }
 
-
     public List<GridMove> getMoves(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
         List<GridMove> moves = new ArrayList<GridMove>();
@@ -321,9 +318,6 @@ public class GameService {
 
     /* Manantiales Specific Methods */
 
-    
-    /**
-     *  Todo:  Consider separate Java service code for Manantiales? */
     public PuzzleSuggestion makeSuggestion (GridGame game, PuzzleSuggestion suggestion) throws
             InvalidSuggestionException
     {
@@ -332,16 +326,19 @@ public class GameService {
         return (PuzzleSuggestion) ret.getImplementation();
     }
 
-    /**
-     * Todo:  consdier seperate Java code for Manantiales?
-     */
-    public Set<PuzzleSuggestion> getSuggestions (int gameId, ManantialesMove move) {
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        Game game = sharedBoard.getGame(gameId);
-        if (game.getImplementation() == null)
-            throw new RuntimeException ("Null implementation for Game Id: " + gameId);
+    public Set<PuzzleSuggestion> getSuggestions (int gameId, SuggestionStatus status) {
+        LinkedHashSet<PuzzleSuggestion> ret = new LinkedHashSet<PuzzleSuggestion>();
+        Game gameModel = getSharedBoard().getGame(gameId);
+        ManantialesGame game = (ManantialesGame) gameModel.getImplementation();
+        for (PuzzleSuggestion sug : game.getSuggestions()) {
+            if (sug.getStatus().equals(status))
+                ret.add(sug);
+        }
 
-        ManantialesGame impl = (ManantialesGame) game.getImplementation();
-        return impl.findSuggestion(move);
+        return ret;
+
     }
+
+
+
 }

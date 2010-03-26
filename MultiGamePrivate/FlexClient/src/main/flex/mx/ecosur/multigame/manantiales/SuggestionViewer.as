@@ -68,12 +68,16 @@ package mx.ecosur.multigame.manantiales
          * @param suggestions the suggestions to initialize the accordian with.
          */
         public function initFromSuggestions(suggestions:ArrayCollection):void{
-            _suggestions.removeAllChildren();
-            for (var i:int = 0; i < suggestions.length; i++){
-                addSuggestion (Suggestion (suggestions[i]));
-            }
-            if(suggestions.length > 0){
-                this.selectedSuggestion = Suggestion(_suggestions[suggestions.length - 1]);
+            if (suggestions != null) {
+                _suggestions.removeAllChildren();
+                for (var i:int = 0; i < suggestions.length; i++){
+                    var suggestion:Suggestion = Suggestion (suggestions [ i ]);
+                    if (suggestion.status == "EVALUATED")
+                        addSuggestion (Suggestion (suggestions[i]));
+                }
+                if(suggestions.length > 0){
+                    this.selectedSuggestion = Suggestion(_suggestions[suggestions.length - 1]);
+                }
             }
         }
         

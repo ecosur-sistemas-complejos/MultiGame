@@ -133,8 +133,6 @@ public class ManantialesGame extends GridGame {
         Set<Implementation> facts = super.getFacts();
         if (checkConditions != null)
             facts.addAll(checkConditions);
-        if (suggestions != null)
-            facts.addAll(suggestions);
         return facts;
     }
 
@@ -223,16 +221,15 @@ public class ManantialesGame extends GridGame {
                 "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-
-        addSuggestion ((PuzzleSuggestion) suggestion);
-
+        
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
+        session.insert(suggestion);
         for (Implementation fact : getFacts()) {
             session.insert(fact);
         }
-
+        addSuggestion ((PuzzleSuggestion) suggestion);
         session.getAgenda().getAgendaGroup("verify").setFocus();
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("move").setFocus();
