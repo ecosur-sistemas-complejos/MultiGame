@@ -128,7 +128,8 @@ public class GameService {
         GridGame game = ret.getGame();
         if (game instanceof ManantialesGame) {
             ManantialesGame m = (ManantialesGame) game;
-            m.setMode(Mode.valueOf(mode));
+            if (mode != null && mode.length() > 0)
+                m.setMode(Mode.valueOf(mode));
             ret.setGame(game);
         }
 

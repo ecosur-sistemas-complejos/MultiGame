@@ -317,6 +317,8 @@ public class ManantialesGame extends GridGame {
                 continue;
             if (color.equals(Color.GREEN))
                 continue;
+            if (color.equals(Color.BLUE))
+                continue;
             ret.add(color);
         }
                 

@@ -90,7 +90,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         int counter = 0;
 
         for (int i = 0; i < colors.length; i++) {
-            if (colors [ i ].equals(Color.UNKNOWN) || colors [ i ].equals(Color.GREEN))
+            if (colors [ i ].equals(Color.UNKNOWN) || colors [ i ].equals(Color.GREEN) || colors [ i ].equals(Color.BLUE))
                 continue;
             game.registerPlayer (players [ counter++ ]);
         }

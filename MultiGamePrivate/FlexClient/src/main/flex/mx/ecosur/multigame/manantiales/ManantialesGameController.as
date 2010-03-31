@@ -149,7 +149,6 @@ package mx.ecosur.multigame.manantiales
         public function dragEnterBoardCell(evt:DragEvent):void{
 
             if (evt.dragSource.hasFormat("token")){
-
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
                 var boardCell:RoundCell = RoundCell(evt.currentTarget);
                 boardCell.addEventListener(DragEvent.DRAG_EXIT, dragExitCell);
@@ -160,25 +159,20 @@ package mx.ecosur.multigame.manantiales
                 if (validateMove(boardCell, token)){
                     boardCell.select(token.cell.colorCode);
                     DragManager.acceptDragDrop(boardCell);
-                }
+                } 
             }
         }
 
-        private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean
-        {
+        private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {
             var ret:Boolean = false;
-            if (boardCell.token is UndevelopedToken) {
-                if (token.cell.color == boardCell.color) {
-                        ret = true;
-                    } else if (boardCell.color == Color.UNKNOWN)
-                /* Special case, border zones. Cell color is
-                 * calculated by RoundCell except for this case */
-
+            if (token.cell.color == boardCell.color) {
+                    ret = true;
+            } else if (boardCell.color == Color.UNKNOWN) {
                 switch (token.cell.color) {
                     case Color.YELLOW:
                         ret = (boardCell.column < 5 && boardCell.row < 5);
                         break;
-                    case Color.BLUE:
+                    case Color.PURPLE:
                         ret = (boardCell.column < 5 && boardCell.row > 3);
                         break;
                     case Color.RED:
@@ -188,15 +182,6 @@ package mx.ecosur.multigame.manantiales
                         ret = (boardCell.column > 3 && boardCell.row > 3);
                         break;
                }
-            } else {
-                if (boardCell.token.cell.color == token.cell.color) {
-
-                    /* Replacement Logic */
-                    ret = (boardCell.token is ForestToken && token is ModerateToken ||
-                           boardCell.token is ModerateToken &&
-                                  (token is ForestToken || token is IntensiveToken) ||
-                           boardCell.token is ViveroToken && token is SilvopastoralToken);
-                }
             }
 
             return ret;
@@ -257,6 +242,7 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function dragDropCell(evt:DragEvent):void{
+            var animate:Boolean = true;
             var suggestion:Boolean = false;
             
             if (evt.dragSource.hasFormat("token"))
@@ -297,46 +283,52 @@ package mx.ecosur.multigame.manantiales
                         }
                     }
 
-                    _suggestionHandler.makeSuggestion(move);
-                }
-
-                // do move in interface
-                boardCell.reset();
-
-                var newToken:ManantialesToken;
-
-                if (destToken is ForestToken) {
-                    if (!suggestion)
-                        _gameWindow.forestStore.removeToken();
-                    newToken = new ForestToken();
-                }
-                else if (destToken is IntensiveToken) {
-                    if (!suggestion) 
-                        _gameWindow.intensiveStore.removeToken();
-                    newToken = new IntensiveToken();
-                }
-                else if (destToken is ModerateToken) {
-                    if (!suggestion)
-                        _gameWindow.moderateStore.removeToken();
-                    newToken = new ModerateToken();
-                }
-                else if (destToken is ViveroToken) {
-                    if (!suggestion)
-                        _gameWindow.viveroStore.removeToken();
-                    newToken = new ViveroToken();
-                }
-                else if (destToken is SilvopastoralToken) {
-                    if (! suggestion)
-                        _gameWindow.silvoStore.removeToken();
-                    newToken = new SilvopastoralToken();
+                    if (_suggestionHandler._currentSuggestions [ move.player ] == null) {
+                        _suggestionHandler.makeSuggestion(move);
+                    } else {
+                        animate = false;
+                    }
                 }
                 
-                newToken.cell = destination;
-                
-                /* all tokens have active listeners, action is regulated in call back */
-                newToken.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
-                newToken.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.makeSuggestion);                                                
-                _gameWindow.board.addToken(newToken);
+                if (animate) {
+                    // do move in interface, if allowed to animate 
+                    boardCell.reset();
+    
+                    var newToken:ManantialesToken;
+    
+                    if (destToken is ForestToken) {
+                        if (!suggestion)
+                            _gameWindow.forestStore.removeToken();
+                        newToken = new ForestToken();
+                    }
+                    else if (destToken is IntensiveToken) {
+                        if (!suggestion) 
+                            _gameWindow.intensiveStore.removeToken();
+                        newToken = new IntensiveToken();
+                    }
+                    else if (destToken is ModerateToken) {
+                        if (!suggestion)
+                            _gameWindow.moderateStore.removeToken();
+                        newToken = new ModerateToken();
+                    }
+                    else if (destToken is ViveroToken) {
+                        if (!suggestion)
+                            _gameWindow.viveroStore.removeToken();
+                        newToken = new ViveroToken();
+                    }
+                    else if (destToken is SilvopastoralToken) {
+                        if (! suggestion)
+                            _gameWindow.silvoStore.removeToken();
+                        newToken = new SilvopastoralToken();
+                    }
+                    
+                    newToken.cell = destination;
+                    
+                    /* all tokens have active listeners, action is regulated in call back */
+                    newToken.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+                    newToken.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.makeSuggestion);                                                
+                    _gameWindow.board.addToken(newToken);
+                }
             }
         }
 
@@ -348,6 +340,11 @@ package mx.ecosur.multigame.manantiales
                 boardCell.reset();
             }
         }
+        
+        private function get puzzleMode():Boolean {
+            return (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE");
+        } 
+        
 
         /*
          * Process the different types of messages received by the MessageReciever,
@@ -543,7 +540,7 @@ package mx.ecosur.multigame.manantiales
 
                     _gameWindow.board.addToken(token);
 
-                    if (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE")
+                    if (puzzleMode)
                         token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
                 }
             }
@@ -731,7 +728,7 @@ package mx.ecosur.multigame.manantiales
                     /* If PUZZLE, check and see if the move was suggested, and if so,
                     remove the token connected to the move's "currentCell" -- thereby 
                     completing the suggested move */
-                if ((_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) && move.currentCell != null) {
+                if (puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
                         move.currentCell.column, move.currentCell.row));
                         
@@ -868,9 +865,8 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
 
-            if (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE") {
-                token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
-            }
+            if (puzzleMode)
+                token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);            
 
             //define motion animation
             var apX:AnimateProperty = new AnimateProperty(token);

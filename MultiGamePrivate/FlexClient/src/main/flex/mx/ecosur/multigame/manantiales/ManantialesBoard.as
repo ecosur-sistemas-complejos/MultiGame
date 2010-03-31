@@ -54,7 +54,6 @@
 
         public function ManantialesBoard () {
             super();
-
             this._nCols = 9;
             this._nRows = 9;
         }
@@ -100,7 +99,7 @@
                     } else if (i < 4 && j < 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
                     } else if (i < 4 && j > 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.BLUE));
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.PURPLE));
                     } else if (i > 4 && j < 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
                     } else if (i > 4 && j > 4) {
@@ -256,15 +255,16 @@
 
                 /* Inlay the Manantial */
             _manantial.graphics.clear();
-            _manantial.graphics.beginFill(0xE4961A);
+            _manantial.graphics.beginFill(0x6CA5E5);
             _manantial.graphics.lineStyle(1, 0xE4961A, 0.65);
             _manantial.graphics.drawRect(centerX - size/2 + linecompensation/2,
                 centerY - size/2 + linecompensation/2, size, size);
             _manantial.graphics.endFill();
+            _manantial.alpha = .55;
 
             _spring.graphics.clear();
             _spring.graphics.beginFill(0x2e83bc);
-            _spring.graphics.lineStyle(1, 0x2e83bc);
+            _spring.graphics.lineStyle(1, 0x007CD3);
             _spring.graphics.drawCircle(centerX + linecompensation/2,
                 centerY + linecompensation/2, size/4);
             _spring.graphics.endFill();

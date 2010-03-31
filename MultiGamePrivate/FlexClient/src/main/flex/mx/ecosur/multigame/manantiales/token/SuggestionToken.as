@@ -14,6 +14,8 @@ package mx.ecosur.multigame.manantiales.token
         private var _suggestion:Suggestion;
 
         public function SuggestionToken (suggestion:Suggestion) {
+            super();
+            _tooltip = "Suggestion [" + suggestion.move + "]";
             _suggestion = suggestion;
             var destination:Ficha = Ficha(suggestion.move.destinationCell);
 
@@ -42,7 +44,7 @@ package mx.ecosur.multigame.manantiales.token
                    break;
             }
 
-            alpha = .5;
+                alpha = .45;
 
          }
 

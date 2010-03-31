@@ -1,16 +1,19 @@
 package mx.ecosur.multigame.manantiales
     {
     import flash.filters.DropShadowFilter;
-
+    
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.Color;
 
     public class RoundCell extends BoardCell
     {
+        private var _factor:int;
+        
         public function RoundCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number)
         {
             super(column, row, bgColor, borderColor, borderThickness);
             this.filters.concat(new DropShadowFilter());
+            _factor = 4;
         }
 
         public function get color ():String {
@@ -19,7 +22,7 @@ package mx.ecosur.multigame.manantiales
             if (column < 4 && row < 4)
                  ret = Color.YELLOW;
             else if (column < 4 && row > 4)
-                 ret = Color.BLUE;
+                 ret = Color.PURPLE;
             else if (column > 4 && row < 4)
                  ret = Color.RED;
             else if (column > 4 && row > 4)
@@ -29,13 +32,17 @@ package mx.ecosur.multigame.manantiales
 
             return ret;
         }
+        
+        public function get tokenSize():int {
+            return unscaledWidth + _factor
+        }
 
         /*
-          Override how cells are drawn, we use drawCircle as opposed to drawRect.
+          Override how cells are drawn, we use drawEllipse as opposed to drawRect.
         */
         override protected function updateDisplayList(unscaledWidth:Number,
-            unscaledHeight:Number):void {
-
+            unscaledHeight:Number):void 
+        {
             super.updateDisplayList(unscaledWidth, unscaledHeight);
 
             //redraw bg
@@ -45,7 +52,7 @@ package mx.ecosur.multigame.manantiales
                 _bg.graphics.lineStyle(_borderThickness, _borderColor, 1);
             }
             /* We use ellipse to draw the rounded representation */
-            _bg.graphics.drawEllipse(0, 0, unscaledWidth, unscaledHeight);
+            _bg.graphics.drawEllipse(0, 0, tokenSize, tokenSize);
             _bg.graphics.endFill();
             _bg.filters = _bgFilters;
 
@@ -61,10 +68,9 @@ package mx.ecosur.multigame.manantiales
             if (_token){
                 _token.width = unscaledWidth - 2 * getStyle("padding");
                 _token.height = unscaledHeight - 2 * getStyle("padding");
-                _token.x = unscaledWidth / 2;
-                _token.y = unscaledHeight / 2;
+                _token.x = (tokenSize) / 2;
+                _token.y = (tokenSize) / 2;
             }
         }
-
     }
 }

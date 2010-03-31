@@ -4,8 +4,12 @@ package mx.ecosur.multigame.manantiales
 {
     import flash.display.DisplayObject;
     import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
     import flash.geom.Point;
+    import flash.utils.Dictionary;
+    import flash.utils.Timer;
     
+    import mx.controls.Alert;
     import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.BoardCell;
@@ -31,6 +35,10 @@ package mx.ecosur.multigame.manantiales
         private var _player:ManantialesPlayer;
 
         private var _isMoving:Boolean;
+        
+        public var _currentSuggestions:Dictionary;
+        
+        public var _timer:Timer;
 
         private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
         
@@ -39,90 +47,132 @@ package mx.ecosur.multigame.manantiales
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
             _player = controller._currentPlayer;
+            _currentSuggestions = new Dictionary();
+        }
+        
+        private function animateSuggestion (currentCell:RoundCell, suggestion:Suggestion):void {
+            var current:Ficha = Ficha (suggestion.move.currentCell);
+            
+            if (currentCell == null) 
+                currentCell = RoundCell(_controller._gameWindow.board.getBoardCell(
+                    current.column, current.row));
+
+            /* Setup the timer */
+            if (_timer == null) {
+                _timer = new Timer(1500, 2);
+                _timer.addEventListener("timer", timerCallback);
+            }
+            
+            var destination:Ficha = Ficha (suggestion.move.destinationCell);
+            var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
+                    suggestion.move.destinationCell.column, suggestion.move.destinationCell.row));
+                
+             //define origin
+            var startPoint:Point;
+            var startSize:Number;
+
+            startPoint = new Point(currentCell.width /2, currentCell.height/2);
+            startSize = boardCell.tokenSize;
+            startPoint = current.localToGlobal(startPoint);
+            startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
+
+            //define destination
+            var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
+            var endSize:Number = boardCell.tokenSize;
+            endPoint = boardCell.localToGlobal(endPoint);
+            endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
+
+            //create new token
+            var token:ManantialesToken = new SuggestionToken(suggestion);
+            
+            token.cell = destination;
+            token.width = endSize;
+            token.height = endSize;
+            _controller._gameWindow.animateLayer.addChild(token);
+
+            //define motion animation
+            var apX:AnimateProperty = new AnimateProperty(token);
+            apX.fromValue = startPoint.x;
+            apX.toValue = endPoint.x;
+            apX.duration = 1000;
+            apX.property = "x";
+            var apY:AnimateProperty = new AnimateProperty(token);
+            apY.fromValue = startPoint.y;
+            apY.toValue = endPoint.y;
+            apY.duration = 1000;
+            apY.property = "y";
+
+            //define size animation
+            var apXScale:AnimateProperty = new AnimateProperty(token);
+            apXScale.property = "scaleX";
+            apXScale.fromValue = startSize / endSize;
+            apXScale.toValue = 1;
+            apXScale.duration = 1000;
+            var apYScale:AnimateProperty = new AnimateProperty(token);
+            apYScale.property = "scaleY";
+            apYScale.fromValue = startSize / endSize;
+            apYScale.toValue = 1;
+            apYScale.duration = 1000;
+
+            // start the timer
+            if (!_timer.running)
+                _timer.start();
+
+            //start effect
+            apX.play();
+            apY.play();
+            apXScale.play();
+            apYScale.play();
+            
+        }
+        
+        private function timerCallback(event:TimerEvent):void {
+            var count:int = 0;
+            for (var i:int = 0; i < _controller._game.players.length; i++) {
+                var player:ManantialesPlayer = ManantialesPlayer(_controller._game.players [ i ]);
+                if (_currentSuggestions[player] != null) {
+                    animateSuggestion (null, _currentSuggestions [ player ]);
+                    count++;
+                }
+            }
+            
+            if (count == 0)
+                _timer.stop();
         }
 
         public function addSuggestion (suggestion:Suggestion):void {
             var move:ManantialesMove = suggestion.move;
+            
+            /* Check for an unintended suggestion */
+            if (move.currentCell == move.destinationCell)
+                return;
+            
+            var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
+                move.destinationCell.column, move.destinationCell.row));
+
+            /* Remove current */
+            var current:Ficha = Ficha (move.currentCell);
+            var boardCurrent:RoundCell = RoundCell (_controller._gameWindow.board.getBoardCell(
+                current.column, current.row));
+            boardCurrent.token = null;
+            boardCurrent.reset();
+            boardCurrent.token = new UndevelopedToken ();
+            boardCurrent.token.cell = current;
+            boardCurrent.reset();
+            
+            /* Animate in suggestion */
+            if (_currentSuggestions [ move.player ] == null)
+                _currentSuggestions [move.player] = suggestion;
+            animateSuggestion (boardCurrent, suggestion);
+
             if (move.player.color == _player.color) {
-                var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
-                    move.destinationCell.column, move.destinationCell.row));
-
-                /* Remove current */
-                var current:Ficha = Ficha (move.currentCell);
-                var boardCurrent:RoundCell = RoundCell (_controller._gameWindow.board.getBoardCell(
-                    current.column, current.row));
-                boardCurrent.token = new UndevelopedToken ();
-                boardCurrent.token.cell = current;
-                boardCurrent.reset();
-                
-                /* Animate in suggestion */
-
-                //define origin
-                var startPoint:Point;
-                var startSize:Number;
-
-                startPoint = new Point(current.width, current.height);
-                startPoint = current.localToGlobal(startPoint);
-                startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
-                startSize = _controller._gameWindow.board.tokenSize;
-
-                //define destination
-                var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
-                var endSize:Number = _controller._gameWindow.board.tokenSize;
-                endPoint = boardCell.localToGlobal(endPoint);
-                endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
-
-                //create new token
-                var destination:Ficha = Ficha (move.destinationCell);
-                var token:ManantialesToken = new SuggestionToken(suggestion);
-                
-                token.cell = destination;
-                token.width = endSize;
-                token.height = endSize;
-                _controller._gameWindow.animateLayer.addChild(token);
-
-                //define motion animation
-                var apX:AnimateProperty = new AnimateProperty(token);
-                apX.fromValue = startPoint.x;
-                apX.toValue = endPoint.x;
-                apX.duration = 1000;
-                apX.property = "x";
-                var apY:AnimateProperty = new AnimateProperty(token);
-                apY.fromValue = startPoint.y;
-                apY.toValue = endPoint.y;
-                apY.duration = 1000;
-                apY.property = "y";
-
-                //define size animation
-                var apXScale:AnimateProperty = new AnimateProperty(token);
-                apXScale.property = "scaleX";
-                apXScale.fromValue = startSize / endSize;
-                apXScale.toValue = 1;
-                apXScale.duration = 1000;
-                var apYScale:AnimateProperty = new AnimateProperty(token);
-                apYScale.property = "scaleY";
-                apYScale.fromValue = startSize / endSize;
-                apYScale.toValue = 1;
-                apYScale.duration = 1000;
-
-                //start effect
-                apX.play();
-                apY.play();
-                apXScale.play();
-                apYScale.play();
-                
-                token.blink(0);
-
-
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
-
                 _alert = new SuggestionAlert();
                 _alert.suggestion = suggestion;
                 _alert.addEventListener("accept", accept);
                 _alert.addEventListener("reject", reject);
-
                 PopUpManager.addPopUp(_alert, _controller._gameWindow, true);
-                        PopUpManager.centerPopUp(_alert);
+                    PopUpManager.centerPopUp(_alert);
             }
         }
 
@@ -140,8 +190,8 @@ package mx.ecosur.multigame.manantiales
                     }
                 }
             }
-
-            /* if the suggestion was rejected, remove the "destination" piece from the board, 
+            
+            /* if the suggestion was rejected, remove the "destination" piece from the board,
                 retrieve the "current" piece from the move and add it to the board
              */
             if (suggestion.status == "REJECT") {
@@ -166,13 +216,13 @@ package mx.ecosur.multigame.manantiales
                             break;
                         default:
                             token = new UndevelopedToken();
+                }                token.cell = ficha;
+                
+                if (token.className != "UndevelopedToken") {
+                        token.addEventListener(MouseEvent.MOUSE_DOWN, startSuggestion);
+                        token.addEventListener(DragEvent.DRAG_COMPLETE, makeSuggestion);
                 }
                 
-                token.cell = ficha;
-                if (! token is UndevelopedToken) {
-                    token.addEventListener(MouseEvent.MOUSE_DOWN, startSuggestion);
-                    token.addEventListener(DragEvent.DRAG_COMPLETE, makeSuggestion);
-                }
                 var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(
                         ficha.column, ficha.row);
                 boardCell.token = token;
@@ -183,10 +233,17 @@ package mx.ecosur.multigame.manantiales
                     boardCell =  _controller._gameWindow.board.getBoardCell(destination.column, destination.row);
                     token = new UndevelopedToken();
                     token.cell = destination;
+                    /* Null out the location */
+                    boardCell.token = null;
+                    boardCell.reset();
+                    /* Now reset with UndevelopedToken */
                     boardCell.token = token;
                     boardCell.reset();
                 }
             }
+            
+            /* Always remove the suggestion from the dictionary */
+            _currentSuggestions [suggestion.move.player.registrant] = null;
         }
 
         public function endRemoveSuggestion (event:EffectEvent):void {
@@ -243,6 +300,9 @@ package mx.ecosur.multigame.manantiales
             suggestion.move = move;
             suggestion.suggestor = _player;
             suggestion.status = SuggestionStatus.UNEVALUATED;
+            
+            if (_currentSuggestions [move.player.registrant] == null)
+                _currentSuggestions [move.player.registrant] = suggestion;
 
             var call:Object = new Object();
             call = _controller._gameService.makeSuggestion(_controller._game, suggestion);

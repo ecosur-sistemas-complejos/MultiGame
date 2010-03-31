@@ -21,6 +21,7 @@ package mx.ecosur.multigame.enum {
 		public static const RED:String = "RED";
 		public static const GREEN:String = "GREEN";
 		public static const BLUE:String = "BLUE";
+		public static const PURPLE:String = "PURPLE";
 		public static const UNKNOWN:String = "UNKNOWN";
 		
 		//icon assets
@@ -37,67 +38,57 @@ package mx.ecosur.multigame.enum {
 		
 		public static function getColorCode(color:String):uint{
 			switch (color){
-				case Color.BLACK:
-					return 0x333333;
-				break;
-				case Color.YELLOW:
+                case Color.BLACK:
+                    return 0x333333;
+                case Color.YELLOW:
 					return 0xffcc00;
-				break;
-				case Color.GREEN:
-					return 0x00bb00;
-				break;
-				case Color.BLUE:
+                case Color.GREEN:
+                    return 0x00bb00;
+                case Color.BLUE:
 					return 0x0000bb;
 				break;
-				case Color.RED:
+                case Color.RED:
 					return 0xbb0000;
-				break;
-			}
-			return undefined;
+                case Color.PURPLE:
+                    return 0x5F04B4;
+            }
+            return undefined;
 		}
 		
-		public static function getColorDescription(color:String):String{
-			switch (color){
-				case Color.BLACK:
-					return "Black";
-				break;
-				case Color.YELLOW:
-					return "Yellow";
-				break;
-				case Color.GREEN:
-					return "Green";
-				break;
-				case Color.BLUE:
-					return "Blue";
-				break;
-				case Color.RED:
-					return "Red";
-				break;
-			}
-			return "";
-		}
-		
-		public static function getCellIcon(color:String):Class{
-			switch (color){
-				case Color.BLACK:
-					return iconBLACK;
-				break;
-				case Color.YELLOW:
-					return iconYELLOW;
-				break;
-				case Color.GREEN:
-					return iconGREEN;
-				break;
-				case Color.BLUE:
-					return iconBLUE;
-				break;
-				case Color.RED:
-					return iconRED;
-				break;
-			}
-			return null;
-		}
-		
+        public static function getColorDescription(color:String):String{
+            switch (color){
+                case Color.BLACK:
+                    return "Black";
+                case Color.YELLOW:
+                    return "Yellow";
+                case Color.GREEN:
+                    return "Green";
+                case Color.BLUE:
+                    return "Blue";
+                case Color.RED:
+                    return "Red";
+                case Color.PURPLE:
+                    return "Purple";
+            }
+            return "";
+        }
+        
+        public static function getCellIcon(color:String):Class{
+            switch (color){
+                case Color.BLACK:
+                    return iconBLACK;
+                case Color.YELLOW:
+                    return iconYELLOW;
+                case Color.GREEN:
+                    return iconGREEN;
+                case Color.BLUE:
+                    return iconBLUE;
+                case Color.RED:
+                    return iconRED;
+            }
+        return null;
+        }
+
 		public static function getCellIconSize():Number{
 			//TODO: Look for a better way to read the height of the assets dynamically
 			return 20;
@@ -106,7 +97,7 @@ package mx.ecosur.multigame.enum {
 		public static function getTeamName(color:String):String{
 			if (color == Color.YELLOW || color == Color.RED){
 				return "HOT";
-			}else if (color == Color.BLUE || color == Color.GREEN){
+			}else if (color == Color.BLUE || color == Color.GREEN) {
 				return "COLD";
 			}
 			return "";
