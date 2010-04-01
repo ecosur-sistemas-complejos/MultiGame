@@ -451,7 +451,7 @@ rule "score"
     salience -1
 when
     $game  : GridGame (state == GameState.PLAY)
-    $move  : ManantialesMove (status == MoveStatus.MOVED)
+    $move  : ManantialesMove (status == MoveStatus.MOVED, player.turn == true)
 then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
     int ps = score (player, $move);

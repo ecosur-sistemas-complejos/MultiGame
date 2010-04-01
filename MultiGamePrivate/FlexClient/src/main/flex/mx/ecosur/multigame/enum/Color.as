@@ -46,7 +46,6 @@ package mx.ecosur.multigame.enum {
                     return 0x00bb00;
                 case Color.BLUE:
 					return 0x0000bb;
-				break;
                 case Color.RED:
 					return 0xbb0000;
                 case Color.PURPLE:

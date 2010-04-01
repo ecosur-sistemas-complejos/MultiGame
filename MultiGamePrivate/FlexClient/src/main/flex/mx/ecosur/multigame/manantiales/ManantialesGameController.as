@@ -283,52 +283,46 @@ package mx.ecosur.multigame.manantiales
                         }
                     }
 
-                    if (_suggestionHandler._currentSuggestions [ move.player ] == null) {
-                        _suggestionHandler.makeSuggestion(move);
-                    } else {
-                        animate = false;
-                    }
+                    _suggestionHandler.makeSuggestion(move);
                 }
                 
-                if (animate) {
-                    // do move in interface, if allowed to animate 
-                    boardCell.reset();
-    
-                    var newToken:ManantialesToken;
-    
-                    if (destToken is ForestToken) {
-                        if (!suggestion)
-                            _gameWindow.forestStore.removeToken();
-                        newToken = new ForestToken();
-                    }
-                    else if (destToken is IntensiveToken) {
-                        if (!suggestion) 
-                            _gameWindow.intensiveStore.removeToken();
-                        newToken = new IntensiveToken();
-                    }
-                    else if (destToken is ModerateToken) {
-                        if (!suggestion)
-                            _gameWindow.moderateStore.removeToken();
-                        newToken = new ModerateToken();
-                    }
-                    else if (destToken is ViveroToken) {
-                        if (!suggestion)
-                            _gameWindow.viveroStore.removeToken();
-                        newToken = new ViveroToken();
-                    }
-                    else if (destToken is SilvopastoralToken) {
-                        if (! suggestion)
-                            _gameWindow.silvoStore.removeToken();
-                        newToken = new SilvopastoralToken();
-                    }
-                    
-                    newToken.cell = destination;
-                    
-                    /* all tokens have active listeners, action is regulated in call back */
-                    newToken.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
-                    newToken.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.makeSuggestion);                                                
-                    _gameWindow.board.addToken(newToken);
+                // do move in interface, if allowed to animate 
+                boardCell.reset();
+
+                var newToken:ManantialesToken;
+
+                if (destToken is ForestToken) {
+                    if (!suggestion)
+                        _gameWindow.forestStore.removeToken();
+                    newToken = new ForestToken();
                 }
+                else if (destToken is IntensiveToken) {
+                    if (!suggestion) 
+                        _gameWindow.intensiveStore.removeToken();
+                    newToken = new IntensiveToken();
+                }
+                else if (destToken is ModerateToken) {
+                    if (!suggestion)
+                        _gameWindow.moderateStore.removeToken();
+                    newToken = new ModerateToken();
+                }
+                else if (destToken is ViveroToken) {
+                    if (!suggestion)
+                        _gameWindow.viveroStore.removeToken();
+                    newToken = new ViveroToken();
+                }
+                else if (destToken is SilvopastoralToken) {
+                    if (! suggestion)
+                        _gameWindow.silvoStore.removeToken();
+                    newToken = new SilvopastoralToken();
+                }
+                
+                newToken.cell = destination;
+                
+                /* all tokens have active listeners, action is regulated in call back */
+                newToken.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+                newToken.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.makeSuggestion);
+                _gameWindow.board.addToken(newToken);
             }
         }
 
@@ -865,8 +859,7 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
 
-            if (puzzleMode)
-                token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);            
+            token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
 
             //define motion animation
             var apX:AnimateProperty = new AnimateProperty(token);
@@ -1061,47 +1054,49 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleCheckConstraint (checkCondition:CheckCondition):void {
-            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
-            checkConAlert.constraint = checkCondition;
-            checkConAlert.raised = true;
-            checkConAlert.addEventListener("result", handleCheckResult);
-            _alerts.addItem(checkConAlert);
-            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
-            PopUpManager.centerPopUp(checkConAlert);
+            if (!puzzleMode) {
+                var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+                checkConAlert.constraint = checkCondition;
+                checkConAlert.raised = true;
+                checkConAlert.addEventListener("result", handleCheckResult);
+                _alerts.addItem(checkConAlert);
+                PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(checkConAlert);
+            }
         }
 
         private function handleCheckConstraintResolved (checkCondition:CheckCondition):void {
-            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
-            checkConAlert.constraint = checkCondition;
-            checkConAlert.raised = false;
-            checkConAlert.addEventListener("result", handleCheckResult);
-            _alerts.addItem(checkConAlert);
-            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
-            PopUpManager.centerPopUp(checkConAlert);
+            if (!puzzleMode) {
+                var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+                checkConAlert.constraint = checkCondition;
+                checkConAlert.raised = false;
+                checkConAlert.addEventListener("result", handleCheckResult);
+                _alerts.addItem(checkConAlert);
+                PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(checkConAlert);
+            }
         }
 
         private function handleCheckConstraintTriggered (checkCondition:CheckCondition):void {
-            var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
-            checkConAlert.constraint = checkCondition;
-            checkConAlert.raised = false;
-            checkConAlert.triggered = true;
-            checkConAlert.addEventListener("result", handleCheckResult);
-            _alerts.addItem(checkConAlert);
-            PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
-            PopUpManager.centerPopUp(checkConAlert);
-
-             /* Reset the grid on the board */
-            var callGrid:Object = _gameService.getGameGrid(_gameId);
-            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+            if (!puzzleMode) {
+                var checkConAlert:CheckConstraintAlert = new CheckConstraintAlert();
+                checkConAlert.constraint = checkCondition;
+                checkConAlert.raised = false;
+                checkConAlert.triggered = true;
+                checkConAlert.addEventListener("result", handleCheckResult);
+                _alerts.addItem(checkConAlert);
+                PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(checkConAlert);
+    
+                 /* Reset the grid on the board */
+                var callGrid:Object = _gameService.getGameGrid(_gameId);
+                callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+            }
         }
 
         private function handleStateChange (game:ManantialesGame):void {
             if (_stageChangeAlert == null) {
                 _stageChangeAlert = new GraphicAlert();
-                if (game == null) {
-                    Alert.show("Null game passed in.");
-                    game = _game;
-                }
                 _stageChangeAlert.text = "Stage complete. Progressing to next stage, '" +
                       game.mode + "'";
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);

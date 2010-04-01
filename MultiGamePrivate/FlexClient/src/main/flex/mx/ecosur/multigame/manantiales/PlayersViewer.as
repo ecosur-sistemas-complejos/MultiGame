@@ -1,7 +1,6 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.utils.Dictionary;
-
     import mx.collections.ArrayCollection;
     import mx.collections.ArrayList;
     import mx.containers.Accordion;
@@ -19,7 +18,7 @@ package mx.ecosur.multigame.manantiales
         private var _selectedPlayer:PlayerInfo;
         private var _gi:GameInfo;
         private var _map:Dictionary;
-        
+
         /**
          * Default constructor 
          */
@@ -82,8 +81,8 @@ package mx.ecosur.multigame.manantiales
          */
         public function updatePlayers():void{
             /* Set the game players into the game info */
-            _gi.players = _players; 
-            
+            _gi.players = _players;
+
             /* Setup all player info tabs */
             for (var i:int = 0; i < _players.length; i++){
                 var pi:PlayerInfo = null;
@@ -168,11 +167,9 @@ package mx.ecosur.multigame.manantiales
         }
         
         override protected function createChildren():void {
-        	var btn:Button = new Button();
-        	
         	super.createChildren();
         	_gi = new GameInfo();
         	addChild(_gi);
-        }   
+        }
     }       
 }
