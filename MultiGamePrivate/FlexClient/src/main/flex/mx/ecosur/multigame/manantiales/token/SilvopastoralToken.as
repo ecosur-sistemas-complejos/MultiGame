@@ -14,28 +14,5 @@ package mx.ecosur.multigame.manantiales.token
 			_label = "S";
 			_type = TokenType.SILVOPASTORAL;
 		}
-		
-        public override function get colorCode():uint {
-            var ret:uint = _cell.colorCode;
-            
-            switch (_cell.color) {
-                case Color.BLUE:
-                    ret = 0x828BEC;
-                    break;
-                case Color.GREEN:
-                    ret = 0x82EC9D;
-                    break;
-                case Color.RED:
-                    ret = 0xEC9482;
-                    break;
-                case Color.YELLOW:
-                    ret = 0xEBF268;
-                    break;
-                default:
-                    break;  
-            }
-            
-            return ret;
-        }	
 	}
 }

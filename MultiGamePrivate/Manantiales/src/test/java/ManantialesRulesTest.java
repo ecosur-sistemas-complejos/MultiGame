@@ -1291,7 +1291,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
         assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.EVALUATED));
+                MoveStatus.MOVED));
         assertTrue(filter.size() > 0);
 
         GameGrid grid = game.getGrid();

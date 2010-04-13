@@ -216,7 +216,7 @@
             <mx:Panel title="Score" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
                       currentPlayer="{currentPlayer}" width="100%"/>
-            </mx:Panel>        
+            </mx:Panel>
            <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />

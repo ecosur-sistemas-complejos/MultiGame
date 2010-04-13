@@ -35,6 +35,8 @@ package mx.ecosur.multigame.enum {
   		private static var iconBLUE:Class;
   		[Embed(source='/assets/icons.swf#cellIconGREEN')]
   		private static var iconGREEN:Class;
+  		[Embed(source='/assets/icons.swf#cellIconPURPLE')]
+  		private static var iconPURPLE:Class;
 		
 		public static function getColorCode(color:String):uint{
 			switch (color){
@@ -84,6 +86,8 @@ package mx.ecosur.multigame.enum {
                     return iconBLUE;
                 case Color.RED:
                     return iconRED;
+                case Color.PURPLE:
+                    return iconPURPLE;
             }
         return null;
         }

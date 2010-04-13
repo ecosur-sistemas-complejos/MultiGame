@@ -1,20 +1,21 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.utils.Dictionary;
+    
     import mx.collections.ArrayCollection;
-    import mx.collections.ArrayList;
     import mx.containers.Accordion;
-    import mx.controls.Alert;
     import mx.controls.Button;
-    import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.enum.Mode;
     
 
 	public class PlayersViewer extends Accordion
 	{
 		private var _currentPlayer:GamePlayer;
-        private var _players:ArrayCollection;         
+        private var _game:ManantialesGame;
         private var _selectedPlayer:PlayerInfo;
         private var _gi:GameInfo;
         private var _map:Dictionary;
@@ -26,6 +27,12 @@ package mx.ecosur.multigame.manantiales
             super();
         }
         
+        public function set game (game:ManantialesGame):void {
+            _game = game;
+            _gi.game = game;
+            updatePlayers();
+        }
+        
         public function set currentPlayer (currentPlayer:GamePlayer):void 
         {
         	_currentPlayer = currentPlayer;
@@ -33,16 +40,6 @@ package mx.ecosur.multigame.manantiales
         
         public function get currentPlayer ():GamePlayer {
             return _currentPlayer;	
-        }
-        
-        /**
-         * Sets players
-         *  
-         * @param players
-         */
-        public function set players(players:ArrayCollection):void{
-            _players = players;
-            updatePlayers();
         }
         
         public function setTurn(player:ManantialesPlayer):void{
@@ -81,13 +78,13 @@ package mx.ecosur.multigame.manantiales
          */
         public function updatePlayers():void{
             /* Set the game players into the game info */
-            _gi.players = _players;
+            _gi.game = _game;
 
             /* Setup all player info tabs */
-            for (var i:int = 0; i < _players.length; i++){
+            for (var i:int = 0; i < _game.players.length; i++){
                 var pi:PlayerInfo = null;
                 var btn:Button = null;
-                var manPlayer:ManantialesPlayer = ManantialesPlayer(_players[i]);
+                var manPlayer:ManantialesPlayer = ManantialesPlayer(_game.players[i]);
 
                 /* Ghost updates are ignored */
                 if (manPlayer.id == 0)

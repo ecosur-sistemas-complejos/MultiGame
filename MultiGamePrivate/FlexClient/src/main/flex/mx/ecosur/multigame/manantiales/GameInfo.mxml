@@ -2,6 +2,7 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
     <mx:Script> 
         <![CDATA[
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.collections.ArrayCollection;        
             import mx.formatters.DateFormatter;
             import mx.ecosur.multigame.enum.Color;
@@ -9,23 +10,24 @@
             
             private static const TERRITORY:int = 48; 
             
-            private var _players:ArrayCollection;            
             private var _deforested:int, _undeveloped:int;
+            private var _game:ManantialesGame;
             
             
-            public function set players (players:ArrayCollection):void{
-            	_players = players;
-            	updatePlayers();            	
+            public function set game (game:ManantialesGame):void {
+                _game = game;
+                updatePlayers();
             }
             
-            public function get player():ArrayCollection{
-                return _players;
+            public function get game():ManantialesGame {
+                return _game;
             }
+            
             
             private function updatePlayers ():void {
                 _deforested = 0, _undeveloped = TERRITORY;
-                for (var i:int = 0; i < _players.length; i++) {
-                	var player:ManantialesPlayer = ManantialesPlayer(_players.getItemAt(i));
+                for (var i:int = 0; i < _game.players.length; i++) {
+                	var player:ManantialesPlayer = ManantialesPlayer(_game.players.getItemAt(i));
                 	var forested:int = player.forested;
                 	var moderate:int = player.moderate;
                 	var intensive:int = player.intensive;
@@ -59,7 +61,8 @@
                 }
                 
                 undeveloped.text = "" + _undeveloped;
-                deforested.text = "" + _deforested;            	                     
+                deforested.text = "" + _deforested;
+                violated.text = "" + _game.checkConditions.length;
             }
                     
         ]]>
@@ -130,7 +133,7 @@
             </mx:GridItem>   
             <mx:GridItem>
                 <mx:Label id="player4Pr" styleName="field"/>
-            </mx:GridItem>                                                  
+            </mx:GridItem>
         </mx:GridRow>         
         <mx:GridRow/>
         <mx:GridRow>
@@ -139,15 +142,23 @@
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="deforested" styleName="field"/>
-            </mx:GridItem>                                                 
-        </mx:GridRow>     
+            </mx:GridItem>
+        </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
                 <mx:Label text="Undeveloped" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="undeveloped" styleName="field"/>
-            </mx:GridItem>                                                 
-        </mx:GridRow>               
+            </mx:GridItem>
+        </mx:GridRow>
+        <mx:GridRow>
+            <mx:GridItem>
+                <mx:Label text="Violated Constraints" styleName="fieldLit"/>
+            </mx:GridItem>
+            <mx:GridItem>
+                <mx:Label id="violated" styleName="field"/>
+            </mx:GridItem>
+        </mx:GridRow>
     </mx:Grid>
 </mx:Canvas>

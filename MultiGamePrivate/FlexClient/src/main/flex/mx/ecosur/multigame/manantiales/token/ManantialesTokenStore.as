@@ -1,7 +1,6 @@
 package mx.ecosur.multigame.manantiales.token
 {
     import flash.display.Shape;
-
     import mx.ecosur.multigame.component.TokenStore;
 
     public class ManantialesTokenStore extends TokenStore

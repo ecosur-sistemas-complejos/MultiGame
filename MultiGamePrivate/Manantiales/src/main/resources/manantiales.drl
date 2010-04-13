@@ -122,12 +122,21 @@ end
 rule "evaluate-move"
     agenda-group "verify"
 when
-    $game  : GridGame (state == GameState.PLAY, $grid : grid)
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, mode == Mode.CLASSIC || mode == Mode.SILVOPASTORAL)
     $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
     eval (isValid($game.getGrid(), $move))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
-end 
+end
+
+rule "evaluate-puzzle-move"
+    agenda-group "verify"
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, mode == Mode.BASIC_PUZZLE || mode == Mode.SILVO_PUZZLE)
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
 
 # MOVE RESTRICTIONS
 
@@ -346,6 +355,7 @@ end
 rule "execute-move"
     agenda-group "move"
     lock-on-active
+    salience -5
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED)
@@ -582,7 +592,7 @@ when
     $move : ManantialesMove ($player : player, player.color == Color.RED,
         status == MoveStatus.EVALUATED)
     $constraint  : CheckCondition (expired == true, type in (
-        ConditionType.SOUTHERN_BORDER_DEFORESTED, ConditionType.WESTERN_BORDER_DEFORESTED))          
+        ConditionType.SOUTHERN_BORDER_DEFORESTED, ConditionType.WESTERN_BORDER_DEFORESTED))
     $constraint1 : CheckCondition (type == ConditionType.SOUTHERN_BORDER_DEFORESTED)
     $constraint2 : CheckCondition (type == ConditionType.WESTERN_BORDER_DEFORESTED)
 then

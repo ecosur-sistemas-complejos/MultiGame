@@ -4,14 +4,12 @@ package mx.ecosur.multigame.manantiales
 {
     import flash.display.DisplayObject;
     import flash.events.MouseEvent;
-    import flash.events.TimerEvent;
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.Timer;
     
     import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
-    import mx.ecosur.multigame.entity.Registrant;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
@@ -36,6 +34,8 @@ package mx.ecosur.multigame.manantiales
 
         private var _isMoving:Boolean;
         
+        private var _animations:int;
+        
         public var _currentSuggestions:Dictionary;
         
         public var _timer:Timer;
@@ -48,6 +48,7 @@ package mx.ecosur.multigame.manantiales
             _controller = controller;
             _player = controller._currentPlayer;
             _currentSuggestions = new Dictionary();
+            _animations = 5;
         }
         
         private function animateSuggestion (suggestion:Suggestion):void {
@@ -57,12 +58,13 @@ package mx.ecosur.multigame.manantiales
                 var current:Ficha = Ficha (suggestion.move.currentCell);
                 var currentCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         current.column, current.row));
-    
-                /* Setup the timer */
-                if (_timer == null) {
-                    _timer = new Timer(1500, 2);
-                    _timer.addEventListener("timer", timerCallback);
-                }
+                        
+                /* Remove current */
+                currentCell.token = null;
+                currentCell.reset();
+                currentCell.token = new UndevelopedToken ();
+                currentCell.token.cell = current;
+                currentCell.reset();
                 
                 var destination:Ficha = Ficha (suggestion.move.destinationCell);
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
@@ -115,10 +117,6 @@ package mx.ecosur.multigame.manantiales
                 apYScale.toValue = 1;
                 apYScale.duration = 1000;
     
-                // start the timer
-                if (!_timer.running)
-                    _timer.start();
-    
                 //start effect
                 apX.play();
                 apY.play();
@@ -129,20 +127,6 @@ package mx.ecosur.multigame.manantiales
             }
             
         }
-        
-        private function timerCallback(event:TimerEvent):void {
-            var count:int = 0;
-            for (var i:int = 0; i < _controller._game.players.length; i++) {
-                var registrant:Registrant = ManantialesPlayer(_controller._game.players [ i ]).registrant;
-                if (_currentSuggestions[registrant] != null) {
-                    animateSuggestion (_currentSuggestions [ registrant ]);
-                    count++;
-                }
-            }
-            
-            if (count == 0)
-                _timer.stop();
-        }
 
         public function addSuggestion (suggestion:Suggestion):void {
             var move:ManantialesMove = suggestion.move;
@@ -151,20 +135,7 @@ package mx.ecosur.multigame.manantiales
             if (move.currentCell == move.destinationCell)
                 return;
             
-            var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
-                move.destinationCell.column, move.destinationCell.row));
-
-            /* Remove current */
-            var current:Ficha = Ficha (move.currentCell);
-            var boardCurrent:RoundCell = RoundCell (_controller._gameWindow.board.getBoardCell(
-                current.column, current.row));
-            boardCurrent.token = null;
-            boardCurrent.reset();
-            boardCurrent.token = new UndevelopedToken ();
-            boardCurrent.token.cell = current;
-            boardCurrent.reset();
-            
-            /* Animate in suggestion */
+            /* Animate suggestion */
             if (_currentSuggestions [ move.player ] == null)
                 _currentSuggestions [move.player] = suggestion;
             animateSuggestion (suggestion);
@@ -314,20 +285,22 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function makeSuggestion (move:ManantialesMove):void {
-            move.status = String (MoveStatus.UNVERIFIED);
-            move.mode = _controller._game.mode;
-
-            var suggestion:Suggestion = new Suggestion();
-            suggestion.move = move;
-            suggestion.suggestor = _player;
-            suggestion.status = SuggestionStatus.UNEVALUATED;
-            
-            if (_currentSuggestions [move.player.registrant] == null)
-                _currentSuggestions [move.player.registrant] = suggestion;
-
-            var call:Object = new Object();
-            call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
-            call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
+            if (move.currentCell != move.destinationCell) {
+                move.status = String (MoveStatus.UNVERIFIED);
+                move.mode = _controller._game.mode;
+    
+                var suggestion:Suggestion = new Suggestion();
+                suggestion.move = move;
+                suggestion.suggestor = _player;
+                suggestion.status = SuggestionStatus.UNEVALUATED;
+                
+                if (_currentSuggestions [move.player.registrant] == null)
+                    _currentSuggestions [move.player.registrant] = suggestion;
+    
+                var call:Object = new Object();
+                call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
+                call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
+            }
         }
     }
 }
