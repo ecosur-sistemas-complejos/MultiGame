@@ -2,7 +2,8 @@ package mx.ecosur.multigame.manantiales.token
 {
     import flash.events.MouseEvent;
     
-    import mx.events.DragEvent;	
+    import mx.events.DragEvent;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
 	
 	public class ModerateTokenStore extends ManantialesTokenStore
@@ -25,7 +26,13 @@ package mx.ecosur.multigame.manantiales.token
             }
             addChild(token);
             _nTokens ++;
-        } 		
-		
+        }
+        
+        public function returnToken (dragEvent:DragEvent):void {
+            var token:ManantialesToken = ManantialesToken (dragEvent.dragSource.dataForFormat("token"));
+            if (token.ficha.type == TokenType.MODERATE) {
+                addToken();
+            }
+        }
 	}
 }

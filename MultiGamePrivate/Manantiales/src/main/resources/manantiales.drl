@@ -361,7 +361,8 @@ when
     $move  : ManantialesMove (status == MoveStatus.VERIFIED)
 then
     GameGrid modifiedGrid = $game.getGrid();
-    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
+    modifiedGrid.removeCell ($move.getCurrentCell());
+    modifiedGrid.updateCell ($move.getDestinationCell());
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.MOVED) }
     messageSender.sendMoveComplete ($game, $move);

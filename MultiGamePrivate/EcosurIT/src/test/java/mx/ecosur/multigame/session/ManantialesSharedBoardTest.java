@@ -28,6 +28,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
+import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.*;
 import mx.ecosur.multigame.model.*;
@@ -62,6 +63,7 @@ public class ManantialesSharedBoardTest {
             new GridRegistrant ("denise")};
 
         ManantialesGame game = new ManantialesGame ();
+        game.setMode(Mode.CLASSIC);
         Game boardGame = new Game (game);
 
         for (int i = 0; i < 4; i++) {
@@ -148,6 +150,10 @@ public class ManantialesSharedBoardTest {
     @Test
     public void testSuggestionAccepted () throws InvalidMoveException, JMSException, InvalidSuggestionException {
         Game game = board.getGame(gameId);
+        ManantialesGame impl = (ManantialesGame) game.getImplementation();
+        impl.setMode (Mode.BASIC_PUZZLE);
+        board.shareGame(impl);
+
         Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
         Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
 
@@ -184,7 +190,7 @@ public class ManantialesSharedBoardTest {
         System.out.println ("Move: [" + move.getId() + "] =" + move);
 
         assertTrue ("Move not evaluated@!  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.EVALUATED));
+                MoveStatus.MOVED));
 
         game = board.getGame(gameId);
         GridGame gridGame = (GridGame) game.getImplementation();
@@ -202,6 +208,10 @@ public class ManantialesSharedBoardTest {
     @Test
     public void testSuggestionRejected () throws InvalidMoveException, JMSException, InvalidSuggestionException {
         Game game = board.getGame(gameId);
+        ManantialesGame impl = (ManantialesGame) game.getImplementation();
+        impl.setMode (Mode.BASIC_PUZZLE);
+        board.shareGame(impl);
+
         Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
         Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
 
