@@ -817,8 +817,11 @@ package mx.ecosur.multigame.manantiales
             }
 
             var current:Ficha;
-            if (move.currentCell != null && move.currentCell is Ficha)
+            var currentCell:RoundCell;
+            if (move.currentCell != null && move.currentCell is Ficha){
                 current = Ficha (move.currentCell);
+                currentCell = RoundCell(_gameWindow.board.getBoardCell(current.column, current.row));
+            }
             var destination:Ficha = Ficha(move.destinationCell);
 
             //define origin
@@ -853,7 +856,7 @@ package mx.ecosur.multigame.manantiales
                     }
                 } else {
                     startPoint = new Point(current.width, current.height);
-                    startPoint = current.localToGlobal(startPoint);
+                    startPoint = currentCell.localToGlobal(startPoint);
                 }
 
                 startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
@@ -869,9 +872,9 @@ package mx.ecosur.multigame.manantiales
                 startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
                 startSize = Color.getCellIconSize();
             } else {
-                startPoint = new Point(move.currentCell.width / 2, move.currentCell.height / 2);
+                startPoint = new Point(currentCell.width / 2, currentCell.height / 2);
                 startSize = _gameWindow.board.tokenSize;
-                startPoint = move.currentCell.localToGlobal(startPoint);
+                startPoint = currentCell.localToGlobal(startPoint);
                 startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
             }
 
