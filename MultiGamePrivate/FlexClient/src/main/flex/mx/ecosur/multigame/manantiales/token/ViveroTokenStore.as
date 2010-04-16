@@ -7,9 +7,11 @@ package mx.ecosur.multigame.manantiales.token
 	
 	public class ViveroTokenStore extends ManantialesTokenStore
 	{
+		
 		public function ViveroTokenStore()
 		{
 			super();
+			_tokenType = TokenType.VIVERO;
 		}
 		
         public override function addToken():void{

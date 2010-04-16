@@ -14,6 +14,7 @@ package mx.ecosur.multigame.manantiales
     import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.Token;
+    import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
@@ -356,7 +357,12 @@ package mx.ecosur.multigame.manantiales
         }
         
         private function addListeners (token:ManantialesToken):void {
-            token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+        	if(token.cell.color == _currentPlayer.color){
+        		 token.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
+        		 token.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
+        	}else{
+            	token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+         	}
         }
 
         public function dragExitCell(evt:DragEvent):void{

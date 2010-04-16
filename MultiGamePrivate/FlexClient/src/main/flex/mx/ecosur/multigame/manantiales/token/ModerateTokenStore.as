@@ -11,6 +11,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function ModerateTokenStore()
 		{
 			super();
+			_tokenType = TokenType.MODERATE;
 		}
 		
         public override function addToken():void{

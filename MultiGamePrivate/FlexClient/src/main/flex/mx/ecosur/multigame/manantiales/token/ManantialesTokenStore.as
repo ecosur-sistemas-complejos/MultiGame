@@ -2,14 +2,18 @@ package mx.ecosur.multigame.manantiales.token
 {
     import flash.display.Shape;
     
+    import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesBoard;
+    import mx.events.DragEvent;
+    import mx.managers.DragManager;
 
     public class ManantialesTokenStore extends TokenStore
     {
         protected static const INITIAL_N_TOKENS:int = 6;
         
         protected var _board:ManantialesBoard;
+        protected var _tokenType:String;
         
         public function get board ():ManantialesBoard {
             return _board;
@@ -26,6 +30,39 @@ package mx.ecosur.multigame.manantiales.token
             
             for (var i:int = 0; i < INITIAL_N_TOKENS; i++) {
                 addToken();
+            }
+            
+            this.addEventListener(DragEvent.DRAG_ENTER, dragEnterHandler);
+            this.addEventListener(DragEvent.DRAG_DROP, dragDropHandler);
+        }
+        
+        protected function dragEnterHandler(evt:DragEvent):void{
+
+            if (evt.dragSource.hasFormat("token")){
+                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
+                
+                if(token.type == this._tokenType && token.cell.color == _currentPlayer.color){
+                	DragManager.acceptDragDrop(this);
+                }
+            }
+        }
+        
+		protected function dragDropHandler(evt:DragEvent):void{
+
+            if (evt.dragSource.hasFormat("token")){
+                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
+                
+                if(token.type == this._tokenType && token.cell.color == _currentPlayer.color){
+                	
+                	/* Check that move is from the board and not the token store */
+                	if(token.cell){
+                		var boardCell:BoardCell = _board.getBoardCell(token.cell.column, token.cell.row);
+                		boardCell.token = new UndevelopedToken ();
+                		addToken();
+                		
+                		// Here is where the move should be sent to the server
+                	}
+                }
             }
         }
 

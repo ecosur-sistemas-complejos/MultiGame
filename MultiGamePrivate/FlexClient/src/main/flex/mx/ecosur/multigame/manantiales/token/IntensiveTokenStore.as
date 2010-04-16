@@ -11,6 +11,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function IntensiveTokenStore()
 		{
 			super();
+			_tokenType = TokenType.INTENSIVE;
 		}
 		
 		public override function addToken():void{

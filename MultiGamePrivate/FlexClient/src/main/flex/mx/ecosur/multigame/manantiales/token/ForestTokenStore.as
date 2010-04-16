@@ -11,6 +11,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function ForestTokenStore()
 		{
 			super();
+			_tokenType = TokenType.FOREST;
 		}
 		
 		public override function addToken():void{

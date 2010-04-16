@@ -33,6 +33,10 @@ package mx.ecosur.multigame.manantiales.token
             _ficha = ficha;
             cell = ficha;
         }
+        
+        public function get type ():String {
+            return _type;
+        }
 
         override public function set cell (cell:Cell):void{
           if (_type != null) {

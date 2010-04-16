@@ -11,6 +11,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function SilvopastoralTokenStore()
 		{
 			super();
+			_tokenType = TokenType.SILVOPASTORAL;
 		}
 		
         public override function addToken():void{
