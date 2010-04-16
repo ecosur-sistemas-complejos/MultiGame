@@ -76,7 +76,7 @@ package mx.ecosur.multigame.manantiales
     
                 startPoint = new Point(currentCell.width /2, currentCell.height/2);
                 startSize = boardCell.tokenSize;
-                startPoint = current.localToGlobal(startPoint);
+                startPoint = currentCell.localToGlobal(startPoint);
                 startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
     
                 //define destination
