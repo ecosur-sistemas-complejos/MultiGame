@@ -362,6 +362,7 @@ package mx.ecosur.multigame.manantiales
         		 token.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
         	}else{
             	token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
+            	token.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.endSuggestion);
          	}
         }
 

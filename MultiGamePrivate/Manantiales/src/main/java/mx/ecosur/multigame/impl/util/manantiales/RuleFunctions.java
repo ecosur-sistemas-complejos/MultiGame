@@ -7,8 +7,6 @@
 
 package mx.ecosur.multigame.impl.util.manantiales;
 
-import mx.ecosur.multigame.enums.MoveStatus;
-
 import mx.ecosur.multigame.impl.Color;
 
 import mx.ecosur.multigame.impl.model.GridCell;
@@ -34,7 +32,7 @@ import java.util.List;
  */
 public class RuleFunctions {
 
-    public static  boolean isValid (GameGrid grid, ManantialesMove move) {
+    public static  boolean isValidReplacement (GameGrid grid, ManantialesMove move) {
         boolean ret = false;
         if (move.getDestinationCell() != null) {
             Ficha destination = (Ficha) move.getDestinationCell();
@@ -61,10 +59,6 @@ public class RuleFunctions {
             } else {
                ret = true;
             }
-        }
-
-        if (!ret) {
-            move.setStatus (MoveStatus.INVALID);
         }
 
         return ret;

@@ -220,6 +220,16 @@ package mx.ecosur.multigame.manantiales
             /* Always remove the suggestion from the dictionary */
             _currentSuggestions [suggestion.move.player.registrant] = null;
         }
+        
+        public function endSuggestion(evt:DragEvent):void{
+            
+            // unselect cell
+            if (evt.dragSource.hasFormat("token")){
+                _isMoving = false;
+                var token:ManantialesToken = ManantialesToken(evt.currentTarget);
+                token.selected = false;
+            }
+        }
 
         public function endRemoveSuggestion (event:EffectEvent):void {
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
