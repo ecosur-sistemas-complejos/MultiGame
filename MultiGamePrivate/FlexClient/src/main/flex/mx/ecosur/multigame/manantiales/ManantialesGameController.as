@@ -571,7 +571,7 @@ package mx.ecosur.multigame.manantiales
             _tokenStorePanels.addItem(_gameWindow.mfp);
             _tokenStorePanels.addItem(_gameWindow.mgp);
             _tokenStorePanels.addItem(_gameWindow.igp);
-            if (_gameWindow.currentState == "SILVOPASTORAL") {
+            if (_gameWindow.currentState == "SILVOPASTORAL" || _gameWindow.currentState == "SILVO_PUZZLE") {
                 _tokenStorePanels.addItem(_gameWindow.sep);
                 _tokenStorePanels.addItem(_gameWindow.sap);
             }
