@@ -510,30 +510,6 @@ package mx.ecosur.multigame.manantiales
                     }
                 }
             }
-            if (_gameWindow.forestStore != null) {
-                _gameWindow.forestStore.board = _gameWindow.board;
-                _gameWindow.forestStore.reset();
-            }
-            
-            if (_gameWindow.intensiveStore != null) {
-                _gameWindow.intensiveStore.board = _gameWindow.board;
-                _gameWindow.intensiveStore.reset();
-            }
-            
-            if (_gameWindow.moderateStore != null) {
-                _gameWindow.moderateStore.board = _gameWindow.board;
-                _gameWindow.moderateStore.reset();
-            }
-            
-            if (_gameWindow.silvoStore != null) {
-                _gameWindow.silvoStore.board = _gameWindow.board;
-                _gameWindow.silvoStore.reset();
-            }
-            
-            if (_gameWindow.viveroStore != null) {
-                _gameWindow.viveroStore.board = _gameWindow.board;
-                _gameWindow.viveroStore.reset();
-            }
 
             var ficha:Ficha;
             var token:ManantialesToken;
