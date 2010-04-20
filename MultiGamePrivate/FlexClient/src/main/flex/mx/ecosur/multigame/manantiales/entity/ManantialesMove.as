@@ -9,11 +9,21 @@ package mx.ecosur.multigame.manantiales.entity
         private var _badYear:Boolean;
 
         private var _mode:String;
+        
+        private var _swap:Ficha;
 
         public function ManantialesMove()
         {
             super();
             _badYear = false;
+        }
+        
+        public function get swap():Ficha {
+            return _swap;
+        }
+        
+        public function set swap(swap:Ficha):void {
+            _swap = swap;
         }
 
         public function get badYear():Boolean {

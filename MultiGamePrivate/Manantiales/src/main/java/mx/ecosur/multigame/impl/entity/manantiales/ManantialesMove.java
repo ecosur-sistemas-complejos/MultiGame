@@ -24,6 +24,8 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 public class ManantialesMove extends GridMove {
 	
 	private static final long serialVersionUID = 1L;
+	
+	private Ficha swap;
 
 	private TokenType type, replacementType;
 	
@@ -45,6 +47,20 @@ public class ManantialesMove extends GridMove {
 	public ManantialesMove (GridPlayer player, Ficha current, Ficha destination)
 	{
 		super (player, current, destination);
+	}
+
+	public ManantialesMove(ManantialesPlayer player, Ficha current, Ficha destination,
+			Ficha swap) {
+		super (player, current, destination);
+		this.swap = swap;
+	}
+
+	public Ficha getSwap() {
+		return swap;
+	}
+
+	public void setSwap(Ficha swap) {
+		this.swap = swap;
 	}
 
 	public TokenType getType () {

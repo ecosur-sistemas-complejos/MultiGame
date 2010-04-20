@@ -62,14 +62,15 @@ package mx.ecosur.multigame.manantiales
                 /* Remove current */
                 currentCell.token = null;
                 currentCell.reset();
+                /*
                 currentCell.token = new UndevelopedToken ();
                 currentCell.token.cell = current;
                 currentCell.reset();
+                */
                 
                 var destination:Ficha = Ficha (suggestion.move.destinationCell);
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         suggestion.move.destinationCell.column, suggestion.move.destinationCell.row));
-                    
                  //define origin
                 var startPoint:Point;
                 var startSize:Number;
@@ -206,14 +207,14 @@ package mx.ecosur.multigame.manantiales
                 /* Now remove the destination (only in the case of the suggestor) */
                 if (_controller._currentPlayer.color == suggestion.suggestor.color) {
                     boardCell =  _controller._gameWindow.board.getBoardCell(destination.column, destination.row);
-                    token = new UndevelopedToken();
-                    token.cell = destination;
+                    //token = new UndevelopedToken();
+                    //token.cell = destination;
                     /* Null out the location */
                     boardCell.token = null;
                     boardCell.reset();
                     /* Now reset with UndevelopedToken */
-                    boardCell.token = token;
-                    boardCell.reset();
+                    //boardCell.token = token;
+                    //boardCell.reset();
                 }
             }
             
@@ -280,10 +281,11 @@ package mx.ecosur.multigame.manantiales
                 /* Set the previous token to Undeveloped */
                 var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
                 var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
-                var undeveloped:UndevelopedToken = new UndevelopedToken();
-                undeveloped.cell = previous.cell;
-                boardCell.token = undeveloped;
-                boardCell.reset();
+                //var undeveloped:UndevelopedToken = new UndevelopedToken();
+                //undeveloped.cell = previous.cell;
+                //boardCell.token = undeveloped;
+                //boardCell.token = null;
+                //boardCell.reset();
                 
                 // Add previous to the drag source 
                 ds.addData(previous,"source");

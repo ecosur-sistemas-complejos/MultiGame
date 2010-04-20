@@ -144,8 +144,8 @@ end
 rule "intensive-replaces-moderate" 
     agenda-group "verify"
 when
-    $game : ManantialesGame (state == GameState.PLAY, $grid : grid, 
-        mode == Mode.CLASSIC || mode == Mode.SILVOPASTORAL)
+    $game : ManantialesGame (state == GameState.PLAY, $grid : grid,
+        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL) )
     $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED,
         type == TokenType.INTENSIVE_PASTURE, replacementType != TokenType.MODERATE_PASTURE)
 then
@@ -157,7 +157,7 @@ rule "silvopastoral-replaces-vivero"
     agenda-group "verify"
 when
     $game : ManantialesGame (state == GameState.PLAY, $grid : grid, 
-        mode == Mode.CLASSIC || mode == Mode.SILVOPASTORAL)
+        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL) )
     $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID,
         type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
 then
@@ -352,17 +352,54 @@ then
     messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
 end
 
-rule "execute-move"
+rule "execute-new-move"
     agenda-group "move"
     lock-on-active
 when 
     $game  : GridGame (state == GameState.PLAY)
-    $move  : ManantialesMove (status == MoveStatus.VERIFIED)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell == null,
+        swap == null)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
     modify ($game) { setGrid (modifiedGrid) }
     modify ($move) { setStatus (MoveStatus.MOVED) }
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "execute-shift-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : GridGame (state == GameState.PLAY)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
+        swap == null)
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    modifiedGrid.removeCell ((GridCell) $current);
+    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
+    modify ($game) { setGrid (modifiedGrid) }
+    modify ($move) { setStatus (MoveStatus.MOVED) }
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "execute-swap-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : GridGame (state == GameState.PLAY)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell !=null,
+        $swap : swap != null)
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    Ficha current = (Ficha) $move.getCurrentCell();
+    Ficha destination = (Ficha) $move.getDestinationCell();
+    $swap.setColumn (current.getColumn());
+    $swap.setRow (current.getRow());
+    modifiedGrid.updateCell (destination);
+    modifiedGrid.updateCell ($swap);
+    modify ($game) { setGrid (modifiedGrid) }
+    modify ($move) { setStatus (MoveStatus.MOVED)}
     messageSender.sendMoveComplete ($game, $move);
 end
 

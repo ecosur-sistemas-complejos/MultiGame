@@ -1346,6 +1346,57 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue ("Destination populated!", location == null);
         assertTrue ("Location does not remain!", grid.getLocation(move.getCurrentCell()) != null);
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testSwapSuggestionAccepted () throws InvalidMoveException, JMSException {
+        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.INTENSIVE_PASTURE);
+        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+
+        setIds(play, change);
+        ManantialesMove move = new ManantialesMove (alice, play);
+        game.move (move);
+
+        mockTopic.clear();
+
+        PuzzleSuggestion suggestion = new PuzzleSuggestion();
+        suggestion.setSuggestor(bob);
+        suggestion.setStatus(SuggestionStatus.UNEVALUATED);
+        move = new ManantialesMove (alice, play, change, play);
+        suggestion.setMove (move);
+        suggestion = (PuzzleSuggestion) game.suggest(suggestion);
+
+        assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
+        assertTrue (move.getStatus () == MoveStatus.UNVERIFIED);
+
+        suggestion.setStatus(SuggestionStatus.ACCEPT);
+        suggestion = (PuzzleSuggestion) game.suggest (suggestion);
+
+        ArrayList filter = new ArrayList();
+        List<Message> messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("MOVE_COMPLETE")) {
+                MockObjectMessage objMessage = (MockObjectMessage) message;
+                ManantialesMove temp = (ManantialesMove) objMessage.getObject();
+                if (temp.getDestinationCell().equals(change)) {
+                    move = temp;
+                    filter.add(message);
+                    break;
+                }
+            }
+        }
+
+        assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
+                MoveStatus.MOVED));
+        assertTrue(filter.size() > 0);
+
+        GameGrid grid = game.getGrid();
+        GridCell location =  grid.getLocation(move.getDestinationCell());
+        assertTrue ("Destination not populated!", location != null);
+        assertTrue ("Destination not populated!", location.equals(change));        
+        assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == play);
+        assertTrue ("Gamegrid does not contain both tokens (no swap)!", grid.getCells().size() == 2);
+    }    
         
     /**
     * @param borderType

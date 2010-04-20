@@ -14,7 +14,6 @@ package mx.ecosur.multigame.manantiales
     import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.Token;
-    import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
@@ -248,25 +247,38 @@ package mx.ecosur.multigame.manantiales
             
             if (evt.dragSource.hasFormat("token"))
             {
-                // define cell and destination
+                // define destination
                 var destToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("token"));
-                var boardCell:BoardCell = BoardCell(evt.currentTarget);
                 var destination:Ficha = Ficha(destToken.ficha);
                 
-                    /* Set the destination information to match where the token was dragged to */
-                destination.row = boardCell.row;
-                destination.column = boardCell.column;
-                destination.type = destToken.ficha.type;
-                
                 var move:ManantialesMove = new ManantialesMove();
-                move.destinationCell = destination;
                 move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _game.mode;
                 move.id = 0;
-            
+                
+                // define target cell
+                var targetCell:BoardCell = BoardCell(evt.currentTarget);
+                
                 var sourceToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("source"));
                 if (sourceToken != null)
                     move.currentCell = sourceToken.cell;
+                
+                var initiatorToken:ManantialesToken = ManantialesToken (evt.dragInitiator);
+                if (initiatorToken != null && initiatorToken.cell != null && 
+                    (initiatorToken.cell.column != 0 && initiatorToken.cell.row != 0)) 
+                {
+                    move.currentCell = initiatorToken.cell;
+                }
+                
+                if (targetCell.token.cell != null) {
+                    move.swap = Ficha (targetCell.token.cell);
+                }
+                
+                    /* Set the destination information to match where the token was dragged to */
+                destination.row = targetCell.row;
+                destination.column = targetCell.column;
+                destination.type = destToken.ficha.type;
+                move.destinationCell = destination;
                     
                 if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell == null) {
                         /* Regular Move */
@@ -276,6 +288,25 @@ package mx.ecosur.multigame.manantiales
                     call.operation = GAME_SERVICE_DO_MOVE_OP;
                     _executingMove = move;
                     
+                    switch (destToken.ficha.type) {
+                        case TokenType.FOREST:
+                            _gameWindow.forestStore.removeToken();
+                            break;
+                        case TokenType.INTENSIVE:
+                            _gameWindow.intensiveStore.removeToken();
+                            break;
+                        case TokenType.MODERATE:
+                            _gameWindow.moderateStore.removeToken();
+                            break;
+                        case TokenType.VIVERO:
+                            _gameWindow.viveroStore.removeToken();
+                            break;
+                        case TokenType.SILVOPASTORAL:
+                            _gameWindow.silvoStore.removeToken();
+                            break;
+                        default:
+                            break;
+                    }
                 } else if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell != null) 
                 {
                     if (! (move.currentCell.row == move.destinationCell.row && move.currentCell.column == move.destinationCell.column)) {
@@ -302,13 +333,13 @@ package mx.ecosur.multigame.manantiales
                         }
                         _suggestionHandler.makeSuggestion(move);
                     }
-                } 
-                
+                }
+
                 // animate
-                boardCell.reset();
-                
+                targetCell.reset();
+
                 var newToken:ManantialesToken;
-                
+
                 if (destToken is ForestToken) {
                     newToken = new ForestToken();
                 }
@@ -325,37 +356,14 @@ package mx.ecosur.multigame.manantiales
                     newToken = new SilvopastoralToken();
                 }
                 
-                /* Synchronize token stores */
-                if (!suggestion) {
-                    switch (destToken.ficha.type) {
-                        case TokenType.FOREST:
-                            _gameWindow.forestStore.removeToken();
-                            break;
-                        case TokenType.INTENSIVE:
-                            _gameWindow.intensiveStore.removeToken();
-                            break;
-                        case TokenType.MODERATE:
-                            _gameWindow.moderateStore.removeToken();
-                            break;
-                        case TokenType.VIVERO:
-                            _gameWindow.viveroStore.removeToken();
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            _gameWindow.silvoStore.removeToken();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                
                 newToken.cell = destination;
-                
+
                 /* all tokens have active listeners, action is regulated in call back */
                 addListeners (newToken);
                 _gameWindow.board.addToken(newToken);
-            }
-        }
-        
+                    }
+                }
+
         private function addListeners (token:ManantialesToken):void {
         	if(token.cell.color == _currentPlayer.color){
         		 token.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
@@ -747,9 +755,9 @@ package mx.ecosur.multigame.manantiales
                         }
                     }
                 }
-
+                
                     /* If PUZZLE, check and see if the move was suggested, and if so,
-                    remove the token connected to the move's "currentCell" -- thereby 
+                    remove the token connected to the move's "currentCell" -- thereby
                     completing the suggested move */
                 if (puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
@@ -1014,34 +1022,39 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
 
-            // restore previous token
-            for (var i:int = 0; i < _moves.length; i++) {
-                var possible:ManantialesMove = _moves [ _moves.length - i];
-                if (possible.destinationCell == move.currentCell) {
-                    var ficha:Ficha = Ficha (possible.destinationCell);
-                    switch (ficha.type) {
-                        case TokenType.INTENSIVE:
-                            boardCell.token = new IntensiveToken();
-                            break;
-                        case TokenType.MODERATE:
-                            boardCell.token = new ModerateToken();
-                            break;
-                        case TokenType.FOREST:
-                            boardCell.token = new ForestToken();
-                            break;
-                        case TokenType.VIVERO:
-                            boardCell.token = new ViveroToken();
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            boardCell.token = new SilvopastoralToken();
-                            break;
-                        default:
-                            boardCell.token = new UndevelopedToken();
-
+            // restore previous token, if determinable from move 
+            if (move.currentCell != null) {
+                for (var index:int = 1; index <= _moves.length; index++) {
+                    var possible:ManantialesMove = _moves [ _moves.length - index];
+                    if (possible.destinationCell == move.currentCell) {
+                        var ficha:Ficha = Ficha (possible.destinationCell);
+                        switch (ficha.type) {
+                            case TokenType.INTENSIVE:
+                                boardCell.token = new IntensiveToken();
+                                break;
+                            case TokenType.MODERATE:
+                                boardCell.token = new ModerateToken();
+                                break;
+                            case TokenType.FOREST:
+                                boardCell.token = new ForestToken();
+                                break;
+                            case TokenType.VIVERO:
+                                boardCell.token = new ViveroToken();
+                                break;
+                            case TokenType.SILVOPASTORAL:
+                                boardCell.token = new SilvopastoralToken();
+                                break;
+                            default:
+                                boardCell.token = new UndevelopedToken();
+                                break;
+    
+                        }
                     }
                 }
+            } else {
+                boardCell.token = new UndevelopedToken();
             }
-
+            
             boardCell.reset();
 
             //define motion animation
