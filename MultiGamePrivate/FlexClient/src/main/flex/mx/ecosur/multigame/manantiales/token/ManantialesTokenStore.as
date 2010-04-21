@@ -5,6 +5,8 @@ package mx.ecosur.multigame.manantiales.token
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesBoard;
+    import mx.ecosur.multigame.manantiales.ManantialesGameController;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 
@@ -13,14 +15,15 @@ package mx.ecosur.multigame.manantiales.token
         protected static const INITIAL_N_TOKENS:int = 6;
         
         protected var _board:ManantialesBoard;
+        protected var _controller:ManantialesGameController;
         protected var _tokenType:String;
         
-        public function get board ():ManantialesBoard {
-            return _board;
+        public function set controller (controller:ManantialesGameController):void {
+            _controller = controller;
         }
         
         public function set board (board:ManantialesBoard):void {
-            _board = board;
+           _board = board;
         }
 
         public function reset():void {
@@ -60,7 +63,13 @@ package mx.ecosur.multigame.manantiales.token
                 		boardCell.token = new UndevelopedToken ();
                 		addToken();
                 		
-                		// Here is where the move should be sent to the server
+                		var move:ManantialesMove = new ManantialesMove ();
+                		move.currentCell = token.ficha;
+                		move.player = _controller._currentPlayer;
+                		move.mode = _controller._game.mode;
+                		var call:Object;
+                        call = _controller._gameService.doMove(_controller._game, move);
+                        call.operation = "doMove";
                 	}
                 }
             }

@@ -65,24 +65,49 @@ public class RuleFunctions {
     }
 
     public static  int score (ManantialesPlayer player, ManantialesMove move) {
-        switch (move.getType()) {
+        if (move.getCurrentCell() != null) {
+            // decrement count of current
+            switch (move.getReplacementType()) {
             case MANAGED_FOREST:
-                player.setForested(player.getForested() +  1);
+                player.setForested(player.getForested() - 1);
                 break;
             case MODERATE_PASTURE:
-                player.setModerate(player.getModerate() + 1);
+                player.setModerate(player.getModerate() - 1);
                 break;
             case INTENSIVE_PASTURE:
-                player.setIntensive(player.getIntensive() + 1);
+                player.setIntensive(player.getIntensive() - 1);
                 break;
             case VIVERO:
-                player.setVivero(player.getVivero() + 1);
+                player.setVivero(player.getVivero() - 1);
                 break;
             case SILVOPASTORAL:
-                player.setSilvo(player.getSilvo() + 1);
+                player.setSilvo(player.getSilvo() - 1);
                 break;
             default:
                 break;
+            }
+        }
+        
+        if (move.getDestinationCell() != null) {
+	        switch (move.getType()) {
+	            case MANAGED_FOREST:
+	                player.setForested(player.getForested() +  1);
+	                break;
+	            case MODERATE_PASTURE:
+	                player.setModerate(player.getModerate() + 1);
+	                break;
+	            case INTENSIVE_PASTURE:
+	                player.setIntensive(player.getIntensive() + 1);
+	                break;
+	            case VIVERO:
+	                player.setVivero(player.getVivero() + 1);
+	                break;
+	            case SILVOPASTORAL:
+	                player.setSilvo(player.getSilvo() + 1);
+	                break;
+	            default:
+	                break;
+	        }
         }
 
         int forested = player.getForested() * 1;

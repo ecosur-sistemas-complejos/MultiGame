@@ -165,23 +165,42 @@ package mx.ecosur.multigame.manantiales
 
         private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {
             var ret:Boolean = false;
-            if (token.cell.color == boardCell.color) {
-                    ret = true;
-            } else if (boardCell.color == Color.UNKNOWN) {
-                switch (token.cell.color) {
-                    case Color.YELLOW:
-                        ret = (boardCell.column < 5 && boardCell.row < 5);
-                        break;
-                    case Color.PURPLE:
-                        ret = (boardCell.column < 5 && boardCell.row > 3);
-                        break;
-                    case Color.RED:
-                        ret = (boardCell.column > 3 && boardCell.row < 5);
-                        break;
-                    case Color.BLACK:
-                        ret = (boardCell.column > 3 && boardCell.row > 3);
-                        break;
-               }
+            if (_game.mode != Mode.BASIC_PUZZLE && _game.mode != Mode.SILVO_PUZZLE) {
+                if (boardCell.color == token.cell.color) {
+                        ret = true;
+                } else if (boardCell.color == Color.UNKNOWN) {
+                    switch (token.cell.color) {
+                        case Color.YELLOW:
+                            ret = (boardCell.column < 5 && boardCell.row < 5);
+                            break;
+                        case Color.PURPLE:
+                            ret = (boardCell.column < 5 && boardCell.row > 3);
+                            break;
+                        case Color.RED:
+                            ret = (boardCell.column > 3 && boardCell.row < 5);
+                            break;
+                        case Color.BLACK:
+                            ret = (boardCell.column > 3 && boardCell.row > 3);
+                            break;
+                   }
+                }
+            } else {
+                if (boardCell.token.cell == null) {
+                    switch (token.cell.color) {
+                        case Color.YELLOW:
+                            ret = (boardCell.column < 5 && boardCell.row < 5);
+                            break;
+                        case Color.PURPLE:
+                            ret = (boardCell.column < 5 && boardCell.row > 3);
+                            break;
+                        case Color.RED:
+                            ret = (boardCell.column > 3 && boardCell.row < 5);
+                            break;
+                        case Color.BLACK:
+                            ret = (boardCell.column > 3 && boardCell.row > 3);
+                            break;
+                   }
+                }
             }
 
             return ret;
@@ -270,9 +289,11 @@ package mx.ecosur.multigame.manantiales
                     move.currentCell = initiatorToken.cell;
                 }
                 
+                /*TODO: Rethink swap moves.  For now all actions are replacement based
                 if (targetCell.token.cell != null) {
                     move.swap = Ficha (targetCell.token.cell);
                 }
+                */
                 
                     /* Set the destination information to match where the token was dragged to */
                 destination.row = targetCell.row;
@@ -796,15 +817,25 @@ package mx.ecosur.multigame.manantiales
                 _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd + 1]);
                 return
             }
+            
+            var boardCell:RoundCell;
 
             //check that destination is free
-            var boardCell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
-                move.destinationCell.column, move.destinationCell.row));
-            if (!boardCell.token is UndevelopedToken ||
-                boardCell.token is IntensiveToken)
-            {
-                _gameWindow.moveViewer.selectedMove = move;
-                return;
+            if (move.destinationCell != null) {
+               boardCell = RoundCell(_gameWindow.board.getBoardCell(
+                    move.destinationCell.column, move.destinationCell.row));
+                if (!boardCell.token is UndevelopedToken ||
+                    boardCell.token is IntensiveToken)
+                {
+                    _gameWindow.moveViewer.selectedMove = move;
+                    return;
+                }
+            } else {
+                boardCell = RoundCell(_gameWindow.board.getBoardCell(
+                    move.currentCell.column, move.currentCell.row));
+                boardCell.token = new UndevelopedToken();
+                boardCell.token.cell = null;
+                boardCell.reset();
             }
 
             var current:Ficha;
@@ -813,7 +844,9 @@ package mx.ecosur.multigame.manantiales
                 current = Ficha (move.currentCell);
                 currentCell = RoundCell(_gameWindow.board.getBoardCell(current.column, current.row));
             }
-            var destination:Ficha = Ficha(move.destinationCell);
+            var destination:Ficha 
+            if (move.destinationCell != null) 
+                destination = Ficha(move.destinationCell);
 
             //define origin
             var startPoint:Point;
@@ -868,37 +901,55 @@ package mx.ecosur.multigame.manantiales
                 startPoint = currentCell.localToGlobal(startPoint);
                 startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
             }
+            
+            var endPoint:Point;
+            var endSize:Number;
 
             //define destination
-            var endPoint:Point = new Point(boardCell.width / 2, boardCell.height / 2);
-            var endSize:Number = _gameWindow.board.tokenSize;
-            endPoint = boardCell.localToGlobal(endPoint);
-            endPoint = _gameWindow.animateLayer.globalToLocal(endPoint);
+            if (destination != null) {
+                endPoint = new Point(boardCell.width / 2, boardCell.height / 2);
+                endSize = _gameWindow.board.tokenSize;
+                endPoint = boardCell.localToGlobal(endPoint);
+                endPoint = _gameWindow.animateLayer.globalToLocal(endPoint);
+            } else if (move.currentCell != null) {
+                var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(
+                    ManantialesPlayer(move.player));
+                endPoint = new Point(
+                    playerBtn.x + Color.getCellIconSize() / 2 + 5,
+                    playerBtn.y + Color.getCellIconSize() / 2 + 5);
+                endPoint = _gameWindow.playersViewer.localToGlobal(startPoint);
+                endPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
+                endSize = Color.getCellIconSize();
+            }
 
             //create new token
             var token:ManantialesToken;
-
-            switch (destination.type) {
-                case TokenType.FOREST:
-                   token = new ForestToken();
-                   break;
-                case TokenType.INTENSIVE:
-                   token = new IntensiveToken();
-                   break;
-                case TokenType.MODERATE:
-                   token = new ModerateToken();
-                   break;
-                case TokenType.SILVOPASTORAL:
-                   token = new SilvopastoralToken();
-                   break;
-                case TokenType.VIVERO:
-                   token = new ViveroToken();
-                   break;
-                default:
-                   break;
+            
+            if (destination != null) {
+                switch (destination.type) {
+                    case TokenType.FOREST:
+                       token = new ForestToken();
+                       break;
+                    case TokenType.INTENSIVE:
+                       token = new IntensiveToken();
+                       break;
+                    case TokenType.MODERATE:
+                       token = new ModerateToken();
+                       break;
+                    case TokenType.SILVOPASTORAL:
+                       token = new SilvopastoralToken();
+                       break;
+                    case TokenType.VIVERO:
+                       token = new ViveroToken();
+                       break;
+                    default:
+                       break;
+                }
+                token.cell = move.destinationCell;
+            } else if (move.currentCell != null) {
+                token = new UndevelopedToken();
             }
-
-            token.cell = move.destinationCell;
+                
             token.width = endSize;
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);

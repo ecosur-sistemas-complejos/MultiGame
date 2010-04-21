@@ -102,10 +102,12 @@ package mx.ecosur.multigame.manantiales
                 btn.label = " no move due to bad year condition.";	
             } else if (move.currentCell == null) {
                 btn.label = " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
-            } else if (move.currentCell != null) {
+            } else if (move.currentCell != null && move.destinationCell != null) {
                 btn.label = " from " + _board.getCellDescription (move.currentCell.column, move.currentCell.row) + 
                     " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
-            }
+            } else if (move.currentCell != null && move.destinationCell == null) {
+                btn.label = " removed " + _board.getCellDescription (move.currentCell.column, move.currentCell.row);
+            } 
             
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);

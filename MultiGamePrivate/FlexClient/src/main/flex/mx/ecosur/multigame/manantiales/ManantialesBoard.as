@@ -13,10 +13,11 @@
     {
     import flash.display.Shape;
     import flash.geom.Point;
-
+    
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.states.State;
 
     /**
@@ -60,6 +61,10 @@
 
         public function get center ():Point {
             return new Point (_centerX, _centerY);
+        }
+        
+        public function get currentPlayer ():GamePlayer {
+            return _currentPlayer;
         }
 
         public function set currentPlayer (currentPlayer:GamePlayer):void {

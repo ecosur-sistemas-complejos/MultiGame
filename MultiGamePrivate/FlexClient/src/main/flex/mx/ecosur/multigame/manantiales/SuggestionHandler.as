@@ -62,12 +62,10 @@ package mx.ecosur.multigame.manantiales
                 /* Remove current */
                 currentCell.token = null;
                 currentCell.reset();
-                /*
                 currentCell.token = new UndevelopedToken ();
                 currentCell.token.cell = current;
                 currentCell.reset();
-                */
-                
+
                 var destination:Ficha = Ficha (suggestion.move.destinationCell);
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         suggestion.move.destinationCell.column, suggestion.move.destinationCell.row));
@@ -281,11 +279,10 @@ package mx.ecosur.multigame.manantiales
                 /* Set the previous token to Undeveloped */
                 var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
                 var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
-                //var undeveloped:UndevelopedToken = new UndevelopedToken();
-                //undeveloped.cell = previous.cell;
-                //boardCell.token = undeveloped;
-                //boardCell.token = null;
-                //boardCell.reset();
+                var undeveloped:UndevelopedToken = new UndevelopedToken();
+                undeveloped.cell = previous.cell;
+                boardCell.token = undeveloped;
+                boardCell.reset();
                 
                 // Add previous to the drag source 
                 ds.addData(previous,"source");
