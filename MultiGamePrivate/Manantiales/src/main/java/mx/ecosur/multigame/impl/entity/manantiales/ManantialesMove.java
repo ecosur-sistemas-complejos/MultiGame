@@ -25,7 +25,7 @@ public class ManantialesMove extends GridMove {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Ficha swap;
+	private boolean swap;
 
 	private TokenType type, replacementType;
 	
@@ -37,11 +37,11 @@ public class ManantialesMove extends GridMove {
 		super();
 		badYear = false;
 		premium = false;
+		swap = false;
 	}
 	
 	public ManantialesMove (GridPlayer player, Ficha destination) {
 		super (player, destination);
-		type = destination.getType();
 	}
 	
 	public ManantialesMove (GridPlayer player, Ficha current, Ficha destination)
@@ -50,16 +50,16 @@ public class ManantialesMove extends GridMove {
 	}
 
 	public ManantialesMove(ManantialesPlayer player, Ficha current, Ficha destination,
-			Ficha swap) {
+			Boolean swap) {
 		super (player, current, destination);
 		this.swap = swap;
 	}
 
-	public Ficha getSwap() {
+	public boolean isSwap() {
 		return swap;
 	}
 
-	public void setSwap(Ficha swap) {
+	public void setSwap(boolean swap) {
 		this.swap = swap;
 	}
 

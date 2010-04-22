@@ -4,6 +4,7 @@ package mx.ecosur.multigame.manantiales
 {
     import flash.display.DisplayObject;
     import flash.events.MouseEvent;
+    import flash.events.TimerEvent;
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.Timer;
@@ -36,6 +37,8 @@ package mx.ecosur.multigame.manantiales
         
         private var _animations:int;
         
+        public var _mySuggestion:Suggestion;
+        
         public var _currentSuggestions:Dictionary;
         
         public var _timer:Timer;
@@ -60,15 +63,14 @@ package mx.ecosur.multigame.manantiales
                         current.column, current.row));
                         
                 /* Remove current */
-                currentCell.token = null;
-                currentCell.reset();
                 currentCell.token = new UndevelopedToken ();
                 currentCell.token.cell = current;
                 currentCell.reset();
-
+                
                 var destination:Ficha = Ficha (suggestion.move.destinationCell);
                 var boardCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         suggestion.move.destinationCell.column, suggestion.move.destinationCell.row));
+                        
                  //define origin
                 var startPoint:Point;
                 var startSize:Number;
@@ -126,18 +128,39 @@ package mx.ecosur.multigame.manantiales
             }
             
         }
+        
+        public function timerHandler (evt:TimerEvent):void {
+            if (_mySuggestion != null) {
+                animateSuggestion (_mySuggestion);
+            }
+            else {
+                _timer.stop();
+            }
+        }
 
         public function addSuggestion (suggestion:Suggestion):void {
+            _mySuggestion = suggestion;
+            
+            /*
+            if (_timer == null) {
+                _timer = new Timer(2000, _animations);
+                _timer.addEventListener("timer", timerHandler);
+            }
+            */
+
             var move:ManantialesMove = suggestion.move;
             
             /* Check for an unintended suggestion */
-            if (move.currentCell == move.destinationCell)
+            if (move.currentCell.column == move.destinationCell.column && move.currentCell.row == move.destinationCell.row)
                 return;
             
             /* Animate suggestion */
             if (_currentSuggestions [ move.player ] == null)
                 _currentSuggestions [move.player] = suggestion;
             animateSuggestion (suggestion);
+            if (_timer != null && !_timer.running)
+                _timer.start();
+            
 
             if (move.player.color == _player.color) {
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */
@@ -205,19 +228,18 @@ package mx.ecosur.multigame.manantiales
                 /* Now remove the destination (only in the case of the suggestor) */
                 if (_controller._currentPlayer.color == suggestion.suggestor.color) {
                     boardCell =  _controller._gameWindow.board.getBoardCell(destination.column, destination.row);
-                    //token = new UndevelopedToken();
-                    //token.cell = destination;
-                    /* Null out the location */
-                    boardCell.token = null;
+                    token = new UndevelopedToken();
+                    token.cell = destination;
+                    /* Reset with UndevelopedToken */
+                    boardCell.token = token;
                     boardCell.reset();
-                    /* Now reset with UndevelopedToken */
-                    //boardCell.token = token;
-                    //boardCell.reset();
                 }
             }
             
             /* Always remove the suggestion from the dictionary */
             _currentSuggestions [suggestion.move.player.registrant] = null;
+            if (suggestion == _mySuggestion)
+                _mySuggestion = null;
         }
         
         public function endSuggestion(evt:DragEvent):void{
@@ -228,6 +250,7 @@ package mx.ecosur.multigame.manantiales
                 var token:ManantialesToken = ManantialesToken(evt.currentTarget);
                 token.selected = false;
             }
+            
         }
 
         public function endRemoveSuggestion (event:EffectEvent):void {
@@ -240,15 +263,34 @@ package mx.ecosur.multigame.manantiales
             PopUpManager.removePopUp(_alert);
             var suggestion:Suggestion = Suggestion (event.data);
             suggestion.status = SuggestionStatus.ACCEPT;
-            var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
-            call.operation = "makeSuggestion";
+            send(suggestion);
         }
 
         public function reject(event:DynamicEvent):void {
             PopUpManager.removePopUp(_alert);
             var suggestion:Suggestion = Suggestion (event.data);
-            var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
-            call.operation = "makeSuggestion";
+            suggestion.status = SuggestionStatus.REJECT;
+            send (suggestion);
+        }
+        
+        public function send (suggestion:Suggestion):void {
+            if (suggestion != null) {
+                var call:Object = _controller._gameService.makeSuggestion (this._controller._game, suggestion);
+                call.operation = "makeSuggestion";
+            }
+            _mySuggestion = null;
+            _alert = null;
+        }
+        
+        public function clearSuggestions():void {
+            if (_mySuggestion != null) {
+                /* Only clears your suggestion (if there) and removes dialog */
+                if (_alert != null)
+                    PopUpManager.removePopUp(_alert);
+                _mySuggestion.status = SuggestionStatus.REJECT;
+                send (_mySuggestion);
+                _mySuggestion = null;
+            }
         }
         
         private function freePlayer (color:String):Boolean {

@@ -358,7 +358,7 @@ rule "execute-new-move"
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell == null,
-        swap == null)
+        swap != true)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
@@ -373,7 +373,7 @@ rule "execute-replace-move"
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
-        destinationCell != null, swap == null)
+        destinationCell != null, swap != true)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ((GridCell) $current);
@@ -389,7 +389,7 @@ rule "execute-shift-move"
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
-        destinationCell == null, swap == null)
+        destinationCell == null, swap != true)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ((GridCell) $current);
@@ -404,18 +404,30 @@ rule "execute-swap-move"
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell !=null,
-        $swap : swap != null)
+        destinationCell != null, swap == true)
 then
     GameGrid modifiedGrid = $game.getGrid();
     Ficha current = (Ficha) $move.getCurrentCell();
     Ficha destination = (Ficha) $move.getDestinationCell();
-    $swap.setColumn (current.getColumn());
-    $swap.setRow (current.getRow());
+    #Swap coumn and row
+    Ficha temp = new Ficha (destination.getColumn(), destination.getRow(), destination.getColor(),
+        destination.getType());
+    destination.setColumn(current.getColumn());
+    destination.setRow (current.getRow());
+    current.setColumn(temp.getColumn());
+    current.setRow(temp.getRow());
+    #Update Grid and notify 
     modifiedGrid.updateCell (destination);
-    modifiedGrid.updateCell ($swap);
+    modifiedGrid.updateCell (current);
     modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.MOVED)}
-    messageSender.sendMoveComplete ($game, $move);
+    #We construct two moves to broadcast and handle the swap
+    ManantialesMove swap1 = new ManantialesMove($move.getPlayer(), destination);
+    ManantialesMove swap2 = new ManantialesMove($move.getPlayer(), current);
+    swap1.setStatus(MoveStatus.MOVED);
+    swap2.setStatus(MoveStatus.MOVED);
+    retract ($move);
+    messageSender.sendMoveComplete ($game, swap1);
+    messageSender.sendMoveComplete ($game, swap2);
 end
 
 rule "territory-deforested"
@@ -509,7 +521,7 @@ end
 rule "score"
     agenda-group "evaluate"
     no-loop true
-    salience -1
+    salience -5
 when
     not PuzzleSuggestion ()
     $game  : GridGame (state == GameState.PLAY)
