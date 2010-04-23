@@ -47,6 +47,11 @@
                 _suggestionHandler = suggestionHandler;
             }
             
+            [Binadble]
+            public function get controller ():ManantialesGameController {
+                return _controller;
+            }
+            
             [Bindable]
             public function get currentGame ():ManantialesGame {
                 return _currentGame;
@@ -158,21 +163,21 @@
             <mx:AddChild relativeTo="{leftBox}">
                 <mx:Panel title="Managed Forest" width="100%" id="mfp">
                     <token:ForestTokenStore id="forestStore"
-                        currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{_controller}" 
+                        currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                         width="100%" creationComplete="forestStore.reset()"/>
                 </mx:Panel>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                 <mx:Panel title="Moderate Grazing" width="100%" id="mgp">
                    <token:ModerateTokenStore id="moderateStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{_controller}" 
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                     width="100%" creationComplete="moderateStore.reset()"/>
                 </mx:Panel>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                <mx:Panel title="Intensive Grazing" width="100%" id="igp">
                 <token:IntensiveTokenStore id="intensiveStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{_controller}" 
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                     width="100%" creationComplete="intensiveStore.reset()"/>
                </mx:Panel>
             </mx:AddChild>
@@ -184,14 +189,14 @@
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
                <token:ViveroTokenStore id="viveroStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{_controller}" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                 width="100%" creationComplete="viveroStore.reset()"/>
             </mx:Panel>
            </mx:AddChild>
            <mx:AddChild relativeTo="{leftBox}">
             <mx:Panel title="Silvopastoral Active" width="100%" id="sap">
                <token:SilvopastoralTokenStore id="silvoStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{_controller}" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                 width="100%" creationComplete="silvoStore.reset()"/>
             </mx:Panel>
            </mx:AddChild>

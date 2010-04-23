@@ -301,14 +301,11 @@ public class GameService {
         }
     }
 
-    public List<GridMove> getMoves(int gameId) {
+    public Set<GridMove> getMoves(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
-        List<GridMove> moves = new ArrayList<GridMove>();
-        Collection<Move> boardMoves = sharedBoard.getMoves(gameId);
-        for (Move move : boardMoves) {
-            moves.add((GridMove) move.getImplementation());
-        }
-        return moves;
+        Game game = sharedBoard.getGame(gameId);
+        GridGame impl = (GridGame) game.getImplementation();
+        return impl.getMoves();
     }
 
     public GridMove updateMove(GridMove move) {

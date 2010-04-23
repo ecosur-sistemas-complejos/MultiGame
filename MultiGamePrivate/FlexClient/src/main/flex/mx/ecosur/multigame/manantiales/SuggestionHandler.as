@@ -11,6 +11,7 @@ package mx.ecosur.multigame.manantiales
     
     import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
+    import mx.controls.Alert;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
@@ -63,6 +64,8 @@ package mx.ecosur.multigame.manantiales
                         current.column, current.row));
                         
                 /* Remove current */
+                currentCell.token = null;
+                currentCell.reset();
                 currentCell.token = new UndevelopedToken ();
                 currentCell.token.cell = current;
                 currentCell.reset();
@@ -222,6 +225,8 @@ package mx.ecosur.multigame.manantiales
                 
                 var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(
                         ficha.column, ficha.row);
+                boardCell.token = null;
+                boardCell.reset();
                 boardCell.token = token;
                 boardCell.reset();
                 
@@ -229,8 +234,9 @@ package mx.ecosur.multigame.manantiales
                 if (_controller._currentPlayer.color == suggestion.suggestor.color) {
                     boardCell =  _controller._gameWindow.board.getBoardCell(destination.column, destination.row);
                     token = new UndevelopedToken();
-                    token.cell = destination;
-                    /* Reset with UndevelopedToken */
+                    /* Reset */
+                    boardCell.token = null;
+                    boardCell.reset();
                     boardCell.token = token;
                     boardCell.reset();
                 }
@@ -243,14 +249,26 @@ package mx.ecosur.multigame.manantiales
         }
         
         public function endSuggestion(evt:DragEvent):void{
-            
             // unselect cell
             if (evt.dragSource.hasFormat("token")){
                 _isMoving = false;
-                var token:ManantialesToken = ManantialesToken(evt.currentTarget);
-                token.selected = false;
+                if (evt.currentTarget != null) {
+                    var token:ManantialesToken = ManantialesToken(evt.currentTarget);
+                    token.selected = false;
+                } 
             }
             
+            // remove dragged image
+            if (evt.dragSource is ManantialesToken) {
+                var previous:ManantialesToken = ManantialesToken (evt.dragSource);
+                if (previous != null && previous.ficha.column > 0 && previous.ficha.row > 0) {
+                    var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
+                    var undeveloped:UndevelopedToken = new UndevelopedToken();
+                    undeveloped.cell = previous.cell;
+                    boardCell.token = undeveloped;
+                    boardCell.reset();
+                }
+            }
         }
 
         public function endRemoveSuggestion (event:EffectEvent):void {
@@ -320,12 +338,7 @@ package mx.ecosur.multigame.manantiales
                 
                 /* Set the previous token to Undeveloped */
                 var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
-                var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
-                var undeveloped:UndevelopedToken = new UndevelopedToken();
-                undeveloped.cell = previous.cell;
-                boardCell.token = undeveloped;
-                boardCell.reset();
-                
+
                 // Add previous to the drag source 
                 ds.addData(previous,"source");
                 

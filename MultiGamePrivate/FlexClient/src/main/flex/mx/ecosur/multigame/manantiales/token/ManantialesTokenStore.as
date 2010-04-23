@@ -58,7 +58,7 @@ package mx.ecosur.multigame.manantiales.token
                 if(token.type == this._tokenType && token.cell.color == _currentPlayer.color){
                 	
                 	/* Check that move is from the board and not the token store */
-                	if(token.cell){
+                	if(token.cell && token.cell.column > 0 && token.cell.row > 0){
                 		var boardCell:BoardCell = _board.getBoardCell(token.cell.column, token.cell.row);
                 		boardCell.token = new UndevelopedToken ();
                 		addToken();

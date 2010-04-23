@@ -220,17 +220,7 @@ package mx.ecosur.multigame.manantiales
                 DragManager.doDrag(token, ds, evt, dragImage);
                 _isMoving = true;
                 
-                // Remove previous token
-                //TODO need to update for SWAP moves
                 var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
-                if (previous != null && previous.ficha.column > 0 && previous.ficha.row > 0) {
-                    var boardCell:BoardCell = _gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
-                    var undeveloped:UndevelopedToken = new UndevelopedToken();
-                    undeveloped.cell = previous.cell;
-                    boardCell.token = undeveloped;
-                    boardCell.reset();
-                }
-
                 // Add previous to the drag source
                 ds.addData(previous,"source");
 
@@ -243,6 +233,18 @@ package mx.ecosur.multigame.manantiales
                 _isMoving = false;
                 var token:ManantialesToken = ManantialesToken(evt.currentTarget);
                 token.selected = false;
+                
+                // remove dragged image
+                if (evt.dragSource is ManantialesToken) {
+                    var previous:ManantialesToken = ManantialesToken (evt.dragSource);
+                    if (previous != null && previous.ficha.column > 0 && previous.ficha.row > 0) {
+                        var boardCell:BoardCell = _gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
+                        var undeveloped:UndevelopedToken = new UndevelopedToken();
+                        undeveloped.cell = previous.cell;
+                        boardCell.token = undeveloped;
+                        boardCell.reset();
+                    }
+                }
             }
         }
 
