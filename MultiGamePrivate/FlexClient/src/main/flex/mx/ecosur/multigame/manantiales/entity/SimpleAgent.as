@@ -6,7 +6,19 @@ package mx.ecosur.multigame.manantiales.entity {
         "mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent")]
     public class SimpleAgent extends ManantialesPlayer {
 
-        //placeholder for Flex 
+        public var _type:String
+
+        public function SimpleAgent() {
+            super();
+        }
+
+        public function get type ():String {
+            return _type;
+        }
+
+        public function set type (type:String):void {
+            _type = type;
+        }
 
     }
 }

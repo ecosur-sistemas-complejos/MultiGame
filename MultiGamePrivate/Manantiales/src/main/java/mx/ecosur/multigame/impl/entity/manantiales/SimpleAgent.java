@@ -8,8 +8,10 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.Game;
@@ -23,6 +25,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.persistence.Entity;
+import java.awt.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -37,18 +41,29 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 	@EJB
     private SharedBoardLocal sharedBoard;
 
+    private AgentType type;
+
     private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
     public SimpleAgent() {
         super();        
     }
 
-    public SimpleAgent(GridRegistrant player, Color favoriteColor) {
+    public SimpleAgent(GridRegistrant player, Color favoriteColor, AgentType type) {
         super (player, favoriteColor);
+        this.type = type;
     }
 
     public void initialize() {
         // do nothing
+    }
+
+    public AgentType getType() {
+        return type;
+    }
+
+    public void setType(AgentType type) {
+        this.type = type;
     }
 
     public void processEvent(Message message) {
@@ -89,74 +104,118 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
     /* Simply returns a simple move response.  No suggestions are made by the Agent */
     public MoveImpl determineNextMove(GameImpl impl) {
-        logger.info ("SimpleAgent creating new move");
         ManantialesMove ret = new ManantialesMove();
+        ret.setPlayer(this);
+
         ManantialesGame game = (ManantialesGame) impl;
-        Set<GridCell> cells = game.getGrid().getCells();
-        for (GridCell cell : cells) {
-            Ficha ficha = (Ficha) cell;
-            if (ficha.getType().equals(TokenType.UNDEVELOPED)) {
-                Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                if (this.getForested() < 6) {
-                    destination.setType (TokenType.MANAGED_FOREST);
-                    ret.setDestinationCell(ficha);
-                    break;
-                } else if (this.getModerate() < 6) {
-                    destination.setType (TokenType.MODERATE_PASTURE);
-                    ret.setDestinationCell(ficha);
-                    break;
-                }
+        Set<GridCell> filter = new HashSet<GridCell>();
+        for (GridCell cell : game.getGrid().getCells()) {
+            if ( cell.getColor().equals(this.getColor()) ) {
+                filter.add (cell);
             }
+
         }
 
-        /* Search for Moderate Pastures to upgrade */
-        if (ret.getDestinationCell() == null) {
-            for (GridCell cell : cells) {
+        /* If the player has cells on its grid, attempt to upgrade those cells */
+        if (filter.size() > 0) {
+            for (GridCell cell : filter) {
                 Ficha ficha = (Ficha) cell;
-                /* Converte Moderate to Intensive */
-                if (ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
+                if (ficha.getType().equals(TokenType.UNDEVELOPED)) {
                     Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                    destination.setType(TokenType.INTENSIVE_PASTURE);
-                    ret.setCurrentCell (ficha);
-                    ret.setDestinationCell(destination);
-                    break;
-                } else if (ficha.getType().equals(TokenType.MANAGED_FOREST)) {
-                    Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                    destination.setType(TokenType.MODERATE_PASTURE);
-                    ret.setCurrentCell (ficha);
-                    ret.setDestinationCell(destination);
-                    break;
+                    if (this.getForested() < 6) {
+                        destination.setType (TokenType.MANAGED_FOREST);
+                        ret.setDestinationCell(ficha);
+                        break;
+                    } else if (this.getModerate() < 6) {
+                        destination.setType (TokenType.MODERATE_PASTURE);
+                        ret.setDestinationCell(ficha);
+                        break;
+                    }
+                }
+            }
+
+            /* Search for Moderate Pastures to upgrade */
+            if (ret.getDestinationCell() == null) {
+                for (GridCell cell : filter) {
+                    Ficha ficha = (Ficha) cell;
+                    /* Convert Moderate to Intensive */
+                    if (ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
+                        Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                        destination.setType(TokenType.INTENSIVE_PASTURE);
+                        ret.setCurrentCell (ficha);
+                        ret.setDestinationCell(destination);
+                        break;
+                    } else if (ficha.getType().equals(TokenType.MANAGED_FOREST)) {
+                        Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                        destination.setType(TokenType.MODERATE_PASTURE);
+                        ret.setCurrentCell (ficha);
+                        ret.setDestinationCell(destination);
+                        break;
+                    }
                 }
             }
         }
 
+        /* Suggest a brand new move */
         if (ret.getDestinationCell() == null) {
-            try {
-                ManantialesGame clone = (ManantialesGame) game.clone();
-                boolean currentTurn = this.isTurn();
+            GameGrid grid = game.getGrid();
+            for (int col = 0; col < game.getColumns() && ret.getDestinationCell () == null; col++) {
+                for (int row = 0; row < game.getRows() && ret.getDestinationCell() == null; row++) {
+                    if (possibleLocation (col + 1, row + 1)) {
+                        GridCell possible = new GridCell (col + 1, row + 1, getColor());
+                        GridCell existing = grid.getLocation (possible);
+                        if (existing == null) {
+                            Ficha dest = null;
+                            boolean basic = game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(
+                                    Mode.BASIC_PUZZLE);
 
-                for (int y = 0; y < game.getColumns(); y++) {
-                    for (int x = 0; x < game.getRows(); x++) {
-                        Ficha attempt = new Ficha (y, x, getColor(), TokenType.MANAGED_FOREST);
-                        this.setTurn(currentTurn);
-                        try {
-                            ManantialesMove move = (ManantialesMove) clone.move(new ManantialesMove(this, attempt));
-                            if (move.getStatus() == MoveStatus.EVALUATED) {
-                                move.setStatus(MoveStatus.UNVERIFIED);
-                                this.setTurn(currentTurn);
-                                ret = move;
-                                break;
+                            /* Add a new ficha to the move based upon the following order */
+                            if (this.getForested() < 6) {
+                                dest = new Ficha (col + 1, row + 1, getColor(), TokenType.MANAGED_FOREST);
+                            } else if (this.getModerate() < 6) {
+                                dest = new Ficha (col + 1, row + 1, getColor(), TokenType.MODERATE_PASTURE);
+                            } else if (!basic) {
+                                if (this.getVivero() < 6) {
+                                    dest = new Ficha (col + 1, row + 1, getColor(), TokenType.VIVERO);
+                                }
                             }
-                        } catch (InvalidMoveException e) {
-                            continue;         
+
+                            if (dest != null)
+                                ret.setDestinationCell (dest);
+                            else
+                                throw new RuntimeException ("Unable to construct destination for move!");
                         }
                     }
                 }
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+        }
+
+        logger.info ("Agent suggests: " + ret);
+
+        return ret;
+    }
+
+    private boolean possibleLocation (int column, int row) {
+        boolean ret;
+
+        switch (getColor()) {
+            case YELLOW:
+                ret = (column < 5 && row < 5);
+                break;
+            case PURPLE:
+                ret = (column < 5 && row > 3);
+                break;
+            case RED:
+                ret = (column > 3 && row < 5);
+                break;
+            case BLACK:
+                ret = column > 3 && row > 3;
+                break;
+            default:
+                ret = false;
         }
 
         return ret;
     }
+
 }

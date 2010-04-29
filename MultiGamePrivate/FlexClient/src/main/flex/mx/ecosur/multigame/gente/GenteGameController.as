@@ -197,6 +197,7 @@ import mx.messaging.messages.ErrorMessage;
          * @param players the new list of players
          */
         public function updatePlayers(game:GenteGame):void{
+
             /* Force compilation of StrategyPlayer in .swf file - ugly code */
             var strategyPlayer:StrategyPlayer;
 

@@ -25,6 +25,7 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
     import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
@@ -84,6 +85,9 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+
+        /* Force compilation of SimplePlayer in .swf file - ugly code */
+        var _unUsed:SimpleAgent;
         
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)

@@ -24,6 +24,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
+import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridGame;
@@ -75,7 +76,8 @@ public class GameService {
         return registrar;
     }
 
-    public GridRegistrant login (String name) {
+    public GridRegistrant login (String name, String password) {
+
         GridRegistrant gr = new GridRegistrant (name);
         RegistrarRemote registrar = this.getRegistrar();
         Registrant registrant = registrar.register(new Registrant (gr));
@@ -128,8 +130,10 @@ public class GameService {
         GridGame game = ret.getGame();
         if (game instanceof ManantialesGame) {
             ManantialesGame m = (ManantialesGame) game;
-            if (mode != null && mode.length() > 0)
-                m.setMode(Mode.valueOf(mode));
+            if (mode != null && mode.length() > 0) {
+                Mode modality = Mode.valueOf(mode);
+                m.setMode(modality.decrement());
+            } 
             ret.setGame(game);
         }
 
@@ -207,7 +211,8 @@ public class GameService {
                 model = registrar.registerPlayer(new Game(game), new Registrant (registrant));
                 for (int i = 0; i < strategies.length; i++) {
                     GridRegistrant robot = new GridRegistrant (strategies [ i ] + "-" + (i + 1));
-                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN);
+                    AgentType type = AgentType.valueOf(strategies [ i ]);
+                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, type);
                     model = registrar.registerAgent (model, new Agent (agent));
                 }
             }
@@ -231,7 +236,7 @@ public class GameService {
     }
 
     public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
-        String gameTypeStr, String [] strategies, String mode)
+        String gameTypeStr, String mode, String [] strategies)
     {
 
         ServiceGameEvent ret = startNewGameWithAI (registrant, preferredColor, gameTypeStr, strategies);

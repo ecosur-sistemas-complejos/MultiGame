@@ -34,4 +34,23 @@ public enum Mode {
 
         return ret;
     }
+
+    public Mode decrement() {
+        Mode ret = null;
+
+        switch (this) {
+            case BASIC_PUZZLE:
+                ret = CLASSIC;
+                break;
+            case SILVOPASTORAL:
+                ret = BASIC_PUZZLE;
+                break;
+            case SILVO_PUZZLE:
+                ret = SILVOPASTORAL;
+                break;
+        }
+
+        return ret;
+
+    }
 }

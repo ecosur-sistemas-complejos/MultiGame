@@ -23,8 +23,10 @@
         if (robots.selected) {
             strategies = [ player2.selectedItem.data,
                 player3.selectedItem.data, player4.selectedItem.data ];
-            if (gameType.selectedItem.data == "MANANTIALES")
-                gameService.startNewGameWithAI (player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data);
+            if (gameType.selectedItem.data == "MANANTIALES") {
+                
+                gameService.startNewGameWithAI (player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data, strategies);
+            }
             else
                 gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
         } else {
@@ -40,7 +42,7 @@
         var gamePlayer:GamePlayer;
         for (var i:Number = 0; i < sge.game.players.length; i++) {
             if (sge.game.players[i].registrant.id == player.id) {
-                gamePlayer = sge.game.players [ i ];
+                gamePlayer = GamePlayer (sge.game.players [ i ]);
                 break;
             }
         }
@@ -88,7 +90,6 @@
 <mx:ArrayCollection id="genteAgentList">
     <mx:Object label="Simple" data="SIMPLE"/>
     <mx:Object label="Blocker" data="BLOCKER"/>
-    <mx:Object label="Human" data="HUMAN"/>
 </mx:ArrayCollection>
 <!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">
@@ -96,10 +97,10 @@
 </mx:ArrayCollection>
 <!-- Manantiales Modalities -->
 <mx:ArrayCollection id="manModes">
-    <mx:Object label="Classic" data=""/>
-    <mx:Object label="Puzzle" data="CLASSIC"/>
-    <mx:Object label="Silvopastoral" data="BASIC_PUZZLE"/>
-    <mx:Object label="Advanced Puzzle" data="SILVOPASTORAL"/>
+    <mx:Object label="Classic" data="CLASSIC" />
+    <mx:Object label="Puzzle" data="BASIC_PUZZLE" />
+    <mx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
+    <mx:Object label="Adavanced Puzzle" data="SILVO_PUZZLE"/>
 </mx:ArrayCollection>
 
 <mx:ArrayCollection id="gameList">

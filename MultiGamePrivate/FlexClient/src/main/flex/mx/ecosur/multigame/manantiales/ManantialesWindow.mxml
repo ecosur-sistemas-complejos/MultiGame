@@ -19,6 +19,7 @@
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
             import mx.ecosur.multigame.manantiales.enum.Mode;
             
             private var _controller:ManantialesGameController;
@@ -26,6 +27,9 @@
             protected var _currentGame:ManantialesGame;
             private var _helpPanel:HelpPanel; 
             private var _suggestionHandler:SuggestionHandler;
+
+            /* for compilation into the swf */
+            var Unused:SimpleAgent;
             
             public function init():void {
                 if (_controller == null)

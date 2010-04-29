@@ -4,6 +4,8 @@ import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.enums.manantiales.ManantialesEvent;
 import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 import javax.jms.*;
 import java.io.Serializable;
@@ -13,6 +15,10 @@ import java.io.Serializable;
  */
 public class ManantialesMessageSender extends MessageSender {
 
+    @Override
+    public void sendMoveComplete(GameImpl game, MoveImpl move) {
+        super.sendMoveComplete(game, move);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
     @SuppressWarnings("unchecked")
 	public void sendMessage(int gameId, Enum event, Serializable body)

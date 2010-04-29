@@ -11,8 +11,6 @@
 
 package mx.ecosur.multigame.gente.entity {
     
-    import mx.ecosur.multigame.gente.entity.GentePlayer;
-    
     /**
      * Represents a server side StrategyPlayer object
      */
