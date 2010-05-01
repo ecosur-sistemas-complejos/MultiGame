@@ -12,6 +12,7 @@
 
             private var _suggestion:Suggestion;
 
+            [Bindable]
             [Embed(source='/assets/icons.swf#thumbsUp')]
             private var thumbsUp:Class
 

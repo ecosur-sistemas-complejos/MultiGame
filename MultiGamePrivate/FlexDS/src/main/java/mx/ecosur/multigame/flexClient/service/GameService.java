@@ -76,7 +76,7 @@ public class GameService {
         return registrar;
     }
 
-    public GridRegistrant login (String name, String password) {
+    public GridRegistrant login (String name) {
 
         GridRegistrant gr = new GridRegistrant (name);
         RegistrarRemote registrar = this.getRegistrar();

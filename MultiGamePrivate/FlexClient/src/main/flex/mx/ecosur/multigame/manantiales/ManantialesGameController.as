@@ -87,7 +87,7 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 
         /* Force compilation of SimplePlayer in .swf file - ugly code */
-        var _unUsed:SimpleAgent;
+        private var _unUsed:SimpleAgent;
         
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)

@@ -28,9 +28,12 @@
                     Alert.show("Please enter your password", "Data incomplete");
                     passWord.setFocus();
                 }
-                
-                securityService.setCredentials(txtName.text, passWord.text);
-                securityService.send();
+
+                var params:Object = new Object();
+                params.data ("j_username", txtName.text);
+                params.data ("j_password", passWord.text);
+                securityService.method = "POST";
+                securityService.send(params);
             }
             
             private function resultHandler(event:ResultEvent):void{

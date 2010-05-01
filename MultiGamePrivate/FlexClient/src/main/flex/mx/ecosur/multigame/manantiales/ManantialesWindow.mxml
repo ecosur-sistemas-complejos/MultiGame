@@ -27,9 +27,6 @@
             protected var _currentGame:ManantialesGame;
             private var _helpPanel:HelpPanel; 
             private var _suggestionHandler:SuggestionHandler;
-
-            /* for compilation into the swf */
-            var Unused:SimpleAgent;
             
             public function init():void {
                 if (_controller == null)
