@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="How to play GENTE" creationComplete="init()">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="Help" creationComplete="init()">
 	<mx:Metadata>
         [Event(name="close")]
     </mx:Metadata>

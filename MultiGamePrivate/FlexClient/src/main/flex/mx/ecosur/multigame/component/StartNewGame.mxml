@@ -9,6 +9,7 @@
     <![CDATA[
     import mx.ecosur.multigame.event.GameEvent;
     import mx.ecosur.multigame.event.ServiceGameEvent;
+    import mx.managers.CursorManager;    
     import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.controls.Alert;
@@ -19,6 +20,8 @@
     public var player:Registrant;
 
     private function doRegister(eventObj:MouseEvent):void {
+        CursorManager.setBusyCursor();
+        
         var strategies:Array;
         if (robots.selected) {
             strategies = [ player2.selectedItem.data,

@@ -20,50 +20,32 @@
             private function doLogin(eventObj:MouseEvent):void {
 
                 if (StringUtil.trim(txtName.text).length == 0){
-                    Alert.show("Please insert your name", "Data incomplete");
+                    Alert.show("Please insert your player name", "Data incomplete");
                     txtName.setFocus();
                 }
 
-                else if (StringUtil.trim(passWord.text).length == 0) {
-                    Alert.show("Please enter your password", "Data incomplete");
-                    passWord.setFocus();
-                }
-
-                var params:Object = new Object();
-                params.data ("j_username", txtName.text);
-                params.data ("j_password", passWord.text);
-                securityService.method = "POST";
-                securityService.send(params);
+                gameService.login(txtName.text);
             }
             
             private function resultHandler(event:ResultEvent):void{
                 player = Registrant(event.result);
                 dispatchEvent(new PlayerEvent("complete", player));
             }
-
-            private function authHandler (event:ResultEvent):void {
-                gameService.login(txtName.text);
-            }
                         
             private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, "Error loggin in");
+            	Alert.show(event.fault.faultString, "Error!");
             }
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-    <mx:HTTPService id="securityService" url="jsecuritycheck" result="authHandler(event)" fault="faultHandler(event)"
-        method="POST"/>    
     <mx:Panel title="Multigame Platform">
-        <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10"><mx:text>Please insert your name to login to the platform.</mx:text></mx:Text>
+        <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10"><mx:text>Please type your player name to begin.</mx:text></mx:Text>
         <mx:Form x="0" y="0" defaultButton="{loginBtn}" id="form">
-            <mx:FormItem label="Name" required="true">
+            <mx:FormItem label="Player" required="true">
                 <mx:TextInput id="txtName" />
             </mx:FormItem>
-            <mx:FormItem label="Password" required="true">
-                <mx:TextInput id="passWord" />
-            </mx:FormItem>
             <mx:FormItem>
-                    <mx:Button id="loginBtn" label="Login" click="doLogin(event)" />
+                    <mx:Button id="loginBtn" label="Begin" click="doLogin(event)" />
             </mx:FormItem>
         </mx:Form>
     </mx:Panel>
