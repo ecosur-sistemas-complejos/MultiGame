@@ -59,7 +59,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     private static KnowledgeBase manantiales;
 
 
-    /* Setup gente kbase */
+    /* Setup manantiales kbase */
     static {
         manantiales = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -107,7 +107,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
             }
         }
     }
-
 
     public static void setIds (GridCell... cells) {
         for (GridCell cell : cells) {

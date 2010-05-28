@@ -9,15 +9,25 @@ import mx.ecosur.multigame.model.implementation.MoveImpl;
 
 import javax.jms.*;
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
  * @author awaterma@ecosur.mx
  */
 public class ManantialesMessageSender extends MessageSender {
 
+    private static final Logger logger = Logger.getLogger(ManantialesMessageSender.class.getCanonicalName());    
+
     @Override
     public void sendMoveComplete(GameImpl game, MoveImpl move) {
+        logger.info("DEBUG -- Move Complete for move [" + move.toString());
         super.sendMoveComplete(game, move);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void sendPlayerChange(GameImpl game) {
+        logger.info ("DEBUG -- send Player Change for game " + game.toString());
+        super.sendPlayerChange(game);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     @SuppressWarnings("unchecked")
