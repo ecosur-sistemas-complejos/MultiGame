@@ -121,6 +121,23 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         lastMove.setPlayer(this);
 
         ManantialesGame game = (ManantialesGame) impl;
+        lastMove.setDestinationCell (generateMove(game));
+
+        /* Suggest a brand new move */
+        if (lastMove.getDestinationCell() == null) {
+            lastMove = upgradeMove(game, lastMove);
+        }
+
+        /* Pair modality */
+        lastMove.setMode (game.getMode());
+
+        /* Debug */
+        logger.info ("DEBUG -- Agent [" + this.toString() + "] suggests: " + lastMove.toString());
+        
+        return lastMove;
+    }
+
+    private ManantialesMove upgradeMove (ManantialesGame game, ManantialesMove lastMove) {
         Set<GridCell> filter = new HashSet<GridCell>();
         for (GridCell cell : game.getGrid().getCells()) {
             if ( cell.getColor().equals(this.getColor()) ) {
@@ -129,7 +146,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
         }
 
-        /* If the player has cells on its grid, attempt to upgrade those cells */
+                /* If the player has cells on its grid, attempt to upgrade those cells */
         if (filter.size() > 0) {
             for (GridCell cell : filter) {
                 Ficha ficha = (Ficha) cell;
@@ -169,17 +186,6 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
             }
         }
 
-        /* Suggest a brand new move */
-        if (lastMove.getDestinationCell() == null) {
-            lastMove.setDestinationCell (generateMove (game));
-        }
-
-        /* Pair modality */
-        lastMove.setMode (game.getMode());
-
-        /* Debug */
-        logger.info ("DEBUG -- Agent [" + this.toString() + "] suggests: " + lastMove.toString());
-        
         return lastMove;
     }
 
@@ -230,6 +236,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
     private List<Ficha> generateCandidates(ManantialesGame game) {
         List<Ficha> ret = new ArrayList<Ficha>();
+        GameGrid grid = game.getGrid();
 
         int startrow, startcol, endrow, endcol;
         switch (getColor()) {
@@ -264,7 +271,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         for (int row = startrow; row < endrow; row++) {
             for (int col = startcol; col < endcol; col++) {
                 Ficha ficha = new Ficha (col, row, getColor(), TokenType.MANAGED_FOREST);
-                if (isGoodLocation (ficha))
+                if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null)
                     ret.add(ficha);
             }
         }
