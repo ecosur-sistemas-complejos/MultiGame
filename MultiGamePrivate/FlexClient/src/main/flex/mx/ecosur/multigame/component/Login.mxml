@@ -37,15 +37,15 @@
             }
         ]]>
     </mx:Script>
-    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
+    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
     <mx:Panel title="Multigame Platform">
-        <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10"><mx:text>Please type your player name to begin.</mx:text></mx:Text>
+        <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10"><mx:text>Please enter your name to begin.</mx:text></mx:Text>
         <mx:Form x="0" y="0" defaultButton="{loginBtn}" id="form">
             <mx:FormItem label="Player" required="true">
                 <mx:TextInput id="txtName" />
             </mx:FormItem>
             <mx:FormItem>
-                    <mx:Button id="loginBtn" label="Begin" click="doLogin(event)" />
+                    <mx:Button id="loginBtn" label="Play" click="doLogin(event)" />
             </mx:FormItem>
         </mx:Form>
     </mx:Panel>

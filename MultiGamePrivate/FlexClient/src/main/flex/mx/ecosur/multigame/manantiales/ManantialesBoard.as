@@ -126,6 +126,7 @@
                     }
 
                     if (boardCell != null) {
+                        boardCell.toolTip = j + "," + i;
                         addChild(boardCell);
                         _boardCells[i][j] = boardCell;
                         boardCell.setStyle("padding", cellPadding);

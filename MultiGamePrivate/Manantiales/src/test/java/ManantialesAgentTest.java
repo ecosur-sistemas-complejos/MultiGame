@@ -16,6 +16,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.model.implementation.MoveImpl;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -29,6 +30,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import java.util.List;
+import java.util.Set;
 
 public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
@@ -129,26 +131,30 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         for (int i = 0; i < agents.length; i++) {
             agents [ i ].setTurn(true);
-            ManantialesMove agentMove = (ManantialesMove) agents [ i ].determineNextMove(game);
-            assertNotNull (agentMove.getDestinationCell());
-            game.move (agentMove);
-            assertEquals (MoveStatus.EVALUATED, agentMove.getStatus());
-            GridCell destination = agentMove.getDestinationCell();
-            assertEquals (destination, game.getGrid().getLocation(destination));
-            List<Message> messages = mockTopic.getCurrentMessageList();
-            boolean found = false;
-            for (Message message : messages) {
-                ObjectMessage msg = (ObjectMessage) message;
-                if (message.getStringProperty("GAME_EVENT").equals(GameEvent.MOVE_COMPLETE.name())) {
-                    ManantialesMove test = (ManantialesMove) msg.getObject();
-                    if (test.getPlayer().equals (agents [ i ])) {
-                           found = true;
-                           assertEquals (agentMove, test);
+            Set<MoveImpl> moves = agents [ i ].determineMoves(game);
+            assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
+            for (MoveImpl agentMove : moves) {
+                assertNotNull (agentMove.getDestinationCell());
+                game.move (agentMove);
+                assertEquals (MoveStatus.EVALUATED, agentMove.getStatus());
+                GridCell destination = (GridCell) agentMove.getDestinationCell();
+                assertEquals (destination, game.getGrid().getLocation(destination));
+                List<Message> messages = mockTopic.getCurrentMessageList();
+                boolean found = false;
+                for (Message message : messages) {
+                    ObjectMessage msg = (ObjectMessage) message;
+                    if (message.getStringProperty("GAME_EVENT").equals(GameEvent.MOVE_COMPLETE.name())) {
+                        ManantialesMove test = (ManantialesMove) msg.getObject();
+                        if (test.getPlayer().equals (agents [ i ])) {
+                               found = true;
+                               assertEquals (agentMove, test);
+                        }
                     }
                 }
-            }
 
-            assertTrue (found);
+                assertTrue (found);
+                break;
+            }
         }
 
         for (GridCell cell : game.getGrid().getCells()) {

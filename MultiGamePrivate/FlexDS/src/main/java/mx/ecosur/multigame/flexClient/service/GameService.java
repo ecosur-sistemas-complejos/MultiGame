@@ -12,6 +12,7 @@ import java.util.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.enums.SuggestionStatus;
@@ -36,13 +37,38 @@ import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.enums.gente.*;
 
+import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 import mx.ecosur.multigame.model.*;
 
 
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
 
-public class GameService {  
+public class GameService {
+
+    private static KnowledgeBase gente, manantiales;
+
+    static {
+        /* Gente KnowledgeBase */
+        gente = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(GenteGame.class.getResourceAsStream (
+            "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+        gente.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        /* Manantiales KnowledgeBase */
+        manantiales = KnowledgeBaseFactory.newKnowledgeBase();
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(ManantialesGame.class.getResourceAsStream (
+            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+        manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
+    }
 
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
@@ -94,10 +120,12 @@ public class GameService {
 
             switch (type) {
                 case GENTE:
-                    game = new GenteGame();
+                    game = new GenteGame(gente);
+                    game.setMessageSender(new MessageSender());
                     break;
                 case MANANTIALES:
-                    game = new ManantialesGame();
+                    game = new ManantialesGame(manantiales);
+                    game.setMessageSender(new ManantialesMessageSender());
                     break;
             }
 

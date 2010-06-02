@@ -2,34 +2,21 @@
 
 package mx.ecosur.multigame.impl.entity.manantiales;
 
-import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
-import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.enums.SuggestionStatus;
-import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.Move;
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GameImpl;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.implementation.SuggestionImpl;
 
-import javax.ejb.EJB;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -40,12 +27,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
 	private static final long serialVersionUID = 8878695200931762776L;
 
-	@EJB
-    private SharedBoardLocal sharedBoard;
-
     private AgentType type;
-
-    private ManantialesMove lastMove;
 
     private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
@@ -60,16 +42,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
     public void initialize() {
         // do nothing
-    }
-
-    @OneToOne
-    public ManantialesMove getLastMove() {
-        return lastMove;
-    }
-
-    public void setLastMove(ManantialesMove lastMove) {
-        this.lastMove = lastMove;
-    }    
+    }   
 
     public AgentType getType() {
         return type;
@@ -79,36 +52,17 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         this.type = type;
     }
 
-    public void processEvent(Message message) {
-        logger.info("DEBUG -- SimpleAgent [" + this.toString() + "] processing message: " + message);
-        try {
-            GameEvent gameEvent = GameEvent.valueOf(message.getStringProperty(
-                "GAME_EVENT"));
-            ObjectMessage msg = (ObjectMessage) message;
+    public SuggestionImpl processSuggestion (GameImpl impl, SuggestionImpl suggestionImpl) {
 
-            if (gameEvent.equals(GameEvent.GAME_CHANGE)) {
-                /* All unacknowledged suggestions addressed to this player are acknowledged */
-                ManantialesGame game = (ManantialesGame) msg.getObject();
-                if (game.getMode().equals(Mode.BASIC_PUZZLE) || game.getMode().equals(Mode.SILVO_PUZZLE)) {
-                    Set<PuzzleSuggestion> suggestions = game.getSuggestions();
-                    for (PuzzleSuggestion suggestion : suggestions) {
-                        if (suggestion.getStatus().equals(SuggestionStatus.EVALUATED)) {
-                            if (suggestion.getMove().getPlayer().equals(this)) {
-                                suggestion.setStatus(SuggestionStatus.ACCEPT);
-                                sharedBoard.doMove(new Game(game), new Move(suggestion.getMove()));
-                            }
-                        }
-                    }
-                }
-            }
+        /* Evaluated Suggestions are automatically acknowledged and accepted */
 
-        } catch (JMSException e) {
-            logger.warning("Not able to process game message: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InvalidMoveException e) {
-            logger.warning("Not able to process move: " + e.getMessage());
-            e.printStackTrace();
+        ManantialesGame game = (ManantialesGame) impl;
+        PuzzleSuggestion suggestion = (PuzzleSuggestion) suggestionImpl;
+        if (suggestion.getMove().getPlayer().equals(this)) {
+            suggestionImpl.setStatus(SuggestionStatus.ACCEPT);
         }
+
+        return suggestionImpl;
     }
 
     public boolean ready() {
@@ -116,119 +70,56 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
     }
 
     /* Simply returns a simple move response.  No suggestions are made by the Agent */
-    public MoveImpl determineNextMove(GameImpl impl) {
-        lastMove = new ManantialesMove();
-        lastMove.setPlayer(this);
-
+    public Set<MoveImpl> determineMoves(GameImpl impl) {
         ManantialesGame game = (ManantialesGame) impl;
-        lastMove.setDestinationCell (generateMove(game));
-
-        /* Suggest a brand new move */
-        if (lastMove.getDestinationCell() == null) {
-            lastMove = upgradeMove(game, lastMove);
+        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+        List<Ficha> fichas = generateCandidates(game);
+        for (Ficha ficha : fichas) {
+            if (this.isGoodLocation(ficha)) {
+                ManantialesMove move = new ManantialesMove();
+                move.setPlayer(this);
+                move.setDestinationCell(ficha);
+                move.setMode (game.getMode());
+                ret.add(move);
+            }
         }
 
-        /* Pair modality */
-        lastMove.setMode (game.getMode());
-
-        /* Debug */
-        logger.info ("DEBUG -- Agent [" + this.toString() + "] suggests: " + lastMove.toString());
-        
-        return lastMove;
+        ret.addAll(findUpgradeMoves((ManantialesGame) impl));
+        return ret;
     }
 
-    private ManantialesMove upgradeMove (ManantialesGame game, ManantialesMove lastMove) {
+    private Set<MoveImpl> findUpgradeMoves (ManantialesGame game) {
+        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+
         Set<GridCell> filter = new HashSet<GridCell>();
         for (GridCell cell : game.getGrid().getCells()) {
             if ( cell.getColor().equals(this.getColor()) ) {
                 filter.add (cell);
             }
-
         }
 
-                /* If the player has cells on its grid, attempt to upgrade those cells */
-        if (filter.size() > 0) {
-            for (GridCell cell : filter) {
-                Ficha ficha = (Ficha) cell;
-                if (ficha.getType().equals(TokenType.UNDEVELOPED)) {
-                    Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                    if (this.getForested() < 6) {
-                        destination.setType (TokenType.MANAGED_FOREST);
-                        lastMove.setDestinationCell(ficha);
-                        break;
-                    } else if (this.getModerate() < 6) {
-                        destination.setType (TokenType.MODERATE_PASTURE);
-                        lastMove.setDestinationCell(ficha);
-                        break;
-                    }
-                }
-            }
+        for (GridCell cell : filter) {
+            ManantialesMove move = new ManantialesMove();
+            move.setPlayer(this);
+            move.setMode(game.getMode());
 
-            /* Search for Moderate Pastures to upgrade */
-            if (lastMove.getDestinationCell() == null) {
-                for (GridCell cell : filter) {
-                    Ficha ficha = (Ficha) cell;
-                    /* Convert Moderate to Intensive */
-                    if (ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
-                        Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                        destination.setType(TokenType.INTENSIVE_PASTURE);
-                        lastMove.setCurrentCell (ficha);
-                        lastMove.setDestinationCell(destination);
-                        break;
-                    } else if (ficha.getType().equals(TokenType.MANAGED_FOREST)) {
-                        Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
-                        destination.setType(TokenType.MODERATE_PASTURE);
-                        lastMove.setCurrentCell (ficha);
-                        lastMove.setDestinationCell(destination);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return lastMove;
-    }
-
-    private Ficha generateMove (ManantialesGame game) {
-        Ficha ret = null;
-
-        List<Ficha> candidates = generateCandidates(game);
-        for (Ficha candidate : candidates) {
-            switch (candidate.getType()) {
-                case MANAGED_FOREST:
-                    if (this.getForested() < 6) {
-                        ret = candidate;
-                        break;
-                    }
-                case MODERATE_PASTURE:
-                    if (this.getModerate() < 6) {
-                        ret = candidate;
-                        break;
-                    }
-                case INTENSIVE_PASTURE:
-                    if (this.getIntensive() < 6) {
-                        ret = candidate;
-                        break;
-                    }
-                    break;
-                case VIVERO:
-                    if (this.getVivero() < 6) {
-                        ret = candidate;
-                        break;
-                    }
-                    break;
-                case SILVOPASTORAL:
-                    if (this.getSilvo() < 6) {
-                        ret = candidate;
-                        break;
-                    }
-                    break;
-                default:
-                    break;
-            }
-
-            if (ret != null)
+            Ficha ficha = (Ficha) cell;
+            /* Convert Moderate to Intensive */
+            if (ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
+                Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                destination.setType(TokenType.INTENSIVE_PASTURE);
+                move.setCurrentCell (ficha);
+                move.setDestinationCell(destination);
                 break;
+            } else if (ficha.getType().equals(TokenType.MANAGED_FOREST)) {
+                Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                destination.setType(TokenType.MODERATE_PASTURE);
+                move.setCurrentCell (ficha);
+                move.setDestinationCell(destination);
+            }
+
+            if (move.getDestinationCell() != null)
+                ret.add(move);
         }
 
         return ret;
@@ -241,28 +132,28 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         int startrow, startcol, endrow, endcol;
         switch (getColor()) {
             case YELLOW:
-                startrow = 1;
-                startcol = 1;
+                startrow = 0;
+                startcol = 0;
                 endrow = 5;
                 endcol = 5;
                 break;
             case PURPLE:
                 startrow = 4;
-                startcol = 1;
-                endrow = game.getRows() + 1;
+                startcol = 0;
+                endrow = game.getRows();
                 endcol = 5;
                 break;
             case RED:
-                startrow = 1;
+                startrow = 0;
                 startcol = 4;
                 endrow = 5;
-                endcol = game.getColumns() + 1;
+                endcol = game.getColumns();
                 break;
             case BLACK:
                 startrow = 4;
                 startcol = 4;
-                endrow = game.getRows() + 1;
-                endcol = game.getColumns() + 1;
+                endrow = game.getRows();
+                endcol = game.getColumns();
                 break;
             default:
                 throw new RuntimeException ("Unknown Color!!");
@@ -270,9 +161,25 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
         for (int row = startrow; row < endrow; row++) {
             for (int col = startcol; col < endcol; col++) {
-                Ficha ficha = new Ficha (col, row, getColor(), TokenType.MANAGED_FOREST);
-                if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null)
+                Ficha ficha = new Ficha (col, row, getColor(), TokenType.UNKNOWN);
+                if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null) {
+                    if (this.getForested() < 6)
+                        ficha.setType(TokenType.MANAGED_FOREST);
+                    else if (this.getModerate() < 6)
+                        ficha.setType(TokenType.MODERATE_PASTURE);
+                    else if (this.getIntensive () < 6)
+                        ficha.setType(TokenType.INTENSIVE_PASTURE);
+                    else if (game.getMode().equals(Mode.SILVOPASTORAL)) {
+                        if (this.getVivero() < 6) {
+                            ficha.setType(TokenType.VIVERO);
+                        }
+                    } else if (game.getMode().equals(Mode.SILVO_PUZZLE)) {
+                        if (this.getSilvo() < 6)
+                            ficha.setType(TokenType.SILVOPASTORAL);
+                    }
+
                     ret.add(ficha);
+                }
             }
         }
 
@@ -301,8 +208,13 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
                 ret = false;
         }
 
+        if (column % 2 == 0)
+            ret = ret && row % 2 == 0;
+        else
+            ret = ret && row % 2 != 0;
+
         /* Check for Manantial */
-        ret = (column !=4 && row != 4);
+        ret = ret && (column !=4 && row != 4);
         return ret;
     }
 
