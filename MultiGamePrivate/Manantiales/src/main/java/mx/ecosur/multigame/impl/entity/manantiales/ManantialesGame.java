@@ -25,6 +25,8 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -33,6 +35,9 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 import java.net.MalformedURLException;
 
@@ -372,6 +377,23 @@ public class ManantialesGame extends GridGame {
     public void setGameType (String type) {
         // do nothing;
     }
+
+    @Override
+    protected void writeObject(ObjectOutputStream out) throws IOException {
+        super.writeObject(out);
+        /* Load the knoweledge base */
+        DroolsObjectOutputStream droolsOut = new DroolsObjectOutputStream(out);
+        droolsOut.writeObject(kbase);
+        droolsOut.flush();
+        droolsOut.close();
+    }
+
+    @Override
+    protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        super.readObject(in);
+        DroolsObjectInputStream droolsIn = new DroolsObjectInputStream(in);
+        kbase = (KnowledgeBase) droolsIn.readObject();
+    }    
 
     @Override
     public String toString() {

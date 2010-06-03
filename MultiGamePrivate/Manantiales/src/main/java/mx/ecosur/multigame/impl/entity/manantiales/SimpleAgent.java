@@ -85,7 +85,15 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         }
 
         ret.addAll(findUpgradeMoves((ManantialesGame) impl));
+        ret.add (generatePassMove((ManantialesGame) impl));
         return ret;
+    }
+
+    private ManantialesMove generatePassMove (ManantialesGame game) {
+        ManantialesMove ret = new ManantialesMove ();
+        ret.setPlayer(this);
+        ret.setBadYear(true);
+        return ret;        
     }
 
     private Set<MoveImpl> findUpgradeMoves (ManantialesGame game) {
