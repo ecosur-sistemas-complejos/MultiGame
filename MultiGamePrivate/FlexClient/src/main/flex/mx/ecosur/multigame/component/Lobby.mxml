@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Box xmlns:mx="http://www.adobe.com/2006/mxml"
 	xmlns:component="mx.ecosur.multigame.component.*" 
-	width="100%" height="100%" horizontalAlign="center" verticalAlign="middle" creationComplete="init(event)">
+	width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 
 	<mx:Metadata>
         [Event(name="registered", type="mx.ecosur.multigame.event.GameEvent")]
@@ -12,55 +12,64 @@
 
 	<mx:Script>
         <![CDATA[
-            import mx.rpc.events.FaultEvent;
-        	import mx.rpc.events.ResultEvent;
-            import mx.controls.Alert;
-            import mx.ecosur.multigame.entity.Registrant;
-            
-            [Bindable]
-            public var player:Registrant;
-            public var timer:Timer;
-    
-            private function init(event:Event):void {
-            	introTxt.text = "Welcome " + player.name + 
-            	   ".\n\nYou may rejoin an unfinished game, join a pending game, " + 
-            	   "or start a new game below.";
-            	timer = new Timer(1000);
-            	timer.addEventListener(TimerEvent.TIMER, timeout);
-            	timer.start();
-            }
+        import mx.controls.Alert;                
+        import mx.managers.PopUpManager;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+        import mx.ecosur.multigame.entity.Registrant;
 
-            public function timeout (event:Event):void {
-            	pendingList.reload(event);
-            }
+        private var _player:Registrant;
+        public var timer:Timer;
 
-            public function reload(event:Event):void {
-            	gameList.reload(event);
-            	pendingList.reload(event);
-            }
+        [BINDABLE]
+        public function set player(newPlayer:Registrant):void {
+            _player = newPlayer;
+            gameList.player = _player;
+            pendingList.player = _player;
+            init();
+        }
 
-            private function choose (event:Event):void {
-                dispatchEvent(event);
-            }
-            
-            private function resultHandler(event:ResultEvent):void{
-            	dispatchEvent(new Event("complete"));
-            }   
-                        
-            private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, "Error");
-            }
+        public function get player():Registrant {
+            return _player;
+        }
+
+        private function init():void {
+            timer = new Timer(1000);
+            timer.addEventListener(TimerEvent.TIMER, timeout);
+            timer.start();
+        }
+
+        public function timeout(event:Event):void {
+            pendingList.reload(event);
+        }
+
+        public function reload(event:Event):void {
+            gameList.reload(event);
+            pendingList.reload(event);
+        }
+
+        private function choose(event:Event):void {
+            dispatchEvent(event);
+        }
+
+        private function resultHandler(event:ResultEvent):void {
+            dispatchEvent(new Event("complete"));
+        }
+
+        private function faultHandler(event:FaultEvent):void {
+            Alert.show(event.fault.faultString, "Error");
+        }
           
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-	<mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
-		<mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-        <mx:TabNavigator width="750" height="280">
-			<component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" player="{player}" height="100%" width="100%" gameChosen="choose(event)"/>
+    <mx:Panel title="Multigame Platform" paddingLeft="5" paddingRight="5" paddingBottom="5">
+        <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
+        <mx:TabNavigator width="750" height="245">
+            <component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" height="100%" width="100%" gameChosen="choose(event)"/>
             <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%" gameJoined="choose(event)"/>
-            <component:StartNewGame  label="Start New Game" player="{player}" height="100%" width="100%" registered="dispatchEvent(event)"/>
-		</mx:TabNavigator>
+            <component:StartNewGame  label="Start New Game" height="100%" width="100%" registered="dispatchEvent(event)"/>
+	    </mx:TabNavigator>
 	</mx:Panel>
 
 </mx:Box>

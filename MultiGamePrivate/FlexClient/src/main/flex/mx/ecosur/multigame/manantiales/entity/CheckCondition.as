@@ -10,6 +10,10 @@ package mx.ecosur.multigame.manantiales.entity
 		private var _violators:ArrayCollection
 		private var _player:GamePlayer;
 		private var _expired:Boolean;
+
+        public function CheckCondition () {
+            super();
+        }
 		
 		public function get expired():Boolean {
 			return _expired;

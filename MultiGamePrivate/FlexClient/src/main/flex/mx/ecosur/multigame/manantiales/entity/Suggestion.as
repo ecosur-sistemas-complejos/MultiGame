@@ -19,6 +19,10 @@ package mx.ecosur.multigame.manantiales.entity
 
         private var _id:int
 
+        public function Suggestion() {
+            super();
+        }
+
         public function get id():int {
             return _id;
         }

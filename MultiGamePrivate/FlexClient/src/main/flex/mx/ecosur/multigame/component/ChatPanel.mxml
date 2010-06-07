@@ -6,52 +6,52 @@
     import mx.ecosur.multigame.entity.Game;
     import mx.utils.StringUtil;
 
-        import mx.controls.Alert;
+    import mx.controls.Alert;
 
-        import mx.messaging.messages.AsyncMessage;
-        import mx.messaging.messages.IMessage;
-        import mx.messaging.events.MessageFaultEvent;
-        import mx.messaging.events.MessageAckEvent;
+    import mx.messaging.messages.AsyncMessage;
+    import mx.messaging.messages.IMessage;
+    import mx.messaging.events.MessageFaultEvent;
+    import mx.messaging.events.MessageAckEvent;
 
-        import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.entity.ChatMessage;
-        import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.entity.ChatMessage;
+    import mx.ecosur.multigame.enum.GameEvent;
 
-        public var currentPlayer:GamePlayer;
-        public var currentGame:Game;
+    public var currentPlayer:GamePlayer;
+    public var currentGame:Game;
 
-        private function send():void {
-            if(StringUtil.trim(msg.text).length == 0){
-                return;
-            }
-            var message:IMessage = new AsyncMessage();
-            var chatMessage:ChatMessage = new ChatMessage();
-            chatMessage.sender = currentPlayer;
-            chatMessage.body = msg.text;
-            chatMessage.dateSent = new Date();
-            message.body = chatMessage;
-            message.headers.GAME_ID = currentGame.id;
-            message.headers.GAME_EVENT = GameEvent.CHAT;
-            producer.send(message);
-            msg.text = "";
+    private function send():void {
+        if (StringUtil.trim(msg.text).length == 0) {
+            return;
         }
+        var message:IMessage = new AsyncMessage();
+        var chatMessage:ChatMessage = new ChatMessage();
+        chatMessage.sender = currentPlayer;
+        chatMessage.body = msg.text;
+        chatMessage.dateSent = new Date();
+        message.body = chatMessage;
+        message.headers.GAME_ID = currentGame.id;
+        message.headers.GAME_EVENT = GameEvent.CHAT;
+        producer.send(message);
+        msg.text = "";
+    }
 
-        public function addMessage(chatMessage:ChatMessage):void {
-            log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
-            callLater(updateScroll);
-        }
+    public function addMessage(chatMessage:ChatMessage):void {
+        log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
+        callLater(updateScroll);
+    }
 
-        private function acknowledgeHandler (event:MessageAckEvent):void {
-            Alert.show("Ack recieved: " + event);
-        }
+    private function acknowledgeHandler(event:MessageAckEvent):void {
+        Alert.show("Ack recieved: " + event);
+    }
 
-        private function faultHandler(event:MessageFaultEvent):void {
-            Alert.show("fault in message " + event.faultString);
-        }
+    private function faultHandler(event:MessageFaultEvent):void {
+        Alert.show("fault in message " + event.faultString);
+    }
 
-        private function updateScroll():void{
-            log.verticalScrollPosition = log.maxVerticalScrollPosition;
-        }
+    private function updateScroll():void {
+        log.verticalScrollPosition = log.maxVerticalScrollPosition;
+    }
 
     ]]>
     </mx:Script>

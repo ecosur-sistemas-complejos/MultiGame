@@ -5,36 +5,36 @@
         [Event(name="complete", type="mx.ecosur.multigame.event.PlayerEvent")]
     </mx:Metadata>
 
-	<mx:Script> 
+	<mx:Script>
         <![CDATA[
 
-        	import mx.rpc.events.FaultEvent;
-        	import mx.rpc.events.ResultEvent;
-            import mx.ecosur.multigame.event.PlayerEvent;
-            import mx.controls.Alert;
-            import mx.utils.StringUtil;
-            import mx.ecosur.multigame.entity.Registrant;
-            
-            public var player:Registrant;
-    
-            private function doLogin(eventObj:MouseEvent):void {
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+        import mx.ecosur.multigame.event.PlayerEvent;
+        import mx.controls.Alert;
+        import mx.utils.StringUtil;
+        import mx.ecosur.multigame.entity.Registrant;
 
-                if (StringUtil.trim(txtName.text).length == 0){
-                    Alert.show("Please insert your player name", "Data incomplete");
-                    txtName.setFocus();
-                }
+        public var player:Registrant;
 
-                gameService.login(txtName.text);
+        private function doLogin(eventObj:MouseEvent):void {
+
+            if (StringUtil.trim(txtName.text).length == 0) {
+                SimpleAlert.show("Please insert your player name", "Data incomplete");
+                txtName.setFocus();
             }
-            
-            private function resultHandler(event:ResultEvent):void{
-                player = Registrant(event.result);
-                dispatchEvent(new PlayerEvent("complete", player));
-            }
-                        
-            private function faultHandler(event:FaultEvent):void{
-            	Alert.show(event.fault.faultString, "Error!");
-            }
+
+            gameService.login(txtName.text);
+        }
+
+        private function resultHandler(event:ResultEvent):void {
+            player = Registrant(event.result);
+            dispatchEvent(new PlayerEvent("complete", player));
+        }
+
+        private function faultHandler(event:FaultEvent):void {
+            SimpleAlert.show(event.fault.faultString, "Error!");
+        }
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>

@@ -7,6 +7,7 @@
 
 package mx.ecosur.multigame.flexClient.service;
 
+import java.security.Principal;
 import java.util.*;
 
 import javax.naming.InitialContext;
@@ -108,10 +109,19 @@ public class GameService {
         RegistrarRemote registrar = this.getRegistrar();
         Registrant registrant = registrar.register(new Registrant (gr));
         return (GridRegistrant) registrant.getImplementation();
-    }    
+    }
+
+    public GridRegistrant registerPrincipal () {  
+        FlexSession flexSession = FlexContext.getFlexSession();
+        Principal user = flexSession.getUserPrincipal();
+        return login (user.getName());
+    }
 
     public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr)
     {
+        if (player == null)
+            player = registerPrincipal();
+
         ServiceGameEvent ret = null;
         try {
             RegistrarRemote registrar = getRegistrar();
@@ -154,6 +164,9 @@ public class GameService {
     }
 
     public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr, String mode) {
+        if (player == null)
+            player = registerPrincipal();
+
         ServiceGameEvent ret = startNewGame (player, preferedColor, gameTypeStr);
         GridGame game = ret.getGame();
         if (game instanceof ManantialesGame) {
@@ -175,6 +188,9 @@ public class GameService {
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
                     Color preferredColor)
     {
+        if (registrant == null)
+            registrant = registerPrincipal();
+
         ServiceGameEvent ret = null;
         RegistrarRemote registrar = getRegistrar();
         try {
@@ -216,6 +232,9 @@ public class GameService {
     public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
         String gameTypeStr, String [] strategies)
     {
+        if (registrant == null)
+            registrant = registerPrincipal();        
+
         ServiceGameEvent ret = null;
         try {
             RegistrarRemote registrar = getRegistrar();
@@ -266,6 +285,8 @@ public class GameService {
     public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
         String gameTypeStr, String mode, String [] strategies)
     {
+        if (registrant == null)
+            registrant = registerPrincipal();
 
         ServiceGameEvent ret = startNewGameWithAI (registrant, preferredColor, gameTypeStr, strategies);
         GridGame game = ret.getGame();
@@ -284,6 +305,9 @@ public class GameService {
 
 
     public List<GridGame> getUnfinishedGames(GridRegistrant player){
+        if (player == null)
+            player = registerPrincipal();
+
         RegistrarRemote registrar = getRegistrar();
         Collection<Game> games = registrar.getUnfinishedGames(
             new Registrant (player));
@@ -295,6 +319,9 @@ public class GameService {
     }
 
     public List<GridGame> getPendingGames(GridRegistrant player){
+        if (player == null)
+            player = registerPrincipal();
+                
         RegistrarRemote registrar = getRegistrar();
         Collection<Game> games = registrar.getPendingGames(new Registrant (
             player));
@@ -367,9 +394,5 @@ public class GameService {
         }
 
         return ret;
-
     }
-
-
-
 }
