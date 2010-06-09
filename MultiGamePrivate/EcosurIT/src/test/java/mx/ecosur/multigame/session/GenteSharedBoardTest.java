@@ -15,11 +15,14 @@ import static org.junit.Assert.*;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.sun.appserv.security.ProgrammaticLogin;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.enums.GameState;
@@ -56,8 +59,11 @@ public class GenteSharedBoardTest {
 	
 
 	@Before
-	public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException {
-		InitialContext ic = new InitialContext();
+	public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException, Exception {
+        ProgrammaticLogin login = new ProgrammaticLogin();
+        login.login("MultiGame", "test","FileRealm", false);
+        InitialContext ic = new InitialContext();
+
 		
 		registrar = (RegistrarRemote) ic.lookup(
 			"mx.ecosur.multigame.ejb.interfaces.RegistrarRemote");

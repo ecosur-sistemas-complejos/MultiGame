@@ -44,7 +44,8 @@
                 <module>MultigameWAR</module>
                 <module>EcosurJPA</module>
                 <module>EcosurEAR</module>
-                <module>EcosurIT</module>
+                <!-- Removed Integration Tests from build to security issues (can't authenticate). -->
+                <!--module>EcosurIT</module-->
             </modules>
         </profile>
          <profile>

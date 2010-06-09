@@ -13,6 +13,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
+import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
@@ -82,6 +83,8 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
             registrant = new GridRegistrant ("Agent-" + (i + 1));
             agents [ i ] = (SimpleAgent) game.registerAgent(new SimpleAgent(registrant, colors[i], AgentType.SIMPLE));
         }
+
+        game.setMode(Mode.BASIC_PUZZLE);
     }
 
 
@@ -134,6 +137,9 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
             Set<MoveImpl> moves = agents [ i ].determineMoves(game);
             assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
             for (MoveImpl agentMove : moves) {
+                ManantialesMove mve = (ManantialesMove) agentMove;
+                if (mve.isBadYear())
+                    continue;
                 assertNotNull (agentMove.getDestinationCell());
                 game.move (agentMove);
                 assertEquals (MoveStatus.EVALUATED, agentMove.getStatus());

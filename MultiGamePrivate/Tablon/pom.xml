@@ -91,22 +91,22 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-core</artifactId>
-            <version>5.1.0.M1</version>
+            <version>${drools.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-compiler</artifactId>
-            <version>5.1.0.M1</version>
+            <version>${drools.version}</version>
 		</dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
-            <version>5.1.0.M1</version>
-        </dependency>   		
+            <version>${drools.version}</version>
+        </dependency>
 		<dependency>
-            <groupId>org.drools.solver</groupId>
-            <artifactId>drools-solver-core</artifactId>
-            <version>5.1.0.M1</version>
+            <groupId>org.drools.planner</groupId>
+            <artifactId>drools-planner-core</artifactId>
+            <version>${drools.version}</version>
         </dependency>
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
         <!--  Use slf4j-jcl to show solver logging -->

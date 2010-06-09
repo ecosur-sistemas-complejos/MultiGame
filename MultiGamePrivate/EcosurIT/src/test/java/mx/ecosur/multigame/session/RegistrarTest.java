@@ -12,8 +12,12 @@ package mx.ecosur.multigame.session;
 
 import static org.junit.Assert.*;
 
-import java.rmi.RemoteException;
+import com.sun.appserv.security.ProgrammaticLogin;
 
+import java.rmi.RemoteException;
+import java.util.Properties;
+
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -48,6 +52,8 @@ public class RegistrarTest {
 
     @Before
     public void fixtures () throws RemoteException, NamingException, InvalidRegistrationException {
+        ProgrammaticLogin login = new ProgrammaticLogin();
+        login.login("MultiGame", "test");
         InitialContext ic = new InitialContext();
 
         registrar = (RegistrarRemote) ic.lookup(

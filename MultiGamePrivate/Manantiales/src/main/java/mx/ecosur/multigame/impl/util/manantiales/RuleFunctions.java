@@ -37,21 +37,22 @@ public class RuleFunctions {
         if (move.getDestinationCell() != null) {
             Ficha destination = (Ficha) move.getDestinationCell();
             Ficha current = (Ficha) grid.getLocation (destination);
+            TokenType replacement = destination.getType();
             if (current != null) {
                switch (current.getType()) {
                    case MANAGED_FOREST:
-                       ret = !destination.getType().equals(TokenType.SILVOPASTORAL) &&
-                           !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
+                       ret = !(replacement.equals(TokenType.INTENSIVE_PASTURE) || replacement.equals(TokenType.SILVOPASTORAL));
                        break;
                    case MODERATE_PASTURE:
-                       ret = !destination.getType().equals(TokenType.SILVOPASTORAL);
+                       ret = (replacement.equals(TokenType.INTENSIVE_PASTURE) || replacement.equals(TokenType.MANAGED_FOREST))
+                               && !(replacement.equals(TokenType.SILVOPASTORAL));
                        break;
                    case VIVERO:
-                       ret = !destination.getType().equals(TokenType.INTENSIVE_PASTURE);
+                       ret = replacement.equals(TokenType.SILVOPASTORAL);
                        break;
                    case SILVOPASTORAL:
-                       ret = true;
-                        break;
+                       ret = !(replacement.equals(TokenType.INTENSIVE_PASTURE));
+                       break;
                    default:
                        ret = false;
                        break;

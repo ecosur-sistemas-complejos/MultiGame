@@ -35,9 +35,7 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.*;
 import java.net.MalformedURLException;
 
@@ -45,6 +43,8 @@ import java.net.MalformedURLException;
 public class ManantialesGame extends GridGame {
         
     private static final long serialVersionUID = -8395074059039838349L;
+
+    private static String FNAME = "ManantialesKBase.dat";
         
     private Mode mode;
         
@@ -152,13 +152,8 @@ public class ManantialesGame extends GridGame {
         this.setColumns(9);
         this.setRows(9);
 
-        if (kbase == null) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        }
+        if (kbase == null)
+            kbase = findKBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
@@ -186,13 +181,8 @@ public class ManantialesGame extends GridGame {
       */
     @Override
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
-        if (kbase == null) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        }
+        if (kbase == null)
+            kbase = findKBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender()); 
         session.insert(this);
@@ -219,14 +209,8 @@ public class ManantialesGame extends GridGame {
 
     @Override
     public SuggestionImpl suggest (SuggestionImpl suggestion) {
-        if (kbase == null) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        }
-        
+        if (kbase == null)
+            kbase = findKBase();        
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
@@ -364,7 +348,6 @@ public class ManantialesGame extends GridGame {
                 ret.add(suggestion);
         }
 
-
         return ret;
     }
 
@@ -378,22 +361,50 @@ public class ManantialesGame extends GridGame {
         // do nothing;
     }
 
-    @Override
-    protected void writeObject(ObjectOutputStream out) throws IOException {
-        super.writeObject(out);
-        /* Load the knoweledge base */
+    protected KnowledgeBase findKBase () {
+        KnowledgeBase ret = null;
+        try {
+            File file = new File(FNAME);
+            file.deleteOnExit();
+            if (!file.exists()) {
+                file.createNewFile();
+                ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream(file));
+                ret = KnowledgeBaseFactory.newKnowledgeBase();
+                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+                kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+                    "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+                ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+                writeKBase(oos, ret);
+            } else {
+                ObjectInputStream ois = new ObjectInputStream (new FileInputStream(FNAME));
+                ret = readKBase(ois);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException (e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException (e);
+        }
+
+        return ret;
+
+    }
+
+    private void writeKBase (ObjectOutputStream out, KnowledgeBase knowledge)
+            throws IOException
+    {
+
+        /* Load the knowledge base */
         DroolsObjectOutputStream droolsOut = new DroolsObjectOutputStream(out);
-        droolsOut.writeObject(kbase);
+        droolsOut.writeObject(knowledge);
         droolsOut.flush();
         droolsOut.close();
     }
 
-    @Override
-    protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        super.readObject(in);
+    private KnowledgeBase readKBase (ObjectInputStream in) throws IOException, ClassNotFoundException  {
+
         DroolsObjectInputStream droolsIn = new DroolsObjectInputStream(in);
-        kbase = (KnowledgeBase) droolsIn.readObject();
-    }    
+        return (KnowledgeBase) droolsIn.readObject();
+    }
 
     @Override
     public String toString() {

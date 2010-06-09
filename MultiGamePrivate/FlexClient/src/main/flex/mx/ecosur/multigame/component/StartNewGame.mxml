@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" title="Start Game">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" title="Start Game" creationComplete="init()">
 
 <mx:Metadata>
     [Event(name="registered", type="mx.ecosur.multigame.event.GameEvent")]
@@ -81,6 +81,10 @@
             modalities.visible = false;
     }
 
+    private function init():void {
+        showAIPlayers(true);
+    }
+
     ]]>
 </mx:Script>
 <mx:ArrayCollection id="agentList"/>
@@ -114,11 +118,11 @@
     </mx:FormItem>
     <mx:FormItem id="ai">
         <mx:HBox>
-            <mx:RadioButton label="Human" selected="true" click="showAIPlayers(false)"/>
-            <mx:RadioButton label="Robot" id="robots" selected="false" click="showAIPlayers(true)" />
+            <mx:RadioButton label="Robot" id="robots" selected="true" click="showAIPlayers(true)" />            
+            <mx:RadioButton label="Human" selected="false" click="showAIPlayers(false)"/>
         </mx:HBox>
     </mx:FormItem>
-        <mx:HBox id="aiPlayers" visible="false" height="0">
+        <mx:HBox id="aiPlayers" visible="true" height="0">
             <mx:FormItem label="Player 2">
                 <mx:ComboBox id="player2" dataProvider="{agentList}"/>
             </mx:FormItem>

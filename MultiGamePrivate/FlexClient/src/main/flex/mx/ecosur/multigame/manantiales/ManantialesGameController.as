@@ -307,21 +307,10 @@ package mx.ecosur.multigame.manantiales
                     sourceCell.reset();
                     
                 }
-                
-                /*
-                var initiatorToken:ManantialesToken = ManantialesToken (evt.dragInitiator);
-                if (initiatorToken != null && initiatorToken.cell != null && 
-                    (initiatorToken.cell.column != 0 && initiatorToken.cell.row != 0)) 
-                {
-                    move.currentCell = initiatorToken.cell;
-                }
-                */
-                
-                /*TODO: Rethink swap moves.  For now all actions are replacement based
+
                 if (targetCell.token.cell != null) {
-                    move.swap = Ficha (targetCell.token.cell);
+                    move.currentCell = Ficha (targetCell.token.cell);
                 }
-                */
                 
                 /* Set the destination information to match where the token was dragged to */
                 destination.row = targetCell.row;
@@ -358,29 +347,24 @@ package mx.ecosur.multigame.manantiales
                     }
                 } else if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell != null) 
                 {
-                    if (! (move.currentCell.row == move.destinationCell.row && move.currentCell.column == move.destinationCell.column)) {
-                        /* Moving an existing piece */
-                        move.player = _currentPlayer;
-                        call = _gameService.doMove(_game, move);
-                        call.operation = GAME_SERVICE_DO_MOVE_OP;
-                        _executingMove = move;
-                    }
+                    move.player = _currentPlayer;
+                    call = _gameService.doMove(_game, move);
+                    call.operation = GAME_SERVICE_DO_MOVE_OP;
+                    _executingMove = move;
                 
                 }else if (_currentPlayer.turn && destToken.cell.color != _currentPlayer.color && move.currentCell != null)
                 {
-                    if (! (move.currentCell.row == move.destinationCell.row && move.currentCell.column == move.destinationCell.column)) {
-                            /* Making a suggestion to another player */
-                        suggestion = true;
-                        var players:ArrayCollection = _game.players;
-                        for (var i:int = 0; i < players.length; i++) {
-                            var player:ManantialesPlayer = ManantialesPlayer (players [ i ]);
-                            if (player.color == destToken.cell.color) {
-                                move.player = player;
-                                break;
-                            }
+                        /* Making a suggestion to another player */
+                    suggestion = true;
+                    var players:ArrayCollection = _game.players;
+                    for (var i:int = 0; i < players.length; i++) {
+                        var player:ManantialesPlayer = ManantialesPlayer (players [ i ]);
+                        if (player.color == destToken.cell.color) {
+                            move.player = player;
+                            break;
                         }
-                        _suggestionHandler.makeSuggestion(move);
                     }
+                    _suggestionHandler.makeSuggestion(move);
                 }
 
                 // animate
@@ -864,8 +848,8 @@ package mx.ecosur.multigame.manantiales
             } else {
                 boardCell = RoundCell(_gameWindow.board.getBoardCell(
                     move.currentCell.column, move.currentCell.row));
-                boardCell.token = new UndevelopedToken();
-                boardCell.token.cell = null;
+                var token:ManantialesToken = new UndevelopedToken();
+                token.cell = move.currentCell;
                 boardCell.reset();
             }
 

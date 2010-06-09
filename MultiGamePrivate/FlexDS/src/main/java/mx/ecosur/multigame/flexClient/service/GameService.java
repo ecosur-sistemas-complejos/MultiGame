@@ -53,24 +53,6 @@ import org.drools.io.ResourceFactory;
 
 public class GameService {
 
-    private static KnowledgeBase gente, manantiales;
-
-    static {
-        /* Gente KnowledgeBase */
-        gente = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(GenteGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
-        gente.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        /* Manantiales KnowledgeBase */
-        manantiales = KnowledgeBaseFactory.newKnowledgeBase();
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(ManantialesGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-        manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    }
-
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
         SharedBoardRemote sharedBoard = (SharedBoardRemote) session.getAttribute("sharedBoard");
@@ -130,11 +112,11 @@ public class GameService {
 
             switch (type) {
                 case GENTE:
-                    game = new GenteGame(gente);
+                    game = new GenteGame();
                     game.setMessageSender(new MessageSender());
                     break;
                 case MANANTIALES:
-                    game = new ManantialesGame(manantiales);
+                    game = new ManantialesGame();
                     game.setMessageSender(new ManantialesMessageSender());
                     break;
             }
@@ -188,6 +170,7 @@ public class GameService {
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
                     Color preferredColor)
     {
+        
         if (registrant == null)
             registrant = registerPrincipal();
 
@@ -379,7 +362,7 @@ public class GameService {
     public PuzzleSuggestion makeSuggestion (GridGame game, PuzzleSuggestion suggestion) throws
             InvalidSuggestionException
     {
-        SharedBoardRemote sharedBoard = getSharedBoard();
+        SharedBoardRemote sharedBoard = getSharedBoard();     
         Suggestion ret = sharedBoard.makeSuggestion (new Game(game), new Suggestion(suggestion));
         return (PuzzleSuggestion) ret.getImplementation();
     }
