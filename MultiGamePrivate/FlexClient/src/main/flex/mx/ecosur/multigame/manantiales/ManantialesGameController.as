@@ -1033,7 +1033,7 @@ package mx.ecosur.multigame.manantiales
             boardCell.token.blink(1);
 
             // Update move viewer
-            if (_moves [_selectedMoveInd] != null && _selectedMoveInd > 0) {
+            if (_selectedMoveInd > 0 && _moves.length > _selectedMoveInd && _moves[_selectedMoveInd] != null) {
                 var move:ManantialesMove = ManantialesMove(_moves[_selectedMoveInd])
                 _gameWindow.moveViewer.selectedMove = move;
             }
@@ -1235,6 +1235,7 @@ package mx.ecosur.multigame.manantiales
                 _stageChangeAlert = new GraphicAlert();
                 _stageChangeAlert.text = "Stage complete. Progressing to next stage, '" +
                       game.mode + "'";
+                _stageChangeAlert.positive = true;
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
