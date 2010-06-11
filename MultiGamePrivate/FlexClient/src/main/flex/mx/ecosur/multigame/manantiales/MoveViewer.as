@@ -75,6 +75,7 @@ package mx.ecosur.multigame.manantiales
          */
         public function initFromMoves(moves:ArrayCollection):void{
             _moves.removeAllChildren();
+            _selectedMove = null;
             for (var i:int = 0; i < moves.length; i++){
                 addMove(ManantialesMove(moves[i]));                   
             }
