@@ -970,7 +970,9 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
 
-            addListeners (token);
+            if(token.cell){
+            	addListeners (token);
+            }
 
             //define motion animation
             var apX:AnimateProperty = new AnimateProperty(token);
