@@ -299,7 +299,7 @@ package mx.ecosur.multigame.manantiales
                 var targetCell:BoardCell = BoardCell(evt.currentTarget);
                 
                 var sourceToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("source"));
-                if (sourceToken != null && sourceToken.cell != null && sourceToken.cell.column > 0 && sourceToken.cell.row > 0) {
+                if (sourceToken != null && sourceToken.cell != null && sourceToken.cell.column >= 0 && sourceToken.cell.row >= 0) {
                     move.currentCell = sourceToken.cell;
                     /* Find the dragged location RoundCell */
                     var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(sourceToken.cell.column, sourceToken.cell.row));
