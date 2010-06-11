@@ -180,24 +180,35 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         switch (color) {
             case YELLOW:
-                ret = (column < 5 && row < 5);
+                ret = (column <= 4 && row <= 4);
                 break;
             case PURPLE:
-                ret = (column < 5 && row > 3);
+                ret = (column <= 4 && row >= 4);
                 break;
             case RED:
-                ret = (column > 3 && row < 5);
+                ret = (column >= 4 && row <= 4);
                 break;
             case BLACK:
-                ret = (column > 3 && row > 3);
+                ret = (column >= 4 && row >= 4);
                 break;
             default:
                 ret = false;
         }
 
+        if (row % 2 == 0 && column % 2 == 0) {
+            // even
+            ret = ret && true;
+
+        } else if (row % 2 != 0 && column % 2 != 0) {
+            //odd
+            ret = ret && true;
+        } else
+            ret = false;
+
         /* Check for Manantial */
-        ret = ret & (column !=4 && row != 4);
-        return ret;
+        if (column == 4 && row == 4)
+            ret = false;
+        return ret;       
     }
 
 }
