@@ -146,8 +146,26 @@ package mx.ecosur.multigame.manantiales
             var _store:ManantialesTokenStore = ManantialesTokenStore(tokenStorePanel.getChildAt(0));
             _store.startMoveHandler = startMove;
             _store.endMoveHandler = endMove;
-            _store.visible=true;
-            _store.active=true;
+            _store.visible = true;
+            _store.active = true;
+            
+            /* Remove cells from token store that are on board */
+            if(!_store.inited){
+            	var token:ManantialesToken;
+            	var cell:RoundCell;
+	            for (var col:int = 0; col < this._gameWindow.board.nCols; col++) {
+	                for (var row:int = 0; row < this._gameWindow.board.nRows; row++) {
+	                	cell = RoundCell(_gameWindow.board.getBoardCell(col, row));
+	                	if(cell){
+		                    token = ManantialesToken(cell.token);
+		                    if(token != null && cell.color == _currentPlayer.color && token.type == _store.tokenType){
+		                    	_store.removeToken();
+		                    }
+		                 }
+	                }
+	            }
+	            _store.inited = true;
+            }
         }
 
         public function dragEnterBoardCell(evt:DragEvent):void{
@@ -561,46 +579,30 @@ package mx.ecosur.multigame.manantiales
             var ficha:Ficha;
             var token:ManantialesToken;
 
-            /* TODO: Move to store objects themselves.
-                Remove all placed tokens from corresonding store */
+            /* TODO: Move to store objects themselves. */
             if (_game.grid.cells && _game.grid.cells.length > 0) {
                 for (var i:Number = 0; i < _game.grid.cells.length; i++){
                     ficha = Ficha(_game.grid.cells[i]);
                     switch (ficha.type) {
                         case TokenType.FOREST:
                            token = new ForestToken();
-                           token.ficha = ficha;
-                           if (this._gameWindow.forestStore && token.ficha.color == this._currentPlayer.color)
-                               this._gameWindow.forestStore.removeToken();
                            break;
                         case TokenType.MODERATE:
                            token = new ModerateToken();
-                           token.ficha = ficha;
-                           if (this._gameWindow.moderateStore && token.ficha.color == this._currentPlayer.color)
-                               this._gameWindow.moderateStore.removeToken();
                            break;
                         case TokenType.INTENSIVE:
                            token = new IntensiveToken();
-                           token.ficha = ficha;
-                           if (this._gameWindow.intensiveStore && token.ficha.color == this._currentPlayer.color)
-                                this._gameWindow.intensiveStore.removeToken();
                            break;
                         case TokenType.VIVERO:
                            token = new ViveroToken();
-                           token.ficha = ficha;
-                           if (this._gameWindow.viveroStore && token.ficha.color == this._currentPlayer.color)
-                                this._gameWindow.viveroStore.removeToken();
                            break;
                         case TokenType.SILVOPASTORAL:
                            token = new SilvopastoralToken();
-                           token.ficha = ficha;
-                           if (this._gameWindow.silvoStore && token.ficha.color == this._currentPlayer.color)
-                                this._gameWindow.silvoStore.removeToken();
                            break;
                         default:
                             break;
                     }
-
+                    token.ficha = ficha;
                     _gameWindow.board.addToken(token);
 
                     if (puzzleMode)
