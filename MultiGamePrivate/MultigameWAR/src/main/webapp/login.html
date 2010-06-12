@@ -2,13 +2,18 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>MultiGame LOGIN</title>
+    <title>ChiapasGames.net</title>
     <style type="text/css">
         body {
-            background-color: #333333;
             font-family: Verdana, sans-serif;
             font-size: 12px;
-            color: #FFFFF0;
+            text-align: left;
+            margin-top: 25px;
+            margin-left: 50px;
+            margin-right: 50px;
+            margin-bottom: 25px;
+            vertical-align: middle;
+            width: 860px;
         }
     </style>
     <script type="text/javascript">
@@ -29,8 +34,28 @@
 </head>
 <body>
     <blockquote>
+        <!-- ECOSUR Header from http://www.ecosur.mx -->
+        <table cellpadding="0" cellspacing="0" class="content_table">
+            <tr>
+                <td width="4" height="64">&nbsp;</td>
+                <td width="194" rowspan="2"  valign="top">
+                    <a href="http://www.ecosur.mx">
+                    <img src="http://www.ecosur.mx/templates/ecosur/images/logo.jpg" width="194" height="96"
+                         alt="Página Principal de ECOSUR"/></a>
+                </td>
+                <td colspan="2"  valign="top">
+                    <img src="http://www.ecosur.mx/templates/ecosur/images/cuadritos.jpg" width="520" height="64"
+                         alt="Cuadritos" />
+                </td>
+                <td width="65" rowspan="2"  valign="top"><a href="http://www.conacyt.mx" target="_banner">
+                    <img src="http://www.ecosur.mx/templates/ecosur/images/conacyt.jpg" width="65" height="96"
+                         alt="CONACYT" /></a>
+                </td>
+            </tr>
+        </table>
+        <br/>
         <p>
-            Access to MultiGame is restricted to approved users.  Please enter your username and password.
+           <h2>Login to MultiGame</h2>
         </p>
         <form method="POST" action="j_security_check">
             <table>
@@ -39,6 +64,125 @@
             </table>
             <input type="submit"/>
         </form>
+        <p>
+            You can use the form above to login to the game server and start playing our hosted games.  Please use your
+            ECOSUR provided credentials to participate in our experiment.
+        </p>
+        <p>
+            <h2>Welcome</h2>
+        </p>
+        <p>
+            This is the network server for the computer assisted participatory modeling project at El Colegio de La
+            Frontera Sur (ECOSUR) in San Cristobal de Las Casas, funded by CONACYT.  We have placed computer games developed
+            here as a result of our ongoing research in the Tablon watershed at the La Sepultura UNESCO world heritage
+            site.
+        </p>
+        <p>
+            Our computer games implement board games created by researchers and stakeholders in La Sepultura. These
+            games have been adapted and/or extended for online play.  We follow the
+            <a href="http://www.ecole-commod.sc.chula.ac.th/www2/index.php">COMMOD</a> process, with our results being
+            based primarily on the gaming aspects of participatory modeling but also making use of multi-agent modeling
+            for experimentation and artificial intelligence.
+        </p>
+        <p>
+            <h2>Background</h2>
+        </p>
+        <p>
+           <h3>TEAM</h3>
+        </p>
+        <p>
+            <ul>
+                <li><a href="http://bdi.ecosur.mx/personal/informaciongeneral.aspx?ID=GarciaLuis">Dr. Luis Garcia Barrios</a>,
+                    team lead, researcher and game designer; Senior Researcher at ECOSUR, San Cristobal de Las Casas
+                    (SCLC).  Does multidisciplinary research in a number of fields, interconnecting Complex
+                    Socio-Environmental Systems, Agent based models, Role Playing games, Agroecology, Agrobiodiversity
+                    and Rural Development.
+                </li>
+                <li>
+                    <a href="http://www.google.com/profiles/andrew.waterman">Andrew Waterman</a>, 
+                    M.A., game designer, architect and software developer; tecnico at ECOSUR SCLC.
+                </li>
+                <li>
+                    Max Pimm, B.Sc., game designer and software developer; freelance programmer in Barcelona.
+                </li>
+                <li>
+                    <a href="http://www.iztacala.unam.mx/mmrg/mega/Personal/Profesores/JoseRaulGarciaBarrios.html">Dr. Raul Garcia Barrios,</a> 
+                    researcher and game designer; Economist at Centro de Investigaciones
+                    Multidisciplinarias a Universidad Nacional Autonoma de Mexico (CRIM-UNAM).
+                </li>
+                <li>
+                   Dr. Claudia Brunel, sociologist and game designer; post-doctorate fellow at ECOSUR, SCLC.
+                </li>
+                <li>
+                   <a href="http://www.chapingo.mx/scru/posgrado/pa.html">Juana Cruz</a>, M.Sc., researcher and game
+                    designer; Sociologist at Universidad Autonoma Chapingo, SCLC.
+                </li>
+            </ul>
+        </p>
+        <p>
+           <h3>GAMES</h3>
+        </p>
+        <p>
+            Currently, we host two rule based games, GENTE and MANANTIALES.  Gente is a fairly simple board game,
+            adapted from "PENTE", and developed to explore self-centered versus selfless behaviors in the context of a
+            four player, team based, game.  Manantiales is more complicated than Gente, and is the amalgamation of
+            several earlier model games and discussions begun at ECOSUR during the ARIDNet workshop in July of 2008.
+            Although Gente has been played with stakeholders across the spectrum, the abstraction of the game made it
+            difficult for stakeholders to help us completely extend and adapt the game from our initial design.  Work
+            on interactive game rules is progressing to try and address this challenge from the computer assisted
+            perspective. In the case of Manantiales, we have had very active stakeholder participation and
+            co-development starting with the AridNET workshop and working through many sessions and workshops in the
+            field, government offices in Tuxtla Gutierrez and in the academic environment here at ECOSUR.
+        </p>
+        <p>
+           <h3>METHODOLOGY</h3>
+        </p>
+        <p>
+            As we mention above, our games have been developed following the COMMOD process, first articulated by F.
+            Bousquet and Guy Trebuil (et. al.) in the seminal paper, <a href="http://cormas.cirad.fr/pdf/adveem.pdf">
+            "An environmental modeling approach: the use of multi-agent simulations."</a>  We have focused our work on
+            iterative game designs with a structure faithful to environmental models while using Game Theory to qualify
+            outcomes and AI participation.  In the case of Manantiales, modeling works to express a stylized simulation
+            of what is actually occurring through development in the Tablon watershed/Sepultura buffer zone.
+        </p>
+        <p>
+            <h3>ARCHITECTURE</h3>
+        </p>
+        <p>
+            The diagram that follows is a simplified view of our JEE rules based architecture for games.  We use a
+            distributed architecture, allowing our games to be edited, modified and run on a variety of client
+            platforms and our server software to scale to any size.  Our current iteration includes a Flash based
+            gaming client; but clients can be developed and written in a variety of technologies that allow for RPC,
+            SOAP or REST based messaging to signal our backend implementation.  We are currently thinking about
+            implementations for smaller handheld devices (Android, XHTML, WML) as well as Apple iPad/iPhone devices.
+            We are very interested in collaborating with software developers who have an interest in our project and
+            any of these platforms.
+        </p>
+        <img align="center" src="img/architecture.png" alt="MultiGame Architecture Diagram"/>
+        <p>
+            As I mention above, the diagram only roughly sketches some of the structure of our backend implementation.
+            A common model, described by a set of interfaces and serializable container classes (the Bridge Pattern)
+            interact with a set of common EJBs capable of being externalized via REST or SOAP protocols.  We use the
+            Drools rules engine to govern interactions in the game as well as the AI implementation (a fully runnable
+            multi-agent system when considered from a COMMOD perspective).  Agents act through rules triggered by
+            modifications to the underlying set of entity beans which act as an implementation of the common model on a
+            per game basis. Agents and the game itself communicate change by means of a JMS Topic queue; which notifies
+            Agent implementations attached to the JMS message bus by means of MessageDrivenBeans and BLAZEDS signaling
+            to the Flash user interface.
+        </p>
+        <p>
+            The code staged on <a href="http://chiapasgames.net">chiapasgames.net</a> comes from a private repository
+            which will soon be made public.  Interested software developers (and computer scientists) can view the
+            common and public version of our source code (including all common libraries, EJBs and the implementation of the game of Gente and its
+            agents) on the following URL at GitHub:
+        </p>
+        <p>
+            <a href="http://github.com/awaterma/MultiGamePublic">http://github.com/awaterma/MultiGamePublic</a>
+        </p>
+        <p>
+            Our private repository is driven out of concurrent work being done in the “development” branch of the
+            public repository.
+        </p>
     </blockquote>
 </body>
 </html>

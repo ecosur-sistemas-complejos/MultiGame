@@ -149,26 +149,26 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         switch (getColor()) {
             case YELLOW:
                 startrow = 0;
+                endrow = 4;
                 startcol = 0;
-                endrow = 5;
-                endcol = 5;
+                endcol = 4;
                 break;
             case PURPLE:
                 startrow = 4;
-                startcol = 0;
                 endrow = game.getRows();
-                endcol = 5;
+                startcol = 0;
+                endcol = 4;
                 break;
             case RED:
                 startrow = 0;
+                endrow = 4;
                 startcol = 4;
-                endrow = 5;
                 endcol = game.getColumns();
                 break;
             case BLACK:
                 startrow = 4;
-                startcol = 4;
                 endrow = game.getRows();
+                startcol = 4;
                 endcol = game.getColumns();
                 break;
             default:
@@ -209,28 +209,34 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
         switch (color) {
             case YELLOW:
-                ret = (column < 5 && row < 5);
+                ret = (column <= 4 && row <= 4);
                 break;
             case PURPLE:
-                ret = (column < 5 && row > 3);
+                ret = (column <= 4 && row >= 4);
                 break;
             case RED:
-                ret = (column > 3 && row < 5);
+                ret = (column >= 4 && row <= 4);
                 break;
             case BLACK:
-                ret = (column > 3 && row > 3);
+                ret = (column >= 4 && row >= 4);
                 break;
             default:
                 ret = false;
         }
 
-        if (column % 2 == 0)
-            ret = ret && row % 2 == 0;
-        else
-            ret = ret && row % 2 != 0;
+        if (row % 2 == 0 && column % 2 == 0) {
+            // even
+            ret = ret && true;
 
+        } else if (row % 2 != 0 && column % 2 != 0) {
+            //odd
+            ret = ret && true;
+        } else
+            ret = false;
+        
         /* Check for Manantial */
-        ret = ret && (column !=4 && row != 4);
+        if (column == 4 && row == 4)
+            ret = false;
         return ret;
     }
 
