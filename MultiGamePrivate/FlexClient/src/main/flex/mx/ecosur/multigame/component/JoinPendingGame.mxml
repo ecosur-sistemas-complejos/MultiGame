@@ -14,8 +14,6 @@
         import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.event.ServiceGameEvent;
-        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-        import mx.ecosur.multigame.gente.entity.GenteGame;
 
         import mx.formatters.DateFormatter;
         import mx.collections.ArrayCollection;
@@ -60,9 +58,8 @@
         }
 
         private function updateDataGrid():void {
-        	if (gamesDataGrid == null)
-        	   return
-        	
+            if (gamesDataGrid == null)
+               return
             var game:Game, selected:Game;
             var gamePlayer:GamePlayer;
             var dataProvider:ArrayCollection = new ArrayCollection();
@@ -79,10 +76,7 @@
             for (var i:Number = 0; i < _games.length; i++) {
                 game = Game(_games.getItemAt(i));
                 dataItem = new Object();
-                if (game.isPrototypeOf(GenteGame))
-                    dataItem.gameType = "Gente";
-                else if (game.isPrototypeOf(ManantialesGame))
-                    dataItem.gameType = "Manantiales";
+                dataItem.gameType = game.type;
                 dataItem.created = df.format(game.created);
                 dataItem.players = "";
                 for (var j:Number = 0; j < game.players.length; j++) {

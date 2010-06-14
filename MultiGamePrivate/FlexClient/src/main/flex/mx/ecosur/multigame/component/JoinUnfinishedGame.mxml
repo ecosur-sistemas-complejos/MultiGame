@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" title="Rejoin unfinished game" creationComplete="init(event)">
 
-	<mx:Metadata>
+    <mx:Metadata>
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.GameEvent")]
     </mx:Metadata>
 
-	<mx:Script>
+    <mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.enum.GameState;   
         import mx.formatters.DateFormatter;
@@ -20,8 +20,6 @@
         import mx.ecosur.multigame.entity.Registrant;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.entity.Game;
-        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-        import mx.ecosur.multigame.gente.entity.GenteGame;
 
         public var player:Registrant;
         private var _games:ArrayCollection;
@@ -45,7 +43,6 @@
         }
 
         private function updateDataGrid():void {
-            var empty:ManantialesGame;
             var game:Game;
             var gamePlayer:GamePlayer;
             var dataProvider:ArrayCollection = new ArrayCollection();
@@ -55,10 +52,7 @@
             for (var i:Number = 0; i < _games.length; i++) {
                 game = Game(_games.getItemAt(i));
                 dataItem = new Object();
-                if (game.isPrototypeOf(GenteGame))
-                    dataItem.gameType = "Gente";
-                else if (game.isPrototypeOf(ManantialesGame))
-                    dataItem.gameType = "Manantiales";
+                dataItem.gameType = game.type;
                 dataItem.created = df.format(game.created);
                 dataItem.players = "";
                 for (var j:Number = 0; j < game.players.length; j++) {
@@ -95,19 +89,19 @@
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 
     <mx:VBox width="100%">
-    	<mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
-    		<mx:columns>
-				<mx:DataGridColumn headerText="Started" dataField="created" width="120"/>
-				<mx:DataGridColumn headerText="Game type" dataField="gameType" width="80"/>
-				<mx:DataGridColumn headerText="Players" dataField="players" wordWrap="true" />
-				<mx:DataGridColumn headerText="Status" dataField="status" width="120" wordWrap="true"/>
-    		</mx:columns>
-		</mx:DataGrid>
+        <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
+            <mx:columns>
+                <mx:DataGridColumn headerText="Started" dataField="created" width="120"/>
+                <mx:DataGridColumn headerText="Game type" dataField="gameType" width="80"/>
+                <mx:DataGridColumn headerText="Players" dataField="players" wordWrap="true" />
+                <mx:DataGridColumn headerText="Status" dataField="status" width="120" wordWrap="true"/>
+            </mx:columns>
+        </mx:DataGrid>
         <mx:Form width="100%">
             <mx:FormItem horizontalAlign="right" width="100%">
                 <mx:Button click="joinGame()" label="Join"/>
             </mx:FormItem>
         </mx:Form>
-	</mx:VBox>
+    </mx:VBox>
     
 </mx:Panel>
