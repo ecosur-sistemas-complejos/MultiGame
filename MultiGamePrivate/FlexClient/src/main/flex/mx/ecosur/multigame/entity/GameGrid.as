@@ -10,27 +10,37 @@
 */
 
 package mx.ecosur.multigame.entity {
-	
-	import mx.collections.ArrayCollection;
-	
-	/**
-	 * Represents a server side GameGrid object.
-	 */
-	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GameGrid")]
-	public class GameGrid {
-		
-		private var _cells:ArrayCollection;
-		
-		public function GameGrid(){
-			super();
-		}
-		
-		public function get cells():ArrayCollection{
-			return _cells;
-		}
-		
-		public function set cells(cells:ArrayCollection):void {
-			_cells = cells;
-		}
-	}
+
+    import mx.collections.ArrayCollection;
+
+    /**
+     * Represents a server side GameGrid object.
+     */
+    [RemoteClass (alias="mx.ecosur.multigame.impl.model.GameGrid")]
+    public class GameGrid {
+
+        private var _id:int;
+
+        private var _cells:ArrayCollection;
+
+        public function GameGrid(){
+            super();
+        }
+        
+        public function get id():int {
+            return _id;
+        }
+
+        public function set id(value:int):void {
+            _id = value;
+        }
+
+        public function get cells():ArrayCollection{
+            return _cells;
+        }
+
+        public function set cells(cells:ArrayCollection):void {
+            _cells = cells;
+        }
+    }
 }

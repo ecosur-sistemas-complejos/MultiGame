@@ -162,25 +162,19 @@
         <mx:State name="CLASSIC">
             <mx:RemoveChild  target="{moveViewer}"/>
             <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Managed Forest" width="100%" id="mfp">
-                    <token:ForestTokenStore id="forestStore"
-                        currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
-                        width="100%" creationComplete="forestStore.reset()"/>
-                </mx:Panel>
+                <token:ForestTokenStore id="forestStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}"
+                    width="100%" creationComplete="forestStore.reset()"/>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
-                <mx:Panel title="Moderate Grazing" width="100%" id="mgp">
                    <token:ModerateTokenStore id="moderateStore"
                     currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                     width="100%" creationComplete="moderateStore.reset()"/>
-                </mx:Panel>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
-               <mx:Panel title="Intensive Grazing" width="100%" id="igp">
                 <token:IntensiveTokenStore id="intensiveStore"
                     currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                     width="100%" creationComplete="intensiveStore.reset()"/>
-               </mx:Panel>
             </mx:AddChild>
         </mx:State>
         <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC">
@@ -188,18 +182,14 @@
         </mx:State>
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
-            <mx:Panel title="Silvopastoral Establishment" width="100%" id="sep">
                <token:ViveroTokenStore id="viveroStore"
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                 width="100%" creationComplete="viveroStore.reset()"/>
-            </mx:Panel>
            </mx:AddChild>
            <mx:AddChild relativeTo="{leftBox}">
-            <mx:Panel title="Silvopastoral Active" width="100%" id="sap">
                <token:SilvopastoralTokenStore id="silvoStore"
                 currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
                 width="100%" creationComplete="silvoStore.reset()"/>
-            </mx:Panel>
            </mx:AddChild>
         </mx:State>
         <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL"/>

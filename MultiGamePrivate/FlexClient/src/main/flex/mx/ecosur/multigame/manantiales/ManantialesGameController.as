@@ -142,12 +142,11 @@ package mx.ecosur.multigame.manantiales
             _suggestionHandler = new SuggestionHandler (this);
         }
         
-        public function initializeTokenStorePanel (tokenStorePanel:Panel):void {
-            var _store:ManantialesTokenStore = ManantialesTokenStore(tokenStorePanel.getChildAt(0));
-            _store.startMoveHandler = startMove;
-            _store.endMoveHandler = endMove;
-            _store.visible=true;
-            _store.active=true;
+        public function initializeTokenStore (tokenStore:ManantialesTokenStore):void {
+            tokenStore.startMoveHandler = startMove;
+            tokenStore.endMoveHandler = endMove;
+            tokenStore.visible=true;
+            tokenStore.active=true;
         }
 
         public function dragEnterBoardCell(evt:DragEvent):void{
@@ -615,17 +614,17 @@ package mx.ecosur.multigame.manantiales
             }
 
             // setup token store panels for hiding
-            _tokenStorePanels.addItem(_gameWindow.mfp);
-            _tokenStorePanels.addItem(_gameWindow.mgp);
-            _tokenStorePanels.addItem(_gameWindow.igp);
+            _tokenStorePanels.addItem(_gameWindow.forestStore);
+            _tokenStorePanels.addItem(_gameWindow.moderateStore);
+            _tokenStorePanels.addItem(_gameWindow.intensiveStore);
             if (_gameWindow.currentState == "SILVOPASTORAL" || _gameWindow.currentState == "SILVO_PUZZLE") {
-                _tokenStorePanels.addItem(_gameWindow.sep);
-                _tokenStorePanels.addItem(_gameWindow.sap);
+                _tokenStorePanels.addItem(_gameWindow.viveroStore);
+                _tokenStorePanels.addItem(_gameWindow.silvoStore);
             }
 
             // initialize token stores
             for (var i:int = 0; i < _tokenStorePanels.length; i++) {
-                initializeTokenStorePanel (Panel(_tokenStorePanels.getItemAt(i)));
+                initializeTokenStore (ManantialesTokenStore(_tokenStorePanels.getItemAt(i)));
             }
 
             // open annual conditions generator

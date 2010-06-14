@@ -15,6 +15,34 @@ package mx.ecosur.multigame.manantiales.entity
 
         private var _checkConditions:ArrayCollection;
 
+        private var _maxPlayers:int;
+
+        private var _version:int;
+
+        public function get version():int {
+            return _version;
+        }
+
+        public function set version(value:int):void {
+            _version = value;
+        }
+
+        public function get suggestions():ArrayCollection {
+            return _suggestions;
+        }
+
+        public function set suggestions(value:ArrayCollection):void {
+            _suggestions = value;
+        }
+
+        public function get maxPlayers():int {
+            return _maxPlayers;
+        }
+
+        public function set maxPlayers(value:int):void {
+            _maxPlayers = value;
+        }
+
         public function get mode():String {
             return _mode;
         }
