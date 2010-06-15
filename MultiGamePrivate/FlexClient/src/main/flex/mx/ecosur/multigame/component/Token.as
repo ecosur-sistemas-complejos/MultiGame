@@ -50,6 +50,7 @@ package mx.ecosur.multigame.component {
             super();
             _selected = false;
             _bgDirty = false;
+            _cell = null;
 
             // Create animation sequence
             _blinkAnim = new Sequence();
@@ -105,6 +106,7 @@ package mx.ecosur.multigame.component {
                 _bgDirty = true;
                 invalidateDisplayList();
             }
+            
             _cell = cell;
         }
 

@@ -295,20 +295,25 @@ package mx.ecosur.multigame.manantiales
                 move.id = 0;
                 
                 // define target cell
-                var targetCell:BoardCell = BoardCell(evt.currentTarget);
-                
+                var targetCell:BoardCell = BoardCell(evt.currentTarget);                
                 var sourceToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("source"));
-                if (sourceToken != null && sourceToken.cell != null && sourceToken.cell.column >= 0 && sourceToken.cell.row >= 0) {
-                    move.currentCell = sourceToken.cell;
-                    /* Find the dragged location RoundCell */
-                    var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(sourceToken.cell.column, sourceToken.cell.row));
-                    sourceCell.token = new UndevelopedToken();
-                    sourceCell.reset();
-                    
-                }
 
-                if (targetCell.token.cell != null) {
-                    move.currentCell = Ficha (targetCell.token.cell);
+                if (sourceToken.placed) {
+                    /* Commented code below is meant for suggestions; need a better way to tell the
+                       difference between a suggested move and a move from the token store.
+                       @TODO: Fix this bug.
+                     */
+                    if (sourceToken != null && sourceToken.cell != null) {
+                        move.currentCell = sourceToken.cell;
+                        var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(sourceToken.cell.column, sourceToken.cell.row));
+                        sourceCell.token = new UndevelopedToken();
+                        sourceCell.reset();
+
+                    }
+
+                    if (targetCell.token.cell != null) {
+                        move.currentCell = Ficha (targetCell.token.cell);
+                    }
                 }
                 
                 /* Set the destination information to match where the token was dragged to */

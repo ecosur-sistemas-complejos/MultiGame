@@ -3,9 +3,11 @@ package mx.ecosur.multigame.manantiales
     import flash.filters.DropShadowFilter;
     
     import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.component.Token;
+import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
-    public class RoundCell extends BoardCell
+public class RoundCell extends BoardCell
     {
         private var _factor:int;
         
@@ -71,6 +73,19 @@ package mx.ecosur.multigame.manantiales
                 _token.x = (tokenSize) / 2;
                 _token.y = (tokenSize) / 2;
             }
+        }
+
+        override public function set token(token:Token):void{
+            if (_token != null)
+                removeChild(_token);
+            if (token != null){
+                addChild(token);
+                invalidateDisplayList();
+                var manToken:ManantialesToken = ManantialesToken(token);
+                manToken.placed = true;
+            }
+            
+            _token = token;
         }
     }
 }

@@ -1,9 +1,12 @@
 package mx.ecosur.multigame.manantiales.token
 {
     import flash.display.Shape;
-    
-    import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.component.TokenStore;
+
+import flash.events.MouseEvent;
+
+import mx.ecosur.multigame.component.BoardCell;
+import mx.ecosur.multigame.component.Token;
+import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesBoard;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
@@ -85,6 +88,14 @@ package mx.ecosur.multigame.manantiales.token
             _nTokens = 0;
             for (var i:int = 0; i < INITIAL_N_TOKENS; i++){
                 addToken();
+            }
+        }
+
+        override protected function selectToken(event:MouseEvent):void {
+            if (event.target is Token) {
+                var target:ManantialesToken = ManantialesToken(event.target);
+                target.selected = true;
+                target.placed = false;
             }
         }
     }
