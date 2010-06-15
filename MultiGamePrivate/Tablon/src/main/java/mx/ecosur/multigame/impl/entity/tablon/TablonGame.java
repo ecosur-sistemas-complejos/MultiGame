@@ -41,6 +41,8 @@ public class TablonGame extends GridGame {
     private static final String ChangeSet = "/mx/ecosur/multigame/impl/tablon.xml";
 
     private static final boolean DEBUG = false;
+
+    private static KnowledgeBase kbase;
 	
 	private transient MessageSender messageSender;
 
@@ -56,7 +58,8 @@ public class TablonGame extends GridGame {
     public TablonGame(int columns, int rows) {
         super();
         setColumns(columns);
-        setRows(rows);        
+        setRows(rows);
+        kbase = null;
     }
 
     public TablonGame(int columns, int rows, KnowledgeBase kbase) {

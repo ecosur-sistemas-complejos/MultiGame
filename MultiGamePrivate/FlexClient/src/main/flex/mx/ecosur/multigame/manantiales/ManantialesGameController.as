@@ -1009,35 +1009,37 @@ package mx.ecosur.multigame.manantiales
         private function endDoMove(event:EffectEvent):void{
 
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
-            var boardCell:BoardCell = _gameWindow.board.getBoardCell(token.cell.column, token.cell.row);
-            _gameWindow.animateLayer.removeChild(token);
+            if (token.cell != null) {
+                var boardCell:BoardCell = _gameWindow.board.getBoardCell(token.cell.column, token.cell.row);
+                _gameWindow.animateLayer.removeChild(token);
 
-            //remove from token store if necessary
-            if(token.cell.color == _currentPlayer.color && _isTurn){
-                if (token is ForestToken) {
-                    _gameWindow.forestStore.removeToken();
+                //remove from token store if necessary
+                if(token.cell.color == _currentPlayer.color && _isTurn){
+                    if (token is ForestToken) {
+                        _gameWindow.forestStore.removeToken();
+                    }
+                    else if (token is IntensiveToken) {
+                        _gameWindow.intensiveStore.removeToken();
+                    }
+                    else if (token is ModerateToken) {
+                        _gameWindow.moderateStore.removeToken();
+                    }
+                    else if (token is ViveroToken) {
+                        _gameWindow.viveroStore.removeToken();
+                    }
+                    else if (token is SilvopastoralToken) {
+                        _gameWindow.silvoStore.removeToken();
+                    }
                 }
-                else if (token is IntensiveToken) {
-                    _gameWindow.intensiveStore.removeToken();
-                }
-                else if (token is ModerateToken) {
-                    _gameWindow.moderateStore.removeToken();
-                }
-                else if (token is ViveroToken) {
-                    _gameWindow.viveroStore.removeToken();
-                }
-                else if (token is SilvopastoralToken) {
-                    _gameWindow.silvoStore.removeToken();
-                }
-            }
 
-            boardCell.token = token;
-            boardCell.token.blink(1);
+                boardCell.token = token;
+                boardCell.token.blink(1);
 
-            // Update move viewer
-            if (_selectedMoveInd > 0 && _moves.length > _selectedMoveInd && _moves[_selectedMoveInd] != null) {
-                var move:ManantialesMove = ManantialesMove(_moves[_selectedMoveInd])
-                _gameWindow.moveViewer.selectedMove = move;
+                // Update move viewer
+                if (_selectedMoveInd > 0 && _moves.length > _selectedMoveInd && _moves[_selectedMoveInd] != null) {
+                    var move:ManantialesMove = ManantialesMove(_moves[_selectedMoveInd])
+                    _gameWindow.moveViewer.selectedMove = move;
+                }
             }
         }
 

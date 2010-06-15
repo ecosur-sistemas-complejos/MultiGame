@@ -67,6 +67,73 @@ then
     messageSender.sendStartGame($game);
 end
 
+#Rule to enforce only 6 of each type of token
+
+rule "only six intensives"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.INTENSIVE_PASTURE,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        Ficha (type == TokenType.INTENSIVE_PASTURE,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six moderates"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.MODERATE_PASTURE,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        Ficha (type == TokenType.MODERATE_PASTURE,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six managed forest"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.MANAGED_FOREST,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        Ficha (type == TokenType.MANAGED_FOREST,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six viveros"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.VIVERO,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        Ficha (type == TokenType.VIVERO,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six silvopastorales"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.SILVOPASTORAL,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        Ficha (type == TokenType.SILVOPASTORAL,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
 rule "evaluate-valid-suggestion"
     agenda-group "verify"
     no-loop true
@@ -342,6 +409,48 @@ rule "manantiales"
         messageSender.sendConditionRaised ($game, constraint);
 end
 
+# Conditions only expire in the classic or silvopastoral games.
+
+rule "expire-condition"
+    agenda-group "verify"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, 
+        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+    $move      : ManantialesMove ($player : player)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type not in (ConditionType.MANANTIALES_DRY, 
+            ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
+then
+    GameGrid grid = clearBorder ($game, $condition.getType());
+    Set<CheckCondition> conditions = $game.getCheckConditions();
+    conditions.remove ($condition);
+    $game.setCheckConditions (conditions);
+    $game.setGrid (grid);
+    messageSender.sendConditionTriggered ($game, $condition);
+    retract ($condition);
+    modify ($game) { setCheckConditions (conditions), setGrid (grid) };
+end  
+
+rule "expire-terminal-condition"
+    agenda-group "verify"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, 
+        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+    $move      : ManantialesMove ($player : player)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type in (ConditionType.MANANTIALES_DRY, 
+            ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
+then
+    $condition.setExpired(true);
+    modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
+    messageSender.sendConditionTriggered ($game, $condition);
+    messageSender.sendEndGame ($game);
+end
+
 rule "evaluated-suggestion-notify"
     agenda-group "move"
     no-loop true
@@ -524,55 +633,13 @@ rule "score"
     salience -5
 when
     not PuzzleSuggestion ()
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.MOVED, player.turn == true)
 then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
-    int ps = score (player, $move);
+    int ps = score (player, $game);
     player.setScore(ps);
     modify ($move) { setPlayer (player), setStatus (MoveStatus.EVALUATED) };
-end
-
-# Conditions only expire in the classic or silvopastoral games.
-
-rule "expire-condition"
-    agenda-group "verify"
-    no-loop true
-when
-    $game : ManantialesGame (state == GameState.PLAY, 
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
-    $move      : ManantialesMove ($player : player)
-    $condition : CheckCondition  (expired == false, $player2 : player, 
-        type not in (ConditionType.MANANTIALES_DRY, 
-            ConditionType.TERRITORY_DEFORESTED))
-    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
-then
-    GameGrid grid = clearBorder ($game, $condition.getType());
-    Set<CheckCondition> conditions = $game.getCheckConditions();
-    conditions.remove ($condition);
-    $game.setCheckConditions (conditions);
-    $game.setGrid (grid);
-    messageSender.sendConditionTriggered ($game, $condition);
-    retract ($condition);
-    modify ($game) { setCheckConditions (conditions), setGrid (grid) };
-end  
-
-rule "expire-terminal-condition"
-    agenda-group "verify"
-    no-loop true
-when
-    $game : ManantialesGame (state == GameState.PLAY, 
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
-    $move      : ManantialesMove ($player : player)
-    $condition : CheckCondition  (expired == false, $player2 : player, 
-        type in (ConditionType.MANANTIALES_DRY, 
-            ConditionType.TERRITORY_DEFORESTED))
-    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
-then
-    $condition.setExpired(true);
-    modify ($game) {addCheckCondition ($condition), setState (GameState.ENDED)}
-    messageSender.sendConditionTriggered ($game, $condition);
-    messageSender.sendEndGame ($game);
 end 
 
 rule "blue-borders-deforested"

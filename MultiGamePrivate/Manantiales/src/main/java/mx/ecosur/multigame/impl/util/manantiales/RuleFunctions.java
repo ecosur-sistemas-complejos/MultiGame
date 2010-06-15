@@ -65,50 +65,33 @@ public class RuleFunctions {
         return ret;
     }
 
-    public static  int score (ManantialesPlayer player, ManantialesMove move) {
-        if (move.getCurrentCell() != null) {
-            // decrement count of current
-            switch (move.getReplacementType()) {
-            case MANAGED_FOREST:
-                player.setForested(player.getForested() - 1);
-                break;
-            case MODERATE_PASTURE:
-                player.setModerate(player.getModerate() - 1);
-                break;
-            case INTENSIVE_PASTURE:
-                player.setIntensive(player.getIntensive() - 1);
-                break;
-            case VIVERO:
-                player.setVivero(player.getVivero() - 1);
-                break;
-            case SILVOPASTORAL:
-                player.setSilvo(player.getSilvo() - 1);
-                break;
-            default:
-                break;
+    public static int score (ManantialesPlayer player, ManantialesGame game) {
+        // reset player count to 0
+        player.reset();
+
+        for (GridCell cell : game.getGrid().getCells()) {
+            if (!cell.getColor().equals(player.getColor()))
+                continue;            
+            Ficha ficha = (Ficha) cell;            
+            switch (ficha.getType()) {
+                case MANAGED_FOREST:
+                    player.setForested(player.getForested() +  1);
+                    break;
+                case MODERATE_PASTURE:
+                    player.setModerate(player.getModerate() + 1);
+                    break;
+                case INTENSIVE_PASTURE:
+                    player.setIntensive(player.getIntensive() + 1);
+                    break;
+                case VIVERO:
+                    player.setVivero(player.getVivero() + 1);
+                    break;
+                case SILVOPASTORAL:
+                    player.setSilvo(player.getSilvo() + 1);
+                    break;
+                default:
+                    break;
             }
-        }
-        
-        if (move.getDestinationCell() != null) {
-	        switch (move.getType()) {
-	            case MANAGED_FOREST:
-	                player.setForested(player.getForested() +  1);
-	                break;
-	            case MODERATE_PASTURE:
-	                player.setModerate(player.getModerate() + 1);
-	                break;
-	            case INTENSIVE_PASTURE:
-	                player.setIntensive(player.getIntensive() + 1);
-	                break;
-	            case VIVERO:
-	                player.setVivero(player.getVivero() + 1);
-	                break;
-	            case SILVOPASTORAL:
-	                player.setSilvo(player.getSilvo() + 1);
-	                break;
-	            default:
-	                break;
-	        }
         }
 
         int forested = player.getForested() * 1;
@@ -188,32 +171,37 @@ public class RuleFunctions {
         GameGrid ret = game.getGrid();
         HashSet<Ficha> deletions = new HashSet<Ficha>();
 
+            /* Set up deletable types */
+        HashSet<TokenType> deletables = new HashSet<TokenType>();
+        deletables.add (TokenType.MODERATE_PASTURE);
+        deletables.add(TokenType.INTENSIVE_PASTURE);
+
         switch (violation) {
             case NORTHERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
                     Ficha ficha = (Ficha) cell;
-                    if (ficha.getBorder().equals(BorderType.NORTH))
+                    if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.NORTH))
                         deletions.add(ficha);
                 }
                 break;
             case WESTERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
                     Ficha ficha = (Ficha) cell;
-                    if (ficha.getBorder().equals(BorderType.WEST))
+                    if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.WEST))
                         deletions.add(ficha);
                 }
                 break;
             case SOUTHERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
                     Ficha ficha = (Ficha) cell;
-                    if (ficha.getBorder().equals(BorderType.SOUTH))
+                    if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.SOUTH))
                         deletions.add(ficha);
                 }
                 break;
             case EASTERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
                     Ficha ficha = (Ficha) cell;
-                    if (ficha.getBorder().equals(BorderType.EAST))
+                    if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.EAST))
                         deletions.add(ficha);
                 }
                 break;

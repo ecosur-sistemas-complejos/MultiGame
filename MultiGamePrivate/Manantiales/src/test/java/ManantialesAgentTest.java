@@ -173,10 +173,8 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
     private boolean isGoodLocation (Ficha ficha) {
         boolean ret;
-
-        int column = ficha.getColumn();
-        int row = ficha.getRow();
         Color color = ficha.getColor();
+        int column = ficha.getColumn(), row = ficha.getRow();
 
         switch (color) {
             case YELLOW:
@@ -195,20 +193,22 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
                 ret = false;
         }
 
-        if (row % 2 == 0 && column % 2 == 0) {
-            // even
-            ret = ret && true;
+        if (column == 4 || row == 4) {
+            /* Check for Manantial */
+            if (column == 4 && row == 4)
+                ret = false;
+        } else {
+            if (row % 2 == 0 && column % 2 == 0) {
+                // even
+                ret = ret && true;
 
-        } else if (row % 2 != 0 && column % 2 != 0) {
-            //odd
-            ret = ret && true;
-        } else
-            ret = false;
+            } else if (row % 2 != 0 && column % 2 != 0) {
+                //odd
+                ret = ret && true;
+            } else
+                ret = false;
+        }
 
-        /* Check for Manantial */
-        if (column == 4 && row == 4)
-            ret = false;
-        return ret;       
+        return ret;
     }
-
 }
