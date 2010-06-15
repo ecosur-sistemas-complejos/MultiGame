@@ -20,6 +20,7 @@ import mx.ecosur.multigame.component.TokenStore;
         protected var _board:ManantialesBoard;
         protected var _controller:ManantialesGameController;
         protected var _tokenType:String;
+        public var inited:Boolean;
         
         public function set controller (controller:ManantialesGameController):void {
             _controller = controller;
@@ -28,16 +29,12 @@ import mx.ecosur.multigame.component.TokenStore;
         public function set board (board:ManantialesBoard):void {
            _board = board;
         }
+        
+        public function get tokenType():String {
+        	return _tokenType;
+        }
 
         public function reset():void {
-            while (_nTokens > 0) {
-                removeToken();
-            }
-            
-            for (var i:int = 0; i < INITIAL_N_TOKENS; i++) {
-                addToken();
-            }
-            
             this.addEventListener(DragEvent.DRAG_ENTER, dragEnterHandler);
             this.addEventListener(DragEvent.DRAG_DROP, dragDropHandler);
         }
