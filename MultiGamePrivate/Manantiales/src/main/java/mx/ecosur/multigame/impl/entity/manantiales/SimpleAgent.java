@@ -121,13 +121,13 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
             Ficha ficha = (Ficha) cell;
             /* Convert Moderate to Intensive */
-            if (ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
+            if (ficha.getType().equals(TokenType.MODERATE_PASTURE) && getIntensive() < 6) {
                 Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
                 destination.setType(TokenType.INTENSIVE_PASTURE);
                 move.setCurrentCell (ficha);
                 move.setDestinationCell(destination);
                 break;
-            } else if (ficha.getType().equals(TokenType.MANAGED_FOREST)) {
+            } else if (ficha.getType().equals(TokenType.MANAGED_FOREST) && getModerate() < 6) {
                 Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
                 destination.setType(TokenType.MODERATE_PASTURE);
                 move.setCurrentCell (ficha);
@@ -175,7 +175,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
                 throw new RuntimeException ("Unknown Color!!");
         }
 
-        for (int row = startrow; row < endrow; row++) {
+        for (int row = startrow; row <= endrow; row++) {
             for (int col = startcol; col < endcol; col++) {
                 Ficha ficha = new Ficha (col, row, getColor(), TokenType.UNKNOWN);
                 if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null) {
@@ -239,6 +239,9 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
             } else
                 ret = false;
         }
+
+        if (row > 8 || column > 8)
+            ret = false;
 
         return ret;
     }

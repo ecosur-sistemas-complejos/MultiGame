@@ -52,15 +52,15 @@ package mx.ecosur.multigame.component {
         protected var _dragDropHandler:Function;
         
         public function AbstractBoard() {
-			super();
-			
-			if(getQualifiedClassName(this) == "mx.ecosur.multigame.component::AbstractGameBoard") {
+            super();
+            
+            if(getQualifiedClassName(this) == "mx.ecosur.multigame.component::AbstractGameBoard") {
                 throw new Error("Unable to instantiate an Abstract Class!");
             }
-                        
+
             _cellsCreated = false;
             addEventListener(Event.RESIZE, function():void{invalidateSize()});
-		}
+        }
         
         /* Getters and setters */
         
@@ -134,8 +134,8 @@ package mx.ecosur.multigame.component {
             for (var i:Number = 0; i < _nCols; i++){
                 for (var j:Number = 0; j < _nRows; j++){
                     boardCell = BoardCell(_boardCells[i][j]);
-					if (boardCell != null)
-	                    boardCell.token = null;
+                    if (boardCell != null)
+                        boardCell.token = null;
                 }
             }
         }

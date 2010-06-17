@@ -83,18 +83,19 @@ public class TokenStore extends UIComponent {
     }
 
     public function addToken():void{
-        var token:Token = new Token();
-        token.buttonMode = false;
-        token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
-        token.addEventListener(MouseEvent.MOUSE_OUT, unselectToken);
-        if (_startMoveHandler != null){
-                token.addEventListener(MouseEvent.MOUSE_DOWN, _startMoveHandler);
+        if (_nTokens < INITIAL_N_TOKENS)
+            var token:Token = new Token();
+            token.buttonMode = false;
+            token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
+            token.addEventListener(MouseEvent.MOUSE_OUT, unselectToken);
+            if (_startMoveHandler != null){
+                    token.addEventListener(MouseEvent.MOUSE_DOWN, _startMoveHandler);
+                }
+            if (_endMoveHandler != null){
+                token.addEventListener(DragEvent.DRAG_COMPLETE, _endMoveHandler);
             }
-        if (_endMoveHandler != null){
-            token.addEventListener(DragEvent.DRAG_COMPLETE, _endMoveHandler);
-        }
-        addChild(token);
-        _nTokens ++;
+            addChild(token);
+            _nTokens ++;
     }
 
     public function removeToken():void{
@@ -153,7 +154,7 @@ public class TokenStore extends UIComponent {
         }
     }
 
-    override protected function commitProperties():void{
+    override protected function commitProperties():void {
 
         //redefine handlers
         var token:Token;

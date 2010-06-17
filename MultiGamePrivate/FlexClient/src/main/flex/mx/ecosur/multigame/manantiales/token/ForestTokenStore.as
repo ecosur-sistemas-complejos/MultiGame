@@ -1,20 +1,20 @@
 package mx.ecosur.multigame.manantiales.token
 {
-	
+
     import flash.events.MouseEvent;
-    
+
     import mx.events.DragEvent;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
-	
-	public class ForestTokenStore extends ManantialesTokenStore
-	{
-		public function ForestTokenStore()
-		{
-			super();
-			_tokenType = TokenType.FOREST;
-		}
-		
-		public override function addToken():void{
+
+    public class ForestTokenStore extends ManantialesTokenStore
+    {
+        public function ForestTokenStore()
+        {
+            super();
+            _tokenType = TokenType.FOREST;
+        }
+
+        public override function addToken():void{
             var token:ForestToken = new ForestToken();
             token.buttonMode = false;
             token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
@@ -35,5 +35,5 @@ package mx.ecosur.multigame.manantiales.token
                 addToken();
             }
         }
-	}
+    }
 }

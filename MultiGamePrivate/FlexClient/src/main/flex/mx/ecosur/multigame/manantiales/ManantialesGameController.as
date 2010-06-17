@@ -7,7 +7,6 @@ package mx.ecosur.multigame.manantiales
     import flash.geom.Point;
     
     import mx.collections.ArrayCollection;
-    import mx.containers.Panel;
     import mx.controls.Alert;
     import mx.controls.Button;
     import mx.core.DragSource;
@@ -51,13 +50,13 @@ package mx.ecosur.multigame.manantiales
 
         // visual components
         public var _gameWindow:ManantialesWindow;
-
-        private var _tokenStorePanels:ArrayCollection;
+        
         private var _annCondGen:AnnualConditionsGenerator;
         private var _alerts:ArrayCollection;
         private var _endAlert:GraphicAlert;
         private var _stageChangeAlert:GraphicAlert;
         private var _suggestionHandler:SuggestionHandler;
+        private var _tokenHandler:TokenHandler;
 
         // data objects
         public var _currentPlayer:ManantialesPlayer;
@@ -101,7 +100,6 @@ package mx.ecosur.multigame.manantiales
 
                 // instantiate collections
             _moves = new ArrayCollection();
-            _tokenStorePanels = new ArrayCollection();
             _alerts = new ArrayCollection();
 
              // initialize game service remote object
@@ -116,16 +114,23 @@ package mx.ecosur.multigame.manantiales
             _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
             _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
 
+            /* Setup managers (handlers) */
+            _suggestionHandler = new SuggestionHandler (this);
+            _tokenHandler = new TokenHandler (_game, _currentPlayer, _gameWindow,
+                    _suggestionHandler, _gameService)
+            _tokenHandler.startMove = startMove;
+            _tokenHandler.endMove = endMove;
+
             // initialize game status
             _gameWindow.gameStatus.showMessage("Welcome to the game " +
                 _currentPlayer.registrant.name + "!\n\n You are " +
                 Color.getColorDescription(_currentPlayer.color),
                 Color.getColorCode(_currentPlayer.color));
 
-            // initialize the board
+                        // initialize the board
             _gameWindow.board.dragEnterHandler = dragEnterBoardCell;
-            _gameWindow.board.dragDropHandler = dragDropCell;
-            _gameWindow.board.dragExitHandler = dragExitCell;
+            _gameWindow.board.dragDropHandler = _tokenHandler.dragDropCell;
+            _gameWindow.board.dragExitHandler = _tokenHandler.dragExitCell;
 
             // initialize the move viewer
             _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, gotoMove);
@@ -137,32 +142,7 @@ package mx.ecosur.multigame.manantiales
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId);
-            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
-
-            _suggestionHandler = new SuggestionHandler (this);
-        }
-
-        public function initializeTokenStore (tokenStore:ManantialesTokenStore):void {
-            tokenStore.startMoveHandler = startMove;
-            tokenStore.endMoveHandler = endMove;
-            tokenStore.visible=true;
-            tokenStore.active=true;
-            /* Remove cells from token store that are on board */
-            if(!tokenStore.inited){
-                var token:ManantialesToken;
-                var cell:RoundCell;
-                for (var col:int = 0; col < this._gameWindow.board.nCols; col++) {
-                    for (var row:int = 0; row < this._gameWindow.board.nRows; row++) {
-                        cell = RoundCell(_gameWindow.board.getBoardCell(col, row));
-                        if(cell){
-                            token = ManantialesToken(cell.token);
-                            if(token != null && cell.color == _currentPlayer.color && token.type == tokenStore.tokenType)
-                                tokenStore.removeToken();
-                         }
-                    }
-                }
-                tokenStore.inited = true;
-            }
+            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;            
         }
 
         public function dragEnterBoardCell(evt:DragEvent):void{
@@ -170,7 +150,7 @@ package mx.ecosur.multigame.manantiales
             if (evt.dragSource.hasFormat("token")){
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
                 var boardCell:RoundCell = RoundCell(evt.currentTarget);
-                boardCell.addEventListener(DragEvent.DRAG_EXIT, dragExitCell);
+                boardCell.addEventListener(DragEvent.DRAG_EXIT, _tokenHandler.dragExitCell);
 
                 _previousToken = boardCell.token;
 
@@ -295,145 +275,10 @@ package mx.ecosur.multigame.manantiales
             }
         }
 
-        public function dragDropCell(evt:DragEvent):void{ 
-            
-            var suggestion:Boolean;
-            
-            if (evt.dragSource.hasFormat("token"))
-            {
-                // define destination
-                var destToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("token"));
-                var destination:Ficha = Ficha(destToken.ficha);
-                
-                var move:ManantialesMove = new ManantialesMove();
-                move.status = String (MoveStatus.UNVERIFIED);
-                move.mode = _game.mode;
-                move.id = 0;
-                
-                // define target cell
-                var targetCell:BoardCell = BoardCell(evt.currentTarget);                
-                var sourceToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("source"));
-
-                if (sourceToken.placed) {
-                    if (sourceToken != null && sourceToken.cell != null) {
-                        move.currentCell = sourceToken.cell;
-                        var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(
-                                sourceToken.cell.column, sourceToken.cell.row));
-                        sourceCell.token = new UndevelopedToken();
-                        sourceCell.reset();
-                    }
-                }
-
-                if (targetCell.token.cell != null) {
-                    move.currentCell = Ficha (targetCell.token.cell);
-                }
-                
-                /* Set the destination information to match where the token was dragged to */
-                destination.row = targetCell.row;
-                destination.column = targetCell.column;
-                destination.type = destToken.ficha.type;
-                move.destinationCell = destination;
-                    
-                if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell == null) {
-                        /* Regular Move */
-                    move.player = _currentPlayer;
-                    var call:Object;
-                    call = _gameService.doMove(_game, move);
-                    call.operation = GAME_SERVICE_DO_MOVE_OP;
-                    _executingMove = move;
-                    
-                    switch (destToken.ficha.type) {
-                        case TokenType.FOREST:
-                            _gameWindow.forestStore.removeToken();
-                            break;
-                        case TokenType.INTENSIVE:
-                            _gameWindow.intensiveStore.removeToken();
-                            break;
-                        case TokenType.MODERATE:
-                            _gameWindow.moderateStore.removeToken();
-                            break;
-                        case TokenType.VIVERO:
-                            _gameWindow.viveroStore.removeToken();
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            _gameWindow.silvoStore.removeToken();
-                            break;
-                        default:
-                            break;
-                    }
-                } else if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell != null) 
-                {
-                    move.player = _currentPlayer;
-                    call = _gameService.doMove(_game, move);
-                    call.operation = GAME_SERVICE_DO_MOVE_OP;
-                    _executingMove = move;
-                
-                }else if (_currentPlayer.turn && destToken.cell.color != _currentPlayer.color && move.currentCell != null)
-                {
-                        /* Making a suggestion to another player */
-                    suggestion = true;
-                    var players:ArrayCollection = _game.players;
-                    for (var i:int = 0; i < players.length; i++) {
-                        var player:ManantialesPlayer = ManantialesPlayer (players [ i ]);
-                        if (player.color == destToken.cell.color) {
-                            move.player = player;
-                            break;
-                        }
-                    }
-                    _suggestionHandler.makeSuggestion(move);
-                }
-
-                // animate
-                targetCell.reset();
-
-                var newToken:ManantialesToken;
-
-                if (destToken is ForestToken) {
-                    newToken = new ForestToken();
-                }
-                else if (destToken is IntensiveToken) {
-                    newToken = new IntensiveToken();
-                }
-                else if (destToken is ModerateToken) {
-                    newToken = new ModerateToken();
-                }
-                else if (destToken is ViveroToken) {
-                    newToken = new ViveroToken();
-                }
-                else if (destToken is SilvopastoralToken) {
-                    newToken = new SilvopastoralToken();
-                }
-                
-                newToken.cell = destination;
-
-                /* all tokens have active listeners, action is regulated in call back */
-                addListeners (newToken);
-                _gameWindow.board.addToken(newToken);
-            }
-        }
-
-        private function addListeners (token:ManantialesToken):void {
-        	if(token.cell.color == _currentPlayer.color){
-        		 token.addEventListener(MouseEvent.MOUSE_DOWN, startMove);
-        		 token.addEventListener(DragEvent.DRAG_COMPLETE, endMove);
-        	}else{
-            	token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
-            	token.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.endSuggestion);
-         	}
-        }
-
-        public function dragExitCell(evt:DragEvent):void{
-
-            // unselect board cell
-            if (evt.dragSource.hasFormat("token")){
-                var boardCell:BoardCell = BoardCell(evt.currentTarget);
-                boardCell.reset();
-            }
-        }
         
         private function get puzzleMode():Boolean {
             return (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE");
-        } 
+        }
         
 
         /*
@@ -559,7 +404,7 @@ package mx.ecosur.multigame.manantiales
             _isEnded = true;
         }
 
-        public function initGrid(gameGrid:GameGrid):void{
+        public function initGrid(gameGrid:GameGrid):void {
             _game.grid = gameGrid;
             _gameWindow.board.clearTokens();
 
@@ -579,7 +424,7 @@ package mx.ecosur.multigame.manantiales
 
             /* TODO: Move to store objects themselves. */
             if (_game.grid.cells && _game.grid.cells.length > 0) {
-                for (var i:Number = 0; i < _game.grid.cells.length; i++){
+                for (var i:int = 0; i < _game.grid.cells.length; i++){
                     ficha = Ficha(_game.grid.cells[i]);
                     switch (ficha.type) {
                         case TokenType.FOREST:
@@ -604,29 +449,17 @@ package mx.ecosur.multigame.manantiales
                     _gameWindow.board.addToken(token);
 
                     if (puzzleMode)
-                        addListeners (token);
+                        _tokenHandler.addListeners (token);
                 }
             }
         }
 
-        private function initTurn():void{
+        private function initTurn():void {
             if (_game.mode != null)  {
                _gameWindow.currentState= _game.mode;
             }
 
-            // setup token store panels for hiding
-            _tokenStorePanels.addItem(_gameWindow.forestStore);
-            _tokenStorePanels.addItem(_gameWindow.moderateStore);
-            _tokenStorePanels.addItem(_gameWindow.intensiveStore);
-            if (_gameWindow.currentState == "SILVOPASTORAL" || _gameWindow.currentState == "SILVO_PUZZLE") {
-                _tokenStorePanels.addItem(_gameWindow.viveroStore);
-                _tokenStorePanels.addItem(_gameWindow.silvoStore);
-            }
-
-            // initialize token stores
-            for (var i:int = 0; i < _tokenStorePanels.length; i++) {
-                initializeTokenStore (ManantialesTokenStore(_tokenStorePanels.getItemAt(i)));
-            }
+            _tokenHandler.initializeTokenStores();            
 
             // open annual conditions generator
             if ( (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
@@ -650,7 +483,8 @@ package mx.ecosur.multigame.manantiales
             }
         }
 
-        private function handleCheckResult(event:DynamicEvent):void {
+        private function handleCheckResult(event:DynamicEvent):void {         
+
             var idx:int = -1;
 
             for (var i:int = 0; i < _alerts.length; i++) {
@@ -742,7 +576,7 @@ package mx.ecosur.multigame.manantiales
             _gameWindow.stateMenuBar.dataProvider = _gameWindow.stateMenu;
             _gameWindow.stateMenuBar.executeBindings();
         }
-
+        
         public function quitGame (gamePlayer:GamePlayer):void {
             var call:Object = _gameService.quitGame(_game, gamePlayer);
             call.operation = "quitGame";
@@ -815,7 +649,7 @@ package mx.ecosur.multigame.manantiales
                     var fnc:Function = function (event:CloseEvent):void{
                         undoMove(_executingMove);
                     }
-                    Alert.show("Sorry but this move is not valid", "Woops!", Alert.OK, null, fnc);
+                    Alert.show("Invalid Move", "Woops!", Alert.OK, null, fnc);
                 }
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
@@ -826,7 +660,6 @@ package mx.ecosur.multigame.manantiales
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
-
             // if was a bad year then nothing to do
             if(move.badYear){
                 _gameWindow.moveViewer.selectedMove = ManantialesMove(_moves[_selectedMoveInd + 1]);
@@ -970,8 +803,8 @@ package mx.ecosur.multigame.manantiales
             token.height = endSize;
             _gameWindow.animateLayer.addChild(token);
 
-            if(token.cell){
-            	addListeners (token);
+            if(puzzleMode){
+                _tokenHandler.addListeners(token);
             }
 
             //define motion animation
@@ -1086,13 +919,6 @@ package mx.ecosur.multigame.manantiales
                 
             }
 
-            //create new token
-            var token:ManantialesToken = new ManantialesToken();
-            token.cell = move.destinationCell;
-            token.width = endSize;
-            token.height = endSize;
-            _gameWindow.animateLayer.addChild(token);
-
             // restore previous token, if determinable from move 
             if (move.currentCell != null) {
                 for (var index:int = 1; index <= _moves.length; index++) {
@@ -1120,21 +946,20 @@ package mx.ecosur.multigame.manantiales
                                 break;
     
                         }
+
+                        boardCell.token.cell = ficha;
                     }
                 }
-            } else {
+            } else
                 boardCell.token = new UndevelopedToken();
-            }
             
-            boardCell.reset();
-
             //define motion animation
-            var apX:AnimateProperty = new AnimateProperty(token);
+            var apX:AnimateProperty = new AnimateProperty(boardCell.token);
             apX.fromValue = startPoint.x;
             apX.toValue = endPoint.x;
             apX.duration = 1000;
             apX.property = "x";
-            var apY:AnimateProperty = new AnimateProperty(token);
+            var apY:AnimateProperty = new AnimateProperty(boardCell.token);
             apY.fromValue = startPoint.y;
             apY.toValue = endPoint.y;
             apY.duration = 1000;
@@ -1142,12 +967,12 @@ package mx.ecosur.multigame.manantiales
             apY.addEventListener(EffectEvent.EFFECT_END, endUndoMove);
 
             //define size animation
-            var apXScale:AnimateProperty = new AnimateProperty(token);
+            var apXScale:AnimateProperty = new AnimateProperty(boardCell.token);
             apXScale.property = "scaleX";
             apXScale.fromValue = startSize / endSize;
             apXScale.toValue = 1;
             apXScale.duration = 1000;
-            var apYScale:AnimateProperty = new AnimateProperty(token);
+            var apYScale:AnimateProperty = new AnimateProperty(boardCell.token);
             apYScale.property = "scaleY";
             apYScale.fromValue = startSize / endSize;
             apYScale.toValue = 1;
@@ -1158,12 +983,14 @@ package mx.ecosur.multigame.manantiales
             apY.play();
             apXScale.play();
             apYScale.play();
+
+            boardCell.reset();            
         }
 
         private function endUndoMove(event:EffectEvent):void {
-
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
-            _gameWindow.animateLayer.removeChild(token);
+            if (_gameWindow.animateLayer.contains(token))
+                _gameWindow.animateLayer.removeChild(token);
 
             //add to token store if necessary
             if(_isTurn) {
@@ -1302,5 +1129,5 @@ package mx.ecosur.multigame.manantiales
             _msgReceiver.destroy();
         }
 
-        }
     }
+}
