@@ -6,7 +6,8 @@ import mx.core.DragSource;
 import mx.core.IFlexDisplayObject;
 import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.manantiales.entity.Ficha;
+import mx.ecosur.multigame.manantiales.entity.CheckCondition;
+import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
@@ -51,6 +52,32 @@ import mx.rpc.remoting.RemoteObject;
             _currentPlayer = player;
         }
 
+        public function processMove(move:ManantialesMove):void {
+            /* Only the current player's replacement moves are processed */
+            if (move.currentCell && move.player == _currentPlayer && move.destinationCell) {
+                var ficha:Ficha = Ficha(move.currentCell);
+                for (var i:int = 0; i < _tokenStores.length; i++) {
+                    var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
+                    if (store.tokenType == ficha.type) {
+                        store.addToken();
+                        break;
+                    }
+                }
+            }
+        }
+
+        public function processViolator (ficha:Ficha):void {
+            if (ficha.color == _currentPlayer.color) {
+                for (var i:int = 0; i < _tokenStores.length; i++) {
+                    var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
+                    if (store.tokenType == ficha.type) {
+                        store.addToken();
+                        break;
+                    }
+                }
+            }
+        }
+
         public function initializeTokenStores ():void {
             // setup token store panels for hiding
             if (_tokenStores.getItemIndex(_gameWindow.forestStore) < 0)
@@ -79,6 +106,7 @@ import mx.rpc.remoting.RemoteObject;
             tokenStore.endMoveHandler = endMove;
             tokenStore.visible = true;
             tokenStore.active = true;
+            tokenStore.init(_gameWindow.board.boardCells);
         }
 
         public function dragDropCell(evt:DragEvent):ManantialesMove {
@@ -180,7 +208,7 @@ import mx.rpc.remoting.RemoteObject;
 
                 newToken.cell = destination;
 
-                if (_mode == Mode.BASIC_PUZZLE || _mode == Mode.SILVO_PUZZLE)
+                if (_gameWindow.controller.puzzleMode)
                     addListeners (newToken);
 
                 _gameWindow.board.addToken(newToken);

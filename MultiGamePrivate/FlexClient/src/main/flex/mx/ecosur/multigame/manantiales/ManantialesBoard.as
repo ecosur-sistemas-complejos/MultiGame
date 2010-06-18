@@ -13,11 +13,15 @@
     {
     import flash.display.Shape;
     import flash.geom.Point;
-    
+
+    import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.states.State;
 
     /**
@@ -57,6 +61,23 @@
             super();
             this._nCols = 9;
             this._nRows = 9;
+        }
+
+        public function get boardCells():ArrayCollection {
+            var ret:ArrayCollection = new ArrayCollection();
+
+            for (var row:int = 0; row < _nRows; row++) {
+                for (var col:int = 0; col < _nCols; col++) {
+                    if (_boardCells [ col ][ row ] != null) {
+                        var cell:RoundCell = RoundCell (_boardCells[col][row]);
+                        var token:ManantialesToken = ManantialesToken (cell.token);
+                        if (token && token.type != TokenType.UNDEVELOPED)
+                            ret.addItem(token);
+                    }
+                }
+            }
+
+            return ret;
         }
 
         public function get center ():Point {

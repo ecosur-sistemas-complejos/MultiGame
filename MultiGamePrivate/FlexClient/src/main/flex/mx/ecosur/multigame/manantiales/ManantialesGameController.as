@@ -230,7 +230,7 @@ package mx.ecosur.multigame.manantiales
         }
 
         
-        private function get puzzleMode():Boolean {
+        public function get puzzleMode():Boolean {
             return (_game.mode == "BASIC_PUZZLE" || _game.mode == "SILVO_PUZZLE");
         }
         
@@ -581,9 +581,9 @@ package mx.ecosur.multigame.manantiales
                     }
                 }
                 
-                    /* If PUZZLE, check and see if the move was suggested, and if so,
-                    remove the token connected to the move's "currentCell" -- thereby
-                    completing the suggested move */
+                /* If PUZZLE, check and see if the move was suggested, and if so,
+                remove the token connected to the move's "currentCell" -- thereby
+                completing the suggested move */
                 if (puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_gameWindow.board.getBoardCell(
                         move.currentCell.column, move.currentCell.row));
@@ -591,6 +591,12 @@ package mx.ecosur.multigame.manantiales
                     cell.token = new UndevelopedToken();
                     cell.reset();
                 }
+
+                /* Let the token handler process the move and remove it's current
+                   if this is a replacement move ...
+                 */
+                _tokenHandler.processMove(move);
+
             }
         }
 
@@ -1019,6 +1025,12 @@ package mx.ecosur.multigame.manantiales
                  /* Reset the grid on the board */
                 var callGrid:Object = _gameService.getGameGrid(_gameId);
                 callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+
+                /* Process the constraint in the token handler */
+                for (var i:int = 0; i < checkCondition.violators.length; i++) {
+                    var violator:Ficha = Ficha (checkCondition.violators.getItemAt(i));
+                    _tokenHandler.processViolator(violator);
+                }
             }
         }
 

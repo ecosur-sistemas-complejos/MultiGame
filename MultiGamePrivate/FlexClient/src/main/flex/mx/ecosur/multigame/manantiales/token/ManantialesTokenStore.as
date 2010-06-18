@@ -2,10 +2,14 @@ package mx.ecosur.multigame.manantiales.token
 {
     import flash.display.Shape;
     import flash.events.MouseEvent;
-    import mx.ecosur.multigame.component.Token;
+
+    import mx.collections.ArrayCollection;
+import mx.controls.Alert;
+import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.tablon.entity.Ficha;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 
@@ -14,6 +18,7 @@ package mx.ecosur.multigame.manantiales.token
         protected static const INITIAL_N_TOKENS:int = 6;
         protected var _tokenType:String;
         protected var _controller:ManantialesGameController;
+        private var _initialized:Boolean;
 
         public function ManantialesTokenStore() {
             super();
@@ -42,6 +47,20 @@ package mx.ecosur.multigame.manantiales.token
             }
         }
 
+        public function init(tokens:ArrayCollection) {
+            if (!_initialized) {
+                for (var i:int = 0; i < tokens.length; i++) {
+                    var token:ManantialesToken = ManantialesToken (tokens.getItemAt(i));
+                    if (token && token.cell && token.cell.color == _controller._currentPlayer.color && 
+                            token.type == _tokenType) {
+                        removeToken();
+                    } 
+                }
+
+                _initialized = true;
+            }
+        }
+
         public function get controller():ManantialesGameController {
             return _controller;
         }
@@ -59,7 +78,7 @@ package mx.ecosur.multigame.manantiales.token
             if (evt.dragSource.hasFormat("token")){
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
 
-                if(token.type == _tokenType && token.cell.color == _currentPlayer.color){
+                if(token.placed && token.type == _tokenType && token.cell.color == _currentPlayer.color){
                     DragManager.acceptDragDrop(this);
                 }
             }
@@ -67,21 +86,20 @@ package mx.ecosur.multigame.manantiales.token
 
         protected function dragDrop(evt:DragEvent):void{
 
-            if (evt.dragSource.hasFormat("token")){
+            if (evt.dragSource.hasFormat("token")) {
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
-                if(token.placed && token.type == _tokenType && token.cell.color == _currentPlayer.color) {
-                    addToken();
+                addToken();
 
-                    /* Send "remove" move to controller */
-                    var move:ManantialesMove = new ManantialesMove ();
-                    move.currentCell = token.ficha;
-                    move.destinationCell = null;
-                    move.player = _controller._currentPlayer;
-                    move.mode = _controller._game.mode;
-                    _controller.sendMove(move);
-                }
+                 /* Send "remove" move to controller */
+                var move:ManantialesMove = new ManantialesMove ();
+                move.currentCell = token.ficha;
+                move.destinationCell = null;
+                move.player = _controller._currentPlayer;
+                move.mode = _controller._game.mode;
+                _controller.sendMove(move);
             }
-        }
 
+        }
     }
+
 }

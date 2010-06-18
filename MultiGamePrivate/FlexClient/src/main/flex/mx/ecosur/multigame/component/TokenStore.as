@@ -83,7 +83,7 @@ public class TokenStore extends UIComponent {
     }
 
     public function addToken():void{
-        if (_nTokens < INITIAL_N_TOKENS)
+        if (_nTokens < INITIAL_N_TOKENS) {
             var token:Token = new Token();
             token.buttonMode = false;
             token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
@@ -96,6 +96,7 @@ public class TokenStore extends UIComponent {
             }
             addChild(token);
             _nTokens ++;
+        }
     }
 
     public function removeToken():void{

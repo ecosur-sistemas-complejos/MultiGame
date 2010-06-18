@@ -1,20 +1,19 @@
 package mx.ecosur.multigame.manantiales.token
 {
-	
-    import flash.events.MouseEvent;
-    
+
+    import flash.events.MouseEvent;    
     import mx.events.DragEvent;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
-    	
-	public class IntensiveTokenStore extends ManantialesTokenStore
-	{
-		public function IntensiveTokenStore()
-		{
-			super();
-			_tokenType = TokenType.INTENSIVE;
-		}
-		
-		public override function addToken():void{
+
+    public class IntensiveTokenStore extends ManantialesTokenStore
+    {
+        public function IntensiveTokenStore()
+        {
+            super();
+            _tokenType = TokenType.INTENSIVE;
+        }
+
+        public override function addToken():void{
             var token:IntensiveToken = new IntensiveToken();
             token.buttonMode = false;
             token.addEventListener(MouseEvent.MOUSE_OVER, selectToken);
@@ -35,5 +34,5 @@ package mx.ecosur.multigame.manantiales.token
                 addToken();
             }
         }
-    }	
+    }
 }
