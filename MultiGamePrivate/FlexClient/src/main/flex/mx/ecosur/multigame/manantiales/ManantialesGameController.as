@@ -71,7 +71,6 @@ package mx.ecosur.multigame.manantiales
         private var _msgReceiver:MessageReceiver;
 
         // flags
-        private var _isMoving:Boolean;
         private var _executingMove:ManantialesMove;
         private var _isTurn:Boolean;
         private var _isEnded:Boolean;
@@ -85,7 +84,7 @@ package mx.ecosur.multigame.manantiales
         private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 
-        /* Force compilation of SimplePlayer in .swf file - ugly code */
+        /* Needed to force compilation of SimplePlayer in .swf file */
         private var _unUsed:SimpleAgent;
         
 
@@ -116,10 +115,7 @@ package mx.ecosur.multigame.manantiales
 
             /* Setup managers (handlers) */
             _suggestionHandler = new SuggestionHandler (this);
-            _tokenHandler = new TokenHandler (_game, _currentPlayer, _gameWindow,
-                    _suggestionHandler, _gameService)
-            _tokenHandler.startMove = startMove;
-            _tokenHandler.endMove = endMove;
+            _tokenHandler = new TokenHandler (_gameWindow, _currentPlayer, _suggestionHandler)
 
             // initialize game status
             _gameWindow.gameStatus.showMessage("Welcome to the game " +
@@ -203,48 +199,6 @@ package mx.ecosur.multigame.manantiales
             }
 
             return ret;
-        }
-
-        public function startMove(evt:MouseEvent):void{
-
-            if (!_isMoving && _isTurn){
-
-                // initialize drag source
-                var token:ManantialesToken = ManantialesToken(evt.currentTarget);
-                var ds:DragSource = new DragSource();
-                ds.addData(token, "token");
-
-                // create proxy image and start drag
-                var dragImage:IFlexDisplayObject = token.createDragImage();
-                DragManager.doDrag(token, ds, evt, dragImage);
-                _isMoving = true;
-                
-                var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
-                // Add previous to the drag source
-                ds.addData(previous,"source");
-
-            }
-        }
-
-        public function endMove(evt:DragEvent):void{
-            
-            if (evt.dragSource.hasFormat("token")){
-                _isMoving = false;
-                var token:ManantialesToken = ManantialesToken(evt.currentTarget);
-                token.selected = false;
-                
-                // remove dragged image
-                if (evt.dragSource is ManantialesToken) {
-                    var previous:ManantialesToken = ManantialesToken (evt.dragSource);
-                    if (previous != null && previous.ficha.column > 0 && previous.ficha.row > 0) {
-                        var boardCell:BoardCell = _gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
-                        var undeveloped:UndevelopedToken = new UndevelopedToken();
-                        undeveloped.cell = previous.cell;
-                        boardCell.token = undeveloped;
-                        boardCell.reset();
-                    }
-                }
-            }
         }
 
 
@@ -575,6 +529,7 @@ package mx.ecosur.multigame.manantiales
 
             _gameWindow.stateMenuBar.dataProvider = _gameWindow.stateMenu;
             _gameWindow.stateMenuBar.executeBindings();
+            _tokenHandler.update(_currentPlayer);
         }
         
         public function quitGame (gamePlayer:GamePlayer):void {
@@ -654,6 +609,12 @@ package mx.ecosur.multigame.manantiales
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
             }
+        }
+
+        public function sendMove (move:ManantialesMove):void {
+            var call:Object = _gameService.doMove(_game, move);
+            call.operation = "doMove";
+            _executingMove = move;
         }
 
         /*
@@ -1124,10 +1085,8 @@ package mx.ecosur.multigame.manantiales
                 }
         }
 
-
         public function destroy():void{
             _msgReceiver.destroy();
         }
-
     }
 }

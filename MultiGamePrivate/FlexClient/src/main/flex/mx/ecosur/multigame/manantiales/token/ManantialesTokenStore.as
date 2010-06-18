@@ -1,13 +1,9 @@
 package mx.ecosur.multigame.manantiales.token
 {
     import flash.display.Shape;
-
-import flash.events.MouseEvent;
-
-import mx.ecosur.multigame.component.BoardCell;
-import mx.ecosur.multigame.component.Token;
-import mx.ecosur.multigame.component.TokenStore;
-    import mx.ecosur.multigame.manantiales.ManantialesBoard;
+    import flash.events.MouseEvent;
+    import mx.ecosur.multigame.component.Token;
+    import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.events.DragEvent;
@@ -16,71 +12,13 @@ import mx.ecosur.multigame.component.TokenStore;
     public class ManantialesTokenStore extends TokenStore
     {
         protected static const INITIAL_N_TOKENS:int = 6;
-        
-        protected var _board:ManantialesBoard;
-        protected var _controller:ManantialesGameController;
         protected var _tokenType:String;
-
-        public var reconciled:Boolean;
+        protected var _controller:ManantialesGameController;
 
         public function ManantialesTokenStore() {
             super();
-            initialized = false;
-        }
-        
-        public function set controller (controller:ManantialesGameController):void {
-            _controller = controller;
-        }
-        
-        public function set board (board:ManantialesBoard):void {
-           _board = board;
-        }
-        
-        public function get tokenType():String {
-            return _tokenType;
-        }
-
-        public function reset():void {
-            this.addEventListener(DragEvent.DRAG_ENTER, dragEnterHandler);
-            this.addEventListener(DragEvent.DRAG_DROP, dragDropHandler);
-        }
-
-        public function populateTokens ():void {
-            for (var i:int = _nTokens; i < INITIAL_N_TOKENS; i++) {
-                addToken();
-            }
-        }
-        
-        protected function dragEnterHandler(evt:DragEvent):void{
-
-            if (evt.dragSource.hasFormat("token")){
-                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
-                
-                if(token.type == _tokenType && token.cell.color == _currentPlayer.color){
-                    DragManager.acceptDragDrop(this);
-                }
-            }
-        }
-        
-        protected function dragDropHandler(evt:DragEvent):void{
-
-            if (evt.dragSource.hasFormat("token")){
-                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
-                
-                if(token.placed && token.type == _tokenType && token.cell.color == _currentPlayer.color) {
-                    var boardCell:BoardCell = _board.getBoardCell(token.cell.column, token.cell.row);
-                    boardCell.token = new UndevelopedToken ();
-                    addToken();
-                    var move:ManantialesMove = new ManantialesMove ();
-                    move.currentCell = token.ficha;
-                    move.destinationCell = null;
-                    move.player = _controller._currentPlayer;
-                    move.mode = _controller._game.mode;
-                    var call:Object;
-                    call = _controller._gameService.doMove(_controller._game, move);
-                    call.operation = "doMove";
-                }
-            }
+            addEventListener(DragEvent.DRAG_ENTER,dragEnter);
+            addEventListener(DragEvent.DRAG_DROP, dragDrop);
         }
 
         override protected function createChildren():void{
@@ -103,5 +41,47 @@ import mx.ecosur.multigame.component.TokenStore;
                 target.placed = false;
             }
         }
+
+        public function get controller():ManantialesGameController {
+            return _controller;
+        }
+
+        public function set controller(controller:ManantialesGameController):void {
+            _controller = controller;
+        }
+        
+        public function get tokenType():String {
+            return _tokenType;
+        }
+
+        protected function dragEnter(evt:DragEvent):void{
+
+            if (evt.dragSource.hasFormat("token")){
+                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
+
+                if(token.type == _tokenType && token.cell.color == _currentPlayer.color){
+                    DragManager.acceptDragDrop(this);
+                }
+            }
+        }
+
+        protected function dragDrop(evt:DragEvent):void{
+
+            if (evt.dragSource.hasFormat("token")){
+                var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
+                if(token.placed && token.type == _tokenType && token.cell.color == _currentPlayer.color) {
+                    addToken();
+
+                    /* Send "remove" move to controller */
+                    var move:ManantialesMove = new ManantialesMove ();
+                    move.currentCell = token.ficha;
+                    move.destinationCell = null;
+                    move.player = _controller._currentPlayer;
+                    move.mode = _controller._game.mode;
+                    _controller.sendMove(move);
+                }
+            }
+        }
+
     }
 }

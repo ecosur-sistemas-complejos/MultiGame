@@ -8,8 +8,9 @@ package mx.ecosur.multigame.manantiales
     import flash.geom.Point;
     import flash.utils.Dictionary;
     import flash.utils.Timer;
-    
-    import mx.core.DragSource;
+
+import mx.collections.ArrayCollection;
+import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
     import mx.controls.Alert;
     import mx.ecosur.multigame.component.BoardCell;
@@ -349,6 +350,17 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function makeSuggestion (move:ManantialesMove):void {
+            if (move.player == null) {
+                    var players:ArrayCollection = _controller._game.players;
+                    for (var i:int = 0; i < players.length; i++) {
+                        var player:ManantialesPlayer = ManantialesPlayer (players [ i ]);
+                        if (player.color == move.destinationCell.color) {
+                            move.player = player;
+                            break;
+                        }
+                    }
+            }
+
             if (move.currentCell != move.destinationCell) {
                 move.status = String (MoveStatus.UNVERIFIED);
                 move.mode = _controller._game.mode;

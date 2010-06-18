@@ -771,6 +771,10 @@ then
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
         player.reset();
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
+        else
+            player.setTurn(false);
     }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());

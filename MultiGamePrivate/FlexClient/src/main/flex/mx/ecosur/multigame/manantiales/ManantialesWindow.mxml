@@ -163,18 +163,18 @@
             <mx:RemoveChild  target="{moveViewer}"/>
             <mx:AddChild relativeTo="{leftBox}">
                 <token:ForestTokenStore id="forestStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}"
-                    width="100%" creationComplete="forestStore.reset()"/>
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%" />
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                    <token:ModerateTokenStore id="moderateStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
-                    width="100%" creationComplete="moderateStore.reset()"/>
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%"/>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                 <token:IntensiveTokenStore id="intensiveStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
-                    width="100%" creationComplete="intensiveStore.reset()"/>
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%"/>
             </mx:AddChild>
         </mx:State>
         <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC">
@@ -183,13 +183,13 @@
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
                <token:ViveroTokenStore id="viveroStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
-                width="100%" creationComplete="viveroStore.reset()"/>
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                width="100%" />
            </mx:AddChild>
            <mx:AddChild relativeTo="{leftBox}">
                <token:SilvopastoralTokenStore id="silvoStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" board="{board}" controller="{controller}" 
-                width="100%" creationComplete="silvoStore.reset()"/>
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}" 
+                width="100%"/>
            </mx:AddChild>
         </mx:State>
         <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL"/>
@@ -202,18 +202,16 @@
                     height="100%" width="100%"/>
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
-            <!--mx:Panel title="ScoreBoard" width="100%">
-                <manantiales:GameInfo id="scoreboard" players="{currentGame.players}" height="120"/>
-            </mx:Panel-->
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"
                     currentPlayer="{currentPlayer}"/>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
             <mx:Panel title="Score" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
-                      currentPlayer="{currentPlayer}" width="100%"/>
+                  currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>
-           <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}" currentGame="{currentGame}"/>  
+           <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}"
+                currentGame="{currentGame}"/>
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />
     </mx:HBox>
