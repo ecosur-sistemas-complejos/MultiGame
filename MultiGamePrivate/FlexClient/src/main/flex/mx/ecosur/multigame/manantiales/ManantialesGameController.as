@@ -591,12 +591,6 @@ package mx.ecosur.multigame.manantiales
                     cell.token = new UndevelopedToken();
                     cell.reset();
                 }
-
-                /* Let the token handler process the move and remove it's current
-                   if this is a replacement move ...
-                 */
-                _tokenHandler.processMove(move);
-
             }
         }
 
@@ -1041,12 +1035,14 @@ package mx.ecosur.multigame.manantiales
                       game.mode + "'";
                 _stageChangeAlert.positive = true;
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
+                _game = game;
+                _moves = new ArrayCollection();
+                _gameWindow.currentState =  _game.mode;
+                _tokenHandler.resetTokenStores();
+
+                /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
-
-                this._game = game;
-                this._moves = new ArrayCollection();
-                this._gameWindow.currentState =  _game.mode;
             }
         }
 

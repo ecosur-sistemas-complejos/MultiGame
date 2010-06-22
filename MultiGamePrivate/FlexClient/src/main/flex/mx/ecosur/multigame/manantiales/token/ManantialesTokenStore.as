@@ -24,6 +24,7 @@ import mx.ecosur.multigame.component.Token;
             super();
             addEventListener(DragEvent.DRAG_ENTER,dragEnter);
             addEventListener(DragEvent.DRAG_DROP, dragDrop);
+            _initialized = false;
         }
 
         override protected function createChildren():void{
@@ -85,8 +86,7 @@ import mx.ecosur.multigame.component.Token;
         }
 
         protected function dragDrop(evt:DragEvent):void{
-
-            if (evt.dragSource.hasFormat("token")) {
+            if (_nTokens < INITIAL_N_TOKENS && evt.dragSource.hasFormat("token")) {
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
                 addToken();
 

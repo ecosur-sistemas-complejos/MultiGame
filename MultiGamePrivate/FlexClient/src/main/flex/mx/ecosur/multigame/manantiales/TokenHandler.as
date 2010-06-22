@@ -1,29 +1,33 @@
 package mx.ecosur.multigame.manantiales {
 
-    import flash.events.MouseEvent;
+import flash.events.MouseEvent;
+
     import mx.collections.ArrayCollection;
-import mx.core.DragSource;
-import mx.core.IFlexDisplayObject;
-import mx.ecosur.multigame.component.BoardCell;
+    import mx.controls.Alert;
+    import mx.core.DragSource;
+    import mx.core.IFlexDisplayObject;
+    import mx.ecosur.multigame.component.BoardCell;
+    import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.MoveStatus;
-import mx.ecosur.multigame.manantiales.entity.CheckCondition;
-import mx.ecosur.multigame.manantiales.entity.Ficha;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-    import mx.ecosur.multigame.manantiales.enum.Mode;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.ForestToken;
+    import mx.ecosur.multigame.manantiales.token.ForestTokenStore;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
+    import mx.ecosur.multigame.manantiales.token.IntensiveTokenStore;
     import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.ManantialesTokenStore;
     import mx.ecosur.multigame.manantiales.token.ModerateToken;
+    import mx.ecosur.multigame.manantiales.token.ModerateTokenStore;
     import mx.ecosur.multigame.manantiales.token.SilvopastoralToken;
+    import mx.ecosur.multigame.manantiales.token.SilvopastoralTokenStore;
     import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
     import mx.ecosur.multigame.manantiales.token.ViveroToken;
+    import mx.ecosur.multigame.manantiales.token.ViveroTokenStore;
     import mx.events.DragEvent;
-import mx.managers.DragManager;
-import mx.rpc.remoting.RemoteObject;
+    import mx.managers.DragManager;
 
     public class TokenHandler {
 
@@ -52,20 +56,6 @@ import mx.rpc.remoting.RemoteObject;
             _currentPlayer = player;
         }
 
-        public function processMove(move:ManantialesMove):void {
-            /* Only the current player's replacement moves are processed */
-            if (move.currentCell && move.player == _currentPlayer && move.destinationCell) {
-                var ficha:Ficha = Ficha(move.currentCell);
-                for (var i:int = 0; i < _tokenStores.length; i++) {
-                    var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
-                    if (store.tokenType == ficha.type) {
-                        store.addToken();
-                        break;
-                    }
-                }
-            }
-        }
-
         public function processViolator (ficha:Ficha):void {
             if (ficha.color == _currentPlayer.color) {
                 for (var i:int = 0; i < _tokenStores.length; i++) {
@@ -76,6 +66,38 @@ import mx.rpc.remoting.RemoteObject;
                     }
                 }
             }
+        }
+
+        public function resetTokenStores():void {
+            var replacementStores:ArrayCollection = new ArrayCollection();
+
+            // initialize token stores
+            for (var i:int = 0; i < _tokenStores.length; i++) {
+                var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
+                switch (store.tokenType) {
+                    case TokenType.INTENSIVE:
+                        store = new IntensiveTokenStore();
+                        break;
+                    case TokenType.MODERATE:
+                        store = new ModerateTokenStore();
+                        break;
+                    case TokenType.FOREST:
+                        store = new ForestTokenStore();
+                        break;
+                    case TokenType.SILVOPASTORAL:
+                        store = new SilvopastoralTokenStore();
+                        break;
+                    case TokenType.VIVERO:
+                        store = new ViveroTokenStore();
+                        break;
+                    default:
+                        break;
+                }
+
+                replacementStores.addItem(store);
+            }
+
+            _tokenStores = replacementStores;
         }
 
         public function initializeTokenStores ():void {
@@ -96,11 +118,13 @@ import mx.rpc.remoting.RemoteObject;
 
             // initialize token stores
             for (var i:int = 0; i < _tokenStores.length; i++) {
-                initializeTokenStore (ManantialesTokenStore(_tokenStores.getItemAt(i)));
+                var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
+                if (store)
+                    initializeTokenStore (store);
             }
         }
 
-        public function initializeTokenStore (tokenStore:ManantialesTokenStore):void {
+        private function initializeTokenStore (tokenStore:ManantialesTokenStore):void {
             tokenStore.controller = _gameWindow.controller;
             tokenStore.startMoveHandler = startMove;
             tokenStore.endMoveHandler = endMove;
@@ -149,40 +173,33 @@ import mx.rpc.remoting.RemoteObject;
                 destination.type = destToken.ficha.type;
                 move.destinationCell = destination;
 
-                if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell == null) {
+                if (_currentPlayer.turn && move.currentCell == null
+                        && (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
+                {
                         /* Regular Move */
                     move.player = _currentPlayer;
-                    _gameWindow.controller.sendMove(move);
+                    decrementStore(Ficha (move.destinationCell));
 
-                    switch (destToken.ficha.type) {
-                        case TokenType.FOREST:
-                            _gameWindow.forestStore.removeToken();
-                            break;
-                        case TokenType.INTENSIVE:
-                            _gameWindow.intensiveStore.removeToken();
-                            break;
-                        case TokenType.MODERATE:
-                            _gameWindow.moderateStore.removeToken();
-                            break;
-                        case TokenType.VIVERO:
-                            _gameWindow.viveroStore.removeToken();
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            _gameWindow.silvoStore.removeToken();
-                            break;
-                        default:
-                            break;
-                    }
-                } else if (_currentPlayer.turn && destToken.cell.color == _currentPlayer.color && move.currentCell != null)
+                     _gameWindow.controller.sendMove(move);
+
+                } else if (_currentPlayer.turn &&
+                        (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN) &&
+                        move.currentCell != null)
                 {
+                    decrementStore(Ficha (move.destinationCell));
+                    incrementStore(Ficha (move.currentCell));
                     move.player = _currentPlayer;
                     _gameWindow.controller.sendMove(move);
 
-                }else if (_currentPlayer.turn && destToken.cell.color != _currentPlayer.color && move.currentCell != null)
+                }else if (_currentPlayer.turn && move.currentCell != null &&
+                        (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
                 {
                         /* Making a suggestion to another player */
                     suggestion = true;                    
                     _suggestionHandler.makeSuggestion(move);
+                } else {
+                    Alert.show ("Unable to create move/suggestion.  destToken.cell=" + destToken.cell + ", " +
+                            "destToken.cell.color==" + destToken.cell.color);
                 }
 
                 // animate
@@ -215,6 +232,51 @@ import mx.rpc.remoting.RemoteObject;
             }
 
             return _executingMove;
+        }
+
+        private function decrementStore(ficha:Ficha):void {
+            switch (ficha.type) {
+                case TokenType.FOREST:
+                    _gameWindow.forestStore.removeToken();
+                    break;
+                case TokenType.INTENSIVE:
+                    _gameWindow.intensiveStore.removeToken();
+                    break;
+                case TokenType.MODERATE:
+                    _gameWindow.moderateStore.removeToken();
+                    break;
+                case TokenType.VIVERO:
+                    _gameWindow.viveroStore.removeToken();
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    _gameWindow.silvoStore.removeToken();
+                    break;
+                default:
+                    break;
+            }            
+        }
+
+        private function incrementStore (ficha:Ficha):void {
+            switch (ficha.type) {
+                case TokenType.FOREST:
+                    _gameWindow.forestStore.addToken();
+                    break;
+                case TokenType.INTENSIVE:
+                    _gameWindow.intensiveStore.addToken();
+                    break;
+                case TokenType.MODERATE:
+                    _gameWindow.moderateStore.addToken();
+                    break;
+                case TokenType.VIVERO:
+                    _gameWindow.viveroStore.addToken();
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    _gameWindow.silvoStore.addToken();
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         public function dragExitCell(evt:DragEvent):void{
