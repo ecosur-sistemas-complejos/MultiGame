@@ -35,9 +35,7 @@ import mx.ecosur.multigame.component.Token;
 
             // Create initial tokens
             _nTokens = 0;
-            for (var i:int = 0; i < INITIAL_N_TOKENS; i++){
-                addToken();
-            }
+            fill();
         }
 
         override protected function selectToken(event:MouseEvent):void {
@@ -59,6 +57,12 @@ import mx.ecosur.multigame.component.Token;
                 }
 
                 _initialized = true;
+            }
+        }
+
+        public function fill():void {
+            for (var i:int = _nTokens; i < INITIAL_N_TOKENS; i++) {
+                addToken();
             }
         }
 

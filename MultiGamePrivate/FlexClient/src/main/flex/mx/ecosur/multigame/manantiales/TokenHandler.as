@@ -69,35 +69,12 @@ import flash.events.MouseEvent;
         }
 
         public function resetTokenStores():void {
-            var replacementStores:ArrayCollection = new ArrayCollection();
-
             // initialize token stores
             for (var i:int = 0; i < _tokenStores.length; i++) {
                 var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
-                switch (store.tokenType) {
-                    case TokenType.INTENSIVE:
-                        store = new IntensiveTokenStore();
-                        break;
-                    case TokenType.MODERATE:
-                        store = new ModerateTokenStore();
-                        break;
-                    case TokenType.FOREST:
-                        store = new ForestTokenStore();
-                        break;
-                    case TokenType.SILVOPASTORAL:
-                        store = new SilvopastoralTokenStore();
-                        break;
-                    case TokenType.VIVERO:
-                        store = new ViveroTokenStore();
-                        break;
-                    default:
-                        break;
-                }
+                store.fill();
 
-                replacementStores.addItem(store);
             }
-
-            _tokenStores = replacementStores;
         }
 
         public function initializeTokenStores ():void {
