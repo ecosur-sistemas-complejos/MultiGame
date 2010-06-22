@@ -79,50 +79,50 @@ public class ManantialesPlayer extends GridPlayer {
      * @param forested the forested to set
      */
     public void setForested(int forested) {
-    	if (forested > 0)
-    		this.forested = forested;
-    	else
-    		this.forested = 0;
+        if (forested > 0)
+            this.forested = forested;
+        else
+            this.forested = 0;
     }
 
     /**
      * @param moderate the moderate to set
      */
     public void setModerate(int moderate) {
-    	if (moderate > 0)
-    		this.moderate = moderate;
-    	else
-    		this.moderate = 0;
+        if (moderate > 0)
+            this.moderate = moderate;
+        else
+            this.moderate = 0;
     }
 
     /**
      * @param intensive the intensive to set
      */
     public void setIntensive(int intensive) {
-    	if (intensive > 0)
-    		this.intensive = intensive;
-    	else
-    		this.intensive = 0;
+        if (intensive > 0)
+            this.intensive = intensive;
+        else
+            this.intensive = 0;
     }
 
     /**
      * @param vivero the vivero to set
      */
     public void setVivero(int vivero) {
-    	if (vivero > 0)
-    		this.vivero = vivero;
-    	else
-    		vivero = 0;
+        if (vivero > 0)
+            this.vivero = vivero;
+        else
+            vivero = 0;
     }
 
     /**
      * @param silvo the silvo to set
      */
     public void setSilvo(int silvo) {
-    	if (silvo > 0)
-    		this.silvo = silvo;
-    	else
-    		this.silvo = 0;
+if (silvo > 0)
+    this.silvo = silvo;
+else
+    this.silvo = 0;
     }
 
     public void reset() {

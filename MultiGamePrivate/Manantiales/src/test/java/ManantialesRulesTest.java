@@ -1122,7 +1122,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
 
-        assertTrue (filter.size() > 0);
+        assertTrue ("No conditions triggered!", filter.size() > 0);
 
         filter.clear();
 

@@ -560,16 +560,35 @@ rule "territory-deforested"
         messageSender.sendConditionRaised ($game, constraint);
 end
 
-rule "resolve-check-constraint"
+rule "resolve-check-constraint-with-empty-move"
     agenda-group "evaluate"
     no-loop true
 when
+    $move   : ManantialesMove (badYear == false, status == MoveStatus.MOVED,
+        status == MoveStatus.MOVED, $cell : currentCell, type in
+        (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE),
+            destinationCell == null)
+    $constraint : CheckCondition ($violators : violators)
+    GridCell ($cell.row == row, $cell.column == column) from $violators
     $game   : ManantialesGame ()
+then
+    Set<CheckCondition> constraints = $game.getCheckConditions();
+    constraints.remove ($constraint);
+    retract ($constraint);
+    modify ($game) { setCheckConditions (constraints) };
+    messageSender.sendConditionResolved ($game, $constraint);
+end
+
+rule "resolve-check-constraint-with-replacement-move"
+    agenda-group "evaluate"
+    no-loop true
+when
     $move   : ManantialesMove (badYear == false, status == MoveStatus.MOVED,
         status == MoveStatus.MOVED, $cell : destinationCell, type in
         (TokenType.MANAGED_FOREST, TokenType.VIVERO, TokenType.SILVOPASTORAL))
     $constraint : CheckCondition ($violators : violators)
     GridCell ($cell.row == row, $cell.column == column) from $violators
+    $game   : ManantialesGame ()
 then
     Set<CheckCondition> constraints = $game.getCheckConditions();
     constraints.remove ($constraint);
@@ -609,23 +628,27 @@ then
     modify ($move) { setPlayer (player) };
 end
 
-rule "reward-premium"
+rule "reward-forested-premium"
     agenda-group "evaluate"
     no-loop true
 when
     $move : ManantialesMove (premium == false, $player : player, 
-        status == MoveStatus.MOVED, type in (TokenType.INTENSIVE_PASTURE, 
-            TokenType.MANAGED_FOREST))
-    $manPlayer : ManantialesPlayer (forested == 5 || intensive == 5) from $player
+        status == MoveStatus.MOVED, type ==  TokenType.MANAGED_FOREST)
+    $manPlayer : ManantialesPlayer (forested == 5) from $player
 then
-    if ($move.getType().equals(TokenType.INTENSIVE_PASTURE)) {
-        $manPlayer.setIntensive(6);
-    } else {
-        $manPlayer.setForested(6);
-    }
     modify ($move) { setPremium (true), setPlayer ($manPlayer) };
 end
 
+rule "reward-intensive-premium"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $move : ManantialesMove (premium == false, $player : player,
+        status == MoveStatus.MOVED, type == TokenType.INTENSIVE_PASTURE)
+    $manPlayer : ManantialesPlayer (intensive == 5) from $player
+then
+    modify ($move) { setPremium (true), setPlayer ($manPlayer) };
+end
 
 rule "score"
     agenda-group "evaluate"
@@ -747,15 +770,11 @@ when
         Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     eval (isSolved ($mode, $game))
 then
-    List<GridPlayer> players = $game.getPlayers();
-    for (GridPlayer p : players) {
-        ManantialesPlayer player = (ManantialesPlayer) p;
-        player.reset();
-    }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
+    modify ($game) { setGrid (grid), setMode (mode) }
     messageSender.sendStateChange($game);
+    messageSender.sendPlayerChange($game);
 end
 
 rule "stage-won"
@@ -767,18 +786,9 @@ when
     $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
-    List<GridPlayer> players = $game.getPlayers();
-    for (GridPlayer p : players) {
-        ManantialesPlayer player = (ManantialesPlayer) p;
-        player.reset();
-        if (player.getColor().equals(Color.YELLOW))
-            player.setTurn(true);
-        else
-            player.setTurn(false);
-    }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
+    modify ($game) { setGrid (grid), setMode (mode)};
     messageSender.sendStateChange($game);
 end
 
@@ -801,10 +811,12 @@ rule "increment-turn"
     salience -15
 when
     $game  : ManantialesGame (state == GameState.PLAY)
-     move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
+    $move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
         badYear == false, destinationCell != null)
+     eval (!isWinner ($game.getMode(), (ManantialesPlayer) $move.getPlayer()))
+     eval (!isSolved ($game.getMode(), $game))
 then
-    GridPlayer player = incrementTurn ($game, move);
+    incrementTurn ($game, $move);
     messageSender.sendPlayerChange($game);
 end
 

@@ -1030,15 +1030,31 @@ package mx.ecosur.multigame.manantiales
 
         private function handleStateChange (game:ManantialesGame):void {
             if (_stageChangeAlert == null) {
-                _stageChangeAlert = new GraphicAlert();
-                _stageChangeAlert.text = "Stage complete. Progressing to next stage, '" +
-                      game.mode + "'";
-                _stageChangeAlert.positive = true;
-                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
-                _game = game;
-                _moves = new ArrayCollection();
-                _gameWindow.currentState =  _game.mode;
+                _gameWindow.currentState =  game.mode;
                 _tokenHandler.resetTokenStores();
+                _game = game;
+                _gameWindow.invalidateDisplayList();
+
+
+                _stageChangeAlert = new GraphicAlert();
+                if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
+                    if (_isTurn) {
+                        _stageChangeAlert.text = "Congratulations!  You have won the sub-game! Progressing to next stage, '" +
+                            game.mode + "'";
+                        _stageChangeAlert.positive = true;
+
+                    } else {
+                        _stageChangeAlert.text = "You have lost the sub-game! Progressing to next stage, '" +
+                            game.mode + "'";
+                        _stageChangeAlert.positive = false;
+                    }
+                } else {
+                    _stageChangeAlert.text = "Puzzle solved.  Stage complete. Progressing to next stage, '" +
+                        game.mode + "'";
+                    _stageChangeAlert.positive = true;
+                }
+
+                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);                
 
                 /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
@@ -1071,26 +1087,20 @@ package mx.ecosur.multigame.manantiales
                                    expiredCondition.reason + "')";
                           _endAlert.positive = false;
                         } else {
-                            if (_isTurn){
-                                _endAlert.text = "Game Over.  You have won!";
-                                _endAlert.positive = true;
-                                end();
-                            } else {
-                                _endAlert.text= "Game Over.  You have lost.";
-                                _endAlert.positive = false;
-                            }
-                   }
+                            _endAlert.text = "Congratulations! You all have won!";
+                            _endAlert.positive = true;
+                            end();
+                        }
 
                     _endAlert.addEventListener("result",handleEndResult);
+                }
 
                     /* Remove all alert conditions from the PopUpManager */
-                for (i = 0; i < _alerts.length; i++) {
+                for (i = 0; i < _alerts.length; i++)
                         PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
-                }
 
-                    PopUpManager.addPopUp(_endAlert, _gameWindow, true);
-                    PopUpManager.centerPopUp(_endAlert);
-                }
+            PopUpManager.addPopUp(_endAlert, _gameWindow, true);
+            PopUpManager.centerPopUp(_endAlert);
         }
 
         public function destroy():void{
