@@ -770,9 +770,14 @@ when
         Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     eval (isSolved ($mode, $game))
 then
+    List<GridPlayer> players = $game.getPlayers();
+    for (GridPlayer p : players) {
+        ManantialesPlayer player = (ManantialesPlayer) p;
+        player.reset();
+    }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setMode (mode) }
+    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
     messageSender.sendStateChange($game);
     messageSender.sendPlayerChange($game);
 end
@@ -782,14 +787,21 @@ rule "stage-won"
     no-loop true
     salience -5
 when
-    $game  : ManantialesGame (state == GameState.PLAY, mode != Mode.SILVO_PUZZLE)
+    $game  : ManantialesGame (state == GameState.PLAY, mode in (Mode.CLASSIC,
+        Mode.SILVOPASTORAL))
     $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
+    List<GridPlayer> players = $game.getPlayers();
+    for (GridPlayer p : players) {
+        ManantialesPlayer player = (ManantialesPlayer) p;
+        player.reset();
+    }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setMode (mode)};
+    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
     messageSender.sendStateChange($game);
+    messageSender.sendPlayerChange($game);
 end
 
 rule "game-won"
@@ -811,12 +823,10 @@ rule "increment-turn"
     salience -15
 when
     $game  : ManantialesGame (state == GameState.PLAY)
-    $move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
+     move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
         badYear == false, destinationCell != null)
-     eval (!isWinner ($game.getMode(), (ManantialesPlayer) $move.getPlayer()))
-     eval (!isSolved ($game.getMode(), $game))
 then
-    incrementTurn ($game, $move);
+    GridPlayer player = incrementTurn ($game, move);
     messageSender.sendPlayerChange($game);
 end
 

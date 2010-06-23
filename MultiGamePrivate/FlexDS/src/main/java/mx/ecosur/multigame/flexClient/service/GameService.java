@@ -44,12 +44,6 @@ import mx.ecosur.multigame.model.*;
 
 import flex.messaging.FlexContext;
 import flex.messaging.FlexSession;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 
 public class GameService {
 
@@ -349,6 +343,13 @@ public class GameService {
         Game game = sharedBoard.getGame(gameId);
         GridGame impl = (GridGame) game.getImplementation();
         return impl.getMoves();
+    }
+
+    public Set<ManantialesMove> getMoves (int gameId, Mode mode) {
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        Game model = sharedBoard.getGame(gameId);
+        ManantialesGame game = (ManantialesGame) model.getImplementation();
+        return game.getMoves(mode);                        
     }
 
     public GridMove updateMove(GridMove move) {

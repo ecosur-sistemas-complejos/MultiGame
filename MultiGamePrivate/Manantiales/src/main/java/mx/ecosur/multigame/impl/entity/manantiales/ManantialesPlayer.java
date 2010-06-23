@@ -119,10 +119,10 @@ public class ManantialesPlayer extends GridPlayer {
      * @param silvo the silvo to set
      */
     public void setSilvo(int silvo) {
-if (silvo > 0)
-    this.silvo = silvo;
-else
-    this.silvo = 0;
+        if (silvo > 0)
+            this.silvo = silvo;
+        else
+            this.silvo = 0;
     }
 
     public void reset() {

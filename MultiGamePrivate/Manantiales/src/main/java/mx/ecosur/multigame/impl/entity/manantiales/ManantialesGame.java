@@ -56,6 +56,8 @@ public class ManantialesGame extends GridGame {
 
     private Set<PuzzleSuggestion> suggestions;
 
+    private Map<Mode,TreeSet<ManantialesMove>> moveMap;
+
 
     public ManantialesGame () {
         super();
@@ -65,6 +67,38 @@ public class ManantialesGame extends GridGame {
     public ManantialesGame (KnowledgeBase kbase) {
         super();
         this.kbase = kbase;
+    }
+
+    @Override
+    public void setMoves(Set<GridMove> moves) {
+        moveMap = new HashMap<Mode,TreeSet<ManantialesMove>>();
+        for (GridMove mv : moves) {
+            ManantialesMove move = (ManantialesMove) mv;
+            TreeSet<ManantialesMove> set = moveMap.get(move.getMode());
+            if (set == null)
+                set = new TreeSet<ManantialesMove>(new MoveComparator());
+            set.add(move);
+            moveMap.put(move.getMode(), set);
+        }
+    }
+
+    @Override
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    public Set<GridMove> getMoves() {
+        TreeSet<GridMove> ret = new TreeSet<GridMove>(new MoveComparator());
+        if (moveMap != null) {
+            for (Mode mode : Mode.values()) {
+                if (moveMap.containsKey(mode))
+                    ret.addAll ((TreeSet<ManantialesMove>) moveMap.get(mode));
+            }
+        }
+
+        return ret;
+
+    }
+
+    public Set<ManantialesMove> getMoves (Mode mode) {
+        return moveMap.get(mode);
     }
     
     @Enumerated (EnumType.STRING)
@@ -184,7 +218,9 @@ public class ManantialesGame extends GridGame {
       * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
       */
     @Override
-    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+    public MoveImpl move(MoveImpl impl) throws InvalidMoveException {
+        ManantialesMove move = (ManantialesMove) impl;
+
         if (kbase == null)
             kbase = findKBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
@@ -203,11 +239,16 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.dispose();
 
+        if (move.getMode() == null)
+            move.setMode(getMode());
+
+        if (moveMap == null)
+            moveMap = new HashMap<Mode,TreeSet<ManantialesMove>>();
+        TreeSet<ManantialesMove> moves = moveMap.get (mode);
         if (moves == null)
-            moves = new TreeSet<GridMove>(new MoveComparator());
-
+            moves = new TreeSet<ManantialesMove>();
         moves.add((ManantialesMove) move);
-
+        moveMap.put(mode, moves);
         return move;
     }
 

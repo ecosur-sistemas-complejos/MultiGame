@@ -21,7 +21,7 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
-public class ManantialesMove extends GridMove {
+public class ManantialesMove extends GridMove implements Comparable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -165,5 +165,18 @@ public class ManantialesMove extends GridMove {
     @Override
     protected Object clone() throws CloneNotSupportedException {
        throw new CloneNotSupportedException ();
+    }
+
+    public int compareTo(Object o) {
+        int ret = 0;
+        if (o instanceof ManantialesMove) {
+            ManantialesMove comparator = (ManantialesMove) o;
+            if (comparator.getId() > getId())
+                ret = 1;
+            else if (comparator.getId() < getId())
+                ret = -1;
+        }
+
+        return ret;
     }
 }

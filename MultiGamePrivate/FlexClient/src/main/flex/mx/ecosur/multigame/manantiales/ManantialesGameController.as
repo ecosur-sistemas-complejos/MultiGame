@@ -137,7 +137,7 @@ package mx.ecosur.multigame.manantiales
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
-            var callMoves:Object = _gameService.getMoves(_gameId);
+            var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;            
         }
 
@@ -467,7 +467,7 @@ package mx.ecosur.multigame.manantiales
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
 
-            var callMoves:Object = _gameService.getMoves(_gameId);
+            var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
         }
 
