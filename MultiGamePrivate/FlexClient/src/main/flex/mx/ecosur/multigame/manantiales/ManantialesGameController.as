@@ -452,7 +452,7 @@ package mx.ecosur.multigame.manantiales
             if (errorMessage.extendedData != null){
                 if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
                     var fnc:Function = function (event:CloseEvent):void{
-                        _moveHandler.undoMove(_executingMove);
+                        _moveHandler.invalidMove(_executingMove);
                     }
                     Alert.show("Invalid Move", "Woops!", Alert.OK, null, fnc);
                 }

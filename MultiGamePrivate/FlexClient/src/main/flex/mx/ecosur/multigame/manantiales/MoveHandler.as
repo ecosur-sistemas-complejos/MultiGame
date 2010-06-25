@@ -4,8 +4,7 @@ package mx.ecosur.multigame.manantiales {
 
     import flash.geom.Point;
 
-import mx.controls.Alert;
-import mx.controls.Button;
+    import mx.controls.Button;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
@@ -400,6 +399,80 @@ import mx.controls.Button;
             }
         }
 
+        /* Function for handling invalid move processing */
+        function invalidMove(move:ManantialesMove):void {
+           var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(
+                   move.destinationCell.column, move.destinationCell.row);
+
+            // if was a bad year then nothing to undo
+            if(move.badYear){
+                _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd - 1]);
+                return
+            }
+
+            /* Restore previous token */
+            if (move.currentCell != null) {
+                var ficha:Ficha = Ficha (move.currentCell);
+                switch (ficha.type) {
+                    case TokenType.INTENSIVE:
+                        boardCell.token = new IntensiveToken();
+                        _controller._gameWindow.intensiveStore.removeToken();
+                        break;
+                    case TokenType.MODERATE:
+                        boardCell.token = new ModerateToken();
+                        _controller._gameWindow.moderateStore.removeToken();
+                        break;
+                    case TokenType.FOREST:
+                        boardCell.token = new ForestToken();
+                        _controller._gameWindow.forestStore.removeToken();
+                        break;
+                    case TokenType.VIVERO:
+                        boardCell.token = new ViveroToken();
+                        _controller._gameWindow.viveroStore.removeToken();
+                        break;
+                    case TokenType.SILVOPASTORAL:
+                        boardCell.token = new SilvopastoralToken();
+                        _controller._gameWindow.silvoStore.removeToken();    
+                        break;
+                    default:
+                        break;
+                }
+
+                boardCell.token.cell = ficha;
+
+            } else
+                boardCell.token = new UndevelopedToken();
+
+            /* Increment the INVALID move's token store */
+            if (move.destinationCell != null) {
+                var ficha:Ficha = Ficha(move.destinationCell);
+                switch (ficha.type) {
+                    case TokenType.INTENSIVE:
+                        _controller._gameWindow.intensiveStore.addToken();
+                        break;
+                    case TokenType.MODERATE:
+                        _controller._gameWindow.moderateStore.addToken();
+                        break;
+                    case TokenType.FOREST:
+                        _controller._gameWindow.forestStore.addToken();
+                        break;
+                    case TokenType.VIVERO:
+                        _controller._gameWindow.viveroStore.addToken();
+                        break;
+                    case TokenType.SILVOPASTORAL:
+                        _controller._gameWindow.silvoStore.addToken();
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            /* An animation would be nice here */
+            
+            /* Reset the cell on the board */
+            boardCell.reset();
+        }
+
         function undoMove(move:ManantialesMove):void{
             var boardCell:BoardCell;
             var startPoint:Point;
@@ -426,22 +499,22 @@ import mx.controls.Button;
             startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
 
             //define destination
-            if (move.currentCell == null) {
-                playerBtn = _controller._gameWindow.playersViewer.getPlayerButton(ManantialesPlayer(move.player));
-                endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y +
-                    Color.getCellIconSize() / 2 + 5);
-                endPoint = _controller._gameWindow.playersViewer.localToGlobal(endPoint);
-                endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
-                endSize = Color.getCellIconSize();
-            } else {
+                if (move.currentCell == null) {
+                    playerBtn = _controller._gameWindow.playersViewer.getPlayerButton(ManantialesPlayer(move.player));
+                    endPoint = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y +
+                        Color.getCellIconSize() / 2 + 5);
+                    endPoint = _controller._gameWindow.playersViewer.localToGlobal(endPoint);
+                    endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
+                    endSize = Color.getCellIconSize();
+                } else {
 
-                endCell = _controller._gameWindow.board.getBoardCell(move.currentCell.column, move.currentCell.row);
-                endPoint = new Point (endCell.width/ 2, endCell.height/2);
-                endSize = _controller._gameWindow.board.tokenSize;
-                endPoint = endCell.localToGlobal(endPoint);
-                endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
+                    endCell = _controller._gameWindow.board.getBoardCell(move.currentCell.column, move.currentCell.row);
+                    endPoint = new Point (endCell.width/ 2, endCell.height/2);
+                    endSize = _controller._gameWindow.board.tokenSize;
+                    endPoint = endCell.localToGlobal(endPoint);
+                    endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
 
-            }
+                }
 
             // restore previous token, if determinable from move
             if (move.currentCell != null) {
@@ -515,31 +588,6 @@ import mx.controls.Button;
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
             if (_controller._gameWindow.animateLayer.contains(token))
                 _controller._gameWindow.animateLayer.removeChild(token);
-
-            //add to token store if necessary
-            if(_controller._isTurn) {
-                var ficha:Ficha = Ficha(token.cell);
-                switch (ficha.type) {
-                        case TokenType.FOREST:
-                          _controller._gameWindow.forestStore.addToken();
-                          break;
-                        case TokenType.INTENSIVE:
-                          _controller._gameWindow.intensiveStore.addToken();
-                          break;
-                        case TokenType.MODERATE:
-                          _controller._gameWindow.moderateStore.addToken();
-                          break;
-                        case TokenType.SILVOPASTORAL:
-                          _controller._gameWindow.silvoStore.addToken();
-                          break;
-                        case TokenType.VIVERO:
-                          _controller._gameWindow.viveroStore.addToken();
-                          break;
-                        default:
-                          break;
-                }
-            }
-
             if (_controller._selectedMoveInd >= 0)
                 _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd]);
         }
