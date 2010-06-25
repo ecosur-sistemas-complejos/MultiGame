@@ -60,6 +60,7 @@ package mx.ecosur.multigame.manantiales
 
         private var _msgReceiver:MessageReceiver;
         private var _isEnded:Boolean;
+        private var _transition:Boolean;
 
         // constants
         private static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
@@ -153,57 +154,59 @@ package mx.ecosur.multigame.manantiales
             var move:ManantialesMove;
             var suggestion:Suggestion;
 
-            switch (gameEvent) {
-                case ManantialesEvent.BEGIN:
-                    begin();
-                    break;
-                case ManantialesEvent.CHAT:
-                    var chatMessage:ChatMessage = ChatMessage(message.body);
-                    _gameWindow.chatPanel.addMessage(chatMessage);
-                    if(chatMessage.sender.id != _currentPlayer.registrant.id){
-                        _gameWindow.gameStatus.showMessage(
-                            chatMessage.sender.registrant.name +
-                            " has sent you a message", 0x000000);
-                    }
-                    break;
-                case ManantialesEvent.END:
-                    game = ManantialesGame(message.body);
-                    handleGameEnd (game);
-                    break;
-                case ManantialesEvent.MOVE_COMPLETE:
-                    move= ManantialesMove(message.body);
-                    _gameWindow.playersViewer.updatePlayers();
-                    _moveHandler.addMove(move);
-                    break;
-                case ManantialesEvent.PLAYER_CHANGE:
-                    game = ManantialesGame(message.body);
-                    updatePlayers(game);
-                    break;
-                case ManantialesEvent.CONDITION_RAISED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraint (checkCondition);
-                    break;
-                case ManantialesEvent.CONDITION_RESOLVED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraintResolved (checkCondition);
-                    break;
-                case ManantialesEvent.CONDITION_TRIGGERED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraintTriggered (checkCondition);
-                    break;
-                case ManantialesEvent.STATE_CHANGE:
-                    game = ManantialesGame(message.body);
-                    handleStateChange (game);
-                    break;
-                case ManantialesEvent.SUGGESTION_EVALUATED:
-                    suggestion = Suggestion(message.body);
-                    _suggestionHandler.addSuggestion (suggestion);
-                    break;
-                case ManantialesEvent.SUGGESTION_APPLIED:
-                    suggestion = Suggestion(message.body);
-                    _suggestionHandler.removeSuggestion (suggestion);
-                    break;
+            if (!_transition) {
+                switch (gameEvent) {
+                    case ManantialesEvent.BEGIN:
+                        begin();
+                        break;
+                    case ManantialesEvent.CHAT:
+                        var chatMessage:ChatMessage = ChatMessage(message.body);
+                        _gameWindow.chatPanel.addMessage(chatMessage);
+                        if(chatMessage.sender.id != _currentPlayer.registrant.id){
+                            _gameWindow.gameStatus.showMessage(
+                                chatMessage.sender.registrant.name +
+                                " has sent you a message", 0x000000);
+                        }
+                        break;
+                    case ManantialesEvent.END:
+                        game = ManantialesGame(message.body);
+                        handleGameEnd (game);
+                        break;
+                    case ManantialesEvent.MOVE_COMPLETE:
+                        move= ManantialesMove(message.body);
+                        _gameWindow.playersViewer.updatePlayers();
+                        _moveHandler.addMove(move);
+                        break;
+                    case ManantialesEvent.PLAYER_CHANGE:
+                        game = ManantialesGame(message.body);
+                        updatePlayers(game);
+                        break;
+                    case ManantialesEvent.CONDITION_RAISED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraint (checkCondition);
+                        break;
+                    case ManantialesEvent.CONDITION_RESOLVED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraintResolved (checkCondition);
+                        break;
+                    case ManantialesEvent.CONDITION_TRIGGERED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraintTriggered (checkCondition);
+                        break;
+                    case ManantialesEvent.STATE_CHANGE:
+                        game = ManantialesGame(message.body);
+                        handleStateChange (game);
+                        break;
+                    case ManantialesEvent.SUGGESTION_EVALUATED:
+                        suggestion = Suggestion(message.body);
+                        _suggestionHandler.addSuggestion (suggestion);
+                        break;
+                    case ManantialesEvent.SUGGESTION_APPLIED:
+                        suggestion = Suggestion(message.body);
+                        _suggestionHandler.removeSuggestion (suggestion);
+                        break;
 
+                }
             }
         }
 
@@ -365,6 +368,7 @@ package mx.ecosur.multigame.manantiales
         private function handleStateChangeResult (event:DynamicEvent):void {
            PopUpManager.removePopUp(_stageChangeAlert);
            _stageChangeAlert = null;
+           _transition = false;
 
            /* Reinitialize the grid in case a move was picked from the previous
            state change */
@@ -373,9 +377,6 @@ package mx.ecosur.multigame.manantiales
 
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
-
-            var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
-            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
         }
 
         private function handleEndResult (event:DynamicEvent):void {
@@ -495,7 +496,7 @@ package mx.ecosur.multigame.manantiales
                 _alerts.addItem(checkConAlert);
                 PopUpManager.addPopUp(checkConAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(checkConAlert);
-    
+
                  /* Reset the grid on the board */
                 var callGrid:Object = _gameService.getGameGrid(_gameId);
                 callGrid.operation = GAME_SERVICE_GET_GRID_OP;
@@ -509,12 +510,14 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChange (game:ManantialesGame):void {
+            _transition = true;
+
             if (_stageChangeAlert == null) {
                 _gameWindow.currentState =  game.mode;
                 _tokenHandler.resetTokenStores();
                 _game = game;
                 _gameWindow.invalidateDisplayList();
-
+                _gameWindow.leftBox.invalidateDisplayList();
 
                 _stageChangeAlert = new GraphicAlert();
                 if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
@@ -534,7 +537,17 @@ package mx.ecosur.multigame.manantiales
                     _stageChangeAlert.positive = true;
                 }
 
-                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);                
+                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
+
+                /* Clear moves for next stage  */
+                this._moves = new ArrayCollection();
+                _gameWindow.moveViewer.board = _gameWindow.board;
+                _gameWindow.moveViewer.initFromMoves(_moves);
+                _selectedMoveInd = _moves.length - 1;
+
+                 /* Reset the grid on the board */
+                var callGrid:Object = _gameService.getGameGrid(_gameId);
+                callGrid.operation = GAME_SERVICE_GET_GRID_OP;                
 
                 /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
