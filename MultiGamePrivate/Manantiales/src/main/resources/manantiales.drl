@@ -465,9 +465,11 @@ rule "execute-new-move"
     agenda-group "move"
     lock-on-active
 when 
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell == null,
-        swap != true)
+        $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
@@ -480,9 +482,11 @@ rule "execute-replace-move"
     agenda-group "move"
     lock-on-active
 when 
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
-        destinationCell != null, swap != true)
+        destinationCell != null, swap != true, $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ((GridCell) $current);
@@ -492,13 +496,13 @@ then
     messageSender.sendMoveComplete ($game, $move);
 end
 
-rule "execute-shift-move"
+rule "execute-remove-move"
     agenda-group "move"
     lock-on-active
 when 
     $game  : GridGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
-        destinationCell == null, swap != true)
+        destinationCell == null)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ((GridCell) $current);
@@ -511,9 +515,11 @@ rule "execute-swap-move"
     agenda-group "move"
     lock-on-active
 when 
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell !=null,
-        destinationCell != null, swap == true)
+        destinationCell != null, swap == true, $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
     Ficha current = (Ficha) $move.getCurrentCell();
@@ -774,12 +780,11 @@ then
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
         player.reset();
-    }
+     }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
     messageSender.sendStateChange($game);
-    messageSender.sendPlayerChange($game);
 end
 
 rule "stage-won"
@@ -801,7 +806,6 @@ then
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
     messageSender.sendStateChange($game);
-    messageSender.sendPlayerChange($game);
 end
 
 rule "game-won"

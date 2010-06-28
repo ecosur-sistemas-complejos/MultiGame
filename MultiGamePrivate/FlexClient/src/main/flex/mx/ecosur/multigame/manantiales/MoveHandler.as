@@ -135,9 +135,12 @@ package mx.ecosur.multigame.manantiales {
                     lastMove = ManantialesMove(_controller._moves[length - 1]);
                 }
 
-                //if move is after the last move then add moves
-                //else update the move since its info may have changed
-                if (lastMove == null || move.id > lastMove.id){
+                if (move.badYear) {
+                    
+                    _controller._moves.source.push(move);
+                    _controller._gameWindow.moveViewer.addMove(move);
+
+                } else if (lastMove == null || move.id > lastMove.id){
 
                     /* Suggestions are cleared on completion of any turn based moves */
                     if (move.player.turn)
@@ -153,7 +156,6 @@ package mx.ecosur.multigame.manantiales {
                         doMove(move);
                     }
                 } else {
-
                     // Search for move in reverse order because its most likely to be the last move
                     var oldMove:ManantialesMove;
                     for (var i:Number = _controller._moves.length - 1; i >= 0; i--){
@@ -172,8 +174,34 @@ package mx.ecosur.multigame.manantiales {
                 if (_controller.puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         move.currentCell.column, move.currentCell.row));
-                    /* Set the previous to Untouched Forest */
-                    cell.token = new UndevelopedToken();
+                    var ficha:Ficha = Ficha (move.currentCell);
+                    if (ficha) {
+                        var token:ManantialesToken;                        
+                        switch (ficha.type) {
+                            case TokenType.FOREST:
+                                token = new ForestToken();
+                                break;
+                            case TokenType.MODERATE:
+                                token = new ModerateToken();
+                                break;
+                            case TokenType.INTENSIVE:
+                                token = new IntensiveToken();
+                                break;
+                            case TokenType.VIVERO:
+                                token = new ViveroToken();
+                                break;
+                            case TokenType.SILVOPASTORAL:
+                                token = new SilvopastoralToken();
+                                break;
+                            default:
+                                token = new UndevelopedToken();
+                                break;
+                        }
+
+                        cell.token = token;
+
+                    } else
+                        cell.token = new UndevelopedToken();
                     cell.reset();
                 }
             }

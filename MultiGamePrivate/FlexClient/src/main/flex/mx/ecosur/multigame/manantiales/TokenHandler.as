@@ -149,6 +149,7 @@ import flash.events.MouseEvent;
                 destination.column = targetCell.column;
                 destination.type = destToken.ficha.type;
                 move.destinationCell = destination;
+                move.mode = _mode;
 
                 if (_currentPlayer.turn && move.currentCell == null
                         && (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))

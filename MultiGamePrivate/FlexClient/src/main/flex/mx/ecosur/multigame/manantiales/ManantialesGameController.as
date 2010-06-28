@@ -126,7 +126,15 @@ package mx.ecosur.multigame.manantiales
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
             var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
             callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
+            _transition = false;
+        }
 
+        public function get transition():Boolean {
+            return _transition;
+        }
+
+        public function set transition(bool:Boolean):void {
+            _transition = bool;
         }
 
         
@@ -135,6 +143,8 @@ package mx.ecosur.multigame.manantiales
         }
 
         public function sendMove (move:ManantialesMove):void {
+            /* forcibly set the mode to that current state */
+            move.mode = _game.mode;
             var call:Object = _gameService.doMove(_game, move);
             call.operation = "doMove";
             _executingMove = move;
@@ -147,14 +157,14 @@ package mx.ecosur.multigame.manantiales
          * header, based on this different actions are taken.
          */
         private function processMessage(event:DynamicEvent):void {
-            var message:IMessage = event.message;
-            var gameEvent:String = message.headers.GAME_EVENT;
-            var checkCondition:CheckCondition;
-            var game:ManantialesGame;
-            var move:ManantialesMove;
-            var suggestion:Suggestion;
+            if (!transition) {
+                var message:IMessage = event.message;
+                var gameEvent:String = message.headers.GAME_EVENT;
+                var checkCondition:CheckCondition;
+                var game:ManantialesGame;
+                var move:ManantialesMove;
+                var suggestion:Suggestion;
 
-            if (!_transition) {
                 switch (gameEvent) {
                     case ManantialesEvent.BEGIN:
                         begin();
@@ -205,7 +215,6 @@ package mx.ecosur.multigame.manantiales
                         suggestion = Suggestion(message.body);
                         _suggestionHandler.removeSuggestion (suggestion);
                         break;
-
                 }
             }
         }
@@ -368,24 +377,20 @@ package mx.ecosur.multigame.manantiales
         private function handleStateChangeResult (event:DynamicEvent):void {
            PopUpManager.removePopUp(_stageChangeAlert);
            _stageChangeAlert = null;
-           _transition = false;
-
-           /* Reinitialize the grid in case a move was picked from the previous
-           state change */
-            var callGrid:Object = _gameService.getGameGrid(_gameId);
-            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-
-            var callPlayers:Object = _gameService.getPlayers(_gameId);
-            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+          var grid:GameGrid = new GameGrid();
+          _game.grid = grid;
+          initGrid(grid);
+          _tokenHandler.resetTokenStores();            
+          transition = false;
         }
 
         private function handleEndResult (event:DynamicEvent):void {
-                PopUpManager.removePopUp(this._endAlert);
-                _endAlert = null;
-                this._gameWindow.dispatchCompletion();
+            PopUpManager.removePopUp(this._endAlert);
+            _endAlert = null;
+            this._gameWindow.dispatchCompletion();
         }
 
-        private function endTurn():void{
+        private function endTurn():void {                                    
                /* return the window to the default state */
             _gameWindow.currentState = "";
         }
@@ -407,7 +412,7 @@ package mx.ecosur.multigame.manantiales
          *
          * @param players the new list of players
          */
-        public function updatePlayers(game:ManantialesGame):void{
+        public function updatePlayers(game:ManantialesGame):void {
             this._game = game;
             _gameWindow.playersViewer.game = _game;      
 
@@ -510,7 +515,7 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChange (game:ManantialesGame):void {
-            _transition = true;
+            transition = true;
 
             if (_stageChangeAlert == null) {
                 _gameWindow.currentState =  game.mode;
@@ -518,9 +523,10 @@ package mx.ecosur.multigame.manantiales
                 _game = game;
                 _gameWindow.invalidateDisplayList();
                 _gameWindow.leftBox.invalidateDisplayList();
+                updatePlayers(game);                
 
                 _stageChangeAlert = new GraphicAlert();
-                if (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) {
+                if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
                     if (_isTurn) {
                         _stageChangeAlert.text = "Congratulations!  You have won the sub-game! Progressing to next stage, '" +
                             game.mode + "'";
@@ -540,15 +546,11 @@ package mx.ecosur.multigame.manantiales
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
 
                 /* Clear moves for next stage  */
-                this._moves = new ArrayCollection();
+                _moves = new ArrayCollection();
                 _gameWindow.moveViewer.board = _gameWindow.board;
                 _gameWindow.moveViewer.initFromMoves(_moves);
                 _selectedMoveInd = _moves.length - 1;
-
-                 /* Reset the grid on the board */
-                var callGrid:Object = _gameService.getGameGrid(_gameId);
-                callGrid.operation = GAME_SERVICE_GET_GRID_OP;                
-
+                
                 /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
