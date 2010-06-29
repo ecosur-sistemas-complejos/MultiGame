@@ -116,6 +116,8 @@ public class RuleFunctions {
             ManantialesPlayer player = (ManantialesPlayer) gridPlayer;
             ret = ret && ( player.getScore() >= mode.getWinningScore() );
         }
+        
+        ret = ret && (game.getCheckConditions().size() == 0);
 
         return ret;
     }

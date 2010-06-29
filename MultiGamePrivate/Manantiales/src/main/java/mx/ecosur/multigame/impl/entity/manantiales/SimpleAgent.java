@@ -101,7 +101,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         ManantialesMove ret = new ManantialesMove ();
         ret.setPlayer(this);
         ret.setBadYear(true);
-        return ret;        
+        ret.setMode(game.getMode());
+        return ret;
     }
 
     private Set<MoveImpl> findUpgradeMoves (ManantialesGame game) {

@@ -122,6 +122,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
+        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());

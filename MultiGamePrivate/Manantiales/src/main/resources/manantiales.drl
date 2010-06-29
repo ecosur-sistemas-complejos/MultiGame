@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 
@@ -52,13 +53,15 @@ rule "setup"
 when
     $game : ManantialesGame (state == GameState.BEGIN);
 then
+    Random random = new Random();
+    int start = random.nextInt(6);
     List<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
-        if (p.getColor() == Color.YELLOW)
-            p.setTurn(true);
-        else
-            p.setTurn(false);
+        p.setTurn(false);
     }
+    ManantialesPlayer player = (ManantialesPlayer) players.get(start);
+    player.setTurn(true);
+    
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
@@ -800,7 +803,6 @@ then
     List<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
-        player.reset();
     }
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
@@ -826,9 +828,9 @@ rule "increment-turn"
     no-loop true
     salience -15
 when
-    $game  : ManantialesGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
      move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
-        badYear == false, destinationCell != null)
+        badYear == false, destinationCell != null, mode == $mode)
 then
     GridPlayer player = incrementTurn ($game, move);
     messageSender.sendPlayerChange($game);
@@ -839,8 +841,9 @@ rule "skip-turn"
     no-loop true
     salience -15
 when
-    $game   : ManantialesGame (state == GameState.PLAY)
-    $move   : ManantialesMove (player.turn == true, badYear == true)
+    $game   : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move   : ManantialesMove (player.turn == true, badYear == true,
+        mode == $mode)
 then
     GridPlayer player = incrementTurn ($game, $move);
     messageSender.sendPlayerChange($game);

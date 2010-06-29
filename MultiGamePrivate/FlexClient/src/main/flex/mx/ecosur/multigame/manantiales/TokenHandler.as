@@ -169,8 +169,8 @@ import flash.events.MouseEvent;
                     move.player = _currentPlayer;
                     _gameWindow.controller.sendMove(move);
 
-                }else if (_currentPlayer.turn && move.currentCell != null &&
-                        (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
+                }else if (_currentPlayer.turn &&
+                        (destToken.cell.color != _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
                 {
                         /* Making a suggestion to another player */
                     suggestion = true;                    
