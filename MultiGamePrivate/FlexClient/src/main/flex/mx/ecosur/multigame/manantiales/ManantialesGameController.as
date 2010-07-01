@@ -60,6 +60,8 @@ package mx.ecosur.multigame.manantiales
 
         private var _msgReceiver:MessageReceiver;
         private var _isEnded:Boolean;
+        private var _stateChange:Boolean;
+        private var _messages:ArrayCollection;
 
         // constants
         private static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
@@ -75,6 +77,7 @@ package mx.ecosur.multigame.manantiales
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
         {
+            _messages = new ArrayCollection();
 
             // set references
             _gameWindow = gameWindow;
@@ -146,64 +149,73 @@ package mx.ecosur.multigame.manantiales
          * reordered and dispatched. All messages contain a game event
          * header, based on this different actions are taken.
          */
-        private function processMessage(event:DynamicEvent):void {
-            var message:IMessage = event.message;
-            var gameEvent:String = message.headers.GAME_EVENT;
-            var checkCondition:CheckCondition;
-            var game:ManantialesGame;
-            var move:ManantialesMove;
-            var suggestion:Suggestion;
+        private function processMessage(evt:DynamicEvent):void {
+            _messages.addItem(evt);
 
-            switch (gameEvent) {
-                case ManantialesEvent.BEGIN:
-                    begin();
-                    break;
-                case ManantialesEvent.CHAT:
-                    var chatMessage:ChatMessage = ChatMessage(message.body);
-                    _gameWindow.chatPanel.addMessage(chatMessage);
-                    if(chatMessage.sender.id != _currentPlayer.registrant.id){
-                        _gameWindow.gameStatus.showMessage(
-                            chatMessage.sender.registrant.name +
-                            " has sent you a message", 0x000000);
+            if (!_stateChange) {
+                for (var i:int = 0; i < _messages.length; i++) {
+                    var event = DynamicEvent(_messages.getItemAt(i));
+                    var message:IMessage = event.message;
+                    var gameEvent:String = message.headers.GAME_EVENT;
+                    var checkCondition:CheckCondition;
+                    var game:ManantialesGame;
+                    var move:ManantialesMove;
+                    var suggestion:Suggestion;
+
+                    switch (gameEvent) {
+                        case ManantialesEvent.BEGIN:
+                            begin();
+                            break;
+                        case ManantialesEvent.CHAT:
+                            var chatMessage:ChatMessage = ChatMessage(message.body);
+                            _gameWindow.chatPanel.addMessage(chatMessage);
+                            if(chatMessage.sender.id != _currentPlayer.registrant.id){
+                                _gameWindow.gameStatus.showMessage(
+                                    chatMessage.sender.registrant.name +
+                                    " has sent you a message", 0x000000);
+                            }
+                            break;
+                        case ManantialesEvent.END:
+                            game = ManantialesGame(message.body);
+                            handleGameEnd (game);
+                            break;
+                        case ManantialesEvent.MOVE_COMPLETE:
+                            move= ManantialesMove(message.body);
+                            _gameWindow.playersViewer.updatePlayers();
+                            _moveHandler.addMove(move);
+                            break;
+                        case ManantialesEvent.PLAYER_CHANGE:
+                            game = ManantialesGame(message.body);
+                            updatePlayers(game);
+                            break;
+                        case ManantialesEvent.CONDITION_RAISED:
+                            checkCondition = CheckCondition(message.body);
+                            handleCheckConstraint (checkCondition);
+                            break;
+                        case ManantialesEvent.CONDITION_RESOLVED:
+                            checkCondition = CheckCondition(message.body);
+                            handleCheckConstraintResolved (checkCondition);
+                            break;
+                        case ManantialesEvent.CONDITION_TRIGGERED:
+                            checkCondition = CheckCondition(message.body);
+                            handleCheckConstraintTriggered (checkCondition);
+                            break;
+                        case ManantialesEvent.STATE_CHANGE:
+                            game = ManantialesGame(message.body);
+                            handleStateChange (game);
+                            break;
+                        case ManantialesEvent.SUGGESTION_EVALUATED:
+                            suggestion = Suggestion(message.body);
+                            _suggestionHandler.addSuggestion (suggestion);
+                            break;
+                        case ManantialesEvent.SUGGESTION_APPLIED:
+                            suggestion = Suggestion(message.body);
+                            _suggestionHandler.removeSuggestion (suggestion);
+                            break;
                     }
-                    break;
-                case ManantialesEvent.END:
-                    game = ManantialesGame(message.body);
-                    handleGameEnd (game);
-                    break;
-                case ManantialesEvent.MOVE_COMPLETE:
-                    move= ManantialesMove(message.body);
-                    _gameWindow.playersViewer.updatePlayers();
-                    _moveHandler.addMove(move);
-                    break;
-                case ManantialesEvent.PLAYER_CHANGE:
-                    game = ManantialesGame(message.body);
-                    updatePlayers(game);
-                    break;
-                case ManantialesEvent.CONDITION_RAISED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraint (checkCondition);
-                    break;
-                case ManantialesEvent.CONDITION_RESOLVED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraintResolved (checkCondition);
-                    break;
-                case ManantialesEvent.CONDITION_TRIGGERED:
-                    checkCondition = CheckCondition(message.body);
-                    handleCheckConstraintTriggered (checkCondition);
-                    break;
-                case ManantialesEvent.STATE_CHANGE:
-                    game = ManantialesGame(message.body);
-                    handleStateChange (game);
-                    break;
-                case ManantialesEvent.SUGGESTION_EVALUATED:
-                    suggestion = Suggestion(message.body);
-                    _suggestionHandler.addSuggestion (suggestion);
-                    break;
-                case ManantialesEvent.SUGGESTION_APPLIED:
-                    suggestion = Suggestion(message.body);
-                    _suggestionHandler.removeSuggestion (suggestion);
-                    break;
+                }
+
+                _messages = new ArrayCollection();
             }
         }
 
@@ -493,15 +505,19 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChange (game:ManantialesGame):void {
+            _stateChange = true;
+            _game = game;
             if (_stageChangeAlert == null) {
-                updatePlayers (game);
-                _gameWindow.currentState =  "";
-                _gameWindow.invalidateDisplayList();
-                _game = game;
+                /* Set the mode */
+                _gameWindow.currentState = game.mode;
+                var winner:Boolean = _isTurn;
 
+                /* update state */
+                updatePlayers (_game);
+                
                 _stageChangeAlert = new GraphicAlert();
                 if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
-                    if (_isTurn) {
+                    if (winner) {
                         _stageChangeAlert.text = "Congratulations!  You have won the sub-game! Progressing to next stage, '" +
                             game.mode + "'";
                         _stageChangeAlert.positive = true;
@@ -519,12 +535,6 @@ package mx.ecosur.multigame.manantiales
 
                 _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
 
-                /* Clear moves for next stage  */
-                _moves = new ArrayCollection();
-                _gameWindow.moveViewer.board = _gameWindow.board;
-                _gameWindow.moveViewer.initFromMoves(_moves);
-                _selectedMoveInd = _moves.length - 1;
-                
                 /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
@@ -532,18 +542,26 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleStateChangeResult (event:DynamicEvent):void {
-           PopUpManager.removePopUp(_stageChangeAlert);
-           _stageChangeAlert = null;
+            PopUpManager.removePopUp(_stageChangeAlert);
+            _stageChangeAlert = null;
 
-          var grid:GameGrid = new GameGrid();
-          _game.grid = grid;
-          initGrid(grid);
+            /* Clear moves for next stage  */
+            _moves = new ArrayCollection();
+            _gameWindow.moveViewer.board = _gameWindow.board;
+            _gameWindow.moveViewer.initFromMoves(_moves);
+            _selectedMoveInd = _moves.length - 1;
 
-          /* Set the mode */
-          _gameWindow.currentState = _game.mode;
-          _gameWindow.invalidateDisplayList();
-          _gameWindow.leftBox.invalidateDisplayList();
-          _tokenHandler.resetTokenStores();
+            _gameWindow.invalidateDisplayList();
+            _gameWindow.leftBox.invalidateDisplayList();
+            _gameWindow.leftBox.invalidateProperties();
+            _gameWindow.invalidateSize();
+            _tokenHandler.resetTokenStores();
+
+            /* Init Game Grid with clear grid */
+            var grid:GameGrid = new GameGrid();
+            _game.grid = grid;
+            initGrid(grid);
+            _stateChange = false;
         }        
 
         private function handleGameEnd (game:ManantialesGame):void {

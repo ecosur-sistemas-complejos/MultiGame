@@ -58,10 +58,9 @@ then
     List<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
         p.setTurn(false);
+        if (p.getColor().equals(Color.YELLOW))
+            p.setTurn(true);
     }
-    ManantialesPlayer player = (ManantialesPlayer) players.get(start);
-    player.setTurn(true);
-    
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
@@ -779,10 +778,15 @@ when
     eval (isSolved ($mode, $game))
 then
     List<GridPlayer> players = $game.getPlayers();
+    Random random = new Random();
+    int index = random.nextInt(4);
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
         player.reset();
-     }
+        player.setTurn(false);
+    }
+    ManantialesPlayer player = (ManantialesPlayer) players.get(index);
+    player.setTurn(true);
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
@@ -800,9 +804,15 @@ when
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
     List<GridPlayer> players = $game.getPlayers();
+    Random random = new Random();
+    int index = random.nextInt(4);
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
+        player.reset();
+        player.setTurn(false);
     }
+    ManantialesPlayer player = (ManantialesPlayer) players.get(index);
+    player.setTurn(true);
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }

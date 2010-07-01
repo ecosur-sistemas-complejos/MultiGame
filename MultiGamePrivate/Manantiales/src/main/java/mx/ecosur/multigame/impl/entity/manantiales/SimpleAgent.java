@@ -184,17 +184,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
                         ficha.setType(TokenType.MANAGED_FOREST);
                     else if (this.getModerate() < 6)
                         ficha.setType(TokenType.MODERATE_PASTURE);
-                    else if (this.getIntensive () < 6)
-                        ficha.setType(TokenType.INTENSIVE_PASTURE);
-                    else if (game.getMode().equals(Mode.SILVOPASTORAL)) {
-                        if (this.getVivero() < 6) {
-                            ficha.setType(TokenType.VIVERO);
-                        }
-                    } else if (game.getMode().equals(Mode.SILVO_PUZZLE)) {
-                        if (this.getSilvo() < 6)
-                            ficha.setType(TokenType.SILVOPASTORAL);
-                    }
-
+                    else if (game.getMode().equals(Mode.SILVOPASTORAL) && getVivero() < 6)
+                        ficha.setType(TokenType.VIVERO);
                     ret.add(ficha);
                 }
             }
@@ -226,6 +217,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         }
 
         if (column == 4 || row == 4) {
+            
             /* Check for Manantial */
             if (column == 4 && row == 4)
                 ret = false;
