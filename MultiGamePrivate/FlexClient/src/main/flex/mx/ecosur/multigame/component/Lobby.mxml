@@ -66,11 +66,11 @@
     <mx:Panel title="ECOSUR MultiGame Project" paddingLeft="5" paddingRight="5" paddingBottom="5">
         <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
         <mx:TabNavigator width="750" height="260">
+            <component:StartNewGame  label="Start New Game" height="100%" width="100%" registered="dispatchEvent(event)"/>
             <component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" height="100%" width="100%"
                 gameChosen="choose(event)"/>
             <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%"
                 gameJoined="choose(event)"/>
-            <component:StartNewGame  label="Start New Game" height="100%" width="100%" registered="dispatchEvent(event)"/>
         </mx:TabNavigator>
     </mx:Panel>
 

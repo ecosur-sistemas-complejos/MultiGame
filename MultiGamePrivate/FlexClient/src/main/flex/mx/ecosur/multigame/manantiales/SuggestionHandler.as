@@ -14,7 +14,8 @@ import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
     import mx.controls.Alert;
     import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.enum.MoveStatus;
+import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
@@ -48,6 +49,8 @@ import mx.core.DragSource;
         private static const GAME_SERVICE_DO_SUGGESTION_OP:String = "makeSuggestion";
         
         private var _alert:SuggestionAlert;
+
+        private var _tokenSuggestor:TokenSuggestor;
 
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
@@ -144,7 +147,7 @@ import mx.core.DragSource;
 
         public function addSuggestion (suggestion:Suggestion):void {
             _mySuggestion = suggestion;
-            
+
             /*
             if (_timer == null) {
                 _timer = new Timer(2000, _animations);
@@ -346,6 +349,86 @@ import mx.core.DragSource;
                 // create proxy image and start drag
                 var dragImage:IFlexDisplayObject = token.createDragImage();
                 DragManager.doDrag(token, ds, evt, dragImage);
+            }
+        }
+
+        public function cancelSuggestion():void {
+            PopUpManager.removePopUp(_tokenSuggestor);
+        }
+
+        public function suggestType():void {
+            PopUpManager.removePopUp(_tokenSuggestor);
+            var type:String = String (_tokenSuggestor.typeBox.selectedItem.label);
+            var ficha:Ficha = null;
+
+            if (type != _tokenSuggestor.source.ficha.type) {
+
+               /* Basic clone of source ficha, modified to indicated type */
+               ficha = new Ficha ();
+               ficha.type = type;
+               ficha.column = _tokenSuggestor.source.ficha.column;
+               ficha.row = _tokenSuggestor.source.ficha.row;
+               ficha.color = _tokenSuggestor.source.ficha.color;
+
+                /* Make the suggestion */
+               var suggestion:Suggestion = new Suggestion();
+               var move:ManantialesMove = new ManantialesMove();
+               move.player = _controller._currentPlayer;
+               move.currentCell = _tokenSuggestor.source.ficha;
+               move.destinationCell = ficha;
+               move.mode = _controller._game.mode;
+               suggestion.move = move;
+
+                /* find the player the suggestion is targeted to */
+               for (var i:int = 0; i < _controller._game.players.length; i++) {
+                   var player:ManantialesPlayer = ManantialesPlayer (_controller._game.players.getItemAt(i));
+                   if (player.color == _tokenSuggestor.source.ficha.color) {
+                        suggestion.move.player = player;
+                        break;
+                   }
+               }
+
+               suggestion.suggestor = _player;
+               suggestion.status = SuggestionStatus.UNEVALUATED;
+
+               if (_currentSuggestions [move.player.registrant] == null)
+                _currentSuggestions [move.player.registrant] = suggestion;
+
+                Alert.show ("Suggestion being made: [" + suggestion.toString() + "]");
+
+               var call:Object = new Object();
+               call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
+               call.operation = GAME_SERVICE_DO_SUGGESTION_OP;
+            }
+        }
+
+        public function typeSuggestion(evt:MouseEvent):void {
+            var token:ManantialesToken = ManantialesToken(evt.currentTarget);
+
+            if (freePlayer (token.cell.color) && _controller._currentPlayer.turn
+                    && _controller._currentPlayer.color == _player.color)
+            {
+                _tokenSuggestor = new TokenSuggestor();
+                var _types:ArrayCollection = new ArrayCollection();
+                var values:ArrayCollection = TokenType.values(_controller._game.mode);
+
+                for (var i:int = 0; i < values.length; i++) {
+                    var test:String = String (values.getItemAt(i));
+                    if (test != token.type && test != TokenType.UNDEVELOPED)
+                        _types.addItem(test);
+                }
+
+                _tokenSuggestor.types = _types;
+                _tokenSuggestor.source = token;
+                _tokenSuggestor.suggestor = suggestType;
+                _tokenSuggestor.canceller = cancelSuggestion;
+
+                PopUpManager.addPopUp(_tokenSuggestor, _controller._gameWindow, true);
+                PopUpManager.centerPopUp(_tokenSuggestor);
+            } else {
+                Alert.show ("_controller._currentPlayer.turn=" + _controller._currentPlayer.turn +
+                        ", _controller._currentPlayer.color == _player.color=" +
+                        (_controller._currentPlayer.color == _player.color));
             }
         }
 

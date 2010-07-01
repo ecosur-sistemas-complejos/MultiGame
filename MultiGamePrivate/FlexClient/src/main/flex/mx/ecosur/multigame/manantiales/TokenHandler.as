@@ -320,6 +320,9 @@ import flash.events.MouseEvent;
                 }else{
                     token.addEventListener(MouseEvent.MOUSE_DOWN, _suggestionHandler.startSuggestion);
                     token.addEventListener(DragEvent.DRAG_COMPLETE, _suggestionHandler.endSuggestion);
+                    token.addEventListener(MouseEvent.CLICK, _suggestionHandler.typeSuggestion);
+                    token.addEventListener(MouseEvent.DOUBLE_CLICK, _suggestionHandler.typeSuggestion);
+                    token.doubleClickEnabled = true;
                 }
             }
         }                               

@@ -136,6 +136,13 @@ public class ManantialesMove extends GridMove implements Comparable {
         return player;
     }
 
+
+    @Override
+    public String toString() {
+       String ret = super.toString();
+       return "Mode = " + this.getMode() + ", " + ret;       
+    }
+
     @Override
     public int hashCode() {
        int curCode = 1, destCode = 1;
@@ -152,10 +159,13 @@ public class ManantialesMove extends GridMove implements Comparable {
         if (obj instanceof ManantialesMove) {
             ManantialesMove comparison = (ManantialesMove) obj;
             if (current != null && destination !=null) {
-                ret = current.equals( (comparison.getCurrentCell())) &&
+                if (comparison.getCurrentCell() != null && comparison.getDestinationCell() != null) {
+                    ret = current.equals( (comparison.getCurrentCell())) &&
                       destination.equals(comparison.getDestinationCell());
+                }
             } else if (destination != null) {
-                ret = destination.equals(comparison.getDestinationCell());
+                if (comparison.getDestinationCell() != null)
+                    ret = destination.equals(comparison.getDestinationCell());
               }
         }
 

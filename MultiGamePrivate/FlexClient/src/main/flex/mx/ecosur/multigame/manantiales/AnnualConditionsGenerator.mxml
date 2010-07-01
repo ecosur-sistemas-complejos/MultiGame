@@ -32,9 +32,8 @@
                 if (int(selectedNum.text) == 6){
                     currentState = "badYear";
                 } else {
-                    currentState = "goodYear"
                     var dEvent:DynamicEvent = new DynamicEvent("result");
-                    dEvent.isGoodYear = (currentState == "goodYear");
+                    dEvent.isGoodYear = true;
                     dispatchEvent(dEvent);
                 }
             }
@@ -47,22 +46,7 @@
 
         ]]>
     </mx:Script>
-
     <mx:states>
-        <mx:State name="goodYear">
-            <mx:RemoveChild target="{btnStop}" />
-            <mx:AddChild relativeTo="{content}" position="lastChild">
-                <mx:HBox width="100%">
-                    <mx:Image source="@Embed(source='/assets/icons.swf#thumbsUp')" />
-                    <mx:Text text="This is a good year, you may colonize" />
-                </mx:HBox>
-            </mx:AddChild>
-            <mx:AddChild relativeTo="{content}" position="lastChild">
-                <mx:Box width="100%" horizontalAlign="center">
-                    <mx:Button label="Continue turn" click="selectionComplete(event)" />
-                </mx:Box>
-            </mx:AddChild>
-        </mx:State>
         <mx:State name="badYear">
             <mx:RemoveChild target="{btnStop}" />
             <mx:AddChild relativeTo="{content}" position="lastChild">

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Generate Anual Condition"
+    creationComplete="">
+
+    <mx:Metadata>
+        [Event(name="result")]
+    </mx:Metadata>
+    <mx:Script>
+      <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+
+        private var _types:ArrayCollection;
+        private var _source:ManantialesToken;
+
+        private var _suggest:Function;
+        private var _cancel:Function;
+
+        public function get types():ArrayCollection {
+            if (_types == null)
+                _types = new ArrayCollection();
+            return _types;
+        }
+
+        public function set types(names:ArrayCollection):void {
+            _types = new ArrayCollection();
+            for (var i:int = 0; i < names.length; i++) {
+                var obj:Object = new Object();
+                obj.label = String (names.getItemAt(i));
+                obj.data = String (names.getItemAt(i));
+                _types.addItem(obj);
+            }
+        }
+
+         public function set suggestor(value):void {
+            _suggest = value;
+        }
+
+        public function set canceller(value):void {
+            _cancel = value;
+        }
+
+        public function suggest():void {
+            _suggest();
+        }
+
+        public function abort():void {
+            _cancel();
+        }
+
+        public function get source():ManantialesToken {
+            return _source;
+        }
+
+        public function set source(value:ManantialesToken):void {
+            _source = value;
+        }
+      ]]>
+    </mx:Script>
+    <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+        <mx:Text width="100%"
+                 text="What kind of change in token type do you want to suggest?" />
+        <mx:ComboBox id="typeBox" dataProvider="{types}"/>
+        <mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
+            <mx:Button id="select" label="Select" click="suggest()" />
+            <mx:Button id="cancel" label="Cancel" click="abort()"/>
+        </mx:HBox>
+        <mx:HBox id="result" width="100%" verticalAlign="middle"/>
+    </mx:VBox>
+    
+</mx:Panel>

@@ -54,7 +54,7 @@ when
     $game : ManantialesGame (state == GameState.BEGIN);
 then
     Random random = new Random();
-    int start = random.nextInt(6);
+    int start = random.nextInt(4);
     List<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
         p.setTurn(false);
@@ -66,7 +66,6 @@ then
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
         setMode ( mode) }
-    messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);
 end
 

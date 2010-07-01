@@ -65,7 +65,8 @@
                 dataItem.status = GameState.getDescription(game.state);
                 dataProvider.addItem(dataItem);
             }
-            gamesDataGrid.dataProvider = dataProvider;
+            if (gamesDataGrid)
+                gamesDataGrid.dataProvider = dataProvider;
         }
 
         private function joinGame():void {

@@ -93,7 +93,11 @@ public class GameService {
         return login (user.getName());
     }
 
-    public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr)
+    public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr) {
+        return startNewGame (player, preferedColor, gameTypeStr, null);
+    }
+
+    public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr, String mode)
     {
         if (player == null)
             player = registerPrincipal();
@@ -102,7 +106,7 @@ public class GameService {
         try {
             RegistrarRemote registrar = getRegistrar();
             GridGame game = null;
-            GameType type = GameType.valueOf(gameTypeStr);
+            GameType type = GameType.valueOf(gameTypeStr.toUpperCase());
 
             switch (type) {
                 case GENTE:
@@ -110,7 +114,10 @@ public class GameService {
                     game.setMessageSender(new MessageSender());
                     break;
                 case MANANTIALES:
-                    game = new ManantialesGame();
+                    if (mode == null)
+                        game = new ManantialesGame();
+                    else
+                        game = new ManantialesGame(Mode.valueOf(mode.toUpperCase()));
                     game.setMessageSender(new ManantialesMessageSender());
                     break;
             }
@@ -135,28 +142,6 @@ public class GameService {
         } catch (NoClassDefFoundError e) {
             e.printStackTrace();
         }
-
-        return ret;
-    }
-
-    public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr, String mode) {
-        if (player == null)
-            player = registerPrincipal();
-
-        ServiceGameEvent ret = startNewGame (player, preferedColor, gameTypeStr);
-        GridGame game = ret.getGame();
-        if (game instanceof ManantialesGame) {
-            ManantialesGame m = (ManantialesGame) game;
-            if (mode != null && mode.length() > 0) {
-                Mode modality = Mode.valueOf(mode);
-                m.setMode(modality.decrement());
-            } 
-            ret.setGame(game);
-        }
-
-        /* Publish modified game */
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        sharedBoard.shareGame(game);
 
         return ret;
     }

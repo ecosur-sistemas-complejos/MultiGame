@@ -58,6 +58,8 @@ public class ManantialesGame extends GridGame {
 
     private Map<Mode,TreeSet<ManantialesMove>> moveMap;
 
+    private Color[] colors = { Color.YELLOW, Color.RED, Color.BLACK, Color.PURPLE };
+
 
     public ManantialesGame () {
         super();
@@ -67,6 +69,11 @@ public class ManantialesGame extends GridGame {
     public ManantialesGame (KnowledgeBase kbase) {
         super();
         this.kbase = kbase;
+    }
+
+    public ManantialesGame (Mode mode) {
+        super();
+        this.mode = mode;
     }
 
     @Override
@@ -346,16 +353,9 @@ public class ManantialesGame extends GridGame {
     @Transient
     public List<Color> getColors() {
         List<Color> ret = new ArrayList<Color>();
-        for (Color color : Color.values()) {
-            if (color.equals(Color.UNKNOWN))
-                continue;
-            if (color.equals(Color.GREEN))
-                continue;
-            if (color.equals(Color.BLUE))
-                continue;
+        for (Color color : colors) {
             ret.add(color);
         }
-                
         return ret;
     }
 
