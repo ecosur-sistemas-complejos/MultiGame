@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="Help">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="How To">
     <mx:Metadata>
         [Event(name="close")]
     </mx:Metadata>
     <mx:Script>
         <![CDATA[
-        import mx.core.BitmapAsset;
+        import mx.collections.ArrayCollection;
 
         [Bindable]
-        public var source:Class;
+        public var index:Number = 0;
+
+        [Bindable]
+        public var images:ArrayCollection;
 
         [Bindable]
         public var _width:Number;
@@ -18,6 +21,24 @@
 
         [Bindable]
         public var scale:Number = 0.90;
+
+
+        public function previousImage():void {
+            if (index > 0)
+                index--;
+            shift();
+        }
+
+        public function nextImage():void {
+            if (index < (images.length - 1))
+                index++;
+            shift();
+        }
+
+        private function shift():void {
+            main.source = images [ index ];
+            main.invalidateProperties();
+        }
 
         public override function set width (width:Number):void {
              _width = width * scale;
@@ -31,8 +52,10 @@
 
         ]]>
     </mx:Script>
-    <mx:Image id="main" source="{source}" scaleContent="true" width="{_width}" height="{height}"/>
+    <mx:Image id="main" source="{images[index]}" scaleContent="true" width="{_width}" height="{_height}"/>
     <mx:ControlBar horizontalAlign="center">
+         <mx:Button id="previous" label="Previous" click="previousImage()" color="#ffffff"/>
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
+         <mx:Button id="next" label="Next" click="nextImage()" color="#ffffff"/>        
     </mx:ControlBar>
 </mx:Panel>

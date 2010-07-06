@@ -7,6 +7,9 @@
         <![CDATA[
             import mx.controls.Alert;
 
+            [Bindable]
+            private var _html:String;
+
             public function load(contentURL:String):void{
                 var urlRequest:URLRequest = new URLRequest(contentURL);
                 var urlLoader:URLLoader = new URLLoader();
@@ -26,7 +29,7 @@
             }
 
             private function urlLoadComplete(evt:Event):void{
-                main.htmlText = evt.target.data;
+               _html = evt.target.data;
             }
 
             private function urlLoadError(evt:Event):void{
@@ -36,7 +39,8 @@
         ]]>
     </mx:Script>
 
-    <mx:TextArea id="main" width="100%" height="100%" editable="false" htmlText="Loading help..." condenseWhite="true" paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
+    <mx:TextArea id="main" width="100%" height="100%" editable="false" htmlText="{_html}" condenseWhite="true"
+                 paddingLeft="5" paddingRight="5" paddingTop="5" paddingBottom="5"/>
     <mx:ControlBar horizontalAlign="right">
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
     </mx:ControlBar>

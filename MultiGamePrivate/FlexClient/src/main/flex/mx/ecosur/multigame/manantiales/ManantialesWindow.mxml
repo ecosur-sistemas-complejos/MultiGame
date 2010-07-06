@@ -12,7 +12,9 @@
     
     <mx:Script>
         <![CDATA[
-            import mx.ecosur.multigame.component.ImagePanel;
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.component.HelpPanel;
+        import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
@@ -27,30 +29,28 @@
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
             protected var _currentGame:ManantialesGame;
-            //private var _helpPanel:HelpPanel;
+            private var _helpPanel:HelpPanel;
             private var _imagePanel:ImagePanel;
             private var _suggestionHandler:SuggestionHandler;
 
             /* Help Images */
             [Embed(source="/assets/competitive-1.svg")]
-            [Bindable]
-            public var _competitive1Img:Class;
+            private var _competitive1Img:Class;
 
             [Embed(source="/assets/competitive-2.svg")]
-            [Bindable]
-            public var _competitive2Img:Class;
+            private var _competitive2Img:Class;
 
             [Embed(source="/assets/competitive-3.svg")]
-            [Bindable]
-            public var _competitive3Img:Class;
+            private var _competitive3Img:Class;
 
             [Embed(source="/assets/competitive-4.svg")]
-            [Bindable]
-            public var _competitive4Img:Class;
+            private var _competitive4Img:Class;
 
             [Embed(source="/assets/puzzle.svg")]
-            [Bindable]
-            public var _puzzleImg:Class;
+            private var _puzzleImg:Class;
+
+            /* All of the loaded images */
+            private var _images:ArrayCollection;
 
 
             
@@ -58,6 +58,13 @@
                 if (_controller == null)
                     _controller = new ManantialesGameController(this);
                 CursorManager.removeBusyCursor();
+                
+                _images = new ArrayCollection ();
+                _images.addItem(_competitive1Img);
+                _images.addItem(_competitive2Img);
+                _images.addItem(_competitive3Img);
+                _images.addItem(_competitive4Img);
+                _images.addItem(_puzzleImg);
             }
             
             public function destroy():void{
@@ -119,41 +126,55 @@
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
             private function handleMenuItemClick(evt:MenuEvent):void {
-                if (evt.label == 'Playing Manantiales') {
+                if (evt.label == "Game Rules") {
+                    _helpPanel = new HelpPanel();
+                    _helpPanel.load("help-manantiales.html");
+                    _helpPanel.width = width - 100;
+                    _helpPanel.height = height - 20;
+                    _helpPanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_helpPanel, this, true);
+                    PopUpManager.centerPopUp(_helpPanel);                    
+
+                } else if (evt.label == 'Play The Classic Game') {
                     _imagePanel = new ImagePanel();
-                    _imagePanel.source = _competitive1Img;
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 0;
                     _imagePanel.width = width - 100;                    
                     _imagePanel.height = height - 20;
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Global Consequences of Deforestation - 1') {
+                } else if (evt.label == 'Understand Global Deforestation - 1') {
                     _imagePanel = new ImagePanel();
-                    _imagePanel.source = _competitive2Img;
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 1;
                     _imagePanel.width = width - 100;
                     _imagePanel.height = height - 20;
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Global Consequences of Deforestation - 2') {
+                } else if (evt.label == 'Understand Global Deforestation - 2') {
                     _imagePanel = new ImagePanel();
-                    _imagePanel.source = _competitive3Img;
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 2;
                     _imagePanel.width = width - 100;
                     _imagePanel.height = height - 20;
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Local Consequences of Deforestation') {
+                } else if (evt.label == 'Understand Local Deforestation') {
                     _imagePanel = new ImagePanel();
-                    _imagePanel.source = _competitive4Img;
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 3;
                     _imagePanel.width = width - 100;
                     _imagePanel.height = height - 20;
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Solving the Puzzles') {
+                } else if (evt.label == 'Get Premiums in the Basic Puzzle') {
                     _imagePanel = new ImagePanel();
-                    _imagePanel.source = _puzzleImg;
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 4;
                     _imagePanel.width = width - 100;
                     _imagePanel.height = height - 20;
                     _imagePanel.addEventListener("close", closeHelp);
@@ -168,7 +189,13 @@
             }
             
             private function closeHelp(event:Event):void{
-                PopUpManager.removePopUp(_imagePanel);
+                if (_imagePanel != null) {
+                    PopUpManager.removePopUp(_imagePanel);
+                    _imagePanel = null;
+                } else if (_helpPanel != null) {
+                    PopUpManager.removePopUp(_helpPanel);
+                    _helpPanel = null;
+                }
             }
             
             public function get state():String {
@@ -203,12 +230,15 @@
             <menuitem label="Lobby"/>
             <menuitem label="Quit"/>
         </menuitem>
+        <menuitem label="How To">
+                <menuitem label="Play The Classic Game" />
+                <menuitem label="Understand Local Deforestation"/>
+                <menuitem label="Understand Global Deforestation - 1"/>
+                <menuitem label="Understand Global Deforestation - 2"/>
+                <menuitem label="Get Premiums in the Basic Puzzle"/>
+            </menuitem>
         <menuitem label="Help">
-            <menuitem label="Playing Manantiales" />
-            <menuitem label="Global Consequences of Deforestation - 1"/>
-            <menuitem label="Global Consequences of Deforestation - 2"/>
-            <menuitem label="Local Consequences of Deforestation"/>
-            <menuitem label="Solving the Puzzles"/>
+            <menuitem label="Game Rules"/>
         </menuitem>
     </mx:XMLList>
     
