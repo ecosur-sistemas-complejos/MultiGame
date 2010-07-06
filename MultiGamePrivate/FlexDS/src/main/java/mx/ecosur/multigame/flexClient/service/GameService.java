@@ -107,7 +107,7 @@ public class GameService {
             RegistrarRemote registrar = getRegistrar();
             GridGame game = null;
             GameType type = GameType.valueOf(gameTypeStr.toUpperCase());
-
+            
             switch (type) {
                 case GENTE:
                     game = new GenteGame();

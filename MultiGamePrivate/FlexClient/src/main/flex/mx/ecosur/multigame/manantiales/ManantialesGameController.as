@@ -509,7 +509,7 @@ package mx.ecosur.multigame.manantiales
             _game = game;
             if (_stageChangeAlert == null) {
                 /* Set the mode */
-                _gameWindow.currentState = game.mode;
+                _gameWindow.currentState = "";
                 var winner:Boolean = _isTurn;
 
                 /* update state */
@@ -545,8 +545,11 @@ package mx.ecosur.multigame.manantiales
             PopUpManager.removePopUp(_stageChangeAlert);
             _stageChangeAlert = null;
 
+            _gameWindow.currentState = _game.mode;
+
             /* Clear moves for next stage  */
             _moves = new ArrayCollection();
+                        
             _gameWindow.moveViewer.board = _gameWindow.board;
             _gameWindow.moveViewer.initFromMoves(_moves);
             _selectedMoveInd = _moves.length - 1;

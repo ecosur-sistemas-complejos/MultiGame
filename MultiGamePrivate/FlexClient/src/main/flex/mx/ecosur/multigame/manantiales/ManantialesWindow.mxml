@@ -12,12 +12,12 @@
     
     <mx:Script>
         <![CDATA[
+            import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
             import mx.events.MenuEvent;
-            import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.manantiales.enum.Mode;
             
@@ -27,8 +27,32 @@
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
             protected var _currentGame:ManantialesGame;
-            private var _helpPanel:HelpPanel; 
+            //private var _helpPanel:HelpPanel;
+            private var _imagePanel:ImagePanel;
             private var _suggestionHandler:SuggestionHandler;
+
+            /* Help Images */
+            [Embed(source="/assets/competitive-1.svg")]
+            [Bindable]
+            public var _competitive1Img:Class;
+
+            [Embed(source="/assets/competitive-2.svg")]
+            [Bindable]
+            public var _competitive2Img:Class;
+
+            [Embed(source="/assets/competitive-3.svg")]
+            [Bindable]
+            public var _competitive3Img:Class;
+
+            [Embed(source="/assets/competitive-4.svg")]
+            [Bindable]
+            public var _competitive4Img:Class;
+
+            [Embed(source="/assets/puzzle.svg")]
+            [Bindable]
+            public var _puzzleImg:Class;
+
+
             
             public function init():void {
                 if (_controller == null)
@@ -94,15 +118,47 @@
             /* Only events that effect this container are handled, all others
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
-            private function handleMenuItemClick(evt:MenuEvent):void { 
-                if (evt.label == 'How to Play') {
-                    _helpPanel = new HelpPanel();
-                    _helpPanel.load("help-manantiales.html");
-                    _helpPanel.width = Math.min(width - 100, 600);
-                    _helpPanel.height = height - 20;
-                    _helpPanel.addEventListener("close", closeHelp);
-                    PopUpManager.addPopUp(_helpPanel, this, true);
-                    PopUpManager.centerPopUp(_helpPanel);
+            private function handleMenuItemClick(evt:MenuEvent):void {
+                if (evt.label == 'Playing Manantiales') {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.source = _competitive1Img;
+                    _imagePanel.width = width - 100;                    
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == 'Global Consequences of Deforestation - 1') {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.source = _competitive2Img;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == 'Global Consequences of Deforestation - 2') {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.source = _competitive3Img;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == 'Local Consequences of Deforestation') {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.source = _competitive4Img;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == 'Solving the Puzzles') {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.source = _puzzleImg;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
                 } else if (evt.label=='Lobby') {
                     dispatchCompletion();
                 } else if (evt.label == 'Quit') {
@@ -112,7 +168,7 @@
             }
             
             private function closeHelp(event:Event):void{
-                PopUpManager.removePopUp(_helpPanel);
+                PopUpManager.removePopUp(_imagePanel);
             }
             
             public function get state():String {
@@ -148,7 +204,11 @@
             <menuitem label="Quit"/>
         </menuitem>
         <menuitem label="Help">
-            <menuitem label="How to Play"/>
+            <menuitem label="Playing Manantiales" />
+            <menuitem label="Global Consequences of Deforestation - 1"/>
+            <menuitem label="Global Consequences of Deforestation - 2"/>
+            <menuitem label="Local Consequences of Deforestation"/>
+            <menuitem label="Solving the Puzzles"/>
         </menuitem>
     </mx:XMLList>
     
@@ -210,7 +270,7 @@
                     currentPlayer="{currentPlayer}"/>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
-            <mx:Panel title="Score" width="100%">
+            <mx:Panel title="Info" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
                   currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>

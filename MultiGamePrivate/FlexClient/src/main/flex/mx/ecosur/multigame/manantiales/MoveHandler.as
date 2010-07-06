@@ -54,42 +54,23 @@ package mx.ecosur.multigame.manantiales {
 
         private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {
          var ret:Boolean = false;
-         if (_controller._game.mode != Mode.BASIC_PUZZLE && _controller._game.mode != Mode.SILVO_PUZZLE) {
-             if (boardCell.color == token.cell.color) {
-                     ret = true;
-             } else if (boardCell.color == Color.UNKNOWN) {
-                 switch (token.cell.color) {
-                     case Color.YELLOW:
-                         ret = (boardCell.column < 5 && boardCell.row < 5);
-                         break;
-                     case Color.PURPLE:
-                         ret = (boardCell.column < 5 && boardCell.row > 3);
-                         break;
-                     case Color.RED:
-                         ret = (boardCell.column > 3 && boardCell.row < 5);
-                         break;
-                     case Color.BLACK:
-                         ret = (boardCell.column > 3 && boardCell.row > 3);
-                         break;
-                }
-             }
-         } else {
-             if (boardCell.token.cell == null) {
-                 switch (token.cell.color) {
-                     case Color.YELLOW:
-                         ret = (boardCell.column < 5 && boardCell.row < 5);
-                         break;
-                     case Color.PURPLE:
-                         ret = (boardCell.column < 5 && boardCell.row > 3);
-                         break;
-                     case Color.RED:
-                         ret = (boardCell.column > 3 && boardCell.row < 5);
-                         break;
-                     case Color.BLACK:
-                         ret = (boardCell.column > 3 && boardCell.row > 3);
-                         break;
-                }
-             }
+         if (boardCell.color == token.cell.color) {
+                 ret = true;
+         } else if (boardCell.color == Color.UNKNOWN) {
+             switch (token.cell.color) {
+                 case Color.YELLOW:
+                     ret = (boardCell.column < 5 && boardCell.row < 5);
+                     break;
+                 case Color.PURPLE:
+                     ret = (boardCell.column < 5 && boardCell.row > 3);
+                     break;
+                 case Color.RED:
+                     ret = (boardCell.column > 3 && boardCell.row < 5);
+                     break;
+                 case Color.BLACK:
+                     ret = (boardCell.column > 3 && boardCell.row > 3);
+                     break;
+            }
          }
 
          return ret;

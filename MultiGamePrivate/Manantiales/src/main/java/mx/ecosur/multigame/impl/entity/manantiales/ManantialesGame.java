@@ -408,6 +408,7 @@ public class ManantialesGame extends GridGame {
 
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = null;
+
         try {
             File file = new File(FNAME);
             file.deleteOnExit();
@@ -431,7 +432,6 @@ public class ManantialesGame extends GridGame {
         }
 
         return ret;
-
     }
 
     private void writeKBase (ObjectOutputStream out, KnowledgeBase knowledge)

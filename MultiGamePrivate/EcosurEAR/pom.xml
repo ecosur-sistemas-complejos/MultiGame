@@ -67,12 +67,6 @@
             <version>${drools.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-guvnor</artifactId>
-            <version>5.0.1</version>
-            <type>war</type>
-        </dependency>          
-        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
@@ -142,10 +136,6 @@
                         <webModule>
                            <groupId>mx.ecosur</groupId>
                            <artifactId>multi-game</artifactId>
-                        </webModule>
-                        <webModule>
-                           <groupId>org.drools</groupId>
-                           <artifactId>drools-guvnor</artifactId>
                         </webModule>
                     </modules>
                 </configuration>

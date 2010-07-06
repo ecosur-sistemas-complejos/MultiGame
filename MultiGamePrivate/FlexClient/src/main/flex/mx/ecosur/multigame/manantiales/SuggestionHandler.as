@@ -394,8 +394,6 @@ import mx.ecosur.multigame.enum.MoveStatus;
                if (_currentSuggestions [move.player.registrant] == null)
                 _currentSuggestions [move.player.registrant] = suggestion;
 
-                Alert.show ("Suggestion being made: [" + suggestion.toString() + "]");
-
                var call:Object = new Object();
                call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
                call.operation = GAME_SERVICE_DO_SUGGESTION_OP;

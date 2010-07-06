@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="Help">
+    <mx:Metadata>
+        [Event(name="close")]
+    </mx:Metadata>
+    <mx:Script>
+        <![CDATA[
+        import mx.core.BitmapAsset;
+
+        [Bindable]
+        public var source:Class;
+
+        [Bindable]
+        public var _width:Number;
+
+        [Bindable]
+        public var _height:Number;
+
+        [Bindable]
+        public var scale:Number = 0.90;
+
+        public override function set width (width:Number):void {
+             _width = width * scale;
+            super.width = width;
+        }
+
+        public override function set height (height:Number):void {
+            _height = height * scale;
+            super.height = height;
+        }
+
+        ]]>
+    </mx:Script>
+    <mx:Image id="main" source="{source}" scaleContent="true" width="{_width}" height="{height}"/>
+    <mx:ControlBar horizontalAlign="center">
+         <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
+    </mx:ControlBar>
+</mx:Panel>

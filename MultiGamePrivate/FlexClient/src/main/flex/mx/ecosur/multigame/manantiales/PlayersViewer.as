@@ -117,19 +117,19 @@ package mx.ecosur.multigame.manantiales
                         if (info.manantialesPlayer.id == manPlayer.id) {
                             // Create button header if required
                             btn = getHeaderAt(j);
-                           label = manPlayer.registrant.name;
+                            label = manPlayer.registrant.name;
                             btn.label = label;
-                            btn.setStyle("icon", Color.getCellIcon(manPlayer.color));
                             btn.setStyle("paddingBottom", 5);
                             btn.setStyle("paddingTop", 5);
+                            btn.setStyle("icon", Color.getCellIcon(manPlayer.color));                            
                         }
                     } else {
                         btn = getHeaderAt(j)
-                        label = "Game Info";
+                        label = "Score";
                         btn.label = label;
-                        btn.setStyle("icon", Color.getCellIcon(Color.BLACK));
                         btn.setStyle("paddingBottom", 5);
                         btn.setStyle("paddingTop", 5);
+                        btn.setStyle("center", true);
                     }
                 }
 

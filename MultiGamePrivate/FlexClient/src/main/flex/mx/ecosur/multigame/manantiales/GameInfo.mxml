@@ -35,22 +35,18 @@
                        + vivero + silvo);
                     _deforested = _deforested + (moderate + intensive);
                     if (i == 0) {
-                       player1.text=player.registrant.name;
                        player1Pts.text = "" + player.score;
                        player1Tks.text = "" + player.tokens;
                        player1Pr.text = "" + player.premiums;
                     } else if (i == 1) {
-                       player2.text=player.registrant.name;
                        player2Pts.text = "" +  player.score;
                        player2Tks.text = "" + player.tokens;
                        player2Pr.text = "" + player.premiums;
                     } else if (i == 2) {
-                       player3.text=player.registrant.name;
                        player3Pts.text = "" + player.score;
                        player3Tks.text = "" + player.tokens;
                        player3Pr.text = "" + player.premiums;
                     } else if (i == 3) {
-                       player4.text=player.registrant.name;
                        player4Pts.text = "" + player.score;
                        player4Tks.text = "" + player.tokens;
                        player4Pr.text = "" + player.premiums;
@@ -69,16 +65,16 @@
         <mx:GridRow>
             <mx:GridItem/>
             <mx:GridItem>
-                <mx:Label id="player1" styleName="fieldLit"/>
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconYELLOW')" />
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Label id="player2" styleName="fieldLit"/>
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconRED')" />
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Label id="player3" styleName="fieldLit"/>
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconBLACK')" />
             </mx:GridItem> 
             <mx:GridItem>
-                <mx:Label id="player4" styleName="fieldLit"/>
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconPURPLE')" />
             </mx:GridItem>                                   
         </mx:GridRow>
         <mx:GridRow>
@@ -151,7 +147,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Violated Constraints" styleName="fieldLit"/>
+                <mx:Label text="Violations" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="violated" styleName="field"/>
