@@ -22,6 +22,12 @@
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
+            <artifactId>ecosur-ejb</artifactId>
+            <version>${version}</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
@@ -83,6 +89,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
+                    <security>
+                        <security-role>
+                            <role-name>admin</role-name>
+                        </security-role>
+                    </security>
                     <modules>
                         <jarModule>
                             <groupId>org.drools</groupId>
@@ -104,10 +115,6 @@
                             <groupId>com.thoughtworks.xstream</groupId>
                             <artifactId>xstream</artifactId>
                         </jarModule>
-                        <ejbModule>
-                            <groupId>mx.ecosur</groupId>
-                            <artifactId>multi-game-common</artifactId>
-                        </ejbModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>grid-common</artifactId>
@@ -133,6 +140,14 @@
                             <artifactId>ecosur-jpa</artifactId>
                             <bundleDir>lib</bundleDir>
                         </jarModule>
+                        <ejbModule>
+                            <groupId>mx.ecosur</groupId>
+                            <artifactId>multi-game-common</artifactId>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>mx.ecosur</groupId>
+                            <artifactId>ecosur-ejb</artifactId>
+                        </ejbModule>
                         <webModule>
                            <groupId>mx.ecosur</groupId>
                            <artifactId>multi-game</artifactId>

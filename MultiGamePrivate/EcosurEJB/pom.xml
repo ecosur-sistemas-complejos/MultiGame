@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright ECOSUR, Andrew Waterman and Max Pimm 2010 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+        <groupId>mx.ecosur</groupId>
+        <artifactId>ecosur-ejb</artifactId>
+        <packaging>ejb</packaging>
+        <name>EcosurEJB</name>
+        <description>
+            Specific implementations of Registrar and SharedBoard entity beans (for security support, among other factors).
+        </description>
+        <parent>
+            <artifactId>multi-game-private</artifactId>
+            <groupId>mx.ecosur</groupId>
+            <version>1.1.0-SNAPSHOT</version>
+        </parent>
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <configuration>
+                        <ejbVersion>3.0</ejbVersion>
+                        <generateClient>true</generateClient>
+                        <clientExcludes>
+                            <clientExclude>**/SharedBoard.class</clientExclude>
+                            <clientExclude>**/Registrar.class</clientExclude>
+                        </clientExcludes>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <executions>
+                    <execution>
+                      <id>attach-sources</id>
+                      <goals>
+                        <goal>jar</goal>
+                      </goals>
+                    </execution>
+                  </executions>
+                </plugin>
+            </plugins>
+        </build>
+        <dependencies>
+            <dependency>
+                <groupId>mx.ecosur</groupId>
+                <artifactId>multi-game-common</artifactId>
+                <version>${version}</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>ejb</artifactId>
+                <version>3.0</version>
+                <scope>system</scope>
+                <systemPath>${glassfish}/lib/javaee.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>javax.ejb</groupId>
+                <artifactId>ejb-rt</artifactId>
+                <version>3.0</version>
+                <scope>system</scope>
+                <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+            </dependency>  
+        </dependencies>    
+</project>

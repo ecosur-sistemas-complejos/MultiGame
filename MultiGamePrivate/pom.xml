@@ -30,6 +30,7 @@
                 <module>FlexDS</module>
                 <module>FlexClient</module>
                 <module>MultigameWAR</module>
+                <module>EcosurEJB</module>
                 <module>EcosurJPA</module>
                 <module>EcosurEAR</module>               
             </modules>
@@ -42,6 +43,7 @@
                 <module>FlexDS</module>
                 <module>FlexClient</module>
                 <module>MultigameWAR</module>
+                <module>EcosurEJB</module>
                 <module>EcosurJPA</module>
                 <module>EcosurEAR</module>
                 <!-- Removed Integration Tests from build to security issues (can't authenticate). -->
