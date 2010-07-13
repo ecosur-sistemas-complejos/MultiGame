@@ -31,7 +31,27 @@ the EAR file is being deployed:
     a) "Name" set to "MultiGame"
     b) "Resource Type" set to "javax.jms.Topic"
     c) All other fields may remain in default state.
- 
+
+3.  Security
+
+    A.  The "Default Principal to role mapping" option must be checked on the security
+        configuration screen.
+    B.  A JMS user must be created in the file-reaml for secure messaging.
+        1.  Click on the "file" security realm.
+        2.  Click on manage existing users.
+        3.  Add the user "MultiGame" with any password (authentication is not checked
+            by password for a MessageBean.
+    C.  At least one user must be created in the "file-realm" of JAAS for logging in
+        and playing the games.
+        1.  Click on the "file" security realm.
+        2.  Click on manage existing users.
+        3.  Add a user with the username you require and the password.
+
+    Note:  security can be modified within the build to work with any other JAAS
+    components available on the Server.  The "MultiGame" user is required for the
+    message bean to be able to receive messages and message other secured EJB
+    components.
+
 
 MAVEN CONFIGURATION
  
