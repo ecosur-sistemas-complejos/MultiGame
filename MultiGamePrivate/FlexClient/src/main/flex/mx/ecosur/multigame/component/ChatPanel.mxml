@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="Chat">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="@Resource(key='chat.panel.title', bundle='StringsBundle')">
 
 <mx:Script>
     <![CDATA[
@@ -11,7 +11,6 @@
     import mx.messaging.messages.AsyncMessage;
     import mx.messaging.messages.IMessage;
     import mx.messaging.events.MessageFaultEvent;
-    import mx.messaging.events.MessageAckEvent;
 
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.entity.ChatMessage;
@@ -41,10 +40,6 @@
         callLater(updateScroll);
     }
 
-    private function acknowledgeHandler(event:MessageAckEvent):void {
-        Alert.show("Ack recieved: " + event);
-    }
-
     private function faultHandler(event:MessageFaultEvent):void {
         Alert.show("fault in message " + event.faultString);
     }
@@ -61,6 +56,6 @@
     <mx:TextArea id="log" width="100%" height="100%" paddingLeft="0" borderThickness="0" editable="false" />
     <mx:ControlBar verticalAlign="top" paddingLeft="5" paddingRight="5">
          <mx:TextArea id="msg" width="100%" height="40" />
-         <mx:Button id="sendBtn" label="Send" click="send()" color="#ffffff"/>
+         <mx:Button id="sendBtn" label="@Resource(key='chat.panel.button', bundle='StringsBundle')" click="send()" color="#ffffff"/>
     </mx:ControlBar>
 </mx:Panel>

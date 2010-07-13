@@ -12,13 +12,13 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.controls.Alert;                
-        import mx.managers.PopUpManager;
+        import mx.controls.Alert;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
         import mx.ecosur.multigame.entity.Registrant;
 
         private var _player:Registrant;
+
         public var timer:Timer;
 
         [BINDABLE]
@@ -63,15 +63,17 @@
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-    <mx:Panel title="ECOSUR MultiGame Project" paddingLeft="5" paddingRight="5" paddingBottom="5">
+    <mx:Panel title="@Resource(key='lobby.panel.title', bundle='StringsBundle')" paddingLeft="5" paddingRight="5" paddingBottom="5">
         <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
-        <mx:TabNavigator width="750" height="260">
-            <component:StartNewGame  label="Start New Game" height="100%" width="100%" registered="dispatchEvent(event)"/>
-            <component:JoinUnfinishedGame label="Join Unfinished Game" id="gameList" height="100%" width="100%"
+        <mx:TabNavigator width="800" height="280">
+            <component:StartNewGame  label="@Resource(key='lobby.tab.start', bundle='StringsBundle')"
+                 height="100%" width="100%" registered="dispatchEvent(event)"/>
+            <component:JoinUnfinishedGame label="@Resource(key='lobby.tab.middle', bundle='StringsBundle')" id="gameList"
+                 height="100%" width="100%"
                 gameChosen="choose(event)"/>
-            <component:JoinPendingGame label="Join Pending Game" id="pendingList" player="{player}" height="100%" width="100%"
+            <component:JoinPendingGame label="@Resource(key='lobby.tab.end', bundle='StringsBundle')" id="pendingList"
+                 player="{player}" height="100%" width="100%"
                 gameJoined="choose(event)"/>
         </mx:TabNavigator>
     </mx:Panel>
-
 </mx:Box>

@@ -12,9 +12,9 @@
     
     <mx:Script>
         <![CDATA[
-        import mx.collections.ArrayCollection;
-        import mx.ecosur.multigame.component.HelpPanel;
-        import mx.ecosur.multigame.component.ImagePanel;
+            import mx.collections.ArrayCollection;
+            import mx.ecosur.multigame.component.HelpPanel;
+            import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
             import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.PopUpManager;
@@ -22,10 +22,11 @@
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.manantiales.enum.Mode;
-            
+            import mx.resources.ResourceBundle;
+
             /* required for compilation of class into runtime */
             import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
-            
+
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
             protected var _currentGame:ManantialesGame;
@@ -51,8 +52,6 @@
 
             /* All of the loaded images */
             private var _images:ArrayCollection;
-
-
             
             public function init():void {
                 if (_controller == null)

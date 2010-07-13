@@ -26,13 +26,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>flexmojos-maven-plugin</artifactId>
             <version>${flexmojos-version}</version>
             <extensions>true</extensions>
-            <configuration>               
+            <configuration>
                 <debug>${debug}</debug>
                 <sourceFile>main.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
-                <services>src/main/resources/services-config.xml</services>
+                <services>${basedir}/src/main/resources/services-config.xml</services>
+                <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
+                <compiledLocales>
+                    <compiledLocale>en_US</compiledLocale>
+                    <compiledLocale>es_ES</compiledLocale>
+                </compiledLocales>
                 <configurationReport>true</configurationReport>
                 <targetPlayer>${player}</targetPlayer>
+                <coverageViewerPath/>
+                <!--storepass/-->
             </configuration>
             <dependencies>
                 <dependency>

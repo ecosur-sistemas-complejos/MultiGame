@@ -55,7 +55,9 @@ package mx.ecosur.multigame.gente{
 import mx.messaging.messages.AsyncMessage;
 import mx.messaging.messages.ErrorMessage;
     import mx.messaging.messages.IMessage;
-    import mx.rpc.events.FaultEvent;
+import mx.resources.IResourceManager;
+import mx.resources.ResourceManager;
+import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.rpc.remoting.RemoteObject;
 
@@ -63,7 +65,10 @@ import mx.messaging.messages.ErrorMessage;
      * Represents a game of gente. Contains a gente board and cell store
      * and controls the main flow of control for the game.
      */
+    [ResourceBundle("StringsBundle")]
     public class GenteGameController {
+
+        private var resourceManager:IResourceManager = ResourceManager.getInstance();
         
         // visual components
         private var _board:GenteBoard;
@@ -154,8 +159,9 @@ import mx.messaging.messages.ErrorMessage;
             _tokenStore.active = false;
             
             // initialize game status
-            _gameStatus.showMessage("Welcome to the game " + 
-                currentPlayer.registrant.name + "!\n\n You are " + 
+            _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.welcome") +
+                currentPlayer.registrant.name + "!\n\n" +
+                    " " + resourceManager.getString("StringsBundle", "gente.identify") + " " + 
                 Color.getColorDescription(currentPlayer.color), 
                     Color.getColorCode(currentPlayer.color));
     
@@ -214,10 +220,12 @@ import mx.messaging.messages.ErrorMessage;
 
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
-                        _gameStatus.showMessage("Its your turn", Color.getColorCode(_currentPlayer.color));
+                        _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.currentplayer.turn"),
+                                Color.getColorCode(_currentPlayer.color));
                     }else{
-                        _gameStatus.showMessage(gamePlayer.registrant.name + 
-                            " to move", Color.getColorCode(gamePlayer.color));
+                        _gameStatus.showMessage(gamePlayer.registrant.name +
+                            " " + resourceManager.getString("StringsBundle", "gente.tomove"),
+                                Color.getColorCode(gamePlayer.color));
                     }
                 }
             }
@@ -230,7 +238,7 @@ import mx.messaging.messages.ErrorMessage;
          * Called when game begins 
          */
         private function begin():void{
-            _gameStatus.showMessage("All players have joined. The game will now begin.", 0x00000);  
+            _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.start.message"), 0x00000);  
         }
         
         /*
@@ -251,14 +259,14 @@ import mx.messaging.messages.ErrorMessage;
             var gentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = gentePlayer.registrant.name + " has won the game.";
+                msg = gentePlayer.registrant.name + " " + resourceManager.getString("StringsBundle", "gente.has.won");
                 color = Color.getColorCode(gentePlayer.color);
             }else{
                 /*
                 for (var i:int = 0; i < _winners.length; i++){
                     msg += gentePlayer(_winners[0]).player.name + " and ";
                 }*/
-                msg = "The " + Color.getTeamName(gentePlayer.color) + " team has won the game."
+                msg = "The " + Color.getTeamName(gentePlayer.color) + " " + resourceManager.getString("StringsBundle", "gente.team.has.won");
                 color = 0x000000;
             }
             _gameStatus.showMessage(msg, 0x00000);
@@ -329,7 +337,8 @@ import mx.messaging.messages.ErrorMessage;
                     var fnc:Function = function (event:CloseEvent):void{
                         undoMove(_executingMove);
                     }
-                    Alert.show("Sorry but this move is not valid", "Woops!", Alert.OK, null, fnc);
+                    Alert.show(resourceManager.getString("StringsBundle", "gente.move.invalid"),
+                            resourceManager.getString("StringsBundle", "gente.move.error.title"), Alert.OK, null, fnc);
                 }
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
@@ -356,14 +365,12 @@ import mx.messaging.messages.ErrorMessage;
                     var chatMessage:ChatMessage = ChatMessage(message.body); 
                     _chatPanel.addMessage(chatMessage);
                     if(chatMessage.sender.id != _currentPlayer.registrant.id){
-                        _gameStatus.showMessage(chatMessage.sender.registrant.name + 
-                            " has sent you a message", 0x000000);
+                        _gameStatus.showMessage(chatMessage.sender.registrant.name + " " +
+                            resourceManager.getString("StringsBundle", "gente.panel.chat.announcement"), 0x000000);
                     }
                     break;
                 case GameEvent.END:
                     game = GenteGame (message.body);
-                    if (game == null)
-                        Alert.show("Game from model [" + gameModel + "] is null!");
                     _winners = game.winners;                
                     if (_isTurn){
                         end();
@@ -371,15 +378,11 @@ import mx.messaging.messages.ErrorMessage;
                     break;
                 case GameEvent.MOVE_COMPLETE:
                     var move:GenteMove = GenteMove(message.body);
-                     if (move == null)
-                        Alert.show ("Move from model [" + move + "] is null!");
                     _executingMove = move;
                     addMove(move);
                     break;
                 case GameEvent.PLAYER_CHANGE:
                     game = GenteGame (message.body);
-                    if (game == null)
-                        Alert.show ("Game from model [" + game + "] is null!");
                     _game = game;
                     updatePlayers(_game);
                     break;            
@@ -672,8 +675,8 @@ import mx.messaging.messages.ErrorMessage;
             }
             
             if(hasScored){
-                _gameStatus.showMessage(move.player.registrant.name + 
-                    " has just scored.", Color.getColorCode(move.player.color));
+                _gameStatus.showMessage(move.player.registrant.name + "  " +
+                    resourceManager.getString("StringsBundle", "gente.move.scored"), Color.getColorCode(move.player.color));
             }
 
         }
@@ -710,13 +713,13 @@ import mx.messaging.messages.ErrorMessage;
             boardCell.select(Color.getColorCode(move.player.color));
             
             // show qualify dialog
-            var txt:String = "Your teammate has made a move.\n\nCould you " + 
-            		"please qualify it according to the level of " + 
-            		"cooperation?"; 
-            var title:String = "QUALIFY MOVE";
-            Alert.yesLabel = "COOPERATIVE";
-            Alert.noLabel = "SELFISH";
-            Alert.cancelLabel = "NEUTRAL";
+            var txt:String = resourceManager.getString("StringsBundle", "move.qualify.announcement") + "\n\n" +
+                    resourceManager.getString("StringsBundle", "move.qualify.question");
+            var title:String = resourceManager.getString("StringsBundle", "move.qualify.title");
+
+            Alert.yesLabel = resourceManager.getString("StringsBundle", "move.qualify.button.cooperate");
+            Alert.noLabel = resourceManager.getString("StringsBundle", "move.qualify.button.selfish");
+            Alert.cancelLabel = resourceManager.getString("StringsBundle", "move.qualify.button.cancel");
             Alert.buttonWidth = 120;
             Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _board, fnc, null, Alert.CANCEL);
         }

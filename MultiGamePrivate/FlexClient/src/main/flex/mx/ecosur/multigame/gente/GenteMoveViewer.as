@@ -111,7 +111,8 @@ package mx.ecosur.multigame.gente {
             
             //create button header
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(pmi));
-            btn.label = " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
+            btn.label = resourceManager.getString("StringsBundle", "move.history.to") +
+                    _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);
             btn.setStyle("paddingTop", 5);

@@ -5,7 +5,7 @@
 	xmlns:component="mx.ecosur.multigame.component.*"
 	layout="absolute">
 	
-	<mx:Style source="~/style.css"/>
+	<mx:Style source="style.css"/>
 	
 	<mx:Script>
         <![CDATA[
@@ -24,6 +24,10 @@
 
         private var _genteGameWindow:GenteGameWindow,
                 _manantialesWindow:ManantialesWindow;
+
+        private function init():void {
+            loginPrincipal();
+        }
 
         private function gameComplete(event:Event):void {
             lobby.reload(event);
@@ -51,8 +55,11 @@
             gameService.registerPrincipal();
         }
 
-        private function resultHandler(event:ResultEvent):void{            
-            lobby.player = Registrant(event.result);
+        private function resultHandler(event:ResultEvent):void{
+            if (event.result is Registrant) {
+                lobby.player = Registrant(event.result);
+            } else
+                Alert.show ("Unable to interpret event: " + event);
         }
 
         private function faultHandler(event:FaultEvent):void{
@@ -89,7 +96,7 @@
     </mx:Script>
 	<mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
-    	<component:Lobby id="lobby" creationComplete="loginPrincipal()" registered="lobbyDone(event)"
+    	<component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
              gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
 		<gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
 		<manantiales:ManantialesWindow id="manantialesWindow" complete="gameComplete(event)" />
