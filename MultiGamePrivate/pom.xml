@@ -13,12 +13,8 @@
         <version>1.1.0-SNAPSHOT</version>
     </parent>
     <properties>
-        <!--
         <flex-version>3.5.0.12683</flex-version>
         <flexmojos-version>3.5.0</flexmojos-version>
-        -->
-        <flex-version>3.2.0.3958</flex-version>
-        <flexmojos-version>3.2.0</flexmojos-version>
         <debug>false</debug>
         <glassfish>/Users/awaterma/util/glassfish-install/glassfishv2.1</glassfish>
     </properties>

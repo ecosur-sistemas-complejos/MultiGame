@@ -54,6 +54,18 @@ export FLEX_SDK=/home/myuser/flex_sdk
  
  %> asadmin start-database
 
+ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
+
+ This project is internationalized in English and Spanish, so it requires access to
+ the Spanish flex framework locale files.  These are distributed by default in the
+ 3.2.0 FlexMojos maven archives, but are note available for 3.5.  You can make the
+ library available locally by using the "copylocale" utility in the Flex SDK.
+ Christopher Herremean does a great job detialing this process here:
+
+ http://www.herrodius.com/blog/123
+
+ You will then need to stage the 2 files from the copied locale(s) into your local
+ maven repository.
 
  DEPLOYMENT
 
