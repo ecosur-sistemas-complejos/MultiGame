@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" styleName="helpPanel" title="How To">
+<mx:Panel
+        xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:component="mx.ecosur.multigame.component.*"
+    styleName="helpPanel"
+    title="How To"
+    creationComplete="initialize()">
     <mx:Metadata>
         [Event(name="close")]
     </mx:Metadata>
@@ -22,7 +27,6 @@
         [Bindable]
         public var scale:Number = 0.90;
 
-
         public function previousImage():void {
             if (index > 0)
                 index--;
@@ -37,6 +41,10 @@
 
         private function shift():void {
             main.source = images [ index ];
+            bar.source = main;
+            bar.invalidateProperties();
+            bar.visible = true;            
+            main.cacheAsBitmap = true;
             main.invalidateProperties();
         }
 
@@ -50,9 +58,17 @@
             super.height = height;
         }
 
+        private function hideProgress(event:Event):void {
+            bar.visible = false;
+        }
+
+        
+
         ]]>
     </mx:Script>
-    <mx:Image id="main" source="{images[index]}" scaleContent="true" width="{_width}" height="{_height}"/>
+    <mx:ProgressBar id="bar" source="main" mode="polled"/>
+     <component:SmoothImage id="main" autoLoad="true" source="{images[index]}" scaleContent="true"
+            width="{_width}" height="{_height}"/>
     <mx:ControlBar horizontalAlign="center">
          <mx:Button id="previous" label="Previous" click="previousImage()" color="#ffffff"/>
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>

@@ -99,7 +99,7 @@
             var now:Date = new Date();
             while(_messages.length > 0){
                 msg = IMessage(_messages[0]);
-                if (msg.headers.GAME_EVENT == GameEvent.CHAT || _lastMsgId == 0 || msg.headers.MESSAGE_ID == _lastMsgId + 1){
+                if (msg.headers.GAME_EVENT == GameEvent.CHAT || _lastMsgId == 0 || msg.headers.MESSAGE_ID > _lastMsgId){
                     if (msg.headers.GAME_EVENT == GameEvent.MOVE_COMPLETE){
                         if (_lastMoveCompleted != null && (now.getTime() - _lastMoveCompleted.getTime()) < MINIMUM_MOVE_TIME){
 
