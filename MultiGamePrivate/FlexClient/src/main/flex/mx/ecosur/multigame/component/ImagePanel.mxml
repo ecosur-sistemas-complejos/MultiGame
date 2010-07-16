@@ -40,10 +40,13 @@
         }
 
         private function shift():void {
+            bar.visible = false;
             main.source = images [ index ];
+            bar.source = null;
+            bar.initialize();
             bar.source = main;
-            bar.invalidateProperties();
-            bar.visible = true;            
+            bar.visible = true;
+            bar.invalidateProperties();            
             main.cacheAsBitmap = true;
             main.invalidateProperties();
         }
@@ -61,8 +64,6 @@
         private function hideProgress(event:Event):void {
             bar.visible = false;
         }
-
-        
 
         ]]>
     </mx:Script>
