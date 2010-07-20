@@ -22,125 +22,114 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
 public class ManantialesMove extends GridMove implements Comparable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private boolean swap;
 
-	private TokenType type, replacementType;
-	
-	private boolean badYear, premium;
-	
-	private Mode mode;
-	
-	public ManantialesMove () {
-		super();
-		badYear = false;
-		premium = false;
-		swap = false;
-	}
-	
-	public ManantialesMove (GridPlayer player, Ficha destination) {
-		super (player, destination);
-	}
-	
-	public ManantialesMove (GridPlayer player, Ficha current, Ficha destination)
-	{
-		super (player, current, destination);
-	}
+    private static final long serialVersionUID = 1L;
 
-	public ManantialesMove(ManantialesPlayer player, Ficha current, Ficha destination,
-			Boolean swap) {
-		super (player, current, destination);
-		this.swap = swap;
-	}
+    private boolean swap;
 
-	public boolean isSwap() {
-		return swap;
-	}
+    private TokenType type, replacementType;
 
-	public void setSwap(boolean swap) {
-		this.swap = swap;
-	}
+    private boolean badYear, premium;
 
-	public TokenType getType () {
-		if (getDestinationCell() == null)
-			type = TokenType.UNKNOWN;
-		else {
-			Ficha destination = (Ficha) getDestinationCell();
-			type = destination.getType();
-		}
-		
-		return type;
-	}
-	
-	public void setType (TokenType type) {
-		this.type = type;
-	}
+    private Mode mode;
 
-	public TokenType getReplacementType() {
-		if (replacementType == null) {
-			replacementType = TokenType.UNKNOWN;			
-			if (getCurrentCell() instanceof Ficha) {
-					Ficha current = (Ficha) getCurrentCell();
-					replacementType = current.getType();
-			}
-		}
-		
-		return replacementType;
-	}
+    public ManantialesMove () {
+        super();
+        badYear = false;
+        premium = false;
+        swap = false;
+    }
 
-	public void setReplacementType(TokenType replacementType) {
-		this.replacementType = replacementType;
-	}
-	
-	public boolean isBadYear () {
-		return badYear;
-	}
-	
-	public void setBadYear (boolean year) {
-		badYear = year;
-	}
-	
-	public boolean isPremium () {
-		return premium;
-	}
-	
-	public void setPremium (boolean premium) {
-		this.premium = premium;
-	}
+    public ManantialesMove (GridPlayer player, Ficha destination) {
+        super (player, destination);
+    }
 
-	/**
-	 * @return the mode
-	 */
-	@Enumerated(EnumType.STRING)
-	public Mode getMode() {
-		return mode;
-	}
+    public ManantialesMove (GridPlayer player, Ficha current, Ficha destination)
+    {
+        super (player, current, destination);
+    }
 
-	/**
-	 * @param mode the mode to set
-	 */
-	public void setMode(Mode mode) {
-		this.mode = mode;
-	}
+    public ManantialesMove(ManantialesPlayer player, Ficha current, Ficha destination,
+            Boolean swap) {
+        super (player, current, destination);
+        this.swap = swap;
+    }
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
-	 */
-	public void setPlayer(GamePlayerImpl player) {
-		this.player = (GridPlayer) player;
-	}
+    public boolean isSwap() {
+        return swap;
+    }
 
-    public GridPlayer getPlayer () {
-        return player;
+    public void setSwap(boolean swap) {
+        this.swap = swap;
+    }
+
+    public TokenType getType () {
+        if (getDestinationCell() == null)
+            type = TokenType.UNKNOWN;
+        else {
+            Ficha destination = (Ficha) getDestinationCell();
+            type = destination.getType();
+        }
+
+        return type;
+    }
+
+    public void setType (TokenType type) {
+        this.type = type;
+    }
+
+    public TokenType getReplacementType() {
+        if (replacementType == null) {
+            replacementType = TokenType.UNKNOWN;
+            if (getCurrentCell() instanceof Ficha) {
+                    Ficha current = (Ficha) getCurrentCell();
+                    replacementType = current.getType();
+            }
+        }
+
+        return replacementType;
+    }
+    
+    public void setReplacementType(TokenType replacementType) {
+        this.replacementType = replacementType;
+    }
+
+    public boolean isBadYear () {
+        return badYear;
+    }
+
+    public void setBadYear (boolean year) {
+        badYear = year;
+    }
+
+    public boolean isPremium () {
+        return premium;
+    }
+
+    public void setPremium (boolean premium) {
+        this.premium = premium;
+    }
+
+    /**
+     * @return the mode
+     */
+    @Enumerated(EnumType.STRING)
+    public Mode getMode() {
+        return mode;
+    }
+
+    /**
+     * @param mode the mode to set
+     */
+    public void setMode(Mode mode) {
+        this.mode = mode;
     }
 
 
     @Override
     public String toString() {
        String ret = super.toString();
-       return "Mode = " + this.getMode() + ", " + ret;       
+       return "Mode = " + this.getMode() + ", BadYear=" + this.isBadYear() + ", " + ret; 
     }
 
     @Override

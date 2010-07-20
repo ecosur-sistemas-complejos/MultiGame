@@ -793,6 +793,17 @@ then
     messageSender.sendStateChange($game);
 end
 
+rule "invalid-move"
+    agenda-group "evaluate"
+    no-loop true
+    salience -15
+when
+    $game   : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move   : ManantialesMove (status != MoveStatus.EVALUATED, mode == $mode, badYear != true)
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
 rule "stage-won"
     agenda-group "evaluate"
     no-loop true

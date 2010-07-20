@@ -41,7 +41,7 @@ import mx.ecosur.multigame.MessageSender;
 
 @Stateless
 @RolesAllowed("admin")
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
     private MessageSender messageSender;

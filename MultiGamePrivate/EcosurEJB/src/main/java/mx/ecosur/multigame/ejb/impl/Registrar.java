@@ -42,7 +42,7 @@ import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 
 @Stateless
 @RolesAllowed("admin")
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class Registrar implements RegistrarRemote, RegistrarLocal {
 
     private MessageSender messageSender;

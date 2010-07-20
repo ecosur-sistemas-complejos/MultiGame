@@ -43,11 +43,10 @@
             bar.visible = false;
             main.source = images [ index ];
             bar.source = null;
-            bar.initialize();
-            bar.source = main;
+            bar.invalidateProperties();
+            bar.source = main;            
             bar.visible = true;
-            bar.invalidateProperties();            
-            main.cacheAsBitmap = true;
+            bar.initialize();
             main.invalidateProperties();
         }
 

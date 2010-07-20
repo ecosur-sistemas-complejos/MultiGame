@@ -2,6 +2,7 @@
 
 package mx.ecosur.multigame.impl.entity.manantiales;
 
+import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
@@ -9,6 +10,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GameImpl;
@@ -84,16 +86,18 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
             for (Ficha ficha : fichas) {
                 if (this.isGoodLocation(ficha)) {
                     ManantialesMove move = new ManantialesMove();
-                    move.setPlayer(this);
+                    move.setPlayer(this);                    
                     move.setDestinationCell(ficha);
                     move.setMode (game.getMode());
                     ret.add(move);
                 }
             }
+
             ret.addAll(findUpgradeMoves(game));
         }
 
         ret.add (generatePassMove(game));
+
         return ret;
     }
 
@@ -101,6 +105,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         ManantialesMove ret = new ManantialesMove ();
         ret.setPlayer(this);
         ret.setBadYear(true);
+        ret.setStatus(MoveStatus.UNVERIFIED);
         ret.setMode(game.getMode());
         return ret;
     }
