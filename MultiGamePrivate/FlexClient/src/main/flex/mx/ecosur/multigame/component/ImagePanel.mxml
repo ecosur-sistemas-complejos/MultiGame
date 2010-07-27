@@ -7,6 +7,7 @@
     creationComplete="initialize()">
     <mx:Metadata>
         [Event(name="close")]
+        [Event(name="loaded")]
     </mx:Metadata>
     <mx:Script>
         <![CDATA[
@@ -27,29 +28,6 @@
         [Bindable]
         public var scale:Number = 0.90;
 
-        public function previousImage():void {
-            if (index > 0)
-                index--;
-            shift();
-        }
-
-        public function nextImage():void {
-            if (index < (images.length - 1))
-                index++;
-            shift();
-        }
-
-        private function shift():void {
-            bar.visible = false;
-            main.source = images [ index ];
-            bar.source = null;
-            bar.invalidateProperties();
-            bar.source = main;            
-            bar.visible = true;
-            bar.initialize();
-            main.invalidateProperties();
-        }
-
         public override function set width (width:Number):void {
              _width = width * scale;
             super.width = width;
@@ -68,10 +46,8 @@
     </mx:Script>
     <mx:ProgressBar id="bar" source="main" mode="polled"/>
      <component:SmoothImage id="main" autoLoad="true" source="{images[index]}" scaleContent="true"
-            width="{_width}" height="{_height}"/>
+            width="{_width}" height="{_height}" creationComplete="dispatchEvent(new Event('loaded'))"/>
     <mx:ControlBar horizontalAlign="center">
-         <mx:Button id="previous" label="Previous" click="previousImage()" color="#ffffff"/>
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
-         <mx:Button id="next" label="Next" click="nextImage()" color="#ffffff"/>        
     </mx:ControlBar>
 </mx:Panel>

@@ -550,6 +550,7 @@ import mx.rpc.events.FaultEvent;
             
             boardCell.token = token;
             boardCell.token.blink(1);
+            boardCell.token.play();
             
             // Update move viewer
             var move:GenteMove = GenteMove(_moves[_selectedMoveInd])
@@ -829,6 +830,7 @@ import mx.rpc.events.FaultEvent;
                 _isMoving = false;
                 var token:Token = Token(evt.currentTarget);
                 token.selected = false;
+                token.play();
             }
         }
         

@@ -416,10 +416,10 @@ public class ManantialesGame extends GridGame {
                 file.createNewFile();
                 ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream(file));
                 ret = KnowledgeBaseFactory.newKnowledgeBase();
-                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-                kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                    "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-                ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
+        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());        
                 writeKBase(oos, ret);
             } else {
                 ObjectInputStream ois = new ObjectInputStream (new FileInputStream(FNAME));
@@ -460,8 +460,21 @@ public class ManantialesGame extends GridGame {
     @Override
     public Object clone() throws CloneNotSupportedException {
         ManantialesGame ret = new ManantialesGame();
-        ret.setGrid((GameGrid) grid.clone());
-        ret.setMode(this.getMode());
+        ret.grid = new GameGrid();
+        for (GridCell cell : getGrid().getCells()) {
+            Ficha ficha = (Ficha) cell;
+            ret.grid.updateCell((GridCell) ficha.clone());
+        }
+        ret.setColumns (this.getColumns());
+        ret.setRows (this.getRows());
+        ret.created = System.currentTimeMillis();
+        ret.id = this.getId();
+        ret.moves = new TreeSet<GridMove>(new MoveComparator());
+
+        ret.state = this.state;
+        ret.setMode(this.mode);
+        ret.version = this.version;
+        ret.kbase = findKBase();
         return ret;
     }
 }

@@ -1,5 +1,4 @@
 GETTING STARTED
-BETA
 
 This README requires you to have installed the following products:
 
@@ -36,7 +35,7 @@ the EAR file is being deployed:
 
     A.  The "Default Principal to role mapping" option must be checked on the security
         configuration screen.
-    B.  A JMS user must be created in the file-reaml for secure messaging.
+    B.  A JMS user must be created in the file-realm for secure messaging.
         1.  Click on the "file" security realm.
         2.  Click on manage existing users.
         3.  Add the user "MultiGame" with any password (authentication is not checked
@@ -45,7 +44,7 @@ the EAR file is being deployed:
         and playing the games.
         1.  Click on the "file" security realm.
         2.  Click on manage existing users.
-        3.  Add a user with the username you require and the password.
+        3.  Add a user with the username you want and the password.
 
     Note:  security can be modified within the build to work with any other JAAS
     components available on the Server.  The "MultiGame" user is required for the

@@ -114,7 +114,7 @@
                 if (evt.label == "Game Rules") {
                     _helpPanel = new HelpPanel();
                     _helpPanel.load("help-manantiales.html");
-                    _helpPanel.width = width - 100;
+                    _helpPanel.width = Math.min(width - 100, 600);
                     _helpPanel.height = height - 20;
                     _helpPanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_helpPanel, this, true);

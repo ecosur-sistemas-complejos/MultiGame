@@ -15,6 +15,8 @@ package mx.ecosur.multigame.component {
     import flash.filters.BitmapFilterQuality;
     import flash.filters.GlowFilter;
     import flash.filters.GradientBevelFilter;
+    import flash.media.Sound;
+    import flash.media.SoundChannel;
 
     import mx.core.IFlexDisplayObject;
     import mx.core.UIComponent;
@@ -26,8 +28,29 @@ package mx.ecosur.multigame.component {
     /**
      * Visual class representing a token on the board. Contains an internal
      * cell object that represents a server side Cell.
+     *
+     *
+     * Extra Licensing information:
+     *
+     * Sound file downloaded from "freesound.org", provided by user "vitriolix":
+     *
+     * http://www.freesound.org/samplesViewSingle.php?id=706
+     *
+     * Converted from .wav format for embedding by awaterma.  Used under the CreativeCommons
+     * Sample Plus license:
+     *
+     * http://creativecommons.org/licenses/sampling+/1.0/
+     *
+     * The sound has been sampled and reused as an integral part of the grid game implementations
+     * in this work.
+     *
      */
     public class Token extends UIComponent{
+
+        [Embed(source="/assets/706__vitriolix__pop.mp3")]
+        protected var _sndCls:Class;
+        protected var _snd:Sound;
+        protected var _sndChannel:SoundChannel;
 
         protected var _cell:Cell;
         protected var _bg:Shape;
@@ -48,6 +71,7 @@ package mx.ecosur.multigame.component {
          */
         public function Token(){
             super();
+            _snd = new _sndCls() as Sound;
             _selected = false;
             _bgDirty = false;
             _cell = null;
@@ -151,6 +175,10 @@ package mx.ecosur.multigame.component {
             dragImage.width = width;
             dragImage.height = height;
             return IFlexDisplayObject(dragImage);
+        }
+
+        public function play():void {
+            _sndChannel=_snd.play();
         }
 
         /**

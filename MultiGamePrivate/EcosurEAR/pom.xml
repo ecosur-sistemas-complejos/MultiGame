@@ -18,7 +18,6 @@
             <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-common</artifactId>
             <version>1.1.0-SNAPSHOT</version>
-            <type>ejb</type>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
@@ -140,10 +139,10 @@
                             <artifactId>ecosur-jpa</artifactId>
                             <bundleDir>lib</bundleDir>
                         </jarModule>
-                        <ejbModule>
+                        <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>multi-game-common</artifactId>
-                        </ejbModule>
+                        </jarModule>
                         <ejbModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>ecosur-ejb</artifactId>

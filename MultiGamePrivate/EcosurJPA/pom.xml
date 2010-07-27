@@ -31,7 +31,6 @@
         <groupId>mx.ecosur</groupId>
         <artifactId>multi-game-common</artifactId>
         <version>1.1.0-SNAPSHOT</version>
-        <type>ejb-client</type>
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
@@ -58,10 +57,5 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency-->
     </dependencies>
 </project>

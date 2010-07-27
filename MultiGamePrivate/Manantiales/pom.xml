@@ -62,7 +62,6 @@
             <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-common</artifactId>
             <version>${project.version}</version>
-            <type>ejb-client</type>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>

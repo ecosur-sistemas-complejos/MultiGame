@@ -297,6 +297,7 @@ import flash.events.MouseEvent;
                 _isMoving = false;
                 var token:ManantialesToken = ManantialesToken(evt.currentTarget);
                 token.selected = false;
+                token.play();
 
                 // remove dragged image
                 if (evt.dragSource is ManantialesToken) {

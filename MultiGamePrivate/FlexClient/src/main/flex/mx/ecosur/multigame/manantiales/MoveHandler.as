@@ -399,6 +399,7 @@ package mx.ecosur.multigame.manantiales {
 
                 boardCell.token = token;
                 boardCell.token.blink(1);
+                boardCell.token.play();
 
                 // Update move viewer
                 if (_controller._selectedMoveInd > 0 && _controller._moves.length > _controller._selectedMoveInd && _controller._moves[_controller._selectedMoveInd] != null) {

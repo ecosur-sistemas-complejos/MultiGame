@@ -47,18 +47,6 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
     private static int lastId;
 
-    private static KnowledgeBase manantiales;
-
-
-    /* Setup manantiales kbase */
-    static {
-        manantiales = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(ManantialesGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-        manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    }
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -70,7 +58,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-        game = new ManantialesGame(manantiales);
+        game = new ManantialesGame();
         game.setMessageSender(new DummyMessageSender());
 
         GridRegistrant registrant = new GridRegistrant ("alice");
@@ -134,33 +122,35 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         assertFalse (alice.isTurn());
 
         for (int i = 0; i < agents.length; i++) {
-            agents [ i ].setTurn(true);
-            Set<MoveImpl> moves = agents [ i ].determineMoves(game);
-            assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
-            for (MoveImpl agentMove : moves) {
-                ManantialesMove mve = (ManantialesMove) agentMove;
-                if (mve.isBadYear())
-                    continue;
-                assertNotNull (agentMove.getDestinationCell());
-                game.move (agentMove);
-                assertEquals (MoveStatus.EVALUATED, agentMove.getStatus());
-                GridCell destination = (GridCell) agentMove.getDestinationCell();
-                assertEquals (destination, game.getGrid().getLocation(destination));
-                List<Message> messages = mockTopic.getCurrentMessageList();
-                boolean found = false;
-                for (Message message : messages) {
-                    ObjectMessage msg = (ObjectMessage) message;
-                    if (message.getStringProperty("GAME_EVENT").equals(GameEvent.MOVE_COMPLETE.name())) {
-                        ManantialesMove test = (ManantialesMove) msg.getObject();
-                        if (test.getPlayer().equals (agents [ i ])) {
-                               found = true;
-                               assertEquals (agentMove, test);
+            if (agents [ i ].ready()) {
+                Set<MoveImpl> moves = agents [ i ].determineMoves(game);
+                assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
+                for (MoveImpl agentMove : moves) {
+                    ManantialesMove mve = (ManantialesMove) agentMove;
+                    if (mve.isBadYear())
+                        continue;
+                    assertTrue (mve.getPlayer().isTurn());
+                    assertNotNull (agentMove.getDestinationCell());
+                    game.move (agentMove);
+                    assertEquals (MoveStatus.EVALUATED, agentMove.getStatus());
+                    GridCell destination = (GridCell) agentMove.getDestinationCell();
+                    assertEquals (destination, game.getGrid().getLocation(destination));
+                    List<Message> messages = mockTopic.getCurrentMessageList();
+                    boolean found = false;
+                    for (Message message : messages) {
+                        ObjectMessage msg = (ObjectMessage) message;
+                        if (message.getStringProperty("GAME_EVENT").equals(GameEvent.MOVE_COMPLETE.name())) {
+                            ManantialesMove test = (ManantialesMove) msg.getObject();
+                            if (test.getPlayer().equals (agents [ i ])) {
+                                   found = true;
+                                   assertEquals (agentMove, test);
+                            }
                         }
                     }
-                }
 
-                assertTrue (found);
-                break;
+                    assertTrue (found);
+                    break;
+                }
             }
         }
 
