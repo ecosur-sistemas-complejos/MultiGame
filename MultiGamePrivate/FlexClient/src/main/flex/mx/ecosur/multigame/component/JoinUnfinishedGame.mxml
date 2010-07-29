@@ -3,17 +3,22 @@
           title="@Resource(key='unfinished.panel.title', bundle='StringsBundle')" creationComplete="init(event)">
 
     <mx:Metadata>
-        [Event(name="gameChosen", type="mx.ecosur.multigame.event.GameEvent")]
+        [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
     </mx:Metadata>
 
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.enum.GameState;   
+        import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
-        import mx.ecosur.multigame.event.GameEvent;
+        import mx.ecosur.multigame.event.PlayEvent;
+        import mx.ecosur.multigame.enum.GameEvent;
 
         import mx.collections.ArrayCollection;
         import mx.managers.CursorManager;
+        import mx.messaging.Producer;
+        import mx.messaging.events.MessageFaultEvent;
+        import mx.messaging.messages.AsyncMessage;
+        import mx.messaging.messages.IMessage;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
@@ -38,9 +43,13 @@
             updateDataGrid();
         }
 
+        private function messageFaultHandler (event:MessageFaultEvent) {
+            Alert.show("Error [" + event.faultString + "]");
+        }
+
         private function faultHandler(event:FaultEvent):void {
             Alert.show(event.fault.faultString,
-                    "Error getting unfinished games");
+                    "Error [" + event.fault.faultString + "]");
         }
 
         private function updateDataGrid():void {
@@ -82,13 +91,23 @@
                 }
             }
 
-            dispatchEvent(new GameEvent("gameChosen", joinedGame, gamePlayer));
+            sendPlayerChange(joinedGame);
+            dispatchEvent(new PlayEvent("gameChosen", joinedGame, gamePlayer));
+        }
+
+        private function sendPlayerChange(game:Game):void {
+            var message:IMessage = new AsyncMessage();
+            message.headers.GAME_ID = game.id;
+            message.headers.GAME_EVENT = GameEvent.PLAYER_CHANGE;
+            message.body = game;
+            _producer.send(message);
         }
 
         ]]>
     </mx:Script>
     
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
+    <mx:Producer id="_producer" destination="multigame-destination" fault="messageFaultHandler(event)"/>
 
     <mx:VBox width="100%">
         <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">

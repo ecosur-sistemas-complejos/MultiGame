@@ -6,15 +6,29 @@
 */
 
 /**
- * @author max@alwayssunny.com
+ * @author max@alwayssunny.com, awaterma@ecosur.mx
 */
 
 package mx.ecosur.multigame.entity {
-	
-	import mx.ecosur.multigame.entity.Game;
-	
+    import flash.media.Sound;
+    import flash.media.SoundChannel;
+
 	/**
 	 * Represents a server side GamePlayer object.
+     *
+     * Extra Licensing information:
+     *
+     * Sound file downloaded from "freesound.org", provided by user "acclivity":
+     *
+     * http://www.freesound.org/samplesViewSingle.php?id=30601
+     *
+     * Converted from .wav format to mp3 for embedding by awaterma.  Used under the
+     * CreativeCommons Sample Plus license:
+     *
+     * http://creativecommons.org/licenses/sampling+/1.0/
+     *
+     * The sound has been sampled and reused as an integral part of the grid game implementations
+     * in this work.
 	 */
 	[RemoteClass (alias="mx.ecosur.multigame.impl.model.GridPlayer")]
 	public class GamePlayer {
@@ -23,10 +37,15 @@ package mx.ecosur.multigame.entity {
 		private var _player:Registrant;
 		private var _color:String;
 		private var _turn:Boolean;
-		private var _game:Game;
+
+        [Embed(source="/assets/30601__acclivity__Goblet_F_Soft.mp3")]
+        protected var _sndCls:Class;
+        protected var _snd:Sound;
+        protected var _sndChannel:SoundChannel;
 		
 		public function GamePlayer(){
 			super();
+            _snd = new _sndCls() as Sound;
 		}
 		
 		public function get id():int{
@@ -65,5 +84,9 @@ package mx.ecosur.multigame.entity {
 			return "id = " + id + ", player = {" + registrant + "}, color = " + 
 			     color + ", turn = " + turn;
 		}
+
+        public function play():void {
+             _sndChannel=_snd.play();
+        }
 	}
 }

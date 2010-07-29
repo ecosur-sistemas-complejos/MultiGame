@@ -266,7 +266,8 @@ import mx.rpc.events.FaultEvent;
                 for (var i:int = 0; i < _winners.length; i++){
                     msg += gentePlayer(_winners[0]).player.name + " and ";
                 }*/
-                msg = "The " + Color.getTeamName(gentePlayer.color) + " " + resourceManager.getString("StringsBundle", "gente.team.has.won");
+                msg = Color.getTeamName(gentePlayer.color) + " " 
+                        + resourceManager.getString("StringsBundle", "gente.team.has.won");
                 color = 0x000000;
             }
             _gameStatus.showMessage(msg, 0x00000);
@@ -747,6 +748,7 @@ import mx.rpc.events.FaultEvent;
         
         private function initTurn():void{
             _tokenStore.active = true;
+            _currentPlayer.play();
         }
         
         private function endTurn():void{

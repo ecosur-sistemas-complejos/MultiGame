@@ -3,13 +3,13 @@
           title="@Resource(key='pending.panel.title', bundle='StringsBundle')" creationComplete="init(event)">
 
     <mx:Metadata>
-        [Event(name="gameJoined", type="mx.ecosur.multigame.event.GameEvent")]
+        [Event(name="gameJoined", type="mx.ecosur.multigame.event.PlayEvent")]
     </mx:Metadata>
 
     <mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.enum.GameState;
-        import mx.ecosur.multigame.event.GameEvent;
+        import mx.ecosur.multigame.event.PlayEvent;
         import mx.ecosur.multigame.entity.Registrant;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.entity.Game;
@@ -51,7 +51,7 @@
 
         private function joinResultHandler(event:ResultEvent):void {
             var serviceEvent:ServiceGameEvent = ServiceGameEvent(event.result);
-            dispatchEvent(new GameEvent("gameJoined", serviceEvent.game, serviceEvent.player));
+            dispatchEvent(new PlayEvent("gameJoined", serviceEvent.game, serviceEvent.player));
         }
 
         private function joinFaultHandler(event:FaultEvent):void {
@@ -60,7 +60,7 @@
 
         private function updateDataGrid():void {
             if (gamesDataGrid == null)
-               return
+                return
             var game:Game, selected:Game;
             var gamePlayer:GamePlayer;
             var dataProvider:ArrayCollection = new ArrayCollection();

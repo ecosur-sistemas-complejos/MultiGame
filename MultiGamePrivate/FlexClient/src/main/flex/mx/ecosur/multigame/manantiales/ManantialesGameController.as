@@ -341,6 +341,8 @@ package mx.ecosur.multigame.manantiales
                 PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
                 PopUpManager.centerPopUp(_annCondGen);
             }
+
+            _currentPlayer.play();
         }
 
         private function handleAnnCondResult(event:DynamicEvent):void{
@@ -538,6 +540,8 @@ package mx.ecosur.multigame.manantiales
                 /* Announce change */
                 PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
                 PopUpManager.centerPopUp(_stageChangeAlert);
+
+                _stageChangeAlert.play();
             }
         }
 

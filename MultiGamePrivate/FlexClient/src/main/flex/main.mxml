@@ -15,7 +15,7 @@
         import mx.managers.CursorManager;
 
         import mx.ecosur.multigame.entity.Game;
-        import mx.ecosur.multigame.event.GameEvent;
+        import mx.ecosur.multigame.event.PlayEvent;
         import mx.controls.Alert;
         import mx.ecosur.multigame.gente.GenteGameWindow;
         import mx.ecosur.multigame.manantiales.ManantialesWindow;
@@ -34,7 +34,7 @@
             vstack.selectedChild = lobby;
 
             /* Clear out any running games */
-            if (_genteGameWindow != null){
+            if (_genteGameWindow != null) {
                 _genteGameWindow.destroy();
                 vstack.removeChild(_genteGameWindow);
                 _genteGameWindow = null;
@@ -42,8 +42,8 @@
             if (_manantialesWindow != null) {
                 _manantialesWindow.destroy();
                 vstack.removeChild(_manantialesWindow);
-                _manantialesWindow = null;                
-            }                     
+                _manantialesWindow = null;
+            }
 
             /* Restart the lobby timer to view any updates to
              * system state ... */
@@ -55,18 +55,18 @@
             gameService.registerPrincipal();
         }
 
-        private function resultHandler(event:ResultEvent):void{
+        private function resultHandler(event:ResultEvent):void {
             if (event.result is Registrant) {
                 lobby.player = Registrant(event.result);
             } else
-                Alert.show ("Unable to interpret event: " + event);
+                Alert.show("Unable to interpret event: " + event);
         }
 
-        private function faultHandler(event:FaultEvent):void{
+        private function faultHandler(event:FaultEvent):void {
             Alert.show(event.fault.faultString, "Error!");
         }
 
-        private function lobbyDone(event:GameEvent):void {
+        private function lobbyDone(event:PlayEvent):void {
             lobby.timer.stop();
             if (event.game is GenteGame) {
                 //create new pente game window
