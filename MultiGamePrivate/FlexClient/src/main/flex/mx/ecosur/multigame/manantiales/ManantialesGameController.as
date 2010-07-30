@@ -508,6 +508,7 @@ package mx.ecosur.multigame.manantiales
 
         private function handleStateChange (game:ManantialesGame):void {
             _stateChange = true;
+            _gameWindow.currentState = "";
             _game = game;
             if (_stageChangeAlert == null) {
                 /* Set the mode */
@@ -565,10 +566,23 @@ package mx.ecosur.multigame.manantiales
             _tokenHandler.resetTokenStores();
 
             /* Init Game Grid with clear grid */
-            var grid:GameGrid = new GameGrid();
-            _game.grid = grid;
-            initGrid(grid);
             _stateChange = false;
+            _msgReceiver.destroy();
+
+            /* Reinitialize the message reciever */
+            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
+            _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
+
+            /* Reset game state */
+            _gameWindow.currentState = _game.mode;
+
+            // get the game grid, players and moves
+            var callGrid:Object = _gameService.getGameGrid(_gameId);
+            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+            var callPlayers:Object = _gameService.getPlayers(_gameId);
+            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+            var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
+            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
         }        
 
         private function handleGameEnd (game:ManantialesGame):void {

@@ -71,7 +71,14 @@ public class AgentListener implements MessageListener {
             for (GameEvent possible : gameEvents) {
                 if (event.equals(possible)) {
                     matched = true;
-                    GameImpl game = (GameImpl) msg.getObject();
+
+                    /* Pull current game state from the shared board and get moves from
+                       any affiliated agents.
+                     */
+                    GameImpl impl = (GameImpl) msg.getObject();
+                    Game model = sharedBoard.getGame(impl.getId());
+                    GameImpl game = model.getImplementation();                    
+
                     List<GamePlayer> players = game.listPlayers();
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {
@@ -139,6 +146,9 @@ public class AgentListener implements MessageListener {
 
         } catch (JMSException e) {
             logger.warning("Not able to process game message: " + e.getMessage());
+            e.printStackTrace();
+        } catch (RuntimeException e) {
+            logger.warning ("RuntimeException generated! " + e.getMessage());
             e.printStackTrace();
         }
     }

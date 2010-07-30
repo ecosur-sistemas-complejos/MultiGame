@@ -7,7 +7,8 @@
 
     <mx:Script>
         <![CDATA[
-            import mx.events.DynamicEvent;
+        import mx.ecosur.multigame.component.SoundAssets;
+        import mx.events.DynamicEvent;
             import flash.media.Sound;
             import flash.media.SoundChannel;
             
@@ -15,15 +16,6 @@
             private var _text:String;
             
             private var _positive:Boolean;
-
-            [Embed(source="/assets/32864__oniwe__smallAudienceClapsMaleYeah.mp3")]
-            protected var _goodSndCls:Class;
-            protected var _goodSnd:Sound;
-
-            [Embed(source="/assets/49944__simon.rue__misslyckad_bana_v1.mp3")]
-            protected var _badSndCls:Class;
-            protected var _badSnd:Sound;
-
             protected var _sndChannel:SoundChannel;
             
             [Embed(source='/assets/icons.swf#thumbsDown')]
@@ -66,9 +58,9 @@
 
             public function play():void {
                 if (_positive)
-                    _sndChannel= _goodSnd.play();
+                    _sndChannel= SoundAssets.approval.play();
                 else
-                    _sndChannel= _badSnd.play();
+                    _sndChannel= SoundAssets.failure.play();
             }
             
         ]]>

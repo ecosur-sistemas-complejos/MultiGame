@@ -62,9 +62,11 @@ then
             p.setTurn(true);
     }
     GameGrid grid = new GameGrid ();
-    Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players), 
-        setMode ( mode) }
+    if ($game.getMode() == null)
+        modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players),
+            setMode (Mode.CLASSIC)}
+    else
+        modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
     messageSender.sendStartGame($game);
 end
 
@@ -783,10 +785,11 @@ then
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
         player.reset();
-        player.setTurn(false);
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
+        else
+            player.setTurn(false);
     }
-    ManantialesPlayer player = (ManantialesPlayer) players.get(index);
-    player.setTurn(true);
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
@@ -820,10 +823,11 @@ then
     for (GridPlayer p : players) {
         ManantialesPlayer player = (ManantialesPlayer) p;
         player.reset();
-        player.setTurn(false);
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
+        else
+            player.setTurn(false);
     }
-    ManantialesPlayer player = (ManantialesPlayer) players.get(index);
-    player.setTurn(true);
     GameGrid grid = new GameGrid ();
     Mode mode = incrementMode($game.getMode());
     modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }

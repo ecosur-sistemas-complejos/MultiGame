@@ -63,7 +63,7 @@ public class ManantialesGame extends GridGame {
 
     public ManantialesGame () {
         super();
-        kbase = null;
+        mode = Mode.CLASSIC;
     }
 
     public ManantialesGame (KnowledgeBase kbase) {

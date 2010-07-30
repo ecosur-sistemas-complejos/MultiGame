@@ -13,25 +13,26 @@ package mx.ecosur.multigame.gente{
     
     import flash.events.MouseEvent;
     import flash.geom.Point;
-    
+    import flash.media.Sound;
+    import flash.media.SoundChannel;
+
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.controls.Button;
-    import mx.core.Application;
     import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
     import mx.core.UIComponent;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.ChatPanel;
     import mx.ecosur.multigame.component.GameStatus;
-    import mx.ecosur.multigame.component.Token;
+import mx.ecosur.multigame.component.SoundAssets;
+import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.Game;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
-    import mx.ecosur.multigame.entity.Move;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;
@@ -52,12 +53,12 @@ package mx.ecosur.multigame.gente{
     import mx.events.EffectEvent;
     import mx.managers.DragManager;
     import mx.messaging.Producer;
-import mx.messaging.messages.AsyncMessage;
-import mx.messaging.messages.ErrorMessage;
+    import mx.messaging.messages.AsyncMessage;
+    import mx.messaging.messages.ErrorMessage;
     import mx.messaging.messages.IMessage;
-import mx.resources.IResourceManager;
-import mx.resources.ResourceManager;
-import mx.rpc.events.FaultEvent;
+    import mx.resources.IResourceManager;
+    import mx.resources.ResourceManager;
+    import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.rpc.remoting.RemoteObject;
 
@@ -78,6 +79,8 @@ import mx.rpc.events.FaultEvent;
         private var _moveViewer:GenteMoveViewer;
         private var _gameStatus:GameStatus;
         private var _animateLayer:UIComponent;
+
+        protected var _sndChannel:SoundChannel;
         
         // data objects
         private var _gameId:int;
@@ -252,6 +255,7 @@ import mx.rpc.events.FaultEvent;
             
             // remove the token store
             _tokenStore.active = false;
+            var sound:Sound = null;
 
             // prepare message for winners
             var msg:String = "";
@@ -261,14 +265,18 @@ import mx.rpc.events.FaultEvent;
             if (_isSoloWin){
                 msg = gentePlayer.registrant.name + " " + resourceManager.getString("StringsBundle", "gente.has.won");
                 color = Color.getColorCode(gentePlayer.color);
+                if (gentePlayer.color == _currentPlayer.color)
+                    sound = SoundAssets.approval;
+                else
+                    sound = SoundAssets.failure;
             }else{
-                /*
-                for (var i:int = 0; i < _winners.length; i++){
-                    msg += gentePlayer(_winners[0]).player.name + " and ";
-                }*/
                 msg = Color.getTeamName(gentePlayer.color) + " " 
                         + resourceManager.getString("StringsBundle", "gente.team.has.won");
                 color = 0x000000;
+                if (Color.getTeamName(gentePlayer.color) == Color.getTeamName(_currentPlayer.color))
+                    sound = SoundAssets.approval;
+                else
+                    sound = SoundAssets.failure;
             }
             _gameStatus.showMessage(msg, 0x00000);
             _gameStatus.active = false;
@@ -298,7 +306,8 @@ import mx.rpc.events.FaultEvent;
                     }
                 } 
             }
-            
+
+            _sndChannel = sound.play();
             _isEnded = true;
             
         }
