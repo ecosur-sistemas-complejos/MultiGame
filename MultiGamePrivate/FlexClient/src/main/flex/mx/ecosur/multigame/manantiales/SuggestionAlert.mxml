@@ -45,12 +45,11 @@
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:HBox width="100%">
             <mx:Image id="indicator" source="{thumbsUp}" />
-            <mx:Text width="100%" id="reason" text="Do you wish to accept the suggestion?"/>
-            <!--mx:Text text="{suggestion.toString())"/-->
+            <mx:Text width="100%" id="reason" text="@Resource(key='manantiales.suggestion.accept', bundle='StringsBundle')"/>
         </mx:HBox>
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-            <mx:Button id="acpt" label="Accept" click="accept(event)"/>
-            <mx:Button id="rjct" label="Reject" click="reject(event)"/>
+            <mx:Button id="acpt" label="@Resource(key='manantiales.suggestion.button', bundle='StringsBundle')" click="accept(event)"/>
+            <mx:Button id="rjct" label="@Resource(key='manantiales.suggestion.cancel', bundle='StringsBundle')" click="reject(event)"/>
         </mx:HBox>
     </mx:VBox>
 </mx:Panel>

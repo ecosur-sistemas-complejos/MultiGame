@@ -358,7 +358,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
 
         public function suggestType():void {
             PopUpManager.removePopUp(_tokenSuggestor);
-            var type:String = String (_tokenSuggestor.typeBox.selectedItem.label);
+            var type:String = String (_tokenSuggestor.typeBox.selectedItem.data);
             var ficha:Ficha = null;
 
             if (type != _tokenSuggestor.source.ficha.type) {
