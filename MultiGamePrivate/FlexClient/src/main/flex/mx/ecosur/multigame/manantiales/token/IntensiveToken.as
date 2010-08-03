@@ -8,7 +8,7 @@ package mx.ecosur.multigame.manantiales.token
         public function IntensiveToken()
         {
             super();
-            _tooltip = "Intensive Grazing";
+            _tooltip = resourceManager.getString("StringsBundle", "manantiales.token.intensive");
             _label = "I";
             _type = TokenType.INTENSIVE;
         }

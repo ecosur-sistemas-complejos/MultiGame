@@ -8,7 +8,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function ViveroToken()
 		{
 			super();
-			_tooltip = "Silvopastoral Establishment";
+			_tooltip = resourceManager.getString("StringsBundle", "manantiales.token.vivero");
 			_label = "E";
 			_type = TokenType.VIVERO;
 		}

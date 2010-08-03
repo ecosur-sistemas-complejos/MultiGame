@@ -23,7 +23,9 @@
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.manantiales.enum.Mode;
+            import mx.resources.IResourceManager;
             import mx.resources.ResourceBundle;
+            import mx.resources.ResourceManager;
 
             /* required for compilation of class into runtime */
             import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
@@ -111,7 +113,7 @@
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
             private function handleMenuItemClick(evt:MenuEvent):void {
-                if (evt.label == "Game Rules") {
+                if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.two.submenu")) {
                     _helpPanel = new HelpPanel();
                     _helpPanel.load("help-manantiales.html");
                     _helpPanel.width = Math.min(width - 100, 600);
@@ -120,7 +122,7 @@
                     PopUpManager.addPopUp(_helpPanel, this, true);
                     PopUpManager.centerPopUp(_helpPanel);                    
 
-                } else if (evt.label == 'Play The Classic Game') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.one")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 0;
@@ -129,7 +131,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Understand Global Deforestation - 1') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.three")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 1;
@@ -138,7 +140,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Understand Global Deforestation - 2') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.four")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 2;
@@ -147,7 +149,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Understand Local Deforestation') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.two")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 3;
@@ -156,7 +158,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == 'Get Premiums in the Basic Puzzle') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.five")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 4;
@@ -165,9 +167,9 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label=='Lobby') {
+                } else if (evt.label==resourceManager.getString("StringsBundle","manantiales.menu.one.submenu.one")) {
                     dispatchCompletion();
-                } else if (evt.label == 'Quit') {
+                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.one.submenu.two")) {
                     quitGame();
                     dispatchCompletion();
                 }
@@ -186,15 +188,15 @@
             public function get state():String {
                 var ret:String;
                 if (_currentGame.mode == null)
-                    ret = "Setup";
+                    ret = resourceManager.getString("StringsBundle","manantiales.state.setup");
                 else if (_currentGame.mode == Mode.CLASSIC)
-                    ret = "Classic";
+                    ret = resourceManager.getString("StringsBundle","manantiales.state.classic");
                 else if (_currentGame.mode == Mode.BASIC_PUZZLE)
-                    ret = "Puzzle";
+                    ret = resourceManager.getString("StringsBundle","manantiales.state.puzzle.basic");
                 else if (_currentGame.mode == Mode.SILVOPASTORAL)
-                    ret = "Silvopastoral";
+                    ret = resourceManager.getString("StringsBundle","manantiales.state.silvopastoral");
                 else if (_currentGame.mode == Mode.SILVO_PUZZLE)
-                    ret = "Advanced Puzzle";
+                    ret = resourceManager.getString("StringsBundle","manantiales.state.puzzle.silvo");
                 
                 return ret;
             }
@@ -208,23 +210,23 @@
                 _controller.quitGame(currentPlayer);
             }
          ]]>       
-    </mx:Script> 
-    
+    </mx:Script>
+
     <mx:XMLList id="menuXML">
-        <menuitem label="Game">
-            <menuitem label="Lobby"/>
-            <menuitem label="Quit"/>
+        <menuitem label="@Resource(key='manantiales.menu.one.title', bundle='StringsBundle')">
+            <menuitem label="@Resource(key='manantiales.menu.one.submenu.one', bundle='StringsBundle')"/>
+            <menuitem label="@Resource(key='manantiales.menu.one.submenu.two', bundle='StringsBundle')"/>
         </menuitem>
-        <menuitem label="Help">
-            <menuitem label="Game Rules"/>
-        </menuitem>        
-        <menuitem label="How To">
-                <menuitem label="Play The Classic Game" />
-                <menuitem label="Understand Local Deforestation"/>
-                <menuitem label="Understand Global Deforestation - 1"/>
-                <menuitem label="Understand Global Deforestation - 2"/>
-                <menuitem label="Get Premiums in the Basic Puzzle"/>
-            </menuitem>
+        <menuitem label="@Resource(key='manantiales.menu.two.title', bundle='StringsBundle')">
+            <menuitem label="@Resource(key='manantiales.menu.two.submenu',bundle='StringsBundle')"/>
+        </menuitem>
+        <menuitem label="@Resource(key='manantiales.menu.three.title', bundle='StringsBundle')">
+            <menuitem label="@Resource(key='manantiales.menu.three.submenu.one', bundle='StringsBundle')" />
+            <menuitem label="@Resource(key='manantiales.menu.three.submenu.two', bundle='StringsBundle')"/>
+            <menuitem label="@Resource(key='manantiales.menu.three.submenu.three', bundle='StringsBundle')"/>
+            <menuitem label="@Resource(key='manantiales.menu.three.submenu.four', bundle='StringsBundle')"/>
+            <menuitem label="@Resource(key='manantiales.menu.three.submenu.five', bundle='StringsBundle')"/>
+        </menuitem>
     </mx:XMLList>
     
     <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
@@ -277,8 +279,9 @@
         paddingLeft="10" paddingRight="10" id="hbox">
         <mx:VBox id="leftBox" width="200" height="100%">
             <component:GameStatus id="gameStatus" width="100%" />
-            <manantiales:MoveViewer id="moveViewer" title="Move History"
-                    height="100%" width="100%"/>
+            <manantiales:MoveViewer id="moveViewer"
+                title="@Resource(key='move.history.title', bundle='StringsBundle')"
+                height="100%" width="100%"/>
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"
@@ -289,7 +292,8 @@
                 <manantiales:PlayersViewer id="playersViewer" 
                   currentPlayer="{currentPlayer}" width="100%"/>
             </mx:Panel>
-           <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}"
+           <component:ChatPanel id="chatPanel" width="100%" height="100%"
+                currentPlayer="{currentPlayer}"
                 currentGame="{currentGame}"/>
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />

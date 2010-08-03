@@ -15,29 +15,25 @@ package mx.ecosur.multigame.manantiales.token
 
         public function SuggestionToken (suggestion:Suggestion) {
             super();
-            _tooltip = "Suggestion [" + suggestion.move + "]";
+            _tooltip = resourceManager.getString("StringsBundle", "manantiales.suggestion")
+            " [" + suggestion.move + "]";
             _suggestion = suggestion;
             var destination:Ficha = Ficha(suggestion.move.destinationCell);
 
             switch (destination.type) {
-            case TokenType.FOREST:
-                   _tooltip = "Suggestion (Managed Forest)";
+                case TokenType.FOREST:
                     _label = "F";
                    break;
                 case TokenType.INTENSIVE:
-                    _tooltip = "Suggestion (Intensive Grazing)";
                     _label = "I";
                    break;
                 case TokenType.MODERATE:
-                   _tooltip = "Suggestion (Moderate Grazing)";
                     _label = "M";
                    break;
                 case TokenType.SILVOPASTORAL:
-                   _tooltip = "Suggestion (SilvoPastoral)";
                     _label = "S";
                    break;
                 case TokenType.VIVERO:
-                   _tooltip = "Suggestion (Vivero)";
                     _label = "V";
                    break;
                 default:

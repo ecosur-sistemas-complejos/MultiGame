@@ -35,15 +35,15 @@
         <mx:GridRow>
             <mx:GridItem/>
             <mx:GridItem>
-        		<mx:Label text="Token" styleName="fieldLit"/>
+        		<mx:Label text="@Resource(key='manantiales.token', bundle='StringsBundle')" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
-                <mx:Label text="Payout" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.payout', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>        	
         </mx:GridRow>
         <mx:GridRow>
         	<mx:GridItem>
-        		<mx:Label text="Managed Forest" styleName="fieldLit"/>        		
+        		<mx:Label text="@Resource(key='manantiales.token.forest', bundle='StringsBundle')" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="managedForest" styleName="field"/>  
@@ -54,7 +54,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Moderate Pasture" styleName="fieldLit"/>              
+                <mx:Label text="@Resource(key='manantiales.token.moderate', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="moderate" styleName="field"/>  
@@ -65,7 +65,7 @@
         </mx:GridRow>    
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Intensive Pasture" styleName="fieldLit"/>              
+                <mx:Label text="@Resource(key='manantiales.token.intensive', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="intensive" styleName="field"/>  
@@ -76,7 +76,7 @@
         </mx:GridRow>        
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Silvopastoral Establishment" styleName="fieldLit"/>              
+                <mx:Label text="@Resource(key='manantiales.token.vivero', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="vivero" styleName="field"/>  
@@ -87,7 +87,7 @@
         </mx:GridRow>
        <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Silvopastoral Active" styleName="fieldLit"/>              
+                <mx:Label text="@Resource(key='manantiales.token.silvopastoral', bundle='StringsBundle')" styleName="fieldLit"/>              
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="silvopastoral" styleName="field"/>  
@@ -99,7 +99,7 @@
         <mx:GridRow/>
         <mx:GridRow>
             <mx:GridItem>
-            	<mx:Label text="Score" styleName="fieldLit" />            	            	
+            	<mx:Label text="@Resource(key='manantiales.score', bundle='StringsBundle')" styleName="fieldLit" />            	            	
             </mx:GridItem>
             <mx:GridItem>
             	<mx:Label id="playerScore" styleName="fieldLit"/>            	

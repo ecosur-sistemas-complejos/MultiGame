@@ -10,7 +10,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function SilvopastoralToken()
 		{
 			super();
-			_tooltip = "Silvepastoral Active";
+			_tooltip = resourceManager.getString("StringsBundle", "manantiales.token.silvopastoral");
 			_label = "S";
 			_type = TokenType.SILVOPASTORAL;
 		}

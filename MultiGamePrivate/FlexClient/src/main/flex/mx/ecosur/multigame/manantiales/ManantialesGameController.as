@@ -30,6 +30,8 @@ package mx.ecosur.multigame.manantiales
     import mx.managers.PopUpManager;
     import mx.messaging.messages.ErrorMessage;
     import mx.messaging.messages.IMessage;
+    import mx.resources.IResourceManager;
+    import mx.resources.ResourceManager;
     import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.rpc.remoting.RemoteObject;
@@ -73,6 +75,9 @@ package mx.ecosur.multigame.manantiales
 
         /* Needed to force compilation of SimplePlayer in .swf file */
         private var _unUsed:SimpleAgent;
+
+        /* Internationalization */
+        private var resourceManager:IResourceManager = ResourceManager.getInstance();
         
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
@@ -107,8 +112,9 @@ package mx.ecosur.multigame.manantiales
             _moveHandler = new MoveHandler (this);               
 
             // initialize game status
-            _gameWindow.gameStatus.showMessage("Welcome to the game " +
-                _currentPlayer.registrant.name + "!\n\n You are " +
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle", "manantiales.welcome") +
+                _currentPlayer.registrant.name + ".\n\n" + resourceManager.getString("StringsBundle",
+                    "manantiales.identify") +
                 Color.getColorDescription(_currentPlayer.color),
                 Color.getColorCode(_currentPlayer.color));
 
@@ -172,7 +178,8 @@ package mx.ecosur.multigame.manantiales
                             if(chatMessage.sender.id != _currentPlayer.registrant.id){
                                 _gameWindow.gameStatus.showMessage(
                                     chatMessage.sender.registrant.name +
-                                    " has sent you a message", 0x000000);
+                                    resourceManager.getString("StringsBundle",
+                                            "manantiales.panel.chat.announcement"), 0x000000);
                             }
                             break;
                         case ManantialesEvent.END:
@@ -250,8 +257,8 @@ package mx.ecosur.multigame.manantiales
          * Called when game begins
          */
         private function begin():void{
-            _gameWindow.gameStatus.showMessage("All players have joined. The game will now begin.",
-                0x00000);
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
+                "manantiales.start.message"), 0x000000);
         }
 
         /*
@@ -259,7 +266,7 @@ package mx.ecosur.multigame.manantiales
          */
         private function end():void{
 
-            _gameWindow.gameStatus.showMessage("You have won the game!",
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle","manantiales.have.won"),
                0x000000);
 
             if(_isEnded){
@@ -420,11 +427,12 @@ package mx.ecosur.multigame.manantiales
                 }
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
-                        _gameWindow.gameStatus.showMessage("Its your turn",
-                            Color.getColorCode(_currentPlayer.color));
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
+                                "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
                     }else{
                         _gameWindow.gameStatus.showMessage(
-                            gamePlayer.registrant.name + " to move", Color.getColorCode(gamePlayer.color));
+                            gamePlayer.registrant.name + resourceManager.getString("StringsBundle","manantiales.tomove"),
+                                    Color.getColorCode(gamePlayer.color));
                     }
                 }
             }
@@ -452,10 +460,13 @@ package mx.ecosur.multigame.manantiales
                     var fnc:Function = function (event:CloseEvent):void{
                         _moveHandler.invalidMove(_executingMove);
                     }
-                    Alert.show("Invalid Move", "Woops!", Alert.OK, null, fnc);
+                    Alert.show(resourceManager.getString("StringsBundle","manantiales.move.invalid"),
+                            resourceManager.getString("StringsBundle","manantiales.move.error.title"), Alert.OK, null,
+                            fnc);
                 }
             }else{
-                Alert.show(event.fault.faultString, "Server Error");
+                Alert.show(event.fault.faultString, resourceManager.getString("StringsBundle",
+                        "manantiales.controller.server.error"));
             }
         }
 
@@ -521,18 +532,19 @@ package mx.ecosur.multigame.manantiales
                 _stageChangeAlert = new GraphicAlert();
                 if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
                     if (winner) {
-                        _stageChangeAlert.text = "Congratulations!  You have won the sub-game! Progressing to next stage, '" +
+                        _stageChangeAlert.text = " '" +
                             game.mode + "'";
                         _stageChangeAlert.positive = true;
 
                     } else {
-                        _stageChangeAlert.text = "You have lost the sub-game! Progressing to next stage, '" +
+                        _stageChangeAlert.text = resourceManager.getString("StringsBundle",
+                                "manantiales.competitive.lose") + " '" +
                             game.mode + "'";
                         _stageChangeAlert.positive = false;
                     }
                 } else {
-                    _stageChangeAlert.text = "Puzzle solved.  Stage complete. Progressing to next stage, '" +
-                        game.mode + "'";
+                    _stageChangeAlert.text = resourceManager.getString("StringsBundle","manantiales.puzzle.solved") +
+                            " '" + game.mode + "'";
                     _stageChangeAlert.positive = true;
                 }
 
@@ -606,11 +618,11 @@ package mx.ecosur.multigame.manantiales
                         }
 
                         if (expiredCondition != null) {
-                          _endAlert.text = "Game Over due to expiry of SEVERE CheckCondition ('" +
-                                   expiredCondition.reason + "')";
+                          _endAlert.text = resourceManager.getString("StringsBundle","manantiales.severe.expiration") +
+                                  " ('" + expiredCondition.reason + "')";
                           _endAlert.positive = false;
                         } else {
-                            _endAlert.text = "Congratulations! You all have won!";
+                            _endAlert.text = resourceManager.getString("StringsBundle","manantiales.all.winners");
                             _endAlert.positive = true;
                             end();
                         }

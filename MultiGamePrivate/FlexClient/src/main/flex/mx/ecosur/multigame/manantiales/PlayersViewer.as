@@ -1,18 +1,18 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.utils.Dictionary;
-    
-    import mx.collections.ArrayCollection;
+
     import mx.containers.Accordion;
     import mx.controls.Button;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-    import mx.ecosur.multigame.manantiales.enum.Mode;
-    
+    import mx.resources.IResourceManager;
+    import mx.resources.ResourceManager;
 
-	public class PlayersViewer extends Accordion
+
+    public class PlayersViewer extends Accordion
 	{
 		private var _currentPlayer:GamePlayer;
         private var _game:ManantialesGame;
@@ -125,7 +125,7 @@ package mx.ecosur.multigame.manantiales
                         }
                     } else {
                         btn = getHeaderAt(j)
-                        label = "Score";
+                        label = resourceManager.getString("StringsBundle","manantiales.panel.info.score.title");
                         btn.label = label;
                         btn.setStyle("paddingBottom", 5);
                         btn.setStyle("paddingTop", 5);

@@ -52,12 +52,13 @@
             <mx:AddChild relativeTo="{content}" position="lastChild">
                 <mx:HBox width="100%">
                     <mx:Image source="@Embed(source='/assets/icons.swf#thumbsDown')" />
-                    <mx:Text text="You've had a bad year and cannot colonize" />
+                    <mx:Text text="@Resource(key='manantiales.badyear', bundle='StringsBundle')" />
                 </mx:HBox>
             </mx:AddChild>
             <mx:AddChild relativeTo="{content}" position="lastChild">
                 <mx:Box width="100%" horizontalAlign="center">
-                    <mx:Button label="Skip turn" click="selectionComplete(event)" />
+                    <mx:Button label="@Resource(key='manantiales.skipturn', bundle='StringsBundle')" 
+                               click="selectionComplete(event)" />
                 </mx:Box>
             </mx:AddChild>
         </mx:State>
@@ -65,10 +66,10 @@
 
 
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-        <mx:Text width="100%" text="Stop the random number generator to determine the type of year.&#13;&#13;Any number from 1 to 5 means that conditions are positive and you may colonize, however a 6 represents a bad year and prevents you from colonizing." />
+        <mx:Text width="100%" text="@Resource(key='manantiales.annualcondition', bundle='StringsBundle')" />
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
             <mx:Text id="selectedNum" fontSize="30" />
-            <mx:Button id="btnStop" label="Stop" click="selectNumber()" />
+            <mx:Button id="btnStop" label="@Resource(key='manantiales.stop', bundle='StringsBundle')" click="selectNumber()" />
         </mx:HBox>
         <mx:HBox id="result" width="100%" verticalAlign="middle"/>
     </mx:VBox>

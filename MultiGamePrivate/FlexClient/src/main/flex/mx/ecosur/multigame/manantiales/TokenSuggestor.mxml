@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Generate Anual Condition"
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400"
+          title="@Resource(key='manantiales.token.suggestor.title', bundle='StringsBundle')"
     creationComplete="">
 
     <mx:Metadata>

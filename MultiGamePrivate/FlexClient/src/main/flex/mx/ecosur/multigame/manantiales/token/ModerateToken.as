@@ -8,7 +8,7 @@ package mx.ecosur.multigame.manantiales.token
 		public function ModerateToken()
 		{
 			super();
-			_tooltip = "Moderate Grazing";
+			_tooltip = resourceManager.getString("StringsBundle", "manantiales.token.moderate");
 			_label = "M";
 			_type = TokenType.MODERATE;
 		}

@@ -10,8 +10,10 @@
 */
 
 package mx.ecosur.multigame.enum {
-	
-	/**
+import mx.resources.IResourceManager;
+import mx.resources.ResourceManager;
+
+/**
 	 * Enumeration of colors and related static helper classes.
 	 */
 	public class Color {
@@ -57,19 +59,21 @@ package mx.ecosur.multigame.enum {
 		}
 		
         public static function getColorDescription(color:String):String{
+            var resource:IResourceManager = ResourceManager.getInstance();
+
             switch (color){
                 case Color.BLACK:
-                    return "Black";
+                    return resource.getString("StringsBundle", "color.black");
                 case Color.YELLOW:
-                    return "Yellow";
+                    return resource.getString("StringsBundle", "color.yellow");
                 case Color.GREEN:
-                    return "Green";
+                    return resource.getString("StringsBundle", "color.green");
                 case Color.BLUE:
-                    return "Blue";
+                    return resource.getString("StringsBundle", "color.blue");
                 case Color.RED:
-                    return "Red";
+                    return resource.getString("StringsBundle", "color.red");
                 case Color.PURPLE:
-                    return "Purple";
+                    return resource.getString("StringsBundle", "color.purple");
             }
             return "";
         }

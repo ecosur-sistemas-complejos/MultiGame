@@ -8,8 +8,10 @@ package mx.ecosur.multigame.manantiales.token
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
+import mx.resources.IResourceManager;
+import mx.resources.ResourceManager;
 
-    public class ManantialesToken extends Token
+public class ManantialesToken extends Token
     {
         protected var _label:String;
         protected var _tooltip:String;
@@ -20,7 +22,7 @@ package mx.ecosur.multigame.manantiales.token
         protected var _ficha:Ficha;
         protected var _type:String;
         protected var _placed:Boolean;
-
+    
         public function ManantialesToken()
         {
             super();

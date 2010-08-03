@@ -79,7 +79,7 @@
         </mx:GridRow>
         <mx:GridRow>
         	<mx:GridItem>
-        		<mx:Label text="Points" styleName="fieldLit"/>
+        		<mx:Label text="@Resource(key='manantiales.panel.info.score.points', bundle='StringsBundle')" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Pts" styleName="field"/>
@@ -96,7 +96,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Tokens" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.panel.info.score.tokens', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Tks" styleName="field"/>
@@ -113,7 +113,7 @@
         </mx:GridRow>        
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Premiums" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.panel.info.score.premiums', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Pr" styleName="field"/>
@@ -131,7 +131,7 @@
         <mx:GridRow/>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Deforested" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.panel.info.score.deforested', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="deforested" styleName="field"/>
@@ -139,7 +139,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Undeveloped" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.panel.info.score.undeveloped', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="undeveloped" styleName="field"/>
@@ -147,7 +147,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="Violations" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='manantiales.panel.info.score.violations', bundle='StringsBundle')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="violated" styleName="field"/>

@@ -79,7 +79,7 @@ export FLEX_SDK=/home/myuser/flex_sdk
  the Spanish flex framework locale files.  These are distributed by default in the
  3.2.0 FlexMojos maven archives, but are note available for 3.5.  You can make the
  library available locally by using the "copylocale" utility in the Flex SDK.
- Christopher Herremean does a great job detialing this process here:
+ Christopher Herremean does a great job detailing this process here:
 
  http://www.herrodius.com/blog/123
 
