@@ -26,7 +26,7 @@
         public var _height:Number;
 
         [Bindable]
-        public var scale:Number = 0.90;
+        public var scale:Number = 0.98;
 
         public override function set width (width:Number):void {
              _width = width * scale;
@@ -44,9 +44,9 @@
 
         ]]>
     </mx:Script>
-    <mx:ProgressBar id="bar" source="main" mode="polled"/>
      <component:SmoothImage id="main" autoLoad="true" source="{images[index]}" scaleContent="true"
             width="{_width}" height="{_height}" creationComplete="dispatchEvent(new Event('loaded'))"/>
+        <mx:ProgressBar id="bar" source="main" mode="polled" visible="{!main._completed}"/>
     <mx:ControlBar horizontalAlign="center">
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
     </mx:ControlBar>

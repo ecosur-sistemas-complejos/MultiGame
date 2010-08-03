@@ -149,7 +149,8 @@ package mx.ecosur.multigame.component {
          * 
          */
         public function getCellDescription(column:Number, row:Number):String{
-            return "row " + (nRows - row) + ", column " + (column + 1);
+            return resourceManager.getString("StringsBundle", "move.history.row") + " " + (nRows - row) +
+                    ", " + resourceManager.getString("StringsBundle", "move.history.column") + " " + (column + 1);
         }
         
         override protected function measure():void{
