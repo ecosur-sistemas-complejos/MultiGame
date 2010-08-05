@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.impl.entity.tablon;
+package mx.ecosur.multigame.impl.entity.pasale;
 
 import mx.ecosur.multigame.enums.GameState;
 

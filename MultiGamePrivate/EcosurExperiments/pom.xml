@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>tablon</artifactId>
+            <artifactId>pasale</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

@@ -15,9 +15,9 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.util.tablon;
+package mx.ecosur.multigame.impl.util.pasale;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 

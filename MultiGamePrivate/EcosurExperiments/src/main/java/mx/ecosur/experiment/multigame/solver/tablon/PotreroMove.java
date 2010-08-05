@@ -1,9 +1,9 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
+import mx.ecosur.multigame.impl.entity.pasale.TablonMove;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;

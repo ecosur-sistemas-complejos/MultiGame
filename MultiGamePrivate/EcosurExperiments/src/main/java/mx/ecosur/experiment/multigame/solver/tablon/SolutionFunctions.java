@@ -1,15 +1,13 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
+import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 import static mx.ecosur.experiment.multigame.solver.tablon.TablonSolution.Quadrant;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
+import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.TablonGrid;
 
 import java.util.HashSet;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
 import java.awt.*;
 
 /**

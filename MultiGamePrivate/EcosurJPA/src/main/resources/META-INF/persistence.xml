@@ -34,12 +34,12 @@
         <class>mx.ecosur.multigame.impl.enums.manantiales.Mode</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.TokenType</class>
         <!-- Tablon -->
-        <class>mx.ecosur.multigame.impl.entity.tablon.TablonFicha</class>
-        <class>mx.ecosur.multigame.impl.entity.tablon.TablonGame</class>
-        <class>mx.ecosur.multigame.impl.entity.tablon.TablonGrid</class>
-        <class>mx.ecosur.multigame.impl.entity.tablon.TablonMove</class>
-        <class>mx.ecosur.multigame.impl.entity.tablon.TablonPlayer</class>
-        <class>mx.ecosur.multigame.impl.enums.tablon.TokenType</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.TablonFicha</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.TablonGame</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.TablonGrid</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.TablonMove</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.TablonPlayer</class>
+        <class>mx.ecosur.multigame.impl.enums.pasale.TokenType</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <!-- Provider meta-data -->
 		<properties>

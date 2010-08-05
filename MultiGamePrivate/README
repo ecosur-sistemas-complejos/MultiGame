@@ -54,19 +54,35 @@ the EAR file is being deployed:
 
 MAVEN CONFIGURATION
  
-This prototype requires the following environmental changes be made, before being
-built and deployed.
+ This prototype requires the following environmental changes be made, before being
+ built and deployed.
 
-1.  The environmental property "GLASSFISH_HOME" must be set by the builder to 
-point to the top-level directory of glassfish-v2.1.
-2.  The environmental property "FLEX_SDK" must be set by the builder to point to the top-
-level directory of the FLEX 3.4 SDK.
+ The environmental property "GLASSFISH_HOME" must be set by the builder to
+ point to the top-level directory of glassfish-v2.1.
 
-For example, in BASH, you would do the following:
+ For example, in BASH, you would do the following:
 
-export GLASSFISH_HOME=/home/myuser/glassfish
-export FLEX_SDK=/home/myuser/flex_sdk
-    
+ export GLASSFISH_HOME=/home/myuser/glassfish
+
+
+NON-MAVEN LIBRARIES
+
+  Some libraries in this build a not available on Maven repositories and will need
+  to be deployed locally.  One such library is the Spanish Flex Internationalization
+  files, please follow the internationalization instructions for installation below.
+
+  AS3ISOLIB
+
+  as3isolib will need to be installed locally.  Please download a copy of the swc
+  file from google code:
+
+  http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
+
+  Use the maven install plugin to install the dependency locally:
+
+  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
+
+
  **** IMPORTANT ****
  
  Before deployment, the local Glassfish Derby database must be up and running:

@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.enums.tablon;
+package mx.ecosur.multigame.impl.enums.pasale;
 
 public enum TokenType {
     POTRERO, SILVOPASTORAL, FOREST, WATER_PARTICLE, SOIL_PARTICLE, UNKNOWN;

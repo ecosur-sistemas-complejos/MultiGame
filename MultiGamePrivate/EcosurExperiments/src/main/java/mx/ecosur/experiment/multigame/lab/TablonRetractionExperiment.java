@@ -1,10 +1,10 @@
 package mx.ecosur.experiment.multigame.lab;
 
-import mx.ecosur.multigame.impl.entity.tablon.*;
+import mx.ecosur.multigame.impl.entity.pasale.*;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.DummyMessageSender;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;

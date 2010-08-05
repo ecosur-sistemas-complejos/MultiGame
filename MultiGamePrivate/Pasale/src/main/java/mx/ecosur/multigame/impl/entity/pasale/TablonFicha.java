@@ -8,7 +8,7 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl.entity.tablon;
+package mx.ecosur.multigame.impl.entity.pasale;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,8 +19,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.enums.tablon.*;
-
-import java.util.Set;
 
 @Entity ()
 public class TablonFicha extends GridCell {

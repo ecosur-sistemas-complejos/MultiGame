@@ -2,15 +2,12 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.impl.DummyMessageSender;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
+import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
-
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.

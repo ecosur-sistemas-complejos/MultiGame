@@ -26,7 +26,7 @@
             </activation>
             <modules>
                 <module>Manantiales</module>
-                <module>Tablon</module>
+                <module>Pasale</module>
                 <module>FlexDS</module>
                 <module>FlexClient</module>
                 <module>MultigameWAR</module>
@@ -39,7 +39,7 @@
             <id>deploy</id>
             <modules>
                 <module>Manantiales</module>
-                <module>Tablon</module>
+                <module>Pasale</module>
                 <module>FlexDS</module>
                 <module>FlexClient</module>
                 <module>MultigameWAR</module>
@@ -54,7 +54,7 @@
             <id>experiment</id>
             <modules>
                 <module>Manantiales</module>
-                <module>Tablon</module>
+                <module>Pasale</module>
                 <module>EcosurExperiments</module>
             </modules>
         </profile>  

@@ -1,8 +1,8 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGrid;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.TablonGrid;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
 
@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.awt.*;
 import java.util.Set;
 
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
+import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
 
 /**
  * Created by IntelliJ IDEA.
