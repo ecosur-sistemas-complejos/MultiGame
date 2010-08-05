@@ -407,48 +407,12 @@ public class ManantialesGame extends GridGame {
     }
 
     protected KnowledgeBase findKBase () {
-        KnowledgeBase ret = null;
-
-        try {
-            File file = new File(FNAME);
-            file.deleteOnExit();
-            if (!file.exists()) {
-                file.createNewFile();
-                ObjectOutputStream oos = new ObjectOutputStream (new FileOutputStream(file));
-                ret = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
             "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());        
-                writeKBase(oos, ret);
-            } else {
-                ObjectInputStream ois = new ObjectInputStream (new FileInputStream(FNAME));
-                ret = readKBase(ois);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException (e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException (e);
-        }
-
+        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
         return ret;
-    }
-
-    private void writeKBase (ObjectOutputStream out, KnowledgeBase knowledge)
-            throws IOException
-    {
-
-        /* Load the knowledge base */
-        DroolsObjectOutputStream droolsOut = new DroolsObjectOutputStream(out);
-        droolsOut.writeObject(knowledge);
-        droolsOut.flush();
-        droolsOut.close();
-    }
-
-    private KnowledgeBase readKBase (ObjectInputStream in) throws IOException, ClassNotFoundException  {
-
-        DroolsObjectInputStream droolsIn = new DroolsObjectInputStream(in);
-        return (KnowledgeBase) droolsIn.readObject();
     }
 
     @Override

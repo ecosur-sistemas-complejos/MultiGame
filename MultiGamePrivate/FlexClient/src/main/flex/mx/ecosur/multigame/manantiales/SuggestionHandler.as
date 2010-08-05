@@ -60,16 +60,12 @@ import mx.ecosur.multigame.enum.MoveStatus;
         }
         
         private function animateSuggestion (suggestion:Suggestion):void {
-                /* Multiple suggestions is too confusing to the eye, with only your suggestion arriving, 
-                players can make sense of play (support for multiple suggestions still available )*/
             if (suggestion.move.player.color == _player.color) {
                 var current:Ficha = Ficha (suggestion.move.currentCell);
                 var currentCell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         current.column, current.row));
                         
                 /* Remove current */
-                currentCell.token = null;
-                currentCell.reset();
                 currentCell.token = new UndevelopedToken ();
                 currentCell.token.cell = current;
                 currentCell.reset();
@@ -164,10 +160,11 @@ import mx.ecosur.multigame.enum.MoveStatus;
             /* Animate suggestion */
             if (_currentSuggestions [ move.player ] == null)
                 _currentSuggestions [move.player] = suggestion;
+
             animateSuggestion (suggestion);
+
             if (_timer != null && !_timer.running)
-                _timer.start();
-            
+                _timer.start();            
 
             if (move.player.color == _player.color) {
                 /* Pop up an Accept/Reject dialogue to determine what to do with suggestion */

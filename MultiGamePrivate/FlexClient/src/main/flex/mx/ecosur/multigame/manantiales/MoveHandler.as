@@ -192,7 +192,7 @@ package mx.ecosur.multigame.manantiales {
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
-            // if was a bad year then nothing to do
+            // if was a bad year, then nothing to do
             if(move.badYear){
                 _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd + 1]);
                 return
@@ -200,12 +200,11 @@ package mx.ecosur.multigame.manantiales {
 
             var boardCell:RoundCell;
 
-            //check that destination is free
+            /* Check that destination is free */
             if (move.destinationCell != null) {
                boardCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                     move.destinationCell.column, move.destinationCell.row));
-                if (!boardCell.token is UndevelopedToken ||
-                    boardCell.token is IntensiveToken)
+                if (!boardCell.token is UndevelopedToken || boardCell.token is IntensiveToken)
                 {
                     _controller._gameWindow.moveViewer.selectedMove = move;
                     return;
@@ -220,10 +219,12 @@ package mx.ecosur.multigame.manantiales {
 
             var current:Ficha;
             var currentCell:RoundCell;
+
             if (move.currentCell != null && move.currentCell is Ficha){
                 current = Ficha (move.currentCell);
                 currentCell = RoundCell(_controller._gameWindow.board.getBoardCell(current.column, current.row));
             }
+
             var destination:Ficha
             if (move.destinationCell != null)
                 destination = Ficha(move.destinationCell);
@@ -302,73 +303,75 @@ package mx.ecosur.multigame.manantiales {
                 endPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
                 endSize = Color.getCellIconSize();
             }
+            
+            if (move.player.id != _controller._currentPlayer.id) {
 
-            //create new token
-            var token:ManantialesToken;
+                //create new token
+                var token:ManantialesToken;
+                var existing:ManantialesToken;
 
-            if (destination != null) {
-                switch (destination.type) {
-                    case TokenType.FOREST:
-                       token = new ForestToken();
-                       break;
-                    case TokenType.INTENSIVE:
-                       token = new IntensiveToken();
-                       break;
-                    case TokenType.MODERATE:
-                       token = new ModerateToken();
-                       break;
-                    case TokenType.SILVOPASTORAL:
-                       token = new SilvopastoralToken();
-                       break;
-                    case TokenType.VIVERO:
-                       token = new ViveroToken();
-                       break;
-                    default:
-                       break;
+                if (destination != null) {
+                    switch (destination.type) {
+                        case TokenType.FOREST:
+                           token = new ForestToken();
+                           break;
+                        case TokenType.INTENSIVE:
+                           token = new IntensiveToken();
+                           break;
+                        case TokenType.MODERATE:
+                           token = new ModerateToken();
+                           break;
+                        case TokenType.SILVOPASTORAL:
+                           token = new SilvopastoralToken();
+                           break;
+                        case TokenType.VIVERO:
+                           token = new ViveroToken();
+                           break;
+                        default:
+                           break;
+                    }
+                    token.cell = move.destinationCell;
+                } 
+
+                token.width = endSize;
+                token.height = endSize;
+                _controller._gameWindow.animateLayer.addChild(token);
+
+                if(_controller.puzzleMode){
+                    _controller._tokenHandler.addListeners(token);
                 }
-                token.cell = move.destinationCell;
-            } else if (move.currentCell != null) {
-                token = new UndevelopedToken();
+
+                //define motion animation
+                var apX:AnimateProperty = new AnimateProperty(token);
+                apX.fromValue = startPoint.x;
+                apX.toValue = endPoint.x;
+                apX.duration = 1000;
+                apX.property = "x";
+                var apY:AnimateProperty = new AnimateProperty(token);
+                apY.fromValue = startPoint.y;
+                apY.toValue = endPoint.y;
+                apY.duration = 1000;
+                apY.property = "y";
+                apY.addEventListener(EffectEvent.EFFECT_END, endDoMove);
+
+                //define size animation
+                var apXScale:AnimateProperty = new AnimateProperty(token);
+                apXScale.property = "scaleX";
+                apXScale.fromValue = startSize / endSize;
+                apXScale.toValue = 1;
+                apXScale.duration = 1000;
+                var apYScale:AnimateProperty = new AnimateProperty(token);
+                apYScale.property = "scaleY";
+                apYScale.fromValue = startSize / endSize;
+                apYScale.toValue = 1;
+                apYScale.duration = 1000;
+
+                //start effect
+                apX.play();
+                apY.play();
+                apXScale.play();
+                apYScale.play();
             }
-
-            token.width = endSize;
-            token.height = endSize;
-            _controller._gameWindow.animateLayer.addChild(token);
-
-            if(_controller.puzzleMode){
-                _controller._tokenHandler.addListeners(token);
-            }
-
-            //define motion animation
-            var apX:AnimateProperty = new AnimateProperty(token);
-            apX.fromValue = startPoint.x;
-            apX.toValue = endPoint.x;
-            apX.duration = 1000;
-            apX.property = "x";
-            var apY:AnimateProperty = new AnimateProperty(token);
-            apY.fromValue = startPoint.y;
-            apY.toValue = endPoint.y;
-            apY.duration = 1000;
-            apY.property = "y";
-            apY.addEventListener(EffectEvent.EFFECT_END, endDoMove);
-
-            //define size animation
-            var apXScale:AnimateProperty = new AnimateProperty(token);
-            apXScale.property = "scaleX";
-            apXScale.fromValue = startSize / endSize;
-            apXScale.toValue = 1;
-            apXScale.duration = 1000;
-            var apYScale:AnimateProperty = new AnimateProperty(token);
-            apYScale.property = "scaleY";
-            apYScale.fromValue = startSize / endSize;
-            apYScale.toValue = 1;
-            apYScale.duration = 1000;
-
-            //start effect
-            apX.play();
-            apY.play();
-            apXScale.play();
-            apYScale.play();
         }
 
         private function endDoMove(event:EffectEvent):void{
@@ -398,6 +401,7 @@ package mx.ecosur.multigame.manantiales {
                 }
 
                 boardCell.token = token;
+                boardCell.reset();
                 boardCell.token.blink(1);
                 boardCell.token.play();
 

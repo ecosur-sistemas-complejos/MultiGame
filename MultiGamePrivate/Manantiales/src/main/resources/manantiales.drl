@@ -141,7 +141,7 @@ rule "evaluate-valid-suggestion"
     agenda-group "verify"
     no-loop true
 when
-    $game  : GridGame (state == GameState.PLAY, $grid : grid)
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid)
     $suggestion : PuzzleSuggestion ($suggestor : suggestor, status == SuggestionStatus.UNEVALUATED, $move : move)
     eval ((ManantialesPlayer) $suggestor != (ManantialesPlayer) $move.getPlayer())
 then
@@ -458,7 +458,7 @@ rule "evaluated-suggestion-notify"
     agenda-group "move"
     no-loop true
 when
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY)
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.EVALUATED)
 then
     messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
@@ -503,7 +503,7 @@ rule "execute-remove-move"
     agenda-group "move"
     lock-on-active
 when 
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
         destinationCell == null)
 then
@@ -610,7 +610,7 @@ rule "remove-replaced-token-from-player"
     agenda-group "evaluate"
     no-loop true
 when
-    $game  : GridGame (state == GameState.PLAY)
+    $game  : ManantialesGame (state == GameState.PLAY)
     $move : ManantialesMove (player.turn == true, badYear == false, status == MoveStatus.MOVED, 
         status == MoveStatus.MOVED, currentCell != null, destinationCell != null)
 then
