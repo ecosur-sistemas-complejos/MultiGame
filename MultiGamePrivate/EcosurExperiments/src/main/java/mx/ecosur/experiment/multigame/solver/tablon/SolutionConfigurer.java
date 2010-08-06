@@ -2,7 +2,7 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.impl.DummyMessageSender;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -28,9 +28,9 @@ public class SolutionConfigurer {
     public TablonSolution configure () throws InvalidRegistrationException {
         KnowledgeBase tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/tablon.drl")), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
@@ -43,7 +43,7 @@ public class SolutionConfigurer {
             throw new RuntimeException ("Unable to load rule base!");
         }
 
-        TablonGame game = new TablonGame(18,18, tablon);
+        PasaleGame game = new PasaleGame(18,18, tablon);
         game.setMessageSender(new DummyMessageSender());
 
 		GridRegistrant a, b, c, d;

@@ -272,7 +272,7 @@ import flash.events.MouseEvent;
 
         public function startMove(evt:MouseEvent):void{
 
-            if (!_isMoving && isTurn){
+            if (!_isMoving && isTurn()){
 
                 // initialize drag source
                 var token:ManantialesToken = ManantialesToken(evt.currentTarget);

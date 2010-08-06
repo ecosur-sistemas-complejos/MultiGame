@@ -3,8 +3,8 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 import static mx.ecosur.experiment.multigame.solver.tablon.TablonSolution.Quadrant;
 
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGrid;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
 
 import java.util.HashSet;
 import java.util.Collection;
@@ -19,10 +19,10 @@ import java.awt.*;
  */
 public class SolutionFunctions {
 
-    public static boolean percentageDirectlyConnected (TablonGrid grid, Collection fichas, double percentage) {
-        HashSet<TablonFicha> connected = new HashSet<TablonFicha>();
+    public static boolean percentageDirectlyConnected (PasaleGrid grid, Collection fichas, double percentage) {
+        HashSet<PasaleFicha> connected = new HashSet<PasaleFicha>();
         for (Object obj : fichas) {
-            TablonFicha ficha = (TablonFicha) obj;
+            PasaleFicha ficha = (PasaleFicha) obj;
             if (isConnectedToWater (ficha, grid)) {
                 connected.add(ficha);
             }
@@ -34,10 +34,10 @@ public class SolutionFunctions {
 
     public static boolean percentagePerQuadrant (Dimension dimensions, Collection fichas, double percentage)
     {
-        HashSet<TablonFicha> tl = new HashSet<TablonFicha>(), tr = new HashSet<TablonFicha>(), 
-                bl = new HashSet<TablonFicha>(), br = new HashSet<TablonFicha>();
+        HashSet<PasaleFicha> tl = new HashSet<PasaleFicha>(), tr = new HashSet<PasaleFicha>(),
+                bl = new HashSet<PasaleFicha>(), br = new HashSet<PasaleFicha>();
         for (Object obj : fichas) {
-            TablonFicha ficha = (TablonFicha) obj;
+            PasaleFicha ficha = (PasaleFicha) obj;
             Point point = new Point (ficha.getRow(),ficha.getColumn());
             if (Quadrant.TOPLEFT.contains(dimensions, point)) {
                 tl.add(ficha);
@@ -55,12 +55,12 @@ public class SolutionFunctions {
         return false;
     }
 
-    public static boolean percentageDirectlyConnectedPerQuadrant (TablonGrid grid, Dimension dimensions,
-          Collection<TablonFicha> fichas, float percentage)
+    public static boolean percentageDirectlyConnectedPerQuadrant (PasaleGrid grid, Dimension dimensions,
+          Collection<PasaleFicha> fichas, float percentage)
     {
-        HashSet<TablonFicha> tl = new HashSet<TablonFicha>(), tr = new HashSet<TablonFicha>(),
-                bl = new HashSet<TablonFicha>(), br = new HashSet<TablonFicha>();
-        for (TablonFicha ficha : fichas) {
+        HashSet<PasaleFicha> tl = new HashSet<PasaleFicha>(), tr = new HashSet<PasaleFicha>(),
+                bl = new HashSet<PasaleFicha>(), br = new HashSet<PasaleFicha>();
+        for (PasaleFicha ficha : fichas) {
             Point point = new Point (ficha.getRow(),ficha.getColumn());
             if (Quadrant.TOPLEFT.contains(dimensions, point)) {
                 tl.add(ficha);

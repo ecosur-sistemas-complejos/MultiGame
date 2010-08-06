@@ -11,17 +11,17 @@
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
+import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.*;
 import org.junit.Before;
 import org.junit.Test;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.entity.tablon.TablonPlayer;
-import mx.ecosur.multigame.impl.entity.tablon.TablonMove;
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridCell;
@@ -31,7 +31,6 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import javax.jms.Message;
 import javax.jms.JMSException;
-import java.lang.annotation.ElementType;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +47,9 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
     static {
         tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/tablon.drl")), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
@@ -64,9 +63,9 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
         }
     }
 
-    private TablonGame game;
+    private PasaleGame game;
 
-    private TablonPlayer alice, bob, charlie, denise;
+    private PasalePlayer alice, bob, charlie, denise;
 
     @Before
 	public void setUp() throws Exception {
@@ -79,7 +78,7 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-		game = new TablonGame(26, 26, tablon);        
+		game = new PasaleGame(26, 26, tablon);
 
 		GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
@@ -87,20 +86,20 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 		c = new GridRegistrant ("charlie");
 		d = new GridRegistrant ("denise");
 
-		alice = (TablonPlayer) game.registerPlayer(a);
-		bob = (TablonPlayer) game.registerPlayer(b);
-		charlie = (TablonPlayer) game.registerPlayer(c);
-		denise = (TablonPlayer) game.registerPlayer(d);
+		alice = (PasalePlayer) game.registerPlayer(a);
+		bob = (PasalePlayer) game.registerPlayer(b);
+		charlie = (PasalePlayer) game.registerPlayer(c);
+		denise = (PasalePlayer) game.registerPlayer(d);
 	}
 
     @Test
 	public void testInitialize () {
 		assertTrue (game.getGrid().getCells().size() != 0);
 		Collection<GridPlayer> players = game.getPlayers();
-		TablonPlayer p = null;
+		PasalePlayer p = null;
 		for (GridPlayer player : players) {
 			if (player.getRegistrant().getName().equals("alice")) {
-				p = (TablonPlayer) player;
+				p = (PasalePlayer) player;
 				break;
 			}
 		}
@@ -112,8 +111,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 
 @Test
 	public void testExecuteMove () throws InvalidMoveException {
-		TablonFicha token = new TablonFicha(2, 10, alice.getColor(), TokenType.POTRERO);		
-		TablonMove move = new TablonMove(alice, token);
+		PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
+		PasaleMove move = new PasaleMove(alice, token);
 		game.move (move);
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
 		assertEquals (token, game.getGrid().getLocation(token));
@@ -123,8 +122,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
     @SuppressWarnings (value= "unchecked")
     @Test
     public void testSoilConsequence () throws InvalidMoveException, JMSException {
-        TablonFicha token = new TablonFicha(2, 10, alice.getColor(), TokenType.POTRERO);
-		TablonMove move = new TablonMove(alice, token);
+        PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
+		PasaleMove move = new PasaleMove(alice, token);
 		game.move (move);
 
         ArrayList<Message> filter = new ArrayList<Message>();
@@ -138,8 +137,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
         
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (4,10, bob.getColor(), TokenType.POTRERO);
-        move = new TablonMove(bob, token);
+        token = new PasaleFicha(4,10, bob.getColor(), TokenType.POTRERO);
+        move = new PasaleMove(bob, token);
 		game.move (move);
 
         filter = new ArrayList<Message>();
@@ -154,8 +153,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 
 		assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (4,8, charlie.getColor(), TokenType.POTRERO);
-        move = new TablonMove(charlie, token);
+        token = new PasaleFicha(4,8, charlie.getColor(), TokenType.POTRERO);
+        move = new PasaleMove(charlie, token);
 		game.move (move);
 
         filter = new ArrayList<Message>();
@@ -170,8 +169,8 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
-        token = new TablonFicha (2,8, denise.getColor(), TokenType.POTRERO);
-        move = new TablonMove(denise, token);
+        token = new PasaleFicha(2,8, denise.getColor(), TokenType.POTRERO);
+        move = new PasaleMove(denise, token);
 		game.move (move);
 
         filter = new ArrayList<Message>();
@@ -188,7 +187,7 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
 
         /* Check for consequences *//*
         /* We should have lost the soil particle at 3,3 */
-        GridCell cell = game.getGrid().getLocation(new TablonFicha (3,9, Color.UNKNOWN, TokenType.SOIL_PARTICLE)); 
+        GridCell cell = game.getGrid().getLocation(new PasaleFicha(3,9, Color.UNKNOWN, TokenType.SOIL_PARTICLE));
         assertNull (game.getGrid().toString(), cell);
     }
 }

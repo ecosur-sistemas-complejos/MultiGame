@@ -15,9 +15,9 @@ import java.util.*;
  */
 public class RuleFunctions {
 
-    public static boolean isUnsupported (int supportSize, TablonFicha center, SortedSet<TablonFicha> set, TokenType type) {
-        HashSet<TablonFicha> test = new HashSet<TablonFicha>();
-        for (TablonFicha ficha : set) {
+    public static boolean isUnsupported (int supportSize, PasaleFicha center, SortedSet<PasaleFicha> set, TokenType type) {
+        HashSet<PasaleFicha> test = new HashSet<PasaleFicha>();
+        for (PasaleFicha ficha : set) {
             if (ficha == null)
                 continue;
             if (ficha.equals(center))
@@ -31,23 +31,23 @@ public class RuleFunctions {
         return test.size() < supportSize;
     }
 
-    public static TablonPlayer incrementTurn (TablonGame game, TablonMove move) {
-        TablonPlayer player = (TablonPlayer) move.getPlayer();
+    public static PasalePlayer incrementTurn (PasaleGame game, PasaleMove move) {
+        PasalePlayer player = (PasalePlayer) move.getPlayer();
         player.setTurn(false);
 
         List<GridPlayer> players = game.getPlayers();
         int playerNumber = players.indexOf(player);
-        TablonPlayer nextPlayer = null;
+        PasalePlayer nextPlayer = null;
         if (playerNumber == players.size() - 1) {
-            nextPlayer = (TablonPlayer) players.get(0);
+            nextPlayer = (PasalePlayer) players.get(0);
         } else {
-            nextPlayer = (TablonPlayer) players.get(playerNumber + 1);
+            nextPlayer = (PasalePlayer) players.get(playerNumber + 1);
         }
         nextPlayer.setTurn (true);
         return nextPlayer;
     }
 
-    public static boolean isBorder (TablonFicha ficha, int [] edges) {
+    public static boolean isBorder (PasaleFicha ficha, int [] edges) {
         boolean ret = false;
         for (int i = 0; i < edges.length; i++) {
             if (ficha.getRow() == edges [ i ] || ficha.getColumn() == edges [ i ]) {
@@ -59,38 +59,38 @@ public class RuleFunctions {
         return ret;        
     }
 
-    public static ArrayList<MutationEvent> findImplications (TablonGrid grid, Set implications) {
+    public static ArrayList<MutationEvent> findImplications (PasaleGrid grid, Set implications) {
         ArrayList<MutationEvent> ret = new ArrayList<MutationEvent>();
         for (Object obj : implications) {
-            TablonFicha ficha = (TablonFicha) obj;
+            PasaleFicha ficha = (PasaleFicha) obj;
             MutationEvent event = new MutationEvent (ficha);
-            SortedSet<TablonFicha> square = grid.getSquare(ficha);
+            SortedSet<PasaleFicha> square = grid.getSquare(ficha);
             event.setSquare (square);
-            SortedSet<TablonFicha> octo = grid.getOctogon(ficha);
+            SortedSet<PasaleFicha> octo = grid.getOctogon(ficha);
             event.setOctogon (octo);
-            SortedSet<TablonFicha> cross = grid.getCross(ficha);
+            SortedSet<PasaleFicha> cross = grid.getCross(ficha);
             event.setCross (cross);
             ret.add(event);
         }
         return ret;
     }
 
-    public static int[] dimension (TablonGrid grid) {
+    public static int[] dimension (PasaleGrid grid) {
         double size = Math.sqrt(grid.getCells().size());
         return new int [] { ((int) size / 2), ((int) size / 2) };
     }
 
     /* Water Path functions */
-    public static boolean hasPathToWater (TablonFicha ficha, TablonGrid grid) {
-        Stack<TablonFicha> path = getPathToWater (new Stack<TablonFicha>(), ficha, grid);
+    public static boolean hasPathToWater (PasaleFicha ficha, PasaleGrid grid) {
+        Stack<PasaleFicha> path = getPathToWater (new Stack<PasaleFicha>(), ficha, grid);
         return (path.size() > 0);
     }
 
-    public static Set<Stack<TablonFicha>> getAllPathsToWater(TablonFicha ficha, TablonGrid grid) {
-        HashSet<Stack<TablonFicha>> ret = new HashSet<Stack<TablonFicha>>();
+    public static Set<Stack<PasaleFicha>> getAllPathsToWater(PasaleFicha ficha, PasaleGrid grid) {
+        HashSet<Stack<PasaleFicha>> ret = new HashSet<Stack<PasaleFicha>>();
         /* Get the original cross */
-        for (TablonFicha test : grid.getCross(ficha)) {
-             Stack<TablonFicha> path = getPathToWater (new Stack<TablonFicha>(), ficha, grid);
+        for (PasaleFicha test : grid.getCross(ficha)) {
+             Stack<PasaleFicha> path = getPathToWater (new Stack<PasaleFicha>(), ficha, grid);
             if (path.size() > 0)
                 ret.add(path);
         }
@@ -104,14 +104,14 @@ public class RuleFunctions {
         If there is no water_particle, a search is made to see if there is
         another
      */
-    private static Stack<TablonFicha> getPathToWater (Stack<TablonFicha> visited, TablonFicha ficha, TablonGrid grid)
+    private static Stack<PasaleFicha> getPathToWater (Stack<PasaleFicha> visited, PasaleFicha ficha, PasaleGrid grid)
     {
         visited.push(ficha);
         if (isConnectedToWater (ficha, grid)) {
            return visited;
         } else {
-            Set<TablonFicha> cross = grid.getCross(ficha);
-            for (TablonFicha crossFicha  : cross) {
+            Set<PasaleFicha> cross = grid.getCross(ficha);
+            for (PasaleFicha crossFicha  : cross) {
                 if ( (crossFicha.getType().equals(TokenType.POTRERO)) && 
                         !visited.contains(crossFicha))
                 {
@@ -125,14 +125,14 @@ public class RuleFunctions {
     }    
 
 
-    public static boolean isConnectedToWater (TablonFicha ficha, TablonGrid grid) {
+    public static boolean isConnectedToWater (PasaleFicha ficha, PasaleGrid grid) {
         boolean ret = false;
-        Set<TablonFicha> square = grid.getSquare(ficha);
-        Set<TablonFicha> cross = grid.getCross(ficha);
+        Set<PasaleFicha> square = grid.getSquare(ficha);
+        Set<PasaleFicha> cross = grid.getCross(ficha);
         if (isDirectlyConnectedToWater (ficha, square)) {
             ret = true;
         } else {
-            for (TablonFicha searchFicha : cross) {
+            for (PasaleFicha searchFicha : cross) {
                 if (isDirectlyConnectedToWater (searchFicha, grid.getSquare(searchFicha))) {
                     ret = true;
                     break;
@@ -143,9 +143,9 @@ public class RuleFunctions {
         return ret;
     }
 
-    public static boolean isDirectlyConnectedToWater (TablonFicha ficha, Set<TablonFicha> square) {
+    public static boolean isDirectlyConnectedToWater (PasaleFicha ficha, Set<PasaleFicha> square) {
         boolean ret = false;
-        for (TablonFicha searchFicha : square) {
+        for (PasaleFicha searchFicha : square) {
             if (searchFicha.getType().equals(TokenType.WATER_PARTICLE)) {
                 ret = true;
                 break;

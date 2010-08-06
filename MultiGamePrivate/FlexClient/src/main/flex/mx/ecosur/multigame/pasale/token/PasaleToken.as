@@ -1,13 +1,13 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
     import mx.controls.Image;
     import mx.controls.Label;
     import mx.core.IFlexDisplayObject;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.entity.Cell;
-    import mx.ecosur.multigame.tablon.entity.Ficha;
+    import mx.ecosur.multigame.pasale.entity.Ficha;
 
-    public class TablonToken extends Token
+    public class PasaleToken extends Token
     {
         protected var _label:String;
         protected var _tooltip:String;
@@ -18,7 +18,7 @@ package mx.ecosur.multigame.tablon.token
         protected var _ficha:Ficha;
         protected var _type:String;
 
-        public function TablonToken()
+        public function PasaleToken()
         {
             super();
         }
@@ -118,7 +118,7 @@ package mx.ecosur.multigame.tablon.token
          * @return the drag image
          */
         override public function createDragImage():IFlexDisplayObject{
-            var token:TablonToken;
+            var token:PasaleToken;
             switch (_type) {
                 default:
                     break;

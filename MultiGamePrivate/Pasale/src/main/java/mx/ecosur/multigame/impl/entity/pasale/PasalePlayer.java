@@ -17,17 +17,17 @@ import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 
 @Entity
-public class TablonPlayer extends GridPlayer {
+public class PasalePlayer extends GridPlayer {
 	
 	private static final long serialVersionUID = 2815240265995571202L;
 	
 	private int points, cheatYears;
 	
-	public TablonPlayer() {
+	public PasalePlayer() {
 		super();
 	}
 	
-	public TablonPlayer(GridRegistrant player, Color favoriteColor) {
+	public PasalePlayer(GridRegistrant player, Color favoriteColor) {
 		super (player, favoriteColor);
 		points = 0;
 	}

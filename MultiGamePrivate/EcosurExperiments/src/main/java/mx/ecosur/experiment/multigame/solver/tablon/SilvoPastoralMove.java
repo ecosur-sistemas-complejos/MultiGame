@@ -1,12 +1,12 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
-import mx.ecosur.multigame.impl.entity.pasale.TablonMove;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
@@ -21,11 +21,11 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
  */
 public class SilvoPastoralMove implements Move {
 
-    TablonFicha ficha;
+    PasaleFicha ficha;
 
-    TablonGame game;
+    PasaleGame game;
 
-    public SilvoPastoralMove (TablonGame game, TablonFicha ficha) {
+    public SilvoPastoralMove (PasaleGame game, PasaleFicha ficha) {
         this.game = game;
         this.ficha = ficha;
     }
@@ -58,8 +58,8 @@ public class SilvoPastoralMove implements Move {
             /* must be a player with a turn */
             assert (current != null);
             int starting = game.getGrid().getCells().size();
-            TablonMove move = new TablonMove (current, ficha);
-            move = (TablonMove) game.move(move);
+            PasaleMove move = new PasaleMove(current, ficha);
+            move = (PasaleMove) game.move(move);
             int ending = game.getGrid().getCells().size();
 
             /* To be valid, the move must have been evaluated and no retractions occurred */
@@ -81,8 +81,8 @@ public class SilvoPastoralMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            TablonFicha undo = ficha.clone();
-            ret = new UndoMove ((TablonGame) game.clone(), undo, ficha);
+            PasaleFicha undo = ficha.clone();
+            ret = new UndoMove ((PasaleGame) game.clone(), undo, ficha);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -97,7 +97,7 @@ public class SilvoPastoralMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {      
-        FactHandle handle = workingMemory.getFactHandle((TablonFicha) game.getGrid().getLocation(ficha));
+        FactHandle handle = workingMemory.getFactHandle((PasaleFicha) game.getGrid().getLocation(ficha));
         workingMemory.modifyRetract(handle);
         ficha.setType(TokenType.SILVOPASTORAL);
         workingMemory.modifyInsert(handle,ficha);

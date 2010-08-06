@@ -18,7 +18,7 @@ package mx.ecosur.multigame.component {
      */
     public class SmoothImage extends Image {
 
-        var _completed:Boolean = false;
+        private var _completed:Boolean = false;
 
         public function SmoothImage():void {
             super();

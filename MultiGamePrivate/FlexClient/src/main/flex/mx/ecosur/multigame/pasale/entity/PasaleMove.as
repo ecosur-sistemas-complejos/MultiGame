@@ -5,13 +5,13 @@ package mx.ecosur.multigame.oculto.entity
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.oculto.OcultoMove")]
-	public class TablonMove extends Move
+	public class PasaleMove extends Move
 	{
 		private var _badYear:Boolean;
 		
 		private var _mode:String;
 		
-		public function TablonMove()
+		public function PasaleMove()
 		{
 			super();
 			_badYear = false;

@@ -14,7 +14,7 @@ import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.CellComparator;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import javax.persistence.Transient;
 import java.util.TreeSet;
@@ -27,7 +27,7 @@ import java.util.SortedSet;
  * Time: 11:35:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TablonGrid extends GameGrid {
+public class PasaleGrid extends GameGrid {
     /**
      *
      * Gets the sqaure of cells centered on this ficha. Note these are the 4 cells that
@@ -39,35 +39,35 @@ public class TablonGrid extends GameGrid {
      * @return
      */
     @Transient
-    public SortedSet<TablonFicha> getSquare (TablonFicha ficha) {
-        SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
+    public SortedSet<PasaleFicha> getSquare (PasaleFicha ficha) {
+        SortedSet<PasaleFicha> ret = new TreeSet<PasaleFicha>(new CellComparator());
 
 
         // x - 1, y -1
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 1, ficha.getRow() - 1, Color.UNKNOWN)));
         }
 
         // x + 1, y - 1
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 1, ficha.getRow() + 1, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 1, ficha.getRow() + 1, Color.UNKNOWN)));
         }
 
         // x - 1, y +1
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() - 1, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() - 1, Color.UNKNOWN)));
         }
 
         // x + 1, y + 1
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() + 1, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 1, ficha.getRow() + 1, Color.UNKNOWN)));
         }
 
@@ -84,54 +84,54 @@ public class TablonGrid extends GameGrid {
      */
 
     @Transient
-    public SortedSet<TablonFicha> getOctogon (TablonFicha ficha) {
-        SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
+    public SortedSet<PasaleFicha> getOctogon (PasaleFicha ficha) {
+        SortedSet<PasaleFicha> ret = new TreeSet<PasaleFicha>(new CellComparator());
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow() - 2, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow() - 2, Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() -2, Color.UNKNOWN)) != null) {
-             ret.add ((TablonFicha) this.getLocation (new GridCell (
+             ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() - 2, Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow() - 2, Color.UNKNOWN)) != null) {
-            ret.add((TablonFicha) this.getLocation (new GridCell (
+            ret.add((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow() - 2, Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)) != null) {
-            ret.add((TablonFicha) this.getLocation (new GridCell (
+            ret.add((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow() + 2, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow() + 2, Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)));
         }
 
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow() + 2, Color.UNKNOWN)) != null) {
-            ret.add((TablonFicha) this.getLocation (new GridCell (
+            ret.add((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow() + 2, Color.UNKNOWN)));
         }
         
@@ -140,34 +140,34 @@ public class TablonGrid extends GameGrid {
     }
 
     @Transient
-    public SortedSet<TablonFicha> getCross (TablonFicha ficha) {
-        SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
+    public SortedSet<PasaleFicha> getCross (PasaleFicha ficha) {
+        SortedSet<PasaleFicha> ret = new TreeSet<PasaleFicha>(new CellComparator());
 
         /* y, x -2 */
         if ( this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() -2, Color.UNKNOWN)) != null) {
-             ret.add ((TablonFicha) this.getLocation (new GridCell (
+             ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() - 2, Color.UNKNOWN)));
         }
 
         /* y, x + 2 */
         if ( this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn(), ficha.getRow() + 2, Color.UNKNOWN)));
         }
 
         /* y + 2, x */
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)) != null) {
-            ret.add ((TablonFicha) this.getLocation (new GridCell (
+            ret.add ((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() + 2, ficha.getRow(), Color.UNKNOWN)));
         }
 
         /* y - 2, x */
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)) != null) {
-            ret.add((TablonFicha) this.getLocation (new GridCell (
+            ret.add((PasaleFicha) this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)));
         }
 
@@ -175,10 +175,10 @@ public class TablonGrid extends GameGrid {
     }
 
     @Transient
-    public SortedSet<TablonFicha> getWaterTokens () {
-        SortedSet<TablonFicha> ret = new TreeSet<TablonFicha>(new CellComparator());
+    public SortedSet<PasaleFicha> getWaterTokens () {
+        SortedSet<PasaleFicha> ret = new TreeSet<PasaleFicha>(new CellComparator());
         for (GridCell cell : this.getCells()) {
-            TablonFicha ficha = (TablonFicha) cell;
+            PasaleFicha ficha = (PasaleFicha) cell;
             if (ficha.getType().equals(TokenType.WATER_PARTICLE))
                 ret.add(ficha);
             else
@@ -191,9 +191,9 @@ public class TablonGrid extends GameGrid {
     @Override
     public Object clone() throws CloneNotSupportedException {
         GameGrid grid = (GameGrid) super.clone();
-        TablonGrid ret = new TablonGrid();
+        PasaleGrid ret = new PasaleGrid();
         for (GridCell cell : grid.getCells()) {
-            ret.updateCell((TablonFicha) cell);
+            ret.updateCell((PasaleFicha) cell);
         }
         return ret;        
     }

@@ -1,10 +1,10 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	import mx.controls.Image;
 	import mx.ecosur.multigame.enum.Color;
 	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
-	public class ForestToken extends TablonToken
+	public class ForestToken extends PasaleToken
 	{
 		public function ForestToken () {
 			super ();

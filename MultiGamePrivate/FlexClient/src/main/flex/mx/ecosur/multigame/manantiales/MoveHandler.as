@@ -36,7 +36,7 @@ package mx.ecosur.multigame.manantiales {
             _controller = controller;
         }
 
-        function dragEnterBoardCell(evt:DragEvent):void{
+        public function dragEnterBoardCell(evt:DragEvent):void{
 
          if (evt.dragSource.hasFormat("token")){
              var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
@@ -81,7 +81,7 @@ package mx.ecosur.multigame.manantiales {
         * Animates tokens on or off the board to transform the current
         * board into a snapshot of the desired move.
         */
-        function gotoMove(event:DynamicEvent):void{
+        public function gotoMove(event:DynamicEvent):void{
 
          var move:ManantialesMove = ManantialesMove(event.move);
 
@@ -104,7 +104,7 @@ package mx.ecosur.multigame.manantiales {
          }
         }
 
-        function addMove(move:ManantialesMove):void {
+        public function addMove(move:ManantialesMove):void {
             if (move.mode == _controller._game.mode && !_controller._isTurn)
                 _controller._gameWindow.currentState = "";
 
@@ -199,6 +199,7 @@ package mx.ecosur.multigame.manantiales {
             }
 
             var boardCell:RoundCell;
+            var token:ManantialesToken;
 
             /* Check that destination is free */
             if (move.destinationCell != null) {
@@ -212,7 +213,7 @@ package mx.ecosur.multigame.manantiales {
             } else {
                 boardCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                     move.currentCell.column, move.currentCell.row));
-                var token:ManantialesToken = new UndevelopedToken();
+                token = new UndevelopedToken();
                 token.cell = move.currentCell;
                 boardCell.reset();
             }
@@ -305,9 +306,6 @@ package mx.ecosur.multigame.manantiales {
             }
             
             if (move.player.id != _controller._currentPlayer.id) {
-
-                //create new token
-                var token:ManantialesToken;
                 var existing:ManantialesToken;
 
                 if (destination != null) {
@@ -414,9 +412,10 @@ package mx.ecosur.multigame.manantiales {
         }
 
         /* Function for handling invalid move processing */
-        function invalidMove(move:ManantialesMove):void {
+        public function invalidMove(move:ManantialesMove):void {
            var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(
                    move.destinationCell.column, move.destinationCell.row);
+            var ficha:Ficha;
 
             // if was a bad year then nothing to undo
             if(move.badYear){
@@ -426,7 +425,7 @@ package mx.ecosur.multigame.manantiales {
 
             /* Restore previous token */
             if (move.currentCell != null) {
-                var ficha:Ficha = Ficha (move.currentCell);
+                ficha = Ficha (move.currentCell);
                 switch (ficha.type) {
                     case TokenType.INTENSIVE:
                         boardCell.token = new IntensiveToken();
@@ -459,7 +458,7 @@ package mx.ecosur.multigame.manantiales {
 
             /* Increment the INVALID move's token store */
             if (move.destinationCell != null) {
-                var ficha:Ficha = Ficha(move.destinationCell);
+                ficha = Ficha(move.destinationCell);
                 switch (ficha.type) {
                     case TokenType.INTENSIVE:
                         _controller._gameWindow.intensiveStore.addToken();
@@ -487,7 +486,7 @@ package mx.ecosur.multigame.manantiales {
             boardCell.reset();
         }
 
-        function undoMove(move:ManantialesMove):void{
+        protected function undoMove(move:ManantialesMove):void{
             var boardCell:BoardCell;
             var startPoint:Point;
             var startSize:Number

@@ -2,22 +2,21 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">  
     <mx:Script>
         <![CDATA[
+        import mx.ecosur.multigame.oculto.entity.PasaleMove;
         import mx.events.DynamicEvent;
-        import mx.controls.Alert;
-        import mx.ecosur.multigame.oculto.entity.OcultoMove;
 
         public static const GOTO_MOVE_EVENT:String = "gotoMove";
 
         [Event (name = GOTO_MOVE_EVENT, type = "mx.events.DynamicEvent")]
 
-        private var _gameMove:TablonMove;
+        private var _gameMove:PasaleMove;
 
-        public function set gameMove(gameMove:TablonMove):void {
+        public function set gameMove(gameMove:PasaleMove):void {
             _gameMove = gameMove;
             txtPremiums.text = "0";
         }
 
-        public function get gameMove():TablonMove {
+        public function get gameMove():PasaleMove {
             return _gameMove;
         }
 

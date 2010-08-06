@@ -18,20 +18,20 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.enums.tablon.*;
+import mx.ecosur.multigame.impl.enums.pasale.*;
 
 @Entity ()
-public class TablonFicha extends GridCell {
+public class PasaleFicha extends GridCell {
 
 	private static final long serialVersionUID = -8048552960014554186L;
 	private TokenType type;
     private Color[] passThroughColors;
 	
-	public TablonFicha () {
+	public PasaleFicha() {
 		super(); 
 	}
 
-	public TablonFicha (int column, int row, Color color, TokenType type) {
+	public PasaleFicha(int column, int row, Color color, TokenType type) {
 		super(column, row, color);
 		this.type = type;
         passThroughColors = Color.values();
@@ -61,8 +61,8 @@ public class TablonFicha extends GridCell {
 	@Override
 	public boolean equals(Object obj) {
 		boolean ret = false;
-		if (obj instanceof TablonFicha) {
-			TablonFicha comp = (TablonFicha) obj;
+		if (obj instanceof PasaleFicha) {
+			PasaleFicha comp = (PasaleFicha) obj;
 			ret = (comp.type.equals(this.type) &&
 					comp.getRow() == getRow() &&
 					comp.getColumn() == getColumn() &&
@@ -73,9 +73,9 @@ public class TablonFicha extends GridCell {
 	}
 
     @Override
-    public TablonFicha clone() throws CloneNotSupportedException {
+    public PasaleFicha clone() throws CloneNotSupportedException {
         GridCell clone = super.clone();
-        TablonFicha ret = new TablonFicha ();
+        PasaleFicha ret = new PasaleFicha();
         ret.setRow(clone.getRow());
         ret.setColumn(clone.getColumn());
         ret.setColor(clone.getColor());

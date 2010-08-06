@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	import mx.ecosur.multigame.component.Token;
 	import mx.ecosur.multigame.entity.Cell;

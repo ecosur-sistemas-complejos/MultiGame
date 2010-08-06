@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	import flash.display.Shape;
 	import flash.events.MouseEvent;
@@ -10,7 +10,7 @@ package mx.ecosur.multigame.tablon.token
 	import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.events.DragEvent;
 
-	public class TablonTokenStore extends TokenStore
+	public class PasaleTokenStore extends TokenStore
 	{
 		protected static const INITIAL_N_TOKENS:int = 12;
 

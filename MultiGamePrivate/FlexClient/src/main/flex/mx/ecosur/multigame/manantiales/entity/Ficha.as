@@ -4,8 +4,9 @@ package mx.ecosur.multigame.manantiales.entity
 {
     import mx.controls.PopUpButton;
     import mx.ecosur.multigame.entity.Cell;
+import mx.ecosur.multigame.manantiales.enum.TokenType;
 
-    [RemoteClass (alias=
+[RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.Ficha")]
     public class Ficha extends Cell
     {
@@ -22,6 +23,32 @@ package mx.ecosur.multigame.manantiales.entity
 
         public function set type (type:String):void {
             this._type = type;
+        }
+
+        public function get typeName():String {
+            var ret:String;
+
+            switch (_type) {
+                case TokenType.FOREST:
+                    ret = resourceManager.getString("StringsBundle", "manantiales.token.forest");
+                    break;
+                case TokenType.MODERATE:
+                    ret = resourceManager.getString("StringsBundle", "manantiales.token.moderate");
+                    break;
+                case TokenType.INTENSIVE:
+                    ret = resourceManager.getString("StringsBundle", "manantiales.token.intensive");
+                    break;
+                case TokenType.VIVERO:
+                    ret = resourceManager.getString("StringsBundle", "manantiales.token.vivero");
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    ret = resourceManager.getString("StringsBundle", "manantiales.token.silvopastoral");
+                    break;
+                default:
+                    ret = "UNKNOWN!";
+            }
+
+            return ret;
         }
 
         /**

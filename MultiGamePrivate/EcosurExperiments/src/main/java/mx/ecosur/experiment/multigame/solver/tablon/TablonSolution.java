@@ -1,7 +1,7 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGrid;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import org.drools.solver.core.solution.Solution;
 import org.drools.solver.core.score.Score;
@@ -11,7 +11,7 @@ import java.util.LinkedHashSet;
 import java.awt.*;
 import java.util.Set;
 
-import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,9 +24,9 @@ public class TablonSolution implements Solution {
 
     private Score score;
 
-    private Set<TablonFicha> workingFacts;
+    private Set<PasaleFicha> workingFacts;
 
-    private TablonGame game;
+    private PasaleGame game;
 
     public enum Quadrant {
         TOPLEFT, TOPRIGHT, BOTTOMLEFT, BOTTOMRIGHT;
@@ -62,7 +62,7 @@ public class TablonSolution implements Solution {
 
     public TablonSolution () {
         super();
-        workingFacts = new LinkedHashSet<TablonFicha>();
+        workingFacts = new LinkedHashSet<PasaleFicha>();
     }
 
     /**
@@ -70,11 +70,11 @@ public class TablonSolution implements Solution {
      *
      * @param game
      */
-    public TablonSolution (TablonGame game) {
+    public TablonSolution (PasaleGame game) {
         this();
         for (Object obj : game.getFacts()) {
-            if (obj instanceof TablonFicha) {
-                workingFacts.add((TablonFicha) obj);
+            if (obj instanceof PasaleFicha) {
+                workingFacts.add((PasaleFicha) obj);
             }
         }
         this.game = game;
@@ -108,8 +108,8 @@ public class TablonSolution implements Solution {
     public Collection<? extends Object> getFacts() {
         if (workingFacts.size() == 0) {
             for (Object obj : game.getFacts()) {
-                if (obj instanceof TablonFicha) {
-                    workingFacts.add((TablonFicha) obj);
+                if (obj instanceof PasaleFicha) {
+                    workingFacts.add((PasaleFicha) obj);
                 }
             }
         }
@@ -126,7 +126,7 @@ public class TablonSolution implements Solution {
      * @return never null, a clone of which the properties that change during solving are deep cloned
      */
     public Solution cloneSolution() {
-        TablonSolution ret = new TablonSolution ((TablonGame) getGame());  
+        TablonSolution ret = new TablonSolution ((PasaleGame) getGame());
         ret.setScore (score);
         return ret;
     }
@@ -136,7 +136,7 @@ public class TablonSolution implements Solution {
         ret.append (summary(getGame()) + "\n");
         for (int y = 0; y < game.getDimensions().getWidth(); y++) {
             for (int x = 0; x < game.getDimensions().getHeight(); x++) {
-                TablonFicha ficha = findCell (x,y);
+                PasaleFicha ficha = findCell (x,y);
                 if (ficha != null) {
                     switch (ficha.getType()) {
                         case SOIL_PARTICLE:
@@ -171,28 +171,28 @@ public class TablonSolution implements Solution {
         return ret.toString();
     }
 
-    public TablonGame getGame () {
+    public PasaleGame getGame () {
         game.setGrid(getGrid());
         return game;
     }
 
-    public void setGame(TablonGame game) {
+    public void setGame(PasaleGame game) {
         this.game = game;
         game.setGrid(getGrid());
     }
         
-    private TablonGrid getGrid() {
-        TablonGrid ret = new TablonGrid ();
-        for (TablonFicha ficha : this.workingFacts) {
+    private PasaleGrid getGrid() {
+        PasaleGrid ret = new PasaleGrid();
+        for (PasaleFicha ficha : this.workingFacts) {
             ret.updateCell(ficha);
         }
         return ret;
     }
 
 
-    private TablonFicha findCell (int y, int x) {
-        TablonFicha ret = null;
-        for (TablonFicha ficha : this.workingFacts) {
+    private PasaleFicha findCell (int y, int x) {
+        PasaleFicha ret = null;
+        for (PasaleFicha ficha : this.workingFacts) {
             if (ficha.getRow() == x && ficha.getColumn() == y) {
                 ret = ficha;
                 break;
@@ -202,7 +202,7 @@ public class TablonSolution implements Solution {
         return ret;
     }
 
-    private String summary (TablonGame game) {
+    private String summary (PasaleGame game) {
         int size = workingFacts.size();
 
         /* count forest */
@@ -224,7 +224,7 @@ public class TablonSolution implements Solution {
 
     private int count (TokenType type) {
         int count = 0;
-        for (TablonFicha ficha : workingFacts) {
+        for (PasaleFicha ficha : workingFacts) {
             if (ficha.getType().equals(type))
                 count++;
         }

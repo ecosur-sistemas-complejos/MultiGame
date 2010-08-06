@@ -1,12 +1,12 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.solver.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,14 +18,14 @@ import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
 public class UndoMove implements Move {
 
     /* The move to do */
-    private TablonFicha previous;
+    private PasaleFicha previous;
 
     /* The move to be undone */
-    private TablonFicha current;
+    private PasaleFicha current;
 
-    private TablonGame game;
+    private PasaleGame game;
 
-    public UndoMove (TablonGame game, TablonFicha previousFicha, TablonFicha currentFicha) {
+    public UndoMove (PasaleGame game, PasaleFicha previousFicha, PasaleFicha currentFicha) {
         this.game = game;
         this.previous = previousFicha;
         this.current = currentFicha;
@@ -66,7 +66,7 @@ public class UndoMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            ret = new UndoMove ((TablonGame) game.clone(), current, previous);
+            ret = new UndoMove ((PasaleGame) game.clone(), current, previous);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.tablon.enum
+package mx.ecosur.multigame.pasale.enum
 {
 	public class TokenType
 	{	

@@ -41,7 +41,7 @@ package mx.ecosur.multigame.oculto
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
-	public class TablonGameController
+	public class GameController
 	{
 		
 	    // visual components
@@ -54,9 +54,9 @@ package mx.ecosur.multigame.oculto
                 
         // data objects
         private var _gameId:int;
-        private var _currentPlayer:TablonPlayer;
+        private var _currentPlayer:PasalePlayer;
         private var _players:ArrayCollection;
-        private var _game:TablonGame;
+        private var _game:PasaleGame;
         private var _tokens:ArrayCollection;
         private var _moves:ArrayCollection;       
         private var _selectedMoveInd:Number; 
@@ -68,7 +68,7 @@ package mx.ecosur.multigame.oculto
         
         // flags
         private var _isMoving:Boolean;
-        private var _executingMove:TablonMove;
+        private var _executingMove:PasaleMove;
         private var _isTurn:Boolean;
         private var _isEnded:Boolean;
         private var _previousToken:Token;
@@ -85,13 +85,13 @@ package mx.ecosur.multigame.oculto
         private static const GAME_SERVICE_UPDATE_MOVE_OP:String = "updateMove";
         private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
         
-        public function TablonGameController (gameWindow:OcultoWindow)
+        public function GameController (gameWindow:OcultoWindow)
         {
         	
         	// set private references
         	_gameWindow = gameWindow;
-        	_currentPlayer = TablonPlayer (gameWindow.currentPlayer);
-            _game = TablonGame(gameWindow.currentGame);
+        	_currentPlayer = PasalePlayer (gameWindow.currentPlayer);
+            _game = PasaleGame(gameWindow.currentGame);
             _gameId = _game.id; 
 
                 // instantiate collections 
@@ -230,23 +230,23 @@ package mx.ecosur.multigame.oculto
          */
         private function gotoMove(event:DynamicEvent):void{
 
-            var move:TablonMove = TablonMove(event.move);
+            var move:PasaleMove = PasaleMove(event.move);
             
             // if move is before the currently selected move then iterate
             // back over the moves transforming the board
             // else iterate forward
-            if(move.id < TablonMove(_moves[_selectedMoveInd]).id){
+            if(move.id < PasaleMove(_moves[_selectedMoveInd]).id){
                 do{
-                    undoMove(TablonMove(_moves[_selectedMoveInd]));
+                    undoMove(PasaleMove(_moves[_selectedMoveInd]));
                     _selectedMoveInd --;                    
-                }while(move.id < TablonMove(_moves[_selectedMoveInd]).id
+                }while(move.id < PasaleMove(_moves[_selectedMoveInd]).id
                         && _selectedMoveInd > 0);
-            }else if (move.id > TablonMove(_moves[_selectedMoveInd]).id
+            }else if (move.id > PasaleMove(_moves[_selectedMoveInd]).id
                         && _selectedMoveInd < _moves.length){
                 do{
-                    doMove(TablonMove(_moves[_selectedMoveInd + 1]));
+                    doMove(PasaleMove(_moves[_selectedMoveInd + 1]));
                     _selectedMoveInd ++;
-                } while (move.id > TablonMove(_moves[_selectedMoveInd]).id
+                } while (move.id > PasaleMove(_moves[_selectedMoveInd]).id
                     && _selectedMoveInd < _moves.length);
             }
         }            
@@ -264,7 +264,7 @@ package mx.ecosur.multigame.oculto
                 destination.type = token.ficha.type;
                 
                 // do move in backend
-                var move:TablonMove = new OcultoMove();
+                var move:PasaleMove = new OcultoMove();
                 move.player = _currentPlayer;
                 move.currentCell = boardCell.token.cell;
                 move.destinationCell = token.ficha;
@@ -325,7 +325,7 @@ package mx.ecosur.multigame.oculto
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
             var checkCondition:CheckCondition;
-            var game:TablonGame;
+            var game:PasaleGame;
             var gameModel:GameModel;
             var conditionModel:ConditionModel;
         
@@ -343,16 +343,16 @@ package mx.ecosur.multigame.oculto
                     }
                     break;
                 case GameEvent.END:
-                    game = TablonGame(message.body);
+                    game = PasaleGame(message.body);
                     handleGameEnd (game);
                     break;
                 case GameEvent.MOVE_COMPLETE:
-                    var move:TablonMove = TablonMove(message.body);
+                    var move:PasaleMove = PasaleMove(message.body);
                     _gameWindow.playersViewer.updatePlayers();
                     addMove(move);
                     break;                    
                 case GameEvent.PLAYER_CHANGE:
-                    game = TablonGame(message.body);
+                    game = PasaleGame(message.body);
                     updatePlayers(game);
                     break;
                 case GameEvent.CONDITION_RAISED:
@@ -387,7 +387,7 @@ package mx.ecosur.multigame.oculto
                     initGrid(GameGrid(event.result));
                     break;
                 case GAME_SERVICE_GET_PLAYERS_OP:
-                    updatePlayers(TablonGame (event.result));
+                    updatePlayers(PasaleGame (event.result));
                     break;
                 case GAME_SERVICE_GET_MOVES_OP:
                     _moves = ArrayCollection(event.result)
@@ -540,7 +540,7 @@ package mx.ecosur.multigame.oculto
             if (event.isCheatYear) {
                 _currentPlayer.cheatYears = (_currentPlayer.cheatYears + 1);
             } else if(event.isBadYear){
-        		var move:TablonMove = new OcultoMove ();
+        		var move:PasaleMove = new OcultoMove ();
         		move.badYear = true;
         		move.player = _currentPlayer;        		
         		var call:Object = _gameService.doMove(_game, move);
@@ -603,14 +603,14 @@ package mx.ecosur.multigame.oculto
          *  
          * @param players the new list of players
          */
-        public function updatePlayers(game:TablonGame):void{
+        public function updatePlayers(game:PasaleGame):void{
             this._game = game;
 
-            var gamePlayer:TablonPlayer;
+            var gamePlayer:PasalePlayer;
             var i:int;
             
             for (i = 0; i < game.players.length; i++){
-                gamePlayer = TablonPlayer(game.players[i]);
+                gamePlayer = PasalePlayer(game.players[i]);
                 if (gamePlayer.id == _currentPlayer.id){
                     _currentPlayer = gamePlayer;
                     _gameWindow.chatPanel.currentPlayer = _currentPlayer;
@@ -640,12 +640,12 @@ package mx.ecosur.multigame.oculto
             call.operation = "quitGame";
         }
         
-        private function addMove(move:TablonMove):void{
+        private function addMove(move:PasaleMove):void{
 
             //get last move in game
-            var lastMove:TablonMove = null;
+            var lastMove:PasaleMove = null;
             if (_moves.length > 0){
-                lastMove = TablonMove(_moves[length - 1]);
+                lastMove = PasaleMove(_moves[length - 1]);
             }
             
             //if move is after the last move then add moves
@@ -664,9 +664,9 @@ package mx.ecosur.multigame.oculto
             } else{
                 
                 // Search for move in reverse order because its most likely to be the last move
-                var oldMove:TablonMove;
+                var oldMove:PasaleMove;
                 for (var i:Number = _moves.length - 1; i >= 0; i--){
-                    oldMove = TablonMove(_moves[i]);
+                    oldMove = PasaleMove(_moves[i]);
                     if (oldMove.id == move.id){
                         _moves[i] = move;
                         _gameWindow.moveViewer.updateMove(move);
@@ -696,11 +696,11 @@ package mx.ecosur.multigame.oculto
         /*
          * Animates a move
          */
-        private function doMove(move:TablonMove):void{
+        private function doMove(move:PasaleMove):void{
         	
         	// if was a bad year then nothing to do
         	if(move.badYear){
-        		_gameWindow.moveViewer.selectedMove = TablonMove(_moves[_selectedMoveInd + 1]);
+        		_gameWindow.moveViewer.selectedMove = PasaleMove(_moves[_selectedMoveInd + 1]);
         		return
         	}
             
@@ -751,7 +751,7 @@ package mx.ecosur.multigame.oculto
                 
             } else{
                 var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(
-                    TablonPlayer(move.player));
+                    PasalePlayer(move.player));
                 startPoint = new Point(
                     playerBtn.x + Color.getCellIconSize() / 2 + 5, 
                     playerBtn.y + Color.getCellIconSize() / 2 + 5);
@@ -856,16 +856,16 @@ package mx.ecosur.multigame.oculto
             
             // Update move viewer
             if (_moves [_selectedMoveInd] != null && _selectedMoveInd > 0) {
-                var move:TablonMove = TablonMove(_moves[_selectedMoveInd])
+                var move:PasaleMove = PasaleMove(_moves[_selectedMoveInd])
                 _gameWindow.moveViewer.selectedMove = move; 
             }            
         }
         
-        private function undoMove(move:TablonMove):void{
+        private function undoMove(move:PasaleMove):void{
         	
         	// if was a bad year then nothing to undo
         	if(move.badYear){
-        		_gameWindow.moveViewer.selectedMove = TablonMove(_moves[_selectedMoveInd - 1]);
+        		_gameWindow.moveViewer.selectedMove = PasaleMove(_moves[_selectedMoveInd - 1]);
         		return
         	}
             
@@ -877,7 +877,7 @@ package mx.ecosur.multigame.oculto
             startPoint = _gameWindow.animateLayer.globalToLocal(startPoint);
             
             //define destination
-        	var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(TablonPlayer(move.player));
+        	var playerBtn:Button = _gameWindow.playersViewer.getPlayerButton(PasalePlayer(move.player));
             var endPoint:Point = new Point(playerBtn.x + Color.getCellIconSize() / 2 + 5, playerBtn.y + Color.getCellIconSize() / 2 + 5);
             endPoint = _gameWindow.playersViewer.localToGlobal(endPoint);
             endPoint = _gameWindow.animateLayer.globalToLocal(endPoint);
@@ -956,7 +956,7 @@ package mx.ecosur.multigame.oculto
             }
             
             if (_selectedMoveInd >= 0)
-                _gameWindow.moveViewer.selectedMove = TablonMove(_moves[_selectedMoveInd]);
+                _gameWindow.moveViewer.selectedMove = PasaleMove(_moves[_selectedMoveInd]);
         } 
         
         private function handleCheckConstraint (checkCondition:CheckCondition):void {
@@ -994,7 +994,7 @@ package mx.ecosur.multigame.oculto
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;                             
         }  
         
-        private function handleGameEnd (game:TablonGame):void {
+        private function handleGameEnd (game:PasaleGame):void {
         	var i:int;
         	
         	if (_endAlert == null) {

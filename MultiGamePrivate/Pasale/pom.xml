@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mx.ecosur</groupId>
-	<artifactId>tablon</artifactId>
-	<name>Tablon Implementation</name>
-	<description>Implementation of the game Tablon.</description>
+	<artifactId>pasale</artifactId>
+	<name>Pasale Compadre</name>
+	<description>Implementation of the game Pasale Compadre.</description>
 	<parent>
 		<artifactId>multi-game-private</artifactId>
 		<groupId>mx.ecosur</groupId>

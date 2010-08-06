@@ -1,8 +1,8 @@
 package mx.ecosur.experiment.multigame.solver.tablon;
 
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
-import mx.ecosur.multigame.impl.entity.pasale.TablonGame;
-import mx.ecosur.multigame.impl.entity.pasale.TablonMove;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
@@ -19,11 +19,11 @@ import org.drools.FactHandle;
  */
 public class PotreroMove implements Move {
 
-    private TablonFicha ficha = null;
+    private PasaleFicha ficha = null;
 
-    private TablonGame game = null;
+    private PasaleGame game = null;
 
-    public PotreroMove(TablonGame game, TablonFicha ficha) {
+    public PotreroMove(PasaleGame game, PasaleFicha ficha) {
         this.game = game;
         this.ficha = ficha;
     }
@@ -54,8 +54,8 @@ public class PotreroMove implements Move {
             /* must be a player with a turn */
             assert (current != null);
             int starting = game.getGrid().getCells().size();
-            TablonMove move = new TablonMove (current, ficha);
-            move = (TablonMove) game.move(move);
+            PasaleMove move = new PasaleMove(current, ficha);
+            move = (PasaleMove) game.move(move);
             int ending = game.getGrid().getCells().size();
             /* To be valid, the move must have been evaluated and no retractions occurred */
             ret = (move.getStatus().equals(MoveStatus.EVALUATED) && starting == ending);
@@ -76,8 +76,8 @@ public class PotreroMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            TablonFicha undo = ficha.clone();
-            ret = new UndoMove ((TablonGame) game.clone(), undo, ficha);
+            PasaleFicha undo = ficha.clone();
+            ret = new UndoMove ((PasaleGame) game.clone(), undo, ficha);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -92,7 +92,7 @@ public class PotreroMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {
-        FactHandle handle = workingMemory.getFactHandle((TablonFicha) game.getGrid().getLocation(ficha));
+        FactHandle handle = workingMemory.getFactHandle((PasaleFicha) game.getGrid().getLocation(ficha));
         workingMemory.modifyRetract(handle);
         ficha.setType(TokenType.POTRERO);
         workingMemory.modifyInsert(handle,ficha);

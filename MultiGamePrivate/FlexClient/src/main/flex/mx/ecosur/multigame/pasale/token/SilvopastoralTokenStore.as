@@ -1,11 +1,11 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	
     import flash.events.MouseEvent;
     
     import mx.events.DragEvent;	
 	
-	public class SilvopastoralTokenStore extends TablonTokenStore
+	public class SilvopastoralTokenStore extends PasaleTokenStore
 	{
 		public function SilvopastoralTokenStore()
 		{

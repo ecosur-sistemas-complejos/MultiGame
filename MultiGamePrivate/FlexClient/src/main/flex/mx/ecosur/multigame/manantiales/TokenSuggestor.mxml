@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400"
-          title="@Resource(key='manantiales.token.suggestor.title', bundle='StringsBundle')"
-    creationComplete="">
+          title="@Resource(key='manantiales.token.suggestor.title', bundle='StringsBundle')">
 
     <mx:Metadata>
         [Event(name="result")]
@@ -18,6 +17,7 @@
         private var _suggest:Function;
         private var _cancel:Function;
 
+        [Bindable]
         public function get types():ArrayCollection {
             if (_types == null)
                 _types = new ArrayCollection();
@@ -35,11 +35,11 @@
             }
         }
 
-        public function set suggestor(value):void {
+        public function set suggestor(value:Function):void {
             _suggest = value;
         }
 
-        public function set canceller(value):void {
+        public function set canceller(value:Function):void {
             _cancel = value;
         }
 
@@ -59,7 +59,7 @@
             _source = value;
         }
 
-        private function getLabel(name:String) {
+        private function getLabel(name:String):String {
             var ret:String = null;
 
             switch (name) {

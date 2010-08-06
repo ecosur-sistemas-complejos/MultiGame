@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	
     import flash.events.MouseEvent;
@@ -7,7 +7,7 @@ package mx.ecosur.multigame.tablon.token
     
     import mx.ecosur.multigame.component.Token;
 	
-	public class ForestTokenStore extends TablonTokenStore
+	public class ForestTokenStore extends PasaleTokenStore
 	{
 		public function ForestTokenStore()
 		{

@@ -160,7 +160,7 @@ package mx.ecosur.multigame.manantiales
 
             if (!_stateChange) {
                 for (var i:int = 0; i < _messages.length; i++) {
-                    var event = DynamicEvent(_messages.getItemAt(i));
+                    var event:DynamicEvent = DynamicEvent(_messages.getItemAt(i));
                     var message:IMessage = event.message;
                     var gameEvent:String = message.headers.GAME_EVENT;
                     var checkCondition:CheckCondition;

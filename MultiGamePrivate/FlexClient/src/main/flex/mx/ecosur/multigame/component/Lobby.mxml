@@ -21,16 +21,16 @@
 
         public var timer:Timer;
 
-        [BINDABLE]
+        [Bindable]
+        public function get player():Registrant {
+            return _player;
+        }
+
         public function set player(newPlayer:Registrant):void {
             _player = newPlayer;
             gameList.player = _player;
             pendingList.player = _player;
             init();
-        }
-
-        public function get player():Registrant {
-            return _player;
         }
 
         private function init():void {

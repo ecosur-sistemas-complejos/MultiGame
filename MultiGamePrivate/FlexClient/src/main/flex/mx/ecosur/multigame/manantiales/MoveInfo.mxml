@@ -29,7 +29,7 @@
         ]]>
     </mx:Script>
     <mx:VBox>
-        <mx:Grid width="100%">
+        <mx:Grid width="100%">            
             <mx:GridRow>
                 <mx:GridItem>
                     <mx:Label text="@Resource(key='manantiales.panel.info.score.premiums',

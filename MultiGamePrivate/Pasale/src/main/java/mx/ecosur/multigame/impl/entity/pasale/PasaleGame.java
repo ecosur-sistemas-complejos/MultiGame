@@ -14,7 +14,7 @@ import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
-import static mx.ecosur.multigame.impl.util.tablon.RuleFunctions.*;
+import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
@@ -34,7 +34,7 @@ import java.net.MalformedURLException;
 import java.awt.*;
 
 @Entity
-public class TablonGame extends GridGame {
+public class PasaleGame extends GridGame {
 	
 	private static final long serialVersionUID = -8395074059039838349L;
 
@@ -50,19 +50,19 @@ public class TablonGame extends GridGame {
 
     private WorkingMemoryFileLogger logger;
 
-    public  TablonGame () {
+    public PasaleGame() {
         super();
     }
 
 
-    public TablonGame(int columns, int rows) {
+    public PasaleGame(int columns, int rows) {
         super();
         setColumns(columns);
         setRows(rows);
         kbase = null;
     }
 
-    public TablonGame(int columns, int rows, KnowledgeBase kbase) {
+    public PasaleGame(int columns, int rows, KnowledgeBase kbase) {
         this(columns, rows);
         this.kbase = kbase;
     }
@@ -143,13 +143,13 @@ public class TablonGame extends GridGame {
         if (moves == null)
             moves = new TreeSet<GridMove>(new MoveComparator());
 
-        moves.add((TablonMove) move);
+        moves.add((PasaleMove) move);
 
         return move;
     }
 	
 	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		TablonPlayer player = new TablonPlayer();
+		PasalePlayer player = new PasalePlayer();
 		player.setRegistrant((GridRegistrant) registrant);
 		
 		for (GridPlayer p : this.getPlayers()) {
@@ -232,7 +232,7 @@ public class TablonGame extends GridGame {
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		TablonGame ret = new TablonGame ();
+		PasaleGame ret = new PasaleGame();
         ret.setPlayers (this.getPlayers());
         ret.setGrid((GameGrid) grid.clone());
         ret.setColumns(this.getColumns());
@@ -250,13 +250,13 @@ public class TablonGame extends GridGame {
 
     @Override
     public String toString() {
-        TablonGrid tgrid = (TablonGrid) getGrid();
+        PasaleGrid tgrid = (PasaleGrid) getGrid();
         StringBuffer ret = new StringBuffer("TablonGame (id=" + id + ")\n");
         for (int y = 0; y < getColumns(); y++) {
             for (int x = 0; x < getRows(); x++) {
                 GridCell cell = grid.getLocation (new GridCell (y,x, Color.UNKNOWN));
                 if (cell != null) {
-                    TablonFicha ficha = (TablonFicha) cell;
+                    PasaleFicha ficha = (PasaleFicha) cell;
                     switch (ficha.getType()) {
                         case SOIL_PARTICLE:
                             ret.append("S");

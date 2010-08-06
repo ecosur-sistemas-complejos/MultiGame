@@ -1,11 +1,11 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {   	
 	import mx.ecosur.multigame.component.Token;
 	
     import mx.ecosur.multigame.manantiales.enum.TokenType;
 	import mx.ecosur.multigame.enum.Color;
 
-	public class SilvopastoralToken extends TablonToken
+	public class SilvopastoralToken extends PasaleToken
 	{
 		public function SilvopastoralToken()
 		{

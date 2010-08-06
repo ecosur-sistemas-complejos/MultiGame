@@ -11,8 +11,9 @@ package mx.ecosur.multigame.manantiales
     
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.enum.Color;
-    
-    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+
+import mx.ecosur.multigame.manantiales.entity.Ficha;
+import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     
     import mx.events.DynamicEvent;
 
@@ -95,24 +96,33 @@ package mx.ecosur.multigame.manantiales
             var mi:MoveInfo = new MoveInfo();
             mi.addEventListener(MoveInfo.GOTO_MOVE_EVENT, goDirect);
             _moves.addChild(mi);
-            mi.gameMove = move;
+            mi.gameMove = move;                
+
+            var current:Ficha, destination:Ficha;
+            if (move.currentCell != null)
+                current = Ficha(move.currentCell);
+
+            if (move.destinationCell != null)
+                destination = Ficha (move.destinationCell);
             
             //create button header
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(mi));
             if (move.badYear) {
-                btn.label = " no move due to bad year condition.";	
+                btn.label = resourceManager.getString("StringsBundle", "move.history.badyear");
             } else if (move.currentCell == null) {
-                btn.label = " " + resourceManager.getString("StringsBundle", "move.history.to") + " " +
+                btn.label = destination.typeName + " " + resourceManager.getString("StringsBundle", "move.history.to") + " " +
                         _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             } else if (move.currentCell != null && move.destinationCell != null) {
-                btn.label = " " + resourceManager.getString("StringsBundle", "move.history.from") + " " +
+                btn.label = current.typeName + " " + resourceManager.getString("StringsBundle", "move.history.from") + " " +
                         _board.getCellDescription (move.currentCell.column, move.currentCell.row) +
-                    " to " + _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
+                    " to " + destination.typeName + resourceManager.getString("StringsBundle", "move.history.at") + " " +
+                        _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             } else if (move.currentCell != null && move.destinationCell == null) {
-                btn.label = " " + resourceManager.getString("StringsBundle", "move.history.removed") + " " +
+                btn.label = current.typeName + " " + resourceManager.getString("StringsBundle", "move.history.removed") +
+                        resourceManager.getString("StringsBundle", "move.history.at") + " " +
                         _board.getCellDescription (move.currentCell.column, move.currentCell.row);
-            } 
-            
+            }
+
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);
             btn.setStyle("paddingTop", 5);

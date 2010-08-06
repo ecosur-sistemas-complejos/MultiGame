@@ -9,7 +9,7 @@ import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-    import mx.ecosur.multigame.tablon.entity.Ficha;
+    import mx.ecosur.multigame.pasale.entity.Ficha;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 
@@ -46,7 +46,7 @@ import mx.ecosur.multigame.component.Token;
             }
         }
 
-        public function init(tokens:ArrayCollection) {
+        public function init(tokens:ArrayCollection):void {
             if (!_initialized) {
                 for (var i:int = 0; i < tokens.length; i++) {
                     var token:ManantialesToken = ManantialesToken (tokens.getItemAt(i));

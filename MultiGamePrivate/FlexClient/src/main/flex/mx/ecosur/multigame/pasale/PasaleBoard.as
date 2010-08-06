@@ -21,7 +21,7 @@ package mx.ecosur.multigame.oculto
 	import mx.states.State;
 
     import mx.ecosur.multigame.component.*;
-    import mx.ecosur.multigame.tablon.token.*;
+    import mx.ecosur.multigame.pasale.token.*;
     
     /**
      *
@@ -29,14 +29,14 @@ package mx.ecosur.multigame.oculto
      * to allow a great deal of 
      *
     */ 
-	public class TablonBoard extends AbstractBoard {
+	public class PasaleBoard extends AbstractBoard {
 		
 		protected var _bg:Shape, _hl:Shape, _vl:Shape;
 		protected var _currentPlayer:GamePlayer;
         protected var _grid:TablonGrid;
 		protected var _centerX:int, _centerY:int;
 		
-		public function TablonBoard (grid:TablonGrid) {
+		public function PasaleBoard (grid:TablonGrid) {
 			super();
             _grid = grid;
 		}
@@ -57,7 +57,7 @@ package mx.ecosur.multigame.oculto
          */
         override public function addToken(token:Token):void{
             var boardCell:BoardCell = getBoardCell(token.cell.column, token.cell.row);
-            var ocultoToken:TablonToken = TablonToken (token);
+            var ocultoToken:PasaleToken = PasaleToken (token);
 /*            if (_currentPlayer.color != ocultoToken.cell.color) {
                 Alert (_currentPlayer.color + "[currPlayer.color], " + ocultoToken.cell.color + "[ocultoToken]");
                 ocultoToken.txt = null;

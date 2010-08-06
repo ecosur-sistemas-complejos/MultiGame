@@ -4,14 +4,14 @@ package mx.ecosur.multigame.oculto.entity
 	
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.oculto.OcultoPlayer")]
-	public class TablonPlayer extends GamePlayer
+	public class PasalePlayer extends GamePlayer
 	{
 		private var _score:int, _forested:int, _moderate:int, _intensive:int,
 		  _vivero:int, _silvo:int, _cheatYears:int;
 		  
 		private var _badYear:Boolean;
 		
-		public function TablonPlayer()
+		public function PasalePlayer()
 		{
 			super();
 			_badYear = false;

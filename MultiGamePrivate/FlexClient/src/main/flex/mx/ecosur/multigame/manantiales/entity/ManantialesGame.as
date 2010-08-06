@@ -19,6 +19,10 @@ package mx.ecosur.multigame.manantiales.entity
 
         private var _version:int;
 
+        public function ManantialesGame () {
+            super();
+        }
+
         public function get version():int {
             return _version;
         }

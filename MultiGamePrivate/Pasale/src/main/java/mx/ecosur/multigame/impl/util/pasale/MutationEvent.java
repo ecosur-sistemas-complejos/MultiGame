@@ -17,7 +17,7 @@
 
 package mx.ecosur.multigame.impl.util.pasale;
 
-import mx.ecosur.multigame.impl.entity.pasale.TablonFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.model.implementation.ConditionImpl;
 
@@ -26,56 +26,56 @@ import java.util.TreeSet;
 
 public class MutationEvent implements ConditionImpl {
 
-    SortedSet<TablonFicha> square, octogon, cross;
-    TablonFicha ficha;
+    SortedSet<PasaleFicha> square, octogon, cross;
+    PasaleFicha ficha;
 
     public MutationEvent() {
-        square = new TreeSet<TablonFicha>(new CellComparator());
-        octogon = new TreeSet<TablonFicha>(new CellComparator());
-        cross = new TreeSet<TablonFicha>(new CellComparator());
+        square = new TreeSet<PasaleFicha>(new CellComparator());
+        octogon = new TreeSet<PasaleFicha>(new CellComparator());
+        cross = new TreeSet<PasaleFicha>(new CellComparator());
     }
 
-    public MutationEvent(TablonFicha ficha) {
+    public MutationEvent(PasaleFicha ficha) {
         this ();
         this.ficha = ficha;
     }
 
-    public MutationEvent(TablonFicha ficha, SortedSet<TablonFicha> square, SortedSet<TablonFicha> octogon, SortedSet<TablonFicha> cross) {
+    public MutationEvent(PasaleFicha ficha, SortedSet<PasaleFicha> square, SortedSet<PasaleFicha> octogon, SortedSet<PasaleFicha> cross) {
         this.ficha = ficha;
         this.square = square;
         this.octogon = octogon;
         this.cross = cross;
     }
 
-    public TablonFicha getFicha() {
+    public PasaleFicha getFicha() {
         return ficha;
     }
 
-    public void setFicha(TablonFicha ficha) {
+    public void setFicha(PasaleFicha ficha) {
         this.ficha = ficha;
     }
 
-    public SortedSet<TablonFicha> getCross() {
+    public SortedSet<PasaleFicha> getCross() {
         return cross;
     }
 
-    public void setCross(SortedSet<TablonFicha> cross) {
+    public void setCross(SortedSet<PasaleFicha> cross) {
         this.cross = cross;
     }
 
-    public SortedSet<TablonFicha> getSquare() {
+    public SortedSet<PasaleFicha> getSquare() {
         return square;
     }
 
-    public void setSquare(SortedSet<TablonFicha> square) {
+    public void setSquare(SortedSet<PasaleFicha> square) {
         this.square = square;
     }
 
-    public SortedSet<TablonFicha> getOctogon() {
+    public SortedSet<PasaleFicha> getOctogon() {
         return octogon;
     }
 
-    public void setOctogon(SortedSet<TablonFicha> octogon) {
+    public void setOctogon(SortedSet<PasaleFicha> octogon) {
         this.octogon = octogon;
     }
 

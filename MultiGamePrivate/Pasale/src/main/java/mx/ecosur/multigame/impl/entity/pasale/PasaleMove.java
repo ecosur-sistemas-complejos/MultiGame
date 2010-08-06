@@ -12,7 +12,7 @@ package mx.ecosur.multigame.impl.entity.pasale;
 
 import javax.persistence.Entity;
 
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.model.GamePlayer;
@@ -20,7 +20,7 @@ import mx.ecosur.multigame.model.GamePlayer;
 import java.util.*;
 
 @Entity
-public class TablonMove extends GridMove {
+public class PasaleMove extends GridMove {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -28,19 +28,19 @@ public class TablonMove extends GridMove {
 	
 	private boolean badYear, premium;
 
-    private Stack<TablonFicha> path;
+    private Stack<PasaleFicha> path;
 	
-	public TablonMove() {
+	public PasaleMove() {
 		super();
 		badYear = false;
 	}
 	
-	public TablonMove(GridPlayer player, TablonFicha destination) {
+	public PasaleMove(GridPlayer player, PasaleFicha destination) {
 		super (player, destination);
 		type = destination.getType();
 	}
 	
-	public TablonMove(GridPlayer player, TablonFicha current, TablonFicha destination)
+	public PasaleMove(GridPlayer player, PasaleFicha current, PasaleFicha destination)
 	{
 		super (player, current, destination);
 	}
@@ -49,7 +49,7 @@ public class TablonMove extends GridMove {
 		if (getDestinationCell() == null)
 			type = TokenType.UNKNOWN;
 		else {
-			TablonFicha destination = (TablonFicha) getDestinationCell();
+			PasaleFicha destination = (PasaleFicha) getDestinationCell();
 			type = destination.getType();
 		}
 		
@@ -63,8 +63,8 @@ public class TablonMove extends GridMove {
 	public TokenType getReplacementType() {
 		if (replacementType == null) {
 			replacementType = TokenType.UNKNOWN;
-			if (getCurrentCell() instanceof TablonFicha) {
-					TablonFicha current = (TablonFicha) getCurrentCell();
+			if (getCurrentCell() instanceof PasaleFicha) {
+					PasaleFicha current = (PasaleFicha) getCurrentCell();
 					replacementType = current.getType();
 			}
 		}
@@ -98,8 +98,8 @@ public class TablonMove extends GridMove {
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-        if (obj instanceof TablonMove) {
-            TablonMove comparison = (TablonMove) obj;
+        if (obj instanceof PasaleMove) {
+            PasaleMove comparison = (PasaleMove) obj;
             if (current != null && destination !=null) {
                 ret = current.equals( (comparison.getCurrentCell())) &&
                       destination.equals(comparison.getDestinationCell());
@@ -113,7 +113,7 @@ public class TablonMove extends GridMove {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        TablonMove ret = new TablonMove();
+        PasaleMove ret = new PasaleMove();
         ret.setBadYear(this.badYear);
         ret.setPlayer(this.getPlayer());
         ret.setReplacementType(this.getReplacementType());

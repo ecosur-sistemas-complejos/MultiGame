@@ -35,7 +35,7 @@ public class TablonRetractionExperiment {
 
     private static Random random;
 
-    private TablonGame game;
+    private PasaleGame game;
 
     private int retractions;
 
@@ -47,9 +47,9 @@ public class TablonRetractionExperiment {
     static {
         tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/tablon.drl")), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newInputStreamResource(TablonGame.class.getResourceAsStream (
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
@@ -64,7 +64,7 @@ public class TablonRetractionExperiment {
     }
 
     public void initialize () throws InvalidRegistrationException, Exception {
-        game = new TablonGame(dimension, dimension, tablon);
+        game = new PasaleGame(dimension, dimension, tablon);
         game.setMessageSender (new DummyMessageSender());
         GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
@@ -83,9 +83,9 @@ public class TablonRetractionExperiment {
 
     public void runExperiment () {
         try {
-            TablonFicha candidate = null;
+            PasaleFicha candidate = null;
             boolean remainingMoves = false;
-            TablonGrid tgrid = (TablonGrid) game.getGrid();
+            PasaleGrid tgrid = (PasaleGrid) game.getGrid();
 
             /* Search for 5 times the number of cells in the grid */
             if (moves > (5 * game.getGrid().getCells().size())) {
@@ -94,7 +94,7 @@ public class TablonRetractionExperiment {
             }
 
             for (GridCell cell : game.getGrid().getCells()) {
-                TablonFicha ficha = (TablonFicha) cell;
+                PasaleFicha ficha = (PasaleFicha) cell;
                 if (ficha.getType().equals(TokenType.FOREST)) {
                     remainingMoves = true;
                     break;
@@ -109,18 +109,18 @@ public class TablonRetractionExperiment {
             /* Pick a potrero and extend it, otherwise,
                pick a random Forest token */
             while (candidate == null) {
-                Set<TablonFicha> potreros = new HashSet<TablonFicha> ();
+                Set<PasaleFicha> potreros = new HashSet<PasaleFicha> ();
                 for (GridCell cell : game.getGrid().getCells()) {
-                    TablonFicha ficha = (TablonFicha) cell;
+                    PasaleFicha ficha = (PasaleFicha) cell;
                     if (ficha.getType().equals(TokenType.POTRERO) || ficha.getType().equals(TokenType.SILVOPASTORAL))
                         potreros.add(ficha);
                 }
 
                 if (potreros.size() > 0) {
                     Object[] set = potreros.toArray();
-                    TablonFicha potrero = (TablonFicha) set [ random.nextInt(set.length) ];
+                    PasaleFicha potrero = (PasaleFicha) set [ random.nextInt(set.length) ];
                     if (true || random.nextInt(6) < 4) {
-                        for (TablonFicha ficha : tgrid.getCross(potrero)) {
+                        for (PasaleFicha ficha : tgrid.getCross(potrero)) {
                             if (ficha.getType().equals(TokenType.FOREST) && extendsPotrero (ficha, potrero)) {
                                 candidate = ficha.clone();
                                 candidate.setType (TokenType.POTRERO);
@@ -136,7 +136,7 @@ public class TablonRetractionExperiment {
                 if (candidate == null) {
                     int rand = random.nextInt(game.getGrid().getCells().size());
                     GridCell cell = (GridCell) game.getGrid().getCells().toArray() [ rand ];
-                    TablonFicha ficha = (TablonFicha) cell;
+                    PasaleFicha ficha = (PasaleFicha) cell;
                     if (ficha.getType().equals(TokenType.FOREST)) {
                         candidate = ficha.clone();
                         candidate.setType (TokenType.POTRERO);
@@ -153,17 +153,17 @@ public class TablonRetractionExperiment {
                so end the game.
              */
 
-            TablonPlayer player = null;
+            PasalePlayer player = null;
             for (GridPlayer p : game.getPlayers()) {
                 if (p.isTurn()) {
-                    player = (TablonPlayer) p;
+                    player = (PasalePlayer) p;
                     break;
                 }
             }
 
             candidate.setColor(player.getColor());
-            TablonMove move = new TablonMove (player, candidate);
-            move = (TablonMove) game.move(move);
+            PasaleMove move = new PasaleMove(player, candidate);
+            move = (PasaleMove) game.move(move);
             moves++;
 
         } catch (Exception e) {
@@ -171,7 +171,7 @@ public class TablonRetractionExperiment {
         }
     }
 
-    public boolean extendsPotrero (TablonFicha ficha, TablonFicha potrero) {
+    public boolean extendsPotrero (PasaleFicha ficha, PasaleFicha potrero) {
         boolean ret = false;
 
         int middle = dimension/2;

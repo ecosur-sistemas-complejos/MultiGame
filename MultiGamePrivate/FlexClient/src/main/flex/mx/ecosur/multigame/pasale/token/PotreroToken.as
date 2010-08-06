@@ -1,9 +1,9 @@
-package mx.ecosur.multigame.tablon.token
+package mx.ecosur.multigame.pasale.token
 {
 	import mx.ecosur.multigame.enum.Color;
 	   import mx.ecosur.multigame.manantiales.enum.TokenType;
 	
-	public class PotreroToken extends TablonToken
+	public class PotreroToken extends PasaleToken
 	{
 		public function ModerateToken()
 		{

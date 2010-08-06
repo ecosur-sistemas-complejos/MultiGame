@@ -5,7 +5,7 @@ package mx.ecosur.multigame.oculto.entity
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.oculto.OcultoGame")]                       
-	public class TablonGame extends Game
+	public class PasaleGame extends Game
 	{
 		private var _mode:String;
 		

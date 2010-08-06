@@ -12,6 +12,8 @@
     <mx:Script>
         <![CDATA[
         import mx.collections.ArrayCollection;
+        import mx.controls.Alert;
+        import mx.events.DynamicEvent;
 
         [Bindable]
         public var index:Number = 0;
@@ -38,15 +40,16 @@
             super.height = height;
         }
 
-        private function hideProgress(event:Event):void {
-            bar.visible = false;
+        private function hideProgress(event:DynamicEvent):void {
+            Alert.show("Attempting to remove progress bar on smoothe image load ..");
+            this.removeChild(bar);
         }
 
         ]]>
     </mx:Script>
-     <component:SmoothImage id="main" autoLoad="true" source="{images[index]}" scaleContent="true"
-            width="{_width}" height="{_height}" creationComplete="dispatchEvent(new Event('loaded'))"/>
-        <mx:ProgressBar id="bar" source="main" mode="polled" visible="{!main._completed}"/>
+    <mx:ProgressBar id="bar" source="main" mode="polled"/>
+     <component:SmoothImage id="main" autoLoad="true" source="{images.getItemAt(index)}" scaleContent="true"
+            width="{_width}" height="{_height}" creationComplete="dispatchEvent(new DynamicEvent('loaded'))"/>
     <mx:ControlBar horizontalAlign="center">
          <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
     </mx:ControlBar>

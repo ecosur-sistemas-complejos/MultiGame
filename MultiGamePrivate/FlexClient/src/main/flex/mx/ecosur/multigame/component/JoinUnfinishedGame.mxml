@@ -43,7 +43,7 @@
             updateDataGrid();
         }
 
-        private function messageFaultHandler (event:MessageFaultEvent) {
+        private function messageFaultHandler (event:MessageFaultEvent):void {
             Alert.show("Error [" + event.faultString + "]");
         }
 
