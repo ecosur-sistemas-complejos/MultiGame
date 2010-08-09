@@ -7,10 +7,8 @@
     <add>
         <resource source="classpath:mx/ecosur/multigame/impl/manantiales.drl" type="DRL"/>
     </add>
-    <!--
-    <add>
+    <!--add>
          <resource source='http://localhost:8080/drools-guvnor-5.1.0/org.drools.guvnor.Guvnor/package/mx.ecosur.multigame.manantiales/LATEST' 
             type='PKG' basicAuthentication='enabled' username='multigame' password='multigame'/>
-    </add>
-    -->
+    </add-->
 </change-set>

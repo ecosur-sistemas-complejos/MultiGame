@@ -478,3 +478,6 @@ MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/entity/pasale/Pa
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/entity/pasale/PasaleGrid.class
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/entity/pasale/PasaleMove.class
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/entity/pasale/PasalePlayer.class
+MultiGamePrivate/Pasale/target/surefire-reports/PasaleRulesTest.txt
+MultiGamePrivate/Pasale/target/surefire-reports/TEST-PasaleRulesTest.xml
+MultiGamePrivate/Pasale/target/test-classes/PasaleRulesTest.class

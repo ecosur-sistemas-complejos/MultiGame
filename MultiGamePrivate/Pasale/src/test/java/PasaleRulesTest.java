@@ -35,7 +35,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TablonRulesTest extends JMSTestCaseAdapter {
+public class PasaleRulesTest extends JMSTestCaseAdapter {
 
     private static KnowledgeBase tablon;
 
@@ -48,9 +48,9 @@ public class TablonRulesTest extends JMSTestCaseAdapter {
         tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/tablon.drl")), ResourceType.DRL);
+            "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf")), ResourceType.DRF);
+            "/mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
             tablon.addKnowledgePackages(kbuilder.getKnowledgePackages());
