@@ -45,6 +45,11 @@
                 <scope>system</scope>
                 <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
             </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-core</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
         </dependencies>
         <build>
             <plugins>

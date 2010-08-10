@@ -25,8 +25,7 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
+import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -35,7 +34,6 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
-import java.io.*;
 import java.util.*;
 import java.net.MalformedURLException;
 
@@ -396,16 +394,18 @@ public class ManantialesGame extends GridGame {
         return ret;
     }
 
+    @Transient
+    public Resource getResource() {
+        return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+            "/mx/ecosur/multigame/impl/manantiales.xml"));
+    }
 
     @Transient
     public String getGameType() {
         return "Manantiales";
     }
 
-    public void setGameType (String type) {
-        // do nothing;
-    }
-
+    @Deprecated
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
