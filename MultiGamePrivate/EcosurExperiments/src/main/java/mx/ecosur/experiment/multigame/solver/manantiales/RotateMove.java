@@ -17,7 +17,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.solver.core.move.Move;
+import org.drools.planner.core.move.Move;
 
 /*
  * Rotates tokens of differing colors around the board, for one rotation.
@@ -78,14 +78,14 @@ public class RotateMove implements Move {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#createUndoMove(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#createUndoMove(org.drools.WorkingMemory)
 	 */
 	public Move createUndoMove(WorkingMemory workingMemory) {
 		return new RotateMove (fourth, third, second, primary);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#doMove(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#doMove(org.drools.WorkingMemory)
 	 */
 	public void doMove(WorkingMemory wm) {
 		int primaryRow, primaryColumn, secondRow, secondColumn, thirdRow, thirdColumn,
@@ -121,18 +121,18 @@ public class RotateMove implements Move {
 		fourth.setRow(primaryRow);
 		
 		/* Update working memory */	
-		wm.modifyRetract(primaryFH);
-		wm.modifyInsert(primaryFH, primary);
-		wm.modifyRetract(secondFH);
-		wm.modifyInsert(secondFH, second);
-		wm.modifyRetract(thirdFH);
-		wm.modifyInsert(thirdFH, third);
-		wm.modifyRetract (fourthFH);
-		wm.modifyInsert (fourthFH, fourth);
+		wm.retract(primaryFH);
+		wm.insert(primary);
+		wm.retract(secondFH);
+		wm.insert(second);
+		wm.retract(thirdFH);
+		wm.insert(third);
+		wm.retract (fourthFH);
+		wm.insert (fourth);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory workingMemory) {
 		/* Rotation is correct */

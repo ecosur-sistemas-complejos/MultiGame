@@ -16,7 +16,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.solver.core.move.Move;
+import org.drools.planner.core.move.Move;
 
 /*
  * Swaps two tokens of the same color.  
@@ -31,14 +31,14 @@ public class SwapMove implements Move {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#createUndoMove(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#createUndoMove(org.drools.WorkingMemory)
 	 */
 	public Move createUndoMove(WorkingMemory workingMemory) {
 		return new SwapMove (swapToken, token);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#doMove(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#doMove(org.drools.WorkingMemory)
 	 */
 	public void doMove(WorkingMemory wm) {
 		int tokenColumn, tokenRow;
@@ -53,18 +53,18 @@ public class SwapMove implements Move {
 		FactHandle tokenHandle = wm.getFactHandle(token);
 		FactHandle swapHandle = wm.getFactHandle(swapToken);
 		
-		wm.modifyRetract(tokenHandle);
+		wm.retract(tokenHandle);
 		token.setColumn(swapColumn);
 		token.setRow (swapRow);
-		wm.modifyInsert(tokenHandle, token);
-		wm.modifyRetract (swapHandle);
+		wm.insert(token);
+		wm.retract (swapHandle);
 		swapToken.setColumn (tokenColumn);
 		swapToken.setRow(tokenRow);
-		wm.modifyInsert (swapHandle, token);	
+		wm.insert (token);	
 	}
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
+	 * @see org.drools.planner.core.move.Move#isMoveDoable(org.drools.WorkingMemory)
 	 */
 	public boolean isMoveDoable(WorkingMemory wm) {
 		return (!token.equals(swapToken)  && 

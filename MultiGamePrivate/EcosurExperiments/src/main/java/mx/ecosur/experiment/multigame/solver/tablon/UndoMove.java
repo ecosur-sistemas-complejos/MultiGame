@@ -4,7 +4,7 @@ import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.solver.core.move.Move;
+import org.drools.planner.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 
@@ -38,8 +38,8 @@ public class UndoMove implements Move {
      * <li>Either doing it would change nothing in the solution.</li>
      * <li>Either it's simply not possible to do.</li>
      * </ul>
-     * Although you could filter out non-doable moves in for example the {@link org.drools.solver.core.move.factory.MoveFactory},
-     * this is not needed as the {@link org.drools.solver.core.Solver} will do it for you.
+     * Although you could filter out non-doable moves in for example the {@link org.drools.planner.core.move.factory.MoveFactory},
+     * this is not needed as the {@link org.drools.planner.core.Solver} will do it for you.
      *
      * @param workingMemory the {@link org.drools.WorkingMemory} not yet modified by the move.
      * @return true if the move achieves a change in the solution and the move is possible to do on the solution.
@@ -74,7 +74,7 @@ public class UndoMove implements Move {
     }
 
     /**
-     * Does the Move and updates the {@link org.drools.solver.core.solution.Solution} and its {@link org.drools.WorkingMemory} accordingly.
+     * Does the Move and updates the {@link org.drools.planner.core.solution.Solution} and its {@link org.drools.WorkingMemory} accordingly.
      * When the solution is modified, the {@link org.drools.WorkingMemory}'s {@link org.drools.FactHandle}s should be correctly notified,
      * otherwise the score(s) calculated will be corrupted.
      *
@@ -82,9 +82,9 @@ public class UndoMove implements Move {
      */
     public void doMove(WorkingMemory workingMemory) {
         FactHandle handle = workingMemory.getFactHandle(current);
-        workingMemory.modifyRetract(handle);
+        workingMemory.retract(handle);
         current.setType(previous.getType());
-        workingMemory.modifyInsert(handle,previous);
+        workingMemory.insert(previous);
     }
 
     /**

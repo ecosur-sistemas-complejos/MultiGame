@@ -75,7 +75,7 @@
           <goal>java</goal>
          </goals>
          <configuration>
-          <mainClass>mx.ecosur.experiment.multigame.lab.TablonRetractionExperiment</mainClass>
+          <mainClass>mx.ecosur.experiment.multigame.lab.PasaleRetractionExperiment</mainClass>
          </configuration>
         </execution>
        </executions>

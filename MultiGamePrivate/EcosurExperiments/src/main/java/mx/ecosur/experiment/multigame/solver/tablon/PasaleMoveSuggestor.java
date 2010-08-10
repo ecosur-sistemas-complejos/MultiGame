@@ -4,9 +4,9 @@ import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import org.drools.solver.core.move.factory.AbstractMoveFactory;
-import org.drools.solver.core.move.Move;
-import org.drools.solver.core.solution.Solution;
+import org.drools.planner.core.move.factory.AbstractMoveFactory;
+import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solution.Solution;
 
 import java.util.*;
 
@@ -18,11 +18,11 @@ import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
  * The CarefulMoveSuggestor is an implmentation of AbstractMoveFactory
  * that seeks to suggest "CarefulMoves" to the solver.
  */
-public class TablonMoveSuggestor extends AbstractMoveFactory {
+public class PasaleMoveSuggestor extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         List<Move> moves = new ArrayList<Move>();        
-        TablonSolution tsol = (TablonSolution) solution;
+        PasaleSolution tsol = (PasaleSolution) solution;
         PasaleGame game = tsol.getGame();
         for (GridCell cell : tsol.getGame().getGrid().getCells()) {
             PasaleFicha ficha = (PasaleFicha) cell;

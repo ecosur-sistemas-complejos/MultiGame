@@ -1,19 +1,17 @@
 package mx.ecosur.experiment.multigame.lab;
 
 import java.util.logging.Logger;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
+import mx.ecosur.experiment.multigame.solver.tablon.PasaleSolution;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
-import mx.ecosur.experiment.multigame.solver.tablon.TablonSolution;
 import mx.ecosur.experiment.multigame.solver.tablon.SolutionConfigurer;
 
-import org.drools.solver.core.Solver;
-import org.drools.solver.core.score.Score;
-import org.drools.solver.core.score.SimpleScore;
-import org.drools.solver.core.solution.Solution;
-import org.drools.solver.config.XmlSolverConfigurer;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.config.XmlSolverConfigurer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,19 +20,19 @@ import org.drools.solver.config.XmlSolverConfigurer;
  * Time: 10:21:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TablonRetractionlessExperiment {
+public class PasaleRetractionlessExperiment {
 
 private static Logger logger = Logger.getLogger(
-			TablonRetractionlessExperiment.class.getCanonicalName());
+			PasaleRetractionlessExperiment.class.getCanonicalName());
 	private static String configPath =
-		"/mx/ecosur/experiment/multigame/solver/tablon/tablon-standard-solver.xml";
+		"/mx/ecosur/experiment/multigame/solver/pasale/pasale-standard-solver.xml";
 
 	private XmlSolverConfigurer configurer;
 
-    protected TablonSolution solution;
+    protected PasaleSolution solution;
 
     public static void main (String... args) throws InvalidRegistrationException {
-        TablonRetractionlessExperiment experiment = new TablonRetractionlessExperiment();
+        PasaleRetractionlessExperiment experiment = new PasaleRetractionlessExperiment();
         experiment.setUp();
         System.out.println ("Starting solver...");
         Score score = experiment.solve();
@@ -47,16 +45,16 @@ private static Logger logger = Logger.getLogger(
 		configurer = new XmlSolverConfigurer();
 		configurer.configure(new InputStreamReader(this.getClass()
 				.getResourceAsStream(configPath)));
-        solution = new TablonSolution ();
+        solution = new PasaleSolution();
 	}
 
 	public Score solve () throws InvalidRegistrationException {
 		Solver solver = configurer.buildSolver();
-        SolutionConfigurer solcon = new SolutionConfigurer((TablonSolution) solution);
+        SolutionConfigurer solcon = new SolutionConfigurer((PasaleSolution) solution);
         Solution startingSolution = solcon.configure();
         solver.setStartingSolution(startingSolution);
 		solver.solve();
-		solution = (TablonSolution) solver.getBestSolution();
+		solution = (PasaleSolution) solver.getBestSolution();
         return solution.getScore();
 	}
 }

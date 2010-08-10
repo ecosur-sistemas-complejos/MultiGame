@@ -20,8 +20,8 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
-import org.drools.solver.core.solution.Solution;
-import org.drools.solver.core.score.Score;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.score.Score;
 
 /**
  * The ManantialesSolution class is used for calculating the solution for the 
@@ -110,7 +110,7 @@ public class ManantialesSolution implements Solution {
 	}	
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.solution.Solution#cloneSolution()
+	 * @see org.drools.planner.core.solution.Solution#cloneSolution()
 	 */
 	public Solution cloneSolution() {
 		Solution ret = null;
@@ -223,7 +223,7 @@ public class ManantialesSolution implements Solution {
     public void setScore(Score score) {
         this.score = score;
     }/* (non-Javadoc)
-	 * @see org.drools.solver.core.solution.Solution#getFacts()
+	 * @see org.drools.planner.core.solution.Solution#getFacts()
 	 */
 	public Collection<? extends Object> getFacts() {
 		return tokens;

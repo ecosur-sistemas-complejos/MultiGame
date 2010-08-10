@@ -18,14 +18,14 @@ import org.drools.builder.*;
  */
 public class SolutionConfigurer {
 
-    TablonSolution solution;
+    PasaleSolution solution;
 
-    public SolutionConfigurer (TablonSolution solution) {
+    public SolutionConfigurer (PasaleSolution solution) {
         this.solution = solution;
     }
 
 
-    public TablonSolution configure () throws InvalidRegistrationException {
+    public PasaleSolution configure () throws InvalidRegistrationException {
         KnowledgeBase tablon = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
@@ -58,7 +58,7 @@ public class SolutionConfigurer {
 		game.registerPlayer(d);
 
         /* Reset solution to use constructed game */
-        solution = new TablonSolution (game);
+        solution = new PasaleSolution(game);
 
         return solution;
     }

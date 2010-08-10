@@ -21,9 +21,9 @@ import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 
-import org.drools.solver.core.move.Move;
-import org.drools.solver.core.move.factory.AbstractMoveFactory;
-import org.drools.solver.core.solution.Solution;
+import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.factory.AbstractMoveFactory;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * The SwapMoveFactory generates a set of all possible swap moves by territory.
@@ -39,7 +39,7 @@ import org.drools.solver.core.solution.Solution;
 public class SwapMoveFactory extends AbstractMoveFactory {
 
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.factory.CachedMoveFactory#createCachedMoveList(org.drools.solver.core.solution.Solution)
+	 * @see org.drools.planner.core.move.factory.CachedMoveFactory#createCachedMoveList(org.drools.planner.core.solution.Solution)
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Move> createMoveList(Solution solution) {

@@ -27,11 +27,11 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.experiment.multigame.solver.manantiales.*;
 import mx.ecosur.multigame.impl.util.CSV;
 
-import org.drools.solver.config.XmlSolverConfigurer;
-import org.drools.solver.core.Solver;
-import org.drools.solver.core.score.Score;
-import org.drools.solver.core.score.SimpleScore;
-import org.drools.solver.core.solution.Solution;
+import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.SimpleScore;
+import org.drools.planner.core.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 
