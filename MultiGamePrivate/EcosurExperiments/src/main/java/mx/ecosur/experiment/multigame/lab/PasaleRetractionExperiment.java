@@ -18,12 +18,12 @@ import java.io.File;
 import java.io.FileWriter;
 
 /**
- * The Experiment runner runs a tablon experiment a certain number
+ * The Experiment runner runs a pasale experiment a certain number
  * of times (default 30) creating 
  */
 public class PasaleRetractionExperiment {
 
-    private static final int dimension = 42;
+    private static final int dimension = 12;
 
     private static String dataFolder = "target/data";
 
@@ -31,7 +31,7 @@ public class PasaleRetractionExperiment {
 
     private static final char separator = '\t';
 
-    private static KnowledgeBase tablon;
+    private static KnowledgeBase pasale;
 
     private static Random random;
 
@@ -42,18 +42,17 @@ public class PasaleRetractionExperiment {
     private int moves;
 
 
-    /* Setup gen
-    te kbase */
+    /* Setup kbase */
     static {
-        tablon = KnowledgeBaseFactory.newKnowledgeBase();
+        pasale = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/tablon.drl")), ResourceType.DRL);
+            "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf")), ResourceType.DRF);
+            "/mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
-            tablon.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            pasale.addKnowledgePackages(kbuilder.getKnowledgePackages());
         else {
             for (KnowledgeBuilderError error : errors) {
                 System.out.println(error);
@@ -64,7 +63,7 @@ public class PasaleRetractionExperiment {
     }
 
     public void initialize () throws InvalidRegistrationException, Exception {
-        game = new PasaleGame(dimension, dimension, tablon);
+        game = new PasaleGame(dimension, dimension, pasale);
         game.setMessageSender (new DummyMessageSender());
         GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");

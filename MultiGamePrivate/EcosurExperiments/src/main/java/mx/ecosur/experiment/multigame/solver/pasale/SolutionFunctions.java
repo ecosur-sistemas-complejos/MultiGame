@@ -1,7 +1,7 @@
-package mx.ecosur.experiment.multigame.solver.tablon;
+package mx.ecosur.experiment.multigame.solver.pasale;
 
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
-import static mx.ecosur.experiment.multigame.solver.tablon.PasaleSolution.Quadrant;
+import static mx.ecosur.experiment.multigame.solver.pasale.PasaleSolution.Quadrant;
 
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;

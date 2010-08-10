@@ -1,4 +1,4 @@
-package mx.ecosur.experiment.multigame.solver.tablon;
+package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.impl.DummyMessageSender;

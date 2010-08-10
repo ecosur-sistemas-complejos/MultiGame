@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <scoreDrl>/mx/ecosur/experiment/multigame/solver/tablon/retractionless-experiment-two.drl</scoreDrl>
+    <scoreDrl>/mx/ecosur/experiment/multigame/solver/tablon/retractionless-experiment-one.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
     <selector>
         <selector>
-            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.pasale.TablonMoveSuggestor</moveFactoryClass>
+            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.pasale.PasaleMoveSuggestor</moveFactoryClass>
         </selector>
     </selector>
     <accepter>

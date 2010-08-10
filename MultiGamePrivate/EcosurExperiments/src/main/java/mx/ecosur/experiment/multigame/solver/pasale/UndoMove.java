@@ -1,31 +1,34 @@
-package mx.ecosur.experiment.multigame.solver.tablon;
+package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.exception.InvalidMoveException;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 
 /**
- * 
- *  
+ * Created by IntelliJ IDEA.
+ * User: awaterma
+ * Date: Dec 9, 2009
+ * Time: 9:52:14 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class PotreroMove implements Move {
+public class UndoMove implements Move {
 
-    private PasaleFicha ficha = null;
+    /* The move to do */
+    private PasaleFicha previous;
 
-    private PasaleGame game = null;
+    /* The move to be undone */
+    private PasaleFicha current;
 
-    public PotreroMove(PasaleGame game, PasaleFicha ficha) {
+    private PasaleGame game;
+
+    public UndoMove (PasaleGame game, PasaleFicha previousFicha, PasaleFicha currentFicha) {
         this.game = game;
-        this.ficha = ficha;
+        this.previous = previousFicha;
+        this.current = currentFicha;
     }
 
     /**
@@ -43,24 +46,11 @@ public class PotreroMove implements Move {
      */
     public boolean isMoveDoable(WorkingMemory workingMemory) {
         boolean ret = false;
-        try {
-            GridPlayer current = null;
-            for (GridPlayer player : game.getPlayers()) {
-                if (player.isTurn()) {
-                    current = player;
-                    break;
-                }
-            }
-            /* must be a player with a turn */
-            assert (current != null);
-            int starting = game.getGrid().getCells().size();
-            PasaleMove move = new PasaleMove(current, ficha);
-            move = (PasaleMove) game.move(move);
-            int ending = game.getGrid().getCells().size();
-            /* To be valid, the move must have been evaluated and no retractions occurred */
-            ret = (move.getStatus().equals(MoveStatus.EVALUATED) && starting == ending);
-        } catch (InvalidMoveException e) {
-            //
+
+        if (current.getType().equals(TokenType.POTRERO)) {
+            ret = previous.getType().equals(TokenType.FOREST);
+        } else if (current.getType().equals(TokenType.SILVOPASTORAL)) {
+            ret = previous.getType().equals(TokenType.POTRERO);
         }
 
         return ret;
@@ -76,8 +66,7 @@ public class PotreroMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            PasaleFicha undo = ficha.clone();
-            ret = new UndoMove ((PasaleGame) game.clone(), undo, ficha);
+            ret = new UndoMove ((PasaleGame) game.clone(), current, previous);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -92,10 +81,10 @@ public class PotreroMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {
-        FactHandle handle = workingMemory.getFactHandle((PasaleFicha) game.getGrid().getLocation(ficha));
+        FactHandle handle = workingMemory.getFactHandle(current);
         workingMemory.retract(handle);
-        ficha.setType(TokenType.POTRERO);
-        workingMemory.insert(ficha);
+        current.setType(previous.getType());
+        workingMemory.insert(previous);
     }
 
     /**
@@ -135,8 +124,9 @@ public class PotreroMove implements Move {
      */
     @Override
     public int hashCode() {
-        HashCodeBuilder builder = new HashCodeBuilder();
-        builder.append(ficha);
+       HashCodeBuilder builder = new HashCodeBuilder();
+        builder.append(previous);
+        builder.append(current);
         return builder.toHashCode();
     }
 
@@ -189,9 +179,9 @@ public class PotreroMove implements Move {
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-        if (obj instanceof PotreroMove) {
-            PotreroMove comp = (PotreroMove) obj;
-            ret = (comp.ficha.equals(this.ficha));
+        if (obj instanceof UndoMove) {
+            UndoMove comp = (UndoMove) obj;
+            ret = (comp.current.equals(this.current) && comp.previous.equals(this.previous));
         } else {
             ret = super.equals(obj);
         }

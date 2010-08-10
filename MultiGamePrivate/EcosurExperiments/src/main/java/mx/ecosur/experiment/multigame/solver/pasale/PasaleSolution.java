@@ -1,4 +1,4 @@
-package mx.ecosur.experiment.multigame.solver.tablon;
+package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;

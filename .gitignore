@@ -516,3 +516,16 @@ MultiGamePrivate/EcosurExperiments/target/classes/pasale/tablon-standard-solver.
 MultiGamePrivate/Manantiales/target/classes/manantiales.xml
 MultiGamePrivate/Manantiales/target/classes/simple-agent.xml
 MultiGamePrivate/Pasale/target/classes/pasale.xml
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/lab/ManantialesMatrixSolverExperiment.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/PasaleMoveSuggestor.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/PasaleSolution$1.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/PasaleSolution$Quadrant.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/PasaleSolution.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/PotreroMove.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/SilvoPastoralMove.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/SolutionConfigurer.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/SolutionFunctions.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/UndoMove.class
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/pasale-standard-solver.xml
+MultiGamePrivate/EcosurExperiments/target/data/lab-experiment.csv
+MultiGamePrivate/EcosurExperiments/target/ecosur-experiments-1.1.0-SNAPSHOT.jar

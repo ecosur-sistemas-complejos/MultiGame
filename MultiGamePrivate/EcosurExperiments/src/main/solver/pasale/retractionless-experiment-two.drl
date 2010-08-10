@@ -3,7 +3,7 @@
 # Licensed under the Academic Free License v. 3.2.
 # http://www.opensource.org/licenses/afl-3.0.php
  
-package mx.ecosur.multigame.impl.entity.tablon
+package mx.ecosur.multigame.impl.entity.pasale
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,11 +12,11 @@ import java.util.Set;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence
 import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
-import function mx.ecosur.experiment.multigame.solver.tablon.SolutionFunctions.*;
+import function mx.ecosur.experiment.multigame.solver.pasale.SolutionFunctions.*;
 
 dialect "java"
 
@@ -29,9 +29,9 @@ global SimpleScoreCalculator scoreCalculator;
 rule "62.5% Potreros"
     no-loop true
     when
-        TablonGame ($grid :  grid)
+        PasaleGame ($grid :  grid)
         $potreros : ArrayList (size != (size * 0.625)) from
-            collect ( TablonFicha (type == TokenType.POTRERO)
+            collect ( PasaleFicha (type == TokenType.POTRERO)
                 )
     then
         insertLogical (
@@ -41,10 +41,10 @@ end
 #24 Forest tokens over a 4x4 board (24/(16 * 4) = Forest)
 rule "37.5% Forests"
     when
-        TablonGame ($size : grid.cells.size)
+        PasaleGame ($size : grid.cells.size)
         $forests : ArrayList (size != (size * 0.375)) from
             collect (
-                TablonFicha (type == TokenType.FOREST))
+                PasaleFicha (type == TokenType.FOREST))
     then
         insertLogical (
             new UnweightedConstraintOccurrence("Not 37.5% Forest", $forests));
@@ -53,10 +53,10 @@ end
 #16 of the 40 potreros must be directly connected to  water (16/40 = directly connected)
 rule "25% Potreros directly connected to water"
      when
-        TablonGame ($grid : grid, $size : grid.cells.size)
+        PasaleGame ($grid : grid, $size : grid.cells.size)
         $potreros : ArrayList (size > 0) from
-            collect ( TablonFicha (type == TokenType.POTRERO))
-        eval (percentageDirectlyConnected ((TablonGrid) $grid, (Collection) $potreros, 0.25))
+            collect ( PasaleFicha (type == TokenType.POTRERO))
+        eval (percentageDirectlyConnected ((PasaleGrid) $grid, (Collection) $potreros, 0.25))
     then
         insertLogical (
             new UnweightedConstraintOccurrence("Not 25% Potreros directly connected to water", $potreros));

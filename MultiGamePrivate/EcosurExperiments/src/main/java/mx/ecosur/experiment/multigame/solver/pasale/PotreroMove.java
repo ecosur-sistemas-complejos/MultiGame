@@ -1,34 +1,31 @@
-package mx.ecosur.experiment.multigame.solver.tablon;
+package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.exception.InvalidMoveException;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.move.Move;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
 
 /**
- * Created by IntelliJ IDEA.
- * User: awaterma
- * Date: Dec 9, 2009
- * Time: 9:52:14 PM
- * To change this template use File | Settings | File Templates.
+ * 
+ *  
  */
-public class UndoMove implements Move {
+public class PotreroMove implements Move {
 
-    /* The move to do */
-    private PasaleFicha previous;
+    private PasaleFicha ficha = null;
 
-    /* The move to be undone */
-    private PasaleFicha current;
+    private PasaleGame game = null;
 
-    private PasaleGame game;
-
-    public UndoMove (PasaleGame game, PasaleFicha previousFicha, PasaleFicha currentFicha) {
+    public PotreroMove(PasaleGame game, PasaleFicha ficha) {
         this.game = game;
-        this.previous = previousFicha;
-        this.current = currentFicha;
+        this.ficha = ficha;
     }
 
     /**
@@ -46,11 +43,24 @@ public class UndoMove implements Move {
      */
     public boolean isMoveDoable(WorkingMemory workingMemory) {
         boolean ret = false;
-
-        if (current.getType().equals(TokenType.POTRERO)) {
-            ret = previous.getType().equals(TokenType.FOREST);
-        } else if (current.getType().equals(TokenType.SILVOPASTORAL)) {
-            ret = previous.getType().equals(TokenType.POTRERO);
+        try {
+            GridPlayer current = null;
+            for (GridPlayer player : game.getPlayers()) {
+                if (player.isTurn()) {
+                    current = player;
+                    break;
+                }
+            }
+            /* must be a player with a turn */
+            assert (current != null);
+            int starting = game.getGrid().getCells().size();
+            PasaleMove move = new PasaleMove(current, ficha);
+            move = (PasaleMove) game.move(move);
+            int ending = game.getGrid().getCells().size();
+            /* To be valid, the move must have been evaluated and no retractions occurred */
+            ret = (move.getStatus().equals(MoveStatus.EVALUATED) && starting == ending);
+        } catch (InvalidMoveException e) {
+            //
         }
 
         return ret;
@@ -66,7 +76,8 @@ public class UndoMove implements Move {
     public Move createUndoMove(WorkingMemory workingMemory) {
         UndoMove ret = null;
         try {
-            ret = new UndoMove ((PasaleGame) game.clone(), current, previous);
+            PasaleFicha undo = ficha.clone();
+            ret = new UndoMove ((PasaleGame) game.clone(), undo, ficha);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -81,10 +92,10 @@ public class UndoMove implements Move {
      * @param workingMemory the {@link org.drools.WorkingMemory} that needs to get notified of the changes.
      */
     public void doMove(WorkingMemory workingMemory) {
-        FactHandle handle = workingMemory.getFactHandle(current);
+        FactHandle handle = workingMemory.getFactHandle((PasaleFicha) game.getGrid().getLocation(ficha));
         workingMemory.retract(handle);
-        current.setType(previous.getType());
-        workingMemory.insert(previous);
+        ficha.setType(TokenType.POTRERO);
+        workingMemory.insert(ficha);
     }
 
     /**
@@ -124,9 +135,8 @@ public class UndoMove implements Move {
      */
     @Override
     public int hashCode() {
-       HashCodeBuilder builder = new HashCodeBuilder();
-        builder.append(previous);
-        builder.append(current);
+        HashCodeBuilder builder = new HashCodeBuilder();
+        builder.append(ficha);
         return builder.toHashCode();
     }
 
@@ -179,9 +189,9 @@ public class UndoMove implements Move {
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-        if (obj instanceof UndoMove) {
-            UndoMove comp = (UndoMove) obj;
-            ret = (comp.current.equals(this.current) && comp.previous.equals(this.previous));
+        if (obj instanceof PotreroMove) {
+            PotreroMove comp = (PotreroMove) obj;
+            ret = (comp.ficha.equals(this.ficha));
         } else {
             ret = super.equals(obj);
         }
