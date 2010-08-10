@@ -8,8 +8,8 @@ package mx.ecosur.multigame.impl.entity.tablon
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.solver.core.score.constraint.UnweightedConstraintOccurrence
-import org.drools.solver.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence
+import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
 import mx.ecosur.multigame.impl.entity.tablon.TablonGame;

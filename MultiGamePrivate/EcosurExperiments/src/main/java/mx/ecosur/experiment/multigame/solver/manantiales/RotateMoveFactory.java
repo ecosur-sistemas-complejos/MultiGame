@@ -22,9 +22,9 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 
-import org.drools.solver.core.move.Move;
-import org.drools.solver.core.move.factory.AbstractMoveFactory;
-import org.drools.solver.core.solution.Solution;
+import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.factory.AbstractMoveFactory;
+import org.drools.planner.core.solution.Solution;
 
 public class RotateMoveFactory extends AbstractMoveFactory {
 	
@@ -32,7 +32,7 @@ public class RotateMoveFactory extends AbstractMoveFactory {
 	Set <Ficha> facts;
 	
 	/* (non-Javadoc)
-	 * @see org.drools.solver.core.move.factory.MoveFactory#createMoveList(org.drools.solver.core.solution.Solution)
+	 * @see org.drools.planner.core.move.factory.MoveFactory#createMoveList(org.drools.planner.core.solution.Solution)
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Move> createMoveList(Solution solution) {

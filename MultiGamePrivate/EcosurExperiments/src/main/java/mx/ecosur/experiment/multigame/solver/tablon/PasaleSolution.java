@@ -3,8 +3,8 @@ package mx.ecosur.experiment.multigame.solver.tablon;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import org.drools.solver.core.solution.Solution;
-import org.drools.solver.core.score.Score;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.score.Score;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -20,7 +20,7 @@ import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
  * Time: 6:48:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TablonSolution implements Solution {
+public class PasaleSolution implements Solution {
 
     private Score score;
 
@@ -60,7 +60,7 @@ public class TablonSolution implements Solution {
     }
 
 
-    public TablonSolution () {
+    public PasaleSolution() {
         super();
         workingFacts = new LinkedHashSet<PasaleFicha>();
     }
@@ -70,7 +70,7 @@ public class TablonSolution implements Solution {
      *
      * @param game
      */
-    public TablonSolution (PasaleGame game) {
+    public PasaleSolution(PasaleGame game) {
         this();
         for (Object obj : game.getFacts()) {
             if (obj instanceof PasaleFicha) {
@@ -91,7 +91,7 @@ public class TablonSolution implements Solution {
     }
 
     /**
-     * Called by the {@link org.drools.solver.core.Solver} when the Score of this Solution has been calculated.
+     * Called by the {@link org.drools.planner.core.Solver} when the Score of this Solution has been calculated.
      *
      * @param score null if the Solution has changed and the new Score has not yet been recalculated
      */
@@ -100,7 +100,7 @@ public class TablonSolution implements Solution {
     }
 
     /**
-     * Called by the {@link org.drools.solver.core.Solver} when the solution needs to be asserted into an empty WorkingMemory.
+     * Called by the {@link org.drools.planner.core.Solver} when the solution needs to be asserted into an empty WorkingMemory.
      * These facts can be used by the score rules.
      *
      * @return never null (although an empty collection is allowed), all the facts of this solution
@@ -118,7 +118,7 @@ public class TablonSolution implements Solution {
     }
 
     /**
-     * Called by the {@link org.drools.solver.core.Solver} when the solution needs to be cloned,
+     * Called by the {@link org.drools.planner.core.Solver} when the solution needs to be cloned,
      * for example to store a clone of the current solution as the best solution.
      * <p/>
      * A clone must also shallow copy the score.
@@ -126,7 +126,7 @@ public class TablonSolution implements Solution {
      * @return never null, a clone of which the properties that change during solving are deep cloned
      */
     public Solution cloneSolution() {
-        TablonSolution ret = new TablonSolution ((PasaleGame) getGame());
+        PasaleSolution ret = new PasaleSolution((PasaleGame) getGame());
         ret.setScore (score);
         return ret;
     }

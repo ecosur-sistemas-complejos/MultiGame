@@ -6,7 +6,7 @@
     </scoreDefinition>
     <selector>
         <selector>
-            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.tablon.TablonMoveSuggestor</moveFactoryClass>
+            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.pasale.TablonMoveSuggestor</moveFactoryClass>
         </selector>
     </selector>
     <accepter>

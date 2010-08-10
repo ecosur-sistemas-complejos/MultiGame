@@ -21,7 +21,7 @@ import java.io.FileWriter;
  * The Experiment runner runs a tablon experiment a certain number
  * of times (default 30) creating 
  */
-public class TablonRetractionExperiment {
+public class PasaleRetractionExperiment {
 
     private static final int dimension = 42;
 
@@ -225,7 +225,7 @@ public class TablonRetractionExperiment {
             long localStart = System.currentTimeMillis();
             System.out.println ("Run time(ms) = " + (System.currentTimeMillis () - start));
             System.out.println("Running iteration " + i);
-            TablonRetractionExperiment tablonRetraction = new TablonRetractionExperiment();
+            PasaleRetractionExperiment tablonRetraction = new PasaleRetractionExperiment();
             tablonRetraction.initialize();
             int startingTokens = tablonRetraction.game.getGrid().getCells().size();
             int counter = 0;
