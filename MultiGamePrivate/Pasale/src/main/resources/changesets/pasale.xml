@@ -3,9 +3,9 @@
              xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
 
     <add>
-        <resource source="classpath:mx/ecosur/multigame/impl/tablon.drl" type="DRL"/>
+        <resource source="classpath:mx/ecosur/multigame/impl/pasale.drl" type="DRL"/>
     </add>
     <add>
-        <resource source="classpath:mx/ecosur/multigame/impl/ruleflow/tablon-flow.rf" type="DRF"/>
+        <resource source="classpath:mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf" type="DRF"/>
     </add>
 </change-set>

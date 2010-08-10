@@ -19,6 +19,7 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -35,16 +36,16 @@ import java.awt.*;
 
 @Entity
 public class PasaleGame extends GridGame {
-	
-	private static final long serialVersionUID = -8395074059039838349L;
+
+    private static final long serialVersionUID = -8395074059039838349L;
 
     private static final String ChangeSet = "/mx/ecosur/multigame/impl/tablon.xml";
 
     private static final boolean DEBUG = false;
 
     private static KnowledgeBase kbase;
-	
-	private transient MessageSender messageSender;
+
+    private transient MessageSender messageSender;
 
     private StatefulKnowledgeSession session;
 
@@ -78,11 +79,7 @@ public class PasaleGame extends GridGame {
     public void initialize() throws MalformedURLException {
         this.setState(GameState.BEGIN);
         if (kbase == null) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                ChangeSet)), ResourceType.CHANGE_SET);
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            kbase = findKBase();
         }
 
         if (session == null) {
@@ -115,11 +112,7 @@ public class PasaleGame extends GridGame {
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
         if (kbase == null) {
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                ChangeSet)), ResourceType.CHANGE_SET);
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            kbase = findKBase();
         }
         
         if (session == null) {
@@ -147,61 +140,61 @@ public class PasaleGame extends GridGame {
 
         return move;
     }
-	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		PasalePlayer player = new PasalePlayer();
-		player.setRegistrant((GridRegistrant) registrant);
-		
-		for (GridPlayer p : this.getPlayers()) {
-			if (p.equals (player))
-				throw new InvalidRegistrationException ("Duplicate Registraton!");
-		}		
-		
-		int max = getMaxPlayers();
-		if (players.size() == max)
-			throw new RuntimeException ("Maximum Players reached!");
-		
-		List<Color> colors = getAvailableColors();
-		player.setColor(colors.get(0));		
-		players.add(player);
+
+    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {
+        PasalePlayer player = new PasalePlayer();
+        player.setRegistrant((GridRegistrant) registrant);
+
+        for (GridPlayer p : this.getPlayers()) {
+            if (p.equals (player))
+                throw new InvalidRegistrationException ("Duplicate Registraton!");
+        }
+
+        int max = getMaxPlayers();
+        if (players.size() == max)
+            throw new RuntimeException ("Maximum Players reached!");
+
+        List<Color> colors = getAvailableColors();
+        player.setColor(colors.get(0));
+        players.add(player);
 
         try {
-		    if (players.size() == getMaxPlayers())
-			    initialize();
+            if (players.size() == getMaxPlayers())
+                initialize();
         } catch (MalformedURLException e) {
             throw new InvalidRegistrationException (e);
         }
-		
-		if (this.created == 0)
-		    this.setCreated(new Date());	
-		if (this.state == null)
-			this.state = GameState.WAITING;
-		
-		return player;
-	}
-	
-	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
-		throw new InvalidRegistrationException (
-				"Agents cannot be registered with an Oculto Game!");
-	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
-	 */
-	@Override
+        if (this.created == 0)
+            this.setCreated(new Date());
+        if (this.state == null)
+            this.state = GameState.WAITING;
+
+        return player;
+    }
+
+    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+        throw new InvalidRegistrationException (
+                "Agents cannot be registered with an Oculto Game!");
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     */
+    @Override
     @Transient
-	public List<Color> getColors() {
-		List<Color> ret = new ArrayList<Color>();
-		for (Color color : Color.values()) {
-			if (color.equals(Color.UNKNOWN))
-				continue;
-			if (color.equals(Color.GREEN))
-				continue;
-			ret.add(color);
-		}
-		
-		return ret;
-	}
+    public List<Color> getColors() {
+        List<Color> ret = new ArrayList<Color>();
+        for (Color color : Color.values()) {
+            if (color.equals(Color.UNKNOWN))
+                continue;
+            if (color.equals(Color.GREEN))
+                continue;
+            ret.add(color);
+        }
+
+        return ret;
+    }
 
 
     @Transient
@@ -219,20 +212,32 @@ public class PasaleGame extends GridGame {
 
 
     @Transient
-    public String getGameType() {
-        return "Tablon";
+    public Resource getResource() {
+        return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+            "/mx/ecosur/multigame/impl/pasale.xml"));
     }
 
-    public void setGameType (String type) {
-       type = type;
-    }    
+    @Transient
+    public String getGameType() {
+        return "Pasale";
+    }
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()
-	 */
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		PasaleGame ret = new PasaleGame();
+    @Deprecated
+    protected KnowledgeBase findKBase () {
+        KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
+            "/mx/ecosur/multigame/impl/pasale.xml")), ResourceType.CHANGE_SET);
+        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return ret;
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        PasaleGame ret = new PasaleGame();
         ret.setPlayers (this.getPlayers());
         ret.setGrid((GameGrid) grid.clone());
         ret.setColumns(this.getColumns());
@@ -246,7 +251,7 @@ public class PasaleGame extends GridGame {
         ret.setVersion(this.getVersion());
         ret.kbase = this.kbase;
         return ret;
-	}
+    }
 
     @Override
     public String toString() {

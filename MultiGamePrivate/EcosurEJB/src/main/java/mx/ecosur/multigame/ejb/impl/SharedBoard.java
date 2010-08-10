@@ -19,9 +19,9 @@
 
 package mx.ecosur.multigame.ejb.impl;
 
-import java.io.IOException;
 import java.util.Collection;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -64,10 +64,11 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         messageSender.initialize();
 
         /* setup the knowledge agents */
-        //KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        //kAgent = KnowledgeAgentFactory.newKnowledgeAgent( "agent", kaconf );
+        KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+        kAgent = KnowledgeAgentFactory.newKnowledgeAgent( "agent", kaconf );
     }
 
+    @PostConstruct
     private void setupGuvnor() {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
@@ -89,7 +90,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
         Game game = new Game (impl);
         game.setMessageSender(messageSender);
-
+        kAgent.applyChangeSet(game.getImplementation().getResource());
+        game.getImplementation().setKbase(kAgent.getKnowledgeBase());
         return game;
     }
 
@@ -163,8 +165,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         game.setMessageSender(messageSender);
 
         /* Get the kagent to find and apply the current package */
-        //kAgent.applyChangeSet(game.getImplementation().getResource());
-        //game.getImplementation().setKbase(kAgent.getKnowledgeBase());
+        kAgent.applyChangeSet(game.getImplementation().getResource());
+        game.getImplementation().setKbase(kAgent.getKnowledgeBase());
 
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
@@ -261,6 +263,11 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         
             /* Make the suggestion */
         game.setMessageSender(messageSender);
+
+        /* Get the kagent to find and apply the current package */
+        kAgent.applyChangeSet(game.getImplementation().getResource());
+        game.getImplementation().setKbase(kAgent.getKnowledgeBase());        
+
         Suggestion ret = game.suggest(suggestion);
 
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
