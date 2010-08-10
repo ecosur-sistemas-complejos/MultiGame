@@ -65,7 +65,7 @@ public class PasaleGame extends GridGame {
 
     public PasaleGame(int columns, int rows, KnowledgeBase kbase) {
         this(columns, rows);
-        this.kbase = kbase;
+        PasaleGame.kbase = kbase;
     }
 
     @Transient
@@ -85,7 +85,7 @@ public class PasaleGame extends GridGame {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
-            session.setGlobal("dimension", new Integer(this.getColumns()));
+            session.setGlobal("dimension", getColumns());
             session.insert(this);
             for (Implementation fact : getFacts()) {
                 session.insert(fact);
@@ -122,7 +122,7 @@ public class PasaleGame extends GridGame {
             session.insert(this);            
         }
 
-        if (logger == null && DEBUG) {
+        if (DEBUG) {
             logger = new WorkingMemoryFileLogger(session);
             logger.setFileName("audit");
         }
@@ -237,6 +237,7 @@ public class PasaleGame extends GridGame {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
+        super.clone();
         PasaleGame ret = new PasaleGame();
         ret.setPlayers (this.getPlayers());
         ret.setGrid((GameGrid) grid.clone());
@@ -249,7 +250,6 @@ public class PasaleGame extends GridGame {
         ret.setId(this.getId());
         ret.setMoves(this.getMoves());
         ret.setVersion(this.getVersion());
-        ret.kbase = this.kbase;
         return ret;
     }
 
@@ -299,6 +299,7 @@ public class PasaleGame extends GridGame {
     }
 
     public void finalize() {
+        super.finalize();
         if (this.session != null)
             session.dispose();
     }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:gente="mx.ecosur.multigame.gente.*"
-	xmlns:manantiales="mx.ecosur.multigame.manantiales.*"
-	xmlns:component="mx.ecosur.multigame.component.*"
-	layout="absolute">
-	
-	<mx:Style source="style.css"/>
-	
-	<mx:Script>
+    xmlns:gente="mx.ecosur.multigame.gente.*"
+    xmlns:manantiales="mx.ecosur.multigame.manantiales.*"
+    xmlns:pasale="mx.ecosur.multigame.pasale.*"
+    xmlns:component="mx.ecosur.multigame.component.*"
+    layout="absolute">
+
+    <mx:Style source="style.css"/>
+
+    <mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.entity.Registrant;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.gente.entity.GenteGame;
+        import mx.ecosur.multigame.pasale.entity.PasaleGame;
         import mx.managers.CursorManager;
 
         import mx.ecosur.multigame.entity.Game;
@@ -19,11 +21,13 @@
         import mx.controls.Alert;
         import mx.ecosur.multigame.gente.GenteGameWindow;
         import mx.ecosur.multigame.manantiales.ManantialesWindow;
+        import mx.ecosur.multigame.pasale.GameWindow;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
         private var _genteGameWindow:GenteGameWindow,
-                _manantialesWindow:ManantialesWindow;
+                _manantialesWindow:ManantialesWindow,
+                _pasaleWindow:GameWindow;
 
         private function init():void {
             loginPrincipal();
@@ -39,10 +43,17 @@
                 vstack.removeChild(_genteGameWindow);
                 _genteGameWindow = null;
             }
+
             if (_manantialesWindow != null) {
                 _manantialesWindow.destroy();
                 vstack.removeChild(_manantialesWindow);
                 _manantialesWindow = null;
+            }
+
+            if (_pasaleWindow == null) {
+                _pasaleWindow.destroy();
+                vstack.removeChild(_pasaleWindow);
+                _pasaleWindow = null;
             }
 
             /* Restart the lobby timer to view any updates to
@@ -85,6 +96,13 @@
                 _manantialesWindow.addEventListener("complete", gameComplete);
                 vstack.addChild(_manantialesWindow);
                 vstack.selectedChild = _manantialesWindow;
+            } else if (event.game is PasaleGame) {
+                _pasaleWindow = new GameWindow();
+                _pasaleWindow.currentPlayer = event.gamePlayer;
+                _pasaleWindow.currentGame = PasaleGame(event.game);
+                _pasaleWindow.addEventListener("complete", gameComplete);
+                vstack.addChild(_pasaleWindow);
+                vstack.selectedChild = _pasaleWindow;
             } else {
                 var game:Game = event.game;
                 Alert.show("Error!  Unknown GameType [" + game + "]");
@@ -94,11 +112,12 @@
         }
         ]]>
     </mx:Script>
-	<mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
+    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
     <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
-    	<component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
+        <component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
              gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
-		<gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
-		<manantiales:ManantialesWindow id="manantialesWindow" complete="gameComplete(event)" />
+        <gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
+        <manantiales:ManantialesWindow id="manantialesWindow" complete="gameComplete(event)" />
+        <pasale:GameWindow id="pasaleWindow" complete="gameComplete(event)" />
 	</mx:ViewStack>
 </mx:Application>

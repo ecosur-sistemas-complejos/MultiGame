@@ -53,6 +53,8 @@
     }
 
     private function showAIPlayers(show:Boolean):void {
+        var showing:Boolean = false;
+
         if (show) {
             var i:int;
             if (gameType.selectedItem.data == "GENTE") {
@@ -60,13 +62,15 @@
                 for (i = 0; i < genteAgentList.length; i++) {
                     agentList.addItem(genteAgentList [ i ]);
                 }
+                showing  = true;
             } else if (gameType.selectedItem.data == "MANANTIALES") {
                 agentList.removeAll();
                 for (i = 0; i < manAgentList.length; i++) {
                     agentList.addItem(manAgentList[ i ]);
                 }
+                showing = true;
             }
-            aiPlayers.visible = true;
+            aiPlayers.visible = showing;
             aiPlayers.percentHeight = 100;
         } else {
             aiPlayers.visible = false;
@@ -109,6 +113,7 @@
 <mx:ArrayCollection id="gameList">
     <mx:Object label="@Resource(key='start.game.gente', bundle='StringsBundle')" data="GENTE"/>
     <mx:Object label="@Resource(key='start.game.manantiales', bundle='StringsBundle')" data="MANANTIALES"/>
+    <mx:Object label="@Resource(key='start.game.pasale', bundle='StringsBundle')" data="PASALE"/>    
 </mx:ArrayCollection>
 
 <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />

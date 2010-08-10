@@ -529,3 +529,5 @@ MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame
 MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/pasale/pasale-standard-solver.xml
 MultiGamePrivate/EcosurExperiments/target/data/lab-experiment.csv
 MultiGamePrivate/EcosurExperiments/target/ecosur-experiments-1.1.0-SNAPSHOT.jar
+MultiGamePrivate/EcosurExperiments/target/classes/pasale/pasale-standard-solver.xml
+MultiGamePrivate/FlexClient/target/classes/StringsBundle.properties

@@ -1,6 +1,6 @@
 package mx.ecosur.multigame.pasale.enum
 {
-	public class TokenType
+	public class UseType
 	{	
 		public static const UNDEVELOPED:String = "UNDEVELOPED";
 		public static const FOREST:String = "FOREST";
