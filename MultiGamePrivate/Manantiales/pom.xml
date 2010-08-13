@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>mx.ecosur</groupId>
     <artifactId>manantiales</artifactId>
-    <name>Manantiales Implementation</name>
+    <name>Manantiales/Sierra Springs</name>
     <description>Implementation of the game Manantiales.</description>
     <parent>
         <artifactId>multi-game-private</artifactId>

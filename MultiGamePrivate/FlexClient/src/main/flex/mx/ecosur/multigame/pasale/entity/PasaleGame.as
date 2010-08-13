@@ -10,5 +10,15 @@ package mx.ecosur.multigame.pasale.entity
         public function PasaleGame () {
             super();
         }
+
+
+        override public function get columns():int {
+            return super.columns;
+        }
+
+
+        override public function get rows():int {
+            return super.rows;
+        }
     }
 }

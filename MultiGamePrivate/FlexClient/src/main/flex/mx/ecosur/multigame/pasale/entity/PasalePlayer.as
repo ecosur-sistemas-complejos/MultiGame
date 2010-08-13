@@ -2,8 +2,7 @@ package mx.ecosur.multigame.pasale.entity
 {
     import mx.ecosur.multigame.entity.GamePlayer;
 
-    [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.pasale.PasalePlayer")]
+    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.pasale.PasalePlayer")]
     public class PasalePlayer extends GamePlayer
     {
 
@@ -17,7 +16,7 @@ package mx.ecosur.multigame.pasale.entity
             return _cheatYears;
         }
 
-        public function setCheatYears(cheatYears:int):void {
+        public function set cheatYears(cheatYears:int):void {
             _cheatYears = cheatYears;
         }
 
@@ -25,13 +24,8 @@ package mx.ecosur.multigame.pasale.entity
             return _points;
         }
 
-        public function setScore (score:int):void {
+        public function set score (score:int):void {
             _points = score;
-        }
-
-        public void reset() {
-            _cheatYears = 0;
-            _points = 0;
         }
     }
 }

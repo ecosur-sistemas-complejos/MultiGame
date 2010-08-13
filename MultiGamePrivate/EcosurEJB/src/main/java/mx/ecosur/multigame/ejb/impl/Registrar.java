@@ -94,7 +94,8 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
             throws InvalidRegistrationException
     {
         /* Set messaging */
-        game.setMessageSender(messageSender);
+        if (game.getMessageSender() == null)
+            game.setMessageSender(messageSender);
 
         if (!em.contains(game.getImplementation())) {
             Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));

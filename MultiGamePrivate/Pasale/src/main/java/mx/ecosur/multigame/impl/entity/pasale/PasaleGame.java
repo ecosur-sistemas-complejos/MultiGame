@@ -43,6 +43,8 @@ public class PasaleGame extends GridGame {
 
     private static final boolean DEBUG = false;
 
+    private static final int DIMENSIONS = 20;  // so, DIMENSIONS x DIMENSIONS
+
     private static KnowledgeBase kbase;
 
     private transient MessageSender messageSender;
@@ -53,6 +55,8 @@ public class PasaleGame extends GridGame {
 
     public PasaleGame() {
         super();
+        setRows (DIMENSIONS);
+        setColumns(DIMENSIONS);
     }
 
 
@@ -77,7 +81,11 @@ public class PasaleGame extends GridGame {
       * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
       */
     public void initialize() throws MalformedURLException {
+        this.setGrid(new GameGrid());
         this.setState(GameState.BEGIN);
+        this.setCreated(new Date());
+        this.setColumns(20);
+        this.setRows(20);  
         if (kbase == null) {
             kbase = findKBase();
         }
@@ -256,7 +264,7 @@ public class PasaleGame extends GridGame {
     @Override
     public String toString() {
         PasaleGrid tgrid = (PasaleGrid) getGrid();
-        StringBuffer ret = new StringBuffer("TablonGame (id=" + id + ")\n");
+        StringBuffer ret = new StringBuffer("PasaleGame (id=" + id + ")\n");
         for (int y = 0; y < getColumns(); y++) {
             for (int x = 0; x < getRows(); x++) {
                 GridCell cell = grid.getLocation (new GridCell (y,x, Color.UNKNOWN));
@@ -299,7 +307,12 @@ public class PasaleGame extends GridGame {
     }
 
     public void finalize() {
-        super.finalize();
+        try {
+            super.finalize();
+        } catch (Throwable t) {
+           t.printStackTrace();
+        }
+        
         if (this.session != null)
             session.dispose();
     }

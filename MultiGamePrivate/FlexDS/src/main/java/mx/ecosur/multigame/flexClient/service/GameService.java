@@ -26,6 +26,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.model.GameGrid;
@@ -122,6 +123,9 @@ public class GameService {
                         game = new ManantialesGame(Mode.valueOf(mode.toUpperCase()));
                     game.setMessageSender(new ManantialesMessageSender());
                     break;
+                case PASALE:
+                    game = new PasaleGame();
+                    game.setMessageSender(new MessageSender());
             }
 
             Game model = new Game (game);

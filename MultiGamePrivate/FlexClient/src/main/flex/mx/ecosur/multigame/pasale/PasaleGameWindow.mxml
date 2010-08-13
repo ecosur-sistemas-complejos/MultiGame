@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox
+        xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:component="mx.ecosur.multigame.component.*"
+        xmlns:pasale="mx.ecosur.multigame.pasale.*"
+        width="100%" height="100%"
+        creationComplete="{init()}">
+
+    <mx:Metadata>
+        [Event(name="complete")]
+    </mx:Metadata>
+
+    <mx:Script>
+        <![CDATA[
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.pasale.entity.PasaleGame;
+        import mx.events.MenuEvent;
+        import mx.managers.CursorManager;
+
+        private var _currentPlayer:GamePlayer;
+        private var _currentGame:PasaleGame;
+
+        public function init():void {
+            CursorManager.removeBusyCursor();
+        }
+
+        public function get currentPlayer():GamePlayer {
+            return _currentPlayer;
+        }
+
+        public function set currentPlayer(value:GamePlayer):void {
+            _currentPlayer = value;
+        }
+
+        public function get currentGame():PasaleGame {
+            return _currentGame;
+        }
+
+        public function set currentGame(value:PasaleGame):void {
+            _currentGame = value;
+        }
+
+        public function destroy():void {
+            // do nothing
+        }
+
+        public function dispatchCompletion ():void {
+                this.dispatchEvent(new Event("complete"));
+        }
+
+        public function quitGame():void {
+            return;
+        }
+
+        private function handleMenuItemClick(evt:MenuEvent):void {
+            if (evt.label == 'Lobby')
+                dispatchCompletion();
+            else if (evt.label == 'Quit') {
+                quitGame();
+                dispatchCompletion();
+            }
+        }
+
+         ]]>
+    </mx:Script>
+
+    <mx:XMLList id="menuXML">
+        <menuitem label="Game">
+            <menuitem label="Lobby"/>
+            <menuitem label="Quit"/>
+        </menuitem>
+    </mx:XMLList>
+
+    <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
+        <mx:MenuBar height="100%"
+                    dataProvider="{menuXML}"
+                    labelField="@label"
+                    showRoot="true"
+                    itemClick="handleMenuItemClick(event)"/>
+    </mx:ApplicationControlBar>
+    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
+             paddingLeft="10" paddingRight="10" id="hbox">
+        <mx:VBox id="centerBox" width="100%" height="100%">
+            <pasale:PasaleBoard id="board" width="100%" height="100%"/>
+        </mx:VBox>
+        <mx:UIComponent id="animateLayer"/>
+    </mx:HBox>
+</mx:VBox>

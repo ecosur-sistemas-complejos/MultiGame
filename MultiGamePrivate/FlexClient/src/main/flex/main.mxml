@@ -21,13 +21,13 @@
         import mx.controls.Alert;
         import mx.ecosur.multigame.gente.GenteGameWindow;
         import mx.ecosur.multigame.manantiales.ManantialesWindow;
-        import mx.ecosur.multigame.pasale.GameWindow;
+        import mx.ecosur.multigame.pasale.PasaleGameWindow;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
         private var _genteGameWindow:GenteGameWindow,
                 _manantialesWindow:ManantialesWindow,
-                _pasaleWindow:GameWindow;
+                _pasaleWindow:PasaleGameWindow;
 
         private function init():void {
             loginPrincipal();
@@ -97,7 +97,7 @@
                 vstack.addChild(_manantialesWindow);
                 vstack.selectedChild = _manantialesWindow;
             } else if (event.game is PasaleGame) {
-                _pasaleWindow = new GameWindow();
+                _pasaleWindow = new PasaleGameWindow();
                 _pasaleWindow.currentPlayer = event.gamePlayer;
                 _pasaleWindow.currentGame = PasaleGame(event.game);
                 _pasaleWindow.addEventListener("complete", gameComplete);
@@ -118,6 +118,6 @@
              gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
         <gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
         <manantiales:ManantialesWindow id="manantialesWindow" complete="gameComplete(event)" />
-        <pasale:GameWindow id="pasaleWindow" complete="gameComplete(event)" />
+        <pasale:PasaleGameWindow id="pasaleWindow" complete="gameComplete(event)" />
 	</mx:ViewStack>
 </mx:Application>

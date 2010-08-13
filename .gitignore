@@ -531,3 +531,6 @@ MultiGamePrivate/EcosurExperiments/target/data/lab-experiment.csv
 MultiGamePrivate/EcosurExperiments/target/ecosur-experiments-1.1.0-SNAPSHOT.jar
 MultiGamePrivate/EcosurExperiments/target/classes/pasale/pasale-standard-solver.xml
 MultiGamePrivate/FlexClient/target/classes/StringsBundle.properties
+MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/commons-logging-1.1.1.jar
+MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/pasale-1.1.0-SNAPSHOT.jar
+MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/slf4j-jcl-1.5.8.jar
