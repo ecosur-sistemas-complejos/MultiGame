@@ -3,22 +3,22 @@ package mx.ecosur.multigame.pasale {
     import as3isolib.display.primitive.IsoBox;
     import mx.ecosur.multigame.pasale.enum.UseType;
 
-    public class PasaleCell extends IsoBox {
+    public class PasaleBox extends IsoBox {
 
-        private var _type:UseType;
+        private var _type:String;
 
         private var _row:int;
         private var _column:int;
 
-        public function PasaleCell() {
+        public function PasaleBox() {
             super();
         }
 
-        public function get type():UseType {
+        public function get type():String {
             return _type;
         }
 
-        public function set type(value:UseType):void {
+        public function set type(value:String):void {
             _type = value;
         }
 

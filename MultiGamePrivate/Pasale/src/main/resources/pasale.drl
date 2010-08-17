@@ -43,27 +43,6 @@ global Integer dimension;
 dialect "java"
 
 #rules
-rule "setup"
-    ruleflow-group "initialize"
-    no-loop true
-when
-    $game : PasaleGame (state == GameState.BEGIN);
-then
-    $game.setCreated(new Date());
-    $game.setColumns(dimension);
-    $game.setRows(dimension);
-    List<GridPlayer> players = $game.getPlayers();
-    for (GridPlayer p : players) {
-        if (p.getColor() == Color.YELLOW)
-            p.setTurn(true);
-        else
-            p.setTurn(false);
-    }    
-    modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players)}
-    messageSender.sendPlayerChange($game);
-    messageSender.sendStartGame($game);
-end
-
 
 rule "verify-move"
     ruleflow-group "verify"

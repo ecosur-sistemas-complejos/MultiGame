@@ -58,13 +58,15 @@ public class PasaleGame extends GridGame {
         super();
         setRows (DIMENSIONS);
         setColumns(DIMENSIONS);
+        setCreated(new Date());
+        setState(GameState.PLAY);
         if (grid.getCells().size() == 0)
             grid = createGrid();
     }
 
 
     public PasaleGame(int columns, int rows) {
-        super();
+        this();
         setColumns(columns);
         setRows(rows);
         kbase = null;
@@ -80,40 +82,13 @@ public class PasaleGame extends GridGame {
         return new Dimension (getColumns(), getRows());
     }
 
-    /* (non-Javadoc)
-      * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
-      */
-    public void initialize() throws MalformedURLException {
-        this.setGrid(createGrid());
-        this.setState(GameState.BEGIN);
-        this.setCreated(new Date());
-        this.setColumns(DIMENSIONS);
-        this.setRows(DIMENSIONS);  
-        if (kbase == null) {
-            kbase = findKBase();
-        }
-
-        if (session == null) {
-            session = kbase.newStatefulKnowledgeSession();
-            session.setGlobal("messageSender", getMessageSender());
-            session.setGlobal("dimension", getColumns());
-            session.insert(this);
-            for (Implementation fact : getFacts()) {
-                session.insert(fact);
-            }
-        }
-
-        session.startProcess("tablon-flow");
-        session.fireAllRules();
-    }
-
     private PasaleGrid createGrid() {
         PasaleGrid grid = new PasaleGrid ();
         int lower = (DIMENSIONS / 2) - 2;
         int upper = (DIMENSIONS / 2)  + 2;
         /* Populate the grid */
-        for (int col = 1; col <= DIMENSIONS; col++) {
-            for (int row = 1; row <= DIMENSIONS; row++) {
+        for (int col = 0; col <= DIMENSIONS; col++) {
+            for (int row = 0; row <= DIMENSIONS; row++) {
                 if ( (col + row) % 2 != 0)
                     continue;
                 if ( row % 2 == 1 || col % 2 == 1) {
@@ -204,19 +179,11 @@ public class PasaleGame extends GridGame {
 
         List<Color> colors = getAvailableColors();
         player.setColor(colors.get(0));
+
+        /* TODO: rethink "turns" in Pasale */
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
         players.add(player);
-
-        try {
-            if (players.size() == getMaxPlayers())
-                initialize();
-            } catch (MalformedURLException e) {
-                throw new InvalidRegistrationException (e);
-        }
-
-        if (this.created == 0)
-            this.setCreated(new Date());
-        if (this.state == null)
-            this.state = GameState.WAITING;
 
         return player;
     }

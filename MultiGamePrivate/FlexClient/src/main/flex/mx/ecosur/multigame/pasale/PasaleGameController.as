@@ -1,8 +1,10 @@
 package mx.ecosur.multigame.pasale {
 import mx.collections.ArrayCollection;
 import mx.controls.Alert;
+import mx.ecosur.multigame.entity.GamePlayer;
 import mx.ecosur.multigame.enum.Color;
 import mx.ecosur.multigame.enum.ExceptionType;
+import mx.ecosur.multigame.enum.GameEvent;
 import mx.ecosur.multigame.pasale.entity.PasaleGame;
 import mx.ecosur.multigame.pasale.entity.PasaleGrid;
 import mx.ecosur.multigame.pasale.entity.PasaleMove;
@@ -82,7 +84,16 @@ public class PasaleGameController {
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
         }
 
+        public function sendMove (move:PasaleMove):void {
+            var call:Object = _gameService.doMove(_game, move);
+            call.operation = "doMove";
+            _executingMove = move;
+        }
 
+        public function quitGame (gamePlayer:GamePlayer):void {
+            var call:Object = _gameService.quitGame(_game, gamePlayer);
+            call.operation = "quitGame";
+        }    
 
         public function destroy():void {
             _msgReceiver.destroy();
@@ -98,9 +109,16 @@ public class PasaleGameController {
                 var event:DynamicEvent = DynamicEvent(_messages.getItemAt(i));
                 var message:IMessage = event.message;
                 var gameEvent:String = message.headers.GAME_EVENT;
+                var move:PasaleMove = null;
 
                 switch (gameEvent) {
-
+                    case GameEvent.MOVE_COMPLETE:
+                        move= PasaleMove(message.body);
+                        var callGrid:Object = _gameService.getGameGrid(_gameId);
+                        callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+                        break;
+                    default:
+                        Alert.show(gameEvent);
                 }
             }
         }    
@@ -153,6 +171,7 @@ public class PasaleGameController {
         }
 
         private function invalidMove(move:PasaleMove):void {
+            Alert.show("INVALID MOVE: " + move);
             
         }
     }

@@ -130,6 +130,7 @@ public class GameService {
 
             Game model = new Game (game);
             model = registrar.registerPlayer(model, new Registrant(player));
+            
             for (GamePlayer impl : model.listPlayers()) {
                 GridPlayer gridPlayer = (GridPlayer) impl.getImplementation();
                 if (gridPlayer.getRegistrant().equals(player)) {
