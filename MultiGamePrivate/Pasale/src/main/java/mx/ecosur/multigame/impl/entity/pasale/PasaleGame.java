@@ -7,6 +7,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.MoveComparator;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
@@ -57,6 +58,8 @@ public class PasaleGame extends GridGame {
         super();
         setRows (DIMENSIONS);
         setColumns(DIMENSIONS);
+        if (grid.getCells().size() == 0)
+            grid = createGrid();
     }
 
 
@@ -81,11 +84,11 @@ public class PasaleGame extends GridGame {
       * @see mx.ecosur.multigame.model.Game#initialize(mx.ecosur.multigame.GameType)
       */
     public void initialize() throws MalformedURLException {
-        this.setGrid(new GameGrid());
+        this.setGrid(createGrid());
         this.setState(GameState.BEGIN);
         this.setCreated(new Date());
-        this.setColumns(20);
-        this.setRows(20);  
+        this.setColumns(DIMENSIONS);
+        this.setRows(DIMENSIONS);  
         if (kbase == null) {
             kbase = findKBase();
         }
@@ -104,6 +107,43 @@ public class PasaleGame extends GridGame {
         session.fireAllRules();
     }
 
+    private PasaleGrid createGrid() {
+        PasaleGrid grid = new PasaleGrid ();
+        int lower = (DIMENSIONS / 2) - 2;
+        int upper = (DIMENSIONS / 2)  + 2;
+        /* Populate the grid */
+        for (int col = 1; col <= DIMENSIONS; col++) {
+            for (int row = 1; row <= DIMENSIONS; row++) {
+                if ( (col + row) % 2 != 0)
+                    continue;
+                if ( row % 2 == 1 || col % 2 == 1) {
+                /* soil or water */
+                /* TODO:  Dynamically determine the location of rivers on the map */
+                if ( (col > lower && col < upper) || (row > lower && row < upper)) {
+                    PasaleFicha particle = null;
+                    if ( (col == 1 || col == upper) || (row == 1 || row == upper) ) {
+                       particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    } else {
+                        particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                    }
+
+                    grid.updateCell(particle);
+
+                } else {
+                    PasaleFicha soilParticle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    grid.updateCell (soilParticle);
+                }
+
+                } else {
+                    PasaleFicha forest = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.FOREST);
+                    grid.updateCell (forest);
+                }
+            }
+        }
+
+        return grid;        
+    }
+
 
 
     @Transient
@@ -112,7 +152,7 @@ public class PasaleGame extends GridGame {
     }
 
     public void setMaxPlayers(int maxPlayers) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        // do nothing
     }
 
     /* (non-Javadoc)
@@ -169,8 +209,8 @@ public class PasaleGame extends GridGame {
         try {
             if (players.size() == getMaxPlayers())
                 initialize();
-        } catch (MalformedURLException e) {
-            throw new InvalidRegistrationException (e);
+            } catch (MalformedURLException e) {
+                throw new InvalidRegistrationException (e);
         }
 
         if (this.created == 0)

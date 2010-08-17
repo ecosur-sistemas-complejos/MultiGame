@@ -12,17 +12,19 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.controls.Alert;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.pasale.entity.PasaleGame;
+        import mx.ecosur.multigame.pasale.entity.PasaleGrid;
         import mx.events.MenuEvent;
         import mx.managers.CursorManager;
 
         private var _currentPlayer:GamePlayer;
         private var _currentGame:PasaleGame;
+        private var _controller:PasaleGameController;
 
         public function init():void {
             CursorManager.removeBusyCursor();
+            _controller = new PasaleGameController(this);
         }
 
         public function get currentPlayer():GamePlayer {
@@ -42,11 +44,11 @@
         }
 
         public function destroy():void {
-            // do nothing
+            _controller.destroy();
         }
 
-        public function dispatchCompletion ():void {
-                this.dispatchEvent(new Event("complete"));
+        public function dispatchCompletion():void {
+            this.dispatchEvent(new Event("complete"));
         }
 
         public function quitGame():void {
@@ -62,7 +64,7 @@
             }
         }
 
-         ]]>
+     ]]>
     </mx:Script>
 
     <mx:XMLList id="menuXML">
@@ -81,9 +83,14 @@
     </mx:ApplicationControlBar>
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
              paddingLeft="10" paddingRight="10" id="hbox">
-        <mx:VBox id="centerBox" width="100%" height="100%">
-            <pasale:PasaleBoard id="board" width="100%" height="100%"/>
-        </mx:VBox>
-        <mx:UIComponent id="animateLayer"/>
+        <pasale:PasaleBoard id="board" width="100%" height="100%" grid="{PasaleGrid(currentGame.grid)}"/>
     </mx:HBox>
+    <mx:HBox>
+        <component:GameStatus id="status" width="200" visible="false"/>
+    </mx:HBox>
+    <mx:HBox>
+        <component:ChatPanel id="chatPanel" currentPlayer="{currentPlayer}"
+            currentGame="{currentGame}" width="300"/>
+    </mx:HBox>
+    <mx:UIComponent id="animateLayer"/>
 </mx:VBox>

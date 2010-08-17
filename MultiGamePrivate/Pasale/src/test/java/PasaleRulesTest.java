@@ -68,7 +68,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
     private PasalePlayer alice, bob, charlie, denise;
 
     @Before
-	public void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
 
         /* Set up mock JMS destination for message sender */
@@ -78,111 +78,111 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-		game = new PasaleGame(26, 26, tablon);
+        game = new PasaleGame(26, 26, tablon);
 
-		GridRegistrant a, b, c, d;
-		a = new GridRegistrant ("alice");
-		b = new GridRegistrant ("bob");
-		c = new GridRegistrant ("charlie");
-		d = new GridRegistrant ("denise");
+        GridRegistrant a, b, c, d;
+        a = new GridRegistrant ("alice");
+        b = new GridRegistrant ("bob");
+        c = new GridRegistrant ("charlie");
+        d = new GridRegistrant ("denise");
 
-		alice = (PasalePlayer) game.registerPlayer(a);
-		bob = (PasalePlayer) game.registerPlayer(b);
-		charlie = (PasalePlayer) game.registerPlayer(c);
-		denise = (PasalePlayer) game.registerPlayer(d);
-	}
+        alice = (PasalePlayer) game.registerPlayer(a);
+        bob = (PasalePlayer) game.registerPlayer(b);
+        charlie = (PasalePlayer) game.registerPlayer(c);
+        denise = (PasalePlayer) game.registerPlayer(d);
+    }
 
     @Test
-	public void testInitialize () {
-		assertTrue (game.getGrid().getCells().size() != 0);
-		Collection<GridPlayer> players = game.getPlayers();
-		PasalePlayer p = null;
-		for (GridPlayer player : players) {
-			if (player.getRegistrant().getName().equals("alice")) {
-				p = (PasalePlayer) player;
-				break;
-			}
-		}
+    public void testInitialize () {
+        assertTrue (game.getGrid().getCells().size() != 0);
+        Collection<GridPlayer> players = game.getPlayers();
+        PasalePlayer p = null;
+        for (GridPlayer player : players) {
+            if (player.getRegistrant().getName().equals("alice")) {
+                p = (PasalePlayer) player;
+                break;
+            }
+        }
 
-		assertNotNull (p);
-		assertEquals ("alice", p.getRegistrant().getName());
-		assertEquals (true, p.isTurn());
-	}
+        assertNotNull (p);
+        assertEquals ("alice", p.getRegistrant().getName());
+        assertEquals (true, p.isTurn());
+    }
 
-@Test
-	public void testExecuteMove () throws InvalidMoveException {
-		PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
-		PasaleMove move = new PasaleMove(alice, token);
-		game.move (move);
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
-		assertEquals (token, game.getGrid().getLocation(token));
+    @Test
+    public void testExecuteMove () throws InvalidMoveException {
+        PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
+        PasaleMove move = new PasaleMove(alice, token);
+        game.move (move);
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (token, game.getGrid().getLocation(token));
         assertTrue (!alice.isTurn());
-	}
+    }
 
     @SuppressWarnings (value= "unchecked")
     @Test
     public void testSoilConsequence () throws InvalidMoveException, JMSException {
         PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
-		PasaleMove move = new PasaleMove(alice, token);
-		game.move (move);
+        PasaleMove move = new PasaleMove(alice, token);
+        game.move (move);
 
         ArrayList<Message> filter = new ArrayList<Message>();
-		List<Message> messageList = (List<Message>) mockTopic.getReceivedMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
+        List<Message> messageList = (List<Message>) mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+                    filter.add(message);
+        }
         mockTopic.clear();
-		assertTrue ("Unexpected event(s) interecpted! " + filter, filter.size() == 0);
-        
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertTrue ("Unexpected event(s) interecpted! " + filter, filter.size() == 0);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
         token = new PasaleFicha(4,10, bob.getColor(), TokenType.POTRERO);
         move = new PasaleMove(bob, token);
-		game.move (move);
+        game.move (move);
 
         filter = new ArrayList<Message>();
 
         messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+                    filter.add(message);
+        }
         mockTopic.clear();
-		assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0); 
+        assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0);
 
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
         token = new PasaleFicha(4,8, charlie.getColor(), TokenType.POTRERO);
         move = new PasaleMove(charlie, token);
-		game.move (move);
+        game.move (move);
 
         filter = new ArrayList<Message>();
-		messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
+        messageList = mockTopic.getCurrentMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+                    filter.add(message);
+        }
         mockTopic.clear();
-		assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0);
+        assertTrue ("Unexpected event(s) interecepted! " + filter, filter.size() == 0);
 
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
         token = new PasaleFicha(2,8, denise.getColor(), TokenType.POTRERO);
         move = new PasaleMove(denise, token);
-		game.move (move);
+        game.move (move);
 
         filter = new ArrayList<Message>();
-		messageList = mockTopic.getCurrentMessageList();
-		for (Message  message : messageList) {
-			if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
-					filter.add(message);
-		}
+        messageList = mockTopic.getCurrentMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+                    filter.add(message);
+        }
         mockTopic.clear();
-		assertTrue ("Filter size is " + filter.size(), filter.size() > 0);
+        assertTrue ("Filter size is " + filter.size(), filter.size() > 0);
 
-		assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (token, game.getGrid().getLocation(token));
 
         /* Check for consequences *//*

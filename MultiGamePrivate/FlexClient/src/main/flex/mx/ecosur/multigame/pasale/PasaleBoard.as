@@ -13,7 +13,7 @@ package mx.ecosur.multigame.pasale {
 
     import as3isolib.display.primitive.IsoBox;
     import as3isolib.display.scene.IsoScene;
-
+    
     import as3isolib.geom.IsoMath;
     import as3isolib.geom.Pt;
 
@@ -29,8 +29,8 @@ package mx.ecosur.multigame.pasale {
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
+    import mx.ecosur.multigame.pasale.entity.PasaleFicha;
     import mx.ecosur.multigame.pasale.entity.PasalePlayer;
-    import mx.effects.Fade;
     import mx.effects.Sequence;
     import mx.events.DynamicEvent;
     import mx.managers.PopUpManager;
@@ -43,11 +43,12 @@ package mx.ecosur.multigame.pasale {
 
         protected var _blinkAnim:Sequence;
 
-
         private var _alert:ColonizerAlert;
         private var _grid:GameGrid;
         private var _scene:IsoScene;
         private var _box:IsoBox;
+        
+        private var _controller:PasaleGameController;
 
         /* Tile sizes for different conditions */
         private var river:int = 10;
@@ -55,8 +56,11 @@ package mx.ecosur.multigame.pasale {
         private var forest:int = 30;
         private var mountain:int = 55;
 
+        private var _size:int = 0;
+
         public function PasaleBoard() {
             super();
+            addEventListener(Event.RESIZE, function():void{invalidateSize()});
         }
 
         public function set currentPlayer (currentPlayer:GamePlayer):void {
@@ -73,12 +77,11 @@ package mx.ecosur.multigame.pasale {
 
         public function set grid(value:GameGrid):void {
             _grid = value;
+            update();
         }
 
         public function remove(event:ProxyEvent):void {
-            var box:IsoBox = IsoBox(event.target);
-            _scene.removeChild(box);
-
+            _scene.removeChild(PasaleCell(event.target));
         }
 
         public function choose(event:ProxyEvent):void {
@@ -112,72 +115,6 @@ package mx.ecosur.multigame.pasale {
             _alert = null;
         }
 
-        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-        {
-            var pt:Pt = new Pt(width /2, height / 2);
-            IsoMath.screenToIso(pt);
-
-            var factor:int = 2;
-            var size:int = (unscaledWidth / DIMENSION)/factor;
-            var particle:int = size / 2;
-
-            if (_scene != null)
-                _scene.removeAllChildren();
-            else
-                _scene = new IsoScene();
-            
-            _scene.hostContainer = this;
-
-            /** TODO:  Fix THIS CONSTANT USE, should use nRows and nCols */
-            for (var i:int = 0; i < DIMENSION; i++) {
-                for (var j:int = 0; j < DIMENSION; j++) {
-                    var events:Boolean = true;
-                    var box:IsoBox = new IsoBox();
-                    /* Location to size boxes based on proximity to water */
-                    if (i % 2 == 0 || j % 2 == 0) {
-                        if (i == DIMENSION /2 || j == DIMENSION / 2) {
-                            box.setSize(size,size, river);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.78);
-                            events == false;
-                        } else if (i == DIMENSION /2 - 1 || i == DIMENSION /2 + 1 || j == DIMENSION /2 - 1 || j == DIMENSION /2 + 1) {
-                            box.setSize(size,size,riparian);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                        } else if (i == DIMENSION /2 - 2 || i == DIMENSION /2 + 2 || j == DIMENSION /2 - 2 || j == DIMENSION /2 + 2) {
-                            box.setSize(size,size,forest);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                        } else if (i == DIMENSION /2 - 3 || i == DIMENSION /2 + 3 || j == DIMENSION /2 - 3 || j == DIMENSION /2 + 3) {
-                            box.setSize(size,size,forest);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                        } else {
-                            box.setSize(size,size,mountain);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                        }
-
-                        if (events)
-                            box.addEventListener(MouseEvent.CLICK, choose);
-
-                    } else {
-                        if (i == DIMENSION /2 || j == DIMENSION / 2) {
-                            box.setSize(size,size, river);
-                            box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.78);
-                            events = false;                            
-                        }
-
-                        else {
-                            box.setSize(size,size, river);
-                            box.fill = new SolidColorFill(0XAA9C82, 0.78);
-                        }
-                    }
-
-                    box.moveTo(i * size + pt.x, j * size + pt.y, (height / 3));
-                    _scene.addChild(box);
-                }
-            }
-
-
-            _scene.render();   
-        }
-
         override protected function measure():void{
             measuredMinWidth = 500;
             measuredMinHeight = 500;
@@ -195,6 +132,99 @@ package mx.ecosur.multigame.pasale {
                 measuredHeight = _nRows * unscaledWidth / _nCols;
                 measuredWidth = unscaledWidth;
             }
+
+            findSize(measuredWidth, measuredHeight);
+        }
+
+        override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+            findSize (unscaledWidth, unscaledHeight);
+            update();
+        }
+
+        public function get size():int {
+            return _size;
+        }
+
+        public function set size (sze:int):void {
+            _size = sze;
+        }
+
+        public function findSize(w:int, h:int):int {
+            size = (w /DIMENSION)/2;
+            return _size;
+        }
+
+        public function update ():void
+        {
+            if (grid == null)
+                return;
+
+            if (_scene == null) {
+                _scene = new IsoScene();
+                _scene.hostContainer = this;
+            } else
+                _scene.removeAllChildren();
+
+            var pt:Pt = new Pt(width /2, height / 2);
+            IsoMath.screenToIso(pt);
+
+            var particle:int = size / 2;
+            var events:Boolean;
+
+            _scene.removeAllChildren();
+
+            for (var i:int=0; i < _grid.cells.length; i++) {
+                var cell:PasaleFicha = PasaleFicha (_grid.cells.getItemAt(i));
+                var box:PasaleCell = drawCell (cell.column, cell.row, cell.type);
+                box.moveTo(box.column * size + pt.x, box.row * size + pt.y, (height / 3));
+                _scene.addChild(box);
+            }
+            _scene.render();
+        }
+        
+        private function drawCell (column:int, row:int, type:String):PasaleCell {
+            var events:Boolean = true;
+            var box:PasaleCell = new PasaleCell();
+            box.column = column;
+            box.row = row;
+            
+            /* Location to size boxes based on proximity to water */
+            if (column % 2 == 0 || row % 2 == 0) {
+                if (column == DIMENSION /2 || row == DIMENSION / 2) {
+                    box.setSize(size,size, river);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.78);
+                    events == false;
+                } else if (column == DIMENSION /2 - 1 || column == DIMENSION /2 + 1 || row == DIMENSION /2 - 1 || row == DIMENSION /2 + 1) {
+                    box.setSize(size,size,riparian);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                } else if (column == DIMENSION /2 - 2 || column == DIMENSION /2 + 2 || row == DIMENSION /2 - 2 || row == DIMENSION /2 + 2) {
+                    box.setSize(size,size,forest);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                } else if (column == DIMENSION /2 - 3 || column == DIMENSION /2 + 3 || row == DIMENSION /2 - 3 || row == DIMENSION /2 + 3) {
+                    box.setSize(size,size,forest);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                } else {
+                    box.setSize(size,size,mountain);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                }
+
+                if (events)
+                    box.addEventListener(MouseEvent.CLICK, remove);
+
+            } else {
+                if (column == DIMENSION /2 || row == DIMENSION / 2) {
+                    box.setSize(size,size, river);
+                    box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.78);
+                    events = false;
+                }
+
+                else {
+                    box.setSize(size,size, river);
+                    box.fill = new SolidColorFill(0XAA9C82, 0.78);
+                }
+            }
+
+            return box;
         }
     }
 }

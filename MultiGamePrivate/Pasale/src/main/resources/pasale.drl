@@ -58,41 +58,7 @@ then
             p.setTurn(true);
         else
             p.setTurn(false);
-    }
-    PasaleGrid grid = new PasaleGrid ();
-    int lower = (dimension / 2) - 2;
-    int upper = (dimension / 2)  + 2;
-    /* Populate the grid */
-    for (int col = 1; col <= dimension; col++) {
-        for (int row = 1; row <= dimension; row++) {
-            if ( (col + row) % 2 != 0)
-                continue;
-
-            if ( row % 2 == 1 || col % 2 == 1) {
-                /* soil or water */
-                /* TODO:  Dynamically determine the location of rivers on the map */
-                if ( (col > lower && col < upper) || (row > lower && row < upper)) {
-                    PasaleFicha particle = null;
-                    if ( (col == 1 || col == upper) || (row == 1 || row == upper) ) {
-                       particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
-                    } else {
-                        particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
-                    }
-
-                    grid.updateCell(particle);
-
-                } else {
-                    PasaleFicha soilParticle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
-                    grid.updateCell (soilParticle);
-                }
-
-            } else {
-                PasaleFicha forest = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.FOREST);
-                grid.updateCell (forest);
-            }
-        }
-    }
-    
+    }    
     modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players)}
     messageSender.sendPlayerChange($game);
     messageSender.sendStartGame($game);

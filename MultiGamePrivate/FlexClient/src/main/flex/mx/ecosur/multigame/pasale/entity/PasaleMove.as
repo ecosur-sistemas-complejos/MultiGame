@@ -13,6 +13,10 @@ package mx.ecosur.multigame.pasale.entity
 
         private var _badYear:Boolean;
 
+        public function PasaleMove() {
+            super();
+        }
+
         public function get type ():String {
             return _type;
         }

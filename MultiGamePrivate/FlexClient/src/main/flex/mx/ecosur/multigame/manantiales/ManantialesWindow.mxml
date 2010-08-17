@@ -68,7 +68,7 @@
                 _suggestionHandler = suggestionHandler;
             }
             
-            [Binadble]
+            [Bindable]
             public function get controller ():ManantialesGameController {
                 return _controller;
             }

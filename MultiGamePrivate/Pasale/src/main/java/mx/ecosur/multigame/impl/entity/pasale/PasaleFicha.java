@@ -35,7 +35,6 @@ public class PasaleFicha extends GridCell {
 		super(column, row, color);
 		this.type = type;
         passThroughColors = Color.values();
-        //passThroughColors = new Color [] { color };
 	}
 
 	@Enumerated (EnumType.STRING)
@@ -47,14 +46,7 @@ public class PasaleFicha extends GridCell {
 	public void setType(TokenType type) {
 		this.type = type;
 	}
-    public Color[] getPassThroughColors() {
-        return passThroughColors;
-    }
-
-    public void setPassThroughColors(Color[] passThroughColors) {
-        this.passThroughColors = passThroughColors;
-    }
-
+    
     /* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
