@@ -129,6 +129,7 @@ package mx.ecosur.multigame.pasale {
             /* Send move across the wire */
             var move:PasaleMove = new PasaleMove();
             move.status = String (MoveStatus.UNVERIFIED);
+            move.player = currentPlayer;
             move.id = 0;
 
             for (var i:int = 0; i < grid.cells.length; i++) {

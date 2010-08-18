@@ -20,12 +20,14 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.builder.*;
+import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.io.Resource;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 import org.drools.audit.WorkingMemoryFileLogger;
@@ -46,7 +48,7 @@ public class PasaleGame extends GridGame {
 
     private static final int DIMENSIONS = 20;  // so, DIMENSIONS x DIMENSIONS
 
-    private static KnowledgeBase kbase;
+    private static transient KnowledgeBase kbase;
 
     private transient MessageSender messageSender;
 
@@ -140,9 +142,13 @@ public class PasaleGame extends GridGame {
         
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
+            session.addEventListener(new DebugAgendaEventListener());
+            session.addEventListener(new DebugWorkingMemoryEventListener());
+            KnowledgeRuntimeLogger krlogger =
+            KnowledgeRuntimeLoggerFactory.newFileLogger(session,"PasaleRulesLogger.txt");  
             session.setGlobal("messageSender", getMessageSender());
             session.setGlobal("dimension", new Integer(getColumns()));
-            session.insert(this);            
+            session.insert(this);
         }
 
         if (DEBUG) {
@@ -244,6 +250,13 @@ public class PasaleGame extends GridGame {
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
             "/mx/ecosur/multigame/impl/pasale.xml")), ResourceType.CHANGE_SET);
         ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+            for (KnowledgeBuilderError error: errors)
+                System.err.println(error);
+            throw new IllegalArgumentException("Error parsing CHANGESET!");
+        }                
+
         return ret;
     }
 

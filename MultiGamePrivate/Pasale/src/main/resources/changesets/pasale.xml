@@ -1,11 +1,14 @@
 <change-set xmlns='http://drools.org/drools-5.0/change-set'
              xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
              xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
-
-    <add>
+    <!--add>
         <resource source="classpath:mx/ecosur/multigame/impl/pasale.drl" type="DRL"/>
     </add>
     <add>
         <resource source="classpath:mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf" type="DRF"/>
+    </add-->
+    <add>
+         <resource source='http://localhost:8080/drools-guvnor-5.1.0/org.drools.guvnor.Guvnor/package/mx.ecosur.multigame.pasale/LATEST' 
+            type='PKG' basicAuthentication='enabled' username='multigame' password='multigame'/>
     </add>
 </change-set>

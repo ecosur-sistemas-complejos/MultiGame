@@ -42,6 +42,8 @@ import mx.ecosur.multigame.MessageSender;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.io.ResourceFactory;
 
 @Stateless
@@ -81,7 +83,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         /** TODO:  Inject or make this query static */
         Query query = em.createNamedQuery("getGameById");
         query.setParameter("id", gameId);
-        GameImpl impl = null;
+        GameImpl impl;
         try {
             impl = (GameImpl) query.getSingleResult();
         } catch (NoResultException e) {
@@ -166,7 +168,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
         /* Get the kagent to find and apply the current package */
         kAgent.applyChangeSet(game.getImplementation().getResource());
-        game.getImplementation().setKbase(kAgent.getKnowledgeBase());
+        game.getImplementation().setKbase(kAgent.getKnowledgeBase());        
 
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))

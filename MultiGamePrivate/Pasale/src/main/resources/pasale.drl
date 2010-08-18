@@ -18,8 +18,11 @@ import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.MessageSender;
 
-import mx.ecosur.multigame.impl.model.*;
-import mx.ecosur.multigame.impl.entity.pasale.*;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
+import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import mx.ecosur.multigame.impl.util.pasale.MutationEvent;
@@ -74,8 +77,7 @@ when
     $move  : PasaleMove  (badYear == false, status == MoveStatus.VERIFIED, player.turn == true)
 then
     PasaleFicha ficha = (PasaleFicha) $move.getDestinationCell();
-    GridCell cell =$grid.getLocation(ficha);
-    $grid.updateCell (ficha);        
+    $grid.updateCell (ficha);
     PasaleGrid tgrid = (PasaleGrid) $grid;
     MutationEvent mutation = new MutationEvent (ficha);
     mutation.setSquare (tgrid.getSquare(ficha));

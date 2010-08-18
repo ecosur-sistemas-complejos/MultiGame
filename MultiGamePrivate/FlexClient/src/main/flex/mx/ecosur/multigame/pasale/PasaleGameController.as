@@ -1,4 +1,5 @@
 package mx.ecosur.multigame.pasale {
+
 import mx.collections.ArrayCollection;
 import mx.controls.Alert;
 import mx.ecosur.multigame.entity.GamePlayer;
