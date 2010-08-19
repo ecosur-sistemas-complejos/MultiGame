@@ -55,9 +55,8 @@ package mx.ecosur.multigame.pasale {
 
         /* Tile sizes for different conditions */
         private var river:int = 10;
-        private var riparian:int = 15;
-        private var forest:int = 30;
-        private var mountain:int = 55;
+        private var riparian:int = 20;
+        private var mountain:int = 45;
 
         private var _size:int = 0;
 
@@ -120,11 +119,13 @@ package mx.ecosur.multigame.pasale {
         }
 
         public function colonize(event:DynamicEvent):void {
+            var targetType:String = _alert.type.selectedItem.data;
+
             /* clean up */
             _box.height = _box.height - mountain;
             _box.render(true);
             PopUpManager.removePopUp(_alert);
-            _alert = null;
+            _alert = null;            
 
             /* Send move across the wire */
             var move:PasaleMove = new PasaleMove();
@@ -135,7 +136,12 @@ package mx.ecosur.multigame.pasale {
             for (var i:int = 0; i < grid.cells.length; i++) {
                 var cell:PasaleFicha = PasaleFicha(grid.cells.getItemAt(i));
                 if (cell.column == _box.column && cell.row == _box.row) {
-                    move.destinationCell = Cell(cell);
+                    var destination:PasaleFicha = new PasaleFicha();
+                    destination.column = cell.column;
+                    destination.row = cell.row;
+                    destination.type = targetType;
+                    move.currentCell = cell;
+                    move.destinationCell = destination;
                     break;
                 }
             }
@@ -145,7 +151,28 @@ package mx.ecosur.multigame.pasale {
                 _controller.sendMove(move);
             }
 
-            _box = null;            
+            _box = null;
+
+            /* render the move */
+            doMove(move);                        
+        }
+
+        public function doMove(move:PasaleMove):void {
+            var destination:PasaleFicha = PasaleFicha (move.destinationCell);
+            var idx:int = -1;
+
+            for (var i:int = 0; i < grid.cells.length; i++) {
+                var cell:PasaleFicha = PasaleFicha (grid.cells.getItemAt(i));
+                if (cell.column == destination.column && cell.row == destination.row) {
+                    idx = i;
+                    break;
+                }
+            }
+
+            grid.cells.removeItemAt(idx);
+            grid.cells.addItemAt(destination, idx);
+            update();
+            
         }
 
         override protected function measure():void{
@@ -221,22 +248,7 @@ package mx.ecosur.multigame.pasale {
             box.column = column;
             box.row = row;
             box.type = type;
-
-            if (column == DIMENSION /2 - 1 || column == DIMENSION /2 + 1 ||
-                    row == DIMENSION /2 - 1 || row == DIMENSION /2 + 1)
-                box.setSize(size,size,riparian);
-
-            else if (column == DIMENSION /2 - 2 || column == DIMENSION /2 + 2 ||
-                    row == DIMENSION /2 - 2 || row == DIMENSION /2 + 2)
-
-                box.setSize(size,size,forest);
-
-            else if (column == DIMENSION /2 - 3 || column == DIMENSION /2 + 3 ||
-                    row == DIMENSION /2 - 3 || row == DIMENSION /2 + 3)
-            
-                box.setSize(size,size,forest);
-            else
-                box.setSize(size,size,mountain);
+            box.setSize(size,size,riparian);
 
             switch (box.type) {
                 case UseType.WATER_PARTICLE:
@@ -244,25 +256,21 @@ package mx.ecosur.multigame.pasale {
                     box.setSize(size,size, river);
                     break;
                 case UseType.SOIL_PARTICLE:
-                    box.fill = new SolidColorFill(0XAA9C82, 0.78);
+                    box.fill = new SolidColorFill(0xAA9C82, 0.78);
                     box.setSize(size,size, river);
                     break;
                 case UseType.FOREST:
-                    box.fill = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                    box.fill = new SolidColorFill(0x2D3A28, 1);
                     events = true;
                     break;
                 case UseType.POTRERO:
-                    box.fill = new SolidColorFill(Color.getColorCode(Color.YELLOW), 1);
+                    box.fill = new SolidColorFill(Color.getColorCode(_pasalePlayer.color), 1);
                     events = true;
                     break;
                 case UseType.SILVOPASTORAL:
-                    box.fill = new SolidColorFill(Color.getColorCode(Color.RED), 1);
+                    box.fill = new SolidColorFill(Color.getColorCode(_pasalePlayer.color), 0.4);
                     events = true;
-                    break;
-                case UseType.UNDEVELOPED:
-                    box.fill = new SolidColorFill(Color.getColorCode(Color.PURPLE), 1);
-                    events = true;
-                    break;                
+                    break;               
                 default:
                     box.fill = new SolidColorFill(Color.getColorCode(Color.BLACK), 1);
                     break;
@@ -272,6 +280,13 @@ package mx.ecosur.multigame.pasale {
                 box.addEventListener(MouseEvent.CLICK, choose);
 
             return box;
+        }
+
+        private function hasPathToWater (box:PasaleBox):Boolean {
+            var ret:Boolean = false;
+            
+
+            return ret;
         }
     }
 }

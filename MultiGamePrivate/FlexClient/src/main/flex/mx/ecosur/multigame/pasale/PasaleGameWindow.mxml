@@ -51,7 +51,7 @@
         }
 
         public function quitGame():void {
-            return;
+
         }
 
         private function handleMenuItemClick(evt:MenuEvent):void {
@@ -61,6 +61,7 @@
                 quitGame();
                 dispatchCompletion();
             }
+            _controller.quitGame(currentPlayer);
         }
 
      ]]>
@@ -80,9 +81,6 @@
             showRoot="true"
             itemClick="handleMenuItemClick(event)"/>
     </mx:ApplicationControlBar>
-    <mx:HBox>
-        <component:GameStatus id="status" width="200" visible="false"/>
-    </mx:HBox>    
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
              paddingLeft="10" paddingRight="10" id="hbox">
         <pasale:PasaleBoard id="board" width="100%" height="100%" controller="{new PasaleGameController(this)}"

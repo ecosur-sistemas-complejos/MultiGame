@@ -10,7 +10,8 @@
             import mx.events.DynamicEvent;
 
             private function constructColony (event:MouseEvent):void{
-                var dEvent:DynamicEvent = new DynamicEvent("build");                
+                var dEvent:DynamicEvent = new DynamicEvent("build");
+                                
                 dispatchEvent(dEvent);
             }
 
@@ -23,7 +24,7 @@
     </mx:Script>
     <mx:ArrayCollection id="landTypes">
         <mx:Object label="Potrero" data="POTRERO"/>
-        <mx:Object label="Silvopastoral" data="BLOCKER"/>
+        <mx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
         <mx:Object label="Managed Forest" data="FOREST"/>
     </mx:ArrayCollection>
 

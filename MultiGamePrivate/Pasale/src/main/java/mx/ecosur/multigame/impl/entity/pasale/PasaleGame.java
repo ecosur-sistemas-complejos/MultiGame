@@ -144,6 +144,7 @@ public class PasaleGame extends GridGame {
             session = kbase.newStatefulKnowledgeSession();
             session.addEventListener(new DebugAgendaEventListener());
             session.addEventListener(new DebugWorkingMemoryEventListener());
+            KnowledgeRuntimeLogger krlogger = KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
             session.setGlobal("messageSender", getMessageSender());
             session.setGlobal("dimension", new Integer(getColumns()));
             session.insert(this);

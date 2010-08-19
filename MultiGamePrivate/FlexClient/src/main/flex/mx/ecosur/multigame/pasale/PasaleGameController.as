@@ -2,6 +2,7 @@ package mx.ecosur.multigame.pasale {
 
 import mx.collections.ArrayCollection;
 import mx.controls.Alert;
+import mx.ecosur.multigame.entity.ChatMessage;
 import mx.ecosur.multigame.entity.GamePlayer;
 import mx.ecosur.multigame.enum.Color;
 import mx.ecosur.multigame.enum.ExceptionType;
@@ -35,7 +36,6 @@ public class PasaleGameController {
         private var _gameId:int;
 
         private var _msgReceiver:MessageReceiver;
-        private var _messages:ArrayCollection;
 
         // constants
         private static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
@@ -50,8 +50,6 @@ public class PasaleGameController {
 
         public function PasaleGameController (gameWindow:PasaleGameWindow)
         {
-            _messages = new ArrayCollection();
-
             // set references
             _gameWindow = gameWindow;
             _currentPlayer = PasalePlayer (gameWindow.currentPlayer);
@@ -69,14 +67,6 @@ public class PasaleGameController {
             // initialize message receiver
             _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
             _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
-
-            // initialize game status
-            _gameWindow.status.visible = true;
-            _gameWindow.status.showMessage(resourceManager.getString("StringsBundle", "manantiales.welcome") + " " +
-                _currentPlayer.registrant.name + ".\n\n" + resourceManager.getString("StringsBundle",
-                    "manantiales.identify") + " " +
-                Color.getColorDescription(_currentPlayer.color),
-                Color.getColorCode(_currentPlayer.color));
 
             // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
@@ -105,24 +95,39 @@ public class PasaleGameController {
          * reordered and dispatched. All messages contain a game event
          * header, based on this different actions are taken.
          */
-        private function processMessage(evt:DynamicEvent):void {
-            for (var i:int = 0; i < _messages.length; i++) {
-                var event:DynamicEvent = DynamicEvent(_messages.getItemAt(i));
-                var message:IMessage = event.message;
-                var gameEvent:String = message.headers.GAME_EVENT;
-                var move:PasaleMove = null;
+        private function processMessage(event:DynamicEvent):void {
+            var message:IMessage = event.message;
+            var gameEvent:String = message.headers.GAME_EVENT;
+            var move:PasaleMove = null;
 
-                switch (gameEvent) {
-                    case GameEvent.MOVE_COMPLETE:
-                        move= PasaleMove(message.body);
-                        var callGrid:Object = _gameService.getGameGrid(_gameId);
-                        callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-                        break;
-                    default:
-                        Alert.show(gameEvent);
-                }
+            switch (gameEvent) {
+                case GameEvent.MOVE_COMPLETE:
+                    move= PasaleMove(message.body);
+                    handleMove(move);
+                    break;
+                case GameEvent.CHAT:
+                    var chatMessage:ChatMessage = ChatMessage(message.body);
+                    _gameWindow.chatPanel.addMessage(chatMessage);
+                    break;
+                case GameEvent.CONDITION_TRIGGERED:
+                    // fall through
+                case GameEvent.PLAYER_CHANGE:
+                    var callGrid:Object = _gameService.getGameGrid(_gameId);
+                    callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+                    break;
+                default:
+                    Alert.show(gameEvent);
             }
-        }    
+        }
+
+        private function handleMove(move:PasaleMove):void {
+            var name:String;
+            if (move.player.color == _currentPlayer.color)
+                name = "You have "
+            else
+                name = move.player.color + " has ";
+            _gameWindow.board.doMove(move);
+        }
 
         /*
          * Game service result handler. Depending on the type of call
