@@ -535,3 +535,7 @@ MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/commons-logging-1.1.1
 MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/pasale-1.1.0-SNAPSHOT.jar
 MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/slf4j-jcl-1.5.8.jar
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/entity/pasale/beaninfo/PasaleGameBeanInfo.class
+MultiGamePrivate/Pasale/src/main/resources/.guvnorinfo/.pasale.drl
+MultiGamePrivate/Pasale/src/main/resources/ruleflow/.guvnorinfo/.pasale-flow.rf
+MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/.guvnorinfo/.pasale.drl
+MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/ruleflow/.guvnorinfo/.pasale-flow.rf
