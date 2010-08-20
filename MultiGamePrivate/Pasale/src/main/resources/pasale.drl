@@ -50,8 +50,8 @@ dialect "java"
 rule "verify-move"
     ruleflow-group "verify"
 when
-    $game  : PasaleGame (state == GameState.PLAY, $grid : grid)
-    $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    $game  : PasaleGame ($grid : grid)
+    $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED)
     eval (hasPathToWater((PasaleFicha) $move.getDestinationCell(), (PasaleGrid) $grid))
     eval ( ((PasaleFicha) $grid.getLocation ($move.getDestinationCell())).getType ().equals (TokenType.FOREST))
 then
@@ -62,8 +62,8 @@ end
 rule "verify-update-move"
     ruleflow-group "verify"
 when
-    $game  : PasaleGame (state == GameState.PLAY, $grid : grid)
-    $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    $game  : PasaleGame ($grid : grid)
+    $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED)
     eval ( ( (PasaleFicha) $move.getDestinationCell() ).getType().equals (TokenType.SILVOPASTORAL) )
     eval ( ( (PasaleFicha) $grid.getLocation ($move.getDestinationCell()) ).getType().equals (TokenType.POTRERO))
 then
@@ -73,8 +73,8 @@ end
 rule "do-move"
    ruleflow-group "move"
 when
-    $game  : PasaleGame  (state == GameState.PLAY, $grid : grid)
-    $move  : PasaleMove  (badYear == false, status == MoveStatus.VERIFIED, player.turn == true)
+    $game  : PasaleGame  ($grid : grid)
+    $move  : PasaleMove  (badYear == false, status == MoveStatus.VERIFIED)
 then
     PasaleFicha ficha = (PasaleFicha) $move.getDestinationCell();
     $grid.updateCell (ficha);
@@ -83,7 +83,6 @@ then
     mutation.setSquare (tgrid.getSquare(ficha));
     mutation.setOctogon (tgrid.getOctogon(ficha));
     mutation.setCross (tgrid.getCross(ficha));
-    incrementTurn ($game, $move);
     modify ($move) { setStatus (MoveStatus.MOVED) }
     insert (tgrid);
     insert (mutation);
@@ -115,7 +114,7 @@ rule "Edges must not be effected"
     ruleflow-group "evaluate"
     salience 10
 when
-    $game  : PasaleGame (state == GameState.PLAY)
+    $game  : PasaleGame ()
     $event : MutationEvent (ficha.column == 1 || ficha.row == 1 ||
         ficha.column == ($game.columns - 1) ||ficha.row == ($game.rows - 1))
 then
@@ -125,10 +124,10 @@ end
 rule "A Potrero token must be supported by 2 soil tokens in the SQUARE"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon)
     eval (isUnsupported (2, $ficha, $square, TokenType.SOIL_PARTICLE))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -145,10 +144,10 @@ end
 rule "A Silvopastoral token must be supported by 1 soil tokens in the SQUARE"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon)
     eval (isUnsupported (1, $ficha, $square, TokenType.SOIL_PARTICLE))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -165,11 +164,11 @@ end
 rule "A Potrero token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO, $square : square, $octo : octogon,
         $cross : cross)
     eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported (2, $ficha, $cross, TokenType.SILVOPASTORAL))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -185,11 +184,11 @@ end
 rule "A Silvopastoral token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL, $square : square, $octo : octogon,
         $cross : cross)
     eval (isUnsupported (1, $ficha, $cross, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -205,10 +204,10 @@ end
 rule "A soil token must be supported by 1 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.SOIL_PARTICLE, $square : square, $octo : octogon)
     eval (isUnsupported (1, $ficha, $square, TokenType.FOREST) && isUnsupported(2, $ficha, $square, TokenType.SILVOPASTORAL))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -224,10 +223,10 @@ end
 rule "A water token must be supported by 2 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
     ruleflow-group "evaluate"
 when
+    $grid : PasaleGrid ()
+    $game : PasaleGame ()
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.WATER_PARTICLE, $square : square, $octo : octogon)
     eval (isUnsupported (2, $ficha, $square, TokenType.FOREST) && isUnsupported(4, $ficha,$square,TokenType.SILVOPASTORAL))
-    $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -247,7 +246,7 @@ when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
     eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST) && isUnsupported(4, $ficha, $octo, TokenType.SILVOPASTORAL))
     $grid : PasaleGrid ()
-    $game : PasaleGame (state == GameState.PLAY)
+    $game : PasaleGame ()
     eval ($grid.getLocation($ficha) != null)
 then
     modify ($grid) { removeCell($ficha) }
@@ -263,9 +262,9 @@ end
 rule "A potrero token must have a path to water in the CROSS"
     ruleflow-group "evaluate"
 when
-        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO,  $square : square, $octo : octogon)
-        $game : PasaleGame (state == GameState.PLAY)
+        $game : PasaleGame ()
         $grid  : PasaleGrid()
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.POTRERO,  $square : square, $octo : octogon)
         eval (!hasPathToWater ($ficha, $grid));
 then
     modify ($grid) { removeCell($ficha) }
@@ -282,9 +281,9 @@ end
 rule "A silvopastoral token must have a path to water in the CROSS"
     ruleflow-group "evaluate"
 when
-        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL,  $square : square, $octo : octogon)
-        $game : PasaleGame (state == GameState.PLAY)
+        $game : PasaleGame ()
         $grid  : PasaleGrid()
+        $event : MutationEvent ($ficha :  ficha, ficha.type == TokenType.SILVOPASTORAL,  $square : square, $octo : octogon)
         eval (!hasPathToWater ($ficha, $grid));
 then
     modify ($grid) { removeCell($ficha) }
@@ -308,9 +307,9 @@ end
 rule "publish move complete"
     ruleflow-group "confirm"
 when
-    $game : PasaleGame (state == GameState.PLAY)
+    $game : PasaleGame ()
+    $grid : PasaleGrid()
     $move : PasaleMove (status == MoveStatus.MOVED)
-    $grid : PasaleGrid()    
 then
     modify ($game) { setGrid ($grid) }
     modify ($move) { setStatus (MoveStatus.EVALUATED) }

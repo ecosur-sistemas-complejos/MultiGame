@@ -140,6 +140,7 @@ public class PasaleGrid extends GameGrid {
         return ret;
 
     }
+    
 
     @Transient
     public SortedSet<PasaleFicha> getCross (PasaleFicha ficha) {

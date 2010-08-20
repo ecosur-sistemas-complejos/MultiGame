@@ -75,7 +75,7 @@ public class PasaleGameController {
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
         }
 
-        public function sendMove (move:PasaleMove):void {
+        public function sendMove (move:PasaleMove):void {            
             var call:Object = _gameService.doMove(_game, move);
             call.operation = "doMove";
             _executingMove = move;

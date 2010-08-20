@@ -12,7 +12,6 @@ import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.model.implementation.AgentImpl;
 import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.Implementation;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
 import mx.ecosur.multigame.model.implementation.RegistrantImpl;
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
@@ -34,7 +33,6 @@ import org.drools.audit.WorkingMemoryFileLogger;
 
 import java.util.*;
 import java.util.List;
-import java.net.MalformedURLException;
 import java.awt.*;
 
 @Entity
@@ -60,8 +58,8 @@ public class PasaleGame extends GridGame {
         super();
         setRows (DIMENSIONS);
         setColumns(DIMENSIONS);
+        setState(GameState.WAITING);
         setCreated(new Date());
-        setState(GameState.PLAY);
         if (grid.getCells().size() == 0)
             grid = createGrid();
     }
@@ -184,18 +182,17 @@ public class PasaleGame extends GridGame {
 
         List<Color> colors = getAvailableColors();
         player.setColor(colors.get(0));
-
-        /* TODO: rethink "turns" in Pasale */
-        if (player.getColor().equals(Color.YELLOW))
-            player.setTurn(true);
         players.add(player);
+        
+        if (players.size() == max)
+            setState(GameState.PLAY);
 
         return player;
     }
 
     public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
         throw new InvalidRegistrationException (
-                "Agents cannot be registered with an Oculto Game!");
+                "Agents cannot be registered with a Pasale Game!");
     }
 
     /* (non-Javadoc)
@@ -209,6 +206,8 @@ public class PasaleGame extends GridGame {
             if (color.equals(Color.UNKNOWN))
                 continue;
             if (color.equals(Color.GREEN))
+                continue;
+            if (color.equals(Color.BLUE))
                 continue;
             ret.add(color);
         }
@@ -260,8 +259,8 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
-     */
+    * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+    */
     @Override
     public Object clone() throws CloneNotSupportedException {
         super.clone();

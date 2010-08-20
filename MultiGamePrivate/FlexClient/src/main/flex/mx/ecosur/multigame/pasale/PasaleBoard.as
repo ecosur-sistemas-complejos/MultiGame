@@ -31,7 +31,8 @@ package mx.ecosur.multigame.pasale {
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.pasale.entity.PasaleFicha;
-    import mx.ecosur.multigame.pasale.entity.PasaleMove;
+import mx.ecosur.multigame.pasale.entity.PasaleGrid;
+import mx.ecosur.multigame.pasale.entity.PasaleMove;
     import mx.ecosur.multigame.pasale.entity.PasalePlayer;
     import mx.ecosur.multigame.pasale.enum.UseType;
     import mx.effects.Sequence;
@@ -47,7 +48,7 @@ package mx.ecosur.multigame.pasale {
         protected var _blinkAnim:Sequence;
 
         private var _alert:ColonizerAlert;
-        private var _grid:GameGrid;
+        private var _grid:PasaleGrid;
         private var _scene:IsoScene;
         private var _box:PasaleBox;
         
@@ -86,7 +87,7 @@ package mx.ecosur.multigame.pasale {
         }
 
         public function set grid(value:GameGrid):void {
-            _grid = value;
+            _grid = PasaleGrid(value);
             update();
         }
 
@@ -95,19 +96,23 @@ package mx.ecosur.multigame.pasale {
         }
 
         public function choose(event:ProxyEvent):void {
-            if (_alert != null) {
-                return;
+            if (_controller._executingMove == null) {
+                if (_alert != null) {
+                    return;
+                }
+                /* Highlight the square if it's colonizable */
+                _box = PasaleBox(event.target);
+                if (hasPathToWater(_box)) {
+                    _box.height = _box.height + mountain;
+                    _box.render(true);
+
+                    _alert = new ColonizerAlert();
+                    _alert.addEventListener("build", colonize);
+                    _alert.addEventListener("cancel", cancelAlert);
+                    PopUpManager.addPopUp(_alert, this, true);
+                    PopUpManager.centerPopUp(_alert);
+                }
             }
-            /* Highlight the square */
-            _box = PasaleBox(event.target);
-            _box.height = _box.height + mountain;
-            _box.render(true);
-            
-            _alert = new ColonizerAlert();
-            _alert.addEventListener("build", colonize);
-            _alert.addEventListener("cancel", cancelAlert);
-            PopUpManager.addPopUp(_alert, this, true);
-            PopUpManager.centerPopUp(_alert);
         }
 
         private function cancelAlert(event:DynamicEvent):void {
@@ -125,7 +130,7 @@ package mx.ecosur.multigame.pasale {
             _box.height = _box.height - mountain;
             _box.render(true);
             PopUpManager.removePopUp(_alert);
-            _alert = null;            
+            _alert = null;
 
             /* Send move across the wire */
             var move:PasaleMove = new PasaleMove();
@@ -140,6 +145,7 @@ package mx.ecosur.multigame.pasale {
                     destination.column = cell.column;
                     destination.row = cell.row;
                     destination.type = targetType;
+                    destination.color = _pasalePlayer.color;
                     move.currentCell = cell;
                     move.destinationCell = destination;
                     break;
@@ -154,7 +160,7 @@ package mx.ecosur.multigame.pasale {
             _box = null;
 
             /* render the move */
-            doMove(move);                        
+            doMove(move);
         }
 
         public function doMove(move:PasaleMove):void {
@@ -235,14 +241,14 @@ package mx.ecosur.multigame.pasale {
 
             for (var i:int=0; i < _grid.cells.length; i++) {
                 var cell:PasaleFicha = PasaleFicha (_grid.cells.getItemAt(i));
-                var box:PasaleBox = drawCell (cell.column, cell.row, cell.type);
+                var box:PasaleBox = drawCell (cell.column, cell.row, cell.color, cell.type);
                 box.moveTo(box.column * size + pt.x, box.row * size + pt.y, (height / 3));
                 _scene.addChild(box);
             }
             _scene.render();
         }
         
-        private function drawCell (column:int, row:int, type:String):PasaleBox {
+        private function drawCell (column:int, row:int, color:String, type:String):PasaleBox {
             var events:Boolean = true;
             var box:PasaleBox = new PasaleBox();
             box.column = column;
@@ -264,11 +270,11 @@ package mx.ecosur.multigame.pasale {
                     events = true;
                     break;
                 case UseType.POTRERO:
-                    box.fill = new SolidColorFill(Color.getColorCode(_pasalePlayer.color), 1);
+                    box.fill = new SolidColorFill(Color.getColorCode(color), 1);
                     events = true;
                     break;
                 case UseType.SILVOPASTORAL:
-                    box.fill = new SolidColorFill(Color.getColorCode(_pasalePlayer.color), 0.4);
+                    box.fill = new SolidColorFill(Color.getColorCode(color), 0.4);
                     events = true;
                     break;               
                 default:
@@ -283,10 +289,7 @@ package mx.ecosur.multigame.pasale {
         }
 
         private function hasPathToWater (box:PasaleBox):Boolean {
-            var ret:Boolean = false;
-            
-
-            return ret;
+            return _grid.hasPathToWater(_grid.getLocation(box.column, box.row));
         }
     }
 }
