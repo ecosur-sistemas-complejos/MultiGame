@@ -10,14 +10,15 @@
 */
 
 package mx.ecosur.multigame.pasale {
-
-    import as3isolib.display.primitive.IsoBox;
+import as3isolib.display.IsoView;
+import as3isolib.display.primitive.IsoBox;
     import as3isolib.display.scene.IsoScene;
     
     import as3isolib.geom.IsoMath;
     import as3isolib.geom.Pt;
 
-    import as3isolib.graphics.SolidColorFill;
+import as3isolib.graphics.IFill;
+import as3isolib.graphics.SolidColorFill;
 
     import eDpLib.events.ProxyEvent;
 
@@ -51,6 +52,7 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
         private var _grid:PasaleGrid;
         private var _scene:IsoScene;
         private var _box:PasaleBox;
+        private var _fill:IFill;
         
         private var _controller:PasaleGameController;
 
@@ -100,12 +102,13 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
                 if (_alert != null) {
                     return;
                 }
+
                 /* Highlight the square if it's colonizable */
                 _box = PasaleBox(event.target);
                 if (hasPathToWater(_box)) {
-                    _box.height = _box.height + mountain;
-                    _box.render(true);
-
+                    _fill = _box.fill;
+                    _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
+                    _box.render();
                     _alert = new ColonizerAlert();
                     _alert.addEventListener("build", colonize);
                     _alert.addEventListener("cancel", cancelAlert);
@@ -116,10 +119,11 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
         }
 
         private function cancelAlert(event:DynamicEvent):void {
-            PopUpManager.removePopUp(_alert);            
-            _box.height = _box.height - mountain;
+            PopUpManager.removePopUp(_alert);
+            _box.fill = _fill;
             _box.render(true);
             _box = null;
+            _fill = null;
             _alert = null;
         }
 
@@ -127,8 +131,8 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
             var targetType:String = _alert.type.selectedItem.data;
 
             /* clean up */
-            _box.height = _box.height - mountain;
-            _box.render(true);
+            _box.fill = _fill;
+            _fill = null;
             PopUpManager.removePopUp(_alert);
             _alert = null;
 
@@ -282,10 +286,33 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
                     break;
             }
 
-            if (events)
+            if (events) {
+                box.addEventListener(MouseEvent.MOUSE_OVER, enterBox);
+                box.addEventListener(MouseEvent.MOUSE_OUT, exitBox);
                 box.addEventListener(MouseEvent.CLICK, choose);
+            }
 
             return box;
+        }
+
+        private function enterBox (event:ProxyEvent):void {
+            _box = PasaleBox(event.target);
+            if (hasPathToWater(_box)) {
+                _fill = _box.fill;
+                _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
+                _box.render();
+            }
+        }
+
+        private function exitBox (event:ProxyEvent):void {
+            _box = PasaleBox(event.target);
+            if (_fill != null) {
+                _box.fill = _fill;
+                _box.render();
+            }
+
+            _box = null;
+            _fill = null;
         }
 
         private function hasPathToWater (box:PasaleBox):Boolean {
