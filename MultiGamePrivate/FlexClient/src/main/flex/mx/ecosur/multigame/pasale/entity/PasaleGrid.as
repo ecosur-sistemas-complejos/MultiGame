@@ -23,35 +23,33 @@ import mx.ecosur.multigame.pasale.enum.UseType;
             return ret;
         }
 
-        public function hasPathToWater (ficha):Boolean {
+        public function hasPathToWater (ficha:PasaleFicha):Boolean {
             return getPathToWater(new ArrayCollection, ficha).length > 0;
         }
 
         private function getSquare (ficha:PasaleFicha):ArrayCollection {
             var ret:ArrayCollection = new ArrayCollection();
 
-            // x - 1, y -1
-            var temp:PasaleFicha = getLocation (ficha.row -1, ficha.column - 1);
-            if (temp != null) {
-                 ret.addItem (temp);;
-            }
 
-            // x + 1, y - 1
+            // top-left corner
+            var temp:PasaleFicha = getLocation (ficha.row - 1, ficha.column - 1);
+            if (temp != null)
+                 ret.addItem (temp);
+
+            // top-right corner
+            temp = getLocation (ficha.row - 1, ficha.column + 1);
+            if (temp != null)
+                 ret.addItem (temp);
+
+            // bottom-left
             temp = getLocation (ficha.row + 1, ficha.column - 1);
-            if (temp != null) {
-                 ret.addItem (temp);;
-            }
-
-            // x - 1, y +1
-            temp = getLocation (ficha.row -1, ficha.column + 1);
             if (temp != null)
                 ret.addItem(temp);
 
-
-            // x + 1, y + 1
+            // bottom right
             temp = getLocation (ficha.row + 1, ficha.column + 1);
             if (temp != null)
-                ret.addItem (temp);;
+                ret.addItem (temp);
 
             return ret;
 
@@ -61,16 +59,15 @@ import mx.ecosur.multigame.pasale.enum.UseType;
             var ret:ArrayCollection = new ArrayCollection();            
 
             /* y, x -2 */
-            var temp:PasaleFicha = getLocation (ficha.column, ficha.row - 2);            
-            if (temp != null) {
-                 ret.addItem (temp);;
-            }
+            var temp:PasaleFicha = getLocation (ficha.column, ficha.row - 2);
+            if (temp != null)
+                 ret.addItem (temp);
+
 
             /* y, x + 2 */
             temp = getLocation (ficha.column, ficha.row + 2);
-            if (temp != null) {
-                 ret.addItem (temp);;
-            }
+            if (temp != null)
+                 ret.addItem (temp);
 
             /* y + 2, x */
             temp = getLocation (ficha.column + 2, ficha.row);
@@ -80,7 +77,7 @@ import mx.ecosur.multigame.pasale.enum.UseType;
             /* y - 2, x */
             temp = getLocation (ficha.column - 2, ficha.row);
             if (temp != null)
-                return ret;
+                ret.addItem(temp);
 
             return ret;
 
@@ -88,6 +85,8 @@ import mx.ecosur.multigame.pasale.enum.UseType;
 
         private function getPathToWater (visited:ArrayCollection, ficha:PasaleFicha):ArrayCollection
         {
+            if (ficha == null)
+                return visited;
             visited.addItem(ficha);
             if (isConnectedToWater (ficha))
                return visited;
@@ -95,7 +94,7 @@ import mx.ecosur.multigame.pasale.enum.UseType;
                 var cross:ArrayCollection = getCross(ficha);
                 for (var i:int = 0; i < cross.length; i++) {
                     var temp:PasaleFicha = PasaleFicha (cross.getItemAt(i));
-                    if (temp.type == UseType.POTRERO && visited.getItemIndex(temp) == -1)
+                    if ((temp.type == UseType.POTRERO)  && !visited.contains(temp))
                         return getPathToWater (visited, temp);
                 }
             }
@@ -104,8 +103,10 @@ import mx.ecosur.multigame.pasale.enum.UseType;
             return visited;
         }        
 
-        private function isConnectedToWater (ficha):Boolean {
-            var ret:Boolean = false;
+        private function isConnectedToWater (ficha:PasaleFicha):Boolean {
+            var ret:Boolean = false;            
+            if (ficha == null)
+                return ret;
 
             var cross:ArrayCollection = getCross(ficha);
             var square:ArrayCollection = getSquare(ficha);
@@ -114,8 +115,9 @@ import mx.ecosur.multigame.pasale.enum.UseType;
                 ret = true;
             else {
                 for (var i:int = 0; i < cross.length; i++) {
-                    if (isDirectlyConnectedToWater (ficha, getSquare(ficha))) {
-                        ret =true;
+                    var check:PasaleFicha = PasaleFicha (cross.getItemAt(i));
+                    if (isDirectlyConnectedToWater (check, getSquare(check))) {
+                        ret = true;
                         break;
                     }
                 }

@@ -31,7 +31,8 @@ public class PasaleGameController {
         public var _game:PasaleGame;
 
         public var _executingMove:PasaleMove;
-        public var _isTurn:Boolean;
+        public var _ready:Boolean;
+
 
         private var _gameId:int;
 
@@ -68,11 +69,17 @@ public class PasaleGameController {
             _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
             _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
 
+            _ready = true;
+
             // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
             var callPlayers:Object = _gameService.getPlayers(_gameId);
             callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
+        }
+
+        public function ready():Boolean {
+            return _ready;
         }
 
         public function sendMove (move:PasaleMove):void {            
@@ -105,15 +112,12 @@ public class PasaleGameController {
                     move= PasaleMove(message.body);
                     handleMove(move);
                     break;
-                case GameEvent.CHAT:
-                    var chatMessage:ChatMessage = ChatMessage(message.body);
-                    _gameWindow.chatPanel.addMessage(chatMessage);
-                    break;
                 case GameEvent.CONDITION_TRIGGERED:
                     // fall through
                 case GameEvent.PLAYER_CHANGE:
                     var callGrid:Object = _gameService.getGameGrid(_gameId);
                     callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+                    _ready = false;
                     break;
                 default:
                     Alert.show(gameEvent);
@@ -121,11 +125,7 @@ public class PasaleGameController {
         }
 
         private function handleMove(move:PasaleMove):void {
-            var name:String;
-            if (move.player.color == _currentPlayer.color)
-                name = "You have "
-            else
-                name = move.player.color + " has ";
+            _ready = true;
             _gameWindow.board.doMove(move);
         }
 
@@ -170,6 +170,7 @@ public class PasaleGameController {
 
         private function initGrid(grid:PasaleGrid):void {
             _gameWindow.board.grid = grid;
+            _ready = true;
         }
 
         private function updatePlayers(game:PasaleGame):void {

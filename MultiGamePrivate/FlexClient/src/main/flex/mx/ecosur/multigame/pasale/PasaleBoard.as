@@ -17,23 +17,23 @@ import as3isolib.display.primitive.IsoBox;
     import as3isolib.geom.IsoMath;
     import as3isolib.geom.Pt;
 
-import as3isolib.graphics.IFill;
-import as3isolib.graphics.SolidColorFill;
+    import as3isolib.graphics.IFill;
+    import as3isolib.graphics.SolidColorFill;
 
     import eDpLib.events.ProxyEvent;
 
     import flash.events.Event;
     import flash.events.MouseEvent;
 
-    import mx.ecosur.multigame.component.AbstractBoard;
-    import mx.ecosur.multigame.entity.Cell;
+import mx.controls.Alert;
+import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.pasale.entity.PasaleFicha;
-import mx.ecosur.multigame.pasale.entity.PasaleGrid;
-import mx.ecosur.multigame.pasale.entity.PasaleMove;
+    import mx.ecosur.multigame.pasale.entity.PasaleGrid;
+    import mx.ecosur.multigame.pasale.entity.PasaleMove;
     import mx.ecosur.multigame.pasale.entity.PasalePlayer;
     import mx.ecosur.multigame.pasale.enum.UseType;
     import mx.effects.Sequence;
@@ -49,17 +49,24 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
         protected var _blinkAnim:Sequence;
 
         private var _alert:ColonizerAlert;
+
         private var _grid:PasaleGrid;
+
         private var _scene:IsoScene;
+
         private var _box:PasaleBox;
+
         private var _fill:IFill;
+
+        private var _HLBox:PasaleBox;
+
+        private var _HLFill:IFill;
         
         private var _controller:PasaleGameController;
 
         /* Tile sizes for different conditions */
         private var river:int = 10;
         private var riparian:int = 20;
-        private var mountain:int = 45;
 
         private var _size:int = 0;
 
@@ -105,8 +112,8 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
 
                 /* Highlight the square if it's colonizable */
                 _box = PasaleBox(event.target);
-                if (hasPathToWater(_box)) {
-                    _fill = _box.fill;
+                if (hasPathToWater(_box) && _controller.ready()) {
+                    _fill = _HLFill;
                     _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
                     _box.render();
                     _alert = new ColonizerAlert();
@@ -278,11 +285,11 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
                     events = true;
                     break;
                 case UseType.SILVOPASTORAL:
-                    box.fill = new SolidColorFill(Color.getColorCode(color), 0.4);
+                    box.fill = new SolidColorFill(Color.getColorCode(color), 0.5);
                     events = true;
                     break;               
                 default:
-                    box.fill = new SolidColorFill(Color.getColorCode(Color.BLACK), 1);
+                    Alert.show("Unknown type requested for a Cell: " + box.type);
                     break;
             }
 
@@ -296,23 +303,23 @@ import mx.ecosur.multigame.pasale.entity.PasaleMove;
         }
 
         private function enterBox (event:ProxyEvent):void {
-            _box = PasaleBox(event.target);
-            if (hasPathToWater(_box)) {
-                _fill = _box.fill;
-                _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
-                _box.render();
+            _HLBox = PasaleBox(event.target);
+            if (hasPathToWater(_HLBox) && _controller.ready()) {
+                _HLFill = _HLBox.fill;
+                _HLBox.fill = new SolidColorFill(0x2D3A28, 0.1);
+                _HLBox.render();
             }
         }
 
         private function exitBox (event:ProxyEvent):void {
-            _box = PasaleBox(event.target);
-            if (_fill != null) {
-                _box.fill = _fill;
-                _box.render();
+            _HLBox = PasaleBox(event.target);
+            if (_HLFill != null) {
+                _HLBox.fill = _HLFill;
+                _HLBox.render();
             }
 
-            _box = null;
-            _fill = null;
+            _HLBox = null;
+            _HLFill = null;
         }
 
         private function hasPathToWater (box:PasaleBox):Boolean {

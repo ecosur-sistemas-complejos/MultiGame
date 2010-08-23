@@ -49,9 +49,11 @@
 
     }
 
-    private function keyDownListener(event:KeyboardEvent) {
-        if (event.keyCode == 13)
+    private function keyDownListener(event:KeyboardEvent):void {
+        if (event.keyCode == 13) {
             send();
+            msg.text = "";
+        }
     }
 
     private function faultHandler(event:MessageFaultEvent):void {
