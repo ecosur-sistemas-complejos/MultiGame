@@ -8,10 +8,12 @@
     <mx:Script>
         <![CDATA[
             import mx.events.DynamicEvent;
+            
+            [Bindable]
+            public var dev:Boolean = true;
 
             private function constructColony (event:MouseEvent):void{
                 var dEvent:DynamicEvent = new DynamicEvent("build");
-                                
                 dispatchEvent(dEvent);
             }
 
@@ -20,22 +22,26 @@
                 dispatchEvent(dEvent);
             }
 
+            private function get text():String {
+                if (dev)
+                    return "Please choose a type of development";
+                else
+                    return "Convert to managed forest?"
+            }
+
         ]]>
     </mx:Script>
-    <mx:ArrayCollection id="landTypes">
+    <mx:ArrayCollection id="devTypes">
         <mx:Object label="Potrero" data="POTRERO"/>
         <mx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
-        <mx:Object label="Managed Forest" data="FOREST"/>
     </mx:ArrayCollection>
-
-
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-        <mx:Text width="100%" text="Please choose a type of development:"/>
+        <mx:Text width="100%" text="{text}"/>
         <mx:HBox width="100%">
-            <mx:ComboBox id="type" dataProvider="{landTypes}"/>
+            <mx:ComboBox id="development" dataProvider="{devTypes}" visible="{dev}"/>
         </mx:HBox>
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-            <mx:Button id="develop" label="Develop" click="constructColony(event)" />
+            <mx:Button id="develop" label="Ok" click="constructColony(event)" />
             <mx:Button id="cancel" label="Cancel" click="cancelAlert(event)"/>
         </mx:HBox>
     </mx:VBox>

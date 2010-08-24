@@ -25,6 +25,7 @@ import as3isolib.display.primitive.IsoBox;
     import flash.events.Event;
     import flash.events.MouseEvent;
 
+import mx.collections.ArrayCollection;
 import mx.controls.Alert;
 import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GameGrid;
@@ -64,8 +65,9 @@ import mx.ecosur.multigame.component.AbstractBoard;
         
         private var _controller:PasaleGameController;
 
-        /* Tile sizes for different conditions */
+        /* Tile sizes for different visual conditions */
         private var river:int = 10;
+
         private var riparian:int = 20;
 
         private var _size:int = 0;
@@ -105,23 +107,31 @@ import mx.ecosur.multigame.component.AbstractBoard;
         }
 
         public function choose(event:ProxyEvent):void {
-            if (_controller._executingMove == null) {
+            if (_controller.ready()) {
                 if (_alert != null) {
                     return;
                 }
 
+                _alert = new ColonizerAlert();
+
                 /* Highlight the square if it's colonizable */
                 _box = PasaleBox(event.target);
-                if (hasPathToWater(_box) && _controller.ready()) {
+                if (_box.type == UseType.FOREST || _box.type == UseType.UNDEVELOPED)
+                    _alert.dev = true;
+                else
+                    _alert.dev = false;
+
+                if (_controller.ready()) {
                     _fill = _HLFill;
                     _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
                     _box.render();
-                    _alert = new ColonizerAlert();
                     _alert.addEventListener("build", colonize);
                     _alert.addEventListener("cancel", cancelAlert);
                     PopUpManager.addPopUp(_alert, this, true);
                     PopUpManager.centerPopUp(_alert);
                 }
+
+                trace (_box.type);
             }
         }
 
@@ -135,7 +145,12 @@ import mx.ecosur.multigame.component.AbstractBoard;
         }
 
         public function colonize(event:DynamicEvent):void {
-            var targetType:String = _alert.type.selectedItem.data;
+            var targetType:String;
+
+            if (_alert.dev == true)
+                targetType = _alert.development.selectedItem.data;
+            else if (_alert.dev == false)
+                targetType = UseType.FOREST;
 
             /* clean up */
             _box.fill = _fill;

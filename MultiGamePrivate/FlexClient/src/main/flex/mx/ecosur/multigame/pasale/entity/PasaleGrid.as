@@ -24,7 +24,7 @@ import mx.ecosur.multigame.pasale.enum.UseType;
         }
 
         public function hasPathToWater (ficha:PasaleFicha):Boolean {
-            return getPathToWater(new ArrayCollection, ficha).length > 0;
+            return getPathToWater(new ArrayCollection, new ArrayCollection, ficha).length > 0;
         }
 
         private function getSquare (ficha:PasaleFicha):ArrayCollection {
@@ -83,46 +83,49 @@ import mx.ecosur.multigame.pasale.enum.UseType;
 
         }
 
-        private function getPathToWater (visited:ArrayCollection, ficha:PasaleFicha):ArrayCollection
+        private function getPathToWater (found:ArrayCollection, visited:ArrayCollection, ficha:PasaleFicha):ArrayCollection
         {
-            if (ficha == null)
-                return visited;
-            visited.addItem(ficha);
-            if (isConnectedToWater (ficha))
-               return visited;
-            else {
+            if (isConnectedToWater (ficha)) {
+                /* Add the endpoint */
+               found.addItem(ficha);
+            } else {
+                /* Get the ficha's cross */
                 var cross:ArrayCollection = getCross(ficha);
                 for (var i:int = 0; i < cross.length; i++) {
                     var temp:PasaleFicha = PasaleFicha (cross.getItemAt(i));
-                    if ((temp.type == UseType.POTRERO)  && !visited.contains(temp))
-                        return getPathToWater (visited, temp);
+                    if (visited.contains(temp))
+                        continue;
+                    visited.addItem(temp);
+                    if ((temp.type == UseType.POTRERO) || (temp.type == UseType.SILVOPASTORAL))
+                        found = getPathToWater (found, visited, temp);
                 }
             }
 
-            visited.removeAll();
-            return visited;
+            /* Return all connected endpoints */
+            return found;
         }        
 
         private function isConnectedToWater (ficha:PasaleFicha):Boolean {
-            var ret:Boolean = false;            
-            if (ficha == null)
-                return ret;
-
+            var ret:Boolean = false;
             var cross:ArrayCollection = getCross(ficha);
             var square:ArrayCollection = getSquare(ficha);
 
-            if (isDirectlyConnectedToWater (ficha, square))
+            if (isDirectlyConnectedToWater (ficha, square)) 
                 ret = true;
-            else {
-                for (var i:int = 0; i < cross.length; i++) {
-                    var check:PasaleFicha = PasaleFicha (cross.getItemAt(i));
-                    if (isDirectlyConnectedToWater (check, getSquare(check))) {
-                        ret = true;
-                        break;
-                    }
+            else
+                ret = isIndirectlyConnectedToWater (ficha, cross);
+
+            return ret;
+        }
+
+        private function isIndirectlyConnectedToWater (ficha:PasaleFicha, cross:ArrayCollection):Boolean {
+            var ret:Boolean = false;
+            for (var i:int = 0; i < cross.length; i++) {
+                var check:PasaleFicha = PasaleFicha (cross.getItemAt(i));
+                if (isDirectlyConnectedToWater (check, getSquare(check))) {
+                    ret = true;
                 }
             }
-
             return ret;
         }
 

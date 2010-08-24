@@ -545,3 +545,4 @@ MultiGamePrivate/EcosurEAR/target/ecosur-ear-1.1.0-SNAPSHOT/slf4j-nop-1.3.0.jar
 MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/commons-lang-2.5.jar
 MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/slf4j-api-1.3.0.jar
 MultiGamePrivate/MultigameWAR/target/MultiGame/WEB-INF/lib/slf4j-nop-1.3.0.jar
+MultiGamePrivate/EcosurJPA/target/classes/persistence.xml
