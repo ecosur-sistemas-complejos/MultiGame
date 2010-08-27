@@ -37,6 +37,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.model.*;
 import mx.ecosur.multigame.model.implementation.*;
 import mx.ecosur.multigame.MessageSender;
@@ -153,6 +154,12 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
             /* Execute the move */
         game.setMessageSender(messageSender);
+        if (game.getImplementation() instanceof PasaleGame) {
+            PasaleGame pg = (PasaleGame) game.getImplementation();
+            pg.setKbase(null);
+            game.setImplementation(pg);
+        }
+
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
             throw new InvalidMoveException ("INVALID Move. [" + move.getImplementation().toString() + "]");
@@ -248,7 +255,11 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         
             /* Make the suggestion */
         game.setMessageSender(messageSender);      
-
+        if (game.getImplementation() instanceof PasaleGame) {
+            PasaleGame pg = (PasaleGame) game.getImplementation();
+            pg.setKbase(null);
+            game.setImplementation(pg);
+        }
         Suggestion ret = game.suggest(suggestion);
 
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))

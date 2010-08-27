@@ -10,10 +10,7 @@
 */
 package mx.ecosur.multigame.impl.entity.manantiales;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -22,7 +19,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 
-@Entity (name="ManantialesFicha")
+@Entity
 public class ManantialesFicha extends GridCell {
 
     private static final long serialVersionUID = -8048552960014554186L;
