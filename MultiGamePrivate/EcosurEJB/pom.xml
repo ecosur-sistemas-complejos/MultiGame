@@ -32,22 +32,39 @@
                 <version>1.0</version>
             </dependency>
             <dependency>
-                <groupId>javax.ejb</groupId>
+                <groupId>javax</groupId>
                 <artifactId>ejb</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
-                <systemPath>${glassfish}/lib/javaee.jar</systemPath>
-            </dependency>
+                <systemPath>${glassfish}/glassfish/modules/javax.ejb.jar</systemPath>
+            </dependency>            
             <dependency>
-                <groupId>javax.ejb</groupId>
-                <artifactId>ejb-rt</artifactId>
+                <groupId>javax</groupId>
+                <artifactId>annotation</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
-                <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+                <systemPath>${glassfish}/glassfish/modules/endorsed/javax.annotation.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>jms</artifactId>
+                <version>3.0</version>
+                <scope>system</scope>
+                <systemPath>${glassfish}/glassfish/modules/javax.jms.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-compiler</artifactId>
+                <version>${drools.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-api</artifactId>
                 <version>${drools.version}</version>
             </dependency>
         </dependencies>

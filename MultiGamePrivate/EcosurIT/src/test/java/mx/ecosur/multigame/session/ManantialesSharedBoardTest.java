@@ -15,10 +15,8 @@ import static org.junit.Assert.*;
 import java.rmi.RemoteException;
 
 import java.util.List;
-import java.util.Properties;
 
 import javax.jms.JMSException;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -129,18 +127,18 @@ public class ManantialesSharedBoardTest {
     @Test
     public void testCheckConstraints () throws InvalidMoveException {
         Game game = board.getGame(gameId);
-        Ficha ficha = new Ficha (4,3, alice.getColor(),
+        ManantialesFicha ficha = new ManantialesFicha(4,3, alice.getColor(),
                 TokenType.MODERATE_PASTURE);
 
         ManantialesMove move = new ManantialesMove (alice, ficha);
         Move mv = board.doMove(game, new Move (move));
 
-        ficha = new Ficha (4,5, bob.getColor(),
+        ficha = new ManantialesFicha(4,5, bob.getColor(),
                 TokenType.MODERATE_PASTURE);
         move = new ManantialesMove (bob, ficha);
         mv = board.doMove(game, new Move (move));
 
-        ficha = new Ficha (3,4, charlie.getColor(),
+        ficha = new ManantialesFicha(3,4, charlie.getColor(),
                 TokenType.MODERATE_PASTURE);
         move = new ManantialesMove (charlie, ficha);
         mv = board.doMove(game, new Move (move));
@@ -159,8 +157,8 @@ public class ManantialesSharedBoardTest {
         impl.setMode (Mode.BASIC_PUZZLE);
         board.shareGame(impl);
 
-        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        ManantialesFicha change = new ManantialesFicha(4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
 
         ManantialesMove move = new ManantialesMove (alice, play);
         Move mve  = board.doMove (game, new Move(move));
@@ -217,8 +215,8 @@ public class ManantialesSharedBoardTest {
         impl.setMode (Mode.BASIC_PUZZLE);
         board.shareGame(impl);
 
-        Ficha play = new Ficha (5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        Ficha change = new Ficha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
+        ManantialesFicha change = new ManantialesFicha(4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
 
         ManantialesMove move = new ManantialesMove (alice, play);
         board.doMove (game, new Move(move));

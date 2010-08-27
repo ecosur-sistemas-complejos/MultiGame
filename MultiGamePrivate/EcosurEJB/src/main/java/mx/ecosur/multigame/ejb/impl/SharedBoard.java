@@ -22,6 +22,7 @@ package mx.ecosur.multigame.ejb.impl;
 import java.util.Collection;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -39,6 +40,7 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.model.*;
 import mx.ecosur.multigame.model.implementation.*;
 import mx.ecosur.multigame.MessageSender;
+import org.drools.KnowledgeBase;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -52,8 +54,6 @@ import org.drools.io.ResourceFactory;
 public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
     private MessageSender messageSender;
-
-    private KnowledgeAgent kAgent;
         
     @PersistenceContext (unitName="MultiGame")
     EntityManager em;
@@ -64,16 +64,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         super();
         messageSender = new MessageSender();
         messageSender.initialize();
-
-        /* setup the knowledge agents */
-        KnowledgeAgentConfiguration kaconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        kAgent = KnowledgeAgentFactory.newKnowledgeAgent( "agent", kaconf );
-    }
-
-    @PostConstruct
-    private void setupGuvnor() {
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
     }
 
     /* (non-Javadoc)
@@ -92,8 +82,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
         Game game = new Game (impl);
         game.setMessageSender(messageSender);
-        kAgent.applyChangeSet(game.getImplementation().getResource());
-        game.getImplementation().setKbase(kAgent.getKnowledgeBase());
         return game;
     }
 
@@ -165,11 +153,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
             /* Execute the move */
         game.setMessageSender(messageSender);
-
-        /* Get the kagent to find and apply the current package */
-        kAgent.applyChangeSet(game.getImplementation().getResource());
-        game.getImplementation().setKbase(kAgent.getKnowledgeBase());        
-
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
             throw new InvalidMoveException ("INVALID Move. [" + move.getImplementation().toString() + "]");
@@ -264,11 +247,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         }
         
             /* Make the suggestion */
-        game.setMessageSender(messageSender);
-
-        /* Get the kagent to find and apply the current package */
-        kAgent.applyChangeSet(game.getImplementation().getResource());
-        game.getImplementation().setKbase(kAgent.getKnowledgeBase());        
+        game.setMessageSender(messageSender);      
 
         Suggestion ret = game.suggest(suggestion);
 

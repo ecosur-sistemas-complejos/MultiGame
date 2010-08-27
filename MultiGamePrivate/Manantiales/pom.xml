@@ -69,18 +69,18 @@
             <version>${project.version}</version>
         </dependency>       
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>
             <scope>system</scope>
-            <systemPath>${glassfish}/lib/javaee.jar</systemPath>
+            <systemPath>${glassfish}/glassfish/modules/javax.ejb.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb-rt</artifactId>
+            <groupId>javax</groupId>
+            <artifactId>jms</artifactId>
             <version>3.0</version>
             <scope>system</scope>
-            <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+            <systemPath>${glassfish}/glassfish/modules/javax.jms.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -129,11 +129,6 @@
             <artifactId>mockrunner</artifactId>
             <version>jdk1.5-j2ee1.3-0.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

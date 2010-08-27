@@ -18,12 +18,6 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.implementation.MoveImpl;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -87,7 +81,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
         game.setState(GameState.PLAY);
 
-        Ficha play = new Ficha (5, 4, alice.getColor(),
+        ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
@@ -106,7 +100,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
         game.setState(GameState.PLAY);
 
-        Ficha play = new Ficha (3,3, alice.getColor(),
+        ManantialesFicha play = new ManantialesFicha(3,3, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
@@ -155,14 +149,14 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         }
 
         for (GridCell cell : game.getGrid().getCells()) {
-            Ficha ficha = (Ficha) cell;
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             assertTrue ("Location is incorrect! " + ficha, isGoodLocation (ficha));
         }
 
         assertEquals (4, game.getGrid().getCells().size());         
     }
 
-    private boolean isGoodLocation (Ficha ficha) {
+    private boolean isGoodLocation (ManantialesFicha ficha) {
         boolean ret;
         Color color = ficha.getColor();
         int column = ficha.getColumn(), row = ficha.getRow();

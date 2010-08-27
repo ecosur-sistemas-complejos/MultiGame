@@ -44,7 +44,7 @@ public class ManantialesGame extends GridGame {
 
     private static String FNAME = "ManantialesKBase.dat";
 
-    private static KnowledgeBase kbase;
+    private transient KnowledgeBase kbase;
         
     private Mode mode;
         
@@ -426,7 +426,7 @@ public class ManantialesGame extends GridGame {
         ManantialesGame ret = new ManantialesGame();
         ret.grid = new GameGrid();
         for (GridCell cell : getGrid().getCells()) {
-            Ficha ficha = (Ficha) cell;
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             ret.grid.updateCell((GridCell) ficha.clone());
         }
         ret.setColumns (this.getColumns());

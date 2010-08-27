@@ -33,7 +33,7 @@ public class CheckCondition implements ConditionImpl {
 
     ConditionType reason;
     GridPlayer agent;
-    HashSet<Ficha> violators;
+    HashSet<ManantialesFicha> violators;
     private boolean expired;
     private int id;
 
@@ -45,12 +45,12 @@ public class CheckCondition implements ConditionImpl {
     }
 
     public CheckCondition (ConditionType reason, GridPlayer agent,
-            Ficha...violator)
+            ManantialesFicha...violator)
     {
         this.reason = reason;
         this.agent = agent;
-        this.violators = new HashSet<Ficha>();
-        for (Ficha cell : violator) {
+        this.violators = new HashSet<ManantialesFicha>();
+        for (ManantialesFicha cell : violator) {
             this.violators.add(cell);
         }
     }
@@ -123,15 +123,15 @@ public class CheckCondition implements ConditionImpl {
      */
     @OneToMany (cascade={CascadeType.ALL},
             fetch=FetchType.EAGER)
-    public Set<Ficha> getViolators() {
+    public Set<ManantialesFicha> getViolators() {
         return violators;
     }
 
     /**
      * @param violators the violators to set
      */
-    public void setViolators(Set<Ficha> violators) {
-        this.violators = (HashSet<Ficha>) violators;
+    public void setViolators(Set<ManantialesFicha> violators) {
+        this.violators = (HashSet<ManantialesFicha>) violators;
     }
 
     /* (non-Javadoc)

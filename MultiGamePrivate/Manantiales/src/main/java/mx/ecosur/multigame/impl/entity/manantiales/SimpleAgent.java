@@ -101,8 +101,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
             random = new Random();
 
         if (!requiresRandom || random.nextInt(6) != 5) {
-            List<Ficha> fichas = generateCandidates(game);
-            for (Ficha ficha : fichas) {
+            List<ManantialesFicha> fichas = generateCandidates(game);
+            for (ManantialesFicha ficha : fichas) {
                 if (this.isGoodLocation(ficha)) {
                     ManantialesMove move = new ManantialesMove();
                     move.setPlayer(this);
@@ -190,8 +190,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
     public Set<MoveImpl> findNewMoves(ManantialesGame game) {
         Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
 
-        List<Ficha> fichas = generateCandidates(game);
-        for (Ficha ficha : fichas) {
+        List<ManantialesFicha> fichas = generateCandidates(game);
+        for (ManantialesFicha ficha : fichas) {
             if (this.isGoodLocation(ficha)) {
                 ManantialesMove move = new ManantialesMove();
                 move.setPlayer(this);
@@ -228,16 +228,16 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
             move.setPlayer(this);
             move.setMode(game.getMode());
 
-            Ficha ficha = (Ficha) cell;
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             /* Convert Moderate to Intensive */
             if (ficha.getType().equals(TokenType.MODERATE_PASTURE) && getIntensive() < 6) {
-                Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                ManantialesFicha destination = new ManantialesFicha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
                 destination.setType(TokenType.INTENSIVE_PASTURE);
                 move.setCurrentCell (ficha);
                 move.setDestinationCell(destination);
                 break;
             } else if (ficha.getType().equals(TokenType.MANAGED_FOREST) && getModerate() < 6) {
-                Ficha destination = new Ficha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
+                ManantialesFicha destination = new ManantialesFicha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
                 destination.setType(TokenType.MODERATE_PASTURE);
                 move.setCurrentCell (ficha);
                 move.setDestinationCell(destination);
@@ -254,8 +254,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         return ret;
     }
 
-    private List<Ficha> generateCandidates(ManantialesGame game) {
-        List<Ficha> ret = new ArrayList<Ficha>();
+    private List<ManantialesFicha> generateCandidates(ManantialesGame game) {
+        List<ManantialesFicha> ret = new ArrayList<ManantialesFicha>();
         GameGrid grid = game.getGrid();
 
         int startrow, startcol, endrow, endcol;
@@ -290,7 +290,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
         for (int row = startrow; row <= endrow; row++) {
             for (int col = startcol; col < endcol; col++) {
-                Ficha ficha = new Ficha (col, row, getColor(), TokenType.UNKNOWN);
+                ManantialesFicha ficha = new ManantialesFicha(col, row, getColor(), TokenType.UNKNOWN);
                 if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null) {
                     if (this.getForested() < 6)
                         ficha.setType(TokenType.MANAGED_FOREST);
@@ -306,7 +306,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         return ret;
     }
 
-    private boolean isGoodLocation (Ficha ficha) {
+    private boolean isGoodLocation (ManantialesFicha ficha) {
         boolean ret;
         Color color = ficha.getColor();
         int column = ficha.getColumn(), row = ficha.getRow();

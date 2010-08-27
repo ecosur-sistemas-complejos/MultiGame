@@ -3,8 +3,6 @@ package mx.ecosur.multigame.session;
 import com.sun.appserv.security.ProgrammaticLogin;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
-import mx.ecosur.multigame.enums.GameEvent;
-import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
@@ -14,7 +12,6 @@ import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.Agent;
@@ -25,14 +22,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -104,7 +97,7 @@ public class ManantialesAgencyTest {
        public void testBasicAgentMoves () throws InvalidMoveException, JMSException, InterruptedException {
            alice.setTurn (true);
 
-           Ficha play = new Ficha (5, 4, alice.getColor(),
+           ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
                            TokenType.MODERATE_PASTURE);
 
            ManantialesMove move = new ManantialesMove (alice, play);

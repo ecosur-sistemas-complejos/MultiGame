@@ -11,10 +11,10 @@
 package mx.ecosur.experiment.multigame.solver.manantiales;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
-public class SolverFicha extends Ficha {
+public class SolverManantialesFicha extends ManantialesFicha {
 	
 	private int counter = 0;
 
@@ -24,7 +24,7 @@ public class SolverFicha extends Ficha {
 	 * @param color
 	 * @param type
 	 */
-	public SolverFicha(int col, int row, Color color, TokenType type) {
+	public SolverManantialesFicha(int col, int row, Color color, TokenType type) {
 		super (col, row, color, type);
 	}
 
@@ -40,8 +40,8 @@ public class SolverFicha extends Ficha {
 	 * @see mx.ecosur.multigame.model.manantiales.Ficha#clone()
 	 */
 	@Override
-	public SolverFicha clone() throws CloneNotSupportedException {
-		return new SolverFicha(this.getColumn(),this.getRow(), 
+	public SolverManantialesFicha clone() throws CloneNotSupportedException {
+		return new SolverManantialesFicha(this.getColumn(),this.getRow(),
 				this.getColor(),this.getType());
 	}
 }

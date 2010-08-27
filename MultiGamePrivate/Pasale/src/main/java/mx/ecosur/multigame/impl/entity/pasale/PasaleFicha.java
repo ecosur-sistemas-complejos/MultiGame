@@ -13,6 +13,7 @@ package mx.ecosur.multigame.impl.entity.pasale;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -35,14 +36,13 @@ public class PasaleFicha extends GridCell {
         super(column, row, color);
         this.type = type;
         passThroughColors = Color.values();
-    }
+    }    
 
     @Enumerated (EnumType.STRING)
     public TokenType getType() {
         return type;
     }
 
-    @Enumerated (EnumType.STRING)
     public void setType(TokenType type) {
         this.type = type;
     }

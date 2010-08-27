@@ -46,7 +46,7 @@ public class PasaleGame extends GridGame {
 
     private static final int DIMENSIONS = 20;  // so, DIMENSIONS x DIMENSIONS
 
-    private static transient KnowledgeBase kbase;
+    private transient KnowledgeBase kbase;
 
     private transient MessageSender messageSender;
 
@@ -74,7 +74,7 @@ public class PasaleGame extends GridGame {
 
     public PasaleGame(int columns, int rows, KnowledgeBase kbase) {
         this(columns, rows);
-        PasaleGame.kbase = kbase;
+        this.kbase = kbase;
     }
 
     @Transient

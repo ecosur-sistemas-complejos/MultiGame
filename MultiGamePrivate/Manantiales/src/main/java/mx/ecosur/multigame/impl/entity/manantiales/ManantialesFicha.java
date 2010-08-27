@@ -23,16 +23,16 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 
 @Entity (name="ManantialesFicha")
-public class Ficha extends GridCell {
+public class ManantialesFicha extends GridCell {
 
     private static final long serialVersionUID = -8048552960014554186L;
     private TokenType type;
 
-    public Ficha () {
+    public ManantialesFicha() {
         super();
     }
 
-    public Ficha (int column, int row, Color color, TokenType type) {
+    public ManantialesFicha(int column, int row, Color color, TokenType type) {
         super(column, row, color);
         this.type = type;
     }
@@ -42,7 +42,6 @@ public class Ficha extends GridCell {
         return type;
     }
 
-    @Enumerated (EnumType.STRING)
     public void setType(TokenType type) {
         this.type = type;
     }
@@ -102,8 +101,8 @@ public class Ficha extends GridCell {
     @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-        if (obj instanceof Ficha) {
-            Ficha comp = (Ficha) obj;
+        if (obj instanceof ManantialesFicha) {
+            ManantialesFicha comp = (ManantialesFicha) obj;
             ret = (comp.type.equals(this.type) &&
                     comp.getRow() == getRow() &&
                     comp.getColumn() == getColumn() &&

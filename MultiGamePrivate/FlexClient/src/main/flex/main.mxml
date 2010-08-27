@@ -50,7 +50,7 @@
                 _manantialesWindow = null;
             }
 
-            if (_pasaleWindow == null) {
+            if (_pasaleWindow != null) {
                 _pasaleWindow.destroy();
                 vstack.removeChild(_pasaleWindow);
                 _pasaleWindow = null;

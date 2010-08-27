@@ -83,6 +83,7 @@ then
     mutation.setSquare (tgrid.getSquare(ficha));
     mutation.setOctogon (tgrid.getOctogon(ficha));
     mutation.setCross (tgrid.getCross(ficha));
+    incrementTurn ($game, $move);
     modify ($move) { setStatus (MoveStatus.MOVED) }
     insert (tgrid);
     insert (mutation);
@@ -115,8 +116,8 @@ rule "Edges must not be effected"
     salience 10
 when
     $game  : PasaleGame ()
-    $event : MutationEvent (ficha.column == 1 || ficha.row == 1 ||
-        ficha.column == ($game.columns - 1) ||ficha.row == ($game.rows - 1))
+    $event : MutationEvent (ficha.column == 0 || ficha.row == 0 ||
+        ficha.column == ($game.columns) || ficha.row == ($game.rows))
 then
     retract ($event);
 end
@@ -295,6 +296,8 @@ then
         insert (event);
     }
 end
+
+#Process rules
 
 rule "Consume events after processing"
     ruleflow-group "confirm"
