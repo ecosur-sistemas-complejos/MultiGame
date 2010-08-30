@@ -7,7 +7,7 @@ package mx.ecosur.multigame.manantiales.entity
 import mx.ecosur.multigame.manantiales.enum.TokenType;
 
 [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.Ficha")]
+        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha")]
     public class Ficha extends Cell
     {
         protected var _type:String;

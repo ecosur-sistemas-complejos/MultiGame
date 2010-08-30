@@ -307,6 +307,18 @@ then
     retract ($event);
 end
 
+rule "publish invalid move"
+    ruleflow-group "confirm"
+when
+    $game : PasaleGame ()
+    $move : PasaleMove (status == MoveStatus.UNVERIFIED)
+then
+    modify ($move) { setStatus (MoveStatus.INVALID)};
+    messageSender.sendMoveComplete ($game, $move);
+    retract ($game);
+    retract ($move);
+end
+
 rule "publish move complete"
     ruleflow-group "confirm"
 when

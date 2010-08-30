@@ -182,6 +182,8 @@ public class PasaleGame extends GridGame {
 
         List<Color> colors = getAvailableColors();
         player.setColor(colors.get(0));
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
         players.add(player);
         
         if (players.size() == max)

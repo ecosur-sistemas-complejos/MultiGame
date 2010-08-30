@@ -30,7 +30,7 @@
                 <module>MultigameWAR</module>
                 <module>EcosurEJB</module>
                 <module>EcosurJPA</module>
-                <module>EcosurEAR</module>               
+                <module>EcosurEAR</module>
             </modules>
         </profile>
         <profile>

@@ -25,7 +25,7 @@ import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 
 import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
@@ -79,7 +79,7 @@ when
     $move : ManantialesMove (type == TokenType.INTENSIVE_PASTURE,
         $color : player.color)
     $fichas : ArrayList( size == 6) from collect (
-        Ficha (type == TokenType.INTENSIVE_PASTURE,
+        ManantialesFicha (type == TokenType.INTENSIVE_PASTURE,
             color == $color))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -92,7 +92,7 @@ when
     $move : ManantialesMove (type == TokenType.MODERATE_PASTURE,
         $color : player.color)
     $fichas : ArrayList( size == 6) from collect (
-        Ficha (type == TokenType.MODERATE_PASTURE,
+        ManantialesFicha (type == TokenType.MODERATE_PASTURE,
             color == $color))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -105,7 +105,7 @@ when
     $move : ManantialesMove (type == TokenType.MANAGED_FOREST,
         $color : player.color)
     $fichas : ArrayList( size == 6) from collect (
-        Ficha (type == TokenType.MANAGED_FOREST,
+        ManantialesFicha (type == TokenType.MANAGED_FOREST,
             color == $color))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -118,7 +118,7 @@ when
     $move : ManantialesMove (type == TokenType.VIVERO,
         $color : player.color)
     $fichas : ArrayList( size == 6) from collect (
-        Ficha (type == TokenType.VIVERO,
+        ManantialesFicha (type == TokenType.VIVERO,
             color == $color))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -131,7 +131,7 @@ when
     $move : ManantialesMove (type == TokenType.SILVOPASTORAL,
         $color : player.color)
     $fichas : ArrayList( size == 6) from collect (
-        Ficha (type == TokenType.SILVOPASTORAL,
+        ManantialesFicha (type == TokenType.SILVOPASTORAL,
             color == $color))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -238,7 +238,7 @@ rule "row contiguous intensive"
     agenda-group "verify"
     no-loop true
 when
-        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             destinationCell.row == $row, type == TokenType.INTENSIVE_PASTURE)
         eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell()))
@@ -251,7 +251,7 @@ rule "column contiguous intensive"
     agenda-group "verify"
     no-loop true
 when
-        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             destinationCell.column == $col, type == TokenType.INTENSIVE_PASTURE)
         eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell()))
@@ -264,7 +264,7 @@ rule "border row contiguous intensive"
     agenda-group "verify"
     no-loop true
 when
-        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             destinationCell.row == $row, type == TokenType.INTENSIVE_PASTURE)
         eval (isBorder($move.getDestinationCell())) and eval (isBorder($tok1))
@@ -277,7 +277,7 @@ rule "border column contiguous intensive"
     agenda-group "verify"
     no-loop true
     when
-        $tok1 : Ficha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             destinationCell.column == $col, type == TokenType.INTENSIVE_PASTURE)
         eval (isBorder($move.getDestinationCell())) and eval (isBorder($tok1))
@@ -290,7 +290,7 @@ rule "diagonal contiguous intensive"
     agenda-group "verify"
     no-loop true
     when
-        $tok1 : Ficha ($col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
+        $tok1 : ManantialesFicha ($col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             $destination : destinationCell, type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs($row - $destination.getRow()) == 1)
@@ -307,9 +307,9 @@ rule
     no-loop true
     when
         $game : ManantialesGame (state == GameState.PLAY)
-        $tok1 : Ficha ($id : id, border == BorderType.NORTH, 
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.NORTH, 
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             destinationCell.border == BorderType.NORTH, type == TokenType.MODERATE_PASTURE)  
@@ -317,7 +317,7 @@ rule
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
-                (Ficha) $move.getDestinationCell());
+                (ManantialesFicha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         GridPlayer player = $move.getPlayer();
         insert (constraint);
@@ -330,9 +330,9 @@ rule
     no-loop true
     when
         $game : ManantialesGame (state == GameState.PLAY)
-        $tok1 : Ficha ($id : id, border == BorderType.EAST, 
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.EAST,
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             destinationCell.border == BorderType.EAST, type == TokenType.MODERATE_PASTURE)
@@ -340,7 +340,7 @@ rule
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
-            $tok1, $tok2, (Ficha) $move.getDestinationCell());
+            $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
@@ -352,9 +352,9 @@ rule
     no-loop true    
     when
         $game : ManantialesGame (state == GameState.PLAY)
-        $tok1 : Ficha ($id : id, border == BorderType.SOUTH, 
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.SOUTH,
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             destinationCell.border == BorderType.SOUTH, type == TokenType.MODERATE_PASTURE) 
@@ -362,7 +362,7 @@ rule
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
-            $tok1, $tok2, (Ficha) $move.getDestinationCell());
+            $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
@@ -375,9 +375,9 @@ rule
     no-loop true    
     when
         $game : ManantialesGame (state == GameState.PLAY)
-        $tok1 : Ficha ($id : id, border == BorderType.WEST, 
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.WEST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Ficha (id > $id, $id2 : id, border == BorderType.WEST,
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.WEST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             destinationCell.border == BorderType.WEST, type == TokenType.MODERATE_PASTURE)   
@@ -385,7 +385,7 @@ rule
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
-                $tok1, $tok2, (Ficha) $move.getDestinationCell());
+                $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         $game.addCheckCondition (constraint);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
@@ -396,9 +396,9 @@ rule "manantiales"
     no-loop true
     when
         $game : ManantialesGame (state == GameState.PLAY)
-        $tok1 : Ficha ($id : id, manantial == true, type in (
+        $tok1 : ManantialesFicha ($id : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $tok2 : Ficha (id > $id, $id2 : id, manantial == true, type in (
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             destinationCell.manantial == true, type == TokenType.MODERATE_PASTURE)
@@ -406,7 +406,7 @@ rule "manantiales"
     then 
         CheckCondition constraint = new CheckCondition(
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
-            (Ficha) $move.getDestinationCell());
+            (ManantialesFicha) $move.getDestinationCell());
         $game.addCheckCondition(constraint);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
@@ -525,10 +525,10 @@ when
     eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
-    Ficha current = (Ficha) $move.getCurrentCell();
-    Ficha destination = (Ficha) $move.getDestinationCell();
+    ManantialesFicha current = (ManantialesFicha) $move.getCurrentCell();
+    ManantialesFicha destination = (ManantialesFicha) $move.getDestinationCell();
     #Swap coumn and row
-    Ficha temp = new Ficha (destination.getColumn(), destination.getRow(), destination.getColor(),
+    ManantialesFicha temp = new ManantialesFicha (destination.getColumn(), destination.getRow(), destination.getColor(),
         destination.getType());
     destination.setColumn(current.getColumn());
     destination.setRow (current.getRow());
@@ -557,12 +557,12 @@ rule "territory-deforested"
             destinationCell.type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $list : ArrayList (size > 30) from collect (
-            Ficha (type in (
+            ManantialesFicha (type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
         eval (!$game.hasCondition (ConditionType.TERRITORY_DEFORESTED))
     then      
         $list.add($move.getDestinationCell());  
-        Ficha [] cells = (Ficha []) $list.toArray(new Ficha [ 0 ]);
+        ManantialesFicha [] cells = (ManantialesFicha []) $list.toArray(new ManantialesFicha [ 0 ]);
         CheckCondition constraint = new CheckCondition(
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
         $game.addCheckCondition(constraint);

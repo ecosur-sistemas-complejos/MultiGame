@@ -41,21 +41,21 @@
                 <artifactId>ejb</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
-                <systemPath>${glassfish}/glassfish/modules/javax.ejb.jar</systemPath>
-            </dependency>            
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>annotation</artifactId>
-                <version>3.0</version>
-                <scope>system</scope>
-                <systemPath>${glassfish}/glassfish/modules/endorsed/javax.annotation.jar</systemPath>
+                <systemPath>${glassfish}/lib/javaee.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>javax</groupId>
-                <artifactId>jms</artifactId>
+                <artifactId>ejb-rt</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
-                <systemPath>${glassfish}/glassfish/modules/javax.jms.jar</systemPath>
+                <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>glassfish</groupId>
+                <artifactId>toplink</artifactId>
+                <version>3.0</version>
+                <scope>system</scope>
+                <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
             </dependency>
             <dependency>
                 <groupId>org.drools</groupId>
