@@ -565,3 +565,6 @@ MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/pasale-social-en
 .idea/libraries/Maven__javax_ejb_rt_3_0.xml
 .idea/libraries/Maven__glassfish_toplink_3_0.xml
 .idea/libraries/Maven__javax_ejb_rt_3_0.xml
+.idea/libraries/Maven__cglib_nodep_cglib_nodep_2_1_3.xml
+.idea/libraries/Maven__com_mockrunner_mockrunner_jdk1_6_j2ee1_3_0_4.xml
+.idea/libraries/Maven__jboss_jboss_jee_4_2_0_GA.xml

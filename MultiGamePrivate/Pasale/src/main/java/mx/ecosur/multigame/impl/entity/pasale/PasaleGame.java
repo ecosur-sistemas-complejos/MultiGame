@@ -134,10 +134,6 @@ public class PasaleGame extends GridGame {
       * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
       */
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
-        if (kbase == null) {
-            kbase = findKBase();
-        }
-        
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.addEventListener(new DebugAgendaEventListener());
@@ -241,23 +237,6 @@ public class PasaleGame extends GridGame {
     @Transient
     public String getGameType() {
         return "Pasale";
-    }
-
-    @Deprecated
-    protected KnowledgeBase findKBase () {
-        KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            "/mx/ecosur/multigame/impl/pasale.xml")), ResourceType.CHANGE_SET);
-        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors)
-                System.err.println(error);
-            throw new IllegalArgumentException("Error parsing CHANGESET!");
-        }                
-
-        return ret;
     }
 
     /* (non-Javadoc)

@@ -15,6 +15,15 @@
         <name>ECOSUR</name>
         <url>http://www.ecosur.mx</url>
     </organization>
+    <repositories>
+        <repository>
+            <id>cica.es</id>
+            <url>http://ftp.cica.es/mirrors/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -145,8 +154,8 @@
         </dependency>
         <dependency>
             <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner</artifactId>
-            <version>jdk1.5-j2ee1.3-0.4</version>
+            <artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
+            <version>0.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

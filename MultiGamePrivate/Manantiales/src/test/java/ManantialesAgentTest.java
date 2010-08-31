@@ -58,7 +58,6 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         GridRegistrant registrant = new GridRegistrant ("alice");
         alice = (ManantialesPlayer) game.registerPlayer(registrant);
         agents = new SimpleAgent [ 3 ];
-        registrant = null;
         Color [] colors = { Color.BLUE, Color.RED, Color.PURPLE };
 
         for (int i = 0; i < 3; i++) {

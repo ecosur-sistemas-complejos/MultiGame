@@ -81,12 +81,6 @@
             <artifactId>xstream</artifactId>
             <version>1.3</version>
         </dependency>
-        <!--dependency>
-            <groupId>com.google.code</groupId>
-            <artifactId>drools-rar</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>rar</type>
-        </dependency-->
     </dependencies>
     <build>
         <plugins>
@@ -148,10 +142,6 @@
                             <groupId>mx.ecosur</groupId>
                             <artifactId>ecosur-ejb</artifactId>
                         </ejbModule>
-                        <!--rarModule>
-                            <groupId>com.google.code</groupId>
-                            <artifactId>drools-rar</artifactId>
-                        </rarModule-->
                         <webModule>
                            <groupId>mx.ecosur</groupId>
                            <artifactId>multi-game</artifactId>

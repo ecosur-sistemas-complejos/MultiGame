@@ -37,7 +37,7 @@ import java.util.List;
 
 public class PasaleRulesTest extends JMSTestCaseAdapter {
 
-    private static KnowledgeBase tablon;
+    private static KnowledgeBase pasale;
 
     protected EJBTestModule ejbModule;
 
@@ -45,7 +45,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
 
     /* Setup gente kbase */
     static {
-        tablon = KnowledgeBaseFactory.newKnowledgeBase();
+        pasale = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
@@ -53,7 +53,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
             "/mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)
-            tablon.addKnowledgePackages(kbuilder.getKnowledgePackages());
+            pasale.addKnowledgePackages(kbuilder.getKnowledgePackages());
         else {
             for (KnowledgeBuilderError error : errors) {
                 System.out.println(error);
@@ -78,7 +78,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-        game = new PasaleGame(26, 26, tablon);
+        game = new PasaleGame(26, 26, pasale);
 
         GridRegistrant a, b, c, d;
         a = new GridRegistrant ("alice");
