@@ -44,7 +44,7 @@ public class PasaleGame extends GridGame {
 
     private static final boolean DEBUG = false;
 
-    private static final int DIMENSIONS = 20;  // so, DIMENSIONS x DIMENSIONS
+    private static final int DIMENSIONS = 21;
 
     private transient KnowledgeBase kbase;
 
@@ -84,30 +84,25 @@ public class PasaleGame extends GridGame {
 
     private PasaleGrid createGrid() {
         PasaleGrid grid = new PasaleGrid ();
-        int lower = (DIMENSIONS / 2) - 2;
-        int upper = (DIMENSIONS / 2)  + 2;
+        int river = DIMENSIONS/2;
+        if (river % 2 != 1)
+                river = river + 1;
+
         /* Populate the grid */
-        for (int col = 0; col <= DIMENSIONS; col++) {
-            for (int row = 0; row <= DIMENSIONS; row++) {
+        for (int col = 0; col < DIMENSIONS; col++) {
+            for (int row = 0; row < DIMENSIONS; row++) {
                 if ( (col + row) % 2 != 0)
                     continue;
                 if ( row % 2 == 1 || col % 2 == 1) {
-                /* soil or water */
-                /* TODO:  Dynamically determine the location of rivers on the map */
-                if ( (col > lower && col < upper) || (row > lower && row < upper)) {
-                    PasaleFicha particle = null;
-                    if ( (col == 1 || col == upper) || (row == 1 || row == upper) ) {
-                       particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                    /* soil or water */
+                    /* TODO:  Dynamically determine the location of rivers on the map */
+                    if (row == river || col == river) {
+                        PasaleFicha ficha = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                        grid.updateCell (ficha);
                     } else {
-                        particle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                        PasaleFicha ficha = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                        grid.updateCell (ficha);                          
                     }
-
-                    grid.updateCell(particle);
-
-                } else {
-                    PasaleFicha soilParticle = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
-                    grid.updateCell (soilParticle);
-                }
 
                 } else {
                     PasaleFicha forest = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.FOREST);
