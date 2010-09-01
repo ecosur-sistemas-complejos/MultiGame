@@ -38,15 +38,16 @@ import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.model.*;
 import mx.ecosur.multigame.model.implementation.*;
 import mx.ecosur.multigame.MessageSender;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.*;
 import org.drools.io.ResourceFactory;
 
 @Stateless
@@ -151,15 +152,29 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             if (test.getImplementation() != null)
                 move.setImplementation(test.getImplementation());
         }
+            /* Load the Kbase */
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (game.getChangeSet())),
+                ResourceType.CHANGE_SET);
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() == 0)
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        else {
+            for (KnowledgeBuilderError error : errors) {
+                System.out.println(error);
+            }
+
+            throw new RuntimeException ("Unable to load rule base!");
+        }
+
+        /* Embed the kbase into the game */
+        GridGame gg = (GridGame) game.getImplementation();
+        gg.setKbase(kbase);
+        game.setImplementation(gg);
 
             /* Execute the move */
         game.setMessageSender(messageSender);
-        if (game.getImplementation() instanceof PasaleGame) {
-            PasaleGame pg = (PasaleGame) game.getImplementation();
-            pg.setKbase(null);
-            game.setImplementation(pg);
-        }
-
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
             throw new InvalidMoveException ("INVALID Move. [" + move.getImplementation().toString() + "]");
@@ -254,12 +269,29 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         }
         
             /* Make the suggestion */
-        game.setMessageSender(messageSender);      
-        if (game.getImplementation() instanceof PasaleGame) {
-            PasaleGame pg = (PasaleGame) game.getImplementation();
-            pg.setKbase(null);
-            game.setImplementation(pg);
+        game.setMessageSender(messageSender);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (game.getChangeSet())),
+                ResourceType.CHANGE_SET);
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() == 0)
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        else {
+            for (KnowledgeBuilderError error : errors) {
+                System.out.println(error);
+            }
+
+            throw new RuntimeException ("Unable to load rule base!");
         }
+
+
+        /* Embed the kbase into the game */
+        GridGame gg = (GridGame) game.getImplementation();
+        gg.setKbase(kbase);
+        game.setImplementation(gg);
+
         Suggestion ret = game.suggest(suggestion);
 
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))

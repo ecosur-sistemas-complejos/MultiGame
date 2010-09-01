@@ -40,11 +40,9 @@ public class PasaleGame extends GridGame {
 
     private static final long serialVersionUID = -8395074059039838349L;
 
-    private static final String ChangeSet = "/mx/ecosur/multigame/impl/tablon.xml";
-
     private static final boolean DEBUG = false;
 
-    private static final int DIMENSIONS = 21;
+    private static final int DIMENSIONS = 22;
 
     private transient KnowledgeBase kbase;
 
@@ -89,8 +87,8 @@ public class PasaleGame extends GridGame {
                 river = river + 1;
 
         /* Populate the grid */
-        for (int col = 0; col < DIMENSIONS; col++) {
-            for (int row = 0; row < DIMENSIONS; row++) {
+        for (int col = 0; col <= DIMENSIONS; col++) {
+            for (int row = 0; row <= DIMENSIONS; row++) {
                 if ( (col + row) % 2 != 0)
                     continue;
                 if ( row % 2 == 1 || col % 2 == 1) {
@@ -113,8 +111,6 @@ public class PasaleGame extends GridGame {
 
         return grid;        
     }
-
-
 
     @Transient
     public int getMaxPlayers() {
@@ -188,6 +184,11 @@ public class PasaleGame extends GridGame {
                 "Agents cannot be registered with a Pasale Game!");
     }
 
+    @Transient
+    public String getChangeSet() {
+        return "/mx/ecosur/multigame/impl/pasale.xml";
+    }
+
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
      */
@@ -208,6 +209,11 @@ public class PasaleGame extends GridGame {
         return ret;
     }
 
+    @Override
+    public void setKbase(KnowledgeBase kbase) {
+        this.kbase = kbase;
+    }    
+
 
     @Transient
     public MessageSender getMessageSender() {
@@ -226,7 +232,7 @@ public class PasaleGame extends GridGame {
     @Transient
     public Resource getResource() {
         return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            "/mx/ecosur/multigame/impl/pasale.xml"));
+            getChangeSet()));
     }
 
     @Transient

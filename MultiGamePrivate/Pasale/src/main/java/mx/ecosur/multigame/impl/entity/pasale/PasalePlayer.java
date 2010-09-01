@@ -32,14 +32,6 @@ public class PasalePlayer extends GridPlayer {
 		points = 0;
 	}
 
-    public int getCheatYears() {
-        return cheatYears;
-    }
-
-    public void setCheatYears(int cheatYears) {
-        this.cheatYears = cheatYears;
-    }
-
     public int getScore() {
 		return points;
 	}
