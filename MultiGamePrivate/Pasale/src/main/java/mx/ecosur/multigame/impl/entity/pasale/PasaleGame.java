@@ -19,7 +19,6 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
-import org.drools.builder.*;
 import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.io.Resource;
@@ -27,7 +26,6 @@ import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 import org.drools.audit.WorkingMemoryFileLogger;
 
@@ -42,7 +40,7 @@ public class PasaleGame extends GridGame {
 
     private static final boolean DEBUG = false;
 
-    private static final int DIMENSIONS = 22;
+    private static final int DIMENSIONS = 27;
 
     private transient KnowledgeBase kbase;
 
@@ -132,7 +130,6 @@ public class PasaleGame extends GridGame {
             KnowledgeRuntimeLogger krlogger = KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
             session.setGlobal("messageSender", getMessageSender());
             session.setGlobal("dimension", new Integer(getColumns()));
-            session.insert(this);
         }
 
         if (DEBUG) {
@@ -140,7 +137,11 @@ public class PasaleGame extends GridGame {
             logger.setFileName("audit");
         }
 
+        /* insert game and move */
+        session.insert(this);
         session.insert(move);
+
+        /* start the flow */
         session.startProcess("tablon-flow");
         session.fireAllRules();
         if (logger != null)

@@ -72,6 +72,10 @@
             color: #ffffff;
         }
 
+        .centerAlign {
+            textAlign : center;
+        }
+
         .leftAlign {
             textAlign: left;
         }

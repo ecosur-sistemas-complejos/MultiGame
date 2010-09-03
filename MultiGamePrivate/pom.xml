@@ -15,6 +15,7 @@
     <properties>
         <flex-version>3.5.0.12683</flex-version>
         <flexmojos-version>3.5.0</flexmojos-version>
+        <glassfish>/Users/awaterma/util/glassfish-installs/glassfishv2.1.1</glassfish>
     </properties>
     <profiles>
         <profile>

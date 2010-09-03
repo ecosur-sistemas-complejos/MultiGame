@@ -133,7 +133,7 @@ public class PasaleGameController {
          * Game service result handler. Depending on the type of call
          * different actions are taken.
          */
-        private function gameServiceResultHandler(event:ResultEvent):void{
+        private function gameServiceResultHandler(event:ResultEvent):void {
             var call:Object = event.token;
             switch (call.operation){
                 case GAME_SERVICE_GET_GRID_OP:

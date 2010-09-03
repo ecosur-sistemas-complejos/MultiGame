@@ -21,7 +21,7 @@ public class PasalePlayer extends GridPlayer {
 	
 	private static final long serialVersionUID = 2815240265995571202L;
 	
-	private int points, cheatYears;
+	private int points;
 	
 	public PasalePlayer() {
 		super();
@@ -41,7 +41,6 @@ public class PasalePlayer extends GridPlayer {
 	}
 
 	public void reset() {
-		this.cheatYears = 0;
 		this.points = 0;
 	}
 }

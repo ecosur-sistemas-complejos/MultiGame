@@ -50,6 +50,8 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
         kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
+            "/mx/ecosur/multigame/impl/pasale-scoring.drl")), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
             "/mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf")), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() == 0)

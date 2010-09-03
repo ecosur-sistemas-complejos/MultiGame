@@ -13,7 +13,6 @@ package mx.ecosur.multigame.impl.entity.pasale;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
