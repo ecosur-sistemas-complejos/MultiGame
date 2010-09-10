@@ -581,3 +581,11 @@ MultiGamePrivate/Pasale/src/main/resources/.guvnorinfo/.pasale-scoring.drl
 MultiGamePrivate/Pasale/src/main/resources/pasale-scoring.drl
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/.guvnorinfo/.pasale-scoring.drl
 MultiGamePrivate/Pasale/target/classes/mx/ecosur/multigame/impl/pasale-scoring.drl
+.idea/libraries/Maven__commons_lang_commons_lang_2_5.xml
+.idea/libraries/Maven__org_slf4j_slf4j_api_1_3_0.xml
+.idea/libraries/Maven__org_slf4j_slf4j_nop_1_3_0.xml
+.idea/libraries/Maven__tweener_tweener_swc_1_33_74.xml
+MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame/solver/manantiales/SolverManantialesFicha.class
+MultiGamePrivate/MultigameWAR/target/MultiGame/img/conacyt.jpg
+MultiGamePrivate/MultigameWAR/target/MultiGame/img/logo.jpg
+MultiGamePrivate/Pasale/pasale.javaxmi
