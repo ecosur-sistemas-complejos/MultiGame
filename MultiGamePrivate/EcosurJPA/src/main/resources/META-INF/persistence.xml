@@ -45,7 +45,7 @@
         <properties>
             <!--property name="hibernate.hbm2ddl.auto" value="create-drop"/-->
             <!-- Tables shoudl only be created, not droppped -->
-            <property name="toplink.ddl-generation" value="none" />
+            <property name="toplink.ddl-generation" value="create-tables" />
             <property name="toplink.jdbc.SynchronizeMappings" value="buildSchema" />
             <property name="toplink.logging.level.sql" value="SEVERE" />
         </properties>
