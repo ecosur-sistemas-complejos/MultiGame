@@ -1,50 +1,50 @@
-package mx.ecosur.multigame.impl.entity.pasale;
+    package mx.ecosur.multigame.impl.entity.pasale;
 
-import mx.ecosur.multigame.enums.GameState;
+    import mx.ecosur.multigame.enums.GameState;
 
-import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.exception.InvalidRegistrationException;
+    import mx.ecosur.multigame.exception.InvalidMoveException;
+    import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.MoveComparator;
-import mx.ecosur.multigame.impl.model.*;
+    import mx.ecosur.multigame.impl.Color;
+    import mx.ecosur.multigame.impl.MoveComparator;
+    import mx.ecosur.multigame.impl.model.*;
 
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.Implementation;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
-import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
-import mx.ecosur.multigame.MessageSender;
+    import mx.ecosur.multigame.model.implementation.AgentImpl;
+    import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+    import mx.ecosur.multigame.model.implementation.Implementation;
+    import mx.ecosur.multigame.model.implementation.MoveImpl;
+    import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+    import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
+    import mx.ecosur.multigame.MessageSender;
 
-import javax.persistence.*;
+    import javax.persistence.*;
 
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.io.ResourceFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.KnowledgeBase;
-import org.drools.audit.WorkingMemoryFileLogger;
+    import org.drools.runtime.StatefulKnowledgeSession;
+    import org.drools.io.ResourceFactory;
+    import org.drools.builder.KnowledgeBuilder;
+    import org.drools.builder.KnowledgeBuilderFactory;
+    import org.drools.builder.ResourceType;
+    import org.drools.KnowledgeBaseFactory;
+    import org.drools.KnowledgeBase;
+    import org.drools.audit.WorkingMemoryFileLogger;
 
-import java.util.*;
-import java.util.List;
-import java.net.MalformedURLException;
-import java.awt.*;
+    import java.util.*;
+    import java.util.List;
+    import java.net.MalformedURLException;
+    import java.awt.*;
 
-@Entity
-public class PasaleGame extends GridGame {
-	
-	private static final long serialVersionUID = -8395074059039838349L;
+    @Entity
+    public class PasaleGame extends GridGame {
+
+    private static final long serialVersionUID = -8395074059039838349L;
 
     private static final String ChangeSet = "/mx/ecosur/multigame/impl/tablon.xml";
 
     private static final boolean DEBUG = false;
 
     private static KnowledgeBase kbase;
-	
-	private transient MessageSender messageSender;
+
+    private transient MessageSender messageSender;
 
     private StatefulKnowledgeSession session;
 
@@ -121,12 +121,12 @@ public class PasaleGame extends GridGame {
                 ChangeSet)), ResourceType.CHANGE_SET);
             kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
-        
+
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
             session.setGlobal("dimension", new Integer(getColumns()));
-            session.insert(this);            
+            session.insert(this);
         }
 
         if (logger == null && DEBUG) {
@@ -147,61 +147,61 @@ public class PasaleGame extends GridGame {
 
         return move;
     }
-	
-	public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {			
-		PasalePlayer player = new PasalePlayer();
-		player.setRegistrant((GridRegistrant) registrant);
-		
-		for (GridPlayer p : this.getPlayers()) {
-			if (p.equals (player))
-				throw new InvalidRegistrationException ("Duplicate Registraton!");
-		}		
-		
-		int max = getMaxPlayers();
-		if (players.size() == max)
-			throw new RuntimeException ("Maximum Players reached!");
-		
-		List<Color> colors = getAvailableColors();
-		player.setColor(colors.get(0));		
-		players.add(player);
+
+    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {
+        PasalePlayer player = new PasalePlayer();
+        player.setRegistrant((GridRegistrant) registrant);
+
+        for (GridPlayer p : this.getPlayers()) {
+            if (p.equals (player))
+                throw new InvalidRegistrationException ("Duplicate Registraton!");
+        }
+
+        int max = getMaxPlayers();
+        if (players.size() == max)
+            throw new RuntimeException ("Maximum Players reached!");
+
+        List<Color> colors = getAvailableColors();
+        player.setColor(colors.get(0));
+        players.add(player);
 
         try {
-		    if (players.size() == getMaxPlayers())
-			    initialize();
+            if (players.size() == getMaxPlayers())
+                initialize();
         } catch (MalformedURLException e) {
             throw new InvalidRegistrationException (e);
         }
-		
-		if (this.created == 0)
-		    this.setCreated(new Date());	
-		if (this.state == null)
-			this.state = GameState.WAITING;
-		
-		return player;
-	}
-	
-	public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
-		throw new InvalidRegistrationException (
-				"Agents cannot be registered with an Oculto Game!");
-	}
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
-	 */
-	@Override
+        if (this.created == 0)
+            this.setCreated(new Date());
+        if (this.state == null)
+            this.state = GameState.WAITING;
+
+        return player;
+    }
+
+    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+        throw new InvalidRegistrationException (
+                "Agents cannot be registered with an Oculto Game!");
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     */
+    @Override
     @Transient
-	public List<Color> getColors() {
-		List<Color> ret = new ArrayList<Color>();
-		for (Color color : Color.values()) {
-			if (color.equals(Color.UNKNOWN))
-				continue;
-			if (color.equals(Color.GREEN))
-				continue;
-			ret.add(color);
-		}
-		
-		return ret;
-	}
+    public List<Color> getColors() {
+        List<Color> ret = new ArrayList<Color>();
+        for (Color color : Color.values()) {
+            if (color.equals(Color.UNKNOWN))
+                continue;
+            if (color.equals(Color.GREEN))
+                continue;
+            ret.add(color);
+        }
+
+        return ret;
+    }
 
 
     @Transient
@@ -215,7 +215,7 @@ public class PasaleGame extends GridGame {
 
     public void setMessageSender(MessageSender messageSender) {
         this.messageSender = messageSender;
-    }    
+    }
 
 
     @Transient
@@ -225,14 +225,19 @@ public class PasaleGame extends GridGame {
 
     public void setGameType (String type) {
        type = type;
-    }    
+    }
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.impl.model.GridGame#clone()
-	 */
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		PasaleGame ret = new PasaleGame();
+    @Override
+    public String getChangeSet() {
+        return ChangeSet;
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        PasaleGame ret = new PasaleGame();
         ret.setPlayers (this.getPlayers());
         ret.setGrid((GameGrid) grid.clone());
         ret.setColumns(this.getColumns());
@@ -246,7 +251,7 @@ public class PasaleGame extends GridGame {
         ret.setVersion(this.getVersion());
         ret.kbase = this.kbase;
         return ret;
-	}
+    }
 
     @Override
     public String toString() {
@@ -297,4 +302,4 @@ public class PasaleGame extends GridGame {
         if (this.session != null)
             session.dispose();
     }
-}
+    }

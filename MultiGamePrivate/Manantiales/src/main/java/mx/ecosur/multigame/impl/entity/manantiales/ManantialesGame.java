@@ -344,6 +344,12 @@ public class ManantialesGame extends GridGame {
         return player;        
     }
 
+    @Transient
+    @Override
+    public String getChangeSet() {
+        return "/mx/ecosur/multigame/impl/manantiales.xml";
+    }
+
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
      */
@@ -397,7 +403,7 @@ public class ManantialesGame extends GridGame {
     @Transient
     public Resource getResource() {
         return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            "/mx/ecosur/multigame/impl/manantiales.xml"));
+            getChangeSet()));
     }
 
     @Transient

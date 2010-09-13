@@ -577,3 +577,5 @@ MultiGamePrivate/EcosurExperiments/target/classes/mx/ecosur/experiment/multigame
 .idea/libraries/Maven__tweener_tweener_swc_1_33_74.xml
 .idea/projectCodeStyle.xml
 MultiGamePrivate/EcosurEAR/target/ecosur-ear-1.1.0-SNAPSHOT/commons-lang-2.5.jar
+.idea/dataSources.ids
+.idea/dataSources.xml

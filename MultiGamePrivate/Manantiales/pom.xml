@@ -126,8 +126,8 @@
         </dependency>
         <dependency>
             <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner</artifactId>
-            <version>jdk1.5-j2ee1.3-0.4</version>
+            <artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
+            <version>0.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>

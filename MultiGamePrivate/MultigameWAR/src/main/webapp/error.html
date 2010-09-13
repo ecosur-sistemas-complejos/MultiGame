@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>ChiapasGames.net</title>
+    <link rel="stylesheet" type="text/css" href="css/globals.css" />    
     <style type="text/css">
         body {
             font-family: Verdana, sans-serif;
@@ -16,50 +17,44 @@
             width: 860px;
         }
     </style>
-    <script type="text/javascript">
-
-     var _gaq = _gaq || [];
-     _gaq.push(['_setAccount', 'UA-12907657-4']);
-     _gaq.push(['_trackPageview']);
-
-     (function() {
-       var ga = document.createElement('script'); ga.type =
-    'text/javascript'; ga.async = true;
-       ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
-    'http://www') + '.google-analytics.com/ga.js';
-       var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(ga, s);
-     })();
-    </script>
 </head>
 <body>
-    <blockquote>
-        <!-- ECOSUR Header from http://www.ecosur.mx -->
-        <table cellpadding="0" cellspacing="0" class="content_table">
-            <tr>
-                <td width="4" height="64">&nbsp;</td>
-                <td width="194" rowspan="2"  valign="top">
+    <div id="main">
+            <div id="header">
+                <div>
                     <a href="http://www.ecosur.mx">
-                    <img src="http://www.ecosur.mx/templates/ecosur/images/logo.jpg" width="194" height="96"
-                         alt="P‡gina Principal de ECOSUR"/></a>
-                </td>
-                <td colspan="2"  valign="top">
-                    <img src="http://www.ecosur.mx/templates/ecosur/images/cuadritos.jpg" width="520" height="64"
-                         alt="Cuadritos" />
-                </td>
-                <td width="65" rowspan="2"  valign="top"><a href="http://www.conacyt.mx" target="_banner">
-                    <img src="http://www.ecosur.mx/templates/ecosur/images/conacyt.jpg" width="65" height="96"
-                         alt="CONACYT" /></a>
-                </td>
-            </tr>
-        </table>
-        <br/>
-     <p>
-        Please contact the developer for access:  <a href="mailto:awaterma@chiapasgames.net">Andrew Waterman</a>
-    </p>
-    <p>
-        Click <a href="login.html">here</a> to return to the home page.
-    </p>
-    </blockquote>
-</body>
+                    <img src="img/logo.jpg" width="194" height="96"
+                         alt="P?gina Principal de ECOSUR"/>
+                    </a>
+                </div>
+                <div>
+                    <img src="img/header.png" alt="Chiapasgames" />
+                </div>
+                <div>
+                    <a href="http://www.conacyt.mx" target="blank">
+                        <img src="img/conacyt.jpg" width="65" height="96"
+                             alt="CONACYT" />
+                    </a>
+                </div>
+            </div>
+        <div id="content">
+            <p>Please contact the developer for access: <a href="mailto:awaterma@chiapasgames.net">Andrew Waterman</a></p>
+            <p>Click <a href="login.html">here</a> to return to the home page.</p>
+        </div>
+    </div>
+    <script type="text/javascript">
+         var _gaq = _gaq || [];
+         _gaq.push(['_setAccount', 'UA-12907657-4']);
+         _gaq.push(['_trackPageview']);
+
+         (function() {
+           var ga = document.createElement('script'); ga.type =
+        'text/javascript'; ga.async = true;
+           ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+        'http://www') + '.google-analytics.com/ga.js';
+           var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+         })();
+    </script>
+    </body>
 </html>
