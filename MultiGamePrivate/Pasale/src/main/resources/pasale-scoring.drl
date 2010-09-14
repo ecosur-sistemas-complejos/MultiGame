@@ -1,0 +1,57 @@
+package mx.ecosur.multigame.pasale;
+
+/*
+* Copyright (C) 2009 ECOSUR, Andrew Waterman
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.entity.pasale.*;
+import function mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
+
+/** 
+	Pasale Compadre Technical DSL for managing scoring in the game.
+*/
+
+rule "Insert Fichas into memory for evaluation"
+    ruleflow-group "verify"    
+	when
+		$game : PasaleGame ($grid : grid)
+		not PasaleFicha () 
+	then
+		for (GridCell g : $grid.getCells()) {
+			PasaleFicha ficha = (PasaleFicha) g;
+			insert (ficha);
+		}
+		for (GridPlayer p : $game.getPlayers()) {
+			PasalePlayer player = (PasalePlayer) p;
+			# Scores are reset to 0 before tokens are counted
+			player.setScore (0);
+			insert (player);
+		}
+end
+
+rule "Score"
+    ruleflow-group "evaluate"
+	when
+		$game : PasaleGame ()		
+		$ficha : PasaleFicha ($color : color)
+		$player : PasalePlayer (color == $color)
+	then
+		int score = $player.getScore();
+		score = score + 1;
+		modify ($player) { setScore (score) };
+		retract ($ficha);
+end
+
+rule "retract fichas"
+    ruleflow-group "confirm"
+    when
+        $ficha : PasaleFicha ()
+    then
+        retract ($ficha);
+end
