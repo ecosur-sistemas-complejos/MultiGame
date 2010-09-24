@@ -153,41 +153,7 @@ package mx.ecosur.multigame.manantiales {
                 completing the suggested move */
                 if (_controller.puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
-                        move.currentCell.column, move.currentCell.row));
-                    /* 
-                     * Uncertain change preposed by max: Please validate Andrew.
-                     * 
-                     * If you want to remove the cell do you not want an undeveloped token always?
-                     *
-                    var ficha:Ficha = Ficha (move.currentCell);
-                    if (ficha) {
-                        var token:ManantialesToken;                        
-                        switch (ficha.type) {
-                            case TokenType.FOREST:
-                                token = new ForestToken();
-                                break;
-                            case TokenType.MODERATE:
-                                token = new ModerateToken();
-                                break;
-                            case TokenType.INTENSIVE:
-                                token = new IntensiveToken();
-                                break;
-                            case TokenType.VIVERO:
-                                token = new ViveroToken();
-                                break;
-                            case TokenType.SILVOPASTORAL:
-                                token = new SilvopastoralToken();
-                                break;
-                            default:
-                                token = new UndevelopedToken();
-                                break;
-                        }
-
-                        cell.token = token;
-
-                    } else
-                        cell.token = new UndevelopedToken();
-                    */
+                        move.currentCell.column, move.currentCell.row));                    
                     cell.token = new UndevelopedToken();
                     cell.reset();
                 }
@@ -312,12 +278,6 @@ package mx.ecosur.multigame.manantiales {
                 endSize = Color.getCellIconSize();
             }
             
-            /*
-             * Uncertain change preposed by Max. Please validate Andrew
-             *
-             * Since suggestions are removed this move needs to be added for all players 
-             * if it is the result of a suggestion.
-             */ 
             var isSuggestion:Boolean = _controller.puzzleMode && move.currentCell != null;
             if (move.player.id != _controller._currentPlayer.id || isSuggestion) {
                 var existing:ManantialesToken;
