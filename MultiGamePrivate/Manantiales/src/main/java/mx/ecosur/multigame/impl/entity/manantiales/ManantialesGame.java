@@ -345,7 +345,6 @@ public class ManantialesGame extends GridGame {
     }
 
     @Transient
-    @Override
     public String getChangeSet() {
         return "/mx/ecosur/multigame/impl/manantiales.xml";
     }

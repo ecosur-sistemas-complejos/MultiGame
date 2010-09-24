@@ -20,6 +20,7 @@
     import javax.persistence.*;
 
     import org.drools.runtime.StatefulKnowledgeSession;
+    import org.drools.io.Resource;
     import org.drools.io.ResourceFactory;
     import org.drools.builder.KnowledgeBuilder;
     import org.drools.builder.KnowledgeBuilderFactory;
@@ -227,7 +228,6 @@
        type = type;
     }
 
-    @Override
     public String getChangeSet() {
         return ChangeSet;
     }
@@ -296,6 +296,12 @@
         }
 
         return ret.toString();
+    }
+
+    @Override
+    public Resource getResource(){
+        //TODO: Added by max to resolve compilation issues
+        return null;
     }
 
     public void finalize() {
