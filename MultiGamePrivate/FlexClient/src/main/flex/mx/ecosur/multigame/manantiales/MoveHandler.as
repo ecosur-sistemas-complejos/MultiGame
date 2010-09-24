@@ -3,14 +3,13 @@
 package mx.ecosur.multigame.manantiales {
 
     import flash.geom.Point;
-
+    
     import mx.controls.Button;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-    import mx.ecosur.multigame.manantiales.enum.Mode;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.ForestToken;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
@@ -155,6 +154,11 @@ package mx.ecosur.multigame.manantiales {
                 if (_controller.puzzleMode && move.currentCell != null) {
                     var cell:RoundCell = RoundCell(_controller._gameWindow.board.getBoardCell(
                         move.currentCell.column, move.currentCell.row));
+                    /* 
+                     * Uncertain change preposed by max: Please validate Andrew.
+                     * 
+                     * If you want to remove the cell do you not want an undeveloped token always?
+                     *
                     var ficha:Ficha = Ficha (move.currentCell);
                     if (ficha) {
                         var token:ManantialesToken;                        
@@ -183,6 +187,8 @@ package mx.ecosur.multigame.manantiales {
 
                     } else
                         cell.token = new UndevelopedToken();
+                    */
+                    cell.token = new UndevelopedToken();
                     cell.reset();
                 }
             }
@@ -192,6 +198,7 @@ package mx.ecosur.multigame.manantiales {
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
+        	
             // if was a bad year, then nothing to do
             if(move.badYear){
                 _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd + 1]);
@@ -305,7 +312,14 @@ package mx.ecosur.multigame.manantiales {
                 endSize = Color.getCellIconSize();
             }
             
-            if (move.player.id != _controller._currentPlayer.id) {
+            /*
+             * Uncertain change preposed by Max. Please validate Andrew
+             *
+             * Since suggestions are removed this move needs to be added for all players 
+             * if it is the result of a suggestion.
+             */ 
+            var isSuggestion:Boolean = _controller.puzzleMode && move.currentCell != null;
+            if (move.player.id != _controller._currentPlayer.id || isSuggestion) {
                 var existing:ManantialesToken;
 
                 if (destination != null) {
