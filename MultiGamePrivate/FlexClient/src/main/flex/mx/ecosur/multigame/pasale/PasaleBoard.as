@@ -169,7 +169,7 @@ import as3isolib.display.scene.IsoScene;
             if (pan)
                 pan = false;
 
-            event.delta > 0 ? zoom += 0.005 : zoom -= 0.005;
+            event.delta > 0 ? zoom += 0.0005 : zoom -= 0.0005;
             Tweener.addTween( _view, { currentZoom:zoom, time:0.5 } );
         }
 

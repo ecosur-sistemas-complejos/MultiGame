@@ -115,6 +115,8 @@ public class PasaleGameController {
                 case GameEvent.CONDITION_TRIGGERED:
                     // fall through
                 case GameEvent.PLAYER_CHANGE:
+                    var game:PasaleGame = PasaleGame(message.body);
+                    updatePlayers(game.players);
                     var callGrid:Object = _gameService.getGameGrid(_gameId);
                     callGrid.operation = GAME_SERVICE_GET_GRID_OP;
                     _ready = false;
@@ -140,7 +142,8 @@ public class PasaleGameController {
                     initGrid(PasaleGrid(event.result));
                     break;
                 case GAME_SERVICE_GET_PLAYERS_OP:
-                    updatePlayers(PasaleGame (event.result));
+                    var game:PasaleGame = PasaleGame(event.result);
+                    updatePlayers(game.players);
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
                     _executingMove = null;
@@ -173,8 +176,9 @@ public class PasaleGameController {
             _ready = true;
         }
 
-        private function updatePlayers(game:PasaleGame):void {
-            
+        private function updatePlayers(players:ArrayCollection):void {
+            _gameWindow.scoreboard.players = players;
+            _gameWindow.scoreboard.draw();
         }
 
         private function invalidMove(move:PasaleMove):void {
