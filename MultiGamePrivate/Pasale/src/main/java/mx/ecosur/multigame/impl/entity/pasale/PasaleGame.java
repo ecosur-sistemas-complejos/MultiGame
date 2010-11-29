@@ -125,9 +125,6 @@ public class PasaleGame extends GridGame {
     public MoveImpl move(MoveImpl move) throws InvalidMoveException {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
-            session.addEventListener(new DebugAgendaEventListener());
-            session.addEventListener(new DebugWorkingMemoryEventListener());
-            KnowledgeRuntimeLogger krlogger = KnowledgeRuntimeLoggerFactory.newConsoleLogger(session);
             session.setGlobal("messageSender", getMessageSender());
             session.setGlobal("dimension", new Integer(getColumns()));
         }

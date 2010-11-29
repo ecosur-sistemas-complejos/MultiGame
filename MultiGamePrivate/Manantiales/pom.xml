@@ -60,11 +60,6 @@
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${project.version}</version>
         </dependency>       
