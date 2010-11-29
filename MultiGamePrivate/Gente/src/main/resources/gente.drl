@@ -1,0 +1,225 @@
+package mx.ecosur.multigame.gente;
+/*
+* Copyright (C) 2010 ECOSUR, Andrew Waterman and Max Pimm
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+
+import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.enums.GameState;
+import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.impl.enums.Direction;
+import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.impl.model.GridMove
+import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.impl.entity.gente.GenteGame;
+import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
+import mx.ecosur.multigame.impl.entity.gente.GenteMove;
+import mx.ecosur.multigame.impl.event.gente.MoveEvent;
+import mx.ecosur.multigame.impl.util.BeadString;
+
+import function mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
+
+dialect "java"
+
+global MessageSender messageSender;
+
+#GENTE
+
+#These rules are for use in the modified game of Pente, GENTE,
+#invented by Dr. Luis Garcia Barrios at ECOSUR, in
+#San Cristobal de Las Casas, Chiapas, Mexico.
+
+#Rules for the game of PENTE
+
+#Sets the players in the game so that Black has the first turn
+#Sets up the empty game grid and sets thate game into the PLAY state
+rule "setup"
+    agenda-group "initialize"
+when
+    game : GenteGame (state == GameState.BEGIN)
+then
+    List<GridPlayer> players = game.getPlayers();
+    for (GridPlayer p : players) {
+        if (p.getColor() == Color.YELLOW)
+            p.setTurn(true);
+        else
+            p.setTurn(false);
+        GentePlayer player = (GentePlayer) p;
+        if (player.getPartner() == null) {
+            for (GridPlayer potential : game.getPlayers()) {
+                if (potential.getColor() != p.getColor().getCompliment())
+                    continue;
+                player.setPartner((GentePlayer) potential);
+            }
+        }          
+    }
+    GameGrid grid = new GameGrid ();
+    modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
+    messageSender.sendPlayerChange(game);
+    messageSender.sendStartGame(game);
+end
+
+#Yellow must move first, and that move can only be at the center of the board
+rule "evaluate-first-move"
+    agenda-group "verify"
+when
+    game  : GenteGame (state == GameState.PLAY, $grid : grid)
+    move  : GenteMove (status != MoveStatus.VERIFIED, player.turn == true, player.color == Color.YELLOW)
+    eval ($grid.getCells().isEmpty())
+    eval (isCenter (game, move))    
+then
+    modify (move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+#Subsequent moves must occur on a non-empty board, on empty locations
+rule "evaluate-move"
+    agenda-group "verify"
+when
+    game  : GenteGame (state == GameState.PLAY, $grid : grid)
+    move  : GenteMove (status == MoveStatus.UNVERIFIED, player.turn == true)
+    eval (!$grid.getCells().isEmpty())
+    eval (isEmpty (game.getGrid(), move))   
+then
+    modify (move) { setStatus (MoveStatus.VERIFIED) }
+end   
+
+# Executes a simple move
+rule "execute-move"
+    agenda-group "move"
+when 
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.VERIFIED)  
+then 
+    GameGrid modifiedGrid = game.getGrid();   
+    modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
+    Set<GridMove> moves = game.getMoves();
+    moves.add(move);
+    modify (game) { setGrid (modifiedGrid), setMoves (moves) }
+    modify (move) { setStatus (MoveStatus.MOVED) }
+end
+
+rule "insert-events"
+    agenda-group "move"
+    no-loop true
+when
+    GenteGame (grid : grid)
+    move : GenteMove (status == MoveStatus.MOVED)
+then
+    #Generates inference events for parsing 
+    for (MoveEvent event : generateEvents (grid, move)) {
+        insert (event);
+    }    
+end
+
+rule "find-tesseras"
+    agenda-group "evaluate"
+    no-loop true
+    salience 5
+when
+    $event : MoveEvent (size == 4)
+    eval (hasMultipleColors ($event))    
+    $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
+    eval (!$move.getTesseras().contains($event.toBeadString()))
+    eval (!hasTessera((GentePlayer) $player, $event.toBeadString()))
+then
+    BeadString tessera = $event.toBeadString();
+    GentePlayer player = (GentePlayer) $player;
+    GentePlayer partner = player.getPartner();
+    player.addTessera(tessera);
+    partner.addTessera (tessera);
+    player.setPartner(partner);
+    retract ($event);
+    modify ($move) { addTessera (tessera), setPlayer (player) };
+end
+
+rule "find-trias"
+    agenda-group "evaluate"
+    no-loop true    
+when
+    $event : MoveEvent (size == 3)
+    $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
+    eval (!hasMultipleColors ($event))
+    eval (!hasTria((GentePlayer) $player, $event.toBeadString()))
+then
+    BeadString tria = $event.toBeadString();
+    GentePlayer player = (GentePlayer) $player;    
+    player.addTria(tria);
+    retract ($event);
+    modify ($move) { addTria (tria), setPlayer (player) };
+end
+
+
+rule "mark-evaluated-move"
+    agenda-group "evaluate"
+    salience -10
+when
+    $game : GenteGame (state == GameState.PLAY)
+    $move : GenteMove (player.turn == true, status == MoveStatus.MOVED)
+then
+    modify ($move) { setStatus (MoveStatus.EVALUATED)}
+    messageSender.sendMoveComplete($game, $move);    
+end
+
+rule "score"
+    agenda-group "evaluate"
+    no-loop true
+when
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+then
+    int score = scorePlayer (move);
+    GentePlayer player = (GentePlayer) move.getPlayer ();
+    if (score > 0) {
+        Set<GentePlayer> winners = new HashSet<GentePlayer>();
+        if (score == 5) {
+            GentePlayer teammate = player.getPartner();
+            teammate.setPoints (score);
+            winners.add(teammate);
+        }
+        player.setPoints (score);
+        winners.add(player);
+        modify (move) { setPlayer (player) }
+        modify (game) { setWinners (winners) }
+    }
+end
+
+# Finds the winner 
+rule "find-the-winner"
+    agenda-group "evaluate"
+    no-loop true
+    salience -15
+when
+    game  : GenteGame (state == GameState.PLAY, winners.size >0)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+then
+    modify (game) { setState (GameState.ENDED) }
+        messageSender.sendEndGame (game);
+end
+
+rule "increment-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -20
+when
+    game  : GenteGame (state == GameState.PLAY)
+    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+then
+    GridPlayer player = incrementTurn (game, move);
+    messageSender.sendPlayerChange(game);
+end

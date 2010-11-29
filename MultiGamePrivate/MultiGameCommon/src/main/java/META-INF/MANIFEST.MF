@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Class-Path: persistence-api-1.0.jar drools-core-5.1.0.M1.jar mvel2-2.0
+ .12.jar drools-api-5.1.0.M1.jar joda-time-1.6.jar drools-compiler-5.1
+ .0.M1.jar antlr-runtime-3.1.1.jar core-3.4.2.v_883_R34x.jar janino-2.
+ 5.15.jar drools-solver-core-5.1.0.M1.jar commons-lang-2.3.jar commons
+ -io-1.3.2.jar slf4j-api-1.5.0.jar xpp3_min-1.1.4c.jar slf4j-nop-1.3.0
+ .jar commons-collections-3.2.1.jar jdom-1.1.jar facebook-java-api-3.0
+ .2.jar jaxb-impl-2.1.9.jar jaxb-api-2.1.jar stax-api-1.0-2.jar activa
+ tion-1.1.jar facebook-java-api-schema-3.0.2.jar runtime-0.4.1.5.jar c
+ ommons-logging-1.1.1.jar json-20080701.jar facebook-java-api-annotati
+ on-processor-3.0.2.jar
+

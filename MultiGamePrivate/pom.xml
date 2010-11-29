@@ -24,6 +24,9 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>MultiGameCommon</module>
+                <module>GridCommon</module>
+                <module>Gente</module>
                 <module>Manantiales</module>
                 <module>Pasale</module>
                 <module>FlexDS</module>
