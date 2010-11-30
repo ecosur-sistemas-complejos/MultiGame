@@ -21,11 +21,11 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import mx.ecosur.multigame.model.implementation.ChatMessageImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.interfaces.ChatMessage;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
 @Entity
-public class GridChatMessage implements ChatMessageImpl {
+public class GridChatMessage implements ChatMessage {
 
     private static final long serialVersionUID = 444999377280040070L;
 
@@ -48,7 +48,7 @@ public class GridChatMessage implements ChatMessageImpl {
             this.id = id;
     }
 
-    public GamePlayerImpl getSender() {
+    public GamePlayer getSender() {
         return sender;
     }
 
@@ -74,9 +74,9 @@ public class GridChatMessage implements ChatMessageImpl {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.ChatMessageImpl#setAgent(mx.ecosur.multigame.model.implementation.AgentImpl)
+     * @see mx.ecosur.multigame.model.interfaces.ChatMessage#setAgent(mx.ecosur.multigame.model.interfaces.Agent)
      */
-    public void setSender(GamePlayerImpl agent) {
+    public void setSender(GamePlayer agent) {
         this.sender = (GridPlayer) agent;
     }
 }

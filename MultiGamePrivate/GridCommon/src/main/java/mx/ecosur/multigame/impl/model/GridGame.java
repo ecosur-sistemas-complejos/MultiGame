@@ -27,9 +27,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.impl.MoveComparator;
-import mx.ecosur.multigame.model.Agent;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.implementation.*;
+import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.KnowledgeBase;
 
 
@@ -45,7 +43,7 @@ import org.drools.KnowledgeBase;
             "player MEMBER OF gme.players")
 })
 @Entity
-public abstract class GridGame implements GameImpl, Cloneable {
+public abstract class GridGame implements Game, Cloneable {
         
     private static final long serialVersionUID = -8785194013529881730L; 
 
@@ -88,7 +86,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
      * @throws mx.ecosur.multigame.exception.InvalidRegistrationException
      *
      */
-    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException {
+    public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException {
         return new GridPlayer();
     }
     
@@ -100,8 +98,8 @@ public abstract class GridGame implements GameImpl, Cloneable {
     }
 
     @Transient
-    public Set<Implementation> getFacts () {
-        Set<Implementation> ret = new HashSet<Implementation>();
+    public Set getFacts () {
+        Set ret = new HashSet();
         ret.addAll(grid.getCells());
         return ret;
     }
@@ -155,7 +153,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
      * The number of rows of the grid contained by this game.
      * @return
      */
-    @Column (name="nRows")
+    @Column(name="nRows")
     public int getRows() {
         return rows;
     }
@@ -177,8 +175,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
      * The number of columns in the grid contained by this game.
      * @return number of columns
      */
-
-    @Column (name="nColumns")
+    @Column(name="nCols")
     public int getColumns() {
         return columns;
     }
@@ -215,7 +212,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
         players.add(player);
     }
 
-    public void removePlayer(GamePlayerImpl player) {
+    public void removePlayer(GamePlayer player) {
         this.players.remove(player);
     }
 
@@ -229,11 +226,11 @@ public abstract class GridGame implements GameImpl, Cloneable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.GameImpl#getMoves()
+     * @see mx.ecosur.multigame.model.interfaces.Game#getMoves()
      */
     @Transient
-    public Set<MoveImpl> listMoves() {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> listMoves() {
+        Set<Move> ret = new LinkedHashSet<Move>();
         Set<GridMove> moves = getMoves();
         for (GridMove move : moves) {
             ret.add(move);
@@ -242,7 +239,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
         return ret;
     }
 
-    public SuggestionImpl suggest(SuggestionImpl suggestion) throws InvalidSuggestionException {
+    public Suggestion suggest(Suggestion suggestion) throws InvalidSuggestionException {
         return suggestion;
     }
 
@@ -273,24 +270,24 @@ public abstract class GridGame implements GameImpl, Cloneable {
     @Transient
     protected List<Color> getAvailableColors() {
         List<Color> colors = getColors();
-        for (GamePlayerImpl player : players) {
+        for (GamePlayer player : players) {
             GridPlayer ep = (GridPlayer) player;
             colors.remove(ep.getColor());
         }
 
         return colors;
     }
-        
+
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.GameImpl#listPlayers()
+     * @see mx.ecosur.multigame.model.interfaces.Game#listPlayers()
      */
     public List<GamePlayer> listPlayers() {
         List<GamePlayer> ret = new ArrayList<GamePlayer>();
         for (GridPlayer player : players) {
-            if (player instanceof AgentImpl)
-                ret.add(new Agent((AgentImpl) player));
+            if (player instanceof Agent)
+                ret.add(player);
             else
-                ret.add(new GamePlayer (player));
+                ret.add(player);
         }
 
         return ret;
@@ -301,7 +298,7 @@ public abstract class GridGame implements GameImpl, Cloneable {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public AgentImpl registerAgent(AgentImpl implementation) throws InvalidRegistrationException {
+    public Agent registerAgent(Agent implementation) throws InvalidRegistrationException {
         return implementation;
     }
 
@@ -327,9 +324,9 @@ public abstract class GridGame implements GameImpl, Cloneable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.GameImpl#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+     * @see mx.ecosur.multigame.model.interfaces.Game#move(mx.ecosur.multigame.model.interfaces.Move)
      */
-    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+    public Move move(Move move) throws InvalidMoveException {
         return move;
     }
 

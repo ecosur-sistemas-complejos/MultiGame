@@ -15,11 +15,10 @@ import java.util.Collection;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.model.ChatMessage;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.Move;
-import mx.ecosur.multigame.model.Suggestion;
-import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.interfaces.ChatMessage;
+import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.Suggestion;
 
 public interface SharedBoardInterface {
     /**
@@ -31,11 +30,11 @@ public interface SharedBoardInterface {
     public Game getGame(int gameId);
 
     /**
-     * Shares a game implementation for use by connected clients.
+     * Shares a game interfaces for use by connected clients.
      *
      * @param gameImpl
      */
-    public void shareGame (GameImpl gameImpl);
+    public void shareGame (Game gameImpl);
 
     /**
      * Makes the specified move on the game grid and invokes the set of game

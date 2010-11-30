@@ -4,7 +4,7 @@
   <groupId>mx.ecosur</groupId>
   <artifactId>flex-ds</artifactId>
   <packaging>jar</packaging>
-  <name>Blaze Data Services</name>
+  <name>MultiGame Data Services (BLAZE)</name>
   <description>BlazeDS connector for flex-client and incorporated games.</description>
   <parent>
         <artifactId>multi-game-private</artifactId>

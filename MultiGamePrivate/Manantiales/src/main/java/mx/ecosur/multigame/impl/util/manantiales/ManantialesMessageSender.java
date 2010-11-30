@@ -3,7 +3,7 @@ package mx.ecosur.multigame.impl.util.manantiales;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
-import mx.ecosur.multigame.model.Game;
+import mx.ecosur.multigame.model.interfaces.Game;
 
 import java.util.logging.Logger;
 

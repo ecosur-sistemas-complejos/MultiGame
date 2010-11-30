@@ -32,7 +32,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.enums.GameEvent;
-import mx.ecosur.multigame.model.implementation.*;
+import mx.ecosur.multigame.model.interfaces.*;
 
 public class MessageSender {
 
@@ -127,7 +127,7 @@ public class MessageSender {
      *
      * @param game
      */
-    public void sendStartGame(GameImpl game) {
+    public void sendStartGame(Game game) {
         sendMessage(game.getId(), GameEvent.BEGIN, game);
     }
 
@@ -137,7 +137,7 @@ public class MessageSender {
     *
     * @param game
     */
-    public void sendPlayerChange(GameImpl game) {
+    public void sendPlayerChange(Game game) {
         sendMessage(game.getId(), GameEvent.PLAYER_CHANGE, game);
     }
 
@@ -147,7 +147,7 @@ public class MessageSender {
     * @param game
     * @param move
     */
-    public void sendMoveComplete(GameImpl game, MoveImpl move) {
+    public void sendMoveComplete(Game game, Move move) {
         sendMessage(game.getId(), GameEvent.MOVE_COMPLETE, move);
     }
 
@@ -157,7 +157,7 @@ public class MessageSender {
     * @param  game
     * @param condition
     */
-    public void sendConditionRaised (GameImpl game, ConditionImpl condition) {
+    public void sendConditionRaised (Game game, Condition condition) {
         sendMessage(game.getId(), GameEvent.CONDITION_RAISED, condition);
     }
 
@@ -168,7 +168,7 @@ public class MessageSender {
     * @param game
     * @param condition
     */
-    public void sendConditionResolved (GameImpl game, ConditionImpl condition) {
+    public void sendConditionResolved (Game game, Condition condition) {
         sendMessage (game.getId(), GameEvent.CONDITION_RESOLVED, condition);
     }
 
@@ -179,18 +179,18 @@ public class MessageSender {
     * @param game
     * @param condition
     */
-    public void sendConditionTriggered (GameImpl game, ConditionImpl condition) {
+    public void sendConditionTriggered (Game game, Condition condition) {
         sendMessage (game.getId(), GameEvent.CONDITION_TRIGGERED, condition);
     }
 
     /**
      * Sends the GameEvent.STATE_CHANGE message with the game object.
      */
-    public void sendStateChange (GameImpl game) {
+    public void sendStateChange (Game game) {
         sendMessage(game.getId(), GameEvent.STATE_CHANGE, game);
     }
 
-    public void sendGameChange (GameImpl game) {
+    public void sendGameChange (Game game) {
         sendMessage(game.getId(), GameEvent.GAME_CHANGE, game);
     }
 
@@ -199,7 +199,7 @@ public class MessageSender {
      *
      * @param game
      */
-    public void sendEndGame(GameImpl game) {
+    public void sendEndGame(Game game) {
         sendMessage(game.getId(), GameEvent.END, game);
     }
 

@@ -14,15 +14,15 @@ import java.util.LinkedHashSet;
 import java.util.TreeSet;
 import java.util.Set;
 
-import javax.jms.Message;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
 import mx.ecosur.multigame.impl.util.gente.GenteMoveComparator;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.SuggestionImpl;
+import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.Suggestion;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -41,11 +41,10 @@ import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.impl.enums.Direction;
 import mx.ecosur.multigame.impl.util.Search;
 
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GameImpl;
+import mx.ecosur.multigame.model.interfaces.Agent;
 
 @Entity
-public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
+public class GenteStrategyAgent extends GentePlayer implements Agent {
         
     private static final long serialVersionUID = 6999849272112074624L;
 
@@ -66,7 +65,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.AgentImpl#initialize()
+     * @see mx.ecosur.multigame.model.interfaces.Agent#initialize()
      */
     public void initialize() {
             nextMove = null;
@@ -203,8 +202,8 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
         return ret;
     }
 
-    public Set<MoveImpl> determineMoves (GameImpl impl) {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> determineMoves (Game impl) {
+        Set<Move> ret = new LinkedHashSet<Move>();
         GenteGame game = (GenteGame) impl;
 
         try {
@@ -221,7 +220,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
                  * one available */
                 ret.add(getNextMove());
 
-                for (MoveImpl moveImpl : ret) {
+                for (Move moveImpl : ret) {
                     GenteMove genteMove = (GenteMove) moveImpl;
                     GridCell destination = genteMove.getDestinationCell();
                     destination.setColor(getColor());
@@ -244,7 +243,7 @@ public class GenteStrategyAgent extends GentePlayer implements AgentImpl {
         return ret;
     }
 
-    public SuggestionImpl processSuggestion (GameImpl game, SuggestionImpl suggestion) {
+    public Suggestion processSuggestion (Game game, Suggestion suggestion) {
         return suggestion;
     }
 

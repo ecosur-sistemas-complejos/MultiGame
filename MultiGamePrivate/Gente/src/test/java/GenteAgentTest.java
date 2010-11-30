@@ -18,7 +18,7 @@ import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,8 +73,8 @@ public class GenteAgentTest extends GenteTestBase {
             for (GridPlayer player : game.getPlayers()) {
                 if (player.isTurn()) {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
-                    Set<MoveImpl> moves = agent.determineMoves(game);
-                    for (MoveImpl move : moves) {
+                    Set<Move> moves = agent.determineMoves(game);
+                    for (Move move : moves) {
                         game.move(move);
                         assertEquals (MoveStatus.EVALUATED, move.getStatus());
                         moved = true;
@@ -108,8 +108,8 @@ public class GenteAgentTest extends GenteTestBase {
             for (GridPlayer player : game.getPlayers()) {
                 if (player.isTurn()) {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
-                    Set<MoveImpl> moves = agent.determineMoves(game);
-                    for (MoveImpl move : moves) {
+                    Set<Move> moves = agent.determineMoves(game);
+                    for (Move move : moves) {
                         game.move(move);
                         assertEquals (MoveStatus.EVALUATED, move.getStatus());
                         moved = true;
@@ -140,8 +140,8 @@ public class GenteAgentTest extends GenteTestBase {
             for (GridPlayer player : game.getPlayers()) {
                 if (player.isTurn()) {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
-                    Set<MoveImpl> moves = agent.determineMoves(game);
-                    for (MoveImpl move : moves) {
+                    Set<Move> moves = agent.determineMoves(game);
+                    for (Move move : moves) {
                         game.move(move);
                         assertEquals (MoveStatus.EVALUATED, move.getStatus());
                         moved = true;

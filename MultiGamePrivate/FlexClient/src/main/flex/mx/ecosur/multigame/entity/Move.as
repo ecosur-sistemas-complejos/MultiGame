@@ -13,7 +13,7 @@ package mx.ecosur.multigame.entity {
 
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.model.GamePlayerModel;
-    import mx.ecosur.multigame.model.implementation.MoveImplementation;
+    import mx.ecosur.multigame.model.interfaces.MoveImplementation;
 
     /**
     * Represents a server side Player object.

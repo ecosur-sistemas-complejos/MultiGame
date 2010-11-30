@@ -12,7 +12,7 @@
 package mx.ecosur.multigame.entity {
 
 import mx.collections.ArrayCollection;
-import mx.ecosur.multigame.model.implementation.GameImplementation;
+import mx.ecosur.multigame.model.interfaces.GameImplementation;
 
     /**
      * Represents a server side Game object.

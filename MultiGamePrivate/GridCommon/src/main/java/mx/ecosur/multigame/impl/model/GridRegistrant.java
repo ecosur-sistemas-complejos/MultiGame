@@ -22,7 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.interfaces.Registrant;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -31,7 +31,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
                         query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name")
 })
 @Entity
-public class GridRegistrant implements RegistrantImpl, Cloneable {
+public class GridRegistrant implements Registrant, Cloneable {
 
         private static final long serialVersionUID = 5230114393058543176L;
 

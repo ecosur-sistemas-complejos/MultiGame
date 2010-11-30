@@ -130,7 +130,7 @@ public class SilvoPastoralMove implements Move {
      * As much as is reasonably practical, the hashCode method defined by
      * class <tt>Object</tt> does return distinct integers for distinct
      * objects. (This is typically implemented by converting the internal
-     * address of the object into an integer, but this implementation
+     * address of the object into an integer, but this interfaces
      * technique is not required by the
      * Java<font size="-2"><sup>TM</sup></font> programming language.)
      *

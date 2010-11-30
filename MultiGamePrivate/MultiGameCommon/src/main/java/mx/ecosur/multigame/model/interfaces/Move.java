@@ -9,12 +9,13 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
 import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.model.GamePlayer;
 
-public interface MoveImpl extends Implementation {
+import java.io.Serializable;
+
+public interface Move extends Serializable {
         
     public int getId();
 
@@ -26,14 +27,14 @@ public interface MoveImpl extends Implementation {
 
     public GamePlayer getPlayerModel ();
 
-    public void setPlayerModel(GamePlayer player);
+    public void setPlayerModel (GamePlayer player);
 
-    public CellImpl getCurrentCell();
+    public Cell getCurrentCell();
 
-    public void setCurrentCell(CellImpl cellImpl);
+    public void setCurrentCell(Cell cellImpl);
 
-    public CellImpl getDestinationCell();
+    public Cell getDestinationCell();
 
-    public void setDestinationCell(CellImpl cellImpl);
+    public void setDestinationCell(Cell cellImpl);
     
 }

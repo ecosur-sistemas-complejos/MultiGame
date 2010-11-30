@@ -19,12 +19,12 @@ package mx.ecosur.multigame.impl.model;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.implementation.CellImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.interfaces.Cell;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.model.interfaces.Move;
 
 @Entity
-public class GridMove implements MoveImpl, Cloneable {
+public class GridMove implements Move, Cloneable {
 
         private static final long serialVersionUID = 8017901476308051472L;
         private int id;
@@ -88,20 +88,19 @@ public class GridMove implements MoveImpl, Cloneable {
         public GridPlayer getPlayer() {
                 return this.player;
         }
-        
-        @Transient
-        public GamePlayer getPlayerModel () {
-                return new GamePlayer (player);
-        }
-        
-        @Transient
-        public void setPlayerModel (GamePlayer model) {
-        if (model != null && model.getImplementation() != null)
-                    this.player = (GridPlayer) model.getImplementation();
-        }
 
         public void setPlayer(GridPlayer player) {
-                this.player = player;
+            this.player = player;
+        }
+
+        @Transient
+        public GamePlayer getPlayerModel () {
+                return player;
+        }
+        
+        @Transient
+        public void setPlayerModel (GamePlayer player) {
+            this.player = (GridPlayer) player;
         }
 
         /**
@@ -121,16 +120,16 @@ public class GridMove implements MoveImpl, Cloneable {
         }
         
         /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.implementation.MoveImpl#setCurrent(mx.ecosur.multigame.model.implementation.CellImpl)
+         * @see mx.ecosur.multigame.model.interfaces.Move#setCurrent(mx.ecosur.multigame.model.interfaces.Cell)
          */
-        public void setCurrentCell(CellImpl cellImpl) {
+        public void setCurrentCell(Cell cellImpl) {
                 setCurrentCell((GridCell) cellImpl);
         }
 
         /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.implementation.MoveImpl#setDestination(mx.ecosur.multigame.model.implementation.CellImpl)
+         * @see mx.ecosur.multigame.model.interfaces.Move#setDestination(mx.ecosur.multigame.model.interfaces.Cell)
          */
-        public void setDestinationCell(CellImpl cellImpl) {
+        public void setDestinationCell(Cell cellImpl) {
                 setDestinationCell((GridCell) cellImpl);
         }
 

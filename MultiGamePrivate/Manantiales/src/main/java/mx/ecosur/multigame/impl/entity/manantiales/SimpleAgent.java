@@ -11,10 +11,10 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GameImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.SuggestionImpl;
+import mx.ecosur.multigame.model.interfaces.Agent;
+import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.Suggestion;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  * @author awaterma@ecosur.mx
  */
 @Entity
-public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
+public class SimpleAgent extends ManantialesPlayer implements Agent {
 
     private static final long serialVersionUID = 8878695200931762776L;
 
@@ -64,7 +64,7 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         this.type = type;
     }
 
-    public SuggestionImpl processSuggestion (GameImpl impl, SuggestionImpl suggestionImpl) {
+    public Suggestion processSuggestion (Game impl, Suggestion suggestionImpl) {
 
         /* Evaluated Suggestions are automatically acknowledged and accepted */
 
@@ -91,8 +91,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
     }
 
 /* Simply returns a simple move response.  No suggestions are made by the Agent */
-    public Set<MoveImpl> determineMoves(GameImpl impl) {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> determineMoves(Game impl) {
+        Set<Move> ret = new LinkedHashSet<Move>();
 
         Random random = null;
         ManantialesGame game = (ManantialesGame) impl;
@@ -130,8 +130,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
 
     /* Simply returns a simple move response.  No suggestions are made by the Agent */
     /*
-    public Set<MoveImpl> determineMoves(GameImpl impl) {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> determineMoves(Game impl) {
+        Set<Move> ret = new LinkedHashSet<Move>();
         ManantialesGame game = (ManantialesGame) impl;
 
         Random random = new Random();
@@ -187,8 +187,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         return ret;
     }
 
-    public Set<MoveImpl> findNewMoves(ManantialesGame game) {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> findNewMoves(ManantialesGame game) {
+        Set<Move> ret = new LinkedHashSet<Move>();
 
         List<ManantialesFicha> fichas = generateCandidates(game);
         for (ManantialesFicha ficha : fichas) {
@@ -213,8 +213,8 @@ public class SimpleAgent extends ManantialesPlayer implements AgentImpl {
         return ret;
     }
 
-    public Set<MoveImpl> findUpgradeMoves (ManantialesGame game) {
-        Set<MoveImpl> ret = new LinkedHashSet<MoveImpl>();
+    public Set<Move> findUpgradeMoves (ManantialesGame game) {
+        Set<Move> ret = new LinkedHashSet<Move>();
 
         Set<GridCell> filter = new HashSet<GridCell>();
         for (GridCell cell : game.getGrid().getCells()) {

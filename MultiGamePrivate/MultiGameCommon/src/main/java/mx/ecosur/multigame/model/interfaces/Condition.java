@@ -9,10 +9,14 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
-public interface GamePlayerImpl extends Implementation {
-        
-    public int getId();
+import java.io.Serializable;
+
+public interface Condition extends Serializable {
+
+    public String getReason();
+
+    public Object[] getTriggers();
 
 }

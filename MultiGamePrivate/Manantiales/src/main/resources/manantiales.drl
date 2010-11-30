@@ -12,9 +12,9 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 
-import mx.ecosur.multigame.model.Condition;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.Move;
+import mx.ecosur.multigame.model.interfaces.Condition;
+import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.Move;
 
 import mx.ecosur.multigame.impl.Color;
 
@@ -159,7 +159,7 @@ then
     modifiedGrid.removeCell ($move.getCurrentCell());
     $move.setStatus (MoveStatus.VERIFIED);
     modify ($game) { addMove ($move), setGrid (modifiedGrid)}
-    messageSender.sendSuggestionApplied (new Game ($game), $suggestion);
+    messageSender.sendSuggestionApplied ($game, $suggestion);
     insert ($move);
 end
 
@@ -171,7 +171,7 @@ when
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.REJECT)
 then
     retract ($suggestion);
-    messageSender.sendSuggestionApplied (new Game ($game), $suggestion);    
+    messageSender.sendSuggestionApplied ($game, $suggestion);    
 end
 
 rule "evaluate-regular-move"
@@ -461,7 +461,7 @@ when
     $game  : ManantialesGame (state == GameState.PLAY)
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.EVALUATED)
 then
-    messageSender.sendSuggestionEvaluated (new Game($game), $suggestion);
+    messageSender.sendSuggestionEvaluated ($game, $suggestion);
 end
 
 rule "execute-new-move"

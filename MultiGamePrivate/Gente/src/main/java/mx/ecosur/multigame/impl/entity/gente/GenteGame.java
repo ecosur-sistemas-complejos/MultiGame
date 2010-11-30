@@ -17,11 +17,13 @@ package mx.ecosur.multigame.impl.entity.gente;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.impl.MoveComparator;
+import mx.ecosur.multigame.model.interfaces.Agent;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.model.interfaces.Move;
 import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -35,10 +37,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.model.*;
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.interfaces.Registrant;
 import mx.ecosur.multigame.MessageSender;
 
 
@@ -118,9 +117,9 @@ public class GenteGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
-    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+    public Move move(Move move) throws InvalidMoveException {
         if (kbase == null)
             kbase = findKBase();
 
@@ -143,7 +142,7 @@ public class GenteGame extends GridGame {
         return move;
     }
         
-    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws
+    public GamePlayer registerPlayer(Registrant registrant) throws
             InvalidRegistrationException
     {
         GentePlayer player = new GentePlayer ();
@@ -177,7 +176,7 @@ public class GenteGame extends GridGame {
         return player;
     }
 
-    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+    public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
         GenteStrategyAgent player = (GenteStrategyAgent) agent;
 
         for (GridPlayer p : this.getPlayers()) {
@@ -206,7 +205,7 @@ public class GenteGame extends GridGame {
         if (this.state == null)
             this.state = GameState.WAITING;
 
-        return (AgentImpl) player;
+        return (Agent) player;
     }
 
     /* (non-Javadoc)
@@ -236,6 +235,16 @@ public class GenteGame extends GridGame {
             messageSender.initialize();
         }
         return messageSender;
+    }
+
+    @Override
+    public List<GamePlayer> listPlayers() {
+      List<GamePlayer> ret = new ArrayList<GamePlayer>();
+      for (GridPlayer p : players) {
+          ret.add(p);
+      }
+
+      return ret;
     }
 
     public void setMessageSender(MessageSender messageSender) {

@@ -21,8 +21,6 @@ package mx.ecosur.multigame.ejb.impl;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -37,16 +35,11 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.model.GridGame;
-import mx.ecosur.multigame.model.*;
-import mx.ecosur.multigame.model.implementation.*;
+import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.*;
 import org.drools.io.ResourceFactory;
 
@@ -75,19 +68,19 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         /** TODO:  Inject or make this query static */
         Query query = em.createNamedQuery("getGameById");
         query.setParameter("id", gameId);
-        GameImpl impl;
+        Game impl;
         try {
-            impl = (GameImpl) query.getSingleResult();
+            impl = (Game) query.getSingleResult();
         } catch (NoResultException e) {
             throw new RuntimeException ("UNABLE TO FIND GAME WITH ID: " + gameId);
         }
 
-        Game game = new Game (impl);
+        Game game = impl;
         game.setMessageSender(messageSender);
         return game;
     }
 
-    public void shareGame (GameImpl impl) {
+    public void shareGame (Game impl) {
         try {
             em.merge(impl);
         } catch (Exception e) {
@@ -100,57 +93,50 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
         /* Refresh a detached GamePlayer in the Move */
-        GamePlayer player = move.getPlayer();
+        GamePlayer player = move.getPlayerModel ();
 
         /* Refresh a detached Game in GamePlayer */
-        if (!em.contains (game.getImplementation())) {
-            GameImpl impl = em.find (game.getImplementation().getClass(),
-                game.getId());
-            game = new Game (impl);
-        }
+        if (!em.contains (game))
+            game = em.find (game.getClass(),game.getId());
 
-        if (!em.contains (player.getImplementation())) {
-            player = new GamePlayer (em.find(
-                player.getImplementation().getClass(), player.getId()));
-        }
+        if (!em.contains (player))
+            player = em.find(player.getClass(), player.getId());
 
-        move.setPlayer(player);
+        move.setPlayerModel (player);
 
 
         /* Refresh any detached GridCells */
-        Cell current = move.getCurrent();
-        Cell dest = move.getDestination();
+        Cell current = move.getCurrentCell();
+        Cell dest = move.getDestinationCell();
 
 
-        if (current.getImplementation() != null) {
-            if (!em.contains (current.getImplementation())) {
-                CellImpl impl = (em.find (
-                    current.getImplementation().getClass(), current.getId()));
+        if (current != null) {
+            if (!em.contains (current)) {
+                Cell impl = (em.find (
+                    current.getClass(), current.getId()));
                 if (impl != null)
-                    current = new Cell (impl);
+                    current = impl;
             }
 
-            move.setCurrent (current);
+            move.setCurrentCell (current);
         }
 
-        if (dest.getImplementation() != null) {
-            if (!em.contains (dest.getImplementation())) {
-                CellImpl impl = (em.find (
-                    dest.getImplementation().getClass(), dest.getId()));
+        if (dest != null) {
+            if (!em.contains (dest)) {
+                Cell impl = (em.find (dest.getClass(), dest.getId()));
                 if (impl != null)
-                    dest = new Cell (impl);
+                    dest = impl;
             }
-            move.setDestination (dest);
+            move.setDestinationCell (dest);
         }
 
-        if (!em.contains(move.getImplementation())) {
-            em.persist(move.getImplementation());
+        if (!em.contains(move)) {
+            em.persist(move);
         }
         else {
-            Move test = new Move (em.find (move.getImplementation().getClass(),
-                move.getImplementation().getId()));
-            if (test.getImplementation() != null)
-                move.setImplementation(test.getImplementation());
+            Move test = em.find (move.getClass(), move.getId());
+            if (test != null)
+                move = test;
         }
             /* Load the Kbase */
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -169,15 +155,13 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         }
 
         /* Embed the kbase into the game */
-        GridGame gg = (GridGame) game.getImplementation();
-        gg.setKbase(kbase);
-        game.setImplementation(gg);
+        ((GridGame) game).setKbase(kbase);
 
             /* Execute the move */
         game.setMessageSender(messageSender);
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
-            throw new InvalidMoveException ("INVALID Move. [" + move.getImplementation().toString() + "]");
+            throw new InvalidMoveException ("INVALID Move. [" + move.toString() + "]");
         return move;
     }
 
@@ -185,85 +169,79 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
 
         /* Refresh a detached Game */
-        if (!em.contains (game.getImplementation())) {
-            GameImpl impl = em.find (game.getImplementation().getClass(),
-                game.getId());
-            game = new Game (impl);
-        } else
-            em.refresh (game.getImplementation());        
+        if (!em.contains (game))
+            game = em.find (game.getClass(), game.getId());
+        else
+            em.refresh (game);
 
             /* Refresh a detached GamePlayer in the Suggestion */
         GamePlayer player = suggestion.listSuggestor();
 
-        if (!em.contains (player.getImplementation())) {
-            player = new GamePlayer (em.find(
-                player.getImplementation().getClass(), player.getId()));
-            suggestion.attachSuggestor (player.getImplementation());
+        if (!em.contains (player)) {
+            player = em.find(player.getClass(), player.getId());
+            suggestion.attachSuggestor (player);
         }
 
         /* Refresh any detached GridCells and Move */
         Move move = suggestion.listMove();
-        Cell current = move.getCurrent();
-        Cell dest = move.getDestination();
+        Cell current = move.getCurrentCell();
+        Cell dest = move.getDestinationCell();
 
-        if (current.getImplementation() != null) {
-            if (!em.contains (current.getImplementation())) {
-                CellImpl impl = (em.find (
-                    current.getImplementation().getClass(), current.getId()));
+        if (current != null) {
+            if (!em.contains (current)) {
+                Cell impl = (em.find (
+                    current.getClass(), current.getId()));
                 if (impl != null)
-                    current = new Cell (impl);
+                    current = impl;
                 else
-                    em.persist(current.getImplementation());
+                    em.persist(current);
             }
         }
 
-        if (dest.getImplementation() != null) {
-            if (!em.contains (dest.getImplementation())) {
-                CellImpl impl = (em.find (
-                    dest.getImplementation().getClass(), dest.getId()));
+        if (dest != null) {
+            if (!em.contains (dest)) {
+                Cell impl = (em.find (
+                    dest.getClass(), dest.getId()));
                 if (impl != null)
-                    dest = new Cell (impl);
+                    dest = impl;
                 else
-                    em.persist(dest.getImplementation());
+                    em.persist(dest);
             }
 
         }
 
-        move.setCurrent (current);
-        move.setDestination (dest);
+        move.setCurrentCell (current);
+        move.setDestinationCell (dest);
 
             /* Refresh a detached GamePlayer in the Move */
-        player = move.getPlayer();
+        player = move.getPlayerModel();
 
-        if (!em.contains (player.getImplementation())) {
-            player = new GamePlayer (em.find(
-                player.getImplementation().getClass(), player.getId()));
-            move.setPlayer(player);
+        if (!em.contains (player)) {
+            player = em.find(player.getClass(), player.getId());
+            move.setPlayerModel(player);
         }
 
-        if (!em.contains(move.getImplementation())) {
-            MoveImpl impl = em.find (move.getImplementation().getClass(),
-                move.getId());
+        if (!em.contains(move)) {
+            Move impl = em.find (move.getClass(), move.getId());
             if (impl != null) {
                 impl.setStatus(move.getStatus());
-                move.setImplementation(impl);
+                move = impl;
             } else {
-                em.persist(move.getImplementation());
+                em.persist(move);
             }
         }
 
-        suggestion.attachMove(move.getImplementation());
+        suggestion.attachMove(move);
 
         /* If suggestion has no id, it should be persisted, otherwise reattach */
-        if (!em.contains (suggestion.getImplementation())) {
+        if (!em.contains (suggestion)) {
             if (suggestion.getId() == 0)
-                em.persist (suggestion.getImplementation());
+                em.persist (suggestion);
             else {
-                SuggestionImpl impl = em.find (suggestion.getImplementation().getClass(),
-                    suggestion.getId());
+                Suggestion impl = em.find (suggestion.getClass(), suggestion.getId());
                 if (impl != null) {
                     impl.setStatus(suggestion.getStatus());
-                    suggestion.setImplementation(impl);
+                    suggestion = impl;
                 }
             }
         }
@@ -288,10 +266,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
         /* Embed the kbase into the game */
-        GridGame gg = (GridGame) game.getImplementation();
-        gg.setKbase(kbase);
-        game.setImplementation(gg);
-
+        ((GridGame) game).setKbase(kbase);
         Suggestion ret = game.suggest(suggestion);
 
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
@@ -309,7 +284,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
         Game game = getGame(gameId);
         if (game != null)
-            ret = game.getMoves();
+            ret = game.listMoves();
 
         return ret;
     }
@@ -317,13 +292,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     public void addMessage(ChatMessage chatMessage) {
         /* chat message sender may be detatched */
         GamePlayer sender = chatMessage.getSender();
-
-        if (!em.contains(sender.getImplementation())) {
-            chatMessage.setSender(new GamePlayer (em.find(sender.getImplementation().getClass(),
-                sender.getImplementation().getId())));
-        }
-
-        em.merge (chatMessage.getImplementation());
+        if (!em.contains(sender))
+            chatMessage.setSender(em.find(sender.getClass(), sender.getId()));
+        em.merge (chatMessage);
     }
 
     /* (non-Javadoc)
@@ -333,13 +304,12 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         /* Refresh the GamePlayer impl reference and proceed to merge any changes in
          * the move back into the backend
          */
-        if (!em.contains(move.getPlayer().getImplementation())) {
-            GamePlayer player = new GamePlayer (em.find (
-                move.getPlayer().getImplementation().getClass(), move.getPlayer().getImplementation().getId()));
-            move.setPlayer(player);
+        if (!em.contains(move.getPlayerModel())) {
+            GamePlayer player = em.find (move.getPlayerModel().getClass(), move.getPlayerModel().getId());
+            move.setPlayerModel(player);
         }
 
-        em.merge(move.getImplementation());
+        em.merge(move);
         return move;
     }
 }

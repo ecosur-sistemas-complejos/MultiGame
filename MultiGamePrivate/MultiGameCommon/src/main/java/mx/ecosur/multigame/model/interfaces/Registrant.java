@@ -8,9 +8,11 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
-public interface RegistrantImpl extends Implementation {
+import java.io.Serializable;
+
+public interface Registrant extends Serializable {
 
     public int getId();
 

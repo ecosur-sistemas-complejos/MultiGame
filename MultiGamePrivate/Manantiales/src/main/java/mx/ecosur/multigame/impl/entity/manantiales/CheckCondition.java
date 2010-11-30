@@ -24,10 +24,10 @@ import javax.persistence.FetchType;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 
-import mx.ecosur.multigame.model.implementation.ConditionImpl;
+import mx.ecosur.multigame.model.interfaces.Condition;
 
 @Entity (name="ManantialesCheckCondition")
-public class CheckCondition implements ConditionImpl {
+public class CheckCondition implements Condition {
     
     private static final long serialVersionUID = -9183594100309734640L;
 
@@ -135,7 +135,7 @@ public class CheckCondition implements ConditionImpl {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.implementation.ConditionImpl#getTriggers()
+     * @see mx.ecosur.multigame.model.interfaces.Condition#getTriggers()
      */
     @Transient
     public Object[] getTriggers() {

@@ -71,7 +71,7 @@ package mx.ecosur.multigame.impl.util;
  * @author Brian W. Kernighan and Rob Pike (C++ original)
  * @author Ian F. Darwin (translation into Java and removal of I/O)
  * @author Ben Ballard (rewrote advQuoted to handle '""' and for readability)
- * @author Andrew Waterman <awaterma@ecosur.mx> (Modified Logger implementation
+ * @author Andrew Waterman <awaterma@ecosur.mx> (Modified Logger interfaces
  * to use the Java logging library)
  * @author Max Pimm Collections genericized 
  * 

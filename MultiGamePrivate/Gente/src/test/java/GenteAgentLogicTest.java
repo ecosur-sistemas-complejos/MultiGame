@@ -21,7 +21,7 @@ import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GameGrid;
 
-import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -38,8 +38,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 
     @Test
     public void testRandomNextMove () throws InvalidMoveException {
-        Set<MoveImpl> moves = alice.determineMoves(game);
-        for (MoveImpl next : moves) {
+        Set<Move> moves = alice.determineMoves(game);
+        for (Move next : moves) {
             assertNotNull (next);
             game.move(next);
             /* Validate that the move was made */
@@ -63,8 +63,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
     public void testBlockerNextMove () throws InvalidMoveException {
         alice.setTurn(false);
         bob.setTurn(true);
-        Set<MoveImpl> moves = bob.determineMoves(game);
-        for (MoveImpl next : moves) {
+        Set<Move> moves = bob.determineMoves(game);
+        for (Move next : moves) {
             assertNotNull (next);
             /* Ensure that the last move blocks a score by blue or green */
             GridCell destination = (GridCell) next.getDestinationCell();
@@ -90,8 +90,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
     @Test
     public void testSimpleNextMove () throws InvalidMoveException {
         charlie.setTurn(true);
-        Set<MoveImpl> moves = charlie.determineMoves(game);
-        for (MoveImpl next : moves) {
+        Set<Move> moves = charlie.determineMoves(game);
+        for (Move next : moves) {
             assertNotNull (next);
             /* Validate that the next move is possible */
             game.move (next);
@@ -111,8 +111,8 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
         game.setState(GameState.PLAY);
 
         charlie.setTurn(true);
-        Set<MoveImpl> moves = charlie.determineMoves(game);
-        for (MoveImpl next : moves) {
+        Set<Move> moves = charlie.determineMoves(game);
+        for (Move next : moves) {
             assertNotNull (next);
             /* Validate that the next move is possible */
             game.move (next);

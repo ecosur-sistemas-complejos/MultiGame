@@ -18,13 +18,13 @@ package mx.ecosur.multigame.impl;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import mx.ecosur.multigame.model.implementation.CellImpl;
+import mx.ecosur.multigame.model.interfaces.Cell;
 
-public class CellComparator implements Comparator<CellImpl>, Serializable {
+public class CellComparator implements Comparator<Cell>, Serializable {
 
     private static final long serialVersionUID = 1192095593909731426L;
 
-    public int compare(CellImpl cell1, CellImpl cell2) {
+    public int compare(Cell cell1, Cell cell2) {
         int ret = 0;
         if (cell1 == null || cell2 == null)
                 return ret;

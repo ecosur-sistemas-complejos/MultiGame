@@ -1,10 +1,10 @@
-package mx.ecosur.multigame.model.implementation
+package mx.ecosur.multigame.model.interfaces
 {
 	import mx.ecosur.multigame.entity.Cell;
 	import mx.ecosur.multigame.enum.MoveStatus;
 	import mx.ecosur.multigame.model.GamePlayerModel;
 	
-    [RemoteClass (alias="mx.ecosur.multigame.model.implementation.MoveImpl")]
+    [RemoteClass (alias="mx.ecosur.multigame.model.interfaces.MoveImpl")]
 	public interface MoveImplementation extends Implementation
 	{
 		function get id ():int;

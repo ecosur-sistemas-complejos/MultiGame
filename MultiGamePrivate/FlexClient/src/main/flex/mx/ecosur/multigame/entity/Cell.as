@@ -13,7 +13,7 @@ package mx.ecosur.multigame.entity {
 	
 	import mx.core.UIComponent;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.model.implementation.CellImplementation;
+	import mx.ecosur.multigame.model.interfaces.CellImplementation;
 	
 	/**
 	 * Represents a server side cell object

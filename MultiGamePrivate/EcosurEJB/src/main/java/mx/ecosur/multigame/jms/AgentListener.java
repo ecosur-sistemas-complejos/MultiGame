@@ -34,12 +34,7 @@ import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.model.*;
-import mx.ecosur.multigame.model.implementation.GameImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.SuggestionImpl;
+import mx.ecosur.multigame.model.interfaces.*;
 
 @RunAs("MultiGame")
 @MessageDriven(mappedName = "MultiGame")
@@ -75,19 +70,18 @@ public class AgentListener implements MessageListener {
                     /* Pull current game state from the shared board and get moves from
                        any affiliated agents.
                      */
-                    GameImpl impl = (GameImpl) msg.getObject();
-                    Game model = sharedBoard.getGame(impl.getId());
-                    GameImpl game = model.getImplementation();                    
+                    Game impl = (Game) msg.getObject();
+                    Game game = sharedBoard.getGame(impl.getId());
 
                     List<GamePlayer> players = game.listPlayers();
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {
                             Agent agent = (Agent) p;
                             if (agent.ready()) {
-                                Set<Move> moves = agent.determineMoves(new Game(game));
+                                Set<Move> moves = agent.determineMoves(game);
                                 for (Move move : moves) {
                                     try {
-                                        moved = sharedBoard.doMove(new Game (game), move);
+                                        moved = sharedBoard.doMove(game, move);
                                     } catch (InvalidMoveException e) {
                                         logger.severe ("Invalid move submitted by agent [" + move + "]");
                                     }
@@ -112,17 +106,15 @@ public class AgentListener implements MessageListener {
                 for (GameEvent possible : suggestionEvents) {
                     if (event.equals(possible)) {
                         matched = true;
-                        SuggestionImpl suggestion = (SuggestionImpl) msg.getObject();
+                        Suggestion suggestion = (Suggestion) msg.getObject();
                         SuggestionStatus oldStatus = suggestion.getStatus();
                         int gameId = new Integer (message.getStringProperty("GAME_ID")).intValue();
                         Game game = sharedBoard.getGame(gameId);
-                        GameImpl impl = (GameImpl) game.getImplementation();
-                        List<GamePlayer> players = impl.listPlayers();
+                        List<GamePlayer> players = game.listPlayers();
                         for (GamePlayer p : players) {
                             if (p instanceof Agent) {
                                 Agent agent = (Agent) p;
-                                suggestion = (agent.processSuggestion (
-                                        new Game(impl), new Suggestion(suggestion))).getImplementation();
+                                suggestion = (agent.processSuggestion (game, suggestion));
                             }
                         }
 
@@ -132,7 +124,7 @@ public class AgentListener implements MessageListener {
                                 newStatus.equals(SuggestionStatus.ACCEPT) || newStatus.equals(SuggestionStatus.REJECT)))
                         {
                              try {
-                                 sharedBoard.makeSuggestion (game, new Suggestion(suggestion));
+                                 sharedBoard.makeSuggestion (game, suggestion);
                              } catch (InvalidSuggestionException e) {
                                  logger.severe("InvalidSuggestionException: " + e.getMessage());
                                  e.printStackTrace();

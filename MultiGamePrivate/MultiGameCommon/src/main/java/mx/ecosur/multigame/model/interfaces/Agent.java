@@ -9,17 +9,17 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
 import java.util.Set;
 
-public interface AgentImpl extends GamePlayerImpl {
+public interface Agent extends GamePlayer {
 
     public void initialize();
 
     public boolean ready();
 
-    public Set<MoveImpl> determineMoves(GameImpl game);
+    public Set<Move> determineMoves(Game game);
 
-    public SuggestionImpl processSuggestion (GameImpl game, SuggestionImpl suggestion);
+    public Suggestion processSuggestion (Game game, Suggestion suggestion);
 }

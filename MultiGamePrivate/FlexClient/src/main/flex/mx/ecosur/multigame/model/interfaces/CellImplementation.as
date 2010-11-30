@@ -1,6 +1,6 @@
-package mx.ecosur.multigame.model.implementation
+package mx.ecosur.multigame.model.interfaces
 {
-	[RemoteClass (alias="mx.ecosur.multigame.model.implementation.CellImpl")]
+	[RemoteClass (alias="mx.ecosur.multigame.model.interfaces.CellImpl")]
 	public interface CellImplementation extends Implementation
 	{	
 				

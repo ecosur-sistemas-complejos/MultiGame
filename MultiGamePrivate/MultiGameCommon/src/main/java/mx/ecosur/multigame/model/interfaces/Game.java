@@ -9,8 +9,9 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -18,26 +19,25 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.model.GamePlayer;
 import mx.ecosur.multigame.MessageSender;
 
-public interface GameImpl extends Implementation {
+public interface Game extends Serializable {
 
     public int getId();
 
-    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException;
+    public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException;
 
-    public void removePlayer(GamePlayerImpl player);
+    public void removePlayer(GamePlayer player);
 
     public void setState(GameState state);
 
     public GameState getState();
 
-    public MoveImpl move(MoveImpl move) throws InvalidMoveException;
+    public Move move(Move move) throws InvalidMoveException;
 
-    public Set<MoveImpl> listMoves();
+    public Set<Move> listMoves();
 
-    public SuggestionImpl suggest (SuggestionImpl suggestion) throws InvalidSuggestionException;
+    public Suggestion suggest (Suggestion suggestion) throws InvalidSuggestionException;
 
     public void setMessageSender (MessageSender sender);
 
@@ -47,7 +47,7 @@ public interface GameImpl extends Implementation {
 
     public int getMaxPlayers();
 
-    public AgentImpl registerAgent(AgentImpl implementation) throws InvalidRegistrationException;
+    public Agent registerAgent(Agent implementation) throws InvalidRegistrationException;
 
     public String getChangeSet();
 }

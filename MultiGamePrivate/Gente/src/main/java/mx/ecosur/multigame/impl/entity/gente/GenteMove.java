@@ -25,7 +25,7 @@ import mx.ecosur.multigame.impl.model.GridMove;
 
 import mx.ecosur.multigame.impl.util.BeadString;
 
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
 
 @Entity
@@ -165,9 +165,9 @@ public class GenteMove extends GridMove {
         }
 
         /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.implementation.MoveImpl#setPlayer(mx.ecosur.multigame.model.implementation.AgentImpl)
+         * @see mx.ecosur.multigame.model.interfaces.Move#setPlayer(mx.ecosur.multigame.model.interfaces.Agent)
          */
-        public void setPlayer(GamePlayerImpl player) {
+        public void setPlayer(GamePlayer player) {
                 this.player = (GentePlayer) player;
         }
 

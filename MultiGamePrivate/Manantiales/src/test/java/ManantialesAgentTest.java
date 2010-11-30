@@ -17,7 +17,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
+import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,9 +116,9 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         for (int i = 0; i < agents.length; i++) {
             if (agents [ i ].ready()) {
-                Set<MoveImpl> moves = agents [ i ].determineMoves(game);
+                Set<Move> moves = agents [ i ].determineMoves(game);
                 assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
-                for (MoveImpl agentMove : moves) {
+                for (Move agentMove : moves) {
                     ManantialesMove mve = (ManantialesMove) agentMove;
                     if (mve.isBadYear())
                         continue;

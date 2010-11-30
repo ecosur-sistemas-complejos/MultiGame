@@ -1,7 +1,7 @@
 package mx.ecosur.multigame.model
 {
     import mx.ecosur.multigame.enum.GameState
-    import mx.ecosur.multigame.model.implementation.GameImplementation;
+    import mx.ecosur.multigame.model.interfaces.GameImplementation;
 	
 	[RemoteClass (alias="mx.ecosur.multigame.model.Game")]
 	public class GameModel

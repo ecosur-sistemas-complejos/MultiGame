@@ -1,25 +1,27 @@
 //copyright
 
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
 import mx.ecosur.multigame.enums.SuggestionStatus;
+
+import java.io.Serializable;
 
 /**
  * @author awaterma@ecosur.mx
  */
-public interface SuggestionImpl extends Implementation {
+public interface Suggestion extends Serializable {
 
     public int getId();
 
-    public MoveImpl listMove();
+    public Move listMove();
 
     /* Allows for the attaching of a detached move entity */
-    public void attachMove (MoveImpl move);
+    public void attachMove (Move move);
 
-    public GamePlayerImpl listSuggestor();
+    public GamePlayer listSuggestor();
 
     /* Allows for the re-attaching of a detached GamePlayer entity */
-    public void attachSuggestor (GamePlayerImpl suggestor);        
+    public void attachSuggestor (GamePlayer suggestor);
 
     public SuggestionStatus getStatus();
 

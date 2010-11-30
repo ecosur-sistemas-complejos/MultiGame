@@ -4,10 +4,11 @@ import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove
 import mx.ecosur.multigame.model.Move
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame
-import mx.ecosur.multigame.model.implementation.GameImpl
+import mx.ecosur.multigame.model.interfaces.Game
 import mx.ecosur.multigame.impl.Color
 import mx.ecosur.multigame.impl.model.GridCell
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha
+import mx.ecosur.multigame.model.interfaces.Game;
 
 /*
  *   A set of EasyB scenarios to test and verify Manantiales story lines.
@@ -68,7 +69,7 @@ scenario "constraint not relieved", {
 
   then "the consequences should be invoked", {
     game = board.getGame(test.gameId);
-    implementation = (GameImpl) game.getImplementation();
+    implementation = (Game) game.getImplementation();
     implementation.getGrid().getLocation(new GridCell (3,4, Color.UNKNOWN)) == null
   }
 }

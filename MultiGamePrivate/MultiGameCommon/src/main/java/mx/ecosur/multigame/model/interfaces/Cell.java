@@ -9,9 +9,11 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
-public interface CellImpl extends Implementation {
+import java.io.Serializable;
+
+public interface Cell extends Serializable {
 
     public int getId();
 

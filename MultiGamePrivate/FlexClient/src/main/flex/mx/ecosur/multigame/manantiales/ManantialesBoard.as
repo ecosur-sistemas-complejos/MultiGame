@@ -25,7 +25,7 @@
     import mx.states.State;
 
     /**
-    * A ManantialesBoard is similar to the GenteBoard implementation,
+    * A ManantialesBoard is similar to the GenteBoard interfaces,
     * but cells are spaced in a much different manner, and not all
     * iumns and rows are filled in with actionable BoardCells.
     *

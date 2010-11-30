@@ -23,11 +23,11 @@ import javax.persistence.Id;
 import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.CellComparator;
 
-import mx.ecosur.multigame.model.implementation.CellImpl;
+import mx.ecosur.multigame.model.interfaces.Cell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
-public class GridCell implements CellImpl, Cloneable {
+public class GridCell implements Cell, Cloneable {
 
     private static final long serialVersionUID = -7917786935353131901L;
 

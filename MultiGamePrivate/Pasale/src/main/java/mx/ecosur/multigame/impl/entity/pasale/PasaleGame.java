@@ -10,20 +10,17 @@ import mx.ecosur.multigame.impl.MoveComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.*;
 
-import mx.ecosur.multigame.model.implementation.AgentImpl;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.interfaces.Agent;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.Registrant;
+
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
-import org.drools.event.rule.DebugAgendaEventListener;
-import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.io.Resource;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.KnowledgeBase;
@@ -120,9 +117,9 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
-    public MoveImpl move(MoveImpl move) throws InvalidMoveException {
+    public Move move(Move move) throws InvalidMoveException {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
@@ -152,7 +149,7 @@ public class PasaleGame extends GridGame {
         return move;
     }
 
-    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {
+    public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
         PasalePlayer player = new PasalePlayer();
         player.setRegistrant((GridRegistrant) registrant);
 
@@ -177,7 +174,7 @@ public class PasaleGame extends GridGame {
         return player;
     }
 
-    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+    public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
         throw new InvalidRegistrationException (
                 "Agents cannot be registered with a Pasale Game!");
     }

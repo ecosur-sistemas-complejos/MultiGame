@@ -15,7 +15,7 @@ package mx.ecosur.multigame.impl.util;
 
 /*
  * Systematically generate permutations. 
- * Somewhat customized from Gilleland's implementation.
+ * Somewhat customized from Gilleland's interfaces.
  *
  */
 import java.math.BigInteger;

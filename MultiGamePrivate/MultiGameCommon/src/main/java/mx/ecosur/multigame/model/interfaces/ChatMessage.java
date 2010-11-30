@@ -9,10 +9,14 @@
 /**
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.model.implementation;
+package mx.ecosur.multigame.model.interfaces;
 
 import java.io.Serializable;
 
-public interface Implementation extends Serializable {
+public interface ChatMessage extends Serializable {
+
+    public GamePlayer getSender();
+
+    public void setSender (GamePlayer agent);
 
 }

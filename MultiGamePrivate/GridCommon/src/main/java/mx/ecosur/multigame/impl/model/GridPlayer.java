@@ -24,12 +24,12 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class GridPlayer implements GamePlayerImpl {
+public class GridPlayer implements GamePlayer {
 
     private static final long serialVersionUID = -1893870933080422147L;
 

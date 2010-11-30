@@ -11,14 +11,13 @@
  */
 package mx.ecosur.multigame.ejb.interfaces;
 
-import java.util.List;
-
-import mx.ecosur.multigame.model.Agent;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Registrant;
-
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
+import mx.ecosur.multigame.model.interfaces.Agent;
+import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.model.interfaces.Registrant;
+
+import java.util.List;
 
 public interface RegistrarInterface {
         
