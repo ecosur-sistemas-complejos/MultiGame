@@ -153,7 +153,7 @@ public abstract class GridGame implements Game, Cloneable {
      * The number of rows of the grid contained by this game.
      * @return
      */
-    @Column(name="nRows")
+    @Column (name="nRows")
     public int getRows() {
         return rows;
     }
@@ -175,7 +175,7 @@ public abstract class GridGame implements Game, Cloneable {
      * The number of columns in the grid contained by this game.
      * @return number of columns
      */
-    @Column(name="nCols")
+    @Column (name="nColumns")
     public int getColumns() {
         return columns;
     }
