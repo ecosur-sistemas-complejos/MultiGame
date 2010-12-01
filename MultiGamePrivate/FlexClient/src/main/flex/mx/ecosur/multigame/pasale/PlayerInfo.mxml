@@ -1,109 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300" styleName=".centerAlign">
        
     <mx:Script>
         <![CDATA[
-        import mx.formatters.DateFormatter;
+
         import mx.ecosur.multigame.enum.Color;
-        import mx.ecosur.multigame.oculto.entity.OcultoPlayer;
-        import mx.controls.Alert;
+        import mx.ecosur.multigame.pasale.entity.PasalePlayer;
 
-        private var _ocultoPlayer:TablonPlayer;
+        private var _pasalePlayer:PasalePlayer;
 
-        public function set ocultoPlayer(ocultoPlayer:TablonPlayer):void {
-            _ocultoPlayer = ocultoPlayer;
-            update();
+        public function get pasalePlayer():PasalePlayer {
+            return _pasalePlayer;
         }
 
-        public function get ocultoPlayer():TablonPlayer {
-            return _ocultoPlayer;
+        public function set pasalePlayer(value:PasalePlayer):void {
+            _pasalePlayer = value;
         }
 
-        public function update():void {
-            playerScore.text = "" + ocultoPlayer.score;
-            managedForest.text = "" + ocultoPlayer.forested;
-            moderate.text = "" + ocultoPlayer.moderate;
-            intensive.text = "" + ocultoPlayer.intensive;
-            vivero.text = "" + ocultoPlayer.vivero;
-            silvopastoral.text = "" + ocultoPlayer.silvo;
-        }
-                    
         ]]>
     </mx:Script>
-    
-    <mx:Grid>
-        <mx:GridRow>
-        	<mx:GridItem/>
-        	<mx:GridItem>
-        		<mx:Label text="Token" styleName="fieldLit"/>
-        	</mx:GridItem>
-            <mx:GridItem>
-                <mx:Label text="Payout" styleName="fieldLit"/>
-            </mx:GridItem>        	
-        </mx:GridRow>
-        <mx:GridRow>
-        	<mx:GridItem>
-        		<mx:Label text="Managed Forest" styleName="fieldLit"/>        		
-        	</mx:GridItem>
-            <mx:GridItem>
-                <mx:Label id="managedForest" styleName="field"/>  
-            </mx:GridItem>        	
-        	<mx:GridItem>
-        		<mx:Label text="1" styleName="field"/>  
-        	</mx:GridItem>
-        </mx:GridRow>
-        <mx:GridRow>
-            <mx:GridItem>
-                <mx:Label text="Moderate Pasture" styleName="fieldLit"/>              
-            </mx:GridItem>
-            <mx:GridItem>
-                <mx:Label id="moderate" styleName="field"/>  
-            </mx:GridItem>          
-            <mx:GridItem>
-                <mx:Label text="2" styleName="field"/>  
-            </mx:GridItem>
-        </mx:GridRow>    
-        <mx:GridRow>
-            <mx:GridItem>
-                <mx:Label text="Intensive Pasture" styleName="fieldLit"/>              
-            </mx:GridItem>
-            <mx:GridItem>
-                <mx:Label id="intensive" styleName="field"/>  
-            </mx:GridItem>          
-            <mx:GridItem>
-                <mx:Label text="3" styleName="field"/>  
-            </mx:GridItem>
-        </mx:GridRow>        
-        <mx:GridRow>
-            <mx:GridItem>
-                <mx:Label text="Silvopastoral Establishment" styleName="fieldLit"/>              
-            </mx:GridItem>
-            <mx:GridItem>
-                <mx:Label id="vivero" styleName="field"/>  
-            </mx:GridItem>          
-            <mx:GridItem>
-                <mx:Label text="0" styleName="field"/>  
-            </mx:GridItem>
-        </mx:GridRow>
-       <mx:GridRow>
-            <mx:GridItem>
-                <mx:Label text="Silvopastoral Active" styleName="fieldLit"/>              
-            </mx:GridItem>
-            <mx:GridItem>
-                <mx:Label id="silvopastoral" styleName="field"/>  
-            </mx:GridItem>          
-            <mx:GridItem>
-                <mx:Label text="4" styleName="field"/>  
-            </mx:GridItem>
-        </mx:GridRow> 
-        <mx:GridRow/>
-        <mx:GridRow>
-            <mx:GridItem>
-            	<mx:Label text="Score" styleName="fieldLit" />            	            	
-            </mx:GridItem>
-            <mx:GridItem>
-            	<mx:Label id="playerScore" styleName="fieldLit"/>            	
-            </mx:GridItem>
-        </mx:GridRow>
-    </mx:Grid>
+    <mx:HBox borderStyle="solid" backgroundAlpha=".75" >
+        <mx:Label id="playername" text="{pasalePlayer.registrant.name}:"/>
+        <mx:Label id="score" text="{pasalePlayer.score}"/>
+    </mx:HBox>
 </mx:Canvas>

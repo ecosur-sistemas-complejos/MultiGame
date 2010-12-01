@@ -25,29 +25,51 @@
                 <groupId>mx.ecosur</groupId>
                 <artifactId>grid-common</artifactId>
                 <version>${version}</version>
-            </dependency>            
+            </dependency>
+            <dependency>
+                <groupId>mx.ecosur</groupId>
+                <artifactId>pasale</artifactId>
+                <version>${version}</version>
+            </dependency>
             <dependency>
                 <groupId>javax.persistence</groupId>
                 <artifactId>persistence-api</artifactId>
                 <version>1.0</version>
             </dependency>
             <dependency>
-                <groupId>javax.ejb</groupId>
+                <groupId>javax</groupId>
                 <artifactId>ejb</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
                 <systemPath>${glassfish}/lib/javaee.jar</systemPath>
             </dependency>
             <dependency>
-                <groupId>javax.ejb</groupId>
+                <groupId>javax</groupId>
                 <artifactId>ejb-rt</artifactId>
                 <version>3.0</version>
                 <scope>system</scope>
                 <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
             </dependency>
             <dependency>
+                <groupId>glassfish</groupId>
+                <artifactId>toplink</artifactId>
+                <version>3.0</version>
+                <scope>system</scope>
+                <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-compiler</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-api</artifactId>
                 <version>${drools.version}</version>
             </dependency>
         </dependencies>

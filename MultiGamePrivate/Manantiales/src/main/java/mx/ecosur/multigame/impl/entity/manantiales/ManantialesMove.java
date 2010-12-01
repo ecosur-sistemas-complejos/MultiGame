@@ -18,7 +18,6 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
 
 @Entity
 public class ManantialesMove extends GridMove implements Comparable {
@@ -40,16 +39,16 @@ public class ManantialesMove extends GridMove implements Comparable {
         swap = false;
     }
 
-    public ManantialesMove (GridPlayer player, Ficha destination) {
+    public ManantialesMove (GridPlayer player, ManantialesFicha destination) {
         super (player, destination);
     }
 
-    public ManantialesMove (GridPlayer player, Ficha current, Ficha destination)
+    public ManantialesMove (GridPlayer player, ManantialesFicha current, ManantialesFicha destination)
     {
         super (player, current, destination);
     }
 
-    public ManantialesMove(ManantialesPlayer player, Ficha current, Ficha destination,
+    public ManantialesMove(ManantialesPlayer player, ManantialesFicha current, ManantialesFicha destination,
             Boolean swap) {
         super (player, current, destination);
         this.swap = swap;
@@ -67,7 +66,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         if (getDestinationCell() == null)
             type = TokenType.UNKNOWN;
         else {
-            Ficha destination = (Ficha) getDestinationCell();
+            ManantialesFicha destination = (ManantialesFicha) getDestinationCell();
             type = destination.getType();
         }
 
@@ -81,8 +80,8 @@ public class ManantialesMove extends GridMove implements Comparable {
     public TokenType getReplacementType() {
         if (replacementType == null) {
             replacementType = TokenType.UNKNOWN;
-            if (getCurrentCell() instanceof Ficha) {
-                    Ficha current = (Ficha) getCurrentCell();
+            if (getCurrentCell() instanceof ManantialesFicha) {
+                    ManantialesFicha current = (ManantialesFicha) getCurrentCell();
                     replacementType = current.getType();
             }
         }

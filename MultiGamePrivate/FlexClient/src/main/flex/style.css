@@ -5,8 +5,8 @@
     @author max@alwayssunny.com
 **/
         Application {
-        	backgroundGradientColors: #333333, #ffffff;
-        	backgroundColor: #333333;
+            backgroundGradientColors: #333333, #ffffff;
+            backgroundColor: #333333;
         }
 
        .windowStyles{
@@ -70,4 +70,16 @@
             fontFamily: verdanaEmbed;
             textAlign: center;
             color: #ffffff;
+        }
+
+        .centerAlign {
+            textAlign : center;
+        }
+
+        .leftAlign {
+            textAlign: left;
+        }
+
+        .rightAlign {
+            textAlign: right;
         }

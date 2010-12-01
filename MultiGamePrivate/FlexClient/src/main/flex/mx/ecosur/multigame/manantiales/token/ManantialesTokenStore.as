@@ -9,7 +9,7 @@ import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-    import mx.ecosur.multigame.pasale.entity.Ficha;
+    import mx.ecosur.multigame.pasale.entity.Territory;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 

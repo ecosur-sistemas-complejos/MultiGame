@@ -21,21 +21,21 @@
             <systemPath>${glassfish}/lib/appserv-admin.jar</systemPath>
         </dependency>        
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/javaee.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb-rt</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>glassfish</groupId>
             <artifactId>toplink</artifactId>
             <version>3.0</version>
             <scope>system</scope>

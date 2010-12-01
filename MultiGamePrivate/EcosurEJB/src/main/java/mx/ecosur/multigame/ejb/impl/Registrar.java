@@ -19,7 +19,6 @@ package mx.ecosur.multigame.ejb.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,12 +32,7 @@ import mx.ecosur.multigame.ejb.interfaces.RegistrarLocal;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.model.Agent;
-import mx.ecosur.multigame.model.Game;
-import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.Registrant;
-import mx.ecosur.multigame.model.implementation.GameImpl;
-import mx.ecosur.multigame.model.implementation.RegistrantImpl;
+import mx.ecosur.multigame.model.interfaces.*;
 
 @Stateless
 @RolesAllowed("admin")
@@ -65,23 +59,18 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#register(java.lang.String)
      */
     public Registrant register(Registrant registrant) {
-        Registrant ret;
-        RegistrantImpl impl = registrant.getImplementation();
-
         /* TODO: inject or make this query static */
         Query query = em.createNamedQuery("getRegistrantByName");
-        query.setParameter("name", impl.getName());
+        query.setParameter("name", registrant.getName());
         @SuppressWarnings ("unchecked")
-        List<RegistrantImpl> registrants = query.getResultList();
+        List<Registrant> registrants = query.getResultList();
         if (registrants.size() == 0) {
-                em.persist(impl);
-                ret = new Registrant (impl);
+                em.persist(registrant);
         } else {
-                RegistrantImpl reg = (RegistrantImpl) registrants.get(0);
-                ret = new Registrant (reg);
+                registrant = (Registrant) registrants.get(0);
         }
 
-        return ret;
+        return registrant;
     }
 
     /**
@@ -94,29 +83,29 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
             throws InvalidRegistrationException
     {
         /* Set messaging */
-        game.setMessageSender(messageSender);
+        if (game.getMessageSender() == null)
+            game.setMessageSender(messageSender);
 
-        if (!em.contains(game.getImplementation())) {
-            Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
-            if (test.getImplementation() == null)
-                em.persist(game.getImplementation());
+        if (!em.contains(game)) {
+            Game test = em.find(game.getClass(), game.getId());
+            if (test == null)
+                em.persist(game);
             else
-                game = new Game (test.getImplementation());
+                game = test;
         }
 
-        if (!em.contains(registrant.getImplementation())) {
-            Registrant test = new Registrant (em.find (
-                registrant.getImplementation().getClass(), registrant.getId()));
-            if (test.getImplementation() == null)
-                em.persist(registrant.getImplementation());
+        if (!em.contains(registrant)) {
+            Registrant test = em.find (registrant.getClass(), registrant.getId());
+            if (test == null)
+                em.persist(registrant);
             else
-                registrant = new Registrant (test.getImplementation());
+                registrant = test;
         }
 
         registrant.setLastRegistration(System.currentTimeMillis());
         GamePlayer player = game.registerPlayer (registrant);
-        em.persist(player.getImplementation());
-        messageSender.sendPlayerChange(game.getImplementation());
+        em.persist(player);
+        messageSender.sendPlayerChange(game);
         return game;
 }
 
@@ -130,48 +119,47 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         /* Set messaging */
         game.setMessageSender(messageSender);
 
-        if (!em.contains(game.getImplementation())) {
-            Game test = new Game(em.find(game.getImplementation().getClass(), game.getId()));
-            if (test.getImplementation() == null)
-                em.persist(game.getImplementation());
+        if (!em.contains(game)) {
+            Game test = em.find(game.getClass(), game.getId());
+            if (test == null)
+                em.persist(game);
             else
-                game = new Game (test.getImplementation());
+                game = test;
         }
 
-        if (!em.contains(agent.getImplementation())) {
-            Agent test = new Agent (em.find (
-                agent.getImplementation().getClass(), agent.getId()));
-            if (test.getImplementation() == null)
-                em.persist(agent.getImplementation());
+        if (!em.contains(agent)) {
+            Agent test = em.find (agent.getClass(), agent.getId());
+            if (test == null)
+                em.persist(agent);
             else
-                agent = new Agent (test.getImplementation());
+                agent = test;
         }
 
         agent = game.registerAgent (agent);
 
         /* Merge changes*/
-        em.merge(agent.getImplementation());
-        em.merge(game.getImplementation());
+        em.merge(agent);
+        em.merge(game);
 
-        messageSender.sendPlayerChange(game.getImplementation());
+        messageSender.sendPlayerChange(game);
         return game;
     }
 
     public Game unregister(Game game, GamePlayer player) throws InvalidRegistrationException {
 
         /* Remove the user from the Game */
-        if (!em.contains(game.getImplementation()))
-            game = new Game (em.find(game.getImplementation().getClass(), game.getId()));
+        if (!em.contains(game))
+            game = em.find(game.getClass(), game.getId());
 
         /* refresh the game object */
-        em.refresh (game.getImplementation());
+        em.refresh (game);
 
         /* Set messaging */
         game.setMessageSender(messageSender);
 
         game.removePlayer(player);
         game.setState(GameState.ENDED);
-        messageSender.sendPlayerChange(game.getImplementation());
+        messageSender.sendPlayerChange(game);
         return game;
     }
 
@@ -181,12 +169,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
     public List<Game> getUnfinishedGames(Registrant player) {
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("getCurrentGames");
-        query.setParameter("registrant", player.getImplementation());
+        query.setParameter("registrant", player);
         query.setParameter("state",GameState.ENDED);
         @SuppressWarnings("unchecked")
-        List<GameImpl> games = query.getResultList();
-        for (GameImpl impl : games) {
-            ret.add(new Game(impl));
+        List<Game> games = query.getResultList();
+        for (Game impl : games) {
+            ret.add(impl);
         }
 
         return ret;
@@ -198,14 +186,14 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
     public List<Game> getPendingGames(Registrant player) {
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("getAvailableGames");
-        query.setParameter("registrant", player.getImplementation());
+        query.setParameter("registrant", player);
         query.setParameter("state", GameState.WAITING);
         /* HACK:  hand narrow the lists of pending games against unfinished */
         List<Game> joinedGames = getUnfinishedGames (player);
         @SuppressWarnings("unchecked")  
-        List<GameImpl> games = query.getResultList();
-        for (GameImpl impl : games) {
-            Game game = new Game (impl);
+        List<Game> games = query.getResultList();
+        for (Game impl : games) {
+            Game game = impl;
             if (joinedGames.contains(game))
                 continue;
             ret.add(game);

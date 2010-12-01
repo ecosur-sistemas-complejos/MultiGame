@@ -4,7 +4,7 @@
   <groupId>mx.ecosur</groupId>
   <artifactId>flex-ds</artifactId>
   <packaging>jar</packaging>
-  <name>Blaze Data Services</name>
+  <name>MultiGame Data Services (BLAZE)</name>
   <description>BlazeDS connector for flex-client and incorporated games.</description>
   <parent>
         <artifactId>multi-game-private</artifactId>
@@ -47,6 +47,11 @@
         <artifactId>manantiales</artifactId>
         <version>${version}</version>
     </dependency>
+    <dependency>
+        <groupId>mx.ecosur</groupId>
+        <artifactId>pasale</artifactId>
+        <version>1.1.0-SNAPSHOT</version>
+    </dependency>      
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

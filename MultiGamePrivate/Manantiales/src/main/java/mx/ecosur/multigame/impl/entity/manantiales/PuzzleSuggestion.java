@@ -8,9 +8,9 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.SuggestionStatus;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import mx.ecosur.multigame.model.implementation.SuggestionImpl;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.Suggestion;
 
 import javax.persistence.*;
 
@@ -18,7 +18,7 @@ import javax.persistence.*;
  * @author awaterma@ecosur.mx
  */
 @Entity
-public class PuzzleSuggestion implements SuggestionImpl {
+public class PuzzleSuggestion implements Suggestion {
 
     private static final long serialVersionUID = -1649014283342618955L;
 
@@ -45,11 +45,11 @@ public class PuzzleSuggestion implements SuggestionImpl {
         this.id = id;
     }
 
-    public MoveImpl listMove() {
+    public Move listMove() {
         return getMove();
     }
 
-    public void attachMove(MoveImpl move) {
+    public void attachMove(Move move) {
         setMove ((ManantialesMove) move);
     }
 
@@ -62,11 +62,11 @@ public class PuzzleSuggestion implements SuggestionImpl {
         this.move = move;
     }
 
-    public void attachSuggestor(GamePlayerImpl gamePlayer) {
+    public void attachSuggestor(GamePlayer gamePlayer) {
         setSuggestor ((ManantialesPlayer) gamePlayer);
     }
 
-    public GamePlayerImpl listSuggestor() {
+    public GamePlayer listSuggestor() {
         return getSuggestor();
     }
 

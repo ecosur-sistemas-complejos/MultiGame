@@ -16,6 +16,7 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 import java.util.TreeSet;
 import java.util.SortedSet;
@@ -27,6 +28,7 @@ import java.util.SortedSet;
  * Time: 11:35:19 PM
  * To change this template use File | Settings | File Templates.
  */
+@Entity
 public class PasaleGrid extends GameGrid {
     /**
      *
@@ -138,6 +140,7 @@ public class PasaleGrid extends GameGrid {
         return ret;
 
     }
+    
 
     @Transient
     public SortedSet<PasaleFicha> getCross (PasaleFicha ficha) {

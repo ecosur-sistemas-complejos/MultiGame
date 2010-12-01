@@ -3,10 +3,10 @@ package mx.ecosur.experiment.multigame.lab;
 import java.util.logging.Logger;
 import java.io.InputStreamReader;
 
-import mx.ecosur.experiment.multigame.solver.tablon.PasaleSolution;
+import mx.ecosur.experiment.multigame.solver.pasale.PasaleSolution;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
-import mx.ecosur.experiment.multigame.solver.tablon.SolutionConfigurer;
+import mx.ecosur.experiment.multigame.solver.pasale.SolutionConfigurer;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;

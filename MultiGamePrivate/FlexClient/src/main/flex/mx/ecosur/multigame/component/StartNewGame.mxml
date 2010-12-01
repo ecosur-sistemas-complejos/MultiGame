@@ -53,6 +53,8 @@
     }
 
     private function showAIPlayers(show:Boolean):void {
+        var showing:Boolean = false;
+
         if (show) {
             var i:int;
             if (gameType.selectedItem.data == "GENTE") {
@@ -60,13 +62,21 @@
                 for (i = 0; i < genteAgentList.length; i++) {
                     agentList.addItem(genteAgentList [ i ]);
                 }
+                radios.visible = true;
+                showing  = true;
             } else if (gameType.selectedItem.data == "MANANTIALES") {
                 agentList.removeAll();
                 for (i = 0; i < manAgentList.length; i++) {
                     agentList.addItem(manAgentList[ i ]);
                 }
+                radios.visible = true;
+                showing = true;
+            }  else if (gameType.selectedItem.data == "PASALE") {
+                showing = false;
+                radios.visible = false;
             }
-            aiPlayers.visible = true;
+
+            aiPlayers.visible = showing;
             aiPlayers.percentHeight = 100;
         } else {
             aiPlayers.visible = false;
@@ -75,6 +85,10 @@
     }
 
     private function evaluateAiPlayers():void {
+
+        if (gameType.selectedItem.data != "PASALE")
+            radios.visible = true;
+
         showAIPlayers(robots.selected);
         if (gameType.selectedItem.data == "MANANTIALES")
             modalities.visible = true;
@@ -109,6 +123,7 @@
 <mx:ArrayCollection id="gameList">
     <mx:Object label="@Resource(key='start.game.gente', bundle='StringsBundle')" data="GENTE"/>
     <mx:Object label="@Resource(key='start.game.manantiales', bundle='StringsBundle')" data="MANANTIALES"/>
+    <mx:Object label="@Resource(key='start.game.pasale', bundle='StringsBundle')" data="PASALE"/>    
 </mx:ArrayCollection>
 
 <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
@@ -117,12 +132,12 @@
     <mx:FormItem label="@Resource(key='start.choice.label', bundle='StringsBundle')" id="game">
         <mx:ComboBox id="gameType" dataProvider="{gameList}" change="evaluateAiPlayers()"/>
     </mx:FormItem>
-    <mx:FormItem id="ai">
-        <mx:HBox>
+    <mx:FormItem id="ai" visible="true">
+        <mx:HBox id="radios">
             <mx:RadioButton label="@Resource(key='start.radio.one', bundle='StringsBundle')" id="robots"
-                            selected="true" click="showAIPlayers(true)" />
-            <mx:RadioButton label="@Resource(key='start.radio.two', bundle='StringsBundle')" selected="false"
-                            click="showAIPlayers(false)"/>
+                selected="{radios.visible}" click="showAIPlayers(true)" />
+            <mx:RadioButton label="@Resource(key='start.radio.two', bundle='StringsBundle')"
+                selected="{!radios.visible}" click="showAIPlayers(false)"/>
         </mx:HBox>
     </mx:FormItem>
         <mx:HBox id="aiPlayers" visible="true" height="0">

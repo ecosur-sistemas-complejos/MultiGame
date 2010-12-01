@@ -20,7 +20,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
 import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
-import mx.ecosur.multigame.model.implementation.*;
+import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
@@ -44,7 +44,7 @@ public class ManantialesGame extends GridGame {
 
     private static String FNAME = "ManantialesKBase.dat";
 
-    private static KnowledgeBase kbase;
+    private transient KnowledgeBase kbase;
         
     private Mode mode;
         
@@ -177,8 +177,8 @@ public class ManantialesGame extends GridGame {
      */
     @Override
     @Transient
-    public Set<Implementation> getFacts() {
-        Set<Implementation> facts = super.getFacts();
+    public Set getFacts() {
+        Set facts = super.getFacts();
         if (checkConditions != null)
             facts.addAll(checkConditions);
         return facts;
@@ -220,10 +220,10 @@ public class ManantialesGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.implementation.MoveImpl)
+      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
     @Override
-    public MoveImpl move(MoveImpl impl) throws InvalidMoveException {
+    public Move move(Move impl) throws InvalidMoveException {
         ManantialesMove move = (ManantialesMove) impl;
 
         if (kbase == null)
@@ -232,7 +232,7 @@ public class ManantialesGame extends GridGame {
         session.setGlobal("messageSender", getMessageSender()); 
         session.insert(this);
         session.insert(move);
-        for (Implementation fact : getFacts()) {
+        for (Object fact : getFacts()) {
             session.insert(fact);
         }
 
@@ -258,14 +258,14 @@ public class ManantialesGame extends GridGame {
     }
 
     @Override
-    public SuggestionImpl suggest (SuggestionImpl suggestion) {
+    public Suggestion suggest (Suggestion suggestion) {
         if (kbase == null)
             kbase = findKBase();        
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(suggestion);
-        for (Implementation fact : getFacts()) {
+        for (Object fact : getFacts()) {
             session.insert(fact);
         }
         addSuggestion ((PuzzleSuggestion) suggestion);
@@ -280,7 +280,7 @@ public class ManantialesGame extends GridGame {
         return suggestion;
     }
         
-    public GamePlayerImpl registerPlayer(RegistrantImpl registrant) throws InvalidRegistrationException  {
+    public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
         ManantialesPlayer player = new ManantialesPlayer ();
         player.setRegistrant((GridRegistrant) registrant);
 
@@ -312,7 +312,7 @@ public class ManantialesGame extends GridGame {
         return player;
     }
         
-    public AgentImpl registerAgent (AgentImpl agent) throws InvalidRegistrationException {
+    public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
         SimpleAgent player = (SimpleAgent) agent;
 
         for (GridPlayer p : this.getPlayers()) {
@@ -431,7 +431,7 @@ public class ManantialesGame extends GridGame {
         ManantialesGame ret = new ManantialesGame();
         ret.grid = new GameGrid();
         for (GridCell cell : getGrid().getCells()) {
-            Ficha ficha = (Ficha) cell;
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             ret.grid.updateCell((GridCell) ficha.clone());
         }
         ret.setColumns (this.getColumns());

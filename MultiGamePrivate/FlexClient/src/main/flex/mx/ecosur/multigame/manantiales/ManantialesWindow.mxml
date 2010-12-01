@@ -68,7 +68,7 @@
                 _suggestionHandler = suggestionHandler;
             }
             
-            [Binadble]
+            [Bindable]
             public function get controller ():ManantialesGameController {
                 return _controller;
             }
@@ -106,7 +106,7 @@
             }
             
             public function dispatchCompletion ():void {
-                this.dispatchEvent(new Event("complete"));
+                dispatchEvent(new Event("complete"));
             }
             
             /* Only events that effect this container are handled, all others

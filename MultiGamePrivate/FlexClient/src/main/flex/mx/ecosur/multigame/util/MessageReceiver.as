@@ -120,9 +120,6 @@
                     evt.message = msg;
                     dispatchEvent(evt);
                     _messages.splice(0, 1);
-                }else{
-                    Alert.show("broken sequence waiting for message with id " + Number(_lastMsgId + 1) + "\n but receivd " + msg.headers.MESSAGE_ID, "Broken sequence");
-                    break;
                 }
             }
         }

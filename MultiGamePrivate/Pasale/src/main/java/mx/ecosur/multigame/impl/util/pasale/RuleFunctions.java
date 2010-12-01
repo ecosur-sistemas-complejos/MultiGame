@@ -25,7 +25,7 @@ public class RuleFunctions {
             if (ficha.getType().equals(type))
                 test.add(ficha);
             if (test.size() >= supportSize)
-            	break;
+                break;
         }
 
         return test.size() < supportSize;

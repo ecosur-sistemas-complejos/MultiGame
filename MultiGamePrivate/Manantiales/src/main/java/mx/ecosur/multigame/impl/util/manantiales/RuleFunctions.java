@@ -14,7 +14,7 @@ import mx.ecosur.multigame.impl.model.GameGrid;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
 
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
@@ -35,8 +35,8 @@ public class RuleFunctions {
     public static  boolean isValidReplacement (GameGrid grid, ManantialesMove move) {
         boolean ret = false;
         if (move.getDestinationCell() != null) {
-            Ficha destination = (Ficha) move.getDestinationCell();
-            Ficha current = (Ficha) grid.getLocation (destination);
+            ManantialesFicha destination = (ManantialesFicha) move.getDestinationCell();
+            ManantialesFicha current = (ManantialesFicha) grid.getLocation (destination);
             TokenType replacement = destination.getType();
             if (current != null) {
                switch (current.getType()) {
@@ -72,7 +72,7 @@ public class RuleFunctions {
         for (GridCell cell : game.getGrid().getCells()) {
             if (!cell.getColor().equals(player.getColor()))
                 continue;            
-            Ficha ficha = (Ficha) cell;            
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             switch (ficha.getType()) {
                 case MANAGED_FOREST:
                     player.setForested(player.getForested() +  1);
@@ -171,7 +171,7 @@ public class RuleFunctions {
 
     public static  GameGrid clearBorder (ManantialesGame game, ConditionType violation) {
         GameGrid ret = game.getGrid();
-        HashSet<Ficha> deletions = new HashSet<Ficha>();
+        HashSet<ManantialesFicha> deletions = new HashSet<ManantialesFicha>();
 
             /* Set up deletable types */
         HashSet<TokenType> deletables = new HashSet<TokenType>();
@@ -181,28 +181,28 @@ public class RuleFunctions {
         switch (violation) {
             case NORTHERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
-                    Ficha ficha = (Ficha) cell;
+                    ManantialesFicha ficha = (ManantialesFicha) cell;
                     if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.NORTH))
                         deletions.add(ficha);
                 }
                 break;
             case WESTERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
-                    Ficha ficha = (Ficha) cell;
+                    ManantialesFicha ficha = (ManantialesFicha) cell;
                     if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.WEST))
                         deletions.add(ficha);
                 }
                 break;
             case SOUTHERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
-                    Ficha ficha = (Ficha) cell;
+                    ManantialesFicha ficha = (ManantialesFicha) cell;
                     if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.SOUTH))
                         deletions.add(ficha);
                 }
                 break;
             case EASTERN_BORDER_DEFORESTED:
                 for (GridCell cell : ret.getCells()) {
-                    Ficha ficha = (Ficha) cell;
+                    ManantialesFicha ficha = (ManantialesFicha) cell;
                     if (deletables.contains(ficha.getType()) && ficha.getBorder().equals(BorderType.EAST))
                         deletions.add(ficha);
                 }
@@ -211,7 +211,7 @@ public class RuleFunctions {
                 break;
         }
 
-        for (Ficha ficha : deletions)
+        for (ManantialesFicha ficha : deletions)
             ret.removeCell(ficha);
 
         return ret;
@@ -219,17 +219,17 @@ public class RuleFunctions {
 
     public static  GameGrid clearTerritory (ManantialesGame game, Color color) {
         GameGrid ret = game.getGrid();
-        HashSet<Ficha> deletions = new HashSet<Ficha>();
+        HashSet<ManantialesFicha> deletions = new HashSet<ManantialesFicha>();
         for (GridCell cell : ret.getCells()) {
             if (cell.getColor().equals(color)) {
-                Ficha ficha = (Ficha) cell;
+                ManantialesFicha ficha = (ManantialesFicha) cell;
                 if (ficha.getType().equals(TokenType.MANAGED_FOREST))
                     continue;
                 deletions.add(ficha);
             }
         }
 
-        for (Ficha ficha : deletions) {
+        for (ManantialesFicha ficha : deletions) {
             ret.removeCell (ficha);
         }
 

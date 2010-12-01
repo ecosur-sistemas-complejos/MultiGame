@@ -17,7 +17,7 @@ import java.util.TreeSet;
 
 import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.entity.manantiales.Ficha;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import org.drools.planner.core.solution.Solution;
@@ -51,14 +51,14 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	private SortedSet<SolverFicha> tokens;
+	private SortedSet<SolverManantialesFicha> tokens;
 	private Threshold umbra;
 	private HashMap<Color, Distribution> distributionMap;
     private Score score;
 	
-	public ManantialesSolution (Threshold umbra, SortedSet<SolverFicha> tokens, Score score) {
+	public ManantialesSolution (Threshold umbra, SortedSet<SolverManantialesFicha> tokens, Score score) {
 		this (umbra);
-		for (SolverFicha tok : tokens) {
+		for (SolverManantialesFicha tok : tokens) {
 			replaceToken(tok);
 		}
         this.score = score;
@@ -66,7 +66,7 @@ public class ManantialesSolution implements Solution {
 	
 	public ManantialesSolution (Threshold umbra) {
 		this.umbra = umbra;
-		tokens = new TreeSet<SolverFicha> (new CellComparator());
+		tokens = new TreeSet<SolverManantialesFicha> (new CellComparator());
         score = null;
 		initialize();
 	}	
@@ -83,7 +83,7 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					} else
 						color = Color.GREEN;
-					tokens.add(new SolverFicha(col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new SolverManantialesFicha(col,row, color, TokenType.UNDEVELOPED));
 					/* Cells are split by even/even and odd/odd (skip manantial) */
 				} else if ( (row !=4 && col!=4) && ( 
 						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
@@ -96,13 +96,13 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					else if (row > 4 && col > 3)
 						color = Color.YELLOW;
-					tokens.add(new SolverFicha (col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new SolverManantialesFicha(col,row, color, TokenType.UNDEVELOPED));
 				} else if (col == 4) {
 					if (row < 5 ) 
 						color = Color.BLUE;
 					else if (row > 4)
 						color = Color.YELLOW;
-					tokens.add (new SolverFicha (col, row, color, TokenType.UNDEVELOPED));
+					tokens.add (new SolverManantialesFicha(col, row, color, TokenType.UNDEVELOPED));
 				} else
 					continue;
 			}
@@ -116,9 +116,9 @@ public class ManantialesSolution implements Solution {
 		Solution ret = null;
 		
 		try {
-			SortedSet<SolverFicha> clones = new TreeSet<SolverFicha>(
+			SortedSet<SolverManantialesFicha> clones = new TreeSet<SolverManantialesFicha>(
 					new CellComparator());
-			for (SolverFicha tok : tokens) {
+			for (SolverManantialesFicha tok : tokens) {
 				clones.add(tok.clone());
 			}
 			
@@ -149,7 +149,7 @@ public class ManantialesSolution implements Solution {
 			
 			if (color.equals(Color.UNKNOWN))
 				continue;
-			for (Ficha tok: tokens) {
+			for (ManantialesFicha tok: tokens) {
 				if (tok.getColor().equals(color)) {
 					switch (tok.getType()) {
 					case MANAGED_FOREST:
@@ -176,10 +176,10 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	public SortedSet<Ficha> getUndevelopedBorders (Color color) {
-		SortedSet<Ficha> ret = new TreeSet<Ficha>(new CellComparator());
+	public SortedSet<ManantialesFicha> getUndevelopedBorders (Color color) {
+		SortedSet<ManantialesFicha> ret = new TreeSet<ManantialesFicha>(new CellComparator());
 		/* Add in all uncolored tokens */
-		for (Ficha tok : tokens) {
+		for (ManantialesFicha tok : tokens) {
 			if (tok.getType().equals(TokenType.UNDEVELOPED)) {
 				switch (tok.getBorder()) {
 				case NORTH:
@@ -230,7 +230,7 @@ public class ManantialesSolution implements Solution {
 	}
 	
 	
-	public boolean replaceToken (SolverFicha token) {
+	public boolean replaceToken (SolverManantialesFicha token) {
 		boolean ret = false;
 		if (tokens.contains(token))
 			ret = tokens.remove(token);
@@ -249,7 +249,7 @@ public class ManantialesSolution implements Solution {
 	/**
 	 * @return the tokens
 	 */
-	public SortedSet<SolverFicha> getTokens() {
+	public SortedSet<SolverManantialesFicha> getTokens() {
 		return tokens;
 	}
 
@@ -259,26 +259,26 @@ public class ManantialesSolution implements Solution {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer ("\n");
-		SortedSet<SolverFicha> subset;
+		SortedSet<SolverManantialesFicha> subset;
 		
 		for (int row = 0; row < 9; row++) {
 			boolean leadingTab = false;
 			subset = null;
 			if (row == 4) {
-				subset = tokens.subSet(new SolverFicha (0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverFicha (9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new SolverManantialesFicha(0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverManantialesFicha(9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			} else if (row % 2 == 0) {
-				subset = tokens.subSet(new SolverFicha (0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverFicha (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));				
+				subset = tokens.subSet(new SolverManantialesFicha(0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverManantialesFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			} else {
 				leadingTab = true;
-				subset = tokens.subSet(new SolverFicha (1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverFicha (9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new SolverManantialesFicha(1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverManantialesFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			}
 			
 			if (leadingTab)
 				buf.append("  ");
-			for (Ficha tok: subset) {
+			for (ManantialesFicha tok: subset) {
 				if (tok.getColumn() == 4)
 					buf.append("  ");
 				else if (tok.getColumn() > 4 && row %2 == 0)

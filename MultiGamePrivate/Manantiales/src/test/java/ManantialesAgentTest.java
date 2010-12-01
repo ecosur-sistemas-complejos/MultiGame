@@ -17,13 +17,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.model.implementation.MoveImpl;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
+import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -64,7 +58,6 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         GridRegistrant registrant = new GridRegistrant ("alice");
         alice = (ManantialesPlayer) game.registerPlayer(registrant);
         agents = new SimpleAgent [ 3 ];
-        registrant = null;
         Color [] colors = { Color.BLUE, Color.RED, Color.PURPLE };
 
         for (int i = 0; i < 3; i++) {
@@ -87,7 +80,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
         game.setState(GameState.PLAY);
 
-        Ficha play = new Ficha (5, 4, alice.getColor(),
+        ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
@@ -106,7 +99,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
         game.setState(GameState.PLAY);
 
-        Ficha play = new Ficha (3,3, alice.getColor(),
+        ManantialesFicha play = new ManantialesFicha(3,3, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
@@ -123,9 +116,9 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         for (int i = 0; i < agents.length; i++) {
             if (agents [ i ].ready()) {
-                Set<MoveImpl> moves = agents [ i ].determineMoves(game);
+                Set<Move> moves = agents [ i ].determineMoves(game);
                 assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
-                for (MoveImpl agentMove : moves) {
+                for (Move agentMove : moves) {
                     ManantialesMove mve = (ManantialesMove) agentMove;
                     if (mve.isBadYear())
                         continue;
@@ -155,14 +148,14 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         }
 
         for (GridCell cell : game.getGrid().getCells()) {
-            Ficha ficha = (Ficha) cell;
+            ManantialesFicha ficha = (ManantialesFicha) cell;
             assertTrue ("Location is incorrect! " + ficha, isGoodLocation (ficha));
         }
 
         assertEquals (4, game.getGrid().getCells().size());         
     }
 
-    private boolean isGoodLocation (Ficha ficha) {
+    private boolean isGoodLocation (ManantialesFicha ficha) {
         boolean ret;
         Color color = ficha.getColor();
         int column = ficha.getColumn(), row = ficha.getRow();

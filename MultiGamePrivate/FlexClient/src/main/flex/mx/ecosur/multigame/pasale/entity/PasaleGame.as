@@ -1,29 +1,41 @@
-package mx.ecosur.multigame.oculto.entity
+package mx.ecosur.multigame.pasale.entity
 {
-	import mx.collections.ArrayCollection;
-	import mx.ecosur.multigame.entity.Game;
+import mx.collections.ArrayCollection;
+import mx.ecosur.multigame.entity.Game;
 
-    [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.oculto.OcultoGame")]                       
-	public class PasaleGame extends Game
-	{
-		private var _mode:String;
-		
-		private var _checkConditions:ArrayCollection;		
-		
-		public function get checkConditions():ArrayCollection {
-			return _checkConditions;
-		}
-		
-		public function set checkConditions(conditions:ArrayCollection):void 
-		{
-		  _checkConditions = conditions;	
-		}
-		
-		public function addCheckCondition (violation:CheckCondition):void {
-			if (_checkConditions == null)
-			     _checkConditions = new ArrayCollection();
-			_checkConditions.addItem(violation); 
-		}
-	}
+[RemoteClass (alias="mx.ecosur.multigame.impl.entity.pasale.PasaleGame")]                       
+    public class PasaleGame extends Game
+    {
+        private var _maxPlayers:int;
+        private var _moves:ArrayCollection;
+        private var _version:int;
+
+        public function PasaleGame () {
+                super();
+        }
+
+        public function get maxPlayers():int {
+            return _maxPlayers;
+        }
+
+        public function set maxPlayers(value:int):void {
+            _maxPlayers = value;
+        }
+
+        public function get moves():ArrayCollection {
+            return _moves;
+        }
+
+        public function set moves(value:ArrayCollection):void {
+            _moves = value;
+        }
+
+        public function get version():int {
+            return _version;
+        }
+
+        public function set version(value:int):void {
+            _version = value;
+        }
+    }
 }

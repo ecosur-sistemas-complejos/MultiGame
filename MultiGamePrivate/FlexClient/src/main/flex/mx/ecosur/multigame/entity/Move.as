@@ -11,9 +11,7 @@
 
 package mx.ecosur.multigame.entity {
 
-    import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.model.GamePlayerModel;
-    import mx.ecosur.multigame.model.implementation.MoveImplementation;
+    import mx.ecosur.multigame.model.interfaces.MoveImplementation;
 
     /**
     * Represents a server side Player object.
@@ -23,7 +21,6 @@ package mx.ecosur.multigame.entity {
 
         protected var _id:int;
         protected var _player:GamePlayer;
-        protected var _playerModel:GamePlayerModel;
         protected var _current:Cell;
         protected var _destination:Cell;
         protected var _status:String;
@@ -46,14 +43,6 @@ package mx.ecosur.multigame.entity {
         
         public function set status(status:String):void{
             _status = status;
-        }
-        
-        public function get playerModel ():GamePlayerModel {
-            return _playerModel;
-        }
-        
-        public function set playerModel(playerModel:GamePlayerModel):void {
-            _playerModel = playerModel;
         }
          
         public function get currentCell():Cell{

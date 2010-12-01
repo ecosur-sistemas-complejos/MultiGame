@@ -17,7 +17,7 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-common</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
@@ -28,12 +28,12 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>gente</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
@@ -117,31 +117,26 @@
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>grid-common</artifactId>
-                            <bundleDir>lib</bundleDir>
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>gente</artifactId>
-                            <bundleDir>lib</bundleDir>
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>manantiales</artifactId>
-                            <bundleDir>lib</bundleDir>
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>pasale</artifactId>
-                            <bundleDir>lib</bundleDir>
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>ecosur-jpa</artifactId>
-                            <bundleDir>lib</bundleDir>
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
-                            <artifactId>multi-game-common</artifactId>
+                            <artifactId>multi-game-common</artifactId>                          
                         </jarModule>
                         <ejbModule>
                             <groupId>mx.ecosur</groupId>
@@ -185,7 +180,7 @@
                                     <argument>--passwordfile</argument>
                                     <argument>src/main/resources/passwd</argument>
                                     <argument>--name</argument>
-                                    <argument>${artifactId}</argument>
+                                    <argument>${artifactId}</argument>                                      
                                     <argument>target/${artifactId}-${version}.ear</argument>
                                 </arguments>
                             </configuration>

@@ -3,7 +3,7 @@
 # Licensed under the Academic Free License v. 3.2.
 # http://www.opensource.org/licenses/afl-3.0.php
  
-package mx.ecosur.multigame.impl.entity.tablon
+package mx.ecosur.multigame.impl.entity.pasale
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,11 +11,11 @@ import java.util.Collection;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence
 import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
 import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.entity.tablon.TablonFicha;
-import mx.ecosur.multigame.impl.entity.tablon.TablonGame;
-import mx.ecosur.multigame.impl.enums.tablon.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
+import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
-import function mx.ecosur.experiment.multigame.solver.tablon.SolutionFunctions.*;
+import function mx.ecosur.experiment.multigame.solver.pasale.SolutionFunctions.*;
 
 dialect "java"
 
@@ -27,9 +27,9 @@ global SimpleScoreCalculator scoreCalculator;
 rule "10 potreros per quadrant"
 no-loop true
     when
-        $game : TablonGame ($size : grid.cells.size)
+        $game : PasaleGame ($size : grid.cells.size)
         $potreros : ArrayList (size > 0) from
-            collect ( TablonFicha (type == TokenType.POTRERO))
+            collect ( PasaleFicha (type == TokenType.POTRERO))
         eval (!percentagePerQuadrant ($game.getDimensions(), $potreros, 0.625));
     then
         insertLogical (
@@ -39,9 +39,9 @@ end
 #2 (12.5%) forests per quadrant on a 4 x 4 (2/16 = forest)
 rule "2 forests per quadrant"
     when
-        $game : TablonGame ($size : grid.cells.size)
+        $game : PasaleGame ($size : grid.cells.size)
         $forests : ArrayList (size > 0) from
-            collect ( TablonFicha (type == TokenType.FOREST))
+            collect ( PasaleFicha (type == TokenType.FOREST))
         eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.125));
     then
         insertLogical (
@@ -52,9 +52,9 @@ end
 # TODO: Check for only riparian forest in all forest
 rule "4/16 riparians per quadrant"
     when
-        $game : TablonGame ($size : grid.cells.size)
+        $game : PasaleGame ($size : grid.cells.size)
         $forests : ArrayList (size > 0) from
-            collect ( TablonFicha (type == TokenType.FOREST))
+            collect ( PasaleFicha (type == TokenType.FOREST))
         eval (!percentagePerQuadrant ($game.getDimensions(), $forests, 0.25));
     then
         insertLogical (

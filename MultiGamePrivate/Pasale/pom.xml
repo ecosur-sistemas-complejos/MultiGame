@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>mx.ecosur</groupId>
     <artifactId>pasale</artifactId>
-    <name>Pasale Compadre</name>
+    <name>Pasale Compadre/Go Ahead Friend</name>
     <description>Implementation of the game Pasale Compadre.</description>
     <parent>
         <artifactId>multi-game-private</artifactId>
@@ -17,54 +15,7 @@
         <name>ECOSUR</name>
         <url>http://www.ecosur.mx</url>
     </organization>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-ejb-plugin</artifactId>
-                <configuration>
-                    <ejbVersion>3.0</ejbVersion>
-                    <generateClient>true</generateClient>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <excludes>
-                  <exclude>**/StandardSolverTest.java</exclude>
-                </excludes>
-              </configuration>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>mx/ecosur/multigame/impl/</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/ruleflow</directory>
-                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/agent</directory>
-                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/changesets</directory>
-                <targetPath>mx/ecosur/multigame/impl</targetPath>
-            </resource>
-        </resources>
-    </build>
     <dependencies>
-        <dependency>
-            <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-common</artifactId>
-            <version>${version}</version>
-        </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
@@ -76,18 +27,25 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/javaee.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb-rt</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>glassfish</groupId>
+            <artifactId>toplink</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -144,10 +102,77 @@
             <version>0.4</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>cica.es</id>
+            <url>http://ftp.cica.es/mirrors/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <configuration>
+                    <ejbVersion>3.0</ejbVersion>
+                    <generateClient>true</generateClient>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <excludes>
+                  <exclude>**/StandardSolverTest.java</exclude>
+                </excludes>
+              </configuration>
+            </plugin>
+            <!--plugin>
+                <artifactId>drools-guvnor-plugin</artifactId>
+                <goals>
+                    <goal>deployPackage</goal>
+                </goals>
+                <configuration>
+                    <guvnorURL>http://localhost:8080/drools-5.1.0-guvnor/org.drools.guvnor.Guvnor/webdav/packages</guvnorURL>
+                    <packageName>mx.ecosur.multigame.test.pasale</packageName>
+                    <username>MultiGame</username>
+                    <password>test</password>
+                    <resources>
+                        <param>src/main/resources/pasale.drl</param>
+                    </resources>
+                    <models>
+                        <POJODataModel>
+                            <groupId>mx.ecosur</groupId>
+                            <artifactId>grid-common</artifactId>
+                        </POJODataModel>
+                    </models>
+                </configuration>
+            </plugin -->
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>mx/ecosur/multigame/impl/</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/ruleflow</directory>
+                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/agent</directory>
+                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/changesets</directory>
+                <targetPath>mx/ecosur/multigame/impl</targetPath>
+            </resource>
+        </resources>
+    </build>    
 </project>

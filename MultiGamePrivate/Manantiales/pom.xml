@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>mx.ecosur</groupId>
     <artifactId>manantiales</artifactId>
-    <name>Manantiales Implementation</name>
+    <name>Manantiales/Sierra Springs</name>
     <description>Implementation of the game Manantiales.</description>
     <parent>
         <artifactId>multi-game-private</artifactId>
@@ -60,27 +60,29 @@
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${project.version}</version>
         </dependency>       
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/javaee.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>javax.ejb</groupId>
+            <groupId>javax</groupId>
             <artifactId>ejb-rt</artifactId>
             <version>3.0</version>
             <scope>system</scope>
             <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>glassfish</groupId>
+            <artifactId>toplink</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -119,6 +121,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+        </dependency>         
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.0</version>
@@ -129,16 +136,6 @@
             <artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
             <version>0.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
 </project>

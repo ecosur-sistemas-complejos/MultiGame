@@ -15,16 +15,12 @@ import static org.junit.Assert.*;
 import com.sun.appserv.security.ProgrammaticLogin;
 
 import java.rmi.RemoteException;
-import java.util.Properties;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.enums.GameState;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.model.GamePlayer;
-import mx.ecosur.multigame.model.implementation.GamePlayerImpl;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

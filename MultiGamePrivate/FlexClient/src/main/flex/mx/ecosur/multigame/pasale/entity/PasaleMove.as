@@ -1,36 +1,46 @@
-package mx.ecosur.multigame.oculto.entity
+package mx.ecosur.multigame.pasale.entity
 {
-	import mx.ecosur.multigame.entity.Move;
-	import mx.ecosur.multigame.gente.entity.StrategyPlayer;
+    import mx.ecosur.multigame.entity.Move;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.oculto.OcultoMove")]
-	public class PasaleMove extends Move
-	{
-		private var _badYear:Boolean;
-		
-		private var _mode:String;
-		
-		public function PasaleMove()
-		{
-			super();
-			_badYear = false;
-		}
-		
-		public function get badYear():Boolean {
-			return _badYear;
-		}
-		
-		public function set badYear (year:Boolean):void {
-			_badYear = year;
-		}
-		
-		public function get mode ():String {
-			return _mode;
-		}
-		
-		public function set mode (mode:String):void {
-			_mode = mode;
-		}
-	}
+        "mx.ecosur.multigame.impl.entity.pasale.PasaleMove")]
+    public class PasaleMove extends Move
+
+    {
+        private var _type:String;
+
+        private var _replacementType:String;
+
+        private var _badYear:Boolean;
+
+        public function PasaleMove() {
+            super();
+        }
+
+        public function get type ():String {
+            return _type;
+        }
+
+        public function set type (type:String):void {
+            _type = type;
+        }
+
+        public function get replacementType ():String {
+            return _replacementType;
+        }
+
+        public function set replacementType(replacementType:String):void {
+            _replacementType = replacementType;
+        }
+
+        public function get badYear ():Boolean {
+            return _badYear;
+        }
+
+        public function set badYear (year:Boolean):void {
+            _badYear = year;
+        }
+
+
+    }
 }

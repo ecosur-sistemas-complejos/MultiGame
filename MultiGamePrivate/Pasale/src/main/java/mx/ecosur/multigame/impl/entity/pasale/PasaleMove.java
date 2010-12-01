@@ -15,7 +15,6 @@ import javax.persistence.Entity;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.impl.model.GridMove;
 import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.model.GamePlayer;
 
 import java.util.*;
 
@@ -120,7 +119,7 @@ public class PasaleMove extends GridMove {
         ret.setCurrentCell(this.getCurrentCell());
         ret.setDestinationCell(this.getDestinationCell());
         ret.setStatus(this.getStatus());
-        ret.setPlayerModel(new GamePlayer(this.getPlayer()));
+        ret.setPlayerModel(this.getPlayer());
         return ret;
     }
 }

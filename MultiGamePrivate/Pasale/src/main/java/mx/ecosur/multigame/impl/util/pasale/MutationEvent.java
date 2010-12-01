@@ -19,12 +19,12 @@ package mx.ecosur.multigame.impl.util.pasale;
 
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.CellComparator;
-import mx.ecosur.multigame.model.implementation.ConditionImpl;
+import mx.ecosur.multigame.model.interfaces.Condition;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class MutationEvent implements ConditionImpl {
+public class MutationEvent implements Condition {
 
     SortedSet<PasaleFicha> square, octogon, cross;
     PasaleFicha ficha;
