@@ -25,21 +25,20 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.ChatPanel;
     import mx.ecosur.multigame.component.GameStatus;
-import mx.ecosur.multigame.component.SoundAssets;
-import mx.ecosur.multigame.component.Token;
+    import mx.ecosur.multigame.component.SoundAssets;
+    import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.entity.Cell;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.Game;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.entity.Move;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.model.GameModel;
-    import mx.ecosur.multigame.model.MoveModel;
     import mx.ecosur.multigame.gente.entity.BeadString;
     import mx.ecosur.multigame.gente.entity.GenteGame;
     import mx.ecosur.multigame.gente.entity.GenteMove;
@@ -331,8 +330,8 @@ import mx.ecosur.multigame.component.Token;
                     _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
-                    var moveModel:MoveModel = MoveModel (event.result);
-                    _executingMove = GenteMove(moveModel.implementation);
+                    var move:Move = Move (event.result);
+                    _executingMove = GenteMove(move);
                     break;
             }
         }
@@ -364,7 +363,6 @@ import mx.ecosur.multigame.component.Token;
             var message:IMessage = event.message;
             var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
-            var gameModel:GameModel = null;
             var game:GenteGame = null;
         
             switch (gameEvent){
