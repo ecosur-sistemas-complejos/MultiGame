@@ -130,7 +130,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             move.setDestinationCell (dest);
         }
 
-        if (!em.contains(move)) {
+        if (!em.contains(move) && move.getId() == 0) {
             em.persist(move);
         }
         else {
