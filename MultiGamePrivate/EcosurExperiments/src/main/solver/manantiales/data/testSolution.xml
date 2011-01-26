@@ -20,13 +20,13 @@
  <solution type="SIMPLE">
     <!-- Player 1 (blue) -->
     <!--  4 I, 4 M, 4 F -->
-	 <token>
-	    <column>2</column>
-	    <row>0</row>
-	    <color>BLUE</color>
-	    <type>INTENSIVE_PASTURE</type>
-	 </token>
-	 <token>
+    <token>
+        <column>2</column>
+        <row>0</row>
+        <color>BLUE</color>
+        <type>INTENSIVE_PASTURE</type>
+    </token>
+    <token>
         <column>4</column>
         <row>1</row>
         <color>BLUE</color>
@@ -309,17 +309,17 @@
         <row>5</row>
         <color>RED</color>
         <type>MANAGED_FOREST</type>
-     </token>  
+     </token>
      <token>
         <column>1</column>
         <row>7</row>
         <color>RED</color>
-        <type>INTENSIVE_PASTURE</type>
+        <type>MANAGED_FOREST</type>
      </token>
-          <token>
+      <token>
         <column>3</column>
         <row>5</row>
         <color>RED</color>
-        <type>MANAGED_FOREST</type>
+        <type>INTENSIVE_PASTURE</type>
      </token>
 </solution>

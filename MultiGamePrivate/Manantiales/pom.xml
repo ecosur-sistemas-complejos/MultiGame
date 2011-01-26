@@ -100,11 +100,6 @@
             <version>${drools.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.drools.planner</groupId>
-            <artifactId>drools-planner-core</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>

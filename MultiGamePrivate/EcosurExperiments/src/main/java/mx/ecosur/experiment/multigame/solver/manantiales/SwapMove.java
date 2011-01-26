@@ -53,11 +53,13 @@ public class SwapMove implements Move {
 		FactHandle tokenHandle = wm.getFactHandle(token);
 		FactHandle swapHandle = wm.getFactHandle(swapToken);
 		
-		wm.retract(tokenHandle);
+        if (tokenHandle != null)
+            wm.retract(tokenHandle);
 		token.setColumn(swapColumn);
 		token.setRow (swapRow);
 		wm.insert(token);
-		wm.retract (swapHandle);
+        if (swapHandle != null)
+            wm.retract (swapHandle);
 		swapToken.setColumn (tokenColumn);
 		swapToken.setRow(tokenRow);
 		wm.insert (token);	

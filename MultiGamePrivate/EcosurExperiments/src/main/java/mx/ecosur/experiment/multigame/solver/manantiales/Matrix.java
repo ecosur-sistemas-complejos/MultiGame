@@ -102,9 +102,11 @@ public class Matrix {
 			if (color.equals(Color.UNKNOWN))
 				continue;
 			Distribution dist = getDistribution(color);
-			ret += "[" + color + "]" + " F: " + dist.getForest() + ", M: " + 
-				dist.getModerate() + ", I: " + dist.getIntensive() + ", S: " + 
-				dist.getSilvopastoral() + " == " + dist.getScore() + "\n";
+            if (dist != null) {
+                ret += "[" + color + "]" + " F: " + dist.getForest() + ", M: " + 
+                    dist.getModerate() + ", I: " + dist.getIntensive() + ", S: " + 
+                    dist.getSilvopastoral() + " == " + dist.getScore() + "\n";
+            }
 		}
 		
 		return ret;

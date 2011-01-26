@@ -12,23 +12,18 @@
     <parent>
         <artifactId>multi-game-private</artifactId>
         <groupId>mx.ecosur</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>manantiales</artifactId>
-            <version>${version}</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>pasale</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mockrunner</groupId>
-            <artifactId>mockrunner</artifactId>
-            <version>jdk1.5-j2ee1.3-0.4</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -36,25 +31,10 @@
             <version>4.0</version>
         </dependency>
         <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-api</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.drools.planner</groupId>
             <artifactId>drools-planner-core</artifactId>
-            <version>${drools.version}</version>
-        </dependency>        
+            <version>5.2.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
      <resources>
@@ -63,23 +43,37 @@
             <targetPath>mx/ecosur/experiment/multigame/solver</targetPath>
         </resource>
      </resources>
-     <plugins>
-      <plugin>
-       <groupId>org.codehaus.mojo</groupId>
-       <artifactId>exec-maven-plugin</artifactId>
-       <version>1.1</version>
-       <executions>
-        <execution>
-         <phase>install</phase>
-         <goals>
-          <goal>java</goal>
-         </goals>
-         <configuration>
-          <mainClass>mx.ecosur.experiment.multigame.lab.PasaleRetractionExperiment</mainClass>
-         </configuration>
-        </execution>
-       </executions>
-      </plugin>         
-     </plugins>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <mainClass>mx.ecosur.experiment.multigame.lab.ManantialesMatrixSolverExperiment</mainClass>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>mx.ecosur.experiment.multigame.lab.ManantialesMatrixSolverExperiment</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

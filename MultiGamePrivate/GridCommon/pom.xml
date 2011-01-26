@@ -72,11 +72,6 @@
             <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jcl</artifactId>
-            <version>1.5.8</version>
-        </dependency>
-        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>

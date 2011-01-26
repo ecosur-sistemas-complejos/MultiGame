@@ -120,14 +120,18 @@ public class RotateMove implements Move {
 		fourth.setColumn(primaryColumn);
 		fourth.setRow(primaryRow);
 		
-		/* Update working memory */	
-		wm.retract(primaryFH);
+		/* Update working memory */
+        if (primaryFH != null)
+		    wm.retract(primaryFH);
 		wm.insert(primary);
-		wm.retract(secondFH);
+        if (secondFH != null)
+		    wm.retract(secondFH);
 		wm.insert(second);
-		wm.retract(thirdFH);
+        if (thirdFH != null)
+		    wm.retract(thirdFH);
 		wm.insert(third);
-		wm.retract (fourthFH);
+        if (fourthFH != null)
+		    wm.retract (fourthFH);
 		wm.insert (fourth);
 	}
 

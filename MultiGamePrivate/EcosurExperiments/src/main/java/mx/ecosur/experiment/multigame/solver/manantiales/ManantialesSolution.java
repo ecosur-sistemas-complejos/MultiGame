@@ -51,14 +51,14 @@ public class ManantialesSolution implements Solution {
 		}
 	}
 	
-	private SortedSet<SolverManantialesFicha> tokens;
+	private SortedSet<SolverFicha> tokens;
 	private Threshold umbra;
 	private HashMap<Color, Distribution> distributionMap;
     private Score score;
 	
-	public ManantialesSolution (Threshold umbra, SortedSet<SolverManantialesFicha> tokens, Score score) {
+	public ManantialesSolution (Threshold umbra, SortedSet<SolverFicha> tokens, Score score) {
 		this (umbra);
-		for (SolverManantialesFicha tok : tokens) {
+		for (SolverFicha tok : tokens) {
 			replaceToken(tok);
 		}
         this.score = score;
@@ -66,7 +66,7 @@ public class ManantialesSolution implements Solution {
 	
 	public ManantialesSolution (Threshold umbra) {
 		this.umbra = umbra;
-		tokens = new TreeSet<SolverManantialesFicha> (new CellComparator());
+		tokens = new TreeSet<SolverFicha> (new CellComparator());
         score = null;
 		initialize();
 	}	
@@ -83,7 +83,7 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					} else
 						color = Color.GREEN;
-					tokens.add(new SolverManantialesFicha(col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new SolverFicha(col,row, color, TokenType.UNDEVELOPED));
 					/* Cells are split by even/even and odd/odd (skip manantial) */
 				} else if ( (row !=4 && col!=4) && ( 
 						(col % 2 ==0 && row % 2 == 0) || (col % 2 !=0 && row % 2 !=0))) 
@@ -96,13 +96,13 @@ public class ManantialesSolution implements Solution {
 						color = Color.RED;
 					else if (row > 4 && col > 3)
 						color = Color.YELLOW;
-					tokens.add(new SolverManantialesFicha(col,row, color, TokenType.UNDEVELOPED));
+					tokens.add(new SolverFicha(col,row, color, TokenType.UNDEVELOPED));
 				} else if (col == 4) {
 					if (row < 5 ) 
 						color = Color.BLUE;
 					else if (row > 4)
 						color = Color.YELLOW;
-					tokens.add (new SolverManantialesFicha(col, row, color, TokenType.UNDEVELOPED));
+					tokens.add (new SolverFicha(col, row, color, TokenType.UNDEVELOPED));
 				} else
 					continue;
 			}
@@ -116,9 +116,9 @@ public class ManantialesSolution implements Solution {
 		Solution ret = null;
 		
 		try {
-			SortedSet<SolverManantialesFicha> clones = new TreeSet<SolverManantialesFicha>(
+			SortedSet<SolverFicha> clones = new TreeSet<SolverFicha>(
 					new CellComparator());
-			for (SolverManantialesFicha tok : tokens) {
+			for (SolverFicha tok : tokens) {
 				clones.add(tok.clone());
 			}
 			
@@ -230,7 +230,7 @@ public class ManantialesSolution implements Solution {
 	}
 	
 	
-	public boolean replaceToken (SolverManantialesFicha token) {
+	public boolean replaceToken (SolverFicha token) {
 		boolean ret = false;
 		if (tokens.contains(token))
 			ret = tokens.remove(token);
@@ -249,7 +249,7 @@ public class ManantialesSolution implements Solution {
 	/**
 	 * @return the tokens
 	 */
-	public SortedSet<SolverManantialesFicha> getTokens() {
+	public SortedSet<SolverFicha> getTokens() {
 		return tokens;
 	}
 
@@ -259,21 +259,21 @@ public class ManantialesSolution implements Solution {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer ("\n");
-		SortedSet<SolverManantialesFicha> subset;
+		SortedSet<SolverFicha> subset;
 		
 		for (int row = 0; row < 9; row++) {
 			boolean leadingTab = false;
 			subset = null;
 			if (row == 4) {
-				subset = tokens.subSet(new SolverManantialesFicha(0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverManantialesFicha(9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new SolverFicha(0,4, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverFicha(9,4,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			} else if (row % 2 == 0) {
-				subset = tokens.subSet(new SolverManantialesFicha(0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverManantialesFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new SolverFicha(0,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			} else {
 				leadingTab = true;
-				subset = tokens.subSet(new SolverManantialesFicha(1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
-						new SolverManantialesFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
+				subset = tokens.subSet(new SolverFicha(1,row, Color.UNKNOWN, TokenType.UNDEVELOPED),
+						new SolverFicha(9,row,Color.UNKNOWN, TokenType.UNDEVELOPED));
 			}
 			
 			if (leadingTab)

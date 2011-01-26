@@ -4,24 +4,16 @@
     <scoreDefinition>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
-    <selector>
-        <selector>
-            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.RotateMoveFactory</moveFactoryClass>
-             <relativeSelection>0.99</relativeSelection>
-        </selector>
-        <selector>
-            <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.SwapMoveFactory</moveFactoryClass>
-            <relativeSelection>0.99</relativeSelection>
-        </selector>
-    </selector>
-    <accepter>
-         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    </accepter>
-    <forager>
-        <foragerType>MAX_SCORE_OF_ALL</foragerType>
-    </forager>
     <termination>
-        <terminationCompositionStyle>AND</terminationCompositionStyle>
-        <maximumMinutesSpend>1</maximumMinutesSpend> 
+        <maximumMinutesSpend>1</maximumMinutesSpend>
     </termination>
+    <selector>
+        <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.DualMoveFactory</moveFactoryClass>
+    </selector>
+    <acceptor>
+         <completeSolutionTabuSize>5000</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+        <pickEarlyType>NEVER</pickEarlyType>
+    </forager>      
 </localSearchSolver>
