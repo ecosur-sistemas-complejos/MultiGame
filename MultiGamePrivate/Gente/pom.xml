@@ -74,12 +74,12 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-common</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -113,11 +113,6 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
-            <version>${drools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.drools.planner</groupId>
-            <artifactId>drools-planner-core</artifactId>
             <version>${drools.version}</version>
         </dependency>
         <dependency>

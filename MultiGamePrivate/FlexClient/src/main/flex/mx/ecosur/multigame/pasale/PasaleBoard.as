@@ -12,13 +12,11 @@
 package mx.ecosur.multigame.pasale {
 
     import as3isolib.display.IsoView;
-import as3isolib.display.scene.IsoGrid;
-import as3isolib.display.scene.IsoScene;
+    import as3isolib.display.scene.IsoScene;
     import as3isolib.geom.IsoMath;
     import as3isolib.geom.Pt;
     import as3isolib.graphics.IFill;
     import as3isolib.graphics.SolidColorFill;
-    import caurina.transitions.Tweener;
     import eDpLib.events.ProxyEvent;
     import flash.events.Event;
     import flash.events.MouseEvent;
@@ -170,7 +168,6 @@ import as3isolib.display.scene.IsoScene;
                 pan = false;
 
             event.delta > 0 ? zoom += 0.0005 : zoom -= 0.0005;
-            Tweener.addTween( _view, { currentZoom:zoom, time:0.5 } );
         }
 
 

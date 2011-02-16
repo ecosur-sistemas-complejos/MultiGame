@@ -82,18 +82,6 @@ NON-MAVEN LIBRARIES
 
   %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
 
-  TWEENER
-
-  tweener will need to be installed locally.  Please download a copy of the swc
-  file from google code:
-
-  http://code.google.com/p/tweener/downloads/detail?name=tweener_1_33_74_as3_swc.zip&can=1&q=
-
-  Use the maven install plugin to install the dependency locally:
-
-  %> mvn install:install-file -DgroupId=tweener -DartifactId=tweener -Dversion=1.33.74 -Dpackaging=swc -Dfile=tweener.swc
-
-
  **** IMPORTANT ****
  
  Before deployment, the local Glassfish Derby database must be up and running:

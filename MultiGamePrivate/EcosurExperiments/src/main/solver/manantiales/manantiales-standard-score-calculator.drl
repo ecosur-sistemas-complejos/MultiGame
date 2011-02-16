@@ -11,8 +11,8 @@ import mx.ecosur.multigame.impl.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.*;
 import mx.ecosur.experiment.multigame.solver.manantiales.*;
 
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.constraint.*;
+import org.drools.planner.core.score.calculator.*;
 
 global SimpleScoreCalculator scoreCalculator;
 
@@ -23,12 +23,12 @@ rule
         $tok1 : SolverFicha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : SolverFicha (id > $id, $id2 : id, border == BorderType.NORTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok3 : SolverFicha (id > $id2, border == BorderType.NORTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                               
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
     then
         insertLogical (
-            new UnweightedConstraintOccurrence("northern border deforested", 
+            new IntConstraintOccurrence("northern border deforested", 5,
                 $tok1, $tok2, $tok3));
 end
 
@@ -41,10 +41,10 @@ rule
         $tok2 : SolverFicha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
         $tok3 : SolverFicha (id > $id2, border == BorderType.EAST, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))        
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
     then
         insertLogical (
-            new UnweightedConstraintOccurrence("eastern border deforested", 
+            new IntConstraintOccurrence("eastern border deforested", 5,
                 $tok1, $tok2, $tok3)) ;
 end
 
@@ -57,10 +57,10 @@ rule
         $tok2 : SolverFicha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok3 : SolverFicha (id > $id2, border == BorderType.SOUTH, 
-            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))      
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
     then
         insertLogical (
-            new UnweightedConstraintOccurrence("southern border deforested", 
+            new IntConstraintOccurrence("southern border deforested", 5,
                 $tok1, $tok2, $tok3));
 end
 
@@ -73,10 +73,10 @@ rule
         $tok2 : SolverFicha (id > $id, $id2 : id, border == BorderType.WEST,
         type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok3 : SolverFicha (id > $id2, border == BorderType.WEST, 
-        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))                          
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
     then
         insertLogical (
-            new UnweightedConstraintOccurrence("western border deforested", 
+            new IntConstraintOccurrence("western border deforested", 5,
                 $tok1, $tok2, $tok3));
 end
 
@@ -90,8 +90,8 @@ rule "column contiguous intensive"
 		eval (Math.abs($row - $row2) == 2)
 	then 
 		insertLogical (
-		  new UnweightedConstraintOccurrence(
-		  "Column contiguous intensive", $tok1, $tok2));
+		  new IntConstraintOccurrence(
+		  "Column contiguous intensive", 10, $tok1, $tok2));
 end
 
 # Enforces the constraint (by row) that intensives cannot be contiguous
@@ -103,8 +103,8 @@ rule "row contiguous intensive"
         $tok2 : SolverFicha (id > $id, row == $row, $col2 : column, type == TokenType.INTENSIVE_PASTURE)
         eval (Math.abs ($col - $col2) == 2) 
     then 
-        insertLogical (new UnweightedConstraintOccurrence(
-          "Row contiguous intensive", $tok1, $tok2));
+        insertLogical (new IntConstraintOccurrence(
+          "Row contiguous intensive", 10, $tok1, $tok2));
 end
 
 # Enforces the constraint (by diagnal) that intensives cannot be contiguous
@@ -114,8 +114,8 @@ rule "diagnal contiguous intensive"
         $tok2 : SolverFicha (id > $id, $col2 : column, $row2 : row, type == TokenType.INTENSIVE_PASTURE)  
         eval (Math.abs($col - $col2) == 1 && Math.abs($row - $row2) == 1)
     then
-        insertLogical (new UnweightedConstraintOccurrence(
-          "Diagnol contiguous intensive", $tok1, $tok2)); 
+        insertLogical (new IntConstraintOccurrence(
+          "Diagnol contiguous intensive", 10, $tok1, $tok2)); 
 end
 
 #Enforces Manantiales constraint (only 2 developments around the manantiales
@@ -129,8 +129,8 @@ rule "manantiales"
         $tok3 : SolverFicha (id > $id2, manantial == true, type in (
                     TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))         
     then
-        insertLogical (new UnweightedConstraintOccurrence(
-          "Column contiguous intensive", $tok1, $tok2, $tok3));
+        insertLogical (new IntConstraintOccurrence("Column contiguous intensive", 
+            10, $tok1, $tok2, $tok3));
 end
 
 #Enforces the constaint that no more than 32 sites can be deforested
@@ -142,8 +142,8 @@ rule "too many deforested sites"
             count ($id)) 
         eval ($list.intValue() > 32)
     then
-        insertLogical (new UnweightedConstraintOccurrence(
-            "Too many deforested sites", $list));
+        insertLogical (new IntConstraintOccurrence("Too many deforested sites", 
+            (32 - $list.intValue()), $list));
 end  
 
 
@@ -185,8 +185,8 @@ rule "yellow territory worth at least 24 points"
     when
         $total : Number() from accumulate(
             SolverFicha (color == Color.YELLOW, $score : score),
-            sum($score));               
-        eval ($total.intValue() < 24)    
+            sum($score));
+        eval ($total.intValue() < 24)
     then
         insertLogical (new UnweightedConstraintOccurrence(
             "Not enough points", $total)); 
@@ -194,12 +194,18 @@ end
 
 
 #Constraint calculator update
-rule "hardConstraintsBroken"
+rule "constraintsBroken"
+    salience -50 
     when
-        $occurrenceCount : Number() from accumulate(
+        $hardCount : Number() from accumulate(
+            IntConstraintOccurrence(
+                constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+                    sum($weight))
+        $softCount : Number() from accumulate(
             $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
             count($unweightedConstraintOccurrence)
-        );
+            )
     then
-        scoreCalculator.setScore(- $occurrenceCount.intValue());
+        int total = $softCount.intValue() + $hardCount.intValue();
+        scoreCalculator.setScore(- total);
 end

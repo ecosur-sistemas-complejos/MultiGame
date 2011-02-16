@@ -5,15 +5,16 @@
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
     <termination>
-        <maximumMinutesSpend>1</maximumMinutesSpend>
+        <scoreAttained>0</scoreAttained>
     </termination>
     <selector>
-        <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.DualMoveFactory</moveFactoryClass>
+        <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.MoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-         <completeSolutionTabuSize>5000</completeSolutionTabuSize>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+
     </acceptor>
     <forager>
         <pickEarlyType>NEVER</pickEarlyType>
-    </forager>      
+    </forager>
 </localSearchSolver>

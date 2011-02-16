@@ -62,9 +62,8 @@ public class ManantialesMatrixSolverExperiment {
         ManantialesMatrixSolverExperiment experiment = new ManantialesMatrixSolverExperiment();
         experiment.setUp();
         System.out.println ("Starting solver...");
-        experiment.testCSVMatrices();
+        experiment.testSolver();
         System.out.println ("Solution complete.");
-        System.out.println ("Matrix:\n " + experiment.getDistributions(experiment.solution));
     }
 
     public void setUp () {
@@ -88,7 +87,6 @@ public class ManantialesMatrixSolverExperiment {
         solver.solve();
         solution = (ManantialesSolution) solver.getBestSolution();
         SimpleScore score = (SimpleScore) solution.getScore();
-        assertEquals (0, score.getScore());
     }
 
     public void testDistribution () throws JDOMException, IOException,
@@ -98,7 +96,7 @@ public class ManantialesMatrixSolverExperiment {
                 (ManantialesSolution) startingSolution);
         Document doc = solcon.load(asymmetricPath);
         startingSolution = solcon.configure(doc);
-        Solver solver =configurer.buildSolver();
+        Solver solver = configurer.buildSolver();
         solver.setStartingSolution(startingSolution);
         ManantialesSolution solution = (ManantialesSolution) startingSolution;
         logger.info ("Invoking solver, this may take a few moments...");
@@ -107,10 +105,9 @@ public class ManantialesMatrixSolverExperiment {
         solver.solve();
         solution = (ManantialesSolution) solver.getBestSolution();
         logger.info (getDistributions(solution));
+        logger.info ("Score: " + solution.getScore().toString());
         logger.info (solution.toString());
         logger.info ("Solved in: " + solver.getTimeMillisSpend() + " ms.");
-        SimpleScore score = (SimpleScore) solution.getScore();
-        assertEquals (0, score.getScore());
     }
 
     public void testMatrixValidator () {
@@ -192,14 +189,16 @@ public class ManantialesMatrixSolverExperiment {
         while (reader.ready()) {
             Matrix matrix = readMatrix (reader);
             try {
-                counter++;
                 logger.info ("Finding solution for Matrix #" + counter  + " @ [" +
                         new Date(System.currentTimeMillis()) + "]");
                 startingSolution = solcon.configure(matrix);
+                logger.info ("Starting Solution: " + startingSolution);
+                System.out.println ("Starting Distribution: " + getDistributions((ManantialesSolution) startingSolution));
                 MatrixSolverThread thread = new MatrixSolverThread (matrix, configurer.buildSolver(), startingSolution);
                 thread.start();
                 thread.join();
                 threads.add(thread);
+                counter++;
 
             } catch (UnconfigurableException e) {
                 unconfigurable.add(matrix);
@@ -210,6 +209,7 @@ public class ManantialesMatrixSolverExperiment {
 
         for (MatrixSolverThread t : threads) {
             ManantialesSolution solution = (ManantialesSolution) t.getSolution();
+            logger.info ("Distributions: "+ getDistributions ((ManantialesSolution) t.getSolution()));
             logger.info ("Matrix: " + t.getMatrix().toString());
             logger.info ("Best score = " + solution.getScore() + " in " +
                     t.getTimeMillisSpend() + " ms");
@@ -291,10 +291,11 @@ public class ManantialesMatrixSolverExperiment {
     private String getDistributions(ManantialesSolution solution) {
         String ret = "";
         for (Color color : Color.values()) {
-            if (color.equals(Color.UNKNOWN))
+            if (color.equals(Color.UNKNOWN) || color.equals(Color.PURPLE) || color.equals(Color.BLACK))
                 continue;
             Distribution dist = solution.getDistribution(color);
-            ret += "[" + color + "]" + " F: " + dist.getForest() + ", M: " +
+            ret += "[" + color + "," + dist.getCount() + "]";
+            ret += "F: " + dist.getForest() + ", M: " +
                 dist.getModerate() + ", I: " + dist.getIntensive() + ", S: " +
                 dist.getSilvopastoral() + " == " + dist.getScore() + "\n";
         }

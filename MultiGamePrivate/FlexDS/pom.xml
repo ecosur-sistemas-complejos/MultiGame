@@ -45,7 +45,7 @@
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>manantiales</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>

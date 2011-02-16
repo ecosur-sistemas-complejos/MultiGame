@@ -15,12 +15,12 @@
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-ds</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
     </dependency>   
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-client</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
         <type>swf</type>
     </dependency>
     <dependency>

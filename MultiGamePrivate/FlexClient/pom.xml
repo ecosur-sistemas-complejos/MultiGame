@@ -92,11 +92,5 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <version>1.0</version>
         <type>swc</type>
     </dependency>
-    <dependency>
-        <groupId>tweener</groupId>
-        <artifactId>tweener</artifactId>
-        <version>1.33.74</version>
-        <type>swc</type>
-    </dependency>
 </dependencies>    
 </project>

@@ -43,7 +43,7 @@ public class ManantialesSolution implements Solution {
 				ret = 24;
 				break;
 			case INNOVATIVE:
-				ret = 28;
+				ret = 32;
 				break;
 			}
 			

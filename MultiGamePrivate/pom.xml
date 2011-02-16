@@ -55,7 +55,7 @@
     <properties>
         <flex-version>3.5.0.12683</flex-version>
         <flexmojos-version>3.5.0</flexmojos-version>
-        <drools.version>5.2.0-SNAPSHOT</drools.version>
+        <drools.version>5.1.1</drools.version>
         <glassfish>/Users/awaterma/util/glassfish-installs/glassfishv2.1.1</glassfish>
     </properties>
     <dependencies>
@@ -109,32 +109,34 @@
                 <module>Pasale</module>
                 <module>EcosurExperiments</module>
             </modules>
-        </profile>  
+        </profile>
+        <profile>
+            <id>empty</id>
+        </profile>
     </profiles>
     <repositories>
-        <repository>
-            <id>repository.jboss.com</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>flex-mojos-repository</id>
-            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     <repository>
-        <id>repository.jboss.org</id>
-        <!-- url>http://repository.jboss.org/maven2</url-->
+        <id>repository.jboss.com</id>
+        <url>http://repository.jboss.com/maven2/</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>repository2.jboss.com</id>
+        <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+    <repository>
+        <id>repository3.jboss.org</id>
         <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         <snapshots>
             <enabled>false</enabled>
@@ -142,6 +144,16 @@
         <releases>
             <enabled>true</enabled>
         </releases>
+    </repository>
+    <repository>
+        <id>flex-mojos-repository</id>
+        <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
     </repository>
     <repository>
         <id>snapshots.jboss.org</id>
@@ -153,10 +165,20 @@
             <enabled>false</enabled>
         </releases>
     </repository>
+    <repository>
+        <id>ibiblio.mirror</id>
+        <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
-            <id>local</id>
+            <id>sonatype-plugin-repo</id>
             <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
             <releases>
                 <enabled>true</enabled>

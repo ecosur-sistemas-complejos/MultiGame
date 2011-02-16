@@ -17,16 +17,19 @@ import org.drools.planner.core.solution.Solution;
  *
  * @author awaterma
  */
-public class DualMoveFactory extends AbstractMoveFactory {
+public class MoveFactory extends AbstractMoveFactory {
     
     private RotateMoveFactory rotateFactory = new RotateMoveFactory();
 
     private SwapMoveFactory swapFactory = new SwapMoveFactory();
 
+    private ColorMoveFactory colorFactory = new ColorMoveFactory();
+
     @Override
     public List<Move> createMoveList(Solution sltn) {
-        List<Move> ret = swapFactory.createMoveList(sltn);
-        ret.addAll(rotateFactory.createMoveList(sltn));
+        List<Move> ret = rotateFactory.createMoveList(sltn);
+        ret.addAll(swapFactory.createMoveList(sltn));
+        //ret.addAll(colorFactory.createMoveList(sltn));
         return ret;
     }
 }

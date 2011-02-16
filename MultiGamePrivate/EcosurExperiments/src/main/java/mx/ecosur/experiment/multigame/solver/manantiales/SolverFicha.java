@@ -15,33 +15,43 @@ import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 public class SolverFicha extends ManantialesFicha {
-	
-	private int counter = 0;
 
-	/**
-	 * @param col
-	 * @param row
-	 * @param color
-	 * @param type
-	 */
-	public SolverFicha(int col, int row, Color color, TokenType type) {
-		super (col, row, color, type);
-	}
+    private int counter = 0;
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.Cell#getId()
-	 */
-	@Override
-	public int getId() {
-		return counter++;
-	}
+    /**
+     * @param col
+     * @param row
+     * @param color
+     * @param type
+     */
+    public SolverFicha(int col, int row, Color color, TokenType type) {
+        super (col, row, color, type);
+    }
 
-	/* (non-Javadoc)
-	 * @see mx.ecosur.multigame.model.manantiales.Ficha#clone()
-	 */
-	@Override
-	public SolverFicha clone() throws CloneNotSupportedException {
-		return new SolverFicha(this.getColumn(),this.getRow(),
-				this.getColor(),this.getType());
-	}
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.Cell#getId()
+     */
+    @Override
+    public int getId() {
+        return counter++;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof SolverFicha) {
+            SolverFicha other = (SolverFicha) obj;
+            return (other.getRow() == this.getRow() && other.getColumn() == this.getColumn());
+        } else
+            return super.equals(obj);
+    }
+
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.manantiales.Ficha#clone()
+     */
+    @Override
+    public SolverFicha clone() throws CloneNotSupportedException {
+        return new SolverFicha(this.getColumn(),this.getRow(),
+                this.getColor(),this.getType());
+    }
 }
