@@ -32,16 +32,10 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>javax</groupId>
-            <artifactId>ejb</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/javaee.jar</systemPath>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>

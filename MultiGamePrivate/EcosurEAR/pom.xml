@@ -49,7 +49,7 @@
             <groupId>mx.ecosur</groupId>
             <artifactId>ecosur-jpa</artifactId>
             <version>${project.version}</version>
-        </dependency>              
+        </dependency>
         <dependency>
               <groupId>mx.ecosur</groupId>
               <artifactId>multi-game</artifactId>
@@ -171,7 +171,7 @@
                                 <goal>exec</goal>
                             </goals>
                             <configuration>
-                                <executable>${glassfish}/bin/asadmin</executable>
+                                <executable>${server}/bin/asadmin</executable>
                                 <workingDirectory>.</workingDirectory>
                                 <arguments>
                                     <argument>deploy</argument>

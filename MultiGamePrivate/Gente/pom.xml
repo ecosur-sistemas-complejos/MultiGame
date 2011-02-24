@@ -73,32 +73,8 @@
     <dependencies>
         <dependency>
             <groupId>mx.ecosur</groupId>
-            <artifactId>multi-game-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/javaee.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javax.ejb</groupId>
-            <artifactId>ejb-rt</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -138,9 +114,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
+            <groupId>openjms</groupId>
+            <artifactId>openjms</artifactId>
+            <version>0.7.6</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

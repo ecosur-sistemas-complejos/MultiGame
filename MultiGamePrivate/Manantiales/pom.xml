@@ -62,27 +62,6 @@
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${project.version}</version>
-        </dependency>       
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>ejb</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/javaee.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>ejb-rt</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/appserv-rt.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>glassfish</groupId>
-            <artifactId>toplink</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${glassfish}/lib/toplink-essentials.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
