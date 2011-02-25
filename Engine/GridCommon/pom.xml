@@ -50,7 +50,7 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>multi-game-common</artifactId>
-            <version>${project.version}</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

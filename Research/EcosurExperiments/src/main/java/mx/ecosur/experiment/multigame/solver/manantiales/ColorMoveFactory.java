@@ -15,7 +15,6 @@ import java.util.*;
  */
 public class ColorMoveFactory extends AbstractMoveFactory {
 
-    @Override
     public List<Move> createMoveList(Solution solution) {
         List<Move> ret = new ArrayList<Move>();
         Set<SolverFicha> facts = (Set<SolverFicha>) solution.getFacts();

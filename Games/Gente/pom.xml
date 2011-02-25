@@ -74,7 +74,7 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
-            <version>${project.version}</version>
+            <version>${version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -115,7 +115,7 @@
         </dependency>
         <dependency>
             <groupId>openjms</groupId>
-            <artifactId>openjms</artifactId>
+            <artifactId>openjms-client</artifactId>
             <version>0.7.6</version>
             <scope>test</scope>
         </dependency>

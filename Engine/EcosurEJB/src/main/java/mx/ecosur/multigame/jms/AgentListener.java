@@ -64,15 +64,9 @@ public class AgentListener implements MessageListener {
             GameEvent event = GameEvent.valueOf(gameEvent);
             ObjectMessage msg = (ObjectMessage) message;
             for (GameEvent possible : gameEvents) {
-                if (event.equals(possible)) {
+                if (event.equals(possible)) {                    
                     matched = true;
-
-                    /* Pull current game state from the shared board and get moves from
-                       any affiliated agents.
-                     */
-                    Game impl = (Game) msg.getObject();
-                    Game game = sharedBoard.getGame(impl.getId());
-
+                    Game game = (Game) msg.getObject();
                     List<GamePlayer> players = game.listPlayers();
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {

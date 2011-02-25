@@ -44,7 +44,6 @@
         </web-resource-collection>
     </security-constraint>
     <!-- Enforced Security -->
-    <!--
     <security-role>
         <description>Default Role for MultiGame</description>
         <role-name>admin</role-name>
@@ -58,5 +57,4 @@
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
-    -->
 </web-app>

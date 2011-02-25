@@ -16,6 +16,7 @@
         <url>http://www.ecosur.mx</url>
     </organization>
     <dependencies>
+
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>

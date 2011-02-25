@@ -38,6 +38,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+          <groupId>javax.persistence</groupId>
+          <artifactId>ejb</artifactId>
+          <version>3.0-public_review</version>
+          <type>pom</type>
+        </dependency>
+        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.1</version>
