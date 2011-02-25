@@ -1,0 +1,96 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<groupId>mx.ecosur</groupId>
+<artifactId>flex-client</artifactId>
+<packaging>swf</packaging>
+<name>Flex Client</name>
+<description>Flex UI implementation for our participatory modeling games.</description>
+<parent>
+    <artifactId>multi-game-private</artifactId>
+    <groupId>mx.ecosur</groupId>
+    <version>2.0-SNAPSHOT</version>
+</parent>
+<properties>
+    <debug>true</debug>
+    <player>10.0.0</player>
+    <classifier>10</classifier>
+</properties>
+<build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <testSourceDirectory>src/test/flex</testSourceDirectory>
+    <finalName>main</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.sonatype.flexmojos</groupId>
+            <artifactId>flexmojos-maven-plugin</artifactId>
+            <version>${flexmojos-version}</version>
+            <extensions>true</extensions>
+            <configuration>
+                <debug>${debug}</debug>
+                <sourceFile>main.mxml</sourceFile>
+                <contextRoot>multi-game</contextRoot>
+                <services>${basedir}/src/main/resources/services-config.xml</services>
+                <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
+                <compiledLocales>
+                    <compiledLocale>en_US</compiledLocale>
+                    <!--compiledLocale>es_ES</compiledLocale-->
+                </compiledLocales>
+                <configurationReport>true</configurationReport>
+                <targetPlayer>${player}</targetPlayer>
+                <coverageViewerPath/>
+                <storepass/>
+            </configuration>
+            <dependencies>
+                <dependency>
+                  <groupId>com.adobe.flex</groupId>
+                  <artifactId>compiler</artifactId>
+                  <version>${flex-version}</version>
+                  <type>pom</type>
+                </dependency>
+                <dependency>
+                  <groupId>com.adobe.flex.compiler</groupId>
+                  <artifactId>asdoc</artifactId>
+                  <version>${flex-version}</version>
+                  <classifier>template</classifier>
+                  <type>zip</type>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+<dependencies>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${flex-version}</version>
+        <type>pom</type>
+        <exclusions>
+            <exclusion>
+                <groupId>com.adobe.flex.framework</groupId>
+                <artifactId>playerglobal</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flexunit</groupId>
+        <artifactId>flexunit</artifactId>
+        <version>0.90</version>
+        <type>swc</type>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>playerglobal</artifactId>
+        <version>3.3.0.4852</version>
+        <classifier>${classifier}</classifier>
+        <type>swc</type>
+    </dependency>
+    <dependency>
+        <groupId>as3isolib</groupId>
+        <artifactId>as3isolib</artifactId>
+        <version>1.0</version>
+        <type>swc</type>
+    </dependency>
+</dependencies>    
+</project>
