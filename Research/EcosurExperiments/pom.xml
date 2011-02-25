@@ -10,7 +10,7 @@
         This project is used for doing experimental work around game design, and game solutions.
     </description>
     <parent>
-        <artifactId>multi-game-private</artifactId>
+        <artifactId>research-module</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>

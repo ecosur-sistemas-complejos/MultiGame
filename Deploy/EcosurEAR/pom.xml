@@ -9,7 +9,7 @@
     <name>Ecosur Game EAR</name>
     <description>EAR containing common EJBs/Webservices, Rule implementationso of ECOSUR games and RIA Flex client for game play and participant registration.</description>
     <parent>
-        <artifactId>multi-game-private</artifactId>
+        <artifactId>deploy-module</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>

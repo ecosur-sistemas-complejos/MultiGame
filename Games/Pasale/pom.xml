@@ -7,7 +7,7 @@
     <name>Pasale Compadre/Go Ahead Friend</name>
     <description>Implementation of the game Pasale Compadre.</description>
     <parent>
-        <artifactId>multi-game-private</artifactId>
+        <artifactId>games-module</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>

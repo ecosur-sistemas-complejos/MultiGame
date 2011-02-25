@@ -73,40 +73,22 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>MultiGameCommon</module>
-                <module>GridCommon</module>
-                <module>Gente</module>
-                <module>Manantiales</module>
-                <module>Pasale</module>
-                <module>FlexDS</module>
-                <module>FlexClient</module>
-                <module>MultigameWAR</module>
-                <module>EcosurEJB</module>
-                <module>EcosurJPA</module>
-                <module>EcosurEAR</module>
+                <module>Engine</module>
+                <module>Games</module>
+                <module>Deploy</module>
             </modules>
         </profile>
         <profile>
             <id>deploy</id>
             <modules>
-                <module>Manantiales</module>
-                <module>Pasale</module>
-                <module>FlexDS</module>
-                <module>FlexClient</module>
-                <module>MultigameWAR</module>
-                <module>EcosurEJB</module>
-                <module>EcosurJPA</module>
-                <module>EcosurEAR</module>
-                <!-- Removed Integration Tests from build to security issues (can't authenticate). -->
-                <!--module>EcosurIT</module-->
+                <module>Deploy</module>
             </modules>
         </profile>
          <profile>
             <id>experiment</id>
             <modules>
-                <module>Manantiales</module>
-                <module>Pasale</module>
-                <module>EcosurExperiments</module>
+                <module>Games</module>
+                <module>Research</module>
             </modules>
         </profile>
         <profile>

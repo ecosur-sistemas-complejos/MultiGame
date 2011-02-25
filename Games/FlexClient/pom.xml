@@ -7,7 +7,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <name>Flex Client</name>
 <description>Flex UI implementation for our participatory modeling games.</description>
 <parent>
-    <artifactId>multi-game-private</artifactId>
+    <artifactId>games-module</artifactId>
     <groupId>mx.ecosur</groupId>
     <version>2.0-SNAPSHOT</version>
 </parent>

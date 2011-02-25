@@ -2,16 +2,16 @@ GETTING STARTED
 
 This README requires you to have installed the following products:
 
-1.  Sun's opensource Application Server, GLASSFISH.
-    * available from:  https://glassfish.dev.java.net/public/downloadsindex.html
-    * We have been using version 2.1 during development.
-2.  Adobe's open source FLEX3.4 SDK
-    * available from:  http://opensource.adobe.com/wiki/display/flexsdk/Flex+SDK
-3.  MultiGamePublic
-    * available from:  http://awaterma.github.com/MultiGame
+  AS3ISOLIB
 
-MultiGamePublic must be built and installed with maven before attempting to install
-this set of private code due to public dependencies.
+  as3isolib will need to be installed locally.  Please download a copy of the swc
+  file from google code:
+
+  http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
+
+  Use the maven install plugin to install the dependency locally:
+
+  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
 
 All other dependencies are managed by means of Maven.
 
@@ -71,16 +71,6 @@ NON-MAVEN LIBRARIES
   to be deployed locally.  One such library is the Spanish Flex Internationalization
   files, please follow the internationalization instructions for installation below.
 
-  AS3ISOLIB
-
-  as3isolib will need to be installed locally.  Please download a copy of the swc
-  file from google code:
-
-  http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
-
-  Use the maven install plugin to install the dependency locally:
-
-  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
 
  **** IMPORTANT ****
  
