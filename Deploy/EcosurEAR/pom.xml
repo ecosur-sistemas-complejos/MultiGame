@@ -93,6 +93,7 @@
                             <role-name>admin</role-name>
                         </security-role>
                     </security>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
                     <modules>
                         <jarModule>
                             <groupId>org.drools</groupId>

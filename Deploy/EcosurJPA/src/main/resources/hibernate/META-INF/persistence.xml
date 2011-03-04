@@ -1,0 +1,50 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+    version="1.0">
+    <persistence-unit name="MultiGame">
+        <jta-data-source>jdbc/__default</jta-data-source>
+        <class>mx.ecosur.multigame.impl.Color</class>
+        <class>mx.ecosur.multigame.impl.model.GameGrid</class>
+        <class>mx.ecosur.multigame.impl.model.GridCell</class>
+        <class>mx.ecosur.multigame.impl.model.GridChatMessage</class>
+        <class>mx.ecosur.multigame.impl.model.GridGame</class>
+        <class>mx.ecosur.multigame.impl.model.GridMove</class>
+        <class>mx.ecosur.multigame.impl.model.GridPlayer</class>
+        <class>mx.ecosur.multigame.impl.model.GridRegistrant</class>
+        <class>mx.ecosur.multigame.impl.util.BeadString</class>
+        <!-- Game entities -->
+        <!-- Gente -->
+        <class>mx.ecosur.multigame.impl.entity.gente.GenteGame</class>
+        <class>mx.ecosur.multigame.impl.entity.gente.GenteMove</class>
+        <class>mx.ecosur.multigame.impl.entity.gente.GentePlayer</class>
+        <class>mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent</class>
+        <class>mx.ecosur.multigame.impl.enums.gente.GenteStrategy</class>
+        <!-- Manantiales -->
+        <class>mx.ecosur.multigame.impl.entity.manantiales.CheckCondition</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.ConditionType</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.Mode</class>
+        <class>mx.ecosur.multigame.impl.enums.manantiales.TokenType</class>
+        <!-- Pasale -->
+        <class>mx.ecosur.multigame.impl.entity.pasale.PasaleFicha</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.PasaleGame</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.PasaleGrid</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.PasaleMove</class>
+        <class>mx.ecosur.multigame.impl.entity.pasale.PasalePlayer</class>
+        <class>mx.ecosur.multigame.impl.enums.pasale.TokenType</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <!-- Provider meta-data -->
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <property name="hibernate.show_sql" value="true"/>
+        </properties>
+    </persistence-unit>
+</persistence>

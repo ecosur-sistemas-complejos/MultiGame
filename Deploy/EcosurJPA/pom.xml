@@ -17,15 +17,38 @@
         <name>ECOSUR</name>
         <url>http://www.ecosur.mx</url>
     </organization>
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources/META-INF</directory>
-                <targetPath>META-INF</targetPath>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
+    <profiles>
+        <profile>
+            <id>toplink</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/toplink/META-INF</directory>
+                        <targetPath>META-INF</targetPath>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>hibernate</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/hibernate/META-INF</directory>
+                        <targetPath>META-INF</targetPath>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
     <dependencies>
     <dependency>
         <groupId>mx.ecosur</groupId>
