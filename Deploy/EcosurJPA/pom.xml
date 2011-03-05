@@ -34,6 +34,21 @@
             </build>
         </profile>
         <profile>
+            <id>eclipselink</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/eclipselink/META-INF</directory>
+                        <targetPath>META-INF</targetPath>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
             <id>hibernate</id>
             <activation>
                 <activeByDefault>false</activeByDefault>

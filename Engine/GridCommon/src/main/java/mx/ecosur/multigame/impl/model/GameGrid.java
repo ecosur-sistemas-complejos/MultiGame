@@ -19,10 +19,7 @@
 package mx.ecosur.multigame.impl.model;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -37,12 +34,12 @@ public class GameGrid implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2579204312184918693L;
 
-    TreeSet<GridCell> cells;
+    private Set<GridCell> cells;
 
     private int id;
 
     public GameGrid () {
-        cells = new TreeSet<GridCell>(new CellComparator());
+        cells = new LinkedHashSet<GridCell>();
     }
 
     /**
@@ -63,21 +60,12 @@ public class GameGrid implements Serializable, Cloneable {
     }
 
     public GridCell getLocation (GridCell location) {
-        GridCell ret = null;
-        if (location != null) {
-            CellComparator comparator = (CellComparator) cells.comparator();
-            SortedSet<GridCell> sublist = cells.tailSet(location);
-
-            for (GridCell c : sublist) {
-                int value = comparator.compare(location, c);
-                if (value == 0) {
-                    ret = c;
-                    break;
-                }
-            }
+        for (GridCell c : cells) {
+            if (c.getRow() == location.getRow() && c.getColumn() == location.getColumn())
+                return c;
         }
 
-        return ret;
+        return null;
     }
 
     public void updateCell (GridCell cell) {
@@ -96,8 +84,7 @@ public class GameGrid implements Serializable, Cloneable {
     }
 
     public void setCells(Set<GridCell> cells){
-        this.cells = new TreeSet<GridCell> (new CellComparator());
-        this.cells.addAll(cells);
+        this.cells = cells;
     }
 
     public String toString () {
