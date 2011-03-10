@@ -2,7 +2,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
     version="1.0">
-    <persistence-unit name="MultiGame">
+    <persistence-unit name="MultiGamePU">
         <jta-data-source>jdbc/__default</jta-data-source>
         <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>

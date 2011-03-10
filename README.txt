@@ -38,7 +38,7 @@ the EAR file is being deployed:
     B.  A JMS user must be created in the file-realm for secure messaging.
         1.  Click on the "file" security realm.
         2.  Click on manage existing users.
-        3.  Add the user "MultiGame" with any password (authentication is not checked
+        3.  Add the user "j2ee" with any password (authentication is not checked
             by password for a MessageBean.
     C.  At least one user must be created in the "file-realm" of JAAS for logging in
         and playing the games.
@@ -47,13 +47,16 @@ the EAR file is being deployed:
         3.  Add a user with the username you want and the password.
 
     Note:  security can be modified within the build to work with any other JAAS
-    components available on the Server.  The "MultiGame" user is required for the
+    components available on the Server.  The "j2ee" user is required for the
     message bean to be able to receive messages and message other secured EJB
     components.
 
 JBOSS CONFIGURATION
 
-1.  Hibernate is the defa
+1. Hibernate is the default provider for JBoss.  So please use the "hibernate" profile for building with JBoss
+deployment in mind.
+
+2.
 
 
 MAVEN CONFIGURATION
