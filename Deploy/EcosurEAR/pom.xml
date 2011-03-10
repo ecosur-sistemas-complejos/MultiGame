@@ -117,6 +117,10 @@
                         </jarModule>
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
+                            <artifactId>multi-game-common</artifactId>
+                        </jarModule>
+                        <jarModule>
+                            <groupId>mx.ecosur</groupId>
                             <artifactId>grid-common</artifactId>
                         </jarModule>
                         <jarModule>
@@ -134,10 +138,6 @@
                         <jarModule>
                             <groupId>mx.ecosur</groupId>
                             <artifactId>ecosur-jpa</artifactId>
-                        </jarModule>
-                        <jarModule>
-                            <groupId>mx.ecosur</groupId>
-                            <artifactId>multi-game-common</artifactId>
                         </jarModule>
                         <ejbModule>
                             <groupId>mx.ecosur</groupId>

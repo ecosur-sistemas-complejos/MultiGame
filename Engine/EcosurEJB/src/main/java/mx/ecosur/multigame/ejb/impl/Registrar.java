@@ -41,7 +41,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
     private MessageSender messageSender;
 
-    @PersistenceContext (unitName="MultiGame")
+    @PersistenceContext (unitName = "MultiGamePU")
     EntityManager em;
 
     /**

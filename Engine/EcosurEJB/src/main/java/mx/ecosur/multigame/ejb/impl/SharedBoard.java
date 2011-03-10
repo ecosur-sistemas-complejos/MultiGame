@@ -51,7 +51,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
     private MessageSender messageSender;
         
-    @PersistenceContext (unitName="MultiGame")
+    @PersistenceContext (unitName = "MultiGamePU")
     EntityManager em;
 
     public SharedBoard () throws InstantiationException, IllegalAccessException,
