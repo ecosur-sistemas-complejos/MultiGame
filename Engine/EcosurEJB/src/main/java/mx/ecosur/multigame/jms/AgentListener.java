@@ -36,7 +36,8 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.model.interfaces.*;
 
-@RunAs("MultiGame")
+
+@RunAs("j2ee")
 @MessageDriven(mappedName = "MultiGame")
 public class AgentListener implements MessageListener {
 
@@ -57,7 +58,6 @@ public class AgentListener implements MessageListener {
     public void onMessage(Message message) {
         boolean matched = false;
         Move moved = null;
-        Move badMove = null;
 
         try {
             String gameEvent = message.getStringProperty("GAME_EVENT");

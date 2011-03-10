@@ -38,6 +38,7 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.impl.model.GridGame;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
+
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.*;

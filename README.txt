@@ -21,7 +21,7 @@ The following configuration changes must be made on the Glassfish server to whic
 the EAR file is being deployed:
 
 1.  A JMS connection factory must be created with the following details:
-    a) "Name" set to "jms/TopicConnectionFactory"
+    a) "Name" set to "ConnectionFactory"
     b) "Transaction Support" set to "NoTransaction"
     c) Remove the username and password properties from "Additional Properties" 
     d) All other fields may remain in default state.
@@ -50,6 +50,10 @@ the EAR file is being deployed:
     components available on the Server.  The "MultiGame" user is required for the
     message bean to be able to receive messages and message other secured EJB
     components.
+
+JBOSS CONFIGURATION
+
+1.  Hibernate is the defa
 
 
 MAVEN CONFIGURATION

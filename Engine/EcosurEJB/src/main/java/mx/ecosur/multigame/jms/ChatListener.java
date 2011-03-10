@@ -28,7 +28,7 @@ import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.model.interfaces.ChatMessage;
 
-@RunAs("MultiGame")
+@RunAs("j2ee")
 @MessageDriven(mappedName = "MultiGame")
 public class ChatListener implements MessageListener {
 

@@ -153,8 +153,22 @@
         </plugins>
     </build>
     <profiles>
+       <!--profile>
+           <id>jboss</id>
+           <activation>
+               <activeByDefault>false</activeByDefault>
+           </activation>
+           <build>
+               <resources>
+                   <resource>
+                       <directory>src/main/resources/jboss</directory>
+                       <targetPath>META-INF</targetPath>
+                   </resource>
+               </resources>
+           </build>
+       </profile-->
        <profile>
-           <id>deploy</id>
+           <id>deploy-gf</id>
            <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -179,7 +193,7 @@
                                     <argument>--user</argument>
                                     <argument>admin</argument>
                                     <argument>--passwordfile</argument>
-                                    <argument>src/main/resources/passwd</argument>
+                                    <argument>src/main/resources/glassfish/passwd</argument>
                                     <argument>--name</argument>
                                     <argument>${artifactId}</argument>                                      
                                     <argument>target/${artifactId}-${project.version}.ear</argument>

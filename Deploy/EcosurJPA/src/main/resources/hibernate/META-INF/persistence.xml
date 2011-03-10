@@ -4,7 +4,11 @@
              version="2.0">
     <persistence-unit name="MultiGame">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>jdbc/__default</jta-data-source>
+        <!-- JBoss -->
+        <jta-data-source>java:jdbc/__default</jta-data-source>
+        <!-- Glassfish -->
+        <!--jta-data-source>jdbc/__default</jta-data-source-->
+        <!-- Derby -->
         <class>mx.ecosur.multigame.impl.Color</class>
         <class>mx.ecosur.multigame.impl.model.GameGrid</class>
         <class>mx.ecosur.multigame.impl.model.GridCell</class>
@@ -45,7 +49,6 @@
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

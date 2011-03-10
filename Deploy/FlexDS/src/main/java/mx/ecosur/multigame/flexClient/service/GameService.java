@@ -66,8 +66,6 @@ public class GameService {
 
     private RegistrarRemote getRegistrar() {
         FlexSession session = FlexContext.getFlexSession();
-        
-
         RegistrarRemote registrar = (RegistrarRemote) session.getAttribute("registrar");
         if (registrar == null) {
             try {

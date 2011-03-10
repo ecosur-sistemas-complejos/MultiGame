@@ -38,7 +38,8 @@ public class MessageSender {
 
     private static Logger logger = Logger.getLogger(MessageSender.class.getCanonicalName());
 
-    private static final String CONNECTION_FACTORY_JNDI_NAME = "jms/TopicConnectionFactory";
+    private static final String CONNECTION_FACTORY_JNDI_NAME = "ConnectionFactory";
+
     private static final String TOPIC_JNDI_NAME = "MultiGame";
 
     @Resource(mappedName = CONNECTION_FACTORY_JNDI_NAME)

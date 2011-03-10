@@ -17,46 +17,32 @@
         <name>ECOSUR</name>
         <url>http://www.ecosur.mx</url>
     </organization>
+    <!-- JPA deployment profiles, need to be specified at build time with -D flag in mvn. -->
     <profiles>
         <profile>
-            <id>toplink</id>
+            <id>hibernate</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <resources>
                     <resource>
-                        <directory>src/main/resources/toplink/META-INF</directory>
-                        <targetPath>META-INF</targetPath>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-        <profile>
-            <id>eclipselink</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/eclipselink/META-INF</directory>
-                        <targetPath>META-INF</targetPath>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-        <profile>
-            <id>hibernate</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
                         <directory>src/main/resources/hibernate/META-INF</directory>
+                        <targetPath>META-INF</targetPath>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+        <profile>
+            <id>toplink</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/toplink/META-INF</directory>
                         <targetPath>META-INF</targetPath>
                         <filtering>true</filtering>
                     </resource>
