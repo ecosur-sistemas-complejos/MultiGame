@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:gente="mx.ecosur.multigame.gente.*"
+    xmlns:component="mx.ecosur.multigame.component.*"
+    layout="absolute">
+
+    <mx:Style source="style.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			private function gameComplete(event:Event):void{
+				
+			}
+			
+		]]>
+	</mx:Script>
+
+	<gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
+</mx:Module>
