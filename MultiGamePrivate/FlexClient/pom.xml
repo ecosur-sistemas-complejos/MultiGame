@@ -65,26 +65,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <artifactId>flex-framework</artifactId>
         <version>${flex-version}</version>
         <type>pom</type>
-        <exclusions>
-            <exclusion>
-                <groupId>com.adobe.flex.framework</groupId>
-                <artifactId>playerglobal</artifactId>
-            </exclusion>
-        </exclusions>
     </dependency>
     <dependency>
-        <groupId>com.adobe.flexunit</groupId>
-        <artifactId>flexunit</artifactId>
-        <version>0.90</version>
-        <type>swc</type>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.adobe.flex.framework</groupId>
-        <artifactId>playerglobal</artifactId>
-        <version>3.3.0.4852</version>
-        <classifier>${classifier}</classifier>
-        <type>swc</type>
+         <groupId>com.adobe.flex.framework</groupId>
+         <artifactId>halo</artifactId>
+         <version>${flex-version}</version>
+         <type>swc</type>
+         <scope>theme</scope>
+         <classifier>theme</classifier>
     </dependency>
     <dependency>
         <groupId>as3isolib</groupId>
