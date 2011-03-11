@@ -8,6 +8,7 @@
     
     <mx:Metadata>
         [Event(name="complete")]
+		[ResourceBundle("StringsBundle")]
     </mx:Metadata>
     
     <mx:Script>
@@ -213,19 +214,19 @@
     </mx:Script>
 
     <mx:XMLList id="menuXML">
-        <menuitem label="@Resource(key='manantiales.menu.one.title', bundle='StringsBundle')">
-            <menuitem label="@Resource(key='manantiales.menu.one.submenu.one', bundle='StringsBundle')"/>
-            <menuitem label="@Resource(key='manantiales.menu.one.submenu.two', bundle='StringsBundle')"/>
+        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.title')}">
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.submenu.one')}"/>
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.submenu.two')}"/>
         </menuitem>
-        <menuitem label="@Resource(key='manantiales.menu.two.title', bundle='StringsBundle')">
-            <menuitem label="@Resource(key='manantiales.menu.two.submenu',bundle='StringsBundle')"/>
+        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.two.title')}">
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.two.submenu')}"/>
         </menuitem>
-        <menuitem label="@Resource(key='manantiales.menu.three.title', bundle='StringsBundle')">
-            <menuitem label="@Resource(key='manantiales.menu.three.submenu.one', bundle='StringsBundle')" />
-            <menuitem label="@Resource(key='manantiales.menu.three.submenu.two', bundle='StringsBundle')"/>
-            <menuitem label="@Resource(key='manantiales.menu.three.submenu.three', bundle='StringsBundle')"/>
-            <menuitem label="@Resource(key='manantiales.menu.three.submenu.four', bundle='StringsBundle')"/>
-            <menuitem label="@Resource(key='manantiales.menu.three.submenu.five', bundle='StringsBundle')"/>
+        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.title')}">
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.one')}" />
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.two')}"/>
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.three')}"/>
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.four')}"/>
+            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.five')}"/>
         </menuitem>
     </mx:XMLList>
     
