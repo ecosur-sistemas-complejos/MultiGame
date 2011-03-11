@@ -16,7 +16,9 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import mx.ecosur.multigame.impl.MoveComparator;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.model.*;
 import mx.ecosur.multigame.model.interfaces.Agent;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
@@ -35,8 +37,6 @@ import java.net.MalformedURLException;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.*;
 import mx.ecosur.multigame.model.interfaces.Registrant;
 import mx.ecosur.multigame.MessageSender;
 
@@ -45,8 +45,6 @@ import mx.ecosur.multigame.MessageSender;
 public class GenteGame extends GridGame {
         
     private static final long serialVersionUID = -4437359200244786305L;
-
-    private static String FNAME = "GenteGameKBase.dat";
         
     private Set<GentePlayer> winners;
 
@@ -96,7 +94,7 @@ public class GenteGame extends GridGame {
 
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#initialize()
+      * @see GridGame#initialize()
       */
     public void initialize() throws MalformedURLException {
         this.setCreated(new Date());
@@ -117,7 +115,7 @@ public class GenteGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
+      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
     public Move move(Move move) throws InvalidMoveException {
         if (kbase == null)
@@ -209,7 +207,7 @@ public class GenteGame extends GridGame {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     * @see GridGame#getColors()
      */
     @Override
     @Transient
@@ -261,7 +259,7 @@ public class GenteGame extends GridGame {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+     * @see GridGame#clone()
      */
     @Override
     public Object clone() throws CloneNotSupportedException {

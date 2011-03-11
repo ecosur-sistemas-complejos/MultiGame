@@ -13,7 +13,7 @@ package mx.ecosur.multigame.impl.enums.manantiales;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 
 public enum BorderType {
 	

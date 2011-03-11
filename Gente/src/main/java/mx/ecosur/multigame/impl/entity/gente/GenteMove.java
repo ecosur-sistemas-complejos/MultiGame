@@ -18,12 +18,11 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import javax.persistence.Entity;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridMove;
-
-import mx.ecosur.multigame.impl.util.BeadString;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GridMove;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.util.BeadString;
+import mx.ecosur.multigame.grid.model.GridCell;
 
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
@@ -172,7 +171,7 @@ public class GenteMove extends GridMove {
         }
 
         /* (non-Javadoc)
-         * @see mx.ecosur.multigame.impl.model.GridMove#toString()
+         * @see GridMove#toString()
          */
         @Override
         public String toString() {

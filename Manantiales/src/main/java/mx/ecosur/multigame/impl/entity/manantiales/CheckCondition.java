@@ -21,8 +21,8 @@ import javax.persistence.Transient;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
-import mx.ecosur.multigame.impl.model.GridPlayer;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
 

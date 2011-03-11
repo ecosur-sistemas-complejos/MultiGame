@@ -7,12 +7,12 @@
 
 package mx.ecosur.multigame.impl.util.manantiales;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridMove;
-import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridMove;
+import mx.ecosur.multigame.grid.model.GridPlayer;
 
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
@@ -126,7 +126,7 @@ public class RuleFunctions {
         return (cell.getColumn () == 4 || cell.getRow () == 4);
     }
 
-    public static  GridPlayer incrementTurn (ManantialesGame game, GridMove move) {
+    public static GridPlayer incrementTurn (ManantialesGame game, GridMove move) {
         GridPlayer player = move.getPlayer();
         player.setTurn(false);
         List<GridPlayer> players = game.getPlayers();

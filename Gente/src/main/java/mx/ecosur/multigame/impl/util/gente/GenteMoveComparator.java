@@ -13,9 +13,9 @@ package mx.ecosur.multigame.impl.util.gente;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import mx.ecosur.multigame.impl.CellComparator;
+import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-import mx.ecosur.multigame.impl.model.GridCell;
 
 public class GenteMoveComparator implements Comparator<GenteMove>, Serializable {
         

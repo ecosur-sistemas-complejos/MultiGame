@@ -18,16 +18,15 @@
 package mx.ecosur.multigame.impl.util.gente;
 
 import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.impl.enums.Vertice;
+import mx.ecosur.multigame.grid.enums.Vertice;
+import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.impl.event.gente.MoveEvent;
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.util.BeadString;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
-import mx.ecosur.multigame.impl.Color;
 
 import java.util.*;
 import java.awt.*;
@@ -114,7 +113,7 @@ public class RuleFunctions {
     }
 
     public static boolean hasMultipleColors (MoveEvent event) {
-        HashSet<Color> colors = new HashSet<Color>();
+        HashSet<mx.ecosur.multigame.grid.Color> colors = new HashSet<mx.ecosur.multigame.grid.Color>();
         for (GridCell cell : event.getAdjacentCells()) {
             colors.add(cell.getColor());
         }
@@ -124,7 +123,7 @@ public class RuleFunctions {
 
     public static Set<MoveEvent> generateEvents (GameGrid grid, GenteMove move) {
         Set<MoveEvent> ret = new HashSet<MoveEvent>();
-        Color [] team = new Color [ 2 ];
+        mx.ecosur.multigame.grid.Color[] team = new mx.ecosur.multigame.grid.Color[ 2 ];
         team [ 0 ] = move.getDestinationCell().getColor();
         team [ 1 ] = team [0].getCompliment();
 
@@ -146,11 +145,11 @@ public class RuleFunctions {
     }
 
     public static Set<MoveEvent> getPermutations (Vertice vertice, GameGrid grid, GenteMove move, int length,
-                                                  Color... colors)
+                                                  mx.ecosur.multigame.grid.Color... colors)
     {
         Set<MoveEvent> ret = new HashSet<MoveEvent> ();
         GridCell origin = move.getDestinationCell();
-        List<Color> teamColors = Arrays.asList(colors);
+        List<mx.ecosur.multigame.grid.Color> teamColors = Arrays.asList(colors);
 
         /* Returns both tria (one color, three slots) and tessera (two colors, four slots)
            permutations in the specified plane from the specified GameGrid using the move's
@@ -160,8 +159,8 @@ public class RuleFunctions {
             case VERTICAL:
                 BeadString beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
-                    GridCell location = grid.getLocation(new GridCell (origin.getColumn(), origin.getRow() + i,
-                            Color.UNKNOWN));
+                    GridCell location = grid.getLocation(new GridCell(origin.getColumn(), origin.getRow() + i,
+                            mx.ecosur.multigame.grid.Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
                 }
@@ -171,7 +170,7 @@ public class RuleFunctions {
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
                     GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow(),
-                            Color.UNKNOWN));
+                            mx.ecosur.multigame.grid.Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
                 }
@@ -181,7 +180,7 @@ public class RuleFunctions {
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
                     GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow() - i,
-                            Color.UNKNOWN));
+                            mx.ecosur.multigame.grid.Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
                 }
@@ -191,7 +190,7 @@ public class RuleFunctions {
                 beadPlane = new BeadString ();
                 for (int i = -1 * (length); i < length; i++) {
                     GridCell location = grid.getLocation(new GridCell (origin.getColumn() + i, origin.getRow() + i,
-                            Color.UNKNOWN));
+                            mx.ecosur.multigame.grid.Color.UNKNOWN));
                     if (location != null && teamColors.contains(location.getColor()))
                         beadPlane.add(location);
                 }
