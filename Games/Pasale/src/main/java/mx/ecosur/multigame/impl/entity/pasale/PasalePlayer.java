@@ -12,9 +12,9 @@ package mx.ecosur.multigame.impl.entity.pasale;
 
 import javax.persistence.Entity;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
 
 @Entity
 public class PasalePlayer extends GridPlayer {

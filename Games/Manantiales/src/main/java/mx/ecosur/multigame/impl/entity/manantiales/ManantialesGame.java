@@ -12,9 +12,9 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.MoveComparator;
-import mx.ecosur.multigame.impl.model.*;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.model.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -220,7 +220,7 @@ public class ManantialesGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
+      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
     @Override
     public Move move(Move impl) throws InvalidMoveException {
@@ -350,7 +350,7 @@ public class ManantialesGame extends GridGame {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     * @see GridGame#getColors()
      */
     @Override
     @Transient
@@ -424,7 +424,7 @@ public class ManantialesGame extends GridGame {
     public String toString() {
         return getGrid().toString();
     }/* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+     * @see GridGame#clone()
      */
     @Override
     public Object clone() throws CloneNotSupportedException {

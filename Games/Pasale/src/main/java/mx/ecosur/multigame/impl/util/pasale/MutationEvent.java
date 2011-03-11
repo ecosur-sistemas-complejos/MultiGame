@@ -17,8 +17,8 @@
 
 package mx.ecosur.multigame.impl.util.pasale;
 
+import mx.ecosur.multigame.grid.CellComparator;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
-import mx.ecosur.multigame.impl.CellComparator;
 import mx.ecosur.multigame.model.interfaces.Condition;
 
 import java.util.SortedSet;

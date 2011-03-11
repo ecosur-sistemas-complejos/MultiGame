@@ -11,7 +11,7 @@
  *
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.impl;
+package mx.ecosur.multigame.grid;
 
 import java.io.Serializable;
 

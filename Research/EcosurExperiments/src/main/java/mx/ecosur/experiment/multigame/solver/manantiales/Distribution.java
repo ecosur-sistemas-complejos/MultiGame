@@ -10,7 +10,7 @@
  */
 package mx.ecosur.experiment.multigame.solver.manantiales;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 
 public class Distribution {
 	

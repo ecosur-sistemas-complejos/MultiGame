@@ -12,9 +12,9 @@ package mx.ecosur.multigame.impl.entity.pasale;
 
 import javax.persistence.Entity;
 
+import mx.ecosur.multigame.grid.model.GridMove;
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.impl.model.GridMove;
-import mx.ecosur.multigame.impl.model.GridPlayer;
 
 import java.util.*;
 

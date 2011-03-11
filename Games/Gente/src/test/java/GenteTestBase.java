@@ -10,7 +10,7 @@
  */
 
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridCell;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;

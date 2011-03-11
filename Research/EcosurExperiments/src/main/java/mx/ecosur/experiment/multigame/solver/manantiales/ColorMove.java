@@ -1,7 +1,6 @@
 package mx.ecosur.experiment.multigame.solver.manantiales;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
+import mx.ecosur.multigame.grid.Color;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;

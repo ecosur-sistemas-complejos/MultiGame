@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.impl;
+package mx.ecosur.multigame.grid;
 
 import mx.ecosur.multigame.model.interfaces.Move;
 

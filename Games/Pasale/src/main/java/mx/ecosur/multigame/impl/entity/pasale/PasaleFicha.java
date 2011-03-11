@@ -14,10 +14,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.model.GridCell;
 import mx.ecosur.multigame.impl.enums.pasale.*;
 
 @Entity ()

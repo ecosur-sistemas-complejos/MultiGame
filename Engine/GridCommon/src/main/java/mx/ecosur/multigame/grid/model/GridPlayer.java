@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.impl.model;
+package mx.ecosur.multigame.grid.model;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,7 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 

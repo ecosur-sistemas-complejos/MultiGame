@@ -5,10 +5,9 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.MoveComparator;
+import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.impl.model.*;
 
 import mx.ecosur.multigame.model.interfaces.Agent;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
@@ -90,15 +89,15 @@ public class PasaleGame extends GridGame {
                     /* soil or water */
                     /* TODO:  Dynamically determine the location of rivers on the map */
                     if (row == river || col == river) {
-                        PasaleFicha ficha = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.WATER_PARTICLE);
+                        PasaleFicha ficha = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.WATER_PARTICLE);
                         grid.updateCell (ficha);
                     } else {
-                        PasaleFicha ficha = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.SOIL_PARTICLE);
+                        PasaleFicha ficha = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.SOIL_PARTICLE);
                         grid.updateCell (ficha);                          
                     }
 
                 } else {
-                    PasaleFicha forest = new PasaleFicha (col, row, Color.UNKNOWN, TokenType.FOREST);
+                    PasaleFicha forest = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.FOREST);
                     grid.updateCell (forest);
                 }
             }
@@ -117,7 +116,7 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see mx.ecosur.multigame.impl.model.GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
+      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
     public Move move(Move move) throws InvalidMoveException {
         if (session == null) {
@@ -162,9 +161,9 @@ public class PasaleGame extends GridGame {
         if (players.size() == max)
             throw new RuntimeException ("Maximum Players reached!");
 
-        List<Color> colors = getAvailableColors();
+        List<mx.ecosur.multigame.grid.Color> colors = getAvailableColors();
         player.setColor(colors.get(0));
-        if (player.getColor().equals(Color.YELLOW))
+        if (player.getColor().equals(mx.ecosur.multigame.grid.Color.YELLOW))
             player.setTurn(true);
         players.add(player);
         
@@ -185,18 +184,18 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.impl.model.GridGame#getColors()
+     * @see GridGame#getColors()
      */
     @Override
     @Transient
-    public List<Color> getColors() {
-        List<Color> ret = new ArrayList<Color>();
-        for (Color color : Color.values()) {
-            if (color.equals(Color.UNKNOWN))
+    public List<mx.ecosur.multigame.grid.Color> getColors() {
+        List<mx.ecosur.multigame.grid.Color> ret = new ArrayList<mx.ecosur.multigame.grid.Color>();
+        for (mx.ecosur.multigame.grid.Color color : mx.ecosur.multigame.grid.Color.values()) {
+            if (color.equals(mx.ecosur.multigame.grid.Color.UNKNOWN))
                 continue;
-            if (color.equals(Color.GREEN))
+            if (color.equals(mx.ecosur.multigame.grid.Color.GREEN))
                 continue;
-            if (color.equals(Color.BLUE))
+            if (color.equals(mx.ecosur.multigame.grid.Color.BLUE))
                 continue;
             ret.add(color);
         }
@@ -236,7 +235,7 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-    * @see mx.ecosur.multigame.impl.model.GridGame#clone()
+    * @see GridGame#clone()
     */
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -262,7 +261,7 @@ public class PasaleGame extends GridGame {
         StringBuffer ret = new StringBuffer("PasaleGame (id=" + id + ")\n");
         for (int y = 0; y < getColumns(); y++) {
             for (int x = 0; x < getRows(); x++) {
-                GridCell cell = grid.getLocation (new GridCell (y,x, Color.UNKNOWN));
+                GridCell cell = grid.getLocation (new GridCell (y,x, mx.ecosur.multigame.grid.Color.UNKNOWN));
                 if (cell != null) {
                     PasaleFicha ficha = (PasaleFicha) cell;
                     switch (ficha.getType()) {

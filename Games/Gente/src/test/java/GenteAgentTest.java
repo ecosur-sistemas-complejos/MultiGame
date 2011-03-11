@@ -11,13 +11,13 @@
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.DummyMessageSender;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class GenteAgentTest extends GenteTestBase {
         a = new GridRegistrant ("alice");
         b = new GridRegistrant ("bob");
         c = new GridRegistrant ("charlie");
-        d = new GridRegistrant ("denise");
+        d = new GridRegistrant("denise");
     }
 
 

@@ -19,6 +19,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
+import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridGame;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.util.Search;
 import mx.ecosur.multigame.impl.util.gente.GenteMoveComparator;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
@@ -28,18 +33,11 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.impl.CellComparator;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.DummyMessageSender;
 
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
-
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridGame;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-
-import mx.ecosur.multigame.impl.enums.Direction;
-import mx.ecosur.multigame.impl.util.Search;
 
 import mx.ecosur.multigame.model.interfaces.Agent;
 
@@ -94,7 +92,7 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
     private TreeSet<GridCell> findUnboundAdjacentCells (GridGame game, HashSet<Color> colors) {
         TreeSet<GridCell> ret = new TreeSet<GridCell> (new CellComparator());
         TreeSet<GridCell> candidates = new TreeSet<GridCell> (new CellComparator());
-        Search search = new Search (game.getGrid());
+        Search search = new Search(game.getGrid());
 
         /* Get all Cells of with the targeted Colors */
         for (GridCell cell : game.getGrid().getCells ()) {

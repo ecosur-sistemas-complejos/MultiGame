@@ -15,9 +15,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.util.Permutations;
+import mx.ecosur.multigame.grid.util.Permutations;
 
 /**
  *  Genreates all Matrices of interest to the solver.  Basically, a port of 
@@ -231,7 +231,7 @@ public class MatrixGenerator {
 
 	protected boolean hasViableIntensiveRatio(Matrix matrix) {
 		boolean ret = true;
-		Distribution blue = matrix.getDistribution(Color.BLUE), 
+		Distribution blue = matrix.getDistribution(Color.BLUE),
 			green = matrix.getDistribution(Color.GREEN), 
 			yellow = matrix.getDistribution(Color.YELLOW), 
 			red = matrix.getDistribution(Color.RED);

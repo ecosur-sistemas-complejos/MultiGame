@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.experiment.multigame.solver.manantiales.*;
-import mx.ecosur.multigame.impl.util.CSV;
+import mx.ecosur.multigame.grid.util.CSV;
 
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;

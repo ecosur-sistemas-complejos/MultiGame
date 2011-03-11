@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.impl.model;
+package mx.ecosur.multigame.grid.model;
 
 import java.awt.Dimension;
 import java.util.*;
@@ -23,10 +23,10 @@ import javax.persistence.*;
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.impl.MoveComparator;
+import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.KnowledgeBase;
 

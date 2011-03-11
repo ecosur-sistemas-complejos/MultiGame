@@ -10,10 +10,10 @@
  */
 package mx.ecosur.multigame.impl.entity.pasale;
 
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.CellComparator;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.CellComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import javax.persistence.Entity;
@@ -170,7 +170,7 @@ public class PasaleGrid extends GameGrid {
         /* y - 2, x */
         if ( this.getLocation (new GridCell (
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)) != null) {
-            ret.add((PasaleFicha) this.getLocation (new GridCell (
+            ret.add((PasaleFicha) this.getLocation (new GridCell(
                 ficha.getColumn() - 2, ficha.getRow(), Color.UNKNOWN)));
         }
 

@@ -1,5 +1,6 @@
 package mx.ecosur.experiment.multigame.solver.pasale;
 
+import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
@@ -9,8 +10,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
 import java.util.*;
-
-import mx.ecosur.multigame.impl.model.GridCell;
 
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 

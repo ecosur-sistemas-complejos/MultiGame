@@ -9,14 +9,14 @@ import mx.ecosur.multigame.enums.GameEvent;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         /* Set up mock JMS destination for message sender */
         ejbModule = createEJBTestModule();
-        ejbModule.bindToContext("jms/TopicConnectionFactory",
+        ejbModule.bindToContext("ConnectionFactory",
                 getJMSMockObjectFactory().getMockTopicConnectionFactory());
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);

@@ -27,9 +27,8 @@ package mx.ecosur.multigame.impl.entity.gente;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.model.impl.*;
 
-import mx.ecosur.multigame.impl.model.GridCell;
-
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.Color;
 
 import java.util.HashSet;
 import java.util.TreeSet;

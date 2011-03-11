@@ -14,10 +14,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.GridMove;
-import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridMove;
 
 @Entity
 public class ManantialesMove extends GridMove implements Comparable {

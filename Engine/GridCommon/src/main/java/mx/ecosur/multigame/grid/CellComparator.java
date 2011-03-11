@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.impl;
+package mx.ecosur.multigame.grid;
 
 import java.io.Serializable;
 import java.util.Comparator;

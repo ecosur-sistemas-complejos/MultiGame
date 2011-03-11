@@ -12,7 +12,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.enums;
+package mx.ecosur.multigame.grid.enums;
 
 public enum Direction {
         

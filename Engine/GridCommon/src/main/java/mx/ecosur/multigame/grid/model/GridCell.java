@@ -13,15 +13,15 @@
  * 
  */
 
-package mx.ecosur.multigame.impl.model;
+package mx.ecosur.multigame.grid.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.CellComparator;
+import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.Color;
 
 import mx.ecosur.multigame.model.interfaces.Cell;
 import org.apache.commons.lang.builder.HashCodeBuilder;

@@ -62,7 +62,7 @@
  *   DUPLICATION OF THIS SOFTWARE WILL NOT INFRINGE ANY INTELLECTUAL PROPERTY
  *   RIGHTS OF OTHERS. 
  */
-package mx.ecosur.multigame.impl.util;  
+package mx.ecosur.multigame.grid.util;
 
 /** 
  * Parse comma-separated values (CSV), a common Windows file format.

@@ -11,9 +11,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.enums;
-
-import mx.ecosur.multigame.impl.enums.Direction;
+package mx.ecosur.multigame.grid.enums;
 
 import java.util.Set;
 import java.util.HashSet;

@@ -1,10 +1,10 @@
 package mx.ecosur.experiment.multigame.solver.pasale;
 
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.impl.model.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 

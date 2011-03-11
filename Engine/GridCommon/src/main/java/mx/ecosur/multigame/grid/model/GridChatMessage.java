@@ -11,7 +11,7 @@
  * @author max@alwaysunny.com
  */
 
-package mx.ecosur.multigame.impl.model;
+package mx.ecosur.multigame.grid.model;
 
 import java.util.Date;
 

@@ -9,15 +9,15 @@
  * @author awaterma@ecosur.mx
  */
 
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.model.GameGrid;
 
 import org.junit.Before;
 
@@ -77,7 +77,7 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
         GridCell blue1 = new GridCell (9,10, Color.BLUE);
         GridCell blue2 = new GridCell (9,9, Color.BLUE);
         GridCell red1 = new GridCell (11,9, Color.RED);
-        GridCell red2 = new GridCell (11,8, Color.RED);
+        GridCell red2 = new GridCell(11,8, Color.RED);
         GridCell green1 = new GridCell (7, 11, Color.GREEN);
         GridCell green2 = new GridCell (7,12, Color.GREEN);
 

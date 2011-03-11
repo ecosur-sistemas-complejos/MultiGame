@@ -11,6 +11,7 @@
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
+import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
@@ -22,10 +23,9 @@ import org.drools.builder.*;
 import org.junit.Before;
 import org.junit.Test;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
@@ -75,7 +75,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
 
         /* Set up mock JMS destination for message sender */
         ejbModule = createEJBTestModule();
-        ejbModule.bindToContext("jms/TopicConnectionFactory",
+        ejbModule.bindToContext("ConnectionFactory",
                 getJMSMockObjectFactory().getMockTopicConnectionFactory());
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);

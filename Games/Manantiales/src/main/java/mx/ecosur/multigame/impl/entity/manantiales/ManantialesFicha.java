@@ -12,12 +12,12 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 
 import javax.persistence.*;
 
+import mx.ecosur.multigame.grid.model.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.GridCell;
 
 @Entity
 public class ManantialesFicha extends GridCell {

@@ -9,15 +9,15 @@
         <!-- Glassfish -->
         <!--jta-data-source>jdbc/__default</jta-data-source-->
         <!-- Derby -->
-        <class>mx.ecosur.multigame.impl.Color</class>
-        <class>mx.ecosur.multigame.impl.model.GameGrid</class>
-        <class>mx.ecosur.multigame.impl.model.GridCell</class>
-        <class>mx.ecosur.multigame.impl.model.GridChatMessage</class>
-        <class>mx.ecosur.multigame.impl.model.GridGame</class>
-        <class>mx.ecosur.multigame.impl.model.GridMove</class>
-        <class>mx.ecosur.multigame.impl.model.GridPlayer</class>
-        <class>mx.ecosur.multigame.impl.model.GridRegistrant</class>
-        <class>mx.ecosur.multigame.impl.util.BeadString</class>
+        <class>mx.ecosur.multigame.grid.Color</class>
+        <class>mx.ecosur.multigame.grid.model.GameGrid</class>
+        <class>mx.ecosur.multigame.grid.model.GridCell</class>
+        <class>mx.ecosur.multigame.grid.model.GridChatMessage</class>
+        <class>mx.ecosur.multigame.grid.model.GridGame</class>
+        <class>mx.ecosur.multigame.grid.model.GridMove</class>
+        <class>mx.ecosur.multigame.grid.model.GridPlayer</class>
+        <class>mx.ecosur.multigame.grid.model.GridRegistrant</class>
+        <class>mx.ecosur.multigame.grid.util.BeadString</class>
         <!-- Game entities -->
         <!-- Gente -->
         <class>mx.ecosur.multigame.impl.entity.gente.GenteGame</class>

@@ -11,7 +11,7 @@
  *          modified getNext() to return an external representation of a[].
  */
 
-package mx.ecosur.multigame.impl.util;
+package mx.ecosur.multigame.grid.util;
 
 /*
  * Systematically generate permutations. 

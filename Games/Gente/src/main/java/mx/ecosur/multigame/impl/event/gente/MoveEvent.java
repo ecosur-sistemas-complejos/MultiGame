@@ -11,10 +11,10 @@
 
 package mx.ecosur.multigame.impl.event.gente;
 
-import mx.ecosur.multigame.impl.CellComparator;
-import mx.ecosur.multigame.impl.enums.Direction;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.util.BeadString;
+import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.util.BeadString;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.SortedSet;

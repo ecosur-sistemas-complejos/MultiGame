@@ -11,17 +11,17 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.util;
+package mx.ecosur.multigame.grid.util;
 
 import java.io.Serializable;
 import java.util.*;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridCell;
 
-import mx.ecosur.multigame.impl.enums.Direction;
-import mx.ecosur.multigame.impl.enums.Vertice;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GameGrid;
+import mx.ecosur.multigame.grid.enums.Vertice;
 
 public class Search implements Serializable {
         
@@ -41,7 +41,7 @@ public class Search implements Serializable {
          *
          */
         public Set<AnnotatedCell> findCandidates(AnnotatedCell startingCell, 
-                        GridCell destination, Color[] targetColors, int depth) 
+                        GridCell destination, Color[] targetColors, int depth)
         {
             Set<AnnotatedCell> ret = new HashSet<AnnotatedCell> ();
 

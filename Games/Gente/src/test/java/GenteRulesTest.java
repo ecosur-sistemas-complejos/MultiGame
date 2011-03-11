@@ -21,15 +21,15 @@ import java.util.Set;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.impl.Color;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.DummyMessageSender;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridPlayer;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.util.BeadString;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class GenteRulesTest extends GenteTestBase {
         a = new GridRegistrant ("alice");
         b = new GridRegistrant ("bob");
         c = new GridRegistrant ("charlie");
-        d = new GridRegistrant ("denise");
+        d = new GridRegistrant("denise");
 
         alice = (GentePlayer) game.registerPlayer(a);
         bob = (GentePlayer) game.registerPlayer(b);
@@ -533,7 +533,7 @@ public class GenteRulesTest extends GenteTestBase {
 
     @Test
     public void testDiagonalTessera2 () throws Exception {
-        GridCell a = new GridCell (8,10,Color.RED);
+        GridCell a = new GridCell (8,10, Color.RED);
         GridCell b = new GridCell (9,11,Color.YELLOW);
         GridCell c = new GridCell (10,12,Color.YELLOW);
         GridCell d = new GridCell (11,13,Color.RED);
@@ -573,28 +573,5 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (1, move.getTesseras().size());
         assertEquals (0, move.getTrias().size());
 
-    }
-
-    private GentePlayer determinePlayer (Color color) {
-        GentePlayer ret = null;
-
-        switch (color) {
-            case YELLOW:
-                ret = alice;
-                break;
-            case BLUE:
-                ret = bob;
-                break;
-            case RED:
-                ret = charlie;
-                break;
-            case GREEN:
-                ret = denise;
-                break;
-            default:
-                break;
-        }
-
-        return ret;
     }
 }

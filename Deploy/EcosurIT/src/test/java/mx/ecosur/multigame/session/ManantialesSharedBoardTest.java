@@ -31,8 +31,6 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.*;
-import mx.ecosur.multigame.model.*;
 
 import org.junit.After;
 import org.junit.Before;

@@ -4,13 +4,13 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.model.GameGrid;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.model.interfaces.Agent;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;

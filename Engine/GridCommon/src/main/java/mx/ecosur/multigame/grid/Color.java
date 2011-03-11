@@ -11,7 +11,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl;
+package mx.ecosur.multigame.grid;
 
 public enum Color {
     YELLOW, BLUE, PURPLE, RED, GREEN, BLACK, UNKNOWN;

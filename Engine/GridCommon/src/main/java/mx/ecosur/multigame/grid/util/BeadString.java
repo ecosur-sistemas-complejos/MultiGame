@@ -13,15 +13,15 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.impl.util;
+package mx.ecosur.multigame.grid.util;
 
 import java.io.Serializable;
 import java.util.TreeSet;
 
-import mx.ecosur.multigame.impl.CellComparator;
-import mx.ecosur.multigame.impl.enums.Direction;
-import mx.ecosur.multigame.impl.enums.Vertice;
-import mx.ecosur.multigame.impl.model.GridCell;
+import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.enums.Vertice;
+import mx.ecosur.multigame.grid.model.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class BeadString implements Serializable, Cloneable {

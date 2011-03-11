@@ -1,9 +1,9 @@
 package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.impl.DummyMessageSender;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
@@ -50,7 +50,7 @@ public class SolutionConfigurer {
 		a = new GridRegistrant ("alice");
 		b = new GridRegistrant ("bob");
 		c = new GridRegistrant ("charlie");
-		d = new GridRegistrant ("denise");
+		d = new GridRegistrant("denise");
 
 		game.registerPlayer(a);
 		game.registerPlayer(b);

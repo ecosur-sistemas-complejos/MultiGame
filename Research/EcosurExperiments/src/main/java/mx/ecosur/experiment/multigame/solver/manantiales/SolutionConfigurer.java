@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import mx.ecosur.multigame.impl.Color;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.experiment.multigame.solver.manantiales.ManantialesSolution.Threshold;

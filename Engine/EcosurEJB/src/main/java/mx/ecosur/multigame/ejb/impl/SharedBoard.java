@@ -35,7 +35,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.impl.model.GridGame;
+import mx.ecosur.multigame.grid.model.GridGame;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
 

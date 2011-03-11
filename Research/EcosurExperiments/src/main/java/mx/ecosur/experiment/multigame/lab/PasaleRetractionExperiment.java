@@ -1,11 +1,11 @@
 package mx.ecosur.experiment.multigame.lab;
 
+import mx.ecosur.multigame.grid.DummyMessageSender;
+import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.impl.entity.pasale.*;
-import mx.ecosur.multigame.impl.model.GridRegistrant;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.impl.DummyMessageSender;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;
 import org.drools.KnowledgeBase;
@@ -67,7 +67,7 @@ public class PasaleRetractionExperiment {
         game.setMessageSender (new DummyMessageSender());
         GridRegistrant a, b, c, d;
 		a = new GridRegistrant ("alice");
-		b = new GridRegistrant ("bob");
+		b = new GridRegistrant("bob");
 		c = new GridRegistrant ("charlie");
 		d = new GridRegistrant ("denise");
 
