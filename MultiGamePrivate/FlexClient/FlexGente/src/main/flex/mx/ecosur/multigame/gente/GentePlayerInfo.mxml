@@ -4,7 +4,7 @@
     <mx:Script>
         <![CDATA[
         import mx.formatters.DateFormatter;
-        import mx.ecosur.multigame.gente.entity.GentePlayer;
+        import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
         import mx.ecosur.multigame.enum.Color;
 
         private var _gentePlayer:GentePlayer;

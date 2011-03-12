@@ -7,45 +7,69 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.controls.Alert;
-        import mx.ecosur.multigame.entity.Registrant;
-        import mx.ecosur.multigame.event.PlayEvent;
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
+			import mx.controls.Alert;
+			import mx.ecosur.multigame.entity.Game;
+			import mx.ecosur.multigame.entity.Registrant;
+			import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+			import mx.ecosur.multigame.event.PlayEvent;
+			import mx.ecosur.multigame.module.IGameModule;
+			import mx.events.ModuleEvent;
+			import mx.managers.CursorManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 
-        private function init():void {
-            loginPrincipal();
-        }
-
-        private function gameComplete(event:Event):void {
-        }
-
-        private function loginPrincipal():void {
-            gameService.registerPrincipal();
-        }
-
-        private function resultHandler(event:ResultEvent):void {
-            if (event.result is Registrant) {
-                lobby.player = Registrant(event.result);
-            } else
-                Alert.show("Unable to interpret event: " + event);
-        }
-
-        private function faultHandler(event:FaultEvent):void {
-            Alert.show(event.fault.faultString, "Error!");
-        }
-
-        private function lobbyDone(event:PlayEvent):void {
-            
-        }
+	        private function init():void {
+	            loginPrincipal();
+				gameLoader.addEventListener("complete", gameComplete);
+	        }
+	
+	        private function loginPrincipal():void {
+	            gameService.registerPrincipal();
+	        }
+	
+	        private function resultHandler(event:ResultEvent):void {
+	            if (event.result is Registrant) {
+	                lobby.player = Registrant(event.result);
+	            } else
+	                Alert.show("Unable to interpret event: " + event);
+	        }
+	
+	        private function faultHandler(event:FaultEvent):void {
+	            Alert.show(event.fault.faultString, "Error!");
+	        }
+	
+	        private function lobbyDone(playEvent:PlayEvent):void {
+				lobby.timer.stop();
+				if (playEvent.game is GenteGame) {
+					vstack.selectedChild = gameLoader;
+					gameLoader.url = "Gente.swf";
+					gameLoader.addEventListener(ModuleEvent.READY, function(moduleEvent:Event):void {
+						IGameModule(moduleEvent.currentTarget.child).start(playEvent);
+					});
+				} else {
+					var game:Game = playEvent.game;
+					Alert.show("Error!  Unknown GameType [" + game + "]");
+					Alert.show("Game info" + game.id + "," + game.columns + ", " + game.rows);
+					CursorManager.removeBusyCursor();
+				}
+	        }
+			
+			private function gameComplete(event:Event):void {
+				lobby.reload(event);
+				vstack.selectedChild = lobby;
+				gameLoader.url = "";
+				
+				/* Restart the lobby timer to view any updates to
+				* system state ... */
+				lobby.timer.start();
+				lobby.setFocus();
+			}
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
 	<mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
 		<component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
 						 gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
-		<mx:ModuleLoader id="genteGameWindow" url="Gente.swf"/>
-		<mx:ModuleLoader id="manantialesWindow" url="Manantiales.swf"/>
-		<mx:ModuleLoader id="pasaleWindow" url="Pasale.swf"/>
+		<mx:ModuleLoader id="gameLoader" />
 	</mx:ViewStack>
 </mx:Application>

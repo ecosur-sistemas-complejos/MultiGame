@@ -14,7 +14,7 @@
         <![CDATA[
 			import mx.ecosur.multigame.component.HelpPanel;
 			import mx.ecosur.multigame.entity.GamePlayer;
-			import mx.ecosur.multigame.gente.entity.GenteGame;
+			import mx.ecosur.multigame.entity.gente.entity.GenteGame;
 			import mx.events.MenuEvent;
 			import mx.managers.CursorManager;
 			import mx.managers.PopUpManager;
@@ -25,7 +25,6 @@
         private var _currentPlayer:GamePlayer;
         private var _helpPanel:HelpPanel;
 
-        //TODO: Find efficient way to pass rows and columns to penteBoard as initial parameters
         [Bindable]
         public var rows:int;
         [Bindable]
@@ -38,6 +37,8 @@
 
         public function set currentGame(currentGame:GenteGame):void {
             _currentGame = currentGame;
+			rows = currentGame.rows;
+			columns = currentGame.columns;
         }
 
         public function set currentPlayer(currentPlayer:GamePlayer):void {
@@ -49,7 +50,7 @@
         public function get currentPlayer():GamePlayer {
             return _currentPlayer;
         }
-
+			
         public function reload(event:Event):void {
             // do nothing
         }
@@ -80,10 +81,10 @@
                 PopUpManager.centerPopUp(_helpPanel);
             } else if (evt.label == resourceManager.getString("StringsBundle","gente.menu.one.submenu.one")) {
                 this.destroy();
-                this.dispatchEvent(new Event("complete"));
+                this.dispatchEvent(new Event("complete", true));
             } else if (evt.label == resourceManager.getString("StringsBundle","gente.menu.one.submenu.two")) {
                 quitGame();
-                this.dispatchEvent(new Event("complete"));
+                this.dispatchEvent(new Event("complete", true));
             }
         }
 

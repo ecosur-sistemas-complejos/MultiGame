@@ -40,9 +40,9 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.gente.entity.BeadString;
-    import mx.ecosur.multigame.gente.entity.GenteGame;
+    import mx.ecosur.multigame.entity.gente.entity.GenteGame;
     import mx.ecosur.multigame.gente.entity.GenteMove;
-    import mx.ecosur.multigame.gente.entity.GentePlayer;
+    import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
     import mx.ecosur.multigame.gente.entity.StrategyPlayer;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.effects.AnimateProperty;

@@ -2,19 +2,24 @@
 <mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
     xmlns:gente="mx.ecosur.multigame.gente.*"
     xmlns:component="mx.ecosur.multigame.component.*"
-    layout="absolute">
+    layout="absolute" implements="mx.ecosur.multigame.module.IGameModule" 
+	width="100%" height="100%">
 
     <mx:Style source="style.css"/>
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+			import mx.ecosur.multigame.event.PlayEvent;
 			
-			private function gameComplete(event:Event):void{
-				
+			public function start(event:PlayEvent):void {
+				var gameWindow:GenteGameWindow = new GenteGameWindow();
+				gameWindow.currentPlayer = event.gamePlayer;
+				gameWindow.currentGame = GenteGame(event.game);
+				addChild(gameWindow);
 			}
 			
 		]]>
 	</mx:Script>
-
-	<gente:GenteGameWindow id="genteGameWindow" complete="gameComplete(event)" />
+	
 </mx:Module>

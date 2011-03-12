@@ -16,10 +16,17 @@
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
         import mx.ecosur.multigame.entity.Registrant;
+		import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+		import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
 
         private var _player:Registrant;
 
         public var timer:Timer;
+			
+		// Force compilation of game objects to allow serialization of super classes
+	    // TODO: Change server side architecture so that lobby does not receive game specific subclasses
+		private var genteGame:GenteGame;
+		private var gentePlayer:GentePlayer;
 
         [Bindable]
         public function get player():Registrant {
