@@ -2,10 +2,10 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>mx.ecosur</groupId>
-<artifactId>flex-client</artifactId>
+<artifactId>flex-gente</artifactId>
 <packaging>swf</packaging>
-<name>Flex Client</name>
-<description>Flex UI implementation for our participatory modeling games.</description>
+<name>Flex Gente</name>
+<description>Flex UI implementation for Gente game.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
     <artifactId>multi-game-private</artifactId>
@@ -20,7 +20,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <testSourceDirectory>src/test/flex</testSourceDirectory>
-    <finalName>main</finalName>
+    <finalName>Gente</finalName>
     <plugins>
         <plugin>
             <groupId>org.sonatype.flexmojos</groupId>
@@ -29,7 +29,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <extensions>true</extensions>
             <configuration>
                 <debug>${debug}</debug>
-                <sourceFile>main.mxml</sourceFile>
+                <sourceFile>Gente.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
                 <services>${basedir}/../../MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
@@ -37,14 +37,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                     <compiledLocale>en_US</compiledLocale>
                     <!--compiledLocale>es_ES</compiledLocale-->
                 </compiledLocales>
-                <includeFiles>
-                    <includeFile>
-                       <includes>
-                           <include>styles.css</include>
-                           <include>assets/*</include>
-                       </includes>
-                    </includeFile>
-                </includeFiles>
                 
                 <!-- TODO: Check which of these are necessary -->
                 <configurationReport>true</configurationReport>
@@ -71,7 +63,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </plugins>
 </build>
 <dependencies>
-   
+
    <!-- Cached rsl dependencies -->
 	<dependency>
 		<groupId>com.adobe.flex.framework</groupId>
@@ -109,7 +101,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		<scope>caching</scope>
 	</dependency>
 
+	<!-- Framework -->
 	<dependency>
+	   <groupId>com.adobe.flex.framework</groupId>
+		<artifactId>flex-framework</artifactId>
+		<version>${flex-version}</version>
+		<type>pom</type>
+	</dependency>
+   <dependency>
          <groupId>com.adobe.flex.framework</groupId>
          <artifactId>halo</artifactId>
          <version>${flex-version}</version>
@@ -124,7 +123,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
 		  <type>swc</type>
-		  <scope>rsl</scope>
+		  <scope>rsl</scope>        
     </dependency>
+
 </dependencies>    
 </project>
