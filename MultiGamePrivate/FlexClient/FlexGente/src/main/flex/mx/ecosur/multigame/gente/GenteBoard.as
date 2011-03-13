@@ -39,7 +39,7 @@ import mx.controls.Image;
         [Bindable]
         public var tokenSize:Number; //size of tokens
         
-        [Embed(source='assets/icons.swf#centerSquare')]
+        [Embed(source='/assets/icons.swf#centerSquare')]
         private static var centerBgSource:Class;
         
         // Default cell style properties

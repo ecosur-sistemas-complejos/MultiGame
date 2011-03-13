@@ -36,6 +36,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <configurationReport>true</configurationReport>
                 <coverageViewerPath/>
                 <storepass/>
+                <!-- TODO: This does not seem to work - debug flex mojos source or refactory out into theme project -->
+                <includeStylesheets>
+                    <stylesheet>${basedir}/src/main/flex/style.css</stylesheet>
+                </includeStylesheets>
             </configuration>
             <executions>
                 <execution>
