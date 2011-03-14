@@ -4,6 +4,8 @@ package mx.ecosur.multigame.module
 
 	public interface IGameModule
 	{
-		function start(event:PlayEvent):void
+		function start(event:PlayEvent):void;
+			
+		function destroy():void;
 	}
 }

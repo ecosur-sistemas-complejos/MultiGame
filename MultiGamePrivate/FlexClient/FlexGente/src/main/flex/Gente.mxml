@@ -9,15 +9,23 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import mx.ecosur.multigame.entity.Game;
 			import mx.ecosur.multigame.entity.gente.entity.GenteGame;
 			import mx.ecosur.multigame.event.PlayEvent;
 			import mx.ecosur.multigame.gente.GenteGameWindow;
 			
+			private var _gameWindow:GenteGameWindow;
+			
 			public function start(event:PlayEvent):void {
-				var gameWindow:GenteGameWindow = new GenteGameWindow();
-				gameWindow.currentPlayer = event.gamePlayer;
-				gameWindow.currentGame = GenteGame(event.game);
-				addChild(gameWindow);
+				_gameWindow = new GenteGameWindow();
+				_gameWindow.currentPlayer = event.gamePlayer;
+				_gameWindow.currentGame = GenteGame(event.game);
+				addChild(_gameWindow);
+			}
+			
+			public function destroy():void{
+				_gameWindow.destroy();
+				removeChild(_gameWindow);
 			}
 			
 		]]>

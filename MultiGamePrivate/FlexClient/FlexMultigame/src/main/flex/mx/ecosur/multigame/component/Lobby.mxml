@@ -43,7 +43,7 @@
         private function init():void {
             timer = new Timer(1000);
             timer.addEventListener(TimerEvent.TIMER, timeout);
-            timer.start();
+            //timer.start();
         }
 
         public function timeout(event:Event):void {
