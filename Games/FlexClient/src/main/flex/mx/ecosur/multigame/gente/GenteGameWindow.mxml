@@ -7,17 +7,18 @@
     
     <mx:Metadata>
         [Event(name="complete")]
+		[ResourceBundle("StringsBundle")]
     </mx:Metadata>
     
     <mx:Script>
         <![CDATA[
-        import mx.managers.CursorManager;
-        import mx.managers.PopUpManager;
-        import mx.events.MenuEvent;
-
-        import mx.ecosur.multigame.component.HelpPanel;
-        import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.gente.entity.GenteGame;
+			import mx.ecosur.multigame.component.HelpPanel;
+			import mx.ecosur.multigame.entity.GamePlayer;
+			import mx.ecosur.multigame.gente.entity.GenteGame;
+			import mx.events.MenuEvent;
+			import mx.managers.CursorManager;
+			import mx.managers.PopUpManager;
+			import mx.resources.ResourceBundle;
 
         private var _controller:GenteGameController;
         private var _currentGame:GenteGame;
@@ -98,12 +99,12 @@
     </mx:Script>
 
     <mx:XMLList id="menuXML">
-        <menuitem label="@Resource(key='gente.menu.one.title', bundle='StringsBundle')">
-            <menuitem label="@Resource(key='gente.menu.one.submenu.one', bundle='StringsBundle')"/>
-            <menuitem label="@Resource(key='gente.menu.one.submenu.two', bundle='StringsBundle')"/>
+        <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.title')}">
+            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.submenu.one')}"/>
+            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.submenu.two')}"/>
         </menuitem>
-        <menuitem label="@Resource(key='gente.menu.two.title', bundle='StringsBundle')">
-            <menuitem label="@Resource(key='gente.menu.two.submenu',bundle='StringsBundle')"/>
+        <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.two.title')}">
+            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.two.submenu')}"/>
         </menuitem>
     </mx:XMLList>
 
