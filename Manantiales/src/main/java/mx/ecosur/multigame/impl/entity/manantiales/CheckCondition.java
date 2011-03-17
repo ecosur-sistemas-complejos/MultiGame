@@ -13,13 +13,7 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
@@ -74,6 +68,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -88,6 +83,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the reason
      */
+    @Basic
     public String getReason() {
         return reason.toString();
     }
@@ -107,6 +103,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the expired
      */
+    @Basic
     public boolean isExpired() {
         return expired;
     }
@@ -121,8 +118,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the violators
      */
-    @OneToMany (cascade={CascadeType.ALL},
-            fetch=FetchType.EAGER)
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<ManantialesFicha> getViolators() {
         return violators;
     }

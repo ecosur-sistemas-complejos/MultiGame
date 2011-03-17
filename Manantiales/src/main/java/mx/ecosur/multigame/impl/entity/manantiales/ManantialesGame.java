@@ -33,6 +33,8 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 import java.util.*;
 import java.net.MalformedURLException;
@@ -44,7 +46,7 @@ public class ManantialesGame extends GridGame {
 
     private static String FNAME = "ManantialesKBase.dat";
 
-    private transient KnowledgeBase kbase;
+    private static KnowledgeBase kbase;
         
     private Mode mode;
         
@@ -54,7 +56,7 @@ public class ManantialesGame extends GridGame {
 
     private Set<PuzzleSuggestion> suggestions;
 
-    private Map<Mode,TreeSet<ManantialesMove>> moveMap;
+    private Map<Mode,SortedSet<GridMove>> moveMap;
 
     private Color[] colors = { Color.YELLOW, Color.RED, Color.BLACK, Color.PURPLE };
 
@@ -62,6 +64,7 @@ public class ManantialesGame extends GridGame {
     public ManantialesGame () {
         super();
         mode = Mode.CLASSIC;
+        moveMap = new HashMap<Mode,SortedSet<GridMove>>();
     }
 
     public ManantialesGame (KnowledgeBase kbase) {
@@ -74,36 +77,30 @@ public class ManantialesGame extends GridGame {
         this.mode = mode;
     }
 
-    @Override
-    public void setMoves(Set<GridMove> moves) {
-        moveMap = new HashMap<Mode,TreeSet<ManantialesMove>>();
-        for (GridMove mv : moves) {
-            ManantialesMove move = (ManantialesMove) mv;
-            TreeSet<ManantialesMove> set = moveMap.get(move.getMode());
-            if (set == null)
-                set = new TreeSet<ManantialesMove>(new MoveComparator());
-            set.add(move);
-            moveMap.put(move.getMode(), set);
-        }
+    //@ManyToMany(mappedBy="mode")
+    @Transient
+    public Map<Mode,SortedSet<GridMove>> getMappedMoves() {
+        return moveMap;
     }
 
-    @Override
-    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    public Set<GridMove> getMoves() {
-        TreeSet<GridMove> ret = new TreeSet<GridMove>(new MoveComparator());
-        if (moveMap != null) {
-            for (Mode mode : Mode.values()) {
-                if (moveMap.containsKey(mode))
-                    ret.addAll ((TreeSet<ManantialesMove>) moveMap.get(mode));
+    public void setMappedMoves(SortedSet<GridMove> moves) {
+        moveMap = new TreeMap<Mode,SortedSet<GridMove>>();
+        if (getMoves () != null) {
+            for (GridMove mv : getMoves()) {
+                ManantialesMove move = (ManantialesMove) mv;
+                SortedSet<GridMove> set = moveMap.get(move.getMode());
+                if (set == null)
+                    set = (SortedSet) new TreeSet<ManantialesMove>(new MoveComparator());
+                set.add(move);
+                moveMap.put(move.getMode(), set);
             }
         }
-
-        return ret;
-
     }
 
-    public Set<ManantialesMove> getMoves (Mode mode) {
-        return moveMap.get(mode);
+    public void addMove (ManantialesMove move) {
+        Map<Mode,SortedSet<GridMove>> moves = getMappedMoves();
+        SortedSet<GridMove> modality = moves.get(mode);
+        modality.add(move);
     }
     
     @Enumerated (EnumType.STRING)
@@ -115,21 +112,18 @@ public class ManantialesGame extends GridGame {
         this.checkConditions = null;
         this.mode = mode;
     }
-    
+
+    @Transient
     public boolean hasCondition (ConditionType type) {
         boolean ret = false;
         if (checkConditions != null) {
             for (CheckCondition condition : checkConditions) {
                 if (condition.getType().equals(type)) {
-                    ret = true;
-                }
-            }
-        }
-
+                    ret = true;}}}
         return ret;
     }
 
-    @OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
         if (checkConditions == null)
                 checkConditions = new LinkedHashSet<CheckCondition>();
@@ -139,22 +133,14 @@ public class ManantialesGame extends GridGame {
     public void setCheckConditions (Set<CheckCondition> checkConstraints) {
         this.checkConditions = checkConstraints;
     }
-    
+
     public void addCheckCondition (CheckCondition violation) {
-        if (checkConditions == null) 
-                checkConditions = new LinkedHashSet<CheckCondition>();
         if (!hasCondition (ConditionType.valueOf(violation.getReason())))
-                checkConditions.add(violation);
+            getCheckConditions().add(violation);
     }
 
     public void addSuggestion (PuzzleSuggestion suggestion) {
-        if (suggestions == null)
-            suggestions = new LinkedHashSet<PuzzleSuggestion>();
-        
-        if (suggestions.contains (suggestion))
-            updateSuggestion(suggestion);
-        else
-            suggestions.add(suggestion);
+        getSuggestions().add(suggestion);
     }
 
     public void updateSuggestion (PuzzleSuggestion suggestion) {
@@ -165,11 +151,6 @@ public class ManantialesGame extends GridGame {
                 } 
             }
         } 
-    }
-
-    public void addMove (ManantialesMove move) {
-        if (moves != null)
-            moves.add(move);
     }
 
     /* (non-Javadoc)
@@ -215,10 +196,6 @@ public class ManantialesGame extends GridGame {
         return 4;
     }
 
-    public void setMaxPlayers(int maxPlayers) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     /* (non-Javadoc)
       * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
@@ -247,12 +224,10 @@ public class ManantialesGame extends GridGame {
         if (move.getMode() == null)
             move.setMode(getMode());
 
-        if (moveMap == null)
-            moveMap = new HashMap<Mode,TreeSet<ManantialesMove>>();
-        TreeSet<ManantialesMove> moves = moveMap.get (mode);
+        SortedSet<GridMove> moves = moveMap.get (mode);
         if (moves == null)
-            moves = new TreeSet<ManantialesMove>();
-        moves.add((ManantialesMove) move);
+            moves = new TreeSet<GridMove>(new MoveComparator());
+        moves.add(move);
         moveMap.put(mode, moves);
         return move;
     }
@@ -279,7 +254,7 @@ public class ManantialesGame extends GridGame {
 
         return suggestion;
     }
-        
+
     public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
         ManantialesPlayer player = new ManantialesPlayer ();
         player.setRegistrant((GridRegistrant) registrant);
@@ -317,8 +292,7 @@ public class ManantialesGame extends GridGame {
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
-                throw new InvalidRegistrationException (
-                    "Duplicate Registration! " + player.getRegistrant().getName());
+                return (Agent) p;
         }
 
         int max = getMaxPlayers();
@@ -377,26 +351,17 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    @OneToMany (cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
+    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @Transient
     public Set<PuzzleSuggestion> getSuggestions () {
+        if (suggestions == null)
+            suggestions = new LinkedHashSet<PuzzleSuggestion>();
         return suggestions;
 
     }
 
     public void setSuggestions (Set<PuzzleSuggestion> suggestions) {
         this.suggestions = suggestions;
-    }
-
-
-    @Transient
-    public Set<PuzzleSuggestion> findSuggestion (ManantialesMove move) {
-        Set<PuzzleSuggestion> ret = new LinkedHashSet<PuzzleSuggestion>();
-        for (PuzzleSuggestion suggestion : suggestions) {
-            if (suggestion.getMove().equals(move))
-                ret.add(suggestion);
-        }
-
-        return ret;
     }
 
     @Transient
@@ -423,7 +388,9 @@ public class ManantialesGame extends GridGame {
     @Override
     public String toString() {
         return getGrid().toString();
-    }/* (non-Javadoc)
+    }
+
+    /* (non-Javadoc)
      * @see GridGame#clone()
      */
     @Override
@@ -434,12 +401,12 @@ public class ManantialesGame extends GridGame {
             ManantialesFicha ficha = (ManantialesFicha) cell;
             ret.grid.updateCell((GridCell) ficha.clone());
         }
+
         ret.setColumns (this.getColumns());
         ret.setRows (this.getRows());
         ret.created = System.currentTimeMillis();
         ret.id = this.getId();
         ret.moves = new TreeSet<GridMove>(new MoveComparator());
-
         ret.state = this.state;
         ret.setMode(this.mode);
         ret.version = this.version;

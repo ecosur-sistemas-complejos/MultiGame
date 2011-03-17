@@ -11,10 +11,10 @@
 
 package mx.ecosur.multigame.impl.event.gente;
 
-import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.util.BeadString;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.SortedSet;
@@ -82,7 +82,7 @@ public class MoveEvent {
     }
 
     public BeadString toBeadString () {
-        BeadString ret = new BeadString ();
+        BeadString ret = new BeadString();
         ret.add(origin);
         if (adjacentCells != null) {
             for (GridCell cell : adjacentCells) {

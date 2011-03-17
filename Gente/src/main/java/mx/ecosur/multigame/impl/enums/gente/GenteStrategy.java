@@ -24,7 +24,7 @@ public enum GenteStrategy {
         
     RANDOM, BLOCKER, SIMPLE;
         
-    private KnowledgeBase kbase;
+    private static KnowledgeBase kbase;
 
     private static Logger logger = Logger.getLogger(GenteStrategy.class
             .getCanonicalName());

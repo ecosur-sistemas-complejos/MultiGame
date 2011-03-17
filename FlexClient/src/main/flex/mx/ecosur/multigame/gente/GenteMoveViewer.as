@@ -26,7 +26,7 @@ package mx.ecosur.multigame.gente {
     
     /**
      * Visual component showing all the moves made in the game
-     * and allowing navegation to different points in the game.
+     * and allowing navigation to different points in the game.
      */
     public class GenteMoveViewer extends Panel {
         

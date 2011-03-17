@@ -10,6 +10,7 @@
  */
 package mx.ecosur.multigame.impl.entity.manantiales;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 
 import mx.ecosur.multigame.grid.Color;
@@ -32,6 +33,7 @@ public class ManantialesPlayer extends GridPlayer {
         points = 0;
     }
 
+    @Basic
     public int getScore() {
         return points;
     }
@@ -43,36 +45,9 @@ public class ManantialesPlayer extends GridPlayer {
     /**
      * @return the forested
      */
+    @Basic
     public int getForested() {
         return forested;
-    }
-
-    /**
-     * @return the moderate
-     */
-    public int getModerate() {
-        return moderate;
-    }
-
-    /**
-     * @return the intensive
-     */
-    public int getIntensive() {
-        return intensive;
-    }
-
-    /**
-     * @return the vivero
-     */
-    public int getVivero() {
-        return vivero;
-    }
-
-    /**
-     * @return the silvo
-     */
-    public int getSilvo() {
-        return silvo;
     }
 
     /**
@@ -86,6 +61,14 @@ public class ManantialesPlayer extends GridPlayer {
     }
 
     /**
+     * @return the moderate
+     */
+    @Basic
+    public int getModerate() {
+        return moderate;
+    }
+
+    /**
      * @param moderate the moderate to set
      */
     public void setModerate(int moderate) {
@@ -93,6 +76,14 @@ public class ManantialesPlayer extends GridPlayer {
             this.moderate = moderate;
         else
             this.moderate = 0;
+    }
+
+    /**
+     * @return the intensive
+     */
+    @Basic
+    public int getIntensive() {
+        return intensive;
     }
 
     /**
@@ -105,6 +96,15 @@ public class ManantialesPlayer extends GridPlayer {
             this.intensive = 0;
     }
 
+
+    /**
+     * @return the vivero
+     */
+    @Basic
+    public int getVivero() {
+        return vivero;
+    }
+
     /**
      * @param vivero the vivero to set
      */
@@ -113,6 +113,14 @@ public class ManantialesPlayer extends GridPlayer {
             this.vivero = vivero;
         else
             vivero = 0;
+    }
+
+    /**
+     * @return the silvo
+     */
+    @Basic
+    public int getSilvo() {
+        return silvo;
     }
 
     /**

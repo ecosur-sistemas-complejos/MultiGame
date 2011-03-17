@@ -13,15 +13,17 @@
  */
 package mx.ecosur.multigame.impl.entity.gente;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.model.GridPlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Entity
 public class GentePlayer extends GridPlayer {
@@ -30,13 +32,16 @@ public class GentePlayer extends GridPlayer {
 
     private int points;
 
-    private HashSet<BeadString> trias, tesseras;
+    private Set<BeadString> trias, tesseras;
 
     private GentePlayer partner;
 
     public GentePlayer () {
-            super ();
-            points = 0;
+        super ();
+        points = 0;
+        trias = new LinkedHashSet<BeadString>();
+        tesseras = new LinkedHashSet<BeadString>();
+        partner = null;
     }
 
     /**
@@ -47,6 +52,7 @@ public class GentePlayer extends GridPlayer {
         super (player, color);
     }
 
+    @Basic
     public int getPoints() {
         return points;
     }
@@ -55,16 +61,17 @@ public class GentePlayer extends GridPlayer {
         this.points = points;
     }
 
-    public HashSet<BeadString> getTrias() {
-        if (trias == null)
-            trias = new HashSet<BeadString>();
+    @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
+    @JoinColumn(nullable=true)
+    public Set<BeadString> getTrias() {
         return trias;
     }
 
-    public void setTrias(HashSet<BeadString> trias) {
+    public void setTrias(Set<BeadString> trias) {
         this.trias = trias;
     }
 
+    @Transient
     public void addTria (BeadString tria) {
         if (trias == null) {
             trias = new HashSet<BeadString> ();
@@ -74,25 +81,27 @@ public class GentePlayer extends GridPlayer {
             trias.add (tria);
     }
 
-    public HashSet<BeadString> getTesseras() {
-        if (tesseras == null)
-            tesseras = new HashSet<BeadString>();
+    @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
+    @JoinColumn(nullable=true)
+    public Set<BeadString> getTesseras() {
         return tesseras;
     }
 
-    public void setTesseras(HashSet<BeadString> tesseras) {
+    public void setTesseras(Set<BeadString> tesseras) {
         this.tesseras = tesseras;
     }
 
+    @Transient
     public void addTessera (BeadString tessera) {
         if (tesseras == null) {
-            tesseras = new HashSet<BeadString> ();
+            tesseras = new LinkedHashSet<BeadString>();
         }
 
         if (tessera.size() == 4)
             tesseras.add(tessera);
     }
 
+    @OneToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public GentePlayer getPartner () {
         return partner;
     }
@@ -123,19 +132,24 @@ public class GentePlayer extends GridPlayer {
         GentePlayer ret = new GentePlayer ();
         ret.setId(getId());
         ret.setPoints(getPoints());
-        HashSet<BeadString> clones = new HashSet<BeadString>();
-        for (BeadString tessera : getTesseras()) {
-            BeadString clone = (BeadString) tessera.clone();
-            clones.add(clone);
+        if (getTesseras() != null) {
+            HashSet<BeadString> clones = new HashSet<BeadString>();
+            for (BeadString tessera : getTesseras()) {
+                BeadString clone = (BeadString) tessera.clone();
+                clones.add(clone);
+            }
+            ret.setTesseras(clones);
         }
-        ret.setTesseras(clones);
 
-        clones = new HashSet<BeadString>();
-        for (BeadString tria : getTrias()) {
-            BeadString clone = (BeadString) tria.clone();
-            clones.add(clone);
+        if (getTrias() != null) {
+            HashSet<BeadString> clones = new HashSet<BeadString>();
+            for (BeadString tria : getTrias()) {
+                BeadString clone = (BeadString) tria.clone();
+                clones.add(clone);
+            }
+            ret.setTrias(clones);
         }
-        ret.setTrias(clones);
+
         ret.setColor(getColor());
 
         GridRegistrant clone = (GridRegistrant) getRegistrant().clone();

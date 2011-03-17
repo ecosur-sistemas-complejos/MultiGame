@@ -26,6 +26,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author awaterma@ecosur.mx
@@ -126,17 +127,32 @@ public class RuleFunctions {
         return (cell.getColumn () == 4 || cell.getRow () == 4);
     }
 
-    public static GridPlayer incrementTurn (ManantialesGame game, GridMove move) {
+    public static GridPlayer incrementTurn (ManantialesGame game, ManantialesMove move) {
         GridPlayer player = move.getPlayer();
         player.setTurn(false);
-        List<GridPlayer> players = game.getPlayers();
-        int playerNumber = players.indexOf(player);
-        GridPlayer nextPlayer = null;
-        if (playerNumber == players.size() - 1) {
-            nextPlayer = players.get(0);
-        } else {
-            nextPlayer = players.get(playerNumber + 1);
+
+        /* Find next player */
+        Set<GridPlayer> players = game.getPlayers();
+        GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
+        int playerNumber = -1;
+
+        for (int i = 0; i < gps.length; i++) {
+            if (gps [ i ].equals(player)) {
+                playerNumber = i;
+                break;
+            }
         }
+
+        if (playerNumber == -1)
+            throw new RuntimeException ("Unable to find player: " + player + " in set " + gps);
+
+        GridPlayer nextPlayer = null;
+        if (playerNumber == gps.length - 1) {
+            nextPlayer = gps [ 0 ];
+        } else {
+            nextPlayer = gps [playerNumber + 1];
+        }
+
         nextPlayer.setTurn (true);
         return nextPlayer;
     }
@@ -144,14 +160,27 @@ public class RuleFunctions {
     public static  boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
         boolean ret = false;
         if (!first.equals(second)) {
-            List<GridPlayer> players = game.getPlayers();
-            int playerNumber = players.indexOf(first);
-            GridPlayer nextPlayer = null;
-            if (playerNumber == players.size() - 1) {
-                nextPlayer = players.get(0);
-            } else {
-                nextPlayer = players.get(playerNumber + 1);
+            Set<GridPlayer> players = game.getPlayers();
+            GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
+            int playerNumber = -1;
+
+            for (int i = 0; i < gps.length; i++) {
+                if (gps [ i ].equals(first)) {
+                    playerNumber = i;
+                    break;
+                }
             }
+
+            if (playerNumber == -1)
+                throw new RuntimeException ("Unable to find player: " + first + 
+                        " in set " + gps);            
+            GridPlayer nextPlayer = null;
+            if (playerNumber == gps.length - 1) {
+                nextPlayer = gps [ 0 ];
+            } else {
+                nextPlayer = gps [playerNumber + 1];
+            }
+            
             ret = nextPlayer.equals(second);
         }
         return ret;

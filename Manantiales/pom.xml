@@ -59,15 +59,15 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>mx.ecosur</groupId>
-            <artifactId>grid-common</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>mx.ecosur</groupId>
+            <artifactId>grid-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -110,6 +110,12 @@
             <groupId>com.mockrunner</groupId>
             <artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
             <version>0.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

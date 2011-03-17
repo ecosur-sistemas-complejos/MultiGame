@@ -19,6 +19,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridGame;
@@ -33,7 +34,6 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.grid.CellComparator;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 
@@ -148,9 +148,9 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
                         cell.setId(getMaxId(clone) + 1);
                         GenteMove move = new GenteMove (this, cell);
                         move = (GenteMove) clone.move(move);
-                        if (move.getTesseras().size() >  0) {
+                        if (move.getTesseras() != null && move.getTesseras().size() >  0) {
                             ret.add(move);
-                        } else if (move.getTrias().size() > 0) {
+                        } else if (move.getTrias() != null && move.getTrias().size() > 0) {
                             ret.add(move);
                         }
                     }
@@ -219,15 +219,17 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
                 ret.add(getNextMove());
 
                 for (Move moveImpl : ret) {
-                    GenteMove genteMove = (GenteMove) moveImpl;
-                    GridCell destination = genteMove.getDestinationCell();
-                    destination.setColor(getColor());
-                    genteMove.setDestinationCell(destination);
-                    genteMove.setPlayer(this);
-                    if (!isTurn())
-                        throw new RuntimeException ("Move generated but agent has lost turn!");
-                    ret.remove(moveImpl);
-                    ret.add(genteMove);
+                    if (moveImpl != null) {
+                        GenteMove genteMove = (GenteMove) moveImpl;
+                        GridCell destination = genteMove.getDestinationCell();
+                        destination.setColor(getColor());
+                        genteMove.setDestinationCell(destination);
+                        genteMove.setPlayer(this);
+                        if (!isTurn())
+                            throw new RuntimeException ("Move generated but agent has lost turn!");
+                        ret.remove(moveImpl);
+                        ret.add(genteMove);
+                    }
                 }
 
                 if (ret.size() == 0) {

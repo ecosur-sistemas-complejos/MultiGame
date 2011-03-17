@@ -39,7 +39,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
 
     private ManantialesMove _nextMove;
 
-    private KnowledgeBase kbase;
+    private static KnowledgeBase kbase;
 
     private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
@@ -126,49 +126,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
 
         return ret;
     }
-
-
-    /* Simply returns a simple move response.  No suggestions are made by the Agent */
-    /*
-    public Set<Move> determineMoves(Game impl) {
-        Set<Move> ret = new LinkedHashSet<Move>();
-        ManantialesGame game = (ManantialesGame) impl;
-
-        Random random = new Random();
-        boolean requiresRandom = game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL);
-
-
-        try {
-            if (isTurn() && (!requiresRandom || random.nextInt(6) != 5) ) {
-                ManantialesGame gameClone = (ManantialesGame) game.clone();
-                SimpleAgent clone = (SimpleAgent) this.clone();
-                KnowledgeBase kBase = getRuleBase();
-                StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
-                session.insert(gameClone);
-                session.insert(clone);
-                session.insert(new DummyMessageSender());
-                session.fireAllRules();
-                session.dispose();
-                if (clone.getNextMove() != null) {
-                    ManantialesMove mMove = (ManantialesMove) clone.getNextMove();
-                    setNextMove(mMove);
-                    ret.add(mMove);
-                }
-
-            } else if (isTurn()) {
-                ManantialesMove passMove = generatePassMove(game);
-                setNextMove(passMove);
-                ret.add(passMove);
-            }
-
-
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-
-        return ret;
-    }
-    */
 
     @Transient
     private KnowledgeBase getRuleBase() {

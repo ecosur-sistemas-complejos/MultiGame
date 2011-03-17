@@ -16,12 +16,13 @@ package mx.ecosur.multigame.impl.entity.gente;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import javax.persistence.Entity;
+import java.util.Set;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
@@ -36,7 +37,7 @@ public class GenteMove extends GridMove {
             COOPERATIVE, SELFISH, NEUTRAL
         }
         
-        private HashSet<BeadString> trias, tesseras;
+        private Set<BeadString> trias, tesseras;
 
         private CooperationQualifier qualifier = null;
         
@@ -44,6 +45,9 @@ public class GenteMove extends GridMove {
         
         public GenteMove () {
             super ();
+            player = null;
+            trias = new LinkedHashSet<BeadString>();
+            tesseras = new LinkedHashSet<BeadString>();
         }
         
         /**
@@ -51,56 +55,48 @@ public class GenteMove extends GridMove {
          * @param cell
          */
         public GenteMove(GridPlayer player, GridCell cell) {
-                super (player, cell);
+            super (player, cell);
         }
         
         public void addTria(BeadString t) {
             boolean contained = false;
-
             if (trias == null)
-                trias = new HashSet<BeadString> ();
-            /* Only add trias that are not contained by other trias */
+                trias = new LinkedHashSet<BeadString>();
             for (BeadString tria : trias) {
                 if (tria.contains(t)) {
                     contained = true;
-                    break;
-                }
-            }
-
+                    break;}}
             if (!contained)
                 trias.add(t);
         }
 
         public void addTrias (BeadString... trias) {
             for (BeadString tria : trias) {
-                addTria (tria);
-            }
+                addTria (tria);}
         }
 
         /**
          * Gets the Trias that this move created.
          */
-        public HashSet<BeadString> getTrias () {
-            if (trias == null)
-                trias = new HashSet<BeadString> ();
+        @OneToMany(cascade=CascadeType.ALL, fetch= FetchType.EAGER)
+        @JoinColumn(nullable=true)
+        public Set<BeadString> getTrias () {
             return trias;
         }
         
-        public void setTrias (HashSet<BeadString> new_trias) {
+        public void setTrias (Set<BeadString> new_trias) {
             trias = new_trias;
         }
         
         public void addTessera (BeadString t) {
             boolean contained = false;
-                
             if (tesseras == null)
-                tesseras = new HashSet<BeadString> ();
+                tesseras = new LinkedHashSet<BeadString>();
             for (BeadString tessera : tesseras) {
                 if (tessera.contains(t)) {
                     contained = true;
                     break;
                 }
-                                
             }
                 
             if (!contained)
@@ -112,32 +108,33 @@ public class GenteMove extends GridMove {
                 addTessera (tessera);
             }
         }
-    
+
+        @Transient
         public ArrayList<Color> getTeamColors () {
-                if (teamColors == null) {
-                        teamColors = new ArrayList<Color>();
-                        GentePlayer player = (GentePlayer) this.player;
-            teamColors.add (player.getPartner().getColor());
-                    teamColors.add(this.player.getColor());
-                }
+            if (teamColors == null) {
+                teamColors = new ArrayList<Color>();
+                GentePlayer player = (GentePlayer) this.player;
+                teamColors.add (player.getPartner().getColor());
+                teamColors.add(this.player.getColor());
+            }
                 
-                return teamColors;
+            return teamColors;
         }
 
-    public void setTeamColors (ArrayList<Color> colors) {
-        teamColors = colors;
-    }
-        
-        /**
-         * Gets the Tesseras that this move created.  
-         */
-        public HashSet<BeadString> getTesseras () {
-                if (tesseras == null)
-                        tesseras = new HashSet<BeadString> ();          
-                return tesseras;
+        public void setTeamColors (ArrayList<Color> colors) {
+            teamColors = colors;
         }
-        
-        public void setTesseras (HashSet<BeadString> new_tesseras) {
+
+        /**
+         * Gets the Tesseras that this move created.
+         */
+        @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+        @JoinColumn(nullable=true)
+        public Set<BeadString> getTesseras () {
+            return tesseras;
+        }
+
+        public void setTesseras (Set<BeadString> new_tesseras) {
                 tesseras = new_tesseras;
         }
         
@@ -147,9 +144,9 @@ public class GenteMove extends GridMove {
          * @return the qualifier
          */
         public String getQualifier() {
-        if (qualifier == null)
-            qualifier = CooperationQualifier.NEUTRAL;
-                return qualifier.name();
+            if (qualifier == null)
+                qualifier = CooperationQualifier.NEUTRAL;
+            return qualifier.name();
         }
 
         /**
@@ -159,15 +156,7 @@ public class GenteMove extends GridMove {
          *            the cooperation qualifier
          */
         public void setQualifier(String qualifier) {
-        if (qualifier != null)
-                    this.qualifier = CooperationQualifier.valueOf(qualifier);
-        }
-
-        /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.interfaces.Move#setPlayer(mx.ecosur.multigame.model.interfaces.Agent)
-         */
-        public void setPlayer(GamePlayer player) {
-                this.player = (GentePlayer) player;
+            this.qualifier = CooperationQualifier.valueOf(qualifier);
         }
 
         /* (non-Javadoc)
@@ -186,58 +175,63 @@ public class GenteMove extends GridMove {
             return ret.toString();
         }
 
-@Override
-    public int hashCode() {
-       int curCode = 1, destCode = 1;
-       if (current != null)
-        curCode = curCode - current.hashCode();
-       if (destination != null)
-         destCode = destCode + destination.hashCode();
-       return 31 * curCode + destCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        boolean ret = false;
-        if (obj instanceof GenteMove) {
-            GenteMove comparison = (GenteMove) obj;
-            if (current != null && destination !=null) {
-                ret = current.equals( (comparison.getCurrentCell())) &&
-                      destination.equals(comparison.getDestinationCell());
-            } else if (destination != null) {
-                ret = destination.equals(comparison.getDestinationCell());
-              }
+        @Override
+        public int hashCode() {
+           int curCode = 1, destCode = 1;
+           if (current != null)
+            curCode = curCode - current.hashCode();
+           if (destination != null)
+             destCode = destCode + destination.hashCode();
+           return 31 * curCode + destCode;
         }
 
-        return ret;
-    }
-
-    @Override
-    protected Object clone() {
-       GenteMove ret = new GenteMove ();
-        try {
-            if (current != null)
-                ret.current = current.clone();
-            if (destination != null)
-                ret.destination = destination.clone();
-            GentePlayer p = (GentePlayer) this.player;
-            ret.player = (GridPlayer) p.clone();
-            ret.qualifier = this.qualifier;
-            ret.teamColors = new ArrayList<Color>();            
-            ret.tesseras = new LinkedHashSet<BeadString>();
-            for (BeadString string : getTesseras()) {
-                ret.tesseras.add((BeadString) string.clone());
+        @Override
+        public boolean equals(Object obj) {
+            boolean ret = false;
+            if (obj instanceof GenteMove) {
+                GenteMove comparison = (GenteMove) obj;
+                if (current != null && destination !=null) {
+                    ret = current.equals( (comparison.getCurrentCell())) &&
+                          destination.equals(comparison.getDestinationCell());
+                } else if (destination != null) {
+                    ret = destination.equals(comparison.getDestinationCell());
+                  }
             }
 
-            ret.trias = new LinkedHashSet<BeadString>();
-            for (BeadString string : getTrias()) {
-                ret.trias.add((BeadString) string.clone());
-            }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();  
+            return ret;
         }
 
-        return ret;
-    }
+        @Override
+        protected Object clone() {
+           GenteMove ret = new GenteMove ();
+            try {
+                if (current != null)
+                    ret.current = current.clone();
+                if (destination != null)
+                    ret.destination = destination.clone();
+                GentePlayer p = (GentePlayer) this.player;
+                ret.player = (GridPlayer) p.clone();
+                ret.qualifier = this.qualifier;
+                ret.teamColors = new ArrayList<Color>();
+                if (getTesseras() != null) {
+                    ret.tesseras = new LinkedHashSet<BeadString>();
+                    for (BeadString string : getTesseras()) {
+                        ret.tesseras.add((BeadString) string.clone());
+                    }
+                }
+
+                if (getTrias() != null) {
+                    ret.trias = new LinkedHashSet<BeadString>();
+                    for (BeadString string : getTrias()) {
+                        ret.trias.add((BeadString) string.clone());
+                    }
+                }
+
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+
+            return ret;
+        }
 }
 
