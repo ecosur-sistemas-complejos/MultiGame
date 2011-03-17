@@ -15,11 +15,7 @@ package mx.ecosur.multigame.grid.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.model.interfaces.ChatMessage;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
@@ -48,7 +44,8 @@ public class GridChatMessage implements ChatMessage {
             this.id = id;
     }
 
-    public GamePlayer getSender() {
+    @OneToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    public GridPlayer getSender() {
         return sender;
     }
 
@@ -65,18 +62,12 @@ public class GridChatMessage implements ChatMessage {
         this.dateSent = dateSent.getTime();
     }
 
+    @Basic
     public String getBody() {
         return body;
     }
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.ChatMessage#setAgent(mx.ecosur.multigame.model.interfaces.Agent)
-     */
-    public void setSender(GamePlayer agent) {
-        this.sender = (GridPlayer) agent;
     }
 }

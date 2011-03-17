@@ -27,8 +27,8 @@ import mx.ecosur.multigame.model.interfaces.Registrant;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @NamedQueries( {
-        @NamedQuery(name = "getRegistrantByName", 
-                        query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name")
+    @NamedQuery(name = "Registrant.GetByName",
+        query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name")
 })
 @Entity
 public class GridRegistrant implements Registrant, Cloneable {

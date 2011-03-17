@@ -61,7 +61,7 @@ public interface SharedBoardInterface {
      *
      * @param chatMessage
      */
-    public void addMessage(ChatMessage chatMessage);
+    public ChatMessage addMessage(ChatMessage chatMessage);
 
     /**
      * Updates a move (with user input information, for example)

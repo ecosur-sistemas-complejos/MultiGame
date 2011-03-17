@@ -13,18 +13,18 @@
  *
  */
 
-package mx.ecosur.multigame.grid;
+package mx.ecosur.multigame.grid.comparator;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-import mx.ecosur.multigame.model.interfaces.Cell;
+import mx.ecosur.multigame.grid.model.GridCell;
 
-public class CellComparator implements Comparator<Cell>, Serializable {
+public class CellComparator implements Comparator<GridCell>, Serializable {
 
     private static final long serialVersionUID = 1192095593909731426L;
 
-    public int compare(Cell cell1, Cell cell2) {
+    public int compare(GridCell cell1, GridCell cell2) {
         int ret = 0;
         if (cell1 == null || cell2 == null)
                 return ret;

@@ -34,21 +34,6 @@
                 </resources>
             </build>
         </profile>
-        <profile>
-            <id>toplink</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/toplink/META-INF</directory>
-                        <targetPath>META-INF</targetPath>
-                        <filtering>true</filtering>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
     </profiles>
     <dependencies>
     <dependency>

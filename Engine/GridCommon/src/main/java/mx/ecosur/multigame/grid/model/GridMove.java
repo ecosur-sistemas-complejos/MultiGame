@@ -19,12 +19,13 @@ package mx.ecosur.multigame.grid.model;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.grid.comparator.MoveComparator;
 import mx.ecosur.multigame.model.interfaces.Cell;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 
 @Entity
-public class GridMove implements Move, Cloneable {
+public class GridMove implements Move, Cloneable, Comparable {
 
         private static final long serialVersionUID = 8017901476308051472L;
         private int id;
@@ -35,58 +36,58 @@ public class GridMove implements Move, Cloneable {
         private MoveStatus status;
 
         public GridMove() {
-                super();
-                this.status = MoveStatus.UNVERIFIED;
-                this.current = null;
-                this.destination = null;
-                this.player = null;
+            super();
+            this.status = MoveStatus.UNVERIFIED;
+            this.current = null;
+            this.destination = null;
+            this.player = null;
         }
 
         public GridMove(GridPlayer player, GridCell destination) {
-                this.player = player;
-                this.current = null;
-                this.destination = destination;
-                this.status = MoveStatus.UNVERIFIED;
+            this.player = player;
+            this.current = null;
+            this.destination = destination;
+            this.status = MoveStatus.UNVERIFIED;
         }
 
         public GridMove(GridPlayer player, GridCell current, GridCell destination) {
-                this.player = player;
-                this.current = current;
-                this.destination = destination;
-                this.status = MoveStatus.UNVERIFIED;
+            this.player = player;
+            this.current = current;
+            this.destination = destination;
+            this.status = MoveStatus.UNVERIFIED;
         }
 
         @Id
         @GeneratedValue
         public int getId() {
-                return id;
+            return id;
         }
 
         public void setId(int id) {
-                this.id = id;
+            this.id = id;
         }
 
-        @OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
+        @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
         public GridCell getDestinationCell() {
-                return this.destination;
+            return this.destination;
         }
 
         public void setDestinationCell(GridCell destination) {
-                this.destination = destination;
+            this.destination = destination;
         }
 
-        @OneToOne  (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
+        @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
         public GridCell getCurrentCell() {
-                return this.current;
+            return this.current;
         }
 
         public void setCurrentCell(GridCell current) {
-                this.current = current;
+            this.current = current;
         }
 
         @OneToOne  (cascade={CascadeType.ALL},fetch=FetchType.EAGER)
         public GridPlayer getPlayer() {
-                return this.player;
+            return this.player;
         }
 
         public void setPlayer(GridPlayer player) {
@@ -95,7 +96,7 @@ public class GridMove implements Move, Cloneable {
 
         @Transient
         public GamePlayer getPlayerModel () {
-                return player;
+            return player;
         }
         
         @Transient
@@ -108,7 +109,7 @@ public class GridMove implements Move, Cloneable {
          */
         @Enumerated(EnumType.STRING)
         public MoveStatus getStatus() {
-                return status;
+            return status;
         }
 
         /**
@@ -116,7 +117,7 @@ public class GridMove implements Move, Cloneable {
          *            the status to set
          */
         public void setStatus(MoveStatus status) {
-                this.status = status;
+            this.status = status;
         }
         
         /* (non-Javadoc)
@@ -142,5 +143,10 @@ public class GridMove implements Move, Cloneable {
         protected Object clone () throws CloneNotSupportedException {
         return super.clone();
     }
-        
+
+    @Override
+    public int compareTo(Object o) {
+        MoveComparator m = new MoveComparator();
+        return m.compare(this, (GridMove) o);
+    }
 }

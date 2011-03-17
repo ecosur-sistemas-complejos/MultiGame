@@ -77,7 +77,7 @@ public enum Color {
     }
 
     public static Color[] playable() {
-            Color[] ret = { BLUE, GREEN, YELLOW, RED, PURPLE, BLACK};
+            Color[] ret = { YELLOW, BLUE, PURPLE, RED, GREEN, BLACK};
             return ret;
     }
 }

@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.Color;
 
 import mx.ecosur.multigame.model.interfaces.Cell;

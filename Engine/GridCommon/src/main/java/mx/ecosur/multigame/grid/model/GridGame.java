@@ -27,17 +27,19 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.KnowledgeBase;
-
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 @NamedQueries( {
-    @NamedQuery(name = "getGameById", query = "select g from GridGame g where g.id=:id"),
-    @NamedQuery(name = "getCurrentGames",
+    @NamedQuery(name = "GridGame.GetCurrentGames",
         query = "SELECT gme FROM GridGame AS gme JOIN gme.players AS player " +
             "WHERE gme.state <> :state AND player.registrant = :registrant AND " +
             "player MEMBER OF gme.players"),
-    @NamedQuery(name = "getAvailableGames",
+    @NamedQuery(name = "GridGame.GetAvailableGames",
         query = "SELECT DISTINCT gme FROM GridGame AS gme LEFT JOIN gme.players as player " +
             "WHERE gme.state = :state AND player.registrant <> :registrant AND " +
             "player MEMBER OF gme.players")
@@ -51,7 +53,7 @@ public abstract class GridGame implements Game, Cloneable {
 
     protected long created;
 
-    protected List<GridPlayer> players;
+    protected SortedSet<GridPlayer> players;
 
     protected Set<GridMove> moves;
 
@@ -71,7 +73,8 @@ public abstract class GridGame implements Game, Cloneable {
 
     public GridGame () {
         super();
-        players = new ArrayList<GridPlayer> ();
+        players = new TreeSet<GridPlayer>();
+        moves = new TreeSet<GridMove>();
         grid = new GameGrid();
     }
 
@@ -107,24 +110,25 @@ public abstract class GridGame implements Game, Cloneable {
     /**
      * @return the players
      */
-    @OneToMany (cascade={CascadeType.PERSIST}, fetch=FetchType.EAGER)
-    public List<GridPlayer> getPlayers() {
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @Sort(type= SortType.COMPARATOR, comparator=PlayerComparator.class)
+    public SortedSet<GridPlayer> getPlayers() {
         return players;
     }
 
     /**
      * @param players the players to set
      */
-    public void setPlayers(List<GridPlayer> players) {
-            this.players = players;
+    public void setPlayers(SortedSet<GridPlayer> players) {
+        this.players = players;
     }
 
     /**
      * @return the grid
      */
-    @OneToOne  (cascade={CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
+    @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public GameGrid getGrid() {
-            return grid;
+        return grid;
     }
 
     /**
@@ -235,7 +239,7 @@ public abstract class GridGame implements Game, Cloneable {
         for (GridMove move : moves) {
             ret.add(move);
         }
-        
+
         return ret;
     }
 
@@ -256,15 +260,13 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
-        if (moves == null)
-            moves = new TreeSet<GridMove>(new MoveComparator());
         return moves;
     }
 
     public void setMoves (Set<GridMove> moves) {
-        this.moves =new TreeSet<GridMove>(new MoveComparator());
-        this.moves.addAll(moves);
+        this.moves = moves;
     }
 
     @Transient

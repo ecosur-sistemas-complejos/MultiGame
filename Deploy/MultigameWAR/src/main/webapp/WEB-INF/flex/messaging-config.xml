@@ -16,7 +16,7 @@
             <jms>               
                 <destination-type>Topic</destination-type>
                 <message-type>javax.jms.ObjectMessage</message-type>
-                <connection-factory>jms/TopicConnectionFactory</connection-factory>
+                <connection-factory>ConnectionFactory</connection-factory>
                 <destination-jndi-name>MultiGame</destination-jndi-name>
                 <delivery-mode>NON_PERSISTENT</delivery-mode>
                 <message-priority>DEFAULT_PRIORITY</message-priority>

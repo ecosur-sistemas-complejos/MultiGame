@@ -75,17 +75,18 @@ public class GenteAgentTest extends GenteTestBase {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
                     Set<Move> moves = agent.determineMoves(game);
                     for (Move move : moves) {
-                        game.move(move);
-                        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-                        moved = true;
-                        break;
+                        if (move != null) {
+                            game.move(move);
+                            assertEquals (MoveStatus.EVALUATED, move.getStatus());
+                            moved = true;
+                            break;
+                        }
                     }
                  }
                  counter--;
             }
 
-            if (!moved)
-                fail();
+            assertTrue("Not moved!", moved);
         }
 
     }
@@ -110,16 +111,18 @@ public class GenteAgentTest extends GenteTestBase {
                     GenteStrategyAgent agent = (GenteStrategyAgent) player;
                     Set<Move> moves = agent.determineMoves(game);
                     for (Move move : moves) {
-                        game.move(move);
-                        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-                        moved = true;
-                        break;
+                        if (move != null) {
+                            game.move(move);
+                            assertEquals (MoveStatus.EVALUATED, move.getStatus());
+                            moved = true;
+                            break;
+                        }
                     }
                     counter--;
                  }
             }
-            if (!moved)
-                fail();
+
+            assertTrue ("Not moved!", moved);
         }
     }
 

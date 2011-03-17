@@ -19,10 +19,10 @@ package mx.ecosur.multigame.impl.util.gente;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.grid.enums.Vertice;
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.impl.event.gente.MoveEvent;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
@@ -62,9 +62,9 @@ public class RuleFunctions {
     public static int scorePlayer (GenteMove move) {
         int ret = 0;
         GentePlayer player = (GentePlayer) move.getPlayer();
-        if (player.getTrias().size() >= 2)
+        if (player.getTrias() != null && player.getTrias().size() >= 2)
             ret = 10;
-        else if (player.getTesseras().size() >= 3)
+        else if (player.getTesseras() != null && player.getTesseras().size() >= 3)
             ret = 5;
         return ret;
     }
@@ -74,13 +74,25 @@ public class RuleFunctions {
         player.setTurn(false);
 
         /* Find next player */
-        List<GridPlayer> players = game.getPlayers();
-        int playerNumber = players.indexOf(player);
+        Set<GridPlayer> players = game.getPlayers();
+        GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
+        int playerNumber = -1;
+
+        for (int i = 0; i < gps.length; i++) {
+            if (gps [ i ].equals(player)) {
+                playerNumber = i;
+                break;
+            }
+        }
+
+        if (playerNumber == -1)
+            throw new RuntimeException ("Unable to find player: " + player + " in set " + gps);
+
         GridPlayer nextPlayer = null;
-        if (playerNumber == players.size() - 1) {
-            nextPlayer = players.get(0);
+        if (playerNumber == gps.length - 1) {
+            nextPlayer = gps [ 0 ];
         } else {
-            nextPlayer = players.get(playerNumber + 1);
+            nextPlayer = gps [playerNumber + 1];
         }
 
         nextPlayer.setTurn (true);

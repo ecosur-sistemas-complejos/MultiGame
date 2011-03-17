@@ -328,11 +328,12 @@ public class GameService {
         return impl.getMoves();
     }
 
-    public Set<ManantialesMove> getMoves (int gameId, Mode mode) {
+    public Set<GridMove> getMoves (int gameId, Mode mode) {
         SharedBoardRemote sharedBoard = getSharedBoard();
         Game game = sharedBoard.getGame(gameId);
         ManantialesGame mg = (ManantialesGame) game;
-        return mg.getMoves(mode);                        
+        mg.setMode(mode);
+        return mg.getMoves();
     }
 
     public GridMove updateMove(GridMove move) {

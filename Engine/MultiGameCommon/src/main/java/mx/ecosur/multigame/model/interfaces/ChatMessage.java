@@ -15,8 +15,10 @@ import java.io.Serializable;
 
 public interface ChatMessage extends Serializable {
 
+    public int getId();
+
     public GamePlayer getSender();
 
-    public void setSender (GamePlayer agent);
+    public String getBody();
 
 }

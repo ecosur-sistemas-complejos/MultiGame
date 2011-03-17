@@ -15,21 +15,18 @@
 
 package mx.ecosur.multigame.grid.model;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import java.io.IOException;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class GridPlayer implements GamePlayer {
+public class GridPlayer implements Comparable, GamePlayer {
 
     private static final long serialVersionUID = -1893870933080422147L;
 
@@ -47,6 +44,7 @@ public class GridPlayer implements GamePlayer {
 
     public GridPlayer () {
         super();
+
     }
 
     public GridPlayer (GridRegistrant player, Color color) {
@@ -90,15 +88,8 @@ public class GridPlayer implements GamePlayer {
     }
 
     @Override
-    public String toString() {
-        return player.getName() + ", " + color.name() + ", turn=" + turn;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         boolean ret = false;
-
-        /* Simple equality test based upon stated "name" of associated registrant */
         if (obj instanceof GridPlayer) {
             GridPlayer test = (GridPlayer) obj;
             if (test.getRegistrant().getName().equals(this.getRegistrant().getName()))
@@ -113,4 +104,19 @@ public class GridPlayer implements GamePlayer {
         return new HashCodeBuilder().append(id).append(color).append(player).append(turn).toHashCode();
     }
 
+    @Override
+    public String toString() {
+        return player.getName() + ", " + color.name() + ", turn=" + turn;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof GridPlayer) {
+            GridPlayer b = (GridPlayer) o;
+            PlayerComparator c = new PlayerComparator();
+            return c.compare(this, b);
+        } else {
+            return 0;
+        }
+    }
 }

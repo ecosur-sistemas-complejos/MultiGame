@@ -52,8 +52,7 @@ public class PasaleGame extends GridGame {
         setColumns(DIMENSIONS);
         setState(GameState.WAITING);
         setCreated(new Date());
-        if (grid.getCells().size() == 0)
-            grid = createGrid();
+        grid = createGrid();
     }
 
 

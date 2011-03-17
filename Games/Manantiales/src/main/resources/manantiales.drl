@@ -39,6 +39,7 @@ import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -55,7 +56,7 @@ when
 then
     Random random = new Random();
     int start = random.nextInt(4);
-    List<GridPlayer> players = $game.getPlayers();
+    SortedSet<GridPlayer> players = $game.getPlayers();
     for (GridPlayer p : players) {
         p.setTurn(false);
         if (p.getColor().equals(Color.YELLOW))
@@ -779,7 +780,7 @@ when
         Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     eval (isSolved ($mode, $game))
 then
-    List<GridPlayer> players = $game.getPlayers();
+    SortedSet<GridPlayer> players = $game.getPlayers();
     Random random = new Random();
     int index = random.nextInt(4);
     for (GridPlayer p : players) {
@@ -817,7 +818,7 @@ when
     $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
     eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
 then
-    List<GridPlayer> players = $game.getPlayers();
+    SortedSet<GridPlayer> players = $game.getPlayers();
     Random random = new Random();
     int index = random.nextInt(4);
     for (GridPlayer p : players) {

@@ -32,19 +32,33 @@ public class RuleFunctions {
     }
 
     public static PasalePlayer incrementTurn (PasaleGame game, PasaleMove move) {
-        PasalePlayer player = (PasalePlayer) move.getPlayer();
+        GridPlayer player = move.getPlayer();
         player.setTurn(false);
 
-        List<GridPlayer> players = game.getPlayers();
-        int playerNumber = players.indexOf(player);
-        PasalePlayer nextPlayer = null;
-        if (playerNumber == players.size() - 1) {
-            nextPlayer = (PasalePlayer) players.get(0);
-        } else {
-            nextPlayer = (PasalePlayer) players.get(playerNumber + 1);
+        /* Find next player */
+        Set<GridPlayer> players = game.getPlayers();
+        GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
+        int playerNumber = -1;
+
+        for (int i = 0; i < gps.length; i++) {
+            if (gps [ i ].equals(player)) {
+                playerNumber = i;
+                break;
+            }
         }
+
+        if (playerNumber == -1)
+            throw new RuntimeException ("Unable to find player: " + player + " in set " + gps);
+
+        GridPlayer nextPlayer = null;
+        if (playerNumber == gps.length - 1) {
+            nextPlayer = gps [ 0 ];
+        } else {
+            nextPlayer = gps [playerNumber + 1];
+        }
+
         nextPlayer.setTurn (true);
-        return nextPlayer;
+        return (PasalePlayer) nextPlayer;
     }
 
     public static boolean isBorder (PasaleFicha ficha, int [] edges) {

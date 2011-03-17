@@ -46,6 +46,7 @@ public class ManantialesFicha extends GridCell {
     /**
      * @return theScore
      */
+    @Transient
     public int score () {
         int ret = 0;
         if (type != null)

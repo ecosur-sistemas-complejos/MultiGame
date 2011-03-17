@@ -10,8 +10,8 @@ package mx.ecosur.multigame.test;
 import static junit.framework.Assert.*;
 
 import mx.ecosur.multigame.grid.enums.Vertice;
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.Color;
 import org.junit.Test;
 

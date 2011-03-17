@@ -66,99 +66,25 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
      */
     public Game getGame(int gameId) {
-        /** TODO:  Inject or make this query static */
-        Query query = em.createNamedQuery("getGameById");
-        query.setParameter("id", gameId);
-        Game impl;
-        try {
-            impl = (Game) query.getSingleResult();
-        } catch (NoResultException e) {
-            throw new RuntimeException ("UNABLE TO FIND GAME WITH ID: " + gameId);
-        }
-
-        Game game = impl;
+        // Todo:  This should be removed, or generalized */
+        Game game = em.find(GridGame.class, gameId);
+        if (game == null)
+            throw new RuntimeException ("Unable to find GridGame with id: " + gameId);
         game.setMessageSender(messageSender);
         return game;
     }
 
     public void shareGame (Game impl) {
-        try {
-            em.merge(impl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        em.merge(impl);
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
-        /* Refresh a detached GamePlayer in the Move */
-        GamePlayer player = move.getPlayerModel ();
-
-        /* Refresh a detached Game in GamePlayer */
-        if (!em.contains (game))
-            game = em.find (game.getClass(),game.getId());
-
-        if (!em.contains (player))
-            player = em.find(player.getClass(), player.getId());
-
-        move.setPlayerModel (player);
-
-
-        /* Refresh any detached GridCells */
-        Cell current = move.getCurrentCell();
-        Cell dest = move.getDestinationCell();
-
-
-        if (current != null) {
-            if (!em.contains (current)) {
-                Cell impl = (em.find (
-                    current.getClass(), current.getId()));
-                if (impl != null)
-                    current = impl;
-            }
-
-            move.setCurrentCell (current);
-        }
-
-        if (dest != null) {
-            if (!em.contains (dest)) {
-                Cell impl = (em.find (dest.getClass(), dest.getId()));
-                if (impl != null)
-                    dest = impl;
-            }
-            move.setDestinationCell (dest);
-        }
-
-        if (!em.contains(move) && move.getId() == 0) {
-            em.persist(move);
-        }
-        else {
-            Move test = em.find (move.getClass(), move.getId());
-            if (test != null)
-                move = test;
-        }
-            /* Load the Kbase */
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (game.getChangeSet())),
-                ResourceType.CHANGE_SET);
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() == 0)
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        else {
-            for (KnowledgeBuilderError error : errors) {
-                System.out.println(error);
-            }
-
-            throw new RuntimeException ("Unable to load rule base!");
-        }
-
-        /* Embed the kbase into the game */
-        ((GridGame) game).setKbase(kbase);
-
-            /* Execute the move */
+        /* Refresh game */
+        game = em.find(game.getClass(), game.getId());
+        move = em.merge(move);
         game.setMessageSender(messageSender);
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
@@ -168,149 +94,31 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
-
-        /* Refresh a detached Game */
-        if (!em.contains (game))
-            game = em.find (game.getClass(), game.getId());
-        else
-            em.refresh (game);
-
-            /* Refresh a detached GamePlayer in the Suggestion */
-        GamePlayer player = suggestion.listSuggestor();
-
-        if (!em.contains (player)) {
-            player = em.find(player.getClass(), player.getId());
-            suggestion.attachSuggestor (player);
-        }
-
-        /* Refresh any detached GridCells and Move */
-        Move move = suggestion.listMove();
-        Cell current = move.getCurrentCell();
-        Cell dest = move.getDestinationCell();
-
-        if (current != null) {
-            if (!em.contains (current)) {
-                Cell impl = (em.find (
-                    current.getClass(), current.getId()));
-                if (impl != null)
-                    current = impl;
-                else
-                    em.persist(current);
-            }
-        }
-
-        if (dest != null) {
-            if (!em.contains (dest)) {
-                Cell impl = (em.find (
-                    dest.getClass(), dest.getId()));
-                if (impl != null)
-                    dest = impl;
-                else
-                    em.persist(dest);
-            }
-
-        }
-
-        move.setCurrentCell (current);
-        move.setDestinationCell (dest);
-
-            /* Refresh a detached GamePlayer in the Move */
-        player = move.getPlayerModel();
-
-        if (!em.contains (player)) {
-            player = em.find(player.getClass(), player.getId());
-            move.setPlayerModel(player);
-        }
-
-        if (!em.contains(move)) {
-            Move impl = em.find (move.getClass(), move.getId());
-            if (impl != null) {
-                impl.setStatus(move.getStatus());
-                move = impl;
-            } else {
-                em.persist(move);
-            }
-        }
-
-        suggestion.attachMove(move);
-
-        /* If suggestion has no id, it should be persisted, otherwise reattach */
-        if (!em.contains (suggestion)) {
-            if (suggestion.getId() == 0)
-                em.persist (suggestion);
-            else {
-                Suggestion impl = em.find (suggestion.getClass(), suggestion.getId());
-                if (impl != null) {
-                    impl.setStatus(suggestion.getStatus());
-                    suggestion = impl;
-                }
-            }
-        }
-        
-            /* Make the suggestion */
+        game = em.find(game.getClass(),game.getId());
+        em.merge(suggestion);
         game.setMessageSender(messageSender);
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (game.getChangeSet())),
-                ResourceType.CHANGE_SET);
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() == 0)
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        else {
-            for (KnowledgeBuilderError error : errors) {
-                System.out.println(error);
-            }
-
-            throw new RuntimeException ("Unable to load rule base!");
-        }
-
-
-        /* Embed the kbase into the game */
-        ((GridGame) game).setKbase(kbase);
-        Suggestion ret = game.suggest(suggestion);
-
+        suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
-            throw new InvalidSuggestionException ("INVALID Move.");        
-
-         /* Return the processed suggestion */
-        return ret;
+            throw new InvalidSuggestionException ("INVALID Move suggested!");
+        return suggestion;
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#getMoves(int)
      */
     public Collection<Move> getMoves(int gameId) {
-        Collection<Move> ret = null;
-
         Game game = getGame(gameId);
-        if (game != null)
-            ret = game.listMoves();
-
-        return ret;
+        return game.listMoves();
     }
 
-    public void addMessage(ChatMessage chatMessage) {
-        /* chat message sender may be detatched */
-        GamePlayer sender = chatMessage.getSender();
-        if (!em.contains(sender))
-            chatMessage.setSender(em.find(sender.getClass(), sender.getId()));
-        em.merge (chatMessage);
+    public ChatMessage addMessage(ChatMessage chatMessage) {
+        return em.merge (chatMessage);
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
      */
     public Move updateMove(Move move) {
-        /* Refresh the GamePlayer impl reference and proceed to merge any changes in
-         * the move back into the backend
-         */
-        if (!em.contains(move.getPlayerModel())) {
-            GamePlayer player = em.find (move.getPlayerModel().getClass(), move.getPlayerModel().getId());
-            move.setPlayerModel(player);
-        }
-
-        em.merge(move);
-        return move;
+        return em.merge(move);
     }
 }

@@ -18,6 +18,7 @@ import java.util.*;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
 
@@ -229,7 +230,7 @@ public class Search implements Serializable {
                     addString (ret, v, string);
             } else {
                 /* Joined Case */
-                TreeSet<GridCell> cells = string.getBeads();
+                SortedSet<GridCell> cells = string.getBeads();
                 BeadString top = new BeadString ();
                 BeadString bottom = new BeadString ();
                 for (GridCell cell : cells) {

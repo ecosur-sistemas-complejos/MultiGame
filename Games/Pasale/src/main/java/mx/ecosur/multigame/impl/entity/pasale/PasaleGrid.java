@@ -13,11 +13,12 @@ package mx.ecosur.multigame.impl.entity.pasale;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.SortedSet;
 
@@ -30,9 +31,41 @@ import java.util.SortedSet;
  */
 @Entity
 public class PasaleGrid extends GameGrid {
+
+    /*
+    @Override
+    public GridCell getLocation(GridCell location) {
+        PasaleFicha ficha = (PasaleFicha) location;
+
+        GridCell ret = null;
+        Set<GridCell> cells = getCells();
+
+        if (location != null) {
+            TreeSet<GridCell> treeSet = new TreeSet<GridCell>(new CellComparator());
+            for (GridCell cell : cells) {
+                treeSet.add(cell);
+            }
+
+            CellComparator comparator = (CellComparator) treeSet.comparator();
+            SortedSet<GridCell> sublist = treeSet.tailSet(location);
+
+            for (GridCell c : sublist) {
+                PasaleFicha f = (PasaleFicha) c;
+                int value = comparator.compare(location, c);
+                if (value == 0 && ficha.getType().equals(f.getType())) {
+                    ret = c;
+                    break;
+                }
+            }
+        }
+
+        return ret;
+    }
+    */
+
     /**
      *
-     * Gets the sqaure of cells centered on this ficha. Note these are the 4 cells that
+     * Gets the square of cells centered on this ficha. Note these are the 4 cells that
      * immediately surround the passed in Ficha. So, in the case of a particle (water
      * or soil) it will return what exists of the surrounding forest.  For
      * forest it will return the surrounding particles.

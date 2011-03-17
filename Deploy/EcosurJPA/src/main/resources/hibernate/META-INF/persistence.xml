@@ -5,9 +5,9 @@
     <persistence-unit name="MultiGamePU">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <!-- JBoss -->
-        <jta-data-source>java:jdbc/__default</jta-data-source>
-        <!-- Glassfish -->
-        <!--jta-data-source>jdbc/__default</jta-data-source-->
+        <!-- jta-data-source>java:jdbc/__default</jta-data-source-->
+        <!--Glassfish -->
+        <jta-data-source>jdbc/__default</jta-data-source>
         <!-- Derby -->
         <class>mx.ecosur.multigame.grid.Color</class>
         <class>mx.ecosur.multigame.grid.model.GameGrid</class>
@@ -17,7 +17,7 @@
         <class>mx.ecosur.multigame.grid.model.GridMove</class>
         <class>mx.ecosur.multigame.grid.model.GridPlayer</class>
         <class>mx.ecosur.multigame.grid.model.GridRegistrant</class>
-        <class>mx.ecosur.multigame.grid.util.BeadString</class>
+        <class>mx.ecosur.multigame.grid.model.BeadString</class>
         <!-- Game entities -->
         <!-- Gente -->
         <class>mx.ecosur.multigame.impl.entity.gente.GenteGame</class>

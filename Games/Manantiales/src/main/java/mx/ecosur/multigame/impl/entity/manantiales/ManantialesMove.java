@@ -10,6 +10,7 @@
  */
 package mx.ecosur.multigame.impl.entity.manantiales;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -54,6 +55,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         this.swap = swap;
     }
 
+    @Basic
     public boolean isSwap() {
         return swap;
     }
@@ -62,6 +64,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         this.swap = swap;
     }
 
+    @Enumerated(EnumType.STRING)
     public TokenType getType () {
         if (getDestinationCell() == null)
             type = TokenType.UNKNOWN;
@@ -77,6 +80,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         this.type = type;
     }
 
+    @Enumerated
     public TokenType getReplacementType() {
         if (replacementType == null) {
             replacementType = TokenType.UNKNOWN;
@@ -93,6 +97,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         this.replacementType = replacementType;
     }
 
+    @Basic
     public boolean isBadYear () {
         return badYear;
     }
@@ -101,6 +106,7 @@ public class ManantialesMove extends GridMove implements Comparable {
         badYear = year;
     }
 
+    @Basic
     public boolean isPremium () {
         return premium;
     }

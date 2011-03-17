@@ -21,25 +21,21 @@ package mx.ecosur.multigame.grid.model;
 import java.io.Serializable;
 import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
-import mx.ecosur.multigame.grid.CellComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 
 @Entity
 public class GameGrid implements Serializable, Cloneable {
 
     private static final long serialVersionUID = -2579204312184918693L;
 
-    TreeSet<GridCell> cells;
+    Set<GridCell> cells;
 
     private int id;
 
     public GameGrid () {
-        cells = new TreeSet<GridCell>(new CellComparator());
+        cells = new LinkedHashSet<GridCell>();
     }
 
     /**
@@ -61,9 +57,15 @@ public class GameGrid implements Serializable, Cloneable {
 
     public GridCell getLocation (GridCell location) {
         GridCell ret = null;
+
         if (location != null) {
-            CellComparator comparator = (CellComparator) cells.comparator();
-            SortedSet<GridCell> sublist = cells.tailSet(location);
+            TreeSet<GridCell> treeSet = new TreeSet<GridCell>(new CellComparator());
+            for (GridCell cell : cells) {
+                treeSet.add(cell);
+            }
+
+            CellComparator comparator = (CellComparator) treeSet.comparator();
+            SortedSet<GridCell> sublist = treeSet.tailSet(location);
 
             for (GridCell c : sublist) {
                 int value = comparator.compare(location, c);
@@ -78,6 +80,8 @@ public class GameGrid implements Serializable, Cloneable {
     }
 
     public void updateCell (GridCell cell) {
+        if (cells == null)
+            cells = new LinkedHashSet<GridCell>();
         if (cells.contains(cell))
                 cells.remove(cell);
         cells.add(cell);
@@ -87,15 +91,13 @@ public class GameGrid implements Serializable, Cloneable {
         cells.remove(cell);
     }
 
-    @OneToMany (cascade={CascadeType.ALL})
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<GridCell> getCells () {
         return cells;
     }
 
     public void setCells(Set<GridCell> c){
-        if (cells == null)
-            cells = new TreeSet<GridCell>(new CellComparator());
-        cells.addAll(c);
+        cells = c;
     }
 
     public String toString () {

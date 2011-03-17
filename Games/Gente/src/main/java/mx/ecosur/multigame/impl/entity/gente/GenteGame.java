@@ -18,6 +18,7 @@ import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.model.*;
 import mx.ecosur.multigame.model.interfaces.Agent;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
@@ -26,8 +27,10 @@ import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 
+import org.drools.io.impl.InputStreamResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 import java.io.*;
@@ -50,20 +53,21 @@ public class GenteGame extends GridGame {
 
     private transient MessageSender messageSender;
 
-    private transient KnowledgeBase kbase;
+    private static KnowledgeBase kbase;
 
     public GenteGame () {
         super();
+        winners = new LinkedHashSet<GentePlayer>();
     }
 
     public GenteGame (KnowledgeBase kbase) {
         this.kbase = kbase;
     }
         
-    @OneToMany (fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set <GentePlayer> getWinners () {
         if (winners == null)
-            winners = new TreeSet<GentePlayer>(new PlayerComparator());
+            winners = new TreeSet<GentePlayer>(new GentePlayerComparator());
         return winners;
     }
 
@@ -71,7 +75,7 @@ public class GenteGame extends GridGame {
         this.winners = winners;
     }
 
-    static class PlayerComparator implements Serializable, Comparator <GentePlayer>{
+    static class GentePlayerComparator implements Serializable, Comparator <GentePlayer>{
 
         private static final long serialVersionUID = 8076875284327150645L;
 
@@ -136,7 +140,8 @@ public class GenteGame extends GridGame {
 
         if (moves == null)
             moves = new TreeSet<GridMove>(new MoveComparator());
-        moves.add((GenteMove) move);
+        if (move != null)
+            moves.add((GridMove) move);
         return move;
     }
         
@@ -148,7 +153,7 @@ public class GenteGame extends GridGame {
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
-                throw new InvalidRegistrationException ("Duplicate Registraton!");
+                return p;
         }
 
         int max = getMaxPlayers();
@@ -274,15 +279,19 @@ public class GenteGame extends GridGame {
 
         ret.created = System.currentTimeMillis();
         ret.id = this.getId();
-        ret.moves = new TreeSet<GridMove>(new MoveComparator());
-        for (GridMove move : getMoves()) {
-            GenteMove gm = (GenteMove) move;
-            ret.moves.add((GridMove) gm.clone());
+        if (getMoves() != null) {
+            ret.moves = new TreeSet<GridMove>(new MoveComparator());
+            for (GridMove move : getMoves()) {
+                GenteMove gm = (GenteMove) move;
+                ret.moves.add((GridMove) gm.clone());
+            }
         }
 
-        ret.players = new ArrayList<GridPlayer>();
-        for (GridPlayer player : getPlayers()) {
+        if (getPlayers() != null) {
+            ret.players = new TreeSet<GridPlayer>(new PlayerComparator());
+            for (GridPlayer player : getPlayers()) {
                 ret.players.add((GentePlayer) ((GentePlayer) player).clone());
+            }
         }
 
         ret.state = this.state;
@@ -292,9 +301,11 @@ public class GenteGame extends GridGame {
             kbase = findKBase();
         ret.kbase = kbase;
 
-        for (GentePlayer winner : getWinners()) {
+        if (getWinners() != null) {
+            for (GentePlayer winner : getWinners()) {
                 GentePlayer clone = (GentePlayer) winner.clone();
                 ret.winners.add(clone);
+            }
         }
 
         return ret;
@@ -303,9 +314,15 @@ public class GenteGame extends GridGame {
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            "/mx/ecosur/multigame/impl/gente.xml")), ResourceType.CHANGE_SET);
+        Resource resource = ResourceFactory.newInputStreamResource(
+                this.getClass().getResourceAsStream ("/mx/ecosur/multigame/impl/gente.xml"));
+        kbuilder.add(resource, ResourceType.CHANGE_SET);
         ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        try {
+            resource.getReader().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return ret;
     }
 
