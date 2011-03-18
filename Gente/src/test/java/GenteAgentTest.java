@@ -46,7 +46,7 @@ public class GenteAgentTest extends GenteTestBase {
 
 @Before
     public void setUp() throws Exception {
-        game = new GenteGame(gente);
+        game = new GenteGame();
         game.setMessageSender(new DummyMessageSender());
         a = new GridRegistrant ("alice");
         b = new GridRegistrant ("bob");

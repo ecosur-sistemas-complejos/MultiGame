@@ -54,7 +54,7 @@ rule "setup"
 when
     game : GenteGame (state == GameState.BEGIN)
 then
-    SortedSet<GridPlayer> players = game.getPlayers();
+    Set<GridPlayer> players = game.getPlayers();
     for (GridPlayer p : players) {
         if (p.getColor() == Color.YELLOW)
             p.setTurn(true);
@@ -134,7 +134,8 @@ rule "find-tesseras"
 when
     $event : MoveEvent (size == 4)
     eval (hasMultipleColors ($event))    
-    $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
+    $move  : GenteMove (status == MoveStatus.MOVED, $player : player, 
+        tesseras != null)
     eval (!$move.getTesseras().contains($event.toBeadString()))
     eval (!hasTessera((GentePlayer) $player, $event.toBeadString()))
 then
@@ -153,7 +154,7 @@ rule "find-trias"
     no-loop true    
 when
     $event : MoveEvent (size == 3)
-    $move  : GenteMove (status == MoveStatus.MOVED, $player : player)
+    $move  : GenteMove (status == MoveStatus.MOVED, $player : player, trias != null)
     eval (!hasMultipleColors ($event))
     eval (!hasTria((GentePlayer) $player, $event.toBeadString()))
 then

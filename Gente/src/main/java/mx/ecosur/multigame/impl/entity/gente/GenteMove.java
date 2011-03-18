@@ -81,6 +81,8 @@ public class GenteMove extends GridMove {
         @OneToMany(cascade=CascadeType.ALL, fetch= FetchType.EAGER)
         @JoinColumn(nullable=true)
         public Set<BeadString> getTrias () {
+            if (trias == null)
+                trias = new HashSet<BeadString>();
             return trias;
         }
         
@@ -131,6 +133,8 @@ public class GenteMove extends GridMove {
         @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
         @JoinColumn(nullable=true)
         public Set<BeadString> getTesseras () {
+            if (tesseras == null)
+                tesseras = new HashSet<BeadString>();
             return tesseras;
         }
 
@@ -143,10 +147,11 @@ public class GenteMove extends GridMove {
          * 
          * @return the qualifier
          */
-        public String getQualifier() {
+        @Enumerated(EnumType.STRING)
+        public CooperationQualifier getQualifier() {
             if (qualifier == null)
                 qualifier = CooperationQualifier.NEUTRAL;
-            return qualifier.name();
+            return qualifier;
         }
 
         /**
@@ -155,8 +160,8 @@ public class GenteMove extends GridMove {
          * @param qualifier
          *            the cooperation qualifier
          */
-        public void setQualifier(String qualifier) {
-            this.qualifier = CooperationQualifier.valueOf(qualifier);
+        public void setQualifier(CooperationQualifier qualifier) {
+            this.qualifier = qualifier;
         }
 
         /* (non-Javadoc)
