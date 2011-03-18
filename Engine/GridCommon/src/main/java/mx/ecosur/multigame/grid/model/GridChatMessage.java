@@ -31,7 +31,7 @@ public class GridChatMessage implements ChatMessage {
 
     private GridPlayer sender;
 
-    private long dateSent;
+    private Date dateSent;
 
     private String body;
 
@@ -55,11 +55,11 @@ public class GridChatMessage implements ChatMessage {
 
     @Temporal(TemporalType.DATE)
     public Date getDateSent() {
-        return new Date(dateSent);
+        return dateSent;
     }
 
     public void setDateSent(Date dateSent) {
-        this.dateSent = dateSent.getTime();
+        this.dateSent = dateSent;
     }
 
     @Basic

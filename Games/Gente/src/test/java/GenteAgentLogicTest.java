@@ -73,7 +73,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
                             fail("Destination [" + destination + "] does not block any available " +
                             "enemy moves!");
             } else if (destination.getColumn() == 9) {
-                    assertEquals (11, destination.getRow());
+                    assertEquals (8, destination.getRow());
             } else if (destination.getColumn() == 13) {
                     assertEquals (7, destination.getRow());
             } else

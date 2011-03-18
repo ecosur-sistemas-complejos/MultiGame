@@ -19,6 +19,7 @@ import mx.ecosur.multigame.grid.model.BeadString;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.model.interfaces.Agent;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.HashSet;
@@ -64,6 +65,8 @@ public class GentePlayer extends GridPlayer {
     @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
     @JoinColumn(nullable=true)
     public Set<BeadString> getTrias() {
+        if (trias == null)
+            trias = new HashSet<BeadString>();
         return trias;
     }
 
@@ -73,17 +76,15 @@ public class GentePlayer extends GridPlayer {
 
     @Transient
     public void addTria (BeadString tria) {
-        if (trias == null) {
-            trias = new HashSet<BeadString> ();
-        }
-
         if (tria.size() == 3)
-            trias.add (tria);
+            getTrias().add(tria);
     }
 
     @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
     @JoinColumn(nullable=true)
     public Set<BeadString> getTesseras() {
+        if (tesseras == null)
+            tesseras = new HashSet<BeadString>();
         return tesseras;
     }
 
@@ -93,12 +94,8 @@ public class GentePlayer extends GridPlayer {
 
     @Transient
     public void addTessera (BeadString tessera) {
-        if (tesseras == null) {
-            tesseras = new LinkedHashSet<BeadString>();
-        }
-
         if (tessera.size() == 4)
-            tesseras.add(tessera);
+            getTesseras().add(tessera);
     }
 
     @OneToOne (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)

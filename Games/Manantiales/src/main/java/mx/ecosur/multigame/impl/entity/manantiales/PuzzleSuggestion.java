@@ -53,7 +53,8 @@ public class PuzzleSuggestion implements Suggestion {
         setMove ((ManantialesMove) move);
     }
 
-    @OneToOne (cascade = CascadeType.ALL)
+    //@OneToOne (cascade = CascadeType.ALL)
+    @Transient
     public ManantialesMove getMove() {
         return move;
     }

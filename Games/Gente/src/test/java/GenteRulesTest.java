@@ -42,7 +42,7 @@ public class GenteRulesTest extends GenteTestBase {
         
     @Before
     public void setUp() throws Exception {
-        game = new GenteGame(gente);
+        game = new GenteGame();
         game.setMessageSender(new DummyMessageSender());
 
         GridRegistrant a, b, c, d;

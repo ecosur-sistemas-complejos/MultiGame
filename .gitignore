@@ -1646,3 +1646,16 @@ Research/.project
 Research/.settings/org.maven.ide.eclipse.prefs
 Research/EcosurExperiments/.project
 Research/EcosurExperiments/.settings/org.maven.ide.eclipse.prefs
+Games/FlexClient/target/classes/config-4.1.0.16076/air-config.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/build.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/flash-unicode-table.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/flex-config.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/localFonts.ser
+Games/FlexClient/target/classes/config-4.1.0.16076/macFonts.ser
+Games/FlexClient/target/classes/config-4.1.0.16076/mx-manifest.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/mxml-2009-manifest.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/mxml-manifest.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/spark-manifest.xml
+Games/FlexClient/target/classes/config-4.1.0.16076/themes/Spark/spark.css
+Games/FlexClient/target/classes/config-4.1.0.16076/winFonts.ser
+Games/Manantiales/target/classes/mx/ecosur/multigame/impl/entity/manantiales/MoveHistory.class

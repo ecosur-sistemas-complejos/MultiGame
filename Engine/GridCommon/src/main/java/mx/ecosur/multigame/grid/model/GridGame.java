@@ -26,13 +26,8 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
-import mx.ecosur.multigame.grid.MoveComparator;
-import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.KnowledgeBase;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 
 @NamedQueries( {
     @NamedQuery(name = "GridGame.GetCurrentGames",
@@ -51,9 +46,9 @@ public abstract class GridGame implements Game, Cloneable {
 
     protected int id;
 
-    protected long created;
+    protected Date created;
 
-    protected SortedSet<GridPlayer> players;
+    protected Set<GridPlayer> players;
 
     protected Set<GridMove> moves;
 
@@ -89,9 +84,8 @@ public abstract class GridGame implements Game, Cloneable {
      * @throws mx.ecosur.multigame.exception.InvalidRegistrationException
      *
      */
-    public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException {
-        return new GridPlayer();
-    }
+    public abstract GamePlayer registerPlayer(Registrant registrant) throws
+            InvalidRegistrationException;
     
     /**
      * @param id the id to set
@@ -111,15 +105,15 @@ public abstract class GridGame implements Game, Cloneable {
      * @return the players
      */
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    @Sort(type= SortType.COMPARATOR, comparator=PlayerComparator.class)
-    public SortedSet<GridPlayer> getPlayers() {
+    //@Sort(type= SortType.COMPARATOR, comparator=PlayerComparator.class)
+    public Set<GridPlayer> getPlayers() {
         return players;
     }
 
     /**
      * @param players the players to set
      */
-    public void setPlayers(SortedSet<GridPlayer> players) {
+    public void setPlayers(Set<GridPlayer> players) {
         this.players = players;
     }
 
@@ -191,9 +185,9 @@ public abstract class GridGame implements Game, Cloneable {
     /**
      * @return the creation date of this game
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     public Date getCreated() {
-        return new Date(created);
+        return created;
     }
 
     /**
@@ -202,7 +196,7 @@ public abstract class GridGame implements Game, Cloneable {
      * @param created
      */
     public void setCreated(Date created) {
-        this.created = created.getTime();
+        this.created = created;
     }
         
     /** Non bean methods **/
@@ -260,7 +254,7 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    @Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
+    //@Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
         return moves;
     }

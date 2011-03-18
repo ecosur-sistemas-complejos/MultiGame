@@ -38,7 +38,7 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
 
     @Before
     public void setUp() throws Exception {
-        game = new GenteGame(gente);
+        game = new GenteGame();
         game.setMessageSender(new DummyMessageSender());
 
         GridRegistrant a = new GridRegistrant ("alice");

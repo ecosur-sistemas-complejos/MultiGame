@@ -19,10 +19,8 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
-import mx.ecosur.multigame.impl.model.GridCell;
-import mx.ecosur.multigame.impl.Color;
-
-import mx.ecosur.multigame.impl.model.GridPlayer;
+import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.impl.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;

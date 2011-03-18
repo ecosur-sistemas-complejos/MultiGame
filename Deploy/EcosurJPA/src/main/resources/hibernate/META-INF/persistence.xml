@@ -31,6 +31,7 @@
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer</class>
+        <class>mx.ecosur.multigame.impl.entity.manantiales.MoveHistory</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion</class>
         <class>mx.ecosur.multigame.impl.enums.manantiales.BorderType</class>
@@ -49,6 +50,9 @@
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
         </properties>
     </persistence-unit>
 </persistence>

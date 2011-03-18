@@ -245,7 +245,7 @@ public class RuleFunctions {
                 for (Vertice vertice : Vertice.values()) {
                     if (vertice.equals(Vertice.UNKNOWN))
                         continue;
-                    if (candidate.toBeadString().contiguous(vertice) && candidate.getSize() == length) {
+                    if (candidate.toBeadString().isContiguous(vertice) && candidate.getSize() == length) {
                         ret.add(candidate);
                         break;
                     }
@@ -260,7 +260,7 @@ public class RuleFunctions {
                 for (Vertice vertice : Vertice.values()) {
                     if (vertice.equals(Vertice.UNKNOWN))
                         continue;
-                    if (candidate.toBeadString().contiguous(vertice) && candidate.getSize() == length) {
+                    if (candidate.toBeadString().isContiguous(vertice) && candidate.getSize() == length) {
                         ret.add(candidate);
                         break;
                     }
@@ -279,7 +279,7 @@ public class RuleFunctions {
             for (Vertice vertice : Vertice.values()) {
                 if (vertice.equals(Vertice.UNKNOWN))
                     continue;
-                if (candidate.toBeadString().contiguous(vertice) && candidate.getSize() == length) {
+                if (candidate.toBeadString().isContiguous(vertice) && candidate.getSize() == length) {
                     ret.add(candidate);
                     break;
                 }

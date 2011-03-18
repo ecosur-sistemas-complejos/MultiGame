@@ -23,6 +23,8 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import java.util.*;
 import java.util.logging.Logger;
@@ -35,11 +37,11 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
 
     private static final long serialVersionUID = 8878695200931762776L;
 
+    private static KnowledgeBase kbase;
+
     private AgentType type;
 
     private ManantialesMove _nextMove;
-
-    private static KnowledgeBase kbase;
 
     private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
@@ -56,6 +58,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         _nextMove = null;
     }   
 
+    @Enumerated(EnumType.STRING)
     public AgentType getType() {
         return type;
     }

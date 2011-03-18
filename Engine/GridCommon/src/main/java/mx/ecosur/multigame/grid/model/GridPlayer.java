@@ -25,14 +25,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import java.io.IOException;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class GridPlayer implements Comparable, GamePlayer {
+public abstract class GridPlayer implements Comparable, GamePlayer {
 
     private static final long serialVersionUID = -1893870933080422147L;
 
     private int id;
 
-    private GridRegistrant player;
+    private GridRegistrant registrant;
 
     private Color color;
 
@@ -47,8 +46,8 @@ public class GridPlayer implements Comparable, GamePlayer {
 
     }
 
-    public GridPlayer (GridRegistrant player, Color color) {
-        this.player = player;
+    public GridPlayer (GridRegistrant registrant, Color color) {
+        this.registrant = registrant;
         this.color = color;
     }
 
@@ -62,12 +61,13 @@ public class GridPlayer implements Comparable, GamePlayer {
         this.id = id;
     }
 
+    @OneToOne (cascade=CascadeType.ALL)
     public GridRegistrant getRegistrant() {
-        return player;
+        return registrant;
     }
 
-    public void setRegistrant (GridRegistrant player) {
-        this.player = player;
+    public void setRegistrant (GridRegistrant r) {
+        this.registrant = r;
     }
 
     @Enumerated (EnumType.STRING)
@@ -92,8 +92,7 @@ public class GridPlayer implements Comparable, GamePlayer {
         boolean ret = false;
         if (obj instanceof GridPlayer) {
             GridPlayer test = (GridPlayer) obj;
-            if (test.getRegistrant().getName().equals(this.getRegistrant().getName()))
-                ret = true;
+            ret = registrant.getName().equals(test.getRegistrant().getName());
         }
 
         return ret;
@@ -101,12 +100,12 @@ public class GridPlayer implements Comparable, GamePlayer {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).append(color).append(player).append(turn).toHashCode();
+        return new HashCodeBuilder().append(id).append(color).append(registrant).append(turn).toHashCode();
     }
 
     @Override
     public String toString() {
-        return player.getName() + ", " + color.name() + ", turn=" + turn;
+        return registrant.getName() + ", " + color.name() + ", turn=" + turn;
     }
 
     @Override

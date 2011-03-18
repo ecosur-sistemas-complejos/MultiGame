@@ -24,11 +24,11 @@ public class BeadStringTest {
         GridCell b = new GridCell(6,5, Color.UNKNOWN);
         GridCell c = new GridCell(7,5, Color.UNKNOWN);
         BeadString test = new BeadString(a,b,c);
-        assertTrue (test.contiguous(Vertice.VERTICAL));
+        assertTrue (test.isContiguous(Vertice.VERTICAL));
 
         GridCell d = new GridCell (8,5, Color.UNKNOWN);
         test = new BeadString (a,b,d);
-        assertFalse (test.contiguous (Vertice.VERTICAL));
+        assertFalse (test.isContiguous(Vertice.VERTICAL));
     }
 
     @Test
@@ -37,11 +37,11 @@ public class BeadStringTest {
         GridCell b = new GridCell(5,6, Color.UNKNOWN);
         GridCell c = new GridCell(5,7, Color.UNKNOWN);
         BeadString test = new BeadString(a,b,c);
-        assertTrue (test.contiguous(Vertice.HORIZONTAL));
+        assertTrue (test.isContiguous(Vertice.HORIZONTAL));
 
         GridCell d = new GridCell (5,8, Color.UNKNOWN);
         test = new BeadString (a,b,d);
-        assertFalse (test.contiguous (Vertice.HORIZONTAL));
+        assertFalse (test.isContiguous(Vertice.HORIZONTAL));
     }
 
     @Test
@@ -50,11 +50,11 @@ public class BeadStringTest {
         GridCell b = new GridCell(6,4, Color.UNKNOWN);
         GridCell c = new GridCell(7,3, Color.UNKNOWN);
         BeadString test = new BeadString(a,b,c);
-        assertTrue (test.contiguous(Vertice.REVERSE));
+        assertTrue (test.isContiguous(Vertice.REVERSE));
 
         GridCell d = new GridCell (8,8, Color.UNKNOWN);
         test = new BeadString (a,b,d);
-        assertFalse (test.contiguous (Vertice.REVERSE));
+        assertFalse (test.isContiguous(Vertice.REVERSE));
     }
 
     @Test
@@ -63,11 +63,11 @@ public class BeadStringTest {
         GridCell b = new GridCell(6,6, Color.UNKNOWN);
         GridCell c = new GridCell(7,7, Color.UNKNOWN);
         BeadString test = new BeadString(a,b,c);
-        assertTrue ("Not contiguous!", test.contiguous(Vertice.FORWARD));
+        assertTrue ("Not contiguous!", test.isContiguous(Vertice.FORWARD));
 
         GridCell d = new GridCell (8,2, Color.UNKNOWN);
         test = new BeadString (a,b,d);
-        assertFalse (test.contiguous (Vertice.FORWARD));
+        assertFalse (test.isContiguous(Vertice.FORWARD));
     }
 
     @Test
@@ -76,10 +76,10 @@ public class BeadStringTest {
         GridCell b = new GridCell(4,8, Color.UNKNOWN);
         GridCell c = new GridCell(5,9, Color.UNKNOWN);
         BeadString test = new BeadString(a,b,c);
-        assertTrue ("Not contiguous!", test.contiguous(Vertice.FORWARD));
+        assertTrue ("Not contiguous!", test.isContiguous(Vertice.FORWARD));
 
         GridCell d = new GridCell (8,2, Color.UNKNOWN);
         test = new BeadString (a,b,d);
-        assertFalse (test.contiguous (Vertice.FORWARD));
+        assertFalse (test.isContiguous(Vertice.FORWARD));
     }
 }                                     

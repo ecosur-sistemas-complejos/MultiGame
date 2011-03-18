@@ -65,6 +65,7 @@ public class GenteGame extends GridGame {
     }
         
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @JoinColumn(nullable=true)
     public Set <GentePlayer> getWinners () {
         if (winners == null)
             winners = new TreeSet<GentePlayer>(new GentePlayerComparator());
@@ -161,6 +162,8 @@ public class GenteGame extends GridGame {
             throw new InvalidRegistrationException ("Maximum Players reached!");
 
         List<Color> colors = getAvailableColors();
+        if (colors == null)
+            throw new RuntimeException ("No colors available!  Current players: " + players);
         player.setColor(colors.get(0));
         players.add(player);
 
@@ -171,7 +174,7 @@ public class GenteGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 
-        if (this.created == 0)
+        if (this.created == null)
             this.setCreated(new Date());
         if (this.state == null)
             this.state = GameState.WAITING;
@@ -193,6 +196,9 @@ public class GenteGame extends GridGame {
             throw new RuntimeException ("Maximum Players reached!");
 
         List<Color> colors = getAvailableColors();
+        if (colors == null)
+            throw new RuntimeException ("No colors available! Current players: " + players);
+
         player.setColor(colors.get(0));
         players.add(player);
 
@@ -203,7 +209,7 @@ public class GenteGame extends GridGame {
             throw new InvalidRegistrationException (e);
         }
 
-        if (this.created == 0)
+        if (this.created == null)
             this.setCreated(new Date());
         if (this.state == null)
             this.state = GameState.WAITING;
@@ -240,16 +246,6 @@ public class GenteGame extends GridGame {
         return messageSender;
     }
 
-    @Override
-    public List<GamePlayer> listPlayers() {
-      List<GamePlayer> ret = new ArrayList<GamePlayer>();
-      for (GridPlayer p : players) {
-          ret.add(p);
-      }
-
-      return ret;
-    }
-
     public void setMessageSender(MessageSender messageSender) {
         this.messageSender = messageSender;
     }
@@ -257,10 +253,6 @@ public class GenteGame extends GridGame {
     @Transient
     public String getGameType() {
         return "Gente";
-    }
-
-    public void setGameType (String type) {
-        // do nothing;
     }
 
     /* (non-Javadoc)
@@ -277,7 +269,7 @@ public class GenteGame extends GridGame {
         ret.setColumns (this.getColumns());
         ret.setRows (this.getRows());
 
-        ret.created = System.currentTimeMillis();
+        ret.created = new Date(System.currentTimeMillis());
         ret.id = this.getId();
         if (getMoves() != null) {
             ret.moves = new TreeSet<GridMove>(new MoveComparator());

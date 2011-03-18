@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 ECOSUR, Andrew Waterman and Max Pimm
+* Copyright (C) 2010, 2011 ECOSUR, Andrew Waterman and Max Pimm
 *
 * Licensed under the Academic Free License v. 3.0.
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -32,6 +32,7 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.model.interfaces.*;
 
+@SuppressWarnings({"JpaQueryApiInspection"})
 @Stateless
 @RolesAllowed("admin")
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -85,9 +86,9 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
             game = em.find(game.getClass(), game.getId());
         if (game.getMessageSender() == null)
             game.setMessageSender(messageSender);
+        registrant = em.find(registrant.getClass(), registrant.getId());
         registrant.setLastRegistration(System.currentTimeMillis());
-        GamePlayer gp = game.registerPlayer (registrant);
-        em.persist(gp);
+        game.registerPlayer (registrant);
         messageSender.sendPlayerChange(game);
         return game;
     }
@@ -103,19 +104,17 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
             em.persist(game);
         else
             game = em.find(game.getClass(), game.getId());
-
         game.setMessageSender(messageSender);
-        GamePlayer gp = game.registerAgent (agent);
-        em.persist(gp);
+        game.registerAgent (agent);
         messageSender.sendPlayerChange(game);
         return game;
     }
 
     public Game unregister(Game game, GamePlayer player) throws InvalidRegistrationException {
+        game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
         game.removePlayer(player);
         game.setState(GameState.ENDED);
-        em.merge(game);
         messageSender.sendPlayerChange(game);
         return game;
     }
@@ -127,7 +126,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetCurrentGames");
         query.setParameter("registrant", player);
-        query.setParameter("state",GameState.ENDED);
+        query.setParameter("state", GameState.ENDED);
         List<Game> games = query.getResultList();
         for (Game game : games) {
             ret.add(game);
