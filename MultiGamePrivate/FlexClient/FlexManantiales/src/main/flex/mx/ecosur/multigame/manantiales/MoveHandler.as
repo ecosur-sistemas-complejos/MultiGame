@@ -235,7 +235,7 @@ package mx.ecosur.multigame.manantiales {
                             break;
                     }
                 } else {
-                    startPoint = new Point(current.width, current.height);
+                    startPoint = new Point(currentCell.width, currentCell.height);
                     startPoint = currentCell.localToGlobal(startPoint);
                 }
 
