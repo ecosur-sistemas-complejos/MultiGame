@@ -4,7 +4,8 @@ package mx.ecosur.multigame.manantiales.entity
 {
     import mx.controls.PopUpButton;
     import mx.ecosur.multigame.entity.Cell;
-import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.resources.ResourceManager;
 
 [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha")]
@@ -30,19 +31,19 @@ import mx.ecosur.multigame.manantiales.enum.TokenType;
 
             switch (_type) {
                 case TokenType.FOREST:
-                    ret = resourceManager.getString("StringsBundle", "manantiales.token.forest");
+                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.forest");
                     break;
                 case TokenType.MODERATE:
-                    ret = resourceManager.getString("StringsBundle", "manantiales.token.moderate");
+                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.moderate");
                     break;
                 case TokenType.INTENSIVE:
-                    ret = resourceManager.getString("StringsBundle", "manantiales.token.intensive");
+                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.intensive");
                     break;
                 case TokenType.VIVERO:
-                    ret = resourceManager.getString("StringsBundle", "manantiales.token.vivero");
+                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.vivero");
                     break;
                 case TokenType.SILVOPASTORAL:
-                    ret = resourceManager.getString("StringsBundle", "manantiales.token.silvopastoral");
+                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.silvopastoral");
                     break;
                 default:
                     ret = "UNKNOWN!";
