@@ -439,7 +439,6 @@ package mx.ecosur.multigame.gente{
                 
                 //add to moves
                 _moves.source.push(move);
-                _moveViewer.addMove(move);
                 
                 //if current move is the last move then animate
                 if (_selectedMoveInd == _moves.length - 2){
@@ -469,6 +468,7 @@ package mx.ecosur.multigame.gente{
             //check that destination is free
             var boardCell:BoardCell = _board.getBoardCell(move.destinationCell.column, move.destinationCell.row);
             if (boardCell.token != null){
+                _moveViewer.addMove(move);
                 _moveViewer.selectedMove = move;
                 if (_winners){
                     end();
@@ -562,6 +562,7 @@ package mx.ecosur.multigame.gente{
             
             // Update move viewer
             var move:GenteMove = GenteMove(_moves[_selectedMoveInd])
+            _moveViewer.addMove(move);
             _moveViewer.selectedMove = move;
             
             // if winners are not present or the move must be qualified
