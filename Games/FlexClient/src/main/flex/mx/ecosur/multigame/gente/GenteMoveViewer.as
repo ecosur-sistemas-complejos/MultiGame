@@ -102,6 +102,13 @@ package mx.ecosur.multigame.gente {
          * @param move the move to add.
          */
         public function addMove(move:GenteMove):void{
+			
+			//check that move has not already been added
+            for (var i:int = 0; i < _moves.numChildren; i++){
+                if (GenteMoveInfo(_moves.getChildAt(i)).penteMove.id == move.id){
+                    return;
+                }
+            }
             
             //create and add the move information
             var pmi:GenteMoveInfo = new GenteMoveInfo();
