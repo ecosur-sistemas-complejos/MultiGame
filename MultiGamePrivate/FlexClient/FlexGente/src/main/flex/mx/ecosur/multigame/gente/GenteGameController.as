@@ -15,7 +15,7 @@ package mx.ecosur.multigame.gente{
     import flash.geom.Point;
     import flash.media.Sound;
     import flash.media.SoundChannel;
-
+    
     import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.controls.Button;
@@ -34,16 +34,16 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.entity.Move;
+    import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+    import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
+    import mx.ecosur.multigame.entity.gente.entity.StrategyPlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.gente.entity.BeadString;
-    import mx.ecosur.multigame.entity.gente.entity.GenteGame;
     import mx.ecosur.multigame.gente.entity.GenteMove;
-    import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
-    import mx.ecosur.multigame.gente.entity.StrategyPlayer;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.effects.AnimateProperty;
     import mx.events.CloseEvent;

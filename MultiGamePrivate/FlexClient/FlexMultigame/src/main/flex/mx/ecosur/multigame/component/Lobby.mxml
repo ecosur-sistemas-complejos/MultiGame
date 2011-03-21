@@ -12,12 +12,13 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.controls.Alert;
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
-        import mx.ecosur.multigame.entity.Registrant;
-		import mx.ecosur.multigame.entity.gente.entity.GenteGame;
-		import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.entity.Registrant;
+            import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+            import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
+            import mx.ecosur.multigame.entity.gente.entity.StrategyPlayer;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
 
         private var _player:Registrant;
 
@@ -27,6 +28,7 @@
 	    // TODO: Change server side architecture so that lobby does not receive game specific subclasses
 		private var genteGame:GenteGame;
 		private var gentePlayer:GentePlayer;
+        private var strategyPlayer:StrategyPlayer;
 
         [Bindable]
         public function get player():Registrant {
