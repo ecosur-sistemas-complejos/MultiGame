@@ -21,29 +21,6 @@ import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 
 global ManantialesMessageSender messageSender;
 
-rule "setup"
-    agenda-group "initialize"
-    no-loop true
-when
-    $game : ManantialesGame (state == GameState.BEGIN);
-then
-    Random random = new Random();
-    int start = random.nextInt(4);
-    Set<GridPlayer> players = $game.getPlayers();
-    for (GridPlayer p : players) {
-        p.setTurn(false);
-        if (p.getColor().equals(Color.YELLOW))
-            p.setTurn(true);
-    }
-    GameGrid grid = new GameGrid ();
-    if ($game.getMode() == null)
-        modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players),
-            setMode (Mode.CLASSIC)}
-    else
-        modify ($game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
-    messageSender.sendStartGame($game);
-end
-
 #Rule to enforce only 6 of each type of token
 
 rule "only six intensives"

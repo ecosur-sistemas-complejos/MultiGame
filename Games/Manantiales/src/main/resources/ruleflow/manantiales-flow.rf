@@ -8,9 +8,8 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="20" y="101" width="48" height="48" />
+    <start id="1" name="Start" x="120" y="102" width="48" height="48" />
     <end id="2" name="End" x="532" y="103" width="48" height="48" />
-    <ruleSet id="3" name="initialize" x="100" y="101" width="80" height="48" ruleFlowGroup="initialize" />
     <ruleSet id="4" name="verify" x="208" y="102" width="80" height="48" ruleFlowGroup="verify" />
     <ruleSet id="5" name="evaluate" x="417" y="103" width="80" height="48" ruleFlowGroup="evaluate" />
     <ruleSet id="6" name="move" x="310" y="102" width="80" height="48" ruleFlowGroup="move" />
@@ -18,8 +17,7 @@
 
   <connections>
     <connection from="5" to="2" />
-    <connection from="1" to="3" />
-    <connection from="3" to="4" />
+    <connection from="1" to="4" />
     <connection from="6" to="5" />
     <connection from="4" to="6" />
   </connections>

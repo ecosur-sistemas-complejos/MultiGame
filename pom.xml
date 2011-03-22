@@ -55,7 +55,7 @@
     <properties>
         <flex-version>4.1.0.16076</flex-version>
         <flexmojos-version>3.8</flexmojos-version>
-        <drools.version>5.1.1</drools.version>
+        <drools.version>5.2.0.M1</drools.version>
     </properties>
     <dependencies>
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
