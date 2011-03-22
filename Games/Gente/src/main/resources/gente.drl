@@ -24,7 +24,7 @@ import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridGame;
 import mx.ecosur.multigame.grid.model.GridMove
 import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;

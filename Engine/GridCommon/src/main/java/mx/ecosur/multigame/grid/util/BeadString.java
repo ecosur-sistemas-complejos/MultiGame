@@ -13,7 +13,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.util;
 
 import java.io.Serializable;
 import java.util.SortedSet;
@@ -22,20 +22,16 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.enums.Vertice;
+import mx.ecosur.multigame.grid.model.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 
 import javax.persistence.*;
 
-@Entity
 public class BeadString implements Serializable, Cloneable {
         
     private static final long serialVersionUID = -5360218565926616845L;
 
     private SortedSet<GridCell> beads;
-
-    private int id;
 
     public BeadString () {
         super();
@@ -48,20 +44,9 @@ public class BeadString implements Serializable, Cloneable {
         }
     }
 
-    @Id
-    @GeneratedValue
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    @Sort(type= SortType.COMPARATOR, comparator=CellComparator.class)
-    @JoinColumn(nullable=true)
     public SortedSet<GridCell> getBeads () {
+        if (beads == null)
+            beads = new TreeSet<GridCell>(new CellComparator());
         return beads;
     }
 
@@ -69,34 +54,28 @@ public class BeadString implements Serializable, Cloneable {
         beads = new_beads;
     }
 
-    @Transient
     public void add (GridCell cell) {
         if (beads == null)
             beads = new TreeSet<GridCell>(new CellComparator());
         beads.add(cell);
     }
 
-    @Transient
     public boolean remove (GridCell cell) {
         return beads.remove(cell);
     }
 
-    @Transient
     public int size () {
             return beads.size();
     }
 
-    @Transient
     public boolean contains (GridCell cell) {
             return beads.contains(cell);
     }
 
-    @Transient
     public boolean isTerminator (GridCell cell) {
             return (beads.first() == cell || beads.last() == cell);
     }
 
-    @Transient
     public boolean contains (BeadString string) {
             boolean ret = false;
             int count = 0;
@@ -117,7 +96,6 @@ public class BeadString implements Serializable, Cloneable {
      * Returns the Direction to which these beads point.
      * @return
      */
-    @Transient
     public Direction findDirection() {
         Direction ret = Direction.UNKNOWN;
 
@@ -148,7 +126,6 @@ public class BeadString implements Serializable, Cloneable {
      * Verifies that a given beadstring is contiguous on a given Vertice.
      * @return boolean
      */
-    @Transient
     public boolean isContiguous(Vertice v) {
         boolean ret = true;
 
@@ -191,7 +168,6 @@ public class BeadString implements Serializable, Cloneable {
         return ret;
     }
 
-    @Transient
     public BeadString trim(GridCell destination, int stringlength) {
         BeadString ret = new BeadString();
         if (beads.first() == destination) {

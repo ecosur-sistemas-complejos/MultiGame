@@ -23,7 +23,7 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.grid.model.GridRegistrant;

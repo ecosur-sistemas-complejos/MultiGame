@@ -17,7 +17,7 @@
         <class>mx.ecosur.multigame.grid.model.GridMove</class>
         <class>mx.ecosur.multigame.grid.model.GridPlayer</class>
         <class>mx.ecosur.multigame.grid.model.GridRegistrant</class>
-        <class>mx.ecosur.multigame.grid.model.BeadString</class>
+        <class>mx.ecosur.multigame.grid.util.BeadString</class>
         <!-- Game entities -->
         <!-- Gente -->
         <class>mx.ecosur.multigame.impl.entity.gente.GenteGame</class>

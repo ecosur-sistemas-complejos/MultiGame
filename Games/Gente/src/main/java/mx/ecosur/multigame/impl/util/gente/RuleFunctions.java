@@ -19,7 +19,7 @@ package mx.ecosur.multigame.impl.util.gente;
 
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.grid.enums.Vertice;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
@@ -220,9 +220,10 @@ public class RuleFunctions {
         Set<BeadString> sets = new HashSet<BeadString>();
 
         if (string.getBeads().size() > length) {
-            BeadString plane = new BeadString ();
+            BeadString plane = new BeadString();
             sets.add(plane);
             for (GridCell cell : string.getBeads()) {
+
                 if (plane.getBeads().size() == length) {
                     GridCell last = plane.getBeads().last();
                     plane = new BeadString();
