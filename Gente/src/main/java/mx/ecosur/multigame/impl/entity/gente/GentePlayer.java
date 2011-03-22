@@ -15,11 +15,10 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.model.interfaces.Agent;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.HashSet;
@@ -62,8 +61,7 @@ public class GentePlayer extends GridPlayer {
         this.points = points;
     }
 
-    @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
-    @JoinColumn(nullable=true)
+    @Transient
     public Set<BeadString> getTrias() {
         if (trias == null)
             trias = new HashSet<BeadString>();
@@ -80,8 +78,7 @@ public class GentePlayer extends GridPlayer {
             getTrias().add(tria);
     }
 
-    @OneToMany(cascade={CascadeType.ALL}, fetch= FetchType.EAGER)
-    @JoinColumn(nullable=true)
+    @Transient
     public Set<BeadString> getTesseras() {
         if (tesseras == null)
             tesseras = new HashSet<BeadString>();

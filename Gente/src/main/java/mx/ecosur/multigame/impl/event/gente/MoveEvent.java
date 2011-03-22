@@ -13,7 +13,7 @@ package mx.ecosur.multigame.impl.event.gente;
 
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 

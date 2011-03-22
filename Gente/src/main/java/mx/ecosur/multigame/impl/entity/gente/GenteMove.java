@@ -20,12 +20,10 @@ import java.util.Set;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.grid.model.GridCell;
-
-import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
 
 @Entity
@@ -78,8 +76,7 @@ public class GenteMove extends GridMove {
         /**
          * Gets the Trias that this move created.
          */
-        @OneToMany(cascade=CascadeType.ALL, fetch= FetchType.EAGER)
-        @JoinColumn(nullable=true)
+        @Transient
         public Set<BeadString> getTrias () {
             if (trias == null)
                 trias = new HashSet<BeadString>();
@@ -130,8 +127,7 @@ public class GenteMove extends GridMove {
         /**
          * Gets the Tesseras that this move created.
          */
-        @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-        @JoinColumn(nullable=true)
+        @Transient
         public Set<BeadString> getTesseras () {
             if (tesseras == null)
                 tesseras = new HashSet<BeadString>();

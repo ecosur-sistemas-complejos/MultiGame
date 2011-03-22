@@ -13,7 +13,7 @@ import static junit.framework.Assert.*;
 import static mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.BeadString;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.impl.event.gente.MoveEvent;
 import org.junit.Test;

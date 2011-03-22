@@ -20,6 +20,7 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.util.*;
 import mx.ecosur.multigame.impl.*;
 
 import java.util.ArrayList;
