@@ -329,4 +329,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         ret.kbase = this.kbase;
         return ret;                
     }
+
+
 }
