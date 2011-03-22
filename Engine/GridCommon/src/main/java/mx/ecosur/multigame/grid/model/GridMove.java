@@ -27,117 +27,118 @@ import mx.ecosur.multigame.model.interfaces.Move;
 @Entity
 public class GridMove implements Move, Cloneable, Comparable {
 
-        private static final long serialVersionUID = 8017901476308051472L;
-        private int id;
-        protected GridPlayer player;
-        protected GridCell current;
-        protected GridCell destination;
+    private static final long serialVersionUID = 8017901476308051472L;
+    private int id;
+    protected GridPlayer player;
+    protected GridCell current;
+    protected GridCell destination;
 
-        private MoveStatus status;
+    private MoveStatus status;
 
-        public GridMove() {
-            super();
-            this.status = MoveStatus.UNVERIFIED;
-            this.current = null;
-            this.destination = null;
-            this.player = null;
-        }
+    public GridMove() {
+        super();
+        this.status = MoveStatus.UNVERIFIED;
+        this.current = null;
+        this.destination = null;
+        this.player = null;
+    }
 
-        public GridMove(GridPlayer player, GridCell destination) {
-            this.player = player;
-            this.current = null;
-            this.destination = destination;
-            this.status = MoveStatus.UNVERIFIED;
-        }
+    public GridMove(GridPlayer player, GridCell destination) {
+        this.player = player;
+        this.current = null;
+        this.destination = destination;
+        this.status = MoveStatus.UNVERIFIED;
+    }
 
-        public GridMove(GridPlayer player, GridCell current, GridCell destination) {
-            this.player = player;
-            this.current = current;
-            this.destination = destination;
-            this.status = MoveStatus.UNVERIFIED;
-        }
+    public GridMove(GridPlayer player, GridCell current, GridCell destination) {
+        this.player = player;
+        this.current = current;
+        this.destination = destination;
+        this.status = MoveStatus.UNVERIFIED;
+    }
 
-        @Id
-        @GeneratedValue
-        public int getId() {
-            return id;
-        }
+    @Id
+    @GeneratedValue
+    public int getId() {
+        return id;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-        @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-        public GridCell getDestinationCell() {
-            return this.destination;
-        }
 
-        public void setDestinationCell(GridCell destination) {
-            this.destination = destination;
-        }
+    @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    public GridCell getDestinationCell() {
+        return this.destination;
+    }
 
-        @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-        public GridCell getCurrentCell() {
-            return this.current;
-        }
+    public void setDestinationCell(GridCell destination) {
+        this.destination = destination;
+    }
 
-        public void setCurrentCell(GridCell current) {
-            this.current = current;
-        }
+    @OneToOne  (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    public GridCell getCurrentCell() {
+        return this.current;
+    }
 
-        @OneToOne  (cascade={CascadeType.ALL},fetch=FetchType.EAGER)
-        public GridPlayer getPlayer() {
-            return this.player;
-        }
+    public void setCurrentCell(GridCell current) {
+        this.current = current;
+    }
 
-        public void setPlayer(GridPlayer player) {
-            this.player = player;
-        }
+    @OneToOne  (cascade={CascadeType.ALL},fetch=FetchType.EAGER)
+    public GridPlayer getPlayer() {
+        return this.player;
+    }
 
-        @Transient
-        public GamePlayer getPlayerModel () {
-            return player;
-        }
-        
-        @Transient
-        public void setPlayerModel (GamePlayer player) {
-            this.player = (GridPlayer) player;
-        }
+    public void setPlayer(GridPlayer player) {
+        this.player = player;
+    }
 
-        /**
-         * @return the status
-         */
-        @Enumerated(EnumType.STRING)
-        public MoveStatus getStatus() {
-            return status;
-        }
+    @Transient
+    public GamePlayer getPlayerModel () {
+        return player;
+    }
 
-        /**
-         * @param status
-         *            the status to set
-         */
-        public void setStatus(MoveStatus status) {
-            this.status = status;
-        }
+    @Transient
+    public void setPlayerModel (GamePlayer player) {
+        this.player = (GridPlayer) player;
+    }
 
-        /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.interfaces.Move#setCurrent(mx.ecosur.multigame.model.interfaces.Cell)
-         */
-        public void setCurrentCell(Cell cellImpl) {
-                setCurrentCell((GridCell) cellImpl);
-        }
+    /**
+     * @return the status
+     */
+    @Enumerated(EnumType.STRING)
+    public MoveStatus getStatus() {
+        return status;
+    }
 
-        /* (non-Javadoc)
-         * @see mx.ecosur.multigame.model.interfaces.Move#setDestination(mx.ecosur.multigame.model.interfaces.Cell)
-         */
-        public void setDestinationCell(Cell cellImpl) {
-                setDestinationCell((GridCell) cellImpl);
-        }
+    /**
+     * @param status
+     *            the status to set
+     */
+    public void setStatus(MoveStatus status) {
+        this.status = status;
+    }
 
-        public String toString() {
-                return "Registrant: " + player + "\nCurrent: " + current
-                                + "\nDestination: " + destination + "\nStatus: " + status;
-        }
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.interfaces.Move#setCurrent(mx.ecosur.multigame.model.interfaces.Cell)
+     */
+    public void setCurrentCell(Cell cellImpl) {
+            setCurrentCell((GridCell) cellImpl);
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.interfaces.Move#setDestination(mx.ecosur.multigame.model.interfaces.Cell)
+     */
+    public void setDestinationCell(Cell cellImpl) {
+            setDestinationCell((GridCell) cellImpl);
+    }
+
+    public String toString() {
+            return "Registrant: " + player + "\nCurrent: " + current
+                            + "\nDestination: " + destination + "\nStatus: " + status;
+    }
 
     @Override
         protected Object clone () throws CloneNotSupportedException {

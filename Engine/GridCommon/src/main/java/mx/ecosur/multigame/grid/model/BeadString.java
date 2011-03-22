@@ -33,20 +33,19 @@ public class BeadString implements Serializable, Cloneable {
         
     private static final long serialVersionUID = -5360218565926616845L;
 
-    private TreeSet<GridCell> beads;
+    private SortedSet<GridCell> beads;
 
     private int id;
 
     public BeadString () {
-            this.beads = new TreeSet<GridCell>(new CellComparator());
+        super();
     }
 
-    public BeadString (GridCell cell1, GridCell... cells) {
-            this();
-            add(cell1);
-            for (GridCell cell : cells) {
-                    add(cell);
-            }
+    public BeadString (GridCell... cells) {
+        this();
+        for (GridCell cell : cells) {
+            add(cell);
+        }
     }
 
     @Id
@@ -63,21 +62,23 @@ public class BeadString implements Serializable, Cloneable {
     @Sort(type= SortType.COMPARATOR, comparator=CellComparator.class)
     @JoinColumn(nullable=true)
     public SortedSet<GridCell> getBeads () {
-            return beads;
+        return beads;
     }
 
     public void setBeads(SortedSet<GridCell> new_beads){
-            beads.addAll(new_beads);
+        beads = new_beads;
     }
 
     @Transient
     public void add (GridCell cell) {
-            beads.add(cell);
+        if (beads == null)
+            beads = new TreeSet<GridCell>(new CellComparator());
+        beads.add(cell);
     }
 
     @Transient
     public boolean remove (GridCell cell) {
-            return beads.remove(cell);
+        return beads.remove(cell);
     }
 
     @Transient
@@ -209,7 +210,7 @@ public class BeadString implements Serializable, Cloneable {
         super.clone();
         BeadString ret = new BeadString ();
         for (GridCell cell : beads) {
-            ret.beads.add((GridCell) cell.clone());
+            ret.add((GridCell) cell.clone());
         }
 
         return ret;
