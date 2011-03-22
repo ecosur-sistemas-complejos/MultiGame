@@ -119,7 +119,7 @@ public class GridMove implements Move, Cloneable, Comparable {
         public void setStatus(MoveStatus status) {
             this.status = status;
         }
-        
+
         /* (non-Javadoc)
          * @see mx.ecosur.multigame.model.interfaces.Move#setCurrent(mx.ecosur.multigame.model.interfaces.Cell)
          */

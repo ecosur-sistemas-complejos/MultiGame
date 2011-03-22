@@ -212,8 +212,7 @@ public class GameService {
                         continue;
                     GenteStrategy strategy = GenteStrategy.valueOf(
                         strategies [ i ]);
-                    GridRegistrant robot = new GridRegistrant (
-                        strategy.name() + "-" + (i + 1));
+                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
                     GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
                     model = registrar.registerAgent (model, agent);
                 }
@@ -221,9 +220,9 @@ public class GameService {
                 GridGame game = new ManantialesGame ();
                 model = registrar.registerPlayer(game, registrant);
                 for (int i = 0; i < strategies.length; i++) {
-                    GridRegistrant robot = new GridRegistrant (strategies [ i ] + "-" + (i + 1));
-                    AgentType type = AgentType.valueOf(strategies [ i ]);
-                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, type);
+                    AgentType strategy = AgentType.valueOf(strategies [ i ]);
+                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
+                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, strategy);
                     model = registrar.registerAgent (model, agent);
                 }
             }

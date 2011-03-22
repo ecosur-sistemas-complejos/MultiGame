@@ -39,6 +39,13 @@ public class PlayerComparator implements Comparator<GridPlayer>, Serializable {
                 ret = -1;
         }
 
+        if (ret == 0) {
+            if (a.getId() > b.getId())
+                ret = 1;
+            else if (a.getId() < b.getId())
+                ret = -1;
+        }
+
         return ret;
     }
 }

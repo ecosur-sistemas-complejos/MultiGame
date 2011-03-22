@@ -65,12 +65,12 @@ public class ManantialesGame extends GridGame {
     }
 
     public ManantialesGame (KnowledgeBase kbase) {
-        super();
+        this();
         this.kbase = kbase;
     }
 
     public ManantialesGame (Mode mode) {
-        super();
+        this();
         this.mode = mode;
     }
 
@@ -140,9 +140,6 @@ public class ManantialesGame extends GridGame {
     //@MapKey (name="mode")
     @Transient
     public Map<Mode, MoveHistory> getMoveHistory() {
-        if (moveHistory == null) {
-            moveHistory = new HashMap<Mode,MoveHistory>();
-        }
         return moveHistory;
     }
 
@@ -153,8 +150,6 @@ public class ManantialesGame extends GridGame {
     //@OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     @Transient
     public Set<CheckCondition> getCheckConditions () {
-        if (checkConditions == null)
-                checkConditions = new LinkedHashSet<CheckCondition>();
         return checkConditions;
     }
     
@@ -189,8 +184,6 @@ public class ManantialesGame extends GridGame {
     //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @Transient
     public Set<PuzzleSuggestion> getSuggestions () {
-        if (suggestions == null)
-            suggestions = new LinkedHashSet<PuzzleSuggestion>();
         return suggestions;
 
     }
@@ -319,26 +312,29 @@ public class ManantialesGame extends GridGame {
     }
         
     public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
-        SimpleAgent player = (SimpleAgent) agent;
+        if (agent instanceof SimpleAgent) {
+            SimpleAgent player = (SimpleAgent) agent;
 
-        for (GridPlayer p : this.getPlayers()) {
-            if (p.equals (player))
-                throw new InvalidRegistrationException ("Duplicate Registraton!");
-        }
+            for (GridPlayer p : this.getPlayers()) {
+                if (p.equals (player))
+                    throw new InvalidRegistrationException ("Duplicate Registraton!");
+            }
 
-        int max = getMaxPlayers();
-        if (players.size() == max)
-            throw new RuntimeException ("Maximum Players reached!");
+            int max = getMaxPlayers();
+            if (players.size() == max)
+                throw new RuntimeException ("Maximum Players reached!");
 
-        List<Color> colors = getAvailableColors();
-        player.setColor(colors.get(0));
-        players.add(player);
-
-        if (players.size() == getMaxPlayers())
-        try {
-            initialize();
-        } catch (MalformedURLException e) {
-            throw new InvalidRegistrationException (e);
+            List<Color> colors = getAvailableColors();
+            player.setColor(colors.get(0));
+            players.add(player);
+            if (players.size() == getMaxPlayers())
+            try {
+                initialize();
+            } catch (MalformedURLException e) {
+                throw new InvalidRegistrationException (e);
+            }
+        } else {
+            throw new InvalidRegistrationException("Unknown Agent type! [" + agent.getClass() + "]");
         }
 
         if (this.created == null)
@@ -346,7 +342,7 @@ public class ManantialesGame extends GridGame {
         if (this.state == null)
             this.state = GameState.WAITING;
 
-        return player;        
+        return agent;
     }
 
     @Override

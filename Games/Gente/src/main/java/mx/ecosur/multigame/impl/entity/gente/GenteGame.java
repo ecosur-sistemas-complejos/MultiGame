@@ -16,13 +16,12 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
+import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.model.*;
-import mx.ecosur.multigame.model.interfaces.Agent;
-import mx.ecosur.multigame.model.interfaces.GamePlayer;
-import mx.ecosur.multigame.model.interfaces.Move;
+import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -40,8 +39,9 @@ import java.net.MalformedURLException;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.model.interfaces.Registrant;
 import mx.ecosur.multigame.MessageSender;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 
 @Entity
@@ -180,6 +180,11 @@ public class GenteGame extends GridGame {
             this.state = GameState.WAITING;
 
         return player;
+    }
+
+    @Override
+    public Suggestion suggest(Suggestion suggestion) throws InvalidSuggestionException {
+        throw new InvalidSuggestionException("Suggest not supported in Gente!");
     }
 
     public Agent registerAgent (Agent agent) throws InvalidRegistrationException {

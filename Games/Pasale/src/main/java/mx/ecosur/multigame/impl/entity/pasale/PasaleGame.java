@@ -5,14 +5,13 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
+import mx.ecosur.multigame.exception.InvalidSuggestionException;
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.model.*;
 import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
-import mx.ecosur.multigame.model.interfaces.Agent;
-import mx.ecosur.multigame.model.interfaces.GamePlayer;
-import mx.ecosur.multigame.model.interfaces.Move;
-import mx.ecosur.multigame.model.interfaces.Registrant;
+import mx.ecosur.multigame.model.interfaces.*;
 
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 import mx.ecosur.multigame.MessageSender;
@@ -24,6 +23,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.KnowledgeBase;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 import java.util.*;
 import java.util.List;
@@ -102,7 +103,7 @@ public class PasaleGame extends GridGame {
             }
         }
 
-        return grid;        
+        return grid;
     }
 
     @Transient
@@ -170,6 +171,12 @@ public class PasaleGame extends GridGame {
             setState(GameState.PLAY);
 
         return player;
+    }
+
+    @Override
+    public Suggestion suggest(Suggestion suggestion) throws InvalidSuggestionException {
+        throw new InvalidSuggestionException(
+                "Pasale Compadre does not support Suggestions!");
     }
 
     public Agent registerAgent (Agent agent) throws InvalidRegistrationException {

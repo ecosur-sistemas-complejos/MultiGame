@@ -141,4 +141,15 @@ public class ManantialesPlayer extends GridPlayer {
         this.vivero = 0;
         this.points = 0;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ManantialesPlayer) {
+            ManantialesPlayer testPlayer = (ManantialesPlayer) obj;
+            if (testPlayer.getRegistrant().getName().equals(this.getRegistrant().getName()))
+                return true;
+        }
+
+        return false;
+    }
 }

@@ -26,8 +26,12 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.KnowledgeBase;
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 
 @NamedQueries( {
     @NamedQuery(name = "GridGame.GetCurrentGames",
@@ -105,7 +109,7 @@ public abstract class GridGame implements Game, Cloneable {
      * @return the players
      */
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    //@Sort(type= SortType.COMPARATOR, comparator=PlayerComparator.class)
+    @Sort(type= SortType.COMPARATOR, comparator=PlayerComparator.class)
     public Set<GridPlayer> getPlayers() {
         return players;
     }
@@ -237,9 +241,7 @@ public abstract class GridGame implements Game, Cloneable {
         return ret;
     }
 
-    public Suggestion suggest(Suggestion suggestion) throws InvalidSuggestionException {
-        return suggestion;
-    }
+    public abstract Suggestion suggest(Suggestion suggestion) throws InvalidSuggestionException;
 
     /**
      * @param sender
@@ -254,7 +256,7 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    //@Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
+    @Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
         return moves;
     }
@@ -280,10 +282,7 @@ public abstract class GridGame implements Game, Cloneable {
     public List<GamePlayer> listPlayers() {
         List<GamePlayer> ret = new ArrayList<GamePlayer>();
         for (GridPlayer player : players) {
-            if (player instanceof Agent)
-                ret.add(player);
-            else
-                ret.add(player);
+            ret.add(player);
         }
 
         return ret;
@@ -294,9 +293,7 @@ public abstract class GridGame implements Game, Cloneable {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Agent registerAgent(Agent implementation) throws InvalidRegistrationException {
-        return implementation;
-    }
+    public abstract Agent registerAgent(Agent implementation) throws InvalidRegistrationException;
 
     public String getGameType () {
         return gameType;

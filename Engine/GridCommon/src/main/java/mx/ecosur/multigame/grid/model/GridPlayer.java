@@ -92,7 +92,8 @@ public abstract class GridPlayer implements Comparable, GamePlayer {
         boolean ret = false;
         if (obj instanceof GridPlayer) {
             GridPlayer test = (GridPlayer) obj;
-            ret = registrant.getName().equals(test.getRegistrant().getName());
+            ret = registrant.getName().equals(test.getRegistrant().getName()) &&
+                registrant.getId() == test.getId();
         }
 
         return ret;
