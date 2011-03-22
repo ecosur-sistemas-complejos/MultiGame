@@ -54,19 +54,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
     private EJBTestModule ejbModule;    
 
-    private static int lastId;        
-
-    private static KnowledgeBase manantiales;
-
-
-    /* Setup manantiales kbase */
-    static {
-        manantiales = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(ManantialesGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
-        manantiales.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    }
+    private static int lastId;
         
     @Before
     public void setUp() throws Exception {
@@ -79,7 +67,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-        game = new ManantialesGame(manantiales);
+        game = new ManantialesGame();
         GridRegistrant[] players = {
             new GridRegistrant ("alice"),
             new GridRegistrant ("bob"),

@@ -62,11 +62,7 @@ public class ManantialesGame extends GridGame {
         super();
         mode = Mode.CLASSIC;
         moveHistory = new HashMap<Mode,MoveHistory>();
-    }
-
-    public ManantialesGame (KnowledgeBase kbase) {
-        this();
-        this.kbase = kbase;
+        messageSender = new ManantialesMessageSender();
     }
 
     public ManantialesGame (Mode mode) {
@@ -75,31 +71,25 @@ public class ManantialesGame extends GridGame {
     }
 
     public void initialize() throws MalformedURLException {
-        this.setGrid(new GameGrid());
-        this.setState(GameState.BEGIN);
-        this.setCreated(new Date());
-        this.setColumns(9);
-        this.setRows(9);
+        setGrid(new GameGrid());
+        setCreated(new Date());
+        setColumns(9);
+        setRows(9);
+        setState(GameState.PLAY);
+        if (mode == null)
+            setMode(Mode.CLASSIC);
 
-        if (kbase == null)
-            kbase = findKBase();
-
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", getMessageSender());
-        session.insert(this);
-        for (Object fact : getFacts()) {
-            session.insert(fact);
-        }
-
-        session.getAgenda().getAgendaGroup("initialize").setFocus();
-        session.fireAllRules();
-        session.dispose();
+        /* Get the sender ready */
+        messageSender.initialize();
+        messageSender.sendStartGame(this);
     }
 
     @Override
     @Transient
     public Set getFacts() {
         Set facts = super.getFacts();
+        if (facts == null)
+            facts = new HashSet();
         if (checkConditions != null)
             facts.addAll(checkConditions);
         return facts;
@@ -136,8 +126,7 @@ public class ManantialesGame extends GridGame {
         this.mode = mode;
     }
 
-    //@OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    //@MapKey (name="mode")
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     @Transient
     public Map<Mode, MoveHistory> getMoveHistory() {
         return moveHistory;
@@ -147,8 +136,7 @@ public class ManantialesGame extends GridGame {
         this.moveHistory = moveHistory;
     }
 
-    //@OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    @Transient
+    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
         return checkConditions;
     }
@@ -181,8 +169,7 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @Transient
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
         return suggestions;
 
@@ -213,7 +200,6 @@ public class ManantialesGame extends GridGame {
         return "Manantiales";
     }
 
-    @Deprecated
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -228,9 +214,6 @@ public class ManantialesGame extends GridGame {
         return 4;
     }
 
-    /* (non-Javadoc)
-      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
-      */
     @Override
     public Move move(Move impl) throws InvalidMoveException {
         ManantialesMove move = (ManantialesMove) impl;
@@ -294,6 +277,8 @@ public class ManantialesGame extends GridGame {
 
         List<Color> colors = getAvailableColors();
         player.setColor(colors.get(0));
+        if (player.getColor().equals(Color.YELLOW))
+            player.setTurn(true);
         players.add(player);
 
         try {
@@ -326,6 +311,8 @@ public class ManantialesGame extends GridGame {
 
             List<Color> colors = getAvailableColors();
             player.setColor(colors.get(0));
+            if (player.getColor().equals(Color.YELLOW))
+                player.setTurn(true);
             players.add(player);
             if (players.size() == getMaxPlayers())
             try {
@@ -333,6 +320,7 @@ public class ManantialesGame extends GridGame {
             } catch (MalformedURLException e) {
                 throw new InvalidRegistrationException (e);
             }
+
         } else {
             throw new InvalidRegistrationException("Unknown Agent type! [" + agent.getClass() + "]");
         }
