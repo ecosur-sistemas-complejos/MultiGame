@@ -9,7 +9,7 @@
         <![CDATA[
 			import mx.controls.Alert;
 			import mx.ecosur.multigame.entity.Registrant;
-			import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+			import mx.ecosur.multigame.entity.gente.GenteGame;
 			import mx.ecosur.multigame.event.PlayEvent;
 			import mx.ecosur.multigame.module.IGameModule;
 			import mx.events.ModuleEvent;

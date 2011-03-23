@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.entity.gente.entity {
+package mx.ecosur.multigame.entity.gente {
 	
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.GamePlayer;

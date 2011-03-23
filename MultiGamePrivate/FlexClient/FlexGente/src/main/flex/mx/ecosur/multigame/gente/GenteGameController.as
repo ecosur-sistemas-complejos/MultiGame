@@ -34,9 +34,9 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.entity.Move;
-    import mx.ecosur.multigame.entity.gente.entity.GenteGame;
-    import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
-    import mx.ecosur.multigame.entity.gente.entity.StrategyPlayer;
+    import mx.ecosur.multigame.entity.gente.StrategyPlayer;
+    import mx.ecosur.multigame.entity.gente.GenteGame;
+    import mx.ecosur.multigame.entity.gente.GentePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.CooperatiionQualifier;
     import mx.ecosur.multigame.enum.ExceptionType;

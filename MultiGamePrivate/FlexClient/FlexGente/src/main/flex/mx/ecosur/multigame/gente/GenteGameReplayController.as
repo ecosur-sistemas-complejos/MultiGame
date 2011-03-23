@@ -21,9 +21,9 @@ package mx.ecosur.multigame.gente{
 	import mx.ecosur.multigame.component.Token;
 	import mx.ecosur.multigame.entity.Move;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.entity.gente.entity.GenteGame;
+	import mx.ecosur.multigame.entity.gente.GenteGame;
 	import mx.ecosur.multigame.gente.entity.GenteMove;
-	import mx.ecosur.multigame.entity.gente.entity.GentePlayer;
+	import mx.ecosur.multigame.entity.gente.GentePlayer;
 	import mx.effects.AnimateProperty;
 	import mx.events.DynamicEvent;
 	import mx.events.EffectEvent;
