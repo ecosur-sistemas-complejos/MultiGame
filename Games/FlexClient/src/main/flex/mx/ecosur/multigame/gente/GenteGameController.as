@@ -222,11 +222,13 @@ package mx.ecosur.multigame.gente{
 
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
-                        _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.currentplayer.turn"),
+                        _gameStatus.showMessage(resourceManager.getString(
+                                "StringsBundle", "gente.currentplayer.turn"),
                                 Color.getColorCode(_currentPlayer.color));
                     }else{
                         _gameStatus.showMessage(gamePlayer.registrant.name +
-                            " " + resourceManager.getString("StringsBundle", "gente.tomove"),
+                            " " + resourceManager.getString(
+                                "StringsBundle", "gente.tomove"),
                                 Color.getColorCode(gamePlayer.color));
                     }
                 }
@@ -240,7 +242,8 @@ package mx.ecosur.multigame.gente{
          * Called when game begins 
          */
         private function begin():void{
-            _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.start.message"), 0x00000);  
+            _gameStatus.showMessage(resourceManager.getString(
+                    "StringsBundle", "gente.start.message"), 0x00000);
         }
         
         /*
@@ -262,7 +265,8 @@ package mx.ecosur.multigame.gente{
             var gentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = gentePlayer.registrant.name + " " + resourceManager.getString("StringsBundle", "gente.has.won");
+                msg = gentePlayer.registrant.name + " " + resourceManager.getString
+                        ("StringsBundle", "gente.has.won");
                 color = Color.getColorCode(gentePlayer.color);
                 if (gentePlayer.color == _currentPlayer.color)
                     sound = SoundAssets.approval;
@@ -346,8 +350,10 @@ package mx.ecosur.multigame.gente{
                     var fnc:Function = function (event:CloseEvent):void{
                         undoMove(_executingMove);
                     }
-                    Alert.show(resourceManager.getString("StringsBundle", "gente.move.invalid"),
-                            resourceManager.getString("StringsBundle", "gente.move.error.title"), Alert.OK, null, fnc);
+                    Alert.show(resourceManager.getString(
+                            "StringsBundle", "gente.move.invalid"),
+                            resourceManager.getString(
+                                    "StringsBundle", "gente.move.error.title"), Alert.OK, null, fnc);
                 }
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
@@ -374,7 +380,8 @@ package mx.ecosur.multigame.gente{
                     _chatPanel.addMessage(chatMessage);
                     if(chatMessage.sender.id != _currentPlayer.registrant.id){
                         _gameStatus.showMessage(chatMessage.sender.registrant.name + " " +
-                            resourceManager.getString("StringsBundle", "gente.panel.chat.announcement"), 0x000000);
+                            resourceManager.getString(
+                                    "StringsBundle", "gente.panel.chat.announcement"), 0x000000);
                     }
                     break;
                 case GameEvent.END:

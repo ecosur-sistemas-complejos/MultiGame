@@ -1802,3 +1802,12 @@ Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/drools-compiler-5.2.0.M1.jar
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/drools-core-5.2.0.M1.jar
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/mvel2-2.1.RC1.jar
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/stringtemplate-3.2.jar
+Games/target/classes/StringsBundle.properties
+Games/target/classes/assets/dirt.png
+Games/target/classes/assets/forest.png
+Games/target/classes/locales/en_US/StringsBundle.properties
+Games/target/classes/locales/es_ES/StringsBundle.properties
+Games/target/classes/messaging-config.xml
+Games/target/classes/proxy-config.xml
+Games/target/classes/remoting-config.xml
+Games/target/classes/services-config.xml

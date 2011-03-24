@@ -139,7 +139,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
      */
     public List<Game> getPendingGames(Registrant player) {
-        //Mapper mapper = DozerBeanMapperSingletonWrapper.getInstance();
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetAvailableGames");
         query.setParameter("registrant", player);

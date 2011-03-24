@@ -32,11 +32,15 @@
             import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
 
             private var _controller:ManantialesGameController;
-            protected var _currentPlayer:GamePlayer;
-            protected var _currentGame:ManantialesGame;
             private var _helpPanel:HelpPanel;
             private var _imagePanel:ImagePanel;
             private var _suggestionHandler:SuggestionHandler;
+
+            [Bindable]
+            protected var _currentPlayer:GamePlayer;
+
+            [Bindable]
+            protected var _currentGame:ManantialesGame;
 
             /* All of the loaded images */
             private var _images:ArrayCollection;
@@ -59,8 +63,7 @@
                 if (_controller != null)
                     _controller.destroy();
             }
-            
-            [Bindable]
+
             public function get suggestionHandler ():SuggestionHandler {
                 return _suggestionHandler;
             }
@@ -68,13 +71,11 @@
             public function set suggestionHandler (suggestionHandler:SuggestionHandler):void {
                 _suggestionHandler = suggestionHandler;
             }
-            
-            [Bindable]
+
             public function get controller ():ManantialesGameController {
                 return _controller;
             }
-            
-            [Bindable]
+
             public function get currentGame ():ManantialesGame {
                 return _currentGame;
             }
@@ -87,8 +88,7 @@
             public function set currentPlayer(currentPlayer:GamePlayer):void{
                 _currentPlayer = currentPlayer;
             }
-            
-            [Bindable]
+
             public function get currentPlayer():GamePlayer{
                 return _currentPlayer;
             }
@@ -243,17 +243,17 @@
             <mx:RemoveChild  target="{moveViewer}"/>
             <mx:AddChild relativeTo="{leftBox}">
                 <token:ForestTokenStore id="forestStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{_currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
                     width="100%" />
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                    <token:ModerateTokenStore id="moderateStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{_currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
                     width="100%"/>
             </mx:AddChild>
             <mx:AddChild relativeTo="{leftBox}">
                 <token:IntensiveTokenStore id="intensiveStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{_currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
                     width="100%"/>
             </mx:AddChild>
         </mx:State>
@@ -263,12 +263,12 @@
         <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
            <mx:AddChild relativeTo="{leftBox}">
                <token:ViveroTokenStore id="viveroStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                currentPlayer="{_currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
                 width="100%" />
            </mx:AddChild>
            <mx:AddChild relativeTo="{leftBox}">
                <token:SilvopastoralTokenStore id="silvoStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}" 
+                currentPlayer="{_currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
                 width="100%"/>
            </mx:AddChild>
         </mx:State>
@@ -286,16 +286,16 @@
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <manantiales:ManantialesBoard id="board" width="100%" height="100%"
-                    currentPlayer="{currentPlayer}"/>
+                    currentPlayer="{_currentPlayer}"/>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
             <mx:Panel title="Info" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
-                  currentPlayer="{currentPlayer}" width="100%"/>
+                  currentPlayer="{_currentPlayer}" width="100%"/>
             </mx:Panel>
            <component:ChatPanel id="chatPanel" width="100%" height="100%"
-                currentPlayer="{currentPlayer}"
-                currentGame="{currentGame}"/>
+                currentPlayer="{_currentPlayer}"
+                currentGame="{_currentGame}"/>
         </mx:VBox>
         <mx:UIComponent id="animateLayer" />
     </mx:HBox>

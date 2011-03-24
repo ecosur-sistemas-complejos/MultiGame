@@ -2,25 +2,32 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300" styleName=".centerAlign">
        
     <mx:Script>
-        <![CDATA[
+    <![CDATA[
 
-        import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.pasale.entity.PasalePlayer;
 
+        [Bindable]
         private var _pasalePlayer:PasalePlayer;
 
         public function get pasalePlayer():PasalePlayer {
             return _pasalePlayer;
         }
 
-        public function set pasalePlayer(value:PasalePlayer):void {
-            _pasalePlayer = value;
+        public function set pasalePlayer(player:PasalePlayer):void {
+            _pasalePlayer = player;
+            _name = player.registrant.name;
+            _score = player.score;
         }
 
-        ]]>
+        [Bindable]
+        private var _name:String;
+
+        [Bindable]
+        private var _score:int;
+    ]]>
     </mx:Script>
     <mx:HBox borderStyle="solid" backgroundAlpha=".75" >
-        <mx:Label id="playername" text="{pasalePlayer.registrant.name}:"/>
-        <mx:Label id="score" text="{pasalePlayer.score}"/>
+        <mx:Label id="playername" text="{_name}:"/>
+        <mx:Label id="score" text="{_score}"/>
     </mx:HBox>
 </mx:Canvas>

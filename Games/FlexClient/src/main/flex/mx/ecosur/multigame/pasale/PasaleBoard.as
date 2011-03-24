@@ -60,9 +60,9 @@ package mx.ecosur.multigame.pasale {
 
         /* 800 x 600 minium board size */
 
-        private static var WIDTH = 800;
+        private static var WIDTH:int = 800;
 
-        private static var HEIGHT = 600;
+        private static var HEIGHT:int = 600;
 
         private var _viewHeight:int = HEIGHT;
 
@@ -113,9 +113,8 @@ package mx.ecosur.multigame.pasale {
             update();
         }
 
-        [Bindable]
         public function get viewHeight():int {
-            if (measuredHeight = 0)
+            if (measuredHeight == 0)
                 measure();
             if (measuredHeight > HEIGHT)
                 _viewHeight = measuredHeight;
@@ -125,9 +124,8 @@ package mx.ecosur.multigame.pasale {
             return _viewHeight;
         }
 
-        [Bindable]
         public function get viewWidth():int {
-            if (measuredWidth = 0)
+            if (measuredWidth == 0)
                 measure();
             if (measuredWidth > WIDTH)
                 _viewWidth = measuredWidth;
@@ -152,7 +150,7 @@ package mx.ecosur.multigame.pasale {
 
         public function panView (event:MouseEvent):void {
             if (pan) {
-                _view.pan(lastX - event.stageX, lastY - event.stageY);
+                _view.panTo(lastX - event.stageX,  lastY - event.stageY);
                 lastX = event.stageX;
                 lastY = event.stageY;
             }

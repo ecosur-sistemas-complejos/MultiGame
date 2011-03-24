@@ -1,14 +1,18 @@
 //copyright
 
 package mx.ecosur.multigame.manantiales.entity
+
 {
     import mx.collections.ArrayCollection;
+    import mx.collections.Grouping;
     import mx.ecosur.multigame.entity.Game;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame")]
     public class ManantialesGame extends Game
     {
+        private var _moveHistory:Grouping;
+
         private var _mode:String;
 
         private var _suggestions:ArrayCollection;
@@ -17,18 +21,8 @@ package mx.ecosur.multigame.manantiales.entity
 
         private var _maxPlayers:int;
 
-        private var _version:int;
-
         public function ManantialesGame () {
             super();
-        }
-
-        public function get version():int {
-            return _version;
-        }
-
-        public function set version(value:int):void {
-            _version = value;
         }
 
         public function get suggestions():ArrayCollection {
@@ -82,6 +76,14 @@ package mx.ecosur.multigame.manantiales.entity
 
         public function setSuggestions(suggestions:ArrayCollection):void {
             _suggestions = suggestions;
+        }
+
+        public function get moveHistory():Grouping {
+            return _moveHistory;
+        }
+
+        public function set moveHistory(value:Grouping):void {
+            _moveHistory = value;
         }
     }
 }
