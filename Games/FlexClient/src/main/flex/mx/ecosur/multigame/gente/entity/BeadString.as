@@ -10,27 +10,27 @@
 */
 
 package mx.ecosur.multigame.gente.entity {
-	
-	import mx.collections.ArrayCollection;
-	
-	/**
-	 * Represents a server side BeadString object.
-	 */
-	[RemoteClass (alias="mx.ecosur.multigame.impl.util.BeadString")]
-	public class BeadString{
-		
-		private var _beads:ArrayCollection;
-		
-		public function BeadString(){
-			super();
-		}
-		
-		public function get beads():ArrayCollection{
-			return _beads;
-		}
-		
-		public function set beads(beads:ArrayCollection):void {
-			_beads = beads;
-		}
-	}
+
+    import mx.collections.ArrayCollection;
+
+    /**
+     * Represents a server side BeadString object.
+     */
+    [RemoteClass (alias="mx.ecosur.multigame.grid.util.BeadString")]
+    public class BeadString{
+
+        private var _beads:ArrayCollection;
+
+        public function BeadString(){
+            super();
+        }
+
+        public function get beads():ArrayCollection{
+            return _beads;
+        }
+
+        public function set beads(beads:ArrayCollection):void {
+            _beads = beads;
+        }
+    }
 }

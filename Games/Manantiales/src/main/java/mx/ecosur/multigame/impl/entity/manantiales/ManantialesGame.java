@@ -25,6 +25,8 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
@@ -34,6 +36,7 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
+import java.io.*;
 import java.util.*;
 import java.net.MalformedURLException;
 
@@ -42,9 +45,7 @@ public class ManantialesGame extends GridGame {
         
     private static final long serialVersionUID = -8395074059039838349L;
 
-    private static String FNAME = "ManantialesKBase.dat";
-
-    private static KnowledgeBase kbase;
+    private static transient KnowledgeBase kbase;
         
     private Mode mode;
         
@@ -56,7 +57,7 @@ public class ManantialesGame extends GridGame {
 
     private Map<Mode,MoveHistory> moveHistory;
 
-    private Color[] colors = { Color.YELLOW, Color.RED, Color.BLACK, Color.PURPLE };
+    private Color[] colors = { Color.YELLOW, Color.PURPLE, Color.RED, Color.BLACK,  };
 
     public ManantialesGame () {
         super();
