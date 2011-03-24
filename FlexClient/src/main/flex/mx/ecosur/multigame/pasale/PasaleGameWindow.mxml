@@ -12,15 +12,27 @@
 
     <mx:Script>
         <![CDATA[
+        import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.pasale.entity.PasaleGame;
         import mx.ecosur.multigame.pasale.entity.PasaleGrid;
         import mx.events.MenuEvent;
         import mx.managers.CursorManager;
 
+        [Bindable]
         private var _currentPlayer:GamePlayer;
+
+        [Bindable]
         private var _currentGame:PasaleGame;
+
+        [Bindable]
         private var _controller:PasaleGameController;
+
+        [Bindable]
+        private var _grid:PasaleGrid;
+
+        [Bindable]
+        private var _players:ArrayCollection;
 
         public function init():void {
             CursorManager.removeBusyCursor();
@@ -41,6 +53,8 @@
 
         public function set currentGame(value:PasaleGame):void {
             _currentGame = value;
+            _grid = PasaleGrid (_currentGame.grid);
+            _players = _currentGame.players;
         }
 
         public function destroy():void {
@@ -91,12 +105,12 @@
             showRoot="true"
             itemClick="handleMenuItemClick(event)"/>
     </mx:ApplicationControlBar>
-    <pasale:ScoreBoard id="scoreboard" players="{currentGame.players}" creationComplete="{scoreboard.draw()}"
+    <pasale:ScoreBoard id="scoreboard" players="{_players}" creationComplete="{scoreboard.draw()}"
             height="20" width="{board.width}"/>    
     <mx:VBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
              paddingLeft="10" paddingRight="10" id="hbox">
-        <pasale:PasaleBoard id="board" width="100%" height="100%" controller="{controller}"
-            grid="{PasaleGrid(currentGame.grid)}" currentPlayer="{currentPlayer}"/>
+        <pasale:PasaleBoard id="board" width="100%" height="100%" controller="{_controller}"
+            grid="{_grid}" currentPlayer="{_currentPlayer}"/>
     </mx:VBox>
     <mx:UIComponent id="animateLayer"/>
 </mx:VBox>

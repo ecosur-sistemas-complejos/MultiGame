@@ -61,7 +61,6 @@ public class ManantialesGame extends GridGame {
     public ManantialesGame () {
         super();
         mode = Mode.CLASSIC;
-        moveHistory = new HashMap<Mode,MoveHistory>();
         messageSender = new ManantialesMessageSender();
     }
 
@@ -77,9 +76,7 @@ public class ManantialesGame extends GridGame {
         setRows(9);
         setState(GameState.PLAY);
         if (mode == null)
-            setMode(Mode.CLASSIC);
-
-        /* Get the sender ready */
+            mode = Mode.CLASSIC;
         messageSender.initialize();
         messageSender.sendStartGame(this);
     }
@@ -117,18 +114,13 @@ public class ManantialesGame extends GridGame {
 
     public void setMode (Mode mode) {
         this.checkConditions = null;
-        if (getMoves() != null && mode != null) {
-            MoveHistory history = new MoveHistory ();
-            history.setMode(mode);
-            history.setMoves(getMoves());
-            getMoveHistory().put(mode, history);
-        }
         this.mode = mode;
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    @Transient
     public Map<Mode, MoveHistory> getMoveHistory() {
+        if (moveHistory == null)
+            moveHistory = new HashMap<Mode,MoveHistory>();
         return moveHistory;
     }
 

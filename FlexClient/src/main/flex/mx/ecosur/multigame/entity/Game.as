@@ -37,9 +37,7 @@ import mx.collections.ArrayCollection;
 
         private var _type:String;
 
-        /*
-        private var _moves:Collection;
-        */
+        private var _moves:ArrayCollection;
 
         private var _messageSender:Object;
 
@@ -120,15 +118,13 @@ import mx.collections.ArrayCollection;
             _type = value;
         }
 
-        /*
-        public function get moves():Collection {
+        public function get moves():ArrayCollection {
             return _moves;
         }
 
-        public function set moves(value:Collection):void {
+        public function set moves(value:ArrayCollection):void {
             _moves = value;
         }
-        */
 
         public function get messageSender():Object {
             return _messageSender;
