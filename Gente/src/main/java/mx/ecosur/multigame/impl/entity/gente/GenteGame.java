@@ -26,6 +26,8 @@ import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 
@@ -54,6 +56,8 @@ public class GenteGame extends GridGame {
     private transient MessageSender messageSender;
 
     private static KnowledgeBase kbase;
+
+    private static File Temp;
 
     public GenteGame () {
         super();
@@ -330,7 +334,20 @@ public class GenteGame extends GridGame {
 
     @Transient
     public String getChangeSet() {
-       return "/mx/ecosur/multigame/impl/gente.xml";
+        return "/mx/ecosur/multigame/impl/gente.xml";
+    }
+
+    private void writeObject(ObjectOutputStream oos) throws IOException
+    {
+        oos.defaultWriteObject();
+        System.out.println ("*** serializing GenteGame object ***");
+    }
+
+
+    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException
+    {
+        ois.defaultReadObject();
+        System.out.println ("*** de-serializing GenteGame object ***");
     }
 
     @Override
