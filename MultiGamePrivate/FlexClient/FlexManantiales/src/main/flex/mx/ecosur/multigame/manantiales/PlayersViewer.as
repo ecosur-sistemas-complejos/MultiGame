@@ -11,7 +11,7 @@ package mx.ecosur.multigame.manantiales
     import mx.resources.IResourceManager;
     import mx.resources.ResourceManager;
 
-
+    [ResourceBundle("Manantiales")]
     public class PlayersViewer extends Accordion
 	{
 		private var _currentPlayer:GamePlayer;
@@ -125,7 +125,7 @@ package mx.ecosur.multigame.manantiales
                         }
                     } else {
                         btn = getHeaderAt(j)
-                        label = resourceManager.getString("StringsBundle","manantiales.panel.info.score.title");
+                        label = resourceManager.getString("Manantiales","manantiales.panel.info.score.title");
                         btn.label = label;
                         btn.setStyle("paddingBottom", 5);
                         btn.setStyle("paddingTop", 5);

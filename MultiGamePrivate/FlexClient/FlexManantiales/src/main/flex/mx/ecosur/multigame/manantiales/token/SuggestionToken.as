@@ -9,13 +9,14 @@ package mx.ecosur.multigame.manantiales.token
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
 
+    [ResourceBundle("Manantiales")]
     public class SuggestionToken extends ManantialesToken {
 
         private var _suggestion:Suggestion;
 
         public function SuggestionToken (suggestion:Suggestion) {
             super();
-            _tooltip = resourceManager.getString("StringsBundle", "manantiales.suggestion")
+            _tooltip = resourceManager.getString("Manantiales", "manantiales.suggestion")
             " [" + suggestion.move + "]";
             _suggestion = suggestion;
             var destination:Ficha = Ficha(suggestion.move.destinationCell);

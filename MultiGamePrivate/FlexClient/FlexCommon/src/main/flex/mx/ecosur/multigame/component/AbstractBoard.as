@@ -24,7 +24,7 @@ package mx.ecosur.multigame.component {
     [Style(name="cellBorderColor", type="uint", format="Color")]
     [Style(name="cellBorderThickness", type="int", format="Length")]
     [Style(name="cellPadding", type="int", format="Length")]
-    
+    [ResourceBundle("Commons")]
     public class AbstractBoard extends UIComponent {
         
         protected var _nCols:int; //number of cells on X axis
@@ -149,8 +149,8 @@ package mx.ecosur.multigame.component {
          * 
          */
         public function getCellDescription(column:Number, row:Number):String{
-            return resourceManager.getString("StringsBundle", "move.history.row") + " " + (nRows - row) +
-                    ", " + resourceManager.getString("StringsBundle", "move.history.column") + " " + (column + 1);
+            return resourceManager.getString("Commons", "move.history.row") + " " + (nRows - row) +
+                    ", " + resourceManager.getString("Commons", "move.history.column") + " " + (column + 1);
         }
         
         override protected function measure():void{

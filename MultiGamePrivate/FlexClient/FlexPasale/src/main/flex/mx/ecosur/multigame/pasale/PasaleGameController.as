@@ -161,13 +161,13 @@ public class PasaleGameController {
                     var fnc:Function = function (event:CloseEvent):void{
                         invalidMove(_executingMove);
                     }
-                    Alert.show(resourceManager.getString("StringsBundle","manantiales.move.invalid"),
-                        resourceManager.getString("StringsBundle","manantiales.move.error.title"), Alert.OK, null,
+                    Alert.show(resourceManager.getString("Pasale","pasale.move.invalid"),
+                        resourceManager.getString("Pasale","pasale.move.error.title"), Alert.OK, null,
                         fnc);
                 }
             }else{
-                Alert.show(event.fault.faultString, resourceManager.getString("StringsBundle",
-                        "manantiales.controller.server.error"));
+                Alert.show(event.fault.faultString, resourceManager.getString("Pasale",
+                        "pasale.controller.server.error"));
             }
         }
 

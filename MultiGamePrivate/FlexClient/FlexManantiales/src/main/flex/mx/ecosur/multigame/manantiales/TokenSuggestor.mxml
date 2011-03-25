@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400"
-          title="@Resource(key='manantiales.token.suggestor.title', bundle='StringsBundle')">
+          title="@Resource(key='manantiales.token.suggestor.title', bundle='Manantiales')">
 
     <mx:Metadata>
         [Event(name="result")]
+        [ResourceBundle("Manantiales")]
     </mx:Metadata>
+    
     <mx:Script>
       <![CDATA[
         import mx.collections.ArrayCollection;
@@ -64,19 +66,19 @@
 
             switch (name) {
                 case TokenType.FOREST:
-                    ret = resourceManager.getString("StringsBundle","manantiales.token.forest");
+                    ret = resourceManager.getString("Manantiales","manantiales.token.forest");
                     break;
                 case TokenType.MODERATE:
-                    ret = resourceManager.getString("StringsBundle","manantiales.token.moderate");
+                    ret = resourceManager.getString("Manantiales","manantiales.token.moderate");
                     break;
                 case TokenType.INTENSIVE:
-                    ret = resourceManager.getString("StringsBundle","manantiales.token.intensive")
+                    ret = resourceManager.getString("Manantiales","manantiales.token.intensive")
                     break;
                 case TokenType.VIVERO:
-                    ret = resourceManager.getString("StringsBundle","manantiales.token.vivero")
+                    ret = resourceManager.getString("Manantiales","manantiales.token.vivero")
                     break;
                 case TokenType.SILVOPASTORAL:
-                    ret = resourceManager.getString("StringsBundle","manantiales.token.silvopastoral")
+                    ret = resourceManager.getString("Manantiales","manantiales.token.silvopastoral")
                     break;
             }
 
@@ -86,12 +88,12 @@
     </mx:Script>
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:Text width="100%"
-                 text="@Resource(key='manantiales.suggestion.type', bundle='StringsBundle')" />
+                 text="@Resource(key='manantiales.suggestion.type', bundle='Manantiales')" />
         <mx:ComboBox id="typeBox" dataProvider="{types}"/>
         <mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
-            <mx:Button id="select" label="@Resource(key='manantiales.suggestion.button', bundle='StringsBundle')"
+            <mx:Button id="select" label="@Resource(key='manantiales.suggestion.button', bundle='Manantiales')"
                        click="suggest()" />
-            <mx:Button id="cancel" label="@Resource(key='manantiales.suggestion.cancel', bundle='StringsBundle')"
+            <mx:Button id="cancel" label="@Resource(key='manantiales.suggestion.cancel', bundle='Manantiales')"
                        click="abort()"/>
         </mx:HBox>
         <mx:HBox id="result" width="100%" verticalAlign="middle"/>

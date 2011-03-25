@@ -28,6 +28,7 @@ package mx.ecosur.multigame.gente {
      * Visual component showing all the moves made in the game
      * and allowing navegation to different points in the game.
      */
+	[ResourceBundle("Commons")]
     public class GenteMoveViewer extends Panel {
         
         private var _moves:Accordion; 
@@ -118,7 +119,7 @@ package mx.ecosur.multigame.gente {
             
             //create button header
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(pmi));
-            btn.label = resourceManager.getString("StringsBundle", "move.history.to") +
+            btn.label = resourceManager.getString("Commons", "move.history.to") +
                     _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             btn.setStyle("icon", Color.getCellIcon(move.player.color));
             btn.setStyle("paddingBottom", 5);

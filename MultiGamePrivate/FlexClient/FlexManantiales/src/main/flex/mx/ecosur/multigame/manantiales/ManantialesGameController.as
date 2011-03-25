@@ -36,6 +36,7 @@ package mx.ecosur.multigame.manantiales
     import mx.rpc.events.ResultEvent;
     import mx.rpc.remoting.RemoteObject;
 
+    [ResourceBundle("Manantiales")]
     public class ManantialesGameController
     {
         public var _gameWindow:ManantialesWindow;
@@ -112,8 +113,8 @@ package mx.ecosur.multigame.manantiales
             _moveHandler = new MoveHandler (this);               
 
             // initialize game status
-            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle", "manantiales.welcome") + " " +
-                _currentPlayer.registrant.name + ".\n\n" + resourceManager.getString("StringsBundle",
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales", "manantiales.welcome") + " " +
+                _currentPlayer.registrant.name + ".\n\n" + resourceManager.getString("Manantiales",
                     "manantiales.identify") + " " + 
                 Color.getColorDescription(_currentPlayer.color),
                 Color.getColorCode(_currentPlayer.color));
@@ -178,7 +179,7 @@ package mx.ecosur.multigame.manantiales
                             if(chatMessage.sender.id != _currentPlayer.registrant.id){
                                 _gameWindow.gameStatus.showMessage(
                                     chatMessage.sender.registrant.name + " " +
-                                    resourceManager.getString("StringsBundle",
+                                    resourceManager.getString("Manantiales",
                                             "manantiales.panel.chat.announcement"), 0x000000);
                             }
                             break;
@@ -257,7 +258,7 @@ package mx.ecosur.multigame.manantiales
          * Called when game begins
          */
         private function begin():void{
-            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
                 "manantiales.start.message"), 0x000000);
         }
 
@@ -266,7 +267,7 @@ package mx.ecosur.multigame.manantiales
          */
         private function end():void{
 
-            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle","manantiales.have.won"),
+            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales","manantiales.have.won"),
                0x000000);
 
             if(_isEnded){
@@ -427,11 +428,11 @@ package mx.ecosur.multigame.manantiales
                 }
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
-                        _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
                                 "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
                     }else{
                         _gameWindow.gameStatus.showMessage(
-                            gamePlayer.registrant.name + " " + resourceManager.getString("StringsBundle","manantiales.tomove"),
+                            gamePlayer.registrant.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
                                     Color.getColorCode(gamePlayer.color));
                     }
                 }
@@ -460,12 +461,12 @@ package mx.ecosur.multigame.manantiales
                     var fnc:Function = function (event:CloseEvent):void{
                         _moveHandler.invalidMove(_executingMove);
                     }
-                    Alert.show(resourceManager.getString("StringsBundle","manantiales.move.invalid"),
-                            resourceManager.getString("StringsBundle","manantiales.move.error.title"), Alert.OK, null,
+                    Alert.show(resourceManager.getString("Manantiales","manantiales.move.invalid"),
+                            resourceManager.getString("Manantiales","manantiales.move.error.title"), Alert.OK, null,
                             fnc);
                 }
             }else{
-                Alert.show(event.fault.faultString, resourceManager.getString("StringsBundle",
+                Alert.show(event.fault.faultString, resourceManager.getString("Manantiales",
                         "manantiales.controller.server.error"));
             }
         }
@@ -537,13 +538,13 @@ package mx.ecosur.multigame.manantiales
                         _stageChangeAlert.positive = true;
 
                     } else {
-                        _stageChangeAlert.text = resourceManager.getString("StringsBundle",
+                        _stageChangeAlert.text = resourceManager.getString("Manantiales",
                                 "manantiales.competitive.lose") + " '" +
                             game.mode + "'";
                         _stageChangeAlert.positive = false;
                     }
                 } else {
-                    _stageChangeAlert.text = resourceManager.getString("StringsBundle","manantiales.puzzle.solved") +
+                    _stageChangeAlert.text = resourceManager.getString("Manantiales","manantiales.puzzle.solved") +
                             " '" + game.mode + "'";
                     _stageChangeAlert.positive = true;
                 }
@@ -618,11 +619,11 @@ package mx.ecosur.multigame.manantiales
                         }
 
                         if (expiredCondition != null) {
-                          _endAlert.text = resourceManager.getString("StringsBundle","manantiales.severe.expiration") +
+                          _endAlert.text = resourceManager.getString("Manantiales","manantiales.severe.expiration") +
                                   " ('" + expiredCondition.reason + "')";
                           _endAlert.positive = false;
                         } else {
-                            _endAlert.text = resourceManager.getString("StringsBundle","manantiales.all.winners");
+                            _endAlert.text = resourceManager.getString("Manantiales","manantiales.all.winners");
                             _endAlert.positive = true;
                             end();
                         }

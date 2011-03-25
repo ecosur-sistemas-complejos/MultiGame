@@ -3,6 +3,7 @@
 
     <mx:Metadata>
         [Event(name="result")]
+        [ResourceBundle("Manantiales")]
     </mx:Metadata>
 
     <mx:Script>
@@ -52,12 +53,12 @@
             <mx:AddChild relativeTo="{content}" position="lastChild">
                 <mx:HBox width="100%">
                     <mx:Image source="@Embed(source='/assets/icons.swf#thumbsDown')" />
-                    <mx:Text text="@Resource(key='manantiales.badyear', bundle='StringsBundle')" />
+                    <mx:Text text="@Resource(key='manantiales.badyear', bundle='Manantiales')" />
                 </mx:HBox>
             </mx:AddChild>
             <mx:AddChild relativeTo="{content}" position="lastChild">
                 <mx:Box width="100%" horizontalAlign="center">
-                    <mx:Button label="@Resource(key='manantiales.skipturn', bundle='StringsBundle')" 
+                    <mx:Button label="@Resource(key='manantiales.skipturn', bundle='Manantiales')" 
                                click="selectionComplete(event)" />
                 </mx:Box>
             </mx:AddChild>
@@ -66,10 +67,10 @@
 
 
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-        <mx:Text width="100%" text="@Resource(key='manantiales.annualcondition', bundle='StringsBundle')" />
+        <mx:Text width="100%" text="@Resource(key='manantiales.annualcondition', bundle='Manantiales')" />
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
             <mx:Text id="selectedNum" fontSize="30" />
-            <mx:Button id="btnStop" label="@Resource(key='manantiales.stop', bundle='StringsBundle')" click="selectNumber()" />
+            <mx:Button id="btnStop" label="@Resource(key='manantiales.stop', bundle='Manantiales')" click="selectNumber()" />
         </mx:HBox>
         <mx:HBox id="result" width="100%" verticalAlign="middle"/>
     </mx:VBox>

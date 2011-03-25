@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
-          title="@Resource(key='pending.panel.title', bundle='StringsBundle')" creationComplete="init(event)">
+          title="@Resource(key='pending.panel.title', bundle='Lobby')" creationComplete="init(event)">
 
     <mx:Metadata>
         [Event(name="gameJoined", type="mx.ecosur.multigame.event.PlayEvent")]
+        [ResourceBundle("Lobby")]
     </mx:Metadata>
 
     <mx:Script>
@@ -115,19 +116,19 @@
     <mx:VBox width="100%">
         <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
             <mx:columns>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column1', bundle='StringsBundle')"
+                <mx:DataGridColumn headerText="@Resource(key='pending.data.column1', bundle='Lobby')"
                                    dataField="created" width="120"/>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column2', bundle='StringsBundle')"
+                <mx:DataGridColumn headerText="@Resource(key='pending.data.column2', bundle='Lobby')"
                                    dataField="gameType" width="80"/>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column3', bundle='StringsBundle')"
+                <mx:DataGridColumn headerText="@Resource(key='pending.data.column3', bundle='Lobby')"
                                    dataField="players" wordWrap="true" />
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column4', bundle='StringsBundle')"
+                <mx:DataGridColumn headerText="@Resource(key='pending.data.column4', bundle='Lobby')"
                                    dataField="status" width="120" wordWrap="true"/>
             </mx:columns>
         </mx:DataGrid>
         <mx:Form width="100%">
             <mx:FormItem horizontalAlign="right" width="100%">
-                <mx:Button click="joinPending()" label="@Resource(key='pending.button', bundle='StringsBundle')"/>
+                <mx:Button click="joinPending()" label="@Resource(key='pending.button', bundle='Lobby')"/>
             </mx:FormItem>
         </mx:Form>
     </mx:VBox>

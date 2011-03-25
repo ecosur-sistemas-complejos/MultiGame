@@ -9,6 +9,7 @@ package mx.ecosur.multigame.entity.manantiales
 
 [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha")]
+	[ResourceBundle("Commons")]
     public class Ficha extends Cell
     {
         protected var _type:String;
@@ -31,19 +32,19 @@ package mx.ecosur.multigame.entity.manantiales
 
             switch (_type) {
                 case TokenType.FOREST:
-                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.forest");
+                    ret = ResourceManager.getInstance().getString("Commons", "manantiales.token.forest");
                     break;
                 case TokenType.MODERATE:
-                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.moderate");
+                    ret = ResourceManager.getInstance().getString("Commons", "manantiales.token.moderate");
                     break;
                 case TokenType.INTENSIVE:
-                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.intensive");
+                    ret = ResourceManager.getInstance().getString("Commons", "manantiales.token.intensive");
                     break;
                 case TokenType.VIVERO:
-                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.vivero");
+                    ret = ResourceManager.getInstance().getString("Commons", "manantiales.token.vivero");
                     break;
                 case TokenType.SILVOPASTORAL:
-                    ret = ResourceManager.getInstance().getString("StringsBundle", "manantiales.token.silvopastoral");
+                    ret = ResourceManager.getInstance().getString("Commons", "manantiales.token.silvopastoral");
                     break;
                 default:
                     ret = "UNKNOWN!";

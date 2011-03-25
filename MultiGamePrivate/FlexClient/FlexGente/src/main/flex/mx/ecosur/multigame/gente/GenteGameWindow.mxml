@@ -7,7 +7,8 @@
     
     <mx:Metadata>
         [Event(name="complete")]
-		[ResourceBundle("StringsBundle")]
+		[ResourceBundle("Commons")]
+        [ResourceBundle("Gente")]
     </mx:Metadata>
     
     <mx:Script>
@@ -70,7 +71,7 @@
          relevent to application lifecycle should be listend to by
          Parent containers (event-bubbling) */
         private function handleMenuItemClick(evt:MenuEvent):void {
-            if (evt.label == resourceManager.getString("StringsBundle","gente.menu.two.submenu"))
+            if (evt.label == resourceManager.getString("Gente","gente.menu.two.submenu"))
             {
                 _helpPanel = new HelpPanel();
                 _helpPanel.load("help-gente.html");
@@ -79,10 +80,10 @@
                 _helpPanel.addEventListener("close", closeHelp);
                 PopUpManager.addPopUp(_helpPanel, this, true);
                 PopUpManager.centerPopUp(_helpPanel);
-            } else if (evt.label == resourceManager.getString("StringsBundle","gente.menu.one.submenu.one")) {
+            } else if (evt.label == resourceManager.getString("Gente","gente.menu.one.submenu.one")) {
                 this.destroy();
                 this.dispatchEvent(new Event("complete", true));
-            } else if (evt.label == resourceManager.getString("StringsBundle","gente.menu.one.submenu.two")) {
+            } else if (evt.label == resourceManager.getString("Gente","gente.menu.one.submenu.two")) {
                 quitGame();
                 this.dispatchEvent(new Event("complete", true));
             }
@@ -100,12 +101,12 @@
     </mx:Script>
 
     <mx:XMLList id="menuXML">
-        <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.title')}">
-            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.submenu.one')}"/>
-            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.one.submenu.two')}"/>
+        <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.title')}">
+            <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.submenu.one')}"/>
+            <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.submenu.two')}"/>
         </menuitem>
-        <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.two.title')}">
-            <menuitem label="{resourceManager.getString('StringsBundle', 'gente.menu.two.submenu')}"/>
+        <menuitem label="{resourceManager.getString('Gente', 'gente.menu.two.title')}">
+            <menuitem label="{resourceManager.getString('Gente', 'gente.menu.two.submenu')}"/>
         </menuitem>
     </mx:XMLList>
 
@@ -123,13 +124,13 @@
             <component:TokenStore id="tokenStore" currentPlayer="{currentPlayer}"
                 tokenSize="{board.tokenSize}" width="100%"/>
             <pente:GenteMoveViewer id="moveViewer"
-                title="@Resource(key='move.history.title', bundle='StringsBundle')" width="100%" height="100%"/>
+                title="@Resource(key='move.history.title', bundle='Commons')" width="100%" height="100%"/>
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
             <pente:GenteBoard id="board" width="100%" height="100%" nRows="19" nCols="19"/>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
-            <mx:Panel title="@Resource(key='gente.panel.score', bundle='StringsBundle')" width="100%">
+            <mx:Panel title="@Resource(key='gente.panel.score', bundle='Gente')" width="100%">
                 <pente:GentePlayersViewer id="playersViewer" width="100%" />
             </mx:Panel>
             <component:ChatPanel id="chatPanel" width="100%" height="100%" currentPlayer="{currentPlayer}"

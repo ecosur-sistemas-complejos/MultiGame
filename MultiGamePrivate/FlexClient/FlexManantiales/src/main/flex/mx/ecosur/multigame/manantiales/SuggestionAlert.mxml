@@ -2,6 +2,7 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Suggestion">
     <mx:Metadata>
         [Event(name="suggestion")]
+        [ResourceBundle("Manantiales")]
     </mx:Metadata>
 
     <mx:Script>
@@ -45,11 +46,11 @@
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:HBox width="100%">
             <mx:Image id="indicator" source="{thumbsUp}" />
-            <mx:Text width="100%" id="reason" text="@Resource(key='manantiales.suggestion.accept', bundle='StringsBundle')"/>
+            <mx:Text width="100%" id="reason" text="@Resource(key='manantiales.suggestion.accept', bundle='Manantiales')"/>
         </mx:HBox>
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-            <mx:Button id="acpt" label="@Resource(key='manantiales.suggestion.button', bundle='StringsBundle')" click="accept(event)"/>
-            <mx:Button id="rjct" label="@Resource(key='manantiales.suggestion.cancel', bundle='StringsBundle')" click="reject(event)"/>
+            <mx:Button id="acpt" label="@Resource(key='manantiales.suggestion.button', bundle='Manantiales')" click="accept(event)"/>
+            <mx:Button id="rjct" label="@Resource(key='manantiales.suggestion.cancel', bundle='Manantiales')" click="reject(event)"/>
         </mx:HBox>
     </mx:VBox>
 </mx:Panel>

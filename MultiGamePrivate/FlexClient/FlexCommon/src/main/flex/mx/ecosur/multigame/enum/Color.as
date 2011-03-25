@@ -16,6 +16,7 @@ import mx.resources.ResourceManager;
 /**
 	 * Enumeration of colors and related static helper classes.
 	 */
+	[ResourceBundle("Commons")]
 	public class Color {
 		
 		public static const BLACK:String = "BLACK";
@@ -63,17 +64,17 @@ import mx.resources.ResourceManager;
 
             switch (color){
                 case Color.BLACK:
-                    return resource.getString("StringsBundle", "color.black");
+                    return resource.getString("Commons", "color.black");
                 case Color.YELLOW:
-                    return resource.getString("StringsBundle", "color.yellow");
+                    return resource.getString("Commons", "color.yellow");
                 case Color.GREEN:
-                    return resource.getString("StringsBundle", "color.green");
+                    return resource.getString("Commons", "color.green");
                 case Color.BLUE:
-                    return resource.getString("StringsBundle", "color.blue");
+                    return resource.getString("Commons", "color.blue");
                 case Color.RED:
-                    return resource.getString("StringsBundle", "color.red");
+                    return resource.getString("Commons", "color.red");
                 case Color.PURPLE:
-                    return resource.getString("StringsBundle", "color.purple");
+                    return resource.getString("Commons", "color.purple");
             }
             return "";
         }

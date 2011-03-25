@@ -8,7 +8,8 @@
     
     <mx:Metadata>
         [Event(name="complete")]
-		[ResourceBundle("StringsBundle")]
+		[ResourceBundle("Manantiales")]
+        [ResourceBundle("Commons")]
     </mx:Metadata>
     
     <mx:Script>
@@ -114,7 +115,7 @@
                relevent to application lifecycle should be listend to by 
                Parent containers (event-bubbling) */
             private function handleMenuItemClick(evt:MenuEvent):void {
-                if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.two.submenu")) {
+                if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.two.submenu")) {
                     _helpPanel = new HelpPanel();
                     _helpPanel.load("help-manantiales.html");
                     _helpPanel.width = Math.min(width - 100, 600);
@@ -123,7 +124,7 @@
                     PopUpManager.addPopUp(_helpPanel, this, true);
                     PopUpManager.centerPopUp(_helpPanel);                    
 
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.one")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.one")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 0;
@@ -132,7 +133,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.three")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.three")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 1;
@@ -141,7 +142,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.four")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.four")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 2;
@@ -150,7 +151,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.two")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.two")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 3;
@@ -159,7 +160,7 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.three.submenu.five")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.five")) {
                     _imagePanel = new ImagePanel();
                     _imagePanel.images = _images;
                     _imagePanel.index = 4;
@@ -168,9 +169,9 @@
                     _imagePanel.addEventListener("close", closeHelp);
                     PopUpManager.addPopUp(_imagePanel, this, true);
                     PopUpManager.centerPopUp(_imagePanel);
-                } else if (evt.label==resourceManager.getString("StringsBundle","manantiales.menu.one.submenu.one")) {
+                } else if (evt.label==resourceManager.getString("Manantiales","manantiales.menu.one.submenu.one")) {
                     dispatchCompletion();
-                } else if (evt.label == resourceManager.getString("StringsBundle","manantiales.menu.one.submenu.two")) {
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.one.submenu.two")) {
                     quitGame();
                     dispatchCompletion();
                 }
@@ -189,15 +190,15 @@
             public function get state():String {
                 var ret:String;
                 if (_currentGame.mode == null)
-                    ret = resourceManager.getString("StringsBundle","manantiales.state.setup");
+                    ret = resourceManager.getString("Manantiales","manantiales.state.setup");
                 else if (_currentGame.mode == Mode.CLASSIC)
-                    ret = resourceManager.getString("StringsBundle","manantiales.state.classic");
+                    ret = resourceManager.getString("Manantiales","manantiales.state.classic");
                 else if (_currentGame.mode == Mode.BASIC_PUZZLE)
-                    ret = resourceManager.getString("StringsBundle","manantiales.state.puzzle.basic");
+                    ret = resourceManager.getString("Manantiales","manantiales.state.puzzle.basic");
                 else if (_currentGame.mode == Mode.SILVOPASTORAL)
-                    ret = resourceManager.getString("StringsBundle","manantiales.state.silvopastoral");
+                    ret = resourceManager.getString("Manantiales","manantiales.state.silvopastoral");
                 else if (_currentGame.mode == Mode.SILVO_PUZZLE)
-                    ret = resourceManager.getString("StringsBundle","manantiales.state.puzzle.silvo");
+                    ret = resourceManager.getString("Manantiales","manantiales.state.puzzle.silvo");
                 
                 return ret;
             }
@@ -214,19 +215,19 @@
     </mx:Script>
 
     <mx:XMLList id="menuXML">
-        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.title')}">
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.submenu.one')}"/>
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.one.submenu.two')}"/>
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.submenu.one')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.submenu.two')}"/>
         </menuitem>
-        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.two.title')}">
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.two.submenu')}"/>
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.two.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.two.submenu')}"/>
         </menuitem>
-        <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.title')}">
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.one')}" />
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.two')}"/>
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.three')}"/>
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.four')}"/>
-            <menuitem label="{resourceManager.getString('StringsBundle', 'manantiales.menu.three.submenu.five')}"/>
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.one')}" />
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.two')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.three')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.four')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.five')}"/>
         </menuitem>
     </mx:XMLList>
     
@@ -281,7 +282,7 @@
         <mx:VBox id="leftBox" width="200" height="100%">
             <component:GameStatus id="gameStatus" width="100%" />
             <manantiales:MoveViewer id="moveViewer"
-                title="@Resource(key='move.history.title', bundle='StringsBundle')"
+                title="@Resource(key='move.history.title', bundle='Commons')"
                 height="100%" width="100%"/>
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">  
+    
+    <mx:Metadata>
+        [ResourceBundle("Commons")]
+        [ResourceBundle("Manantiales")]
+    </mx:Metadata>
+    
     <mx:Script> 
         <![CDATA[
             import mx.events.DynamicEvent;
@@ -33,7 +39,7 @@
             <mx:GridRow>
                 <mx:GridItem>
                     <mx:Label text="@Resource(key='manantiales.panel.info.score.premiums',
-                        bundle='StringsBundle')" styleName="fieldLit"/>
+                        bundle='Manantiales')" styleName="fieldLit"/>
                 </mx:GridItem>
                 <mx:GridItem>
                     <mx:Label id="txtPremiums" styleName="field"/>
@@ -42,7 +48,7 @@
         </mx:Grid>    
         <mx:Box width="100%" horizontalAlign="center">
             <mx:Button label="@Resource(key='move.history.go', 
-                        bundle='StringsBundle')" click="gotoGameMove()" />
+                        bundle='Commons')" click="gotoGameMove()" />
         </mx:Box>
     </mx:VBox>
 </mx:Canvas>

@@ -65,7 +65,7 @@ package mx.ecosur.multigame.gente{
      * Represents a game of gente. Contains a gente board and cell store
      * and controls the main flow of control for the game.
      */
-    [ResourceBundle("StringsBundle")]
+    [ResourceBundle("Gente")]
     public class GenteGameController {
 
         private var resourceManager:IResourceManager = ResourceManager.getInstance();
@@ -161,9 +161,9 @@ package mx.ecosur.multigame.gente{
             _tokenStore.active = false;
             
             // initialize game status
-            _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.welcome") +
+            _gameStatus.showMessage(resourceManager.getString("Gente", "gente.welcome") +
                 currentPlayer.registrant.name + "!\n\n" +
-                    " " + resourceManager.getString("StringsBundle", "gente.identify") + " " + 
+                    " " + resourceManager.getString("Gente", "gente.identify") + " " + 
                 Color.getColorDescription(currentPlayer.color), 
                     Color.getColorCode(currentPlayer.color));
     
@@ -222,11 +222,11 @@ package mx.ecosur.multigame.gente{
 
                 if (gamePlayer.turn){
                     if (gamePlayer.id == _currentPlayer.id){
-                        _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.currentplayer.turn"),
+                        _gameStatus.showMessage(resourceManager.getString("Gente", "gente.currentplayer.turn"),
                                 Color.getColorCode(_currentPlayer.color));
                     }else{
                         _gameStatus.showMessage(gamePlayer.registrant.name +
-                            " " + resourceManager.getString("StringsBundle", "gente.tomove"),
+                            " " + resourceManager.getString("Gente", "gente.tomove"),
                                 Color.getColorCode(gamePlayer.color));
                     }
                 }
@@ -240,7 +240,7 @@ package mx.ecosur.multigame.gente{
          * Called when game begins 
          */
         private function begin():void{
-            _gameStatus.showMessage(resourceManager.getString("StringsBundle", "gente.start.message"), 0x00000);  
+            _gameStatus.showMessage(resourceManager.getString("Gente", "gente.start.message"), 0x00000);  
         }
         
         /*
@@ -262,7 +262,7 @@ package mx.ecosur.multigame.gente{
             var gentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = gentePlayer.registrant.name + " " + resourceManager.getString("StringsBundle", "gente.has.won");
+                msg = gentePlayer.registrant.name + " " + resourceManager.getString("Gente", "gente.has.won");
                 color = Color.getColorCode(gentePlayer.color);
                 if (gentePlayer.color == _currentPlayer.color)
                     sound = SoundAssets.approval;
@@ -270,7 +270,7 @@ package mx.ecosur.multigame.gente{
                     sound = SoundAssets.failure;
             }else{
                 msg = Color.getTeamName(gentePlayer.color) + " " 
-                        + resourceManager.getString("StringsBundle", "gente.team.has.won");
+                        + resourceManager.getString("Gente", "gente.team.has.won");
                 color = 0x000000;
                 if (Color.getTeamName(gentePlayer.color) == Color.getTeamName(_currentPlayer.color))
                     sound = SoundAssets.approval;
@@ -346,8 +346,8 @@ package mx.ecosur.multigame.gente{
                     var fnc:Function = function (event:CloseEvent):void{
                         undoMove(_executingMove);
                     }
-                    Alert.show(resourceManager.getString("StringsBundle", "gente.move.invalid"),
-                            resourceManager.getString("StringsBundle", "gente.move.error.title"), Alert.OK, null, fnc);
+                    Alert.show(resourceManager.getString("Gente", "gente.move.invalid"),
+                            resourceManager.getString("Gente", "gente.move.error.title"), Alert.OK, null, fnc);
                 }
             }else{
                 Alert.show(event.fault.faultString, "Server Error");
@@ -374,7 +374,7 @@ package mx.ecosur.multigame.gente{
                     _chatPanel.addMessage(chatMessage);
                     if(chatMessage.sender.id != _currentPlayer.registrant.id){
                         _gameStatus.showMessage(chatMessage.sender.registrant.name + " " +
-                            resourceManager.getString("StringsBundle", "gente.panel.chat.announcement"), 0x000000);
+                            resourceManager.getString("Gente", "gente.panel.chat.announcement"), 0x000000);
                     }
                     break;
                 case GameEvent.END:
@@ -686,7 +686,7 @@ package mx.ecosur.multigame.gente{
             
             if(hasScored){
                 _gameStatus.showMessage(move.player.registrant.name + "  " +
-                    resourceManager.getString("StringsBundle", "gente.move.scored"), Color.getColorCode(move.player.color));
+                    resourceManager.getString("Gente", "gente.move.scored"), Color.getColorCode(move.player.color));
             }
 
         }
@@ -723,13 +723,13 @@ package mx.ecosur.multigame.gente{
             boardCell.select(Color.getColorCode(move.player.color));
             
             // show qualify dialog
-            var txt:String = resourceManager.getString("StringsBundle", "move.qualify.announcement") + "\n\n" +
-                    resourceManager.getString("StringsBundle", "move.qualify.question");
-            var title:String = resourceManager.getString("StringsBundle", "move.qualify.title");
+            var txt:String = resourceManager.getString("Gente", "move.qualify.announcement") + "\n\n" +
+                    resourceManager.getString("Gente", "move.qualify.question");
+            var title:String = resourceManager.getString("Gente", "move.qualify.title");
 
-            Alert.yesLabel = resourceManager.getString("StringsBundle", "move.qualify.button.cooperate");
-            Alert.noLabel = resourceManager.getString("StringsBundle", "move.qualify.button.selfish");
-            Alert.cancelLabel = resourceManager.getString("StringsBundle", "move.qualify.button.cancel");
+            Alert.yesLabel = resourceManager.getString("Gente", "move.qualify.button.cooperate");
+            Alert.noLabel = resourceManager.getString("Gente", "move.qualify.button.selfish");
+            Alert.cancelLabel = resourceManager.getString("Gente", "move.qualify.button.cancel");
             Alert.buttonWidth = 120;
             Alert.show(txt, title, Alert.YES | Alert.NO | Alert.CANCEL, _board, fnc, null, Alert.CANCEL);
         }

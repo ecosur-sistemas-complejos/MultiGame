@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+    
+    <mx:Metadata>
+        [ResourceBundle("Commons")]
+    </mx:Metadata>
 
     <mx:Script>
         <![CDATA[
@@ -38,13 +42,13 @@
     <mx:Grid>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='player.info.team', bundle='StringsBundle')" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='player.info.team', bundle='Commons')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem paddingRight="0">
                 <mx:Label id="playerTeam" styleName="field"/>
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='player.info.registered', bundle='StringsBundle')" styleName="fieldLit"/>
+                <mx:Label text="@Resource(key='player.info.registered', bundle='Commons')" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="playerLastRegistration" styleName="field"/>

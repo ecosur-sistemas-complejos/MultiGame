@@ -17,6 +17,7 @@ import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
     
     import mx.events.DynamicEvent;
 
+    [ResourceBundle("Commons")]
     public class MoveViewer extends Panel
     {
         private var _moves:Accordion; 
@@ -108,18 +109,18 @@ import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
             //create button header
             var btn:Button = _moves.getHeaderAt(_moves.getChildIndex(mi));
             if (move.badYear) {
-                btn.label = resourceManager.getString("StringsBundle", "move.history.badyear");
+                btn.label = resourceManager.getString("Commons", "move.history.badyear");
             } else if (move.currentCell == null) {
-                btn.label = destination.typeName + " " + resourceManager.getString("StringsBundle", "move.history.to") + " " +
+                btn.label = destination.typeName + " " + resourceManager.getString("Commons", "move.history.to") + " " +
                         _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             } else if (move.currentCell != null && move.destinationCell != null) {
-                btn.label = current.typeName + " " + resourceManager.getString("StringsBundle", "move.history.from") + " " +
+                btn.label = current.typeName + " " + resourceManager.getString("Commons", "move.history.from") + " " +
                         _board.getCellDescription (move.currentCell.column, move.currentCell.row) +
-                    " to " + destination.typeName + resourceManager.getString("StringsBundle", "move.history.at") + " " +
+                    " to " + destination.typeName + resourceManager.getString("Commons", "move.history.at") + " " +
                         _board.getCellDescription(move.destinationCell.column, move.destinationCell.row);
             } else if (move.currentCell != null && move.destinationCell == null) {
-                btn.label = current.typeName + " " + resourceManager.getString("StringsBundle", "move.history.removed") +
-                        resourceManager.getString("StringsBundle", "move.history.at") + " " +
+                btn.label = current.typeName + " " + resourceManager.getString("Commons", "move.history.removed") +
+                        resourceManager.getString("Commons", "move.history.at") + " " +
                         _board.getCellDescription (move.currentCell.column, move.currentCell.row);
             }
 

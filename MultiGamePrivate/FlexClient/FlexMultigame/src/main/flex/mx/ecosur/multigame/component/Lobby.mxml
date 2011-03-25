@@ -8,6 +8,7 @@
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
         [Event(name="gameJoined", type="mx.ecosur.multigame.event.PlayEvent")]
         [Event(name="rowSelected", type="mx.ecosur.multigame.event.PlayEvent")]
+        [ResourceBundle("Lobby")]
     </mx:Metadata>
 
     <mx:Script>
@@ -75,15 +76,15 @@
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-    <mx:Panel title="@Resource(key='lobby.panel.title', bundle='StringsBundle')" paddingLeft="5" paddingRight="5" paddingBottom="5">
+    <mx:Panel title="@Resource(key='lobby.panel.title', bundle='Lobby')" paddingLeft="5" paddingRight="5" paddingBottom="5">
         <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
         <mx:TabNavigator width="800" height="280">
-            <component:StartNewGame  label="@Resource(key='lobby.tab.start', bundle='StringsBundle')"
+            <component:StartNewGame  label="@Resource(key='lobby.tab.start', bundle='Lobby')"
                  height="100%" width="100%" registered="dispatchEvent(event)"/>
-            <component:JoinUnfinishedGame label="@Resource(key='lobby.tab.middle', bundle='StringsBundle')" id="gameList"
+            <component:JoinUnfinishedGame label="@Resource(key='lobby.tab.middle', bundle='Lobby')" id="gameList"
                  height="100%" width="100%"
                 gameChosen="choose(event)"/>
-            <component:JoinPendingGame label="@Resource(key='lobby.tab.end', bundle='StringsBundle')" id="pendingList"
+            <component:JoinPendingGame label="@Resource(key='lobby.tab.end', bundle='Lobby')" id="pendingList"
                  player="{player}" height="100%" width="100%"
                 gameJoined="choose(event)"/>
         </mx:TabNavigator>
