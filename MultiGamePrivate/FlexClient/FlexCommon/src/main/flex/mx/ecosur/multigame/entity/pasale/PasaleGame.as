@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.pasale.entity
+package mx.ecosur.multigame.entity.pasale
 {
 import mx.collections.ArrayCollection;
 import mx.ecosur.multigame.entity.Game;

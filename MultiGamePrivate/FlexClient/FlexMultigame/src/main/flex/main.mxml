@@ -11,6 +11,7 @@
             import mx.ecosur.multigame.entity.Registrant;
             import mx.ecosur.multigame.entity.gente.GenteGame;
             import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.entity.pasale.PasaleGame;
             import mx.ecosur.multigame.event.PlayEvent;
             import mx.ecosur.multigame.module.IGameModule;
             import mx.events.ModuleEvent;
@@ -49,6 +50,8 @@
 					gameLoader.url = "Gente.swf";
 				} else if (playEvent.game is ManantialesGame) {
                     gameLoader.url = "Manantiales.swf";
+                } else if (playEvent.game is PasaleGame) {
+                    gameLoader.url = "Pasale.swf";
                 } else {
 					Alert.show("Error!  Unknown GameType [" + playEvent.game + "]");
 					Alert.show("Game info" + playEvent.game.id + "," + playEvent.game.columns + ", " + playEvent.game.rows);

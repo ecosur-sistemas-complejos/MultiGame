@@ -29,8 +29,8 @@ package mx.ecosur.multigame.pasale {
     import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.pasale.entity.PasaleFicha;
     import mx.ecosur.multigame.pasale.entity.PasaleGrid;
-    import mx.ecosur.multigame.pasale.entity.PasaleMove;
-    import mx.ecosur.multigame.pasale.entity.PasalePlayer;
+    import mx.ecosur.multigame.entity.pasale.PasaleMove;
+    import mx.ecosur.multigame.entity.pasale.PasalePlayer;
     import mx.ecosur.multigame.pasale.enum.UseType;
     import mx.effects.Sequence;
     import mx.events.DynamicEvent;

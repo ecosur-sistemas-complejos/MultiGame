@@ -1,7 +1,7 @@
 package mx.ecosur.multigame.pasale.entity {
 import mx.collections.ArrayCollection;
-import mx.ecosur.multigame.entity.GameGrid;
 import mx.ecosur.multigame.pasale.enum.UseType;
+import mx.ecosur.multigame.entity.GameGrid;
 
 [RemoteClass (alias="mx.ecosur.multigame.impl.entity.pasale.PasaleGrid")]
 

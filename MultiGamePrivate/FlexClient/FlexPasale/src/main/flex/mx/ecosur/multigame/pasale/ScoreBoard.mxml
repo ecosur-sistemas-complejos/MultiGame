@@ -4,7 +4,7 @@
         <![CDATA[
 
         import mx.collections.ArrayCollection;
-        import mx.ecosur.multigame.pasale.entity.PasalePlayer;
+        import mx.ecosur.multigame.entity.pasale.PasalePlayer;
 
         private var _info:ArrayCollection = new ArrayCollection();
         private var _players:ArrayCollection = new ArrayCollection();

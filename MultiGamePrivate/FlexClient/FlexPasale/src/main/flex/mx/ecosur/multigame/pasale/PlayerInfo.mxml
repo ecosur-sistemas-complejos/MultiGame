@@ -5,7 +5,7 @@
         <![CDATA[
 
         import mx.ecosur.multigame.enum.Color;
-        import mx.ecosur.multigame.pasale.entity.PasalePlayer;
+        import mx.ecosur.multigame.entity.pasale.PasalePlayer;
 
         private var _pasalePlayer:PasalePlayer;
 

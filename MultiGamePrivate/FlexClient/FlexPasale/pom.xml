@@ -2,10 +2,10 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>mx.ecosur</groupId>
-<artifactId>flex-gente</artifactId>
+<artifactId>flex-pasale</artifactId>
 <packaging>swf</packaging>
-<name>Flex Gente</name>
-<description>Flex UI implementation for Gente game.</description>
+<name>Flex Pasale</name>
+<description>Flex UI implementation for Pasale game.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
     <artifactId>multi-game-flex-client</artifactId>
@@ -14,7 +14,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <testSourceDirectory>src/test/flex</testSourceDirectory>
-    <finalName>Gente</finalName>
+    <finalName>Pasale</finalName>
     <plugins>
         <plugin>
             <groupId>org.sonatype.flexmojos</groupId>
@@ -23,7 +23,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <extensions>true</extensions>
             <configuration>
                 <debug>${debug}</debug>
-                <sourceFile>Gente.mxml</sourceFile>
+                <sourceFile>Pasale.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
                 <services>${basedir}/../../MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
@@ -116,9 +116,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
-		  <type>swc</type>
-		  <scope>rsl</scope>        
+        <type>swc</type>
+        <scope>rsl</scope>        
     </dependency>
-    
+    <dependency>
+        <groupId>as3isolib</groupId>
+        <artifactId>as3isolib</artifactId>
+        <version>1.0</version>
+		  <type>swc</type>
+    </dependency>
+
+
 </dependencies>    
 </project>

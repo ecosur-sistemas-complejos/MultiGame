@@ -13,7 +13,7 @@
     <mx:Script>
         <![CDATA[
         import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.pasale.entity.PasaleGame;
+        import mx.ecosur.multigame.entity.pasale.PasaleGame;
         import mx.ecosur.multigame.pasale.entity.PasaleGrid;
         import mx.events.MenuEvent;
         import mx.managers.CursorManager;
@@ -48,7 +48,7 @@
         }
 
         public function dispatchCompletion():void {
-            this.dispatchEvent(new Event("complete"));
+            this.dispatchEvent(new Event("complete", true));
         }
 
         public function quitGame():void {

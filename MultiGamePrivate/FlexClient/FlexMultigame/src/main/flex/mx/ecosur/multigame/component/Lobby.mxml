@@ -14,9 +14,10 @@
         <![CDATA[
             import mx.controls.Alert;
             import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.entity.gente.StrategyPlayer;
             import mx.ecosur.multigame.entity.gente.GenteGame;
             import mx.ecosur.multigame.entity.gente.GentePlayer;
+            import mx.ecosur.multigame.entity.gente.StrategyPlayer;
+            import mx.ecosur.multigame.entity.pasale.PasalePlayer;
             import mx.rpc.events.FaultEvent;
             import mx.rpc.events.ResultEvent;
 
@@ -29,6 +30,8 @@
 		private var genteGame:GenteGame;
 		private var gentePlayer:GentePlayer;
         private var strategyPlayer:StrategyPlayer;
+        private var pasalePlayer:PasalePlayer;    
+            
 
         [Bindable]
         public function get player():Registrant {
