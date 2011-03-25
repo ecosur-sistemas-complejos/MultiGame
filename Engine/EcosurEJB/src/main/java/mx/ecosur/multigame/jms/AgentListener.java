@@ -77,20 +77,14 @@ public class AgentListener implements MessageListener {
                                     try {
                                         moved = sharedBoard.doMove(game, move);
                                     } catch (InvalidMoveException e) {
-                                        logger.severe ("Invalid move submitted by agent [" + move + "]");
-                                    }
-
-                                    if (moved.getStatus() == MoveStatus.EVALUATED) {
-                                        break;
+                                            logger.severe ("Invalid move submitted by agent [" + move + "]");
                                     }
                                 }
-
-                                if (moved == null || moved.getStatus() != MoveStatus.EVALUATED) {
-                                    logger.severe ("Ready Agent unable to create evaluable move!");
-                                }
-                                
-                                break;
                             }
+
+                            if (moved == null || moved.getStatus() != MoveStatus.EVALUATED)
+                                logger.severe ("Ready Agent unable to create evaluable move!");
+                            break;
                         }
                     }
                 }

@@ -83,7 +83,11 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
         /* Refresh game */
+        if (game == null)
+            throw new InvalidMoveException ("Null game!");
         game = em.find(game.getClass(), game.getId());
+        if (move == null)
+            throw new InvalidMoveException("Null move!");
         move = em.merge(move);
         game.setMessageSender(messageSender);
         move = game.move (move);

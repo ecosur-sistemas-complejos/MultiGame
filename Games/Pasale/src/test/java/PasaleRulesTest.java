@@ -12,6 +12,7 @@ import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
@@ -37,33 +38,9 @@ import java.util.List;
 
 public class PasaleRulesTest extends JMSTestCaseAdapter {
 
-    private static KnowledgeBase pasale;
-
     protected EJBTestModule ejbModule;
 
     private MockTopic mockTopic;
-
-    /* Setup gente kbase */
-    static {
-        pasale = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/pasale-scoring.drl")), ResourceType.DRL);
-        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream (
-            "/mx/ecosur/multigame/impl/ruleflow/pasale-flow.rf")), ResourceType.DRF);
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() == 0)
-            pasale.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        else {
-            for (KnowledgeBuilderError error : errors) {
-                System.out.println(error);
-            }
-
-            throw new RuntimeException ("Unable to load rule base!");
-        }
-    }
 
     private PasaleGame game;
 
@@ -80,7 +57,7 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
 
-        game = new PasaleGame(26, 26, pasale);
+        game = new PasaleGame(26, 26);
 
         GridRegistrant a, b, c, d;
         a = new GridRegistrant ("alice");
@@ -115,10 +92,11 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
     public void testExecuteMove () throws InvalidMoveException {
         PasaleFicha token = new PasaleFicha(2, 10, alice.getColor(), TokenType.POTRERO);
         PasaleMove move = new PasaleMove(alice, token);
-        game.move (move);
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (token, game.getGrid().getLocation(token));
-        assertTrue (!alice.isTurn());
+        move = (PasaleMove) game.move (move);
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
+        PasaleFicha existing = (PasaleFicha) game.getGrid().getLocation(token);
+        assertEquals("Token types do not match!", token.getType(), existing.getType());
+        assertTrue("It's still Alice's turn!", !alice.isTurn());
     }
 
     @SuppressWarnings (value= "unchecked")
@@ -138,7 +116,8 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
         assertTrue ("Unexpected event(s) interecpted! " + filter, filter.size() == 0);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (token, game.getGrid().getLocation(token));
+        PasaleFicha existing = (PasaleFicha) game.getGrid().getLocation(token);
+        assertEquals ("Token types do not match!", token.getType(), existing.getType());
         token = new PasaleFicha(4,10, bob.getColor(), TokenType.POTRERO);
         move = new PasaleMove(bob, token);
         game.move (move);

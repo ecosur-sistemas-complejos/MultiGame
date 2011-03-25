@@ -131,6 +131,8 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
+        if (checkConditions == null)
+            checkConditions = new HashSet<CheckCondition>();
         return checkConditions;
     }
     
@@ -164,6 +166,8 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
+        if (suggestions == null)
+            suggestions = new HashSet<PuzzleSuggestion>();
         return suggestions;
 
     }

@@ -18,6 +18,10 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
@@ -26,6 +30,8 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
@@ -39,11 +45,11 @@ public class PasaleGame extends GridGame {
 
     private static final int DIMENSIONS = 27;
 
-    private transient KnowledgeBase kbase;
+    private static KnowledgeBase kbase;
 
     private transient MessageSender messageSender;
 
-    private StatefulKnowledgeSession session;
+    private transient StatefulKnowledgeSession session;
 
     private WorkingMemoryFileLogger logger;
 
@@ -53,7 +59,6 @@ public class PasaleGame extends GridGame {
         setColumns(DIMENSIONS);
         setState(GameState.WAITING);
         setCreated(new Date());
-        grid = createGrid();
     }
 
 
@@ -61,7 +66,7 @@ public class PasaleGame extends GridGame {
         this();
         setColumns(columns);
         setRows(rows);
-        kbase = null;
+        grid = createGrid();
     }
 
     public PasaleGame(int columns, int rows, KnowledgeBase kbase) {
@@ -111,14 +116,14 @@ public class PasaleGame extends GridGame {
         return 4;
     }
 
-    public void setMaxPlayers(int maxPlayers) {
-        // do nothing
-    }
-
     /* (non-Javadoc)
       * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
       */
     public Move move(Move move) throws InvalidMoveException {
+        if (kbase == null) {
+            kbase = findKBase();
+        }
+
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
@@ -209,10 +214,20 @@ public class PasaleGame extends GridGame {
         return ret;
     }
 
-    @Override
-    public void setKbase(KnowledgeBase kbase) {
-        this.kbase = kbase;
-    }    
+    protected KnowledgeBase findKBase () {
+        KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        InputStream is = this.getClass().getResourceAsStream (getChangeSet());
+        Resource resource = ResourceFactory.newInputStreamResource(is);
+        kbuilder.add(resource, ResourceType.CHANGE_SET);
+        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        try {
+            resource.getReader().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
 
 
     @Transient

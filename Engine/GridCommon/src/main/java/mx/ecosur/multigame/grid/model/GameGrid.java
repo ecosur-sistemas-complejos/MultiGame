@@ -24,6 +24,7 @@ import java.util.*;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.comparator.CellComparator;
+import org.hibernate.annotations.Sort;
 
 @Entity
 public class GameGrid implements Serializable, Cloneable {
@@ -35,7 +36,7 @@ public class GameGrid implements Serializable, Cloneable {
     private int id;
 
     public GameGrid () {
-        cells = new LinkedHashSet<GridCell>();
+        cells = new TreeSet<GridCell>(new CellComparator());
     }
 
     /**
@@ -57,14 +58,13 @@ public class GameGrid implements Serializable, Cloneable {
 
     public GridCell getLocation (GridCell location) {
         GridCell ret = null;
-
         if (location != null) {
-            TreeSet<GridCell> treeSet = new TreeSet<GridCell>(new CellComparator());
+            CellComparator comparator = new CellComparator();
+            TreeSet<GridCell> treeSet = new TreeSet<GridCell>(comparator);
             for (GridCell cell : cells) {
                 treeSet.add(cell);
             }
 
-            CellComparator comparator = (CellComparator) treeSet.comparator();
             SortedSet<GridCell> sublist = treeSet.tailSet(location);
 
             for (GridCell c : sublist) {
@@ -81,7 +81,7 @@ public class GameGrid implements Serializable, Cloneable {
 
     public void updateCell (GridCell cell) {
         if (cells == null)
-            cells = new LinkedHashSet<GridCell>();
+            cells = new TreeSet<GridCell>(new CellComparator());
         if (cells.contains(cell))
                 cells.remove(cell);
         cells.add(cell);
@@ -92,12 +92,16 @@ public class GameGrid implements Serializable, Cloneable {
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @Sort(comparator=CellComparator.class)
     public Set<GridCell> getCells () {
+        if (cells == null)
+            cells = new TreeSet<GridCell>(new CellComparator());
         return cells;
     }
 
     public void setCells(Set<GridCell> c){
-        cells = c;
+        this.cells = new TreeSet<GridCell> (new CellComparator());
+        this.cells.addAll(cells);
     }
 
     public String toString () {

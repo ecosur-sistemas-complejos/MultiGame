@@ -93,6 +93,8 @@ public class MessageSender {
 
     public void sendMessage(int gameId, GameEvent gameEvent, Serializable body)
     {
+        if (connectionFactory == null)
+            initialize();
         try {
             Connection connection = connectionFactory.createConnection();
             Session session = connection.createSession(false,

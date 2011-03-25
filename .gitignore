@@ -1811,3 +1811,8 @@ Games/target/classes/messaging-config.xml
 Games/target/classes/proxy-config.xml
 Games/target/classes/remoting-config.xml
 Games/target/classes/services-config.xml
+Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/backport-util-concurrent-3.1.jar
+Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-common-3.2.0.3978.jar
+Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-core-3.2.0.3978.jar
+Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-remoting-3.2.0.3978.jar
+Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/flex-ds-2.0-SNAPSHOT.jar

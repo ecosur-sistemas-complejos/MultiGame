@@ -19,7 +19,7 @@
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -81,27 +81,25 @@
         </repository>
     </repositories>
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>mx/ecosur/multigame/impl/</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/ruleflow</directory>
+                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/agent</directory>
+                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/changesets</directory>
+                <targetPath>mx/ecosur/multigame/impl</targetPath>
+            </resource>
+        </resources>
         <plugins>
-            <plugin>
-                <artifactId>maven-ejb-plugin</artifactId>
-                <configuration>
-                    <ejbVersion>3.0</ejbVersion>
-                    <generateClient>true</generateClient>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <configuration>
-                <excludes>
-                  <exclude>**/StandardSolverTest.java</exclude>
-                </excludes>
-              </configuration>
-            </plugin>
             <!--plugin>
                 <artifactId>drools-guvnor-plugin</artifactId>
                 <goals>
@@ -124,23 +122,5 @@
                 </configuration>
             </plugin -->
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <targetPath>mx/ecosur/multigame/impl/</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/ruleflow</directory>
-                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/agent</directory>
-                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
-            </resource>
-            <resource>
-                <directory>src/main/resources/changesets</directory>
-                <targetPath>mx/ecosur/multigame/impl</targetPath>
-            </resource>
-        </resources>
     </build>    
 </project>
