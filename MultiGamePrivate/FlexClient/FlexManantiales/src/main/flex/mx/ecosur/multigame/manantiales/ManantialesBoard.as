@@ -18,9 +18,9 @@
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.manantiales.entity.Ficha;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.entity.manantiales.Ficha;
+    import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+    import mx.ecosur.multigame.enum.manantiales.TokenType;
     import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.states.State;
 

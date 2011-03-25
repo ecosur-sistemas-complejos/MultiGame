@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.manantiales.entity
+package mx.ecosur.multigame.entity.manantiales
 {
     import mx.ecosur.multigame.entity.GamePlayer;
 

@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.manantiales.enum
+package mx.ecosur.multigame.enum.manantiales
 {
 	public class Mode
 	{

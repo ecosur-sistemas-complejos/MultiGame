@@ -1,9 +1,11 @@
 //copyright
 
-package mx.ecosur.multigame.manantiales.entity
+package mx.ecosur.multigame.entity.manantiales
 {
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.entity.Game;
+    import mx.ecosur.multigame.entity.manantiales.CheckCondition;
+    import mx.ecosur.multigame.entity.manantiales.Suggestion;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame")]

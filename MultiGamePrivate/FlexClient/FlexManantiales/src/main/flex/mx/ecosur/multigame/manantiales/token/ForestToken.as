@@ -2,7 +2,7 @@ package mx.ecosur.multigame.manantiales.token
 {
     import mx.controls.Image;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.enum.manantiales.TokenType;
 import mx.resources.IResourceManager;
 import mx.resources.ResourceManager;
 

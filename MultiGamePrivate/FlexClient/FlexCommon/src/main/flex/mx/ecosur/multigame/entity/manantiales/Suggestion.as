@@ -5,8 +5,10 @@
  * http://www.opensource.org/licenses/afl-3.0.php
  */
 
-package mx.ecosur.multigame.manantiales.entity
+package mx.ecosur.multigame.entity.manantiales
 {
+    import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
+    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
 
     [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion")]
     public class Suggestion {

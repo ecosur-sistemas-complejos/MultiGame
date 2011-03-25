@@ -7,15 +7,16 @@
 
     <mx:Script>
         <![CDATA[
-			import mx.controls.Alert;
-			import mx.ecosur.multigame.entity.Registrant;
-			import mx.ecosur.multigame.entity.gente.GenteGame;
-			import mx.ecosur.multigame.event.PlayEvent;
-			import mx.ecosur.multigame.module.IGameModule;
-			import mx.events.ModuleEvent;
-			import mx.managers.CursorManager;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.entity.Registrant;
+            import mx.ecosur.multigame.entity.gente.GenteGame;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.event.PlayEvent;
+            import mx.ecosur.multigame.module.IGameModule;
+            import mx.events.ModuleEvent;
+            import mx.managers.CursorManager;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
 			
 			private var _currGame:PlayEvent;
 
@@ -46,7 +47,9 @@
 				vstack.selectedChild = gameLoader;
 				if (playEvent.game is GenteGame) {
 					gameLoader.url = "Gente.swf";
-				} else {
+				} else if (playEvent.game is ManantialesGame) {
+                    gameLoader.url = "Manantiales.swf";
+                } else {
 					Alert.show("Error!  Unknown GameType [" + playEvent.game + "]");
 					Alert.show("Game info" + playEvent.game.id + "," + playEvent.game.columns + ", " + playEvent.game.rows);
 					CursorManager.removeBusyCursor();

@@ -1,10 +1,10 @@
 //copyright
 
-package mx.ecosur.multigame.manantiales.entity
+package mx.ecosur.multigame.entity.manantiales
 {
     import mx.controls.PopUpButton;
     import mx.ecosur.multigame.entity.Cell;
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.enum.manantiales.TokenType;
     import mx.resources.ResourceManager;
 
 [RemoteClass (alias=

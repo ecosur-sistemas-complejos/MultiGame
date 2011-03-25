@@ -6,8 +6,8 @@ package mx.ecosur.multigame.manantiales
     import mx.controls.Button;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.resources.IResourceManager;
     import mx.resources.ResourceManager;
 

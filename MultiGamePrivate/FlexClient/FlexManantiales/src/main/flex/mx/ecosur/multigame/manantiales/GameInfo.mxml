@@ -2,8 +2,8 @@
 <mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
     <mx:Script> 
         <![CDATA[
-            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
             
             private static const TERRITORY:int = 48; 
             

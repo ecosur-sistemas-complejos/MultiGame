@@ -2,10 +2,10 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>mx.ecosur</groupId>
-<artifactId>flex-gente</artifactId>
+<artifactId>flex-manantiales</artifactId>
 <packaging>swf</packaging>
-<name>Flex Gente</name>
-<description>Flex UI implementation for Gente game.</description>
+<name>Flex Manantiales</name>
+<description>Flex UI implementation for Manantiales game.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
     <artifactId>multi-game-flex-client</artifactId>
@@ -14,7 +14,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <testSourceDirectory>src/test/flex</testSourceDirectory>
-    <finalName>Gente</finalName>
+    <finalName>Manantiales</finalName>
     <plugins>
         <plugin>
             <groupId>org.sonatype.flexmojos</groupId>
@@ -23,7 +23,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <extensions>true</extensions>
             <configuration>
                 <debug>${debug}</debug>
-                <sourceFile>Gente.mxml</sourceFile>
+                <sourceFile>Manantiales.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
                 <services>${basedir}/../../MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>

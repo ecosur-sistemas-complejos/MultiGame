@@ -5,7 +5,7 @@ package mx.ecosur.multigame.manantiales
     import mx.containers.Panel;
     import mx.controls.Button;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.manantiales.entity.Suggestion;
+    import mx.ecosur.multigame.entity.manantiales.Suggestion;
 
     public class SuggestionViewer extends Panel
     {

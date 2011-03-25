@@ -7,7 +7,7 @@
 
     <mx:Script>
         <![CDATA[
-        	import mx.ecosur.multigame.manantiales.entity.CheckCondition;
+        	import mx.ecosur.multigame.entity.manantiales.CheckCondition;
             import mx.events.DynamicEvent;
             import mx.containers.Box;
             import mx.controls.Image;

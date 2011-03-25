@@ -17,19 +17,19 @@
             import mx.controls.Image;
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.component.ImagePanel;
-            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
             import mx.managers.PopUpManager;
             import mx.managers.CursorManager;
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
-            import mx.ecosur.multigame.manantiales.enum.Mode;
+            import mx.ecosur.multigame.enum.manantiales.Mode;
             import mx.resources.IResourceManager;
             import mx.resources.ResourceBundle;
             import mx.resources.ResourceManager;
 
             /* required for compilation of class into runtime */
-            import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
+            import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
 
             private var _controller:ManantialesGameController;
             protected var _currentPlayer:GamePlayer;
@@ -107,7 +107,7 @@
             }
             
             public function dispatchCompletion ():void {
-                dispatchEvent(new Event("complete"));
+                dispatchEvent(new Event("complete", true));
             }
             
             /* Only events that effect this container are handled, all others

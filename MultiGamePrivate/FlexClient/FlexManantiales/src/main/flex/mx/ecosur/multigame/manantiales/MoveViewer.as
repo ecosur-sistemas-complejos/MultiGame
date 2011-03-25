@@ -12,8 +12,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.enum.Color;
 
-import mx.ecosur.multigame.manantiales.entity.Ficha;
-import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+import mx.ecosur.multigame.entity.manantiales.Ficha;
+import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
     
     import mx.events.DynamicEvent;
 

@@ -1,6 +1,7 @@
-package mx.ecosur.multigame.manantiales.enum
+package mx.ecosur.multigame.enum.manantiales
 {
 import mx.collections.ArrayCollection;
+import mx.ecosur.multigame.enum.manantiales.Mode;
 
 public class TokenType
     {

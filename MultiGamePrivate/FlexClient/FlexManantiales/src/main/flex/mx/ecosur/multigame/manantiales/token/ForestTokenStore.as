@@ -4,7 +4,7 @@ package mx.ecosur.multigame.manantiales.token
     import flash.events.MouseEvent;
 
     import mx.events.DragEvent;
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.enum.manantiales.TokenType;
 
     public class ForestTokenStore extends ManantialesTokenStore
     {

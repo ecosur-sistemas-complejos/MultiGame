@@ -26,6 +26,7 @@
             <modules>
                 <module>FlexCommon</module>
                 <module>FlexGente</module>
+                <module>FlexManantiales</module>
                 <module>FlexMultigame</module>
             </modules>
         </profile>
