@@ -15,15 +15,12 @@ import java.util.List;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.model.interfaces.*;
 
 import mx.ecosur.multigame.MessageSender;
 
-import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
-import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
-import mx.ecosur.multigame.impl.enums.pasale.TokenType;
+import mx.ecosur.multigame.impl.entity.pasale.*;
+import mx.ecosur.multigame.impl.enums.pasale.*;
 
 import mx.ecosur.multigame.impl.util.pasale.MutationEvent;
 
@@ -48,7 +45,6 @@ dialect "java"
 #rules
 
 rule "verify-move"
-    ruleflow-group "verify"
 when
     $game  : PasaleGame ($grid : grid)
     $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED)
@@ -60,7 +56,6 @@ end
 
 
 rule "verify-update-move"
-    ruleflow-group "verify"
 when
     $game  : PasaleGame ($grid : grid)
     $move  : PasaleMove (badYear == false, status == MoveStatus.UNVERIFIED)
@@ -71,7 +66,6 @@ then
 end
 
 rule "do-move"
-   ruleflow-group "move"
 when
     $game  : PasaleGame  ($grid : grid)
     $move  : PasaleMove  (badYear == false, status == MoveStatus.VERIFIED)
@@ -112,7 +106,6 @@ end
 # Environmental constraints
 
 rule "Edges must not be effected"
-    ruleflow-group "evaluate"
     salience 10
 when
     $game  : PasaleGame ()
@@ -123,7 +116,6 @@ then
 end
 
 rule "A Potrero token must be supported by 2 soil tokens in the SQUARE"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -143,7 +135,6 @@ then
 end
 
 rule "A Silvopastoral token must be supported by 1 soil tokens in the SQUARE"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -163,7 +154,6 @@ then
 end
 
 rule "A Potrero token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -183,7 +173,6 @@ then
 end
 
 rule "A Silvopastoral token must be supported by 1 forest token in the CROSS (Silvopastoral counts as 1/2 a Forest token)"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -203,7 +192,6 @@ then
 end
 
 rule "A soil token must be supported by 1 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -222,7 +210,6 @@ then
 end
 
 rule "A water token must be supported by 2 forest tokens in the SQUARE (Silvopastoral counts as 1/2 a Forest token)"
-    ruleflow-group "evaluate"
 when
     $grid : PasaleGrid ()
     $game : PasaleGame ()
@@ -242,7 +229,6 @@ end
 
 
 rule "A forest token must be suported by 2 forest tokens in the OCTOGON (Silvopastoral counts as 1/2 a Forest token)"
-    ruleflow-group "evaluate"
 when
     $event : MutationEvent ($ficha : ficha, ficha.type == TokenType.FOREST, $square : square, $octo : octogon)
     eval (isUnsupported (2, $ficha, $octo, TokenType.FOREST) && isUnsupported(4, $ficha, $octo, TokenType.SILVOPASTORAL))
@@ -261,7 +247,6 @@ then
 end
 
 rule "A potrero token must have a path to water in the CROSS"
-    ruleflow-group "evaluate"
 when
         $game : PasaleGame ()
         $grid  : PasaleGrid()
@@ -280,7 +265,6 @@ end
 
 
 rule "A silvopastoral token must have a path to water in the CROSS"
-    ruleflow-group "evaluate"
 when
         $game : PasaleGame ()
         $grid  : PasaleGrid()
@@ -300,7 +284,7 @@ end
 #Process rules
 
 rule "Consume events after processing"
-    ruleflow-group "confirm"
+    salience -20
 when
     $event : MutationEvent ()
 then
@@ -308,7 +292,7 @@ then
 end
 
 rule "publish invalid move"
-    ruleflow-group "confirm"
+    salience -20
 when
     $game : PasaleGame ()
     $move : PasaleMove (status == MoveStatus.UNVERIFIED)
@@ -320,7 +304,6 @@ then
 end
 
 rule "publish move complete"
-    ruleflow-group "confirm"
 when
     $game : PasaleGame ()
     $grid : PasaleGrid()

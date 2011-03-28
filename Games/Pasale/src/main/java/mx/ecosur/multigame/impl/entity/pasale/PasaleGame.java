@@ -19,9 +19,7 @@ import mx.ecosur.multigame.MessageSender;
 import javax.persistence.*;
 
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
@@ -41,7 +39,7 @@ public class PasaleGame extends GridGame {
 
     private static final long serialVersionUID = -8395074059039838349L;
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final int DIMENSIONS = 27;
 
@@ -53,6 +51,7 @@ public class PasaleGame extends GridGame {
 
     public PasaleGame() {
         super();
+        grid = createGrid();
         setRows (DIMENSIONS);
         setColumns(DIMENSIONS);
         setState(GameState.WAITING);
@@ -64,12 +63,6 @@ public class PasaleGame extends GridGame {
         this();
         setColumns(columns);
         setRows(rows);
-        grid = createGrid();
-    }
-
-    public PasaleGame(int columns, int rows, KnowledgeBase kbase) {
-        this(columns, rows);
-        this.kbase = kbase;
     }
 
     @Transient
@@ -215,14 +208,19 @@ public class PasaleGame extends GridGame {
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        InputStream is = this.getClass().getResourceAsStream (getChangeSet());
-        Resource resource = ResourceFactory.newInputStreamResource(is);
-        kbuilder.add(resource, ResourceType.CHANGE_SET);
-        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        try {
-            resource.getReader().close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream(
+                "/mx/ecosur/multigame/impl/pasale.drl")), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newInputStreamResource(PasaleGame.class.getResourceAsStream(
+                "/mx/ecosur/multigame/impl/pasale-scoring.drl")), ResourceType.DRL);
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() == 0)
+            ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        else {
+            for (KnowledgeBuilderError error : errors) {
+                System.out.println(error);
+            }
+
+            throw new RuntimeException ("Unable to load rule base!");
         }
         return ret;
     }
