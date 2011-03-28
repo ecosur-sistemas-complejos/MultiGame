@@ -40,7 +40,6 @@ import function mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
 
 #globals
 global MessageSender messageSender;
-
 global Integer dimension;
 
 #dialect

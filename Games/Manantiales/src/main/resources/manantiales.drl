@@ -104,15 +104,16 @@ rule "accept-suggestion"
     agenda-group "verify"
     no-loop true
 when
-    $game : ManantialesGame (state == GameState.PLAY)
+    $game : ManantialesGame (state == GameState.PLAY, $moves : moves)
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.ACCEPT, $move : move)
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ($move.getCurrentCell());
     $move.setStatus (MoveStatus.VERIFIED);
-    Set<GridMove> moves = $game.getMoves();
-    moves.add($move);
-    modify ($game) { setMoves (moves), setGrid (modifiedGrid)}
+    if ($moves == null)
+        $moves = new LinkedHashSet<Move>();
+    $moves.add($move);
+    modify ($game) { setMoves ($moves), setGrid (modifiedGrid)}
     messageSender.sendSuggestionApplied ($game, $suggestion);
     insert ($move);
 end
@@ -260,7 +261,7 @@ rule
     agenda-group "verify"
     no-loop true
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.NORTH, 
@@ -272,7 +273,10 @@ rule
         CheckCondition constraint = new CheckCondition(
             ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
                 (ManantialesFicha) $move.getDestinationCell());
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);
+        $game.setCheckConditions($checks);
         GridPlayer player = $move.getPlayer();
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
@@ -283,7 +287,7 @@ rule
     agenda-group "verify"    
     no-loop true
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.EAST,
@@ -295,7 +299,10 @@ rule
         CheckCondition constraint = new CheckCondition(
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);
+        $game.setCheckConditions($checks);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -305,7 +312,7 @@ rule
     agenda-group "verify"
     no-loop true    
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, border == BorderType.SOUTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.SOUTH,
@@ -317,7 +324,10 @@ rule
         CheckCondition constraint = new CheckCondition(
             ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);
+        $game.setCheckConditions($checks);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -328,7 +338,7 @@ rule
     agenda-group "verify"
     no-loop true    
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, border == BorderType.WEST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.WEST,
@@ -340,7 +350,10 @@ rule
         CheckCondition constraint = new CheckCondition(
             ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
                 $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);
+        $game.setCheckConditions($checks);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -349,7 +362,7 @@ rule "manantiales"
     agenda-group "verify"
     no-loop true
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, manantial == true, type in (
@@ -361,7 +374,10 @@ rule "manantiales"
         CheckCondition constraint = new CheckCondition(
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
             (ManantialesFicha) $move.getDestinationCell());
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);        
+        $game.setCheckConditions($checks);
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -507,7 +523,7 @@ rule "territory-deforested"
     agenda-group "evaluate"
     no-loop true
     when
-        $game : ManantialesGame (state == GameState.PLAY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $move : ManantialesMove (status == MoveStatus.MOVED, destinationCell != null,
             destinationCell.type in (
                 TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
@@ -520,7 +536,10 @@ rule "territory-deforested"
         ManantialesFicha [] cells = (ManantialesFicha []) $list.toArray(new ManantialesFicha [ 0 ]);
         CheckCondition constraint = new CheckCondition(
             ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
-        $game.getCheckConditions().add(constraint);
+        if ($checks == null)
+            $checks = new HashSet<CheckCondition>();
+        $checks.add(constraint);
+        $game.setCheckConditions($checks);
         messageSender.sendConditionRaised ($game, constraint);
 end
 

@@ -12,15 +12,10 @@ import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.impl.entity.pasale.PasalePlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.builder.*;
 import org.junit.Before;
 import org.junit.Test;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
@@ -56,7 +51,6 @@ public class PasaleRulesTest extends JMSTestCaseAdapter {
                 getJMSMockObjectFactory().getMockTopicConnectionFactory());
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
-
         game = new PasaleGame(26, 26);
 
         GridRegistrant a, b, c, d;

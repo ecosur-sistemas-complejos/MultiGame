@@ -41,13 +41,11 @@ public class PasaleGame extends GridGame {
 
     private static final long serialVersionUID = -8395074059039838349L;
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final int DIMENSIONS = 27;
 
     private static KnowledgeBase kbase;
-
-    private transient MessageSender messageSender;
 
     private transient StatefulKnowledgeSession session;
 
@@ -127,7 +125,7 @@ public class PasaleGame extends GridGame {
         if (session == null) {
             session = kbase.newStatefulKnowledgeSession();
             session.setGlobal("messageSender", getMessageSender());
-            session.setGlobal("dimension", new Integer(getColumns()));
+            //session.setGlobal("dimension", new Integer(DIMENSIONS / 2));
         }
 
         if (DEBUG) {
@@ -140,7 +138,7 @@ public class PasaleGame extends GridGame {
         session.insert(move);
 
         /* start the flow */
-        session.startProcess("tablon-flow");
+        //session.startProcess("tablon-flow");
         session.fireAllRules();
         if (logger != null)
             logger.writeToDisk();
@@ -228,20 +226,6 @@ public class PasaleGame extends GridGame {
         }
         return ret;
     }
-
-
-    @Transient
-    public MessageSender getMessageSender() {
-        if (messageSender == null) {
-            messageSender = new MessageSender ();
-            messageSender.initialize();
-        }
-        return messageSender;
-    }
-
-    public void setMessageSender(MessageSender messageSender) {
-        this.messageSender = messageSender;
-    }    
 
 
     @Transient
