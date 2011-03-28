@@ -25,8 +25,6 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
@@ -36,7 +34,6 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
-import java.io.*;
 import java.util.*;
 import java.net.MalformedURLException;
 
@@ -120,8 +117,6 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Map<Mode, MoveHistory> getMoveHistory() {
-        if (moveHistory == null)
-            moveHistory = new HashMap<Mode,MoveHistory>();
         return moveHistory;
     }
 
@@ -131,8 +126,6 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
-        if (checkConditions == null)
-            checkConditions = new HashSet<CheckCondition>();
         return checkConditions;
     }
     
@@ -166,8 +159,6 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
-        if (suggestions == null)
-            suggestions = new HashSet<PuzzleSuggestion>();
         return suggestions;
 
     }
@@ -248,7 +239,11 @@ public class ManantialesGame extends GridGame {
         session.insert(suggestion);
         for (Object fact : getFacts())
             session.insert(fact);
-        getSuggestions().add((PuzzleSuggestion) suggestion);
+        Set<PuzzleSuggestion> set = getSuggestions();
+        if (set == null)
+            set = new LinkedHashSet<PuzzleSuggestion>();
+        set.add((PuzzleSuggestion) suggestion);
+        setSuggestions(set);
         session.getAgenda().getAgendaGroup("verify").setFocus();
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("move").setFocus();

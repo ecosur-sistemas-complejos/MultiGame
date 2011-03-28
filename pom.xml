@@ -22,6 +22,7 @@
                 <module>Manantiales</module>                   
                 <module>Pasale</module>             
                 <module>FlexClient</module>
+                <module>FlexDS</module>
             </modules>
         </profile>
     </profiles>
