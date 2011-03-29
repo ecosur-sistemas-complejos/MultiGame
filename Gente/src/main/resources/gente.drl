@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.enums.GameState;
@@ -81,7 +82,7 @@ rule "evaluate-first-move"
 when
     game  : GenteGame (state == GameState.PLAY, $grid : grid)
     move  : GenteMove (status != MoveStatus.VERIFIED, player.turn == true, player.color == Color.YELLOW)
-    eval ($grid.getCells().isEmpty())
+    eval ($grid.isEmpty())
     eval (isCenter (game, move))    
 then
     modify (move) { setStatus (MoveStatus.VERIFIED) }
@@ -93,7 +94,7 @@ rule "evaluate-move"
 when
     game  : GenteGame (state == GameState.PLAY, $grid : grid)
     move  : GenteMove (status == MoveStatus.UNVERIFIED, player.turn == true)
-    eval (!$grid.getCells().isEmpty())
+    eval (!$grid.isEmpty())
     eval (isEmpty (game.getGrid(), move))   
 then
     modify (move) { setStatus (MoveStatus.VERIFIED) }
@@ -106,9 +107,14 @@ when
     game  : GenteGame (state == GameState.PLAY)
     move  : GenteMove (player.turn == true, status == MoveStatus.VERIFIED)  
 then 
-    GameGrid modifiedGrid = game.getGrid();   
-    modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
+    GameGrid modifiedGrid = game.getGrid();
+    Set<GridCell> cells = modifiedGrid.getCells();
+    if (cells == null)
+        cells = new TreeSet<GridCell>(new CellComparator());
+    cells.add(move.getDestinationCell());
     Set<GridMove> moves = game.getMoves();
+    if (moves == null)
+        moves = new TreeSet<GridMove>(new MoveComparator());
     moves.add(move);
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }
@@ -118,11 +124,11 @@ rule "insert-events"
     agenda-group "move"
     no-loop true
 when
-    GenteGame (grid : grid)
-    move : GenteMove (status == MoveStatus.MOVED)
+    GenteGame ($grid : grid)
+    $move : GenteMove (status == MoveStatus.MOVED)
 then
     #Generates inference events for parsing 
-    for (MoveEvent event : generateEvents (grid, move)) {
+    for (MoveEvent event : generateEvents ($grid, $move)) {
         insert (event);
     }    
 end

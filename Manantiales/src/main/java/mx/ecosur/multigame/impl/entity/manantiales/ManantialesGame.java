@@ -144,6 +144,7 @@ public class ManantialesGame extends GridGame {
     }
 
     @Transient
+    @Override
     public MessageSender getMessageSender() {
         if (messageSender == null) {
             messageSender = new ManantialesMessageSender ();
@@ -152,6 +153,7 @@ public class ManantialesGame extends GridGame {
         return messageSender;
     }
 
+    @Override
     public void setMessageSender(MessageSender messageSender) {
         if (messageSender instanceof ManantialesMessageSender)
             this.messageSender = (ManantialesMessageSender) messageSender;
@@ -209,7 +211,7 @@ public class ManantialesGame extends GridGame {
         if (kbase == null)
             kbase = findKBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        session.setGlobal("messageSender", getMessageSender()); 
+        session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
         for (Object fact : getFacts()) {
@@ -224,6 +226,8 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.dispose();
 
+        if (getMoves() == null)
+            setMoves(new TreeSet<GridMove>(new MoveComparator()));
         getMoves().add(move);
 
         return move;
@@ -257,6 +261,9 @@ public class ManantialesGame extends GridGame {
     public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
         ManantialesPlayer player = new ManantialesPlayer ();
         player.setRegistrant((GridRegistrant) registrant);
+
+        if (getPlayers() == null)
+            setPlayers(new TreeSet<GridPlayer>());
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))

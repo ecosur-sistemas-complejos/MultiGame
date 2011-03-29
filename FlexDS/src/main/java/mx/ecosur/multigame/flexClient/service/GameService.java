@@ -259,10 +259,6 @@ public class GameService {
             ret.setGame(game);
         }
 
-        /* Publish modified game */
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        sharedBoard.shareGame(game);        
-
         return ret;                                
     }
 

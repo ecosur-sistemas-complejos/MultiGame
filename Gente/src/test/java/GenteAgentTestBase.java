@@ -11,6 +11,7 @@
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
@@ -20,6 +21,8 @@ import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.grid.model.GameGrid;
 
 import org.junit.Before;
+
+import java.util.TreeSet;
 
 public abstract class GenteAgentTestBase extends GenteTestBase {
         
@@ -83,14 +86,17 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
 
         setIds (yellow1, yellow2, blue1, blue2, red1, red2, green1, green2);
 
-        grid.updateCell(yellow1);
-        grid.updateCell(yellow2);
-        grid.updateCell(blue1);
-        grid.updateCell(blue2);
-        grid.updateCell(red1);
-        grid.updateCell(red2);
-        grid.updateCell(green1);
-        grid.updateCell(green2);
+        if (grid.getCells() == null)
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+
+        grid.getCells().add(yellow1);
+        grid.getCells().add(yellow2);
+        grid.getCells().add(blue1);
+        grid.getCells().add(blue2);
+        grid.getCells().add(red1);
+        grid.getCells().add(red2);
+        grid.getCells().add(green1);
+        grid.getCells().add(green2);
 
         game.setGrid(grid);
     }

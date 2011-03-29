@@ -16,9 +16,11 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
+import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.model.*;
 import mx.ecosur.multigame.model.interfaces.*;
@@ -129,6 +131,8 @@ public class GenteGame extends GridGame {
     public Move move(Move move) throws InvalidMoveException {
         if (kbase == null)
             kbase = findKBase();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
@@ -155,6 +159,8 @@ public class GenteGame extends GridGame {
     {
         GentePlayer player = new GentePlayer ();
         player.setRegistrant((GridRegistrant) registrant);
+        if (getPlayers () == null)
+            setPlayers(new TreeSet<GridPlayer>(new PlayerComparator()));
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
@@ -193,6 +199,8 @@ public class GenteGame extends GridGame {
 
     public Agent registerAgent (Agent agent) throws InvalidRegistrationException {
         GenteStrategyAgent player = (GenteStrategyAgent) agent;
+        if (getPlayers () == null)
+            setPlayers(new TreeSet<GridPlayer>(new PlayerComparator()));
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
@@ -271,9 +279,13 @@ public class GenteGame extends GridGame {
     public Object clone() throws CloneNotSupportedException {
         super.clone();
         GenteGame ret = new GenteGame ();
-        ret.grid = new GameGrid();
-        for (GridCell cell : getGrid().getCells()) {
-            ret.grid.updateCell((GridCell) cell.clone());
+        if (this.grid != null)
+            ret.grid = new GameGrid();
+        if (getGrid().getCells () != null) {
+            ret.grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+            for (GridCell cell : getGrid().getCells()) {
+                ret.grid.getCells().add((GridCell) cell.clone());
+            }
         }
         ret.setColumns (this.getColumns());
         ret.setRows (this.getRows());

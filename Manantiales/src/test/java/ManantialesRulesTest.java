@@ -24,6 +24,8 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.MoveComparator;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.model.*;
 
 import mx.ecosur.multigame.impl.entity.manantiales.*;
@@ -100,7 +102,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         
     @Test
     public void testInitialize () {
-        assertTrue (game.getGrid().getCells().size() == 0);
+        assertTrue (game.getGrid().isEmpty());
         Collection<GridPlayer> players = game.getPlayers();
         GridPlayer p = null;
         for (GridPlayer player : players) {
@@ -169,7 +171,10 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         setIds (contig1, contig2);
 
-        game.getGrid().updateCell(contig1);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>());
+        game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
         move.setMode(game.getMode());
         game.move (move);
@@ -185,7 +190,10 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         setIds (contig1, contig2);
 
-        game.getGrid().updateCell(contig1);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>());
+        game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
         move.setMode(game.getMode());
         game.move (move);
@@ -202,7 +210,10 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         setIds (contig1, contig2);
 
-        game.getGrid().updateCell(contig1);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>());
+        game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
         move.setMode(game.getMode());
         game.move (move);
@@ -221,8 +232,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells( new TreeSet<GridCell>(new CellComparator()) );
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         alice.setTurn(false);
         charlie.setTurn(true);
@@ -250,8 +264,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(3,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -293,8 +310,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(3,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -324,8 +344,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(4,8, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -354,8 +377,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(8,4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2,man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         ManantialesMove move = new ManantialesMove (alice, man3);
         move.setMode(game.getMode());
         game.move (move);
@@ -383,8 +409,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(0,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -411,8 +440,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man3 = new ManantialesFicha(4,2, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3);
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -463,8 +495,12 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha[] fichaArr = fichas.toArray(new ManantialesFicha[] {});
         setIds (fichaArr);
         fichas.remove(deforest);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+
         for (ManantialesFicha ficha : fichas)
-            game.getGrid().updateCell(ficha);
+            game.getGrid().getCells().add(ficha);
         ManantialesMove move = new ManantialesMove ();
         move.setPlayer (alice);
         move.setDestinationCell(deforest);
@@ -507,8 +543,12 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         setIds (fichas.toArray(new ManantialesFicha[] {}));
         fichas.remove(deforest);
 
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+
         for (ManantialesFicha ficha : fichas) {
-            game.getGrid().updateCell(ficha);
+            game.getGrid().getCells().add(ficha);
         }
 
         ManantialesMove move = new ManantialesMove ();
@@ -595,9 +635,13 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         setIds (fichas.toArray(new ManantialesFicha[] {}));
         fichas.remove(deforest);
         fichas.remove(reforest);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+
 
         for (ManantialesFicha ficha : fichas) {
-            game.getGrid().updateCell(ficha);
+            game.getGrid().getCells().add(ficha);
         }
 
         ManantialesMove move = new ManantialesMove ();
@@ -642,8 +686,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1, man2, man3, resolve);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -687,8 +734,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1, man2, man3, resolve);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -733,8 +783,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1, man2, man3, resolve);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -780,8 +833,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1, man2, man3, resolve);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -825,8 +881,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1, man2, man3, terminator);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -889,8 +948,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1,man2,man3,terminator);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -951,8 +1013,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1,man2,man3,terminator);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -1012,8 +1077,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MANAGED_FOREST);
         setIds (man1,man2,man3,terminator);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
@@ -1075,8 +1143,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         setIds (man1, man2, man3);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         bob.setTurn(true);
         ManantialesMove move = new ManantialesMove ();
@@ -1108,8 +1179,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         setIds (man1, man2, man3);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         bob.setTurn(true);
         ManantialesMove move = new ManantialesMove (bob, man1, man3);
@@ -1144,14 +1218,17 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man7 = new ManantialesFicha(7,4, charlie.getColor(), TokenType.MODERATE_PASTURE);
         setIds (man1, man2, man3, man4, man5, man6, man7);
 
-        game.getGrid().updateCell(man1);
-        game.getGrid().updateCell(man2);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
 
         /* Set MODERATES on the other borders */
-        game.getGrid().updateCell (man4);
-        game.getGrid().updateCell(man5);
-        game.getGrid().updateCell(man6);
-        game.getGrid().updateCell(man7);
+        game.getGrid().getCells().add(man4);
+        game.getGrid().getCells().add(man5);
+        game.getGrid().getCells().add(man6);
+        game.getGrid().getCells().add(man7);
 
         /* Convert Moderate to Intensive */
         bob.setTurn(true);

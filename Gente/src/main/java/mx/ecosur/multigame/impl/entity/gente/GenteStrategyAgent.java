@@ -209,7 +209,9 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
                 KnowledgeBase kBase = strategy.getRuleBase();
                 StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
                 session.insert(this);
-                session.insert(game.clone());
+                //session.insert(game.clone());
+                Game test = (Game) game.clone();
+                session.insert(game);
                 session.insert(new DummyMessageSender());
                 session.fireAllRules();
                 session.dispose();

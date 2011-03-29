@@ -44,7 +44,7 @@ rule "first-move"
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
-    eval ($grid.getCells().isEmpty())
+    eval ($grid.isEmpty())
 then
     GenteMove centerMove = new GenteMove (player, new GridCell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
@@ -56,7 +56,7 @@ rule "blocker-move"
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
-    eval (!$grid.getCells().isEmpty())
+    eval (!$grid.isEmpty())
 then
     HashSet<Color> colors = new HashSet<Color>();
     TreeSet<GenteMove> scoringMoves = player.determineScoringMoves(game, 
@@ -78,7 +78,7 @@ rule "random-move"
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
-    eval (!$grid.getCells().isEmpty())
+    eval (!$grid.isEmpty())
 then
     GenteMove nextMove = null;
     TreeSet<GenteMove> possible = player.determineAvailableMoves(game);

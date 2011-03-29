@@ -17,12 +17,15 @@ import static junit.framework.Assert.assertTrue;
 import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Set;
+import java.util.TreeSet;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
+import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
@@ -59,7 +62,7 @@ public class GenteRulesTest extends GenteTestBase {
 
     @Test
     public void testInitialize () {
-        assertTrue (game.getGrid().getCells().size() == 0);
+        assertTrue (game.getGrid().getCells() == null);
         Collection<GridPlayer> players = game.getPlayers();
         GentePlayer p = null;
         for (GridPlayer player : players) {
@@ -88,7 +91,10 @@ public class GenteRulesTest extends GenteTestBase {
     @Test
     public void testValidateSubsequentMove () throws InvalidMoveException {
         GridCell center = new GridCell (10, 10, alice.getColor());
-        game.getGrid().updateCell(center);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(center);
 
         GridCell next = new GridCell (10,9, alice.getColor());
         GenteMove subsequent = new GenteMove (alice, next);
@@ -100,7 +106,10 @@ public class GenteRulesTest extends GenteTestBase {
     public void testExecuteSubsequentMove () throws InvalidMoveException {
         alice.setTurn(true);
         GridCell center = new GridCell (10, 10, alice.getColor());
-        game.getGrid().updateCell(center);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(center);
         game.setState(GameState.PLAY);
 
         GridCell next = new GridCell (10, 9, alice.getColor());
@@ -118,8 +127,11 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (start,second,tria);
 
-        game.getGrid().updateCell(start);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+        game.getGrid().getCells().add(second);
 
         GenteMove move = new GenteMove (alice, tria);
         game.move(move);
@@ -139,8 +151,11 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (start,second,tria);
 
-        game.getGrid().updateCell(start);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+        game.getGrid().getCells().add(second);
 
         GenteMove move = new GenteMove (alice, tria);
         game.move(move);
@@ -160,11 +175,14 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (start,second,tria);
 
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+
         GenteGame clone = (GenteGame) game.clone();
         clone.setMessageSender (new DummyMessageSender());
-
-        clone.getGrid().updateCell(start);
-        clone.getGrid().updateCell(second);
+        clone.getGrid().getCells().add(second);
 
         GenteMove move = new GenteMove (alice, tria);
         clone.move(move);
@@ -185,8 +203,11 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (start, second, tria);
 
-        game.getGrid().updateCell(start);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+        game.getGrid().getCells().add(second);
 
         GenteMove move = new GenteMove (alice, tria);
 
@@ -209,9 +230,12 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (start,second,third,tessera);
 
-        game.getGrid().updateCell(start);
-        game.getGrid().updateCell(second);
-        game.getGrid().updateCell(third);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+        game.getGrid().getCells().add(second);
+        game.getGrid().getCells().add(third);
 
         GenteMove move = new GenteMove (alice, tessera);
         game.move(move);
@@ -237,8 +261,11 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (first, second, tria, third, fourth, secondTria);
 
-        game.getGrid().updateCell(first);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(first);
+        game.getGrid().getCells().add(second);
         game.setState(GameState.PLAY);
         GenteMove move = new GenteMove (alice, tria);
         game.move(move);
@@ -248,8 +275,8 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (1, move.getTrias().size());
 
 
-        game.getGrid ().updateCell(third);
-        game.getGrid ().updateCell(fourth);
+        game.getGrid ().getCells().add(third);
+        game.getGrid ().getCells().add(fourth);
         alice.setTurn(true);
         move = new GenteMove (alice, secondTria);
         game.move(move);
@@ -285,9 +312,12 @@ public class GenteRulesTest extends GenteTestBase {
         setIds (start, second, third, tessera, fourth, fifth, sixth, secondTessera,
                         seventh, eighth, ninth, tessera, thirdTessera);
 
-        game.getGrid().updateCell(start);
-        game.getGrid().updateCell(second);
-        game.getGrid().updateCell(third);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(start);
+        game.getGrid().getCells().add(second);
+        game.getGrid().getCells().add(third);
         game.setState(GameState.PLAY);
         GenteMove move = new GenteMove (alice, tessera);
         game.move(move);
@@ -296,9 +326,9 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (tessera, game.getGrid().getLocation(tessera));
 
         /* Setup the second tessera */
-        game.getGrid().updateCell(fourth);
-        game.getGrid().updateCell(fifth);
-        game.getGrid().updateCell(sixth);
+        game.getGrid().getCells().add(fourth);
+        game.getGrid().getCells().add(fifth);
+        game.getGrid().getCells().add(sixth);
         alice.setTurn(true);
         move = new GenteMove (alice, secondTessera);
         game.move(move);
@@ -307,9 +337,9 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (secondTessera, game.getGrid().getLocation(secondTessera));
 
         /* Setup the third tessera */
-        game.getGrid().updateCell(seventh);
-        game.getGrid().updateCell(eighth);
-        game.getGrid().updateCell(ninth);
+        game.getGrid().getCells().add(seventh);
+        game.getGrid().getCells().add(eighth);
+        game.getGrid().getCells().add(ninth);
         alice.setTurn(true);
         move = new GenteMove (alice, thirdTessera);
         move = (GenteMove) game.move(move);
@@ -334,9 +364,12 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell tessera = new GridCell (11,11, alice.getColor());
         setIds (invalid, first, second, tessera);
 
-        game.getGrid().updateCell(invalid);
-        game.getGrid().updateCell(first);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(invalid);
+        game.getGrid().getCells().add(first);
+        game.getGrid().getCells().add(second);
 
         game.setState(GameState.PLAY);
 
@@ -360,8 +393,11 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell tessera = new GridCell (11,11, alice.getColor());
         setIds (first, second, tessera);
 
-        game.getGrid().updateCell(first);
-        game.getGrid().updateCell(second);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(first);
+        game.getGrid().getCells().add(second);
 
         game.setState(GameState.PLAY);
 
@@ -387,10 +423,13 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds (first, second, third, fourth, tria);
 
-        game.getGrid().updateCell(first);
-        game.getGrid().updateCell(second);
-        game.getGrid().updateCell(third);
-        game.getGrid().updateCell(fourth);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(first);
+        game.getGrid().getCells().add(second);
+        game.getGrid().getCells().add(third);
+        game.getGrid().getCells().add(fourth);
         game.setState(GameState.PLAY);
 
         GenteMove move = new GenteMove (alice, tria);
@@ -417,12 +456,15 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell tess = new GridCell (10,10, alice.getColor());
         setIds (first, second, third, fourth, fifth, sixth, tess);
 
-        game.getGrid().updateCell(first);
-        game.getGrid().updateCell(second);
-        game.getGrid().updateCell(third);
-        game.getGrid().updateCell(fourth);
-        game.getGrid().updateCell(fifth);
-        game.getGrid().updateCell(sixth);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(first);
+        game.getGrid().getCells().add(second);
+        game.getGrid().getCells().add(third);
+        game.getGrid().getCells().add(fourth);
+        game.getGrid().getCells().add(fifth);
+        game.getGrid().getCells().add(sixth);
 
 
         /* Tessera move */
@@ -454,7 +496,10 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell twelfth = new GridCell (4,17, denise.getColor());
 
         /* Center cell */
-        game.getGrid().updateCell(new GridCell (1,1, Color.UNKNOWN));
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(new GridCell(1, 1, Color.UNKNOWN));
 
         alice.setTurn(true);
         GenteMove move = new GenteMove (alice, first);
@@ -538,9 +583,12 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell c = new GridCell (10,12,Color.YELLOW);
         GridCell d = new GridCell (11,13,Color.RED);
 
-        game.getGrid().updateCell(a);
-        game.getGrid().updateCell(b);
-        game.getGrid().updateCell(c);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(a);
+        game.getGrid().getCells().add(b);
+        game.getGrid().getCells().add(c);
 
         charlie.setTurn(true);
         GenteMove move = new GenteMove (charlie, d);
@@ -561,9 +609,12 @@ public class GenteRulesTest extends GenteTestBase {
 
         setIds(a,b,c,d);
 
-        game.getGrid().updateCell(a);
-        game.getGrid().updateCell(b);
-        game.getGrid().updateCell(c);
+        GameGrid grid = game.getGrid();
+        if (grid.getCells() == null)
+            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(a);
+        game.getGrid().getCells().add(b);
+        game.getGrid().getCells().add(c);
 
         charlie.setTurn(true);
         GenteMove move = new GenteMove (charlie, d);
