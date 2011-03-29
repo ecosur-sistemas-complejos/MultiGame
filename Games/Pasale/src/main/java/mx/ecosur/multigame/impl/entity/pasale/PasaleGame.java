@@ -6,6 +6,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
+import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.model.*;
 import mx.ecosur.multigame.grid.MoveComparator;
@@ -72,6 +73,7 @@ public class PasaleGame extends GridGame {
 
     private PasaleGrid createGrid() {
         PasaleGrid grid = new PasaleGrid ();
+        grid.setCells(new TreeSet<GridCell>(new CellComparator()));
         int river = DIMENSIONS/2;
         if (river % 2 != 1)
                 river = river + 1;
@@ -86,15 +88,15 @@ public class PasaleGame extends GridGame {
                     /* TODO:  Dynamically determine the location of rivers on the map */
                     if (row == river || col == river) {
                         PasaleFicha ficha = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.WATER_PARTICLE);
-                        grid.updateCell (ficha);
+                        grid.getCells().add(ficha);
                     } else {
                         PasaleFicha ficha = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.SOIL_PARTICLE);
-                        grid.updateCell (ficha);                          
+                        grid.getCells().add(ficha);
                     }
 
                 } else {
                     PasaleFicha forest = new PasaleFicha (col, row, mx.ecosur.multigame.grid.Color.UNKNOWN, TokenType.FOREST);
-                    grid.updateCell (forest);
+                    grid.getCells().add(forest);
                 }
             }
         }
@@ -147,6 +149,9 @@ public class PasaleGame extends GridGame {
     public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
         PasalePlayer player = new PasalePlayer();
         player.setRegistrant((GridRegistrant) registrant);
+
+        if (getPlayers() == null)
+            setPlayers(new TreeSet<GridPlayer>(new PlayerComparator()));
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))

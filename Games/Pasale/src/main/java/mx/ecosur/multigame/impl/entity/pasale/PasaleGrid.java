@@ -197,8 +197,11 @@ public class PasaleGrid extends GameGrid {
     public Object clone() throws CloneNotSupportedException {
         GameGrid grid = (GameGrid) super.clone();
         PasaleGrid ret = new PasaleGrid();
-        for (GridCell cell : grid.getCells()) {
-            ret.updateCell((PasaleFicha) cell);
+        if (!grid.isEmpty()) {
+            ret.setCells(new TreeSet<GridCell>(new CellComparator()));
+            for (GridCell cell : grid.getCells()) {
+                ret.getCells().add((PasaleFicha) cell);
+            }
         }
         return ret;        
     }

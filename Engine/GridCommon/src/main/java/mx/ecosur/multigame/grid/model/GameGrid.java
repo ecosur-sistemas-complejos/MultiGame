@@ -36,7 +36,7 @@ public class GameGrid implements Serializable, Cloneable {
     private int id;
 
     public GameGrid () {
-        cells = new TreeSet<GridCell>(new CellComparator());
+        super();
     }
 
     /**
@@ -58,7 +58,7 @@ public class GameGrid implements Serializable, Cloneable {
 
     public GridCell getLocation (GridCell location) {
         GridCell ret = null;
-        if (location != null) {
+        if (location != null && !isEmpty()) {
             CellComparator comparator = new CellComparator();
             TreeSet<GridCell> treeSet = new TreeSet<GridCell>(comparator);
             for (GridCell cell : cells) {
@@ -88,20 +88,27 @@ public class GameGrid implements Serializable, Cloneable {
     }
 
     public void removeCell (GridCell cell) {
-        cells.remove(cell);
+        if (cells != null)
+            cells.remove(cell);
+    }
+
+
+    public boolean isEmpty() {
+        return (cells == null || cells.size() == 0);
+    }
+
+    public void setEmpty (boolean disregard) {
+
     }
 
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     @Sort(comparator=CellComparator.class)
     public Set<GridCell> getCells () {
-        if (cells == null)
-            cells = new TreeSet<GridCell>(new CellComparator());
         return cells;
     }
 
     public void setCells(Set<GridCell> c){
-        this.cells = new TreeSet<GridCell> (new CellComparator());
-        this.cells.addAll(cells);
+        cells = c;
     }
 
     public String toString () {
@@ -127,9 +134,13 @@ public class GameGrid implements Serializable, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         super.clone();
         GameGrid ret = new GameGrid();
-        for (GridCell cell : cells) {
+        if (!isEmpty()) {
+            Set<GridCell> cloneCells = new TreeSet<GridCell>(new CellComparator());
+            ret.setCells(cloneCells);
+            for (GridCell cell : cells) {
                 GridCell cloneCell = cell.clone();
-                ret.updateCell(cloneCell);
+                ret.getCells().add(cloneCell);
+            }
         }
 
         return ret;

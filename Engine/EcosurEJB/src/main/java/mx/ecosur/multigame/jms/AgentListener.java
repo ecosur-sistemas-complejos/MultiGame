@@ -71,20 +71,22 @@ public class AgentListener implements MessageListener {
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {
                             Agent agent = (Agent) p;
+                            logger.info ("Trying with agent: "+ p);
                             if (agent.ready()) {
                                 Set<Move> moves = agent.determineMoves(game);
                                 for (Move move : moves) {
                                     try {
                                         moved = sharedBoard.doMove(game, move);
                                     } catch (InvalidMoveException e) {
-                                            logger.severe ("Invalid move submitted by agent [" + move + "]");
+                                            logger.severe ("Invalid move [" + move +
+                                                    "] submitted by agent [" + agent + "]");
                                     }
+
+                                    if (moved == null || moved.getStatus() != MoveStatus.EVALUATED)
+                                        logger.severe ("Ready Agent unable to create evaluable move!");
+                                    break;
                                 }
                             }
-
-                            if (moved == null || moved.getStatus() != MoveStatus.EVALUATED)
-                                logger.severe ("Ready Agent unable to create evaluable move!");
-                            break;
                         }
                     }
                 }
@@ -96,8 +98,7 @@ public class AgentListener implements MessageListener {
                         matched = true;
                         Suggestion suggestion = (Suggestion) msg.getObject();
                         SuggestionStatus oldStatus = suggestion.getStatus();
-                        int gameId = new Integer (message.getStringProperty("GAME_ID")).intValue();
-                        Game game = sharedBoard.getGame(gameId);
+                        Game game = (Game) msg.getObject();
                         List<GamePlayer> players = game.listPlayers();
                         for (GamePlayer p : players) {
                             if (p instanceof Agent) {

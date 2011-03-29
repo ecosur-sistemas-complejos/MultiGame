@@ -72,9 +72,6 @@ public abstract class GridGame implements Game, Cloneable {
 
     public GridGame () {
         super();
-        players = new TreeSet<GridPlayer>();
-        moves = new TreeSet<GridMove>();
-        grid = new GameGrid();
     }
 
     @Id @GeneratedValue
@@ -101,7 +98,8 @@ public abstract class GridGame implements Game, Cloneable {
     @Transient
     public Set getFacts () {
         Set ret = new HashSet();
-        ret.addAll(grid.getCells());
+        if (!grid.isEmpty())
+            ret.addAll(grid.getCells());
         return ret;
     }
 
@@ -210,6 +208,9 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     public void updatePlayer (GridPlayer player) {
+        if (getPlayers() == null)
+            setPlayers(new TreeSet<GridPlayer>(new PlayerComparator()));
+
         players.remove(player);
         players.add(player);
     }

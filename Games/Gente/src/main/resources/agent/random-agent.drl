@@ -35,9 +35,9 @@ rule "first-move"
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, color == Color.YELLOW, nextMove==null)
-    eval ($grid.getCells().isEmpty())
+    eval ($grid.isEmpty())
 then
-        GenteMove centerMove = new GenteMove (player, new GridCell (
+    GenteMove centerMove = new GenteMove (player, new GridCell (
         game.getRows() / 2, game.getColumns () / 2, player.getColor()));
     modify (player) { setNextMove (centerMove) }
 end
@@ -48,7 +48,7 @@ rule "random-move"
 when
     game   : GenteGame (state == GameState.PLAY, $grid : grid)
     player : GenteStrategyAgent (turn == true, nextMove == null)
-    eval (!$grid.getCells().isEmpty())
+    eval (!$grid.isEmpty())
 then
     GenteMove nextMove = null;
     TreeSet<GenteMove> possible = player.determineAvailableMoves(game);

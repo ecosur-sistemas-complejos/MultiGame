@@ -20,6 +20,7 @@
 package mx.ecosur.multigame.ejb.impl;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
@@ -35,14 +36,10 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
+import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridGame;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
-
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.*;
-import org.drools.io.ResourceFactory;
 
 @Stateless
 @RolesAllowed("admin")
@@ -66,29 +63,64 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
      */
     public Game getGame(int gameId) {
-        // Todo:  This should be removed, or generalized */
         Game game = em.find(GridGame.class, gameId);
-        if (game == null)
-            throw new RuntimeException ("Unable to find GridGame with id: " + gameId);
         game.setMessageSender(messageSender);
         return game;
     }
 
     public void shareGame (Game impl) {
-        em.merge(impl);
+        // do nothing
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
-        /* Refresh game */
-        if (game == null)
-            throw new InvalidMoveException ("Null game!");
-        game = em.find(game.getClass(), game.getId());
-        if (move == null)
-            throw new InvalidMoveException("Null move!");
-        move = em.merge(move);
+        if (em.contains(game))
+            em.refresh(game);
+        else
+            game = em.find(game.getClass(), game.getId());
+        List<GamePlayer> players = game.listPlayers();
+        for (GamePlayer p : players) {
+            if (p.equals(move.getPlayerModel())) {
+                move.setPlayerModel(p);
+                break;
+            }
+        }
+
+        /* Refresh any detached GridCells */
+        Cell current = move.getCurrentCell();
+        Cell destination = move.getDestinationCell();
+        if (current != null) {
+            if (!em.contains (current)) {
+                Cell impl = (em.find (
+                    current.getClass(), current.getId()));
+                if (impl != null)
+                    current = impl;
+            }
+
+            move.setCurrentCell (current);
+        }
+
+        if (destination != null) {
+            if (!em.contains (destination)) {
+                Cell impl = (em.find (destination.getClass(), destination.getId()));
+                if (impl != null)
+                    destination = impl;
+            }
+            move.setDestinationCell (destination);
+        }
+
+        if (!em.contains(move) && move.getId() == 0) {
+            em.persist(move);
+        }
+        else {
+            Move test = em.find (move.getClass(), move.getId());
+            if (test != null)
+                move = test;
+        }
+
+            /* Execute the move */
         game.setMessageSender(messageSender);
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
@@ -98,8 +130,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
-        game = em.find(game.getClass(),game.getId());
-        em.merge(suggestion);
+        if (em.contains(game))
+            em.refresh(game);
+        else
+            game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
