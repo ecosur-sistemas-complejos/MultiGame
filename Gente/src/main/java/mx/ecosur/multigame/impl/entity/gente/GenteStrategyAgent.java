@@ -82,6 +82,61 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
         this.strategy = strategy;
     }
 
+    public Set<Move> determineMoves (Game impl) {
+        Set<Move> ret = new LinkedHashSet<Move>();
+        GenteGame game = (GenteGame) impl;
+
+        try {
+            if (isTurn()) {
+                KnowledgeBase kBase = strategy.getRuleBase();
+                StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+                session.insert(this);
+                session.insert(game.clone());
+                session.insert(new DummyMessageSender());
+                session.fireAllRules();
+                session.dispose();
+                if (getNextMove() != null)
+                    ret.add(getNextMove());
+
+                for (Move moveImpl : ret) {
+                    if (moveImpl != null) {
+                        GenteMove genteMove = (GenteMove) moveImpl;
+                        GridCell destination = genteMove.getDestinationCell();
+                        destination.setColor(getColor());
+                        genteMove.setDestinationCell(destination);
+                        genteMove.setPlayer(this);
+                        if (!isTurn())
+                            throw new RuntimeException ("Move generated but agent has lost turn!");
+                        ret.remove(moveImpl);
+                        ret.add(genteMove);
+                    }
+                }
+
+                if (ret.size() == 0) {
+                  throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
+                }
+            }
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        return ret;
+    }
+
+    public Suggestion processSuggestion (Game game, Suggestion suggestion) {
+        return suggestion;
+    }
+
+    public void setNextMove (GenteMove next) {
+        if (next != null)
+            this.nextMove = new GenteMove (next.getPlayer(), next.getDestinationCell());
+    }
+
+    @Transient
+    public GenteMove getNextMove () {
+        return nextMove;
+    }
+
     /**
      * Returns a list of cells that are open and adjacent to cells of
      * the colors, "colors".
@@ -198,65 +253,6 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
             ret.add(color);
         }
         return ret;
-    }
-
-    public Set<Move> determineMoves (Game impl) {
-        Set<Move> ret = new LinkedHashSet<Move>();
-        GenteGame game = (GenteGame) impl;
-
-        try {
-            if (isTurn()) {
-                KnowledgeBase kBase = strategy.getRuleBase();
-                StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
-                session.insert(this);
-                //session.insert(game.clone());
-                Game test = (Game) game.clone();
-                session.insert(game);
-                session.insert(new DummyMessageSender());
-                session.fireAllRules();
-                session.dispose();
-
-                /* Rules should have created the next Move into this player, if
-                 * one available */
-                ret.add(getNextMove());
-
-                for (Move moveImpl : ret) {
-                    if (moveImpl != null) {
-                        GenteMove genteMove = (GenteMove) moveImpl;
-                        GridCell destination = genteMove.getDestinationCell();
-                        destination.setColor(getColor());
-                        genteMove.setDestinationCell(destination);
-                        genteMove.setPlayer(this);
-                        if (!isTurn())
-                            throw new RuntimeException ("Move generated but agent has lost turn!");
-                        ret.remove(moveImpl);
-                        ret.add(genteMove);
-                    }
-                }
-
-                if (ret.size() == 0) {
-                  throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
-                }
-            }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-
-        return ret;
-    }
-
-    public Suggestion processSuggestion (Game game, Suggestion suggestion) {
-        return suggestion;
-    }
-
-    public void setNextMove (GenteMove next) {
-        if (next != null)
-            this.nextMove = new GenteMove (next.getPlayer(), next.getDestinationCell());
-    }
-
-    @Transient
-    public GenteMove getNextMove () {
-        return nextMove;
     }
 
     private GridCell createDestination(Direction direction, GridCell cell, int factor) {

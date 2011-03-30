@@ -18,7 +18,7 @@
                 <message-type>javax.jms.ObjectMessage</message-type>
                 <connection-factory>ConnectionFactory</connection-factory>
                 <destination-jndi-name>MultiGame</destination-jndi-name>
-                <delivery-mode>NON_PERSISTENT</delivery-mode>
+                <delivery-mode>PERSISTENT</delivery-mode>
                 <message-priority>DEFAULT_PRIORITY</message-priority>
                 <acknowledge-mode>AUTO_ACKNOWLEDGE</acknowledge-mode>
             </jms>

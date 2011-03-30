@@ -17,9 +17,11 @@ package mx.ecosur.multigame.gente.entity {
     [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent")]
     public class StrategyPlayer extends GentePlayer {
    
-    	private var _strategy:String;
-    	
-    	public function StrategyPlayer(){
+        private var _strategy:String;
+
+        private var _nextMove:GenteMove;
+
+        public function StrategyPlayer(){
             super();
         }
         
@@ -30,6 +32,13 @@ package mx.ecosur.multigame.gente.entity {
         public function set strategy(strategy:String):void {
             _strategy = strategy
         }
-    	
-    }   
+
+        public function get nextMove():GenteMove {
+            return _nextMove;
+        }
+
+        public function set nextMove(value:GenteMove):void {
+            _nextMove = value;
+        }
+    }
 }
