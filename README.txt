@@ -22,9 +22,7 @@ the EAR file is being deployed:
 
 1.  A JMS connection factory must be created with the following details:
     a) "Name" set to "ConnectionFactory"
-    b) "Transaction Support" set to "NoTransaction"
-    c) Remove the username and password properties from "Additional Properties" 
-    d) All other fields may remain in default state.
+    b) "Transaction Support" set to "XATransaction"
 
 2.  A new JMS "destination resource" must be created with the following details:
     a) "Name" set to "MultiGame"
@@ -53,10 +51,14 @@ the EAR file is being deployed:
 
 JBOSS CONFIGURATION
 
-1. Hibernate is the default provider for JBoss.  So please use the "hibernate" profile for building with JBoss
-deployment in mind.
+1. Hibernate is the default provider for JBoss, but Derby is not the default
+   database. Users can install derby on the target system, or simply change the
+   hibernate dialect to work with the default JBoss database.
 
-2.
+2. Users must modify the persistence.xml file to use the "java:" + jndi naming
+   convention that the JBoss server uses for finding the local datasource.
+
+3.  HornetQ. A "j2ee" user in the "admin" group must be defined to allow
 
 
 MAVEN CONFIGURATION

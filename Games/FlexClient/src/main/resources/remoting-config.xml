@@ -9,7 +9,6 @@
     <default-channels>
         <channel ref="my-amf"/>
     </default-channels>
-	
     <destination id="gameService">
         <properties>
             <source>mx.ecosur.multigame.flexClient.service.GameService</source>

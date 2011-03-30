@@ -24,6 +24,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import javax.transaction.*;
 
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardLocal;
 
@@ -67,23 +68,19 @@ public class AgentListener implements MessageListener {
                 if (event.equals(possible)) {                    
                     matched = true;
                     Game game = (Game) msg.getObject();
+                    message.acknowledge();
                     List<GamePlayer> players = game.listPlayers();
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {
                             Agent agent = (Agent) p;
-                            logger.info ("Trying with agent: "+ p);
                             if (agent.ready()) {
                                 Set<Move> moves = agent.determineMoves(game);
                                 for (Move move : moves) {
-                                    try {
-                                        moved = sharedBoard.doMove(game, move);
-                                    } catch (InvalidMoveException e) {
-                                            logger.severe ("Invalid move [" + move +
-                                                    "] submitted by agent [" + agent + "]");
+                                    moved = sharedBoard.doMove(game, move);
+                                    if (moved == null) {
+                                        throw new RuntimeException ("Ready Agent cannot submit move!");
                                     }
 
-                                    if (moved == null || moved.getStatus() != MoveStatus.EVALUATED)
-                                        logger.severe ("Ready Agent unable to create evaluable move!");
                                     break;
                                 }
                             }
@@ -99,6 +96,7 @@ public class AgentListener implements MessageListener {
                         Suggestion suggestion = (Suggestion) msg.getObject();
                         SuggestionStatus oldStatus = suggestion.getStatus();
                         Game game = (Game) msg.getObject();
+                        message.acknowledge();
                         List<GamePlayer> players = game.listPlayers();
                         for (GamePlayer p : players) {
                             if (p instanceof Agent) {
@@ -123,13 +121,15 @@ public class AgentListener implements MessageListener {
                 }
             }
 
-            message.acknowledge();
-
         } catch (JMSException e) {
             logger.warning("Not able to process game message: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException (e);
         } catch (RuntimeException e) {
             logger.warning ("RuntimeException generated! " + e.getMessage());
+            e.printStackTrace();
+        } catch (InvalidMoveException e) {
+            logger.severe(e.getMessage());
             e.printStackTrace();
         }
     }

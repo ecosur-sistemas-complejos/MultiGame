@@ -69,13 +69,15 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     }
 
     public void shareGame (Game impl) {
-        // do nothing
+        em.merge(impl);
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
+
+        /* Manage Game and Move with EM */
         if (em.contains(game))
             em.refresh(game);
         else
@@ -88,7 +90,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             }
         }
 
-        /* Refresh any detached GridCells */
         Cell current = move.getCurrentCell();
         Cell destination = move.getDestinationCell();
         if (current != null) {
@@ -111,16 +112,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             move.setDestinationCell (destination);
         }
 
-        if (!em.contains(move) && move.getId() == 0) {
-            em.persist(move);
-        }
-        else {
-            Move test = em.find (move.getClass(), move.getId());
-            if (test != null)
-                move = test;
-        }
+        em.merge(move);
 
-            /* Execute the move */
+        /* Now that entities are managed, execute rules on move and game */
         game.setMessageSender(messageSender);
         move = game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
@@ -130,10 +124,49 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
+        /* Manage Game and suggestion(Move) with EM */
         if (em.contains(game))
             em.refresh(game);
         else
             game = em.find(game.getClass(), game.getId());
+
+        Move move = suggestion.listMove();
+
+        List<GamePlayer> players = game.listPlayers();
+        for (GamePlayer p : players) {
+            if (p.equals(move.getPlayerModel())) {
+                move.setPlayerModel(p);
+                break;
+            }
+        }
+
+        Cell current = move.getCurrentCell();
+        Cell destination = move.getDestinationCell();
+        if (current != null) {
+            if (!em.contains (current)) {
+                Cell impl = (em.find (
+                    current.getClass(), current.getId()));
+                if (impl != null)
+                    current = impl;
+            }
+
+            move.setCurrentCell (current);
+        }
+
+        if (destination != null) {
+            if (!em.contains (destination)) {
+                Cell impl = (em.find (destination.getClass(), destination.getId()));
+                if (impl != null)
+                    destination = impl;
+            }
+            move.setDestinationCell (destination);
+        }
+
+        if (em.contains(suggestion)) {
+            em.refresh(suggestion);
+        } else
+            em.merge(suggestion);
+
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))

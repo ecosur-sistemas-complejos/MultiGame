@@ -279,14 +279,15 @@ public class GenteGame extends GridGame {
     public Object clone() throws CloneNotSupportedException {
         super.clone();
         GenteGame ret = new GenteGame ();
-        if (this.grid != null)
-            ret.grid = new GameGrid();
+        ret.grid = new GameGrid();
+        ret.grid.setId(0);
         if (getGrid().getCells () != null) {
             ret.grid.setCells(new TreeSet<GridCell>(new CellComparator()));
             for (GridCell cell : getGrid().getCells()) {
                 ret.grid.getCells().add((GridCell) cell.clone());
             }
         }
+
         ret.setColumns (this.getColumns());
         ret.setRows (this.getRows());
 
@@ -347,19 +348,6 @@ public class GenteGame extends GridGame {
     @Transient
     public String getChangeSet() {
         return "/mx/ecosur/multigame/impl/gente.xml";
-    }
-
-    private void writeObject(ObjectOutputStream oos) throws IOException
-    {
-        oos.defaultWriteObject();
-        System.out.println ("*** serializing GenteGame object ***");
-    }
-
-
-    private void readObject(ObjectInputStream ois) throws ClassNotFoundException, IOException
-    {
-        ois.defaultReadObject();
-        System.out.println ("*** de-serializing GenteGame object ***");
     }
 
     @Override

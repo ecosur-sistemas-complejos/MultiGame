@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services-config>
-
     <services>
         <service-include file-path="remoting-config.xml" />
-        <!-- <service-include file-path="proxy-config.xml" />-->
         <service-include file-path="messaging-config.xml" />        
     </services>
-
     <security>
         <login-command class="flex.messaging.security.TomcatLoginCommand" server="Tomcat"/>
     </security>
-
     <channels>
-
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
-	            <serialization>
-	                <log-property-errors>true</log-property-errors>
+                <serialization>
+                    <log-property-errors>true</log-property-errors>
                     <ignore-property-errors>true</ignore-property-errors>
-	            </serialization>
+                </serialization>
             </properties>
         </channel-definition>
 
@@ -35,36 +30,8 @@
             <properties>
                 <polling-enabled>true</polling-enabled>
                 <polling-interval-seconds>4</polling-interval-seconds>
-                <!-- <polling-interval-millis>2000</polling-interval-millis> -->
-			    <!-- Optional. Default is 0. This parameter specifies the number
-			        of milliseconds the server poll response thread will wait
-			        for new messages to arrive when the server has no messages
-			        for the client at the time of poll request handling. Zero means
-			        that server does not wait for new messages for the client
-			        and returns an empty acknowledgment as usual. -1 means that
-			        server waits indefinitely until new messages arrive for the
-			        client before responding to the client poll request. -->
-			    <!--<wait-interval-millis>-1</wait-interval-millis> -->
-			    <!-- Optional. Default is 0. This parameter specifies the maximum
-			        number of server poll response threads that can be in wait
-			        state. When this limit is reached, the subsequent poll requests
-			        will be treated as having zero wait-interval-millis.-->
-			    <!--  <max-waiting-poll-requests>0</max-waiting-poll-requests>-->
             </properties>          
         </channel-definition>
-
-        <!--
-        <channel-definition id="my-http" class="mx.messaging.channels.HTTPChannel">
-            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/http" class="flex.messaging.endpoints.HTTPEndpoint"/>
-        </channel-definition>
-
-        <channel-definition id="my-secure-http" class="mx.messaging.channels.SecureHTTPChannel">
-            <endpoint url="https://{server.name}:{server.port}/{context.root}/messagebroker/httpsecure" class="flex.messaging.endpoints.SecureHTTPEndpoint"/>
-            <properties>
-                <add-no-cache-headers>false</add-no-cache-headers>
-            </properties>
-        </channel-definition>
-        -->
     </channels>
 
     <logging>
@@ -78,8 +45,6 @@
             </properties>
             <filters>
                 <pattern>Message.*</pattern>
-                <!-- pattern>Service.*</pattern>
-                <pattern>Configuration</pattern-->
             </filters>
         </target>
     </logging>
@@ -87,15 +52,6 @@
     <system>
         <redeploy>
             <enabled>false</enabled>
-            <!-- 
-            <watch-interval>20</watch-interval>
-            <watch-file>{context.root}/WEB-INF/flex/services-config.xml</watch-file>
-            <watch-file>{context.root}/WEB-INF/flex/proxy-config.xml</watch-file>
-            <watch-file>{context.root}/WEB-INF/flex/remoting-config.xml</watch-file>
-            <watch-file>{context.root}/WEB-INF/flex/messaging-config.xml</watch-file>
-            <watch-file>{context.root}/WEB-INF/flex/data-management-config.xml</watch-file>
-            <touch-file>{context.root}/WEB-INF/web.xml</touch-file>
-             -->
         </redeploy>
     </system>
 

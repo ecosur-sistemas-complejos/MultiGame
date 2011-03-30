@@ -23,6 +23,8 @@ package mx.ecosur.multigame.entity {
 
         private var _cells:ArrayCollection;
 
+        private var _empty:Boolean;
+
         public function GameGrid(){
             super();
         }
@@ -41,6 +43,14 @@ package mx.ecosur.multigame.entity {
 
         public function set cells(cells:ArrayCollection):void {
             _cells = cells;
+        }
+
+        public function get empty():Boolean {
+            return _empty;
+        }
+
+        public function set empty(value:Boolean):void {
+            _empty = value;
         }
     }
 }

@@ -1816,3 +1816,8 @@ Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-common-3.2.0.3978.ja
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-core-3.2.0.3978.jar
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/blazeds-remoting-3.2.0.3978.jar
 Deploy/EcosurEAR/target/ecosur-ear-2.0-SNAPSHOT/lib/flex-ds-2.0-SNAPSHOT.jar
+.intellij/.idea/libraries/Maven__org_glassfish_distributions_web_all_10_0_build_20080430.xml
+.intellij/audit.log
+Deploy/EcosurIT/ecosur-it.ipr
+Deploy/EcosurIT/ecosur-it.iws
+Games/Pasale/audit.log
