@@ -21,8 +21,10 @@ package mx.ecosur.multigame.ejb.impl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.LockType;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -46,6 +48,13 @@ import mx.ecosur.multigame.MessageSender;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
+
+    private static final Logger logger;
+
+    static {
+        logger = Logger.getLogger(SharedBoard.class.getCanonicalName());
+    }
+
     private MessageSender messageSender;
         
     @PersistenceContext (unitName = "MultiGamePU")
@@ -63,62 +72,45 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
      */
     public Game getGame(int gameId) {
-        Game game = em.find(GridGame.class, gameId);
+        Game game = em.find(GridGame.class, gameId, LockModeType.PESSIMISTIC_WRITE);
         game.setMessageSender(messageSender);
+        em.flush();
         return game;
     }
 
     public void shareGame (Game impl) {
         em.merge(impl);
+        em.flush();
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
-
-        /* Manage Game and Move with EM */
-        if (em.contains(game))
-            em.refresh(game);
-        else
-            game = em.find(game.getClass(), game.getId());
-        List<GamePlayer> players = game.listPlayers();
-        for (GamePlayer p : players) {
-            if (p.equals(move.getPlayerModel())) {
-                move.setPlayerModel(p);
-                break;
-            }
-        }
-
+        GamePlayer player = move.getPlayerModel();
         Cell current = move.getCurrentCell();
         Cell destination = move.getDestinationCell();
-        if (current != null) {
-            if (!em.contains (current)) {
-                Cell impl = (em.find (
-                    current.getClass(), current.getId()));
-                if (impl != null)
-                    current = impl;
-            }
 
-            move.setCurrentCell (current);
+        if (move.getId() == 0) {
+            move.setPlayerModel(null);
+            move.setCurrentCell(null);
+            move.setDestinationCell(null);
+            /* Persist clean move with no detached, dependent entities */
+            em.persist(move);
+            move.setPlayerModel(player);
+            move.setDestinationCell(destination);
+            move.setCurrentCell(current);
         }
 
-        if (destination != null) {
-            if (!em.contains (destination)) {
-                Cell impl = (em.find (destination.getClass(), destination.getId()));
-                if (impl != null)
-                    destination = impl;
-            }
-            move.setDestinationCell (destination);
-        }
-
-        em.merge(move);
+        move = em.merge(move);
+        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
 
         /* Now that entities are managed, execute rules on move and game */
         game.setMessageSender(messageSender);
-        move = game.move (move);
+        game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
             throw new InvalidMoveException ("INVALID Move. [" + move.toString() + "]");
+        em.flush();
         return move;
     }
 
@@ -126,51 +118,41 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
         /* Manage Game and suggestion(Move) with EM */
         if (em.contains(game))
-            em.refresh(game);
+            em.refresh(game, LockModeType.PESSIMISTIC_WRITE);
         else
-            game = em.find(game.getClass(), game.getId());
+            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
 
         Move move = suggestion.listMove();
-
-        List<GamePlayer> players = game.listPlayers();
-        for (GamePlayer p : players) {
-            if (p.equals(move.getPlayerModel())) {
-                move.setPlayerModel(p);
-                break;
-            }
-        }
-
+        GamePlayer player = suggestion.listSuggestor();
         Cell current = move.getCurrentCell();
         Cell destination = move.getDestinationCell();
-        if (current != null) {
-            if (!em.contains (current)) {
-                Cell impl = (em.find (
-                    current.getClass(), current.getId()));
-                if (impl != null)
-                    current = impl;
-            }
 
-            move.setCurrentCell (current);
+        if (suggestion.getId() == 0) {
+            suggestion.attachSuggestor(null);
+            suggestion.attachMove(null);
+            em.persist(suggestion);
         }
 
-        if (destination != null) {
-            if (!em.contains (destination)) {
-                Cell impl = (em.find (destination.getClass(), destination.getId()));
-                if (impl != null)
-                    destination = impl;
-            }
-            move.setDestinationCell (destination);
+        if (move.getId() == 0) {
+            move.setPlayerModel(null);
+            move.setCurrentCell(null);
+            move.setDestinationCell(null);
+            /* Persist clean move with no detached, dependent entities */
+            em.persist(move);
+            move.setPlayerModel(player);
+            move.setDestinationCell(destination);
+            move.setCurrentCell(current);
         }
 
-        if (em.contains(suggestion)) {
-            em.refresh(suggestion);
-        } else
-            em.merge(suggestion);
+        suggestion.attachSuggestor(player);
+        suggestion.attachMove(move);
+        suggestion = em.merge(suggestion);
 
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
             throw new InvalidSuggestionException ("INVALID Move suggested!");
+        em.flush();
         return suggestion;
     }
 
