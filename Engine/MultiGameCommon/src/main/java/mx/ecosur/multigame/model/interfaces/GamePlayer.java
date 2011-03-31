@@ -17,4 +17,6 @@ public interface GamePlayer extends Serializable {
         
     public int getId();
 
+    public Registrant getRegistrant();
+
 }

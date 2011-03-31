@@ -83,12 +83,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         if (game.getId() == 0)
             em.persist(game);
         else
-            game = em.find(game.getClass(), game.getId());
-        if (game.getMessageSender() == null)
-            game.setMessageSender(messageSender);
+            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+        game.setMessageSender(messageSender);
         registrant = em.find(registrant.getClass(), registrant.getId());
         registrant.setLastRegistration(System.currentTimeMillis());
         game.registerPlayer (registrant);
+        em.flush();
         messageSender.sendPlayerChange(game);
         return game;
     }
@@ -103,19 +103,21 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         if (game.getId() == 0)
             em.persist(game);
         else
-            game = em.find(game.getClass(), game.getId());
+            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
         game.setMessageSender(messageSender);
         game.registerAgent (agent);
         messageSender.sendPlayerChange(game);
+        em.flush();
         return game;
     }
 
     public Game unregister(Game game, GamePlayer player) throws InvalidRegistrationException {
-        game = em.find(game.getClass(), game.getId());
+        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
         game.setMessageSender(messageSender);
         game.removePlayer(player);
         game.setState(GameState.ENDED);
         messageSender.sendPlayerChange(game);
+        em.flush();
         return game;
     }
 

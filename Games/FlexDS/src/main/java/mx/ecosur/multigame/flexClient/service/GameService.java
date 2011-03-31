@@ -102,8 +102,6 @@ public class GameService {
     {
         if (player == null)
             player = registerPrincipal();
-
-        ServiceGameEvent ret = null;
         try {
             RegistrarRemote registrar = getRegistrar();
             GridGame game = null;
@@ -112,41 +110,31 @@ public class GameService {
             switch (type) {
                 case GENTE:
                     game = new GenteGame();
-                    game.setMessageSender(new MessageSender());
                     break;
                 case MANANTIALES:
                     if (mode == null)
                         game = new ManantialesGame();
                     else
                         game = new ManantialesGame(Mode.valueOf(mode.toUpperCase()));
-                    game.setMessageSender(new ManantialesMessageSender());
                     break;
                 case PASALE:
                     game = new PasaleGame();
-                    game.setMessageSender(new MessageSender());
             }
 
             game = (GridGame) registrar.registerPlayer(game, player);
-            
+
             for (GamePlayer impl : game.listPlayers()) {
-                if (impl.equals(player)) {
-                    ret = new ServiceGameEvent (game, (GridPlayer) impl);
-                    break;
+                if (impl.getRegistrant().getName().equals(player.getName())) {
+                    return new ServiceGameEvent (game, (GridPlayer) impl);
                 }
             }
 
         } catch (InvalidRegistrationException e) {
             e.printStackTrace();
             throw new GameException(e);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (NoClassDefFoundError e) {
-            e.printStackTrace();
         }
 
-        return ret;
+        throw new RuntimeException ("Issue registering player!  Please check logs for details.");
     }
 
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,

@@ -20,11 +20,9 @@
 package mx.ecosur.multigame.ejb.impl;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.LockType;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -38,7 +36,6 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridGame;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
@@ -116,12 +113,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
-        /* Manage Game and suggestion(Move) with EM */
-        if (em.contains(game))
-            em.refresh(game, LockModeType.PESSIMISTIC_WRITE);
-        else
-            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
-
         Move move = suggestion.listMove();
         GamePlayer player = suggestion.listSuggestor();
         Cell current = move.getCurrentCell();
@@ -147,6 +138,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         suggestion.attachSuggestor(player);
         suggestion.attachMove(move);
         suggestion = em.merge(suggestion);
+        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
 
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);

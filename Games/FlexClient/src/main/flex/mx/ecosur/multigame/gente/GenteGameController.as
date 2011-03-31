@@ -751,7 +751,7 @@ package mx.ecosur.multigame.gente{
             var token:Token;
             _gameGrid = gameGrid;
             _board.clearTokens();
-            if (_gameGrid.cells && _gameGrid.cells.length > 0){
+            if (_gameGrid != null && _gameGrid.cells && _gameGrid.cells.length > 0){
                 for (var i:Number = 0; i < _gameGrid.cells.length; i++){
                     cell = Cell(_gameGrid.cells[i]);
                     token = new Token();
