@@ -13,13 +13,14 @@
     
     <mx:Script>
         <![CDATA[
-			import mx.ecosur.multigame.component.HelpPanel;
-			import mx.ecosur.multigame.entity.GamePlayer;
-			import mx.ecosur.multigame.entity.gente.GenteGame;
-			import mx.events.MenuEvent;
-			import mx.managers.CursorManager;
-			import mx.managers.PopUpManager;
-			import mx.resources.ResourceBundle;
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.component.HelpPanel;
+            import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.entity.gente.GenteGame;
+            import mx.events.MenuEvent;
+            import mx.managers.CursorManager;
+            import mx.managers.PopUpManager;
+            import mx.resources.ResourceBundle;
 
         private var _controller:GenteGameController;
         private var _currentGame:GenteGame;
@@ -86,6 +87,8 @@
             } else if (evt.label == resourceManager.getString("Gente","gente.menu.one.submenu.two")) {
                 quitGame();
                 this.dispatchEvent(new Event("complete", true));
+            } else if (evt.item.@locale) {
+                resourceManager.localeChain = [evt.item.@locale];
             }
         }
 
@@ -103,6 +106,10 @@
     <mx:XMLList id="menuXML">
         <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.title')}">
             <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.submenu.one')}"/>
+            <menuitem id="languageMenu" label="{resourceManager.getString('Commons', 'language')}">
+                <menuitem label="{resourceManager.getString('Commons', 'language.english')}" locale="en_US" />
+                <menuitem label="{resourceManager.getString('Commons', 'language.spanish')}" locale="es_ES" />
+            </menuitem>
             <menuitem label="{resourceManager.getString('Gente', 'gente.menu.one.submenu.two')}"/>
         </menuitem>
         <menuitem label="{resourceManager.getString('Gente', 'gente.menu.two.title')}">
@@ -111,11 +118,11 @@
     </mx:XMLList>
 
     <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
-        <mx:MenuBar height="100%" 
+        <mx:MenuBar id="menuBar" height="100%" 
             dataProvider="{menuXML}" 
             labelField="@label" 
             showRoot="true"
-            itemClick="handleMenuItemClick(event)"/>
+            itemClick="handleMenuItemClick(event)" />
     </mx:ApplicationControlBar>
     
     <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10" paddingLeft="10" paddingRight="10">
