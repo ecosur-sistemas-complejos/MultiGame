@@ -62,7 +62,7 @@
             </mx:GridRow>
         </mx:Grid>
         <mx:Box paddingBottom="5" width="100%" horizontalAlign="center">
-            <mx:Button label="@Resource(key='move.history.go', bundle='Commons')" click="gotoMove()"/>
+            <mx:Button label="{resourceManager.getString('Commons', 'move.history.go')}" click="gotoMove()"/>
         </mx:Box>
     </mx:VBox>
 </mx:Canvas>

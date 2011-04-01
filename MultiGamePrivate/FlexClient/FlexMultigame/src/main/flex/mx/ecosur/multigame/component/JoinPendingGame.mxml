@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
-          title="@Resource(key='pending.panel.title', bundle='Lobby')" creationComplete="init(event)">
+          title="{resourceManager.getString('Lobby', 'pending.panel.title')}" creationComplete="init(event)">
 
     <mx:Metadata>
         [Event(name="gameJoined", type="mx.ecosur.multigame.event.PlayEvent")]
@@ -116,19 +116,19 @@
     <mx:VBox width="100%">
         <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
             <mx:columns>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column1', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'pending.data.column1')}"
                                    dataField="created" width="120"/>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column2', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'pending.data.column2')}"
                                    dataField="gameType" width="80"/>
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column3', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'pending.data.column3')}"
                                    dataField="players" wordWrap="true" />
-                <mx:DataGridColumn headerText="@Resource(key='pending.data.column4', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'pending.data.column4')}"
                                    dataField="status" width="120" wordWrap="true"/>
             </mx:columns>
         </mx:DataGrid>
         <mx:Form width="100%">
             <mx:FormItem horizontalAlign="right" width="100%">
-                <mx:Button click="joinPending()" label="@Resource(key='pending.button', bundle='Lobby')"/>
+                <mx:Button click="joinPending()" label="{resourceManager.getString('Lobby', 'pending.button')}"/>
             </mx:FormItem>
         </mx:Form>
     </mx:VBox>

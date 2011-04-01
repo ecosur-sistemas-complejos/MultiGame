@@ -29,7 +29,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
                     <compiledLocale>en_US</compiledLocale>
-                    <!--compiledLocale>es_ES</compiledLocale-->
+                    <compiledLocale>es_ES</compiledLocale>
                 </compiledLocales>
                 
                 <!-- TODO: Check which of these are necessary -->

@@ -38,8 +38,7 @@
         <mx:Grid width="100%">            
             <mx:GridRow>
                 <mx:GridItem>
-                    <mx:Label text="@Resource(key='manantiales.panel.info.score.premiums',
-                        bundle='Manantiales')" styleName="fieldLit"/>
+                    <mx:Label text="{resourceManager.getString('Commons', 'manantiales.panel.info.score.premiums')}" styleName="fieldLit"/>
                 </mx:GridItem>
                 <mx:GridItem>
                     <mx:Label id="txtPremiums" styleName="field"/>
@@ -47,8 +46,7 @@
             </mx:GridRow>
         </mx:Grid>    
         <mx:Box width="100%" horizontalAlign="center">
-            <mx:Button label="@Resource(key='move.history.go', 
-                        bundle='Commons')" click="gotoGameMove()" />
+            <mx:Button label="{resourceManager.getString('Commons', 'move.history.go')}" click="gotoGameMove()" />
         </mx:Box>
     </mx:VBox>
 </mx:Canvas>

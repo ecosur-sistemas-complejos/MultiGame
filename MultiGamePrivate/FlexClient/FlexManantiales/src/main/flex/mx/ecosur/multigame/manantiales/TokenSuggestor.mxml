@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400"
-          title="@Resource(key='manantiales.token.suggestor.title', bundle='Manantiales')">
+          title="{resourceManager.getString('Manantiales', 'manantiales.token.suggestor.title')}">
 
     <mx:Metadata>
         [Event(name="result")]
@@ -88,12 +88,12 @@
     </mx:Script>
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:Text width="100%"
-                 text="@Resource(key='manantiales.suggestion.type', bundle='Manantiales')" />
+                 text="{resourceManager.getString('Manantiales', 'manantiales.suggestion.type')}" />
         <mx:ComboBox id="typeBox" dataProvider="{types}"/>
         <mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
-            <mx:Button id="select" label="@Resource(key='manantiales.suggestion.button', bundle='Manantiales')"
+            <mx:Button id="select" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.button')}"
                        click="suggest()" />
-            <mx:Button id="cancel" label="@Resource(key='manantiales.suggestion.cancel', bundle='Manantiales')"
+            <mx:Button id="cancel" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.cancel')}"
                        click="abort()"/>
         </mx:HBox>
         <mx:HBox id="result" width="100%" verticalAlign="middle"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
-          title="@Resource(key='unfinished.panel.title', bundle='Lobby')" creationComplete="init(event)">
+          title="{resourceManager.getString('Lobby', 'unfinished.panel.title')}" creationComplete="init(event)">
 
     <mx:Metadata>
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
@@ -113,19 +113,19 @@
     <mx:VBox width="100%">
         <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
             <mx:columns>
-                <mx:DataGridColumn headerText="@Resource(key='unfinished.data.column1', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column1')}"
                                    dataField="created" width="120"/>
-                <mx:DataGridColumn headerText="@Resource(key='unfinished.data.column2', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column2')}"
                                    dataField="gameType" width="80"/>
-                <mx:DataGridColumn headerText="@Resource(key='unfinished.data.column3', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column3')}"
                                    dataField="players" wordWrap="true" />
-                <mx:DataGridColumn headerText="@Resource(key='unfinished.data.column4', bundle='Lobby')"
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column4')}"
                                    dataField="status" width="120" wordWrap="true"/>
             </mx:columns>
         </mx:DataGrid>
         <mx:Form width="100%">
             <mx:FormItem horizontalAlign="right" width="100%">
-                <mx:Button click="joinGame()" label="@Resource(key='unfinished.button', bundle='Lobby')"/>
+                <mx:Button click="joinGame()" label="{resourceManager.getString('Lobby', 'unfinished.button')}"/>
             </mx:FormItem>
         </mx:Form>
     </mx:VBox>

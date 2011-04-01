@@ -8,13 +8,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <description>Common Flex Library for our participatory modeling games.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
-    <artifactId>multi-game-private</artifactId>
+    <artifactId>multi-game-flex-client</artifactId>
     <version>2.0-SNAPSHOT</version>
 </parent>
-<!-- TODO: Move to parent -->
-<properties>
-    <debug>true</debug>
-</properties>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <testSourceDirectory>src/test/flex</testSourceDirectory>
@@ -30,16 +26,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
                     <compiledLocale>en_US</compiledLocale>
-                    <!--compiledLocale>es_ES</compiledLocale-->
+                    <compiledLocale>es_ES</compiledLocale>
                 </compiledLocales>
                 <!-- TODO: Check which of these are necessary -->
                 <configurationReport>true</configurationReport>
                 <coverageViewerPath/>
                 <storepass/>
-                <!-- TODO: This does not seem to work - debug flex mojos source or refactory out into theme project -->
-                <includeStylesheets>
-                    <stylesheet>${basedir}/src/main/flex/style.css</stylesheet>
-                </includeStylesheets>
             </configuration>
             <executions>
                 <execution>

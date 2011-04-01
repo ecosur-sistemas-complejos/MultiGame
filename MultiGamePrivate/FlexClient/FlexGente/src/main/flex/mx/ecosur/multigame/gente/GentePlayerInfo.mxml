@@ -42,13 +42,13 @@
     <mx:Grid>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='player.info.team', bundle='Commons')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Commons', 'player.info.team')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem paddingRight="0">
                 <mx:Label id="playerTeam" styleName="field"/>
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='player.info.registered', bundle='Commons')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Commons', 'player.info.registered')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="playerLastRegistration" styleName="field"/>

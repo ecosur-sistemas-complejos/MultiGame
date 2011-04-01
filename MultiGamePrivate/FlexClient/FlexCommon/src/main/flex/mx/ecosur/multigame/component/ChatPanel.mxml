@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="@Resource(key='chat.panel.title', bundle='Commons')">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="{resourceManager.getString('Commons','chat.panel.title')}">
 
     <mx:Metadata>
         [ResourceBundle("Commons")]
@@ -80,6 +80,6 @@
     <mx:TextArea id="log" width="100%" height="100%" paddingLeft="0" borderThickness="0" editable="false" />
     <mx:ControlBar verticalAlign="top" paddingLeft="5" paddingRight="5">
          <mx:TextArea id="msg" width="100%" height="40" creationComplete="{attachKeyboardListener()}"/>
-         <mx:Button id="sendBtn" label="@Resource(key='chat.panel.button', bundle='Commons')" click="send()" color="#ffffff"/>
+         <mx:Button id="sendBtn" label="{resourceManager.getString('Commons','chat.panel.button')}" click="send()" color="#ffffff"/>
     </mx:ControlBar>
 </mx:Panel>

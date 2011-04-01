@@ -39,15 +39,15 @@
         <mx:GridRow>
             <mx:GridItem/>
             <mx:GridItem>
-        		<mx:Label text="@Resource(key='manantiales.token', bundle='Manantiales')" styleName="fieldLit"/>
+        		<mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token')}" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.payout', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.payout')}" styleName="fieldLit"/>
             </mx:GridItem>        	
         </mx:GridRow>
         <mx:GridRow>
         	<mx:GridItem>
-        		<mx:Label text="@Resource(key='manantiales.token.forest', bundle='Manantiales')" styleName="fieldLit"/>
+        		<mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token.forest')}" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="managedForest" styleName="field"/>  
@@ -58,7 +58,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.token.moderate', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token.moderate')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="moderate" styleName="field"/>  
@@ -69,7 +69,7 @@
         </mx:GridRow>    
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.token.intensive', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token.intensive')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="intensive" styleName="field"/>  
@@ -80,7 +80,7 @@
         </mx:GridRow>        
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.token.vivero', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token.vivero')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="vivero" styleName="field"/>  
@@ -91,7 +91,7 @@
         </mx:GridRow>
        <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.token.silvopastoral', bundle='Manantiales')" styleName="fieldLit"/>              
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.token.silvopastoral')}" styleName="fieldLit"/>              
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="silvopastoral" styleName="field"/>  
@@ -103,7 +103,7 @@
         <mx:GridRow/>
         <mx:GridRow>
             <mx:GridItem>
-            	<mx:Label text="@Resource(key='manantiales.score', bundle='Manantiales')" styleName="fieldLit" />            	            	
+            	<mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.score')}" styleName="fieldLit" />            	            	
             </mx:GridItem>
             <mx:GridItem>
             	<mx:Label id="playerScore" styleName="fieldLit"/>            	

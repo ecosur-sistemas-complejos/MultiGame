@@ -84,7 +84,7 @@
         </mx:GridRow>
         <mx:GridRow>
         	<mx:GridItem>
-        		<mx:Label text="@Resource(key='manantiales.panel.info.score.points', bundle='Manantiales')" styleName="fieldLit"/>
+        		<mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.points')}" styleName="fieldLit"/>
         	</mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Pts" styleName="field"/>
@@ -101,7 +101,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.panel.info.score.tokens', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.tokens')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Tks" styleName="field"/>
@@ -118,7 +118,7 @@
         </mx:GridRow>        
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.panel.info.score.premiums', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.premiums')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="player1Pr" styleName="field"/>
@@ -136,7 +136,7 @@
         <mx:GridRow/>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.panel.info.score.deforested', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.deforested')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="deforested" styleName="field"/>
@@ -144,7 +144,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.panel.info.score.undeveloped', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.undeveloped')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="undeveloped" styleName="field"/>
@@ -152,7 +152,7 @@
         </mx:GridRow>
         <mx:GridRow>
             <mx:GridItem>
-                <mx:Label text="@Resource(key='manantiales.panel.info.score.violations', bundle='Manantiales')" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Manantiales', 'manantiales.panel.info.score.violations')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="violated" styleName="field"/>

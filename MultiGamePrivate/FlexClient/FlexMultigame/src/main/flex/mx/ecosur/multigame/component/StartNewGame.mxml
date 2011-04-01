@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
-          title="@Resource(key='start.panel.title', bundle='Lobby')" creationComplete="init()">
+          title="{resourceManager.getString('Lobby', 'start.panel.title')}" creationComplete="init()">
 
 <mx:Metadata>
     [Event(name="registered", type="mx.ecosur.multigame.event.PlayEvent")]
@@ -106,49 +106,49 @@
 <mx:ArrayCollection id="agentList"/>
 <!-- Gente agents -->
 <mx:ArrayCollection id="genteAgentList">
-    <mx:Object label="@Resource(key='gente.agent.one', bundle='Lobby')" data="SIMPLE"/>
-    <mx:Object label="@Resource(key='gente.agent.two', bundle='Lobby')" data="BLOCKER"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.one')}" data="SIMPLE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.two')}" data="BLOCKER"/>
 </mx:ArrayCollection>
 <!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">
-    <mx:Object label="@Resource(key='manantiales.agent', bundle='Lobby')" data="SIMPLE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'manantiales.agent')}" data="SIMPLE"/>
 </mx:ArrayCollection>
 <!-- Manantiales Modalities -->
 <mx:ArrayCollection id="manModes">
-    <mx:Object label="@Resource(key='start.mode1', bundle='Lobby')" data="CLASSIC" />
-    <mx:Object label="@Resource(key='start.mode2', bundle='Lobby')" data="BASIC_PUZZLE" />
-    <mx:Object label="@Resource(key='start.mode3', bundle='Lobby')" data="SILVOPASTORAL"/>
-    <mx:Object label="@Resource(key='start.mode4', bundle='Lobby')" data="SILVO_PUZZLE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="CLASSIC" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="BASIC_PUZZLE" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="SILVOPASTORAL"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="SILVO_PUZZLE"/>
 </mx:ArrayCollection>
 
 <mx:ArrayCollection id="gameList">
-    <mx:Object label="@Resource(key='start.game.gente', bundle='Lobby')" data="GENTE"/>
-    <mx:Object label="@Resource(key='start.game.manantiales', bundle='Lobby')" data="MANANTIALES"/>
-    <mx:Object label="@Resource(key='start.game.pasale', bundle='Lobby')" data="PASALE"/>    
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.gente')}" data="GENTE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.manantiales')}" data="MANANTIALES"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.pasale')}" data="PASALE"/>    
 </mx:ArrayCollection>
 
 <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
 
 <mx:Form x="0" y="0" id="form" defaultButton="{startBtn}" width="100%">
-    <mx:FormItem label="@Resource(key='start.choice.label', bundle='Lobby')" id="game">
+    <mx:FormItem label="{resourceManager.getString('Lobby', 'start.choice.label')}" id="game">
         <mx:ComboBox id="gameType" dataProvider="{gameList}" change="evaluateAiPlayers()"/>
     </mx:FormItem>
     <mx:FormItem id="ai" visible="true">
         <mx:HBox id="radios">
-            <mx:RadioButton label="@Resource(key='start.radio.one', bundle='Lobby')" id="robots"
+            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.one')}" id="robots"
                 selected="{radios.visible}" click="showAIPlayers(true)" />
-            <mx:RadioButton label="@Resource(key='start.radio.two', bundle='Lobby')"
+            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.two')}"
                 selected="{!radios.visible}" click="showAIPlayers(false)"/>
         </mx:HBox>
     </mx:FormItem>
         <mx:HBox id="aiPlayers" visible="true" height="0">
-            <mx:FormItem label="@Resource(key='start.player2', bundle='Lobby')">
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player2')}">
                 <mx:ComboBox id="player2" dataProvider="{agentList}"/>
             </mx:FormItem>
-            <mx:FormItem label="@Resource(key='start.player3', bundle='Lobby')">
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player3')}">
                 <mx:ComboBox id="player3" dataProvider ="{agentList}"/>
             </mx:FormItem>
-            <mx:FormItem label="@Resource(key='start.player4', bundle='Lobby')">
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player4')}">
                 <mx:ComboBox id="player4" dataProvider ="{agentList}"/>
             </mx:FormItem>
         </mx:HBox>
@@ -156,7 +156,7 @@
         <mx:ComboBox id="mode" dataProvider="{manModes}"/>
     </mx:FormItem>    
     <mx:FormItem horizontalAlign="right" width="100%">
-            <mx:Button id="startBtn" label="@Resource(key='start.button', bundle='Lobby')"
+            <mx:Button id="startBtn" label="{resourceManager.getString('Lobby', 'start.button')}"
                        click="doRegister(event)" />
     </mx:FormItem>
 </mx:Form>
