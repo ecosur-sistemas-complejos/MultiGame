@@ -41,7 +41,7 @@ public class RuleFunctions {
         int playerNumber = -1;
 
         for (int i = 0; i < gps.length; i++) {
-            if (gps [ i ].equals(player)) {
+            if (gps [ i ].getRegistrant().equals(player.getRegistrant())) {
                 playerNumber = i;
                 break;
             }

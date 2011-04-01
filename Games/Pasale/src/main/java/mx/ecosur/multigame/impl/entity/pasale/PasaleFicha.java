@@ -10,6 +10,7 @@
  */
 package mx.ecosur.multigame.impl.entity.pasale;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,7 +21,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.impl.enums.pasale.*;
 
-@Entity ()
+@Entity
 public class PasaleFicha extends GridCell {
 
     private static final long serialVersionUID = -8048552960014554186L;
@@ -93,4 +94,4 @@ public class PasaleFicha extends GridCell {
     public String toString() {
         return "[" + this.getClass().getName() + "], type = " + type + ", " + super.toString();
     }
-    }
+}

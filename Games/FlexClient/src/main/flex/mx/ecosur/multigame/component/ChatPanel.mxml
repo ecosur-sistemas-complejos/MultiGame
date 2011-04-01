@@ -51,8 +51,9 @@
 
     private function keyDownListener(event:KeyboardEvent):void {
         if (event.keyCode == 13) {
+            msg.text = msg.text + "\n";
             send();
-            msg.text = "";
+            msg.data = null;
         }
     }
 

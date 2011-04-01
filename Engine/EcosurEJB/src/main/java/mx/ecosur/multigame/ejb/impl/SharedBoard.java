@@ -75,11 +75,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         return game;
     }
 
-    public void shareGame (Game impl) {
-        em.merge(impl);
-        em.flush();
-    }
-
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
@@ -134,9 +129,10 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             move.setDestinationCell(destination);
             move.setCurrentCell(current);
         }
-
         suggestion.attachSuggestor(player);
         suggestion.attachMove(move);
+
+        move = em.merge(move);
         suggestion = em.merge(suggestion);
         game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
 

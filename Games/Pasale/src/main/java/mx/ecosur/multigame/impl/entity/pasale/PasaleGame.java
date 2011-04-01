@@ -131,9 +131,6 @@ public class PasaleGame extends GridGame {
         /* insert game and move */
         session.insert(this);
         session.insert(move);
-
-        /* start the flow */
-        //session.startProcess("tablon-flow");
         session.fireAllRules();
         if (logger != null)
             logger.writeToDisk();

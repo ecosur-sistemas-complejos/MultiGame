@@ -30,13 +30,6 @@ public interface SharedBoardInterface {
     public Game getGame(int gameId);
 
     /**
-     * Shares a game interfaces for use by connected clients.
-     *
-     * @param gameImpl
-     */
-    public void shareGame (Game gameImpl);
-
-    /**
      * Makes the specified move on the game grid and invokes the set of game
      * rule's affiliated with the Move's game.
      *

@@ -11,6 +11,9 @@
 package mx.ecosur.multigame.impl.entity.pasale;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 
 import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.grid.model.GridPlayer;
@@ -20,68 +23,60 @@ import java.util.*;
 
 @Entity
 public class PasaleMove extends GridMove {
-	
-	private static final long serialVersionUID = 1L;
 
-	private TokenType type, replacementType;
-	
-	private boolean badYear, premium;
+    private static final long serialVersionUID = 1L;
+
+    private TokenType type, replacementType;
+
+    private boolean badYear, premium;
 
     private Stack<PasaleFicha> path;
-	
-	public PasaleMove() {
-		super();
-		badYear = false;
-	}
-	
-	public PasaleMove(GridPlayer player, PasaleFicha destination) {
-		super (player, destination);
-		type = destination.getType();
-	}
-	
-	public PasaleMove(GridPlayer player, PasaleFicha current, PasaleFicha destination)
-	{
-		super (player, current, destination);
-	}
 
+    public PasaleMove() {
+        super();
+    }
+
+    public PasaleMove(GridPlayer player, PasaleFicha destination) {
+        super (player, destination);
+        type = destination.getType();
+    }
+
+    public PasaleMove(GridPlayer player, PasaleFicha current, PasaleFicha destination)
+    {
+        super (player, current, destination);
+    }
+
+    @Enumerated(EnumType.STRING)
     public TokenType getType () {
-		if (getDestinationCell() == null)
-			type = TokenType.UNKNOWN;
-		else {
-			PasaleFicha destination = (PasaleFicha) getDestinationCell();
-			type = destination.getType();
-		}
-		
-		return type;
-	}
-	
-	public void setType (TokenType type) {
-		this.type = type;
-	}
+        return type;
+    }
 
-	public TokenType getReplacementType() {
-		if (replacementType == null) {
-			replacementType = TokenType.UNKNOWN;
-			if (getCurrentCell() instanceof PasaleFicha) {
-					PasaleFicha current = (PasaleFicha) getCurrentCell();
-					replacementType = current.getType();
-			}
-		}
+    public void setType (TokenType type) {
+        this.type = type;
+    }
 
-		return replacementType;
-	}
+    @Transient
+    public TokenType getReplacementType() {
+        replacementType = TokenType.UNKNOWN;
+        if (getCurrentCell() instanceof PasaleFicha) {
+            PasaleFicha current = (PasaleFicha) getCurrentCell();
+            replacementType = current.getType();
+        }
 
-	public void setReplacementType(TokenType replacementType) {
-		this.replacementType = replacementType;
-	}
-	
-	public boolean isBadYear () {
-		return badYear;
-	}
-	
-	public void setBadYear (boolean year) {
-		badYear = year;
-	}
+        return replacementType;
+    }
+
+    public void setReplacementType(TokenType replacementType) {
+        this.replacementType = replacementType;
+    }
+
+    public boolean isBadYear () {
+        return badYear;
+    }
+
+    public void setBadYear (boolean year) {
+        badYear = year;
+    }
 
 
     @Override

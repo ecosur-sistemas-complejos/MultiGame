@@ -204,15 +204,6 @@ public class GameService {
                     GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
                     model = registrar.registerAgent (model, agent);
                 }
-            } else if (gameType.equals(GameType.MANANTIALES)) {
-                GridGame game = new ManantialesGame ();
-                model = registrar.registerPlayer(game, registrant);
-                for (int i = 0; i < strategies.length; i++) {
-                    AgentType strategy = AgentType.valueOf(strategies [ i ]);
-                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
-                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, strategy);
-                    model = registrar.registerAgent (model, agent);
-                }
             }
 
             if (model != null) {
@@ -226,7 +217,6 @@ public class GameService {
             }
 
         } catch (InvalidRegistrationException e) {
-            e.printStackTrace();
             throw new GameException (e);
         }
 
@@ -236,20 +226,41 @@ public class GameService {
     public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
         String gameTypeStr, String mode, String [] strategies)
     {
-        if (registrant == null)
-            registrant = registerPrincipal();
+        ServiceGameEvent ret = null;
 
-        ServiceGameEvent ret = startNewGameWithAI (registrant, preferredColor, gameTypeStr, strategies);
-        GridGame game = ret.getGame();
-        if (game instanceof ManantialesGame) {
-            ManantialesGame m = (ManantialesGame) game;
-            m.setMode(Mode.valueOf(mode));
-            ret.setGame(game);
+        try {
+            if (registrant == null)
+                registrant = registerPrincipal();
+
+            RegistrarRemote registrar = getRegistrar();
+            Game game = null;
+            GameType gameType = GameType.valueOf(gameTypeStr);
+
+            if (gameType.equals(GameType.MANANTIALES)) {
+                ManantialesGame mg = new ManantialesGame ();
+                mg.setMode(Mode.valueOf(mode));
+                game = registrar.registerPlayer(mg, registrant);
+                for (int i = 0; i < strategies.length; i++) {
+                    AgentType strategy = AgentType.valueOf(strategies [ i ]);
+                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
+                    SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, strategy);
+                    game = registrar.registerAgent (game, agent);
+                }
+            }
+
+            if (game != null) {
+                for (GamePlayer player : game.listPlayers()) {
+                    GridPlayer gp = (GridPlayer) player;
+                    if (gp.getRegistrant().equals(registrant)) {
+                        ret = new ServiceGameEvent ((GridGame) game, gp);
+                        break;
+                    }
+                }
+            }
+
+        } catch (InvalidRegistrationException e) {
+            throw new GameException (e);
         }
-
-        /* Publish modified game */
-        SharedBoardRemote sharedBoard = getSharedBoard();
-        sharedBoard.shareGame(game);
 
         return ret;
     }
