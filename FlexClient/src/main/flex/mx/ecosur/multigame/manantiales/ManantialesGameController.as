@@ -12,7 +12,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.ExceptionType;
-    import mx.ecosur.multigame.manantiales.entity.CheckCondition;
+import mx.ecosur.multigame.enum.GameState;
+import mx.ecosur.multigame.manantiales.entity.CheckCondition;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
@@ -259,6 +260,7 @@ package mx.ecosur.multigame.manantiales
         private function begin():void{
             _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
                 "manantiales.start.message"), 0x000000);
+
         }
 
         /*
@@ -303,7 +305,7 @@ package mx.ecosur.multigame.manantiales
             var token:ManantialesToken;
 
             /* TODO: Move to store objects themselves. */
-            if (_game.grid.cells && _game.grid.cells.length > 0) {
+            if (_game.grid != null && _game.grid.cells && _game.grid.cells.length > 0) {
                 for (var i:int = 0; i < _game.grid.cells.length; i++){
                     ficha = Ficha(_game.grid.cells[i]);
                     switch (ficha.type) {
@@ -335,21 +337,25 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function initTurn():void {
-            if (_game.mode != null)  {
-               _gameWindow.currentState= _game.mode;
+            if (_game.state == GameState.PLAY) {
+                if (_game.mode != null)  {
+                   _gameWindow.currentState= _game.mode;
+                }
+
+                _tokenHandler.initializeTokenStores();
+
+                // open annual conditions generator
+                if ((_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&
+                        _annCondGen == null)
+                {
+                    _annCondGen = new AnnualConditionsGenerator();
+                    _annCondGen.addEventListener("result", handleAnnCondResult);
+                    PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
+                    PopUpManager.centerPopUp(_annCondGen);
+                }
+
+                _currentPlayer.play();
             }
-
-            _tokenHandler.initializeTokenStores();
-
-            // open annual conditions generator
-            if ( (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
-                _annCondGen = new AnnualConditionsGenerator();
-                _annCondGen.addEventListener("result", handleAnnCondResult);
-                PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
-                PopUpManager.centerPopUp(_annCondGen);
-            }
-
-            _currentPlayer.play();
         }
 
         private function handleAnnCondResult(event:DynamicEvent):void{
@@ -425,15 +431,20 @@ package mx.ecosur.multigame.manantiales
                     _gameWindow.chatPanel.currentPlayer = _currentPlayer;
                     this.isTurn = _currentPlayer.turn;
                 }
-                if (gamePlayer.turn){
-                    if (gamePlayer.id == _currentPlayer.id){
-                        _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
-                                "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
-                    }else{
-                        _gameWindow.gameStatus.showMessage(
-                            gamePlayer.registrant.name + " " + resourceManager.getString("StringsBundle","manantiales.tomove"),
-                                    Color.getColorCode(gamePlayer.color));
+                if (game.state == GameState.PLAY) {
+                    if (gamePlayer.turn){
+                        if (gamePlayer.id == _currentPlayer.id){
+                            _gameWindow.gameStatus.showMessage(resourceManager.getString("StringsBundle",
+                                    "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
+                        }else{
+                            _gameWindow.gameStatus.showMessage(
+                                gamePlayer.registrant.name + " " + resourceManager.getString("StringsBundle","manantiales.tomove"),
+                                        Color.getColorCode(gamePlayer.color));
+                        }
                     }
+                } else {
+                    _gameWindow.gameStatus.showMessage("Welcome to the Sierra Springs.  Awaiting more players.",
+                            Color.getColorCode(gamePlayer.color));
                 }
             }
 

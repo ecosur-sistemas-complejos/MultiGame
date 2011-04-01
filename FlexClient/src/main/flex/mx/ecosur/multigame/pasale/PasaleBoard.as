@@ -76,8 +76,12 @@ package mx.ecosur.multigame.pasale {
         private var _size:int = 0;
 
         private var pan:Boolean;
+
         private var lastX:int;
+
         private var lastY:int;
+
+        private var zoomed:Boolean;
 
         private var zoom:int;
 
@@ -150,7 +154,7 @@ package mx.ecosur.multigame.pasale {
 
         public function panView (event:MouseEvent):void {
             if (pan) {
-                _view.panTo(lastX - event.stageX,  lastY - event.stageY);
+                _view.panBy(lastX - event.stageX,  lastY - event.stageY);
                 lastX = event.stageX;
                 lastY = event.stageY;
             }
@@ -164,8 +168,13 @@ package mx.ecosur.multigame.pasale {
             /* Always interrupt panning */
             if (pan)
                 pan = false;
-
-            event.delta > 0 ? zoom += 0.0005 : zoom -= 0.0005;
+            if (zoomed) {
+                _view.zoom(1);
+                zoomed = false;
+            } else {
+                _view.zoom(0.5);
+                zoomed = true;
+            }
         }
 
 
@@ -321,7 +330,7 @@ package mx.ecosur.multigame.pasale {
                 addEventListener(MouseEvent.MOUSE_UP, stopPan);
                 addEventListener(MouseEvent.MOUSE_MOVE, panView)
                 addEventListener(MouseEvent.MOUSE_WHEEL, zoomView);
-                addEventListener( Event.ENTER_FRAME, onRender, false, 0, true );                
+                addEventListener( Event.ENTER_FRAME, onRender, false, 0, true );
             }
 
             if (grid == null)
@@ -348,14 +357,11 @@ package mx.ecosur.multigame.pasale {
             }
 
             _scene.render();
-
-            _view = new IsoView();
             _view.setSize(viewWidth, viewHeight);
             _view.addScene(_scene);
             _view.showBorder = true;
             _view.clipContent = true;
             _view.render();
-
             addChild(_view);
         }
 
