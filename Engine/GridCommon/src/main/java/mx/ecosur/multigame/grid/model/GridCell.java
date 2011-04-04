@@ -96,7 +96,6 @@ public class GridCell implements Cell, Cloneable {
         super.clone();
         GridCell clone = new GridCell (this.column, this.row, Color
                             .valueOf(color.name()));
-        clone.setId(getId());
         return clone;
     }
 
