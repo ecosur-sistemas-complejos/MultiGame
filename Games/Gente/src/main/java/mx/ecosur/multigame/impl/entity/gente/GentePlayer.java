@@ -156,10 +156,11 @@ public class GentePlayer extends GridPlayer {
 
     @Override
     public boolean equals(Object obj) {
-        boolean ret = super.equals(obj);
+        boolean ret = false;
         if (obj instanceof GentePlayer) {
             GentePlayer comp = (GentePlayer) obj;
-            ret = ret && comp.points == this.points;
+            if (comp.getRegistrant().getName().equals(this.getRegistrant().getName()))
+                ret = true;
         }
 
         return ret;
