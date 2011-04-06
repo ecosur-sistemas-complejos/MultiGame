@@ -48,29 +48,6 @@ public class CellComparator implements Comparator<GridCell>, Serializable {
                     ret = 0;
         }
 
-        if (ret == 0) {
-            if (!cell1.getColor().equals(Color.UNKNOWN) && !cell2.getColor().equals(Color.UNKNOWN)) {
-                if (!cell1.getColor().equals(cell2.getColor())) {
-                    Color[] p = Color.playable();
-                    int pos1 = -1, pos2 = -1;
-                    for (int i = 0; i < p.length; i++) {
-                        if (p [ i ].equals(cell1.getColor()))
-                            pos1 = i;
-                        else if (p [ i ].equals(cell2.getColor()))
-                            pos2 = i;
-                    }
-
-                    if (pos1 == -1 || pos2 == -1)
-                        throw new RuntimeException ("Unable to perform Color Comparison!");
-
-                    if (pos1 > pos2) {
-                        ret = 1;
-                    } else if (pos1 < pos2)
-                        ret = -1;
-                    }
-            }
-        }
-
         return ret;
     }
 }

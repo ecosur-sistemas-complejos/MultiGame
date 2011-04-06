@@ -79,6 +79,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
+        if (game.getId() == 0)
+            throw new InvalidMoveException ("Move requested by unknown game (id = 0)!");
+
         GamePlayer player = move.getPlayerModel();
         Cell current = move.getCurrentCell();
         Cell destination = move.getDestinationCell();
