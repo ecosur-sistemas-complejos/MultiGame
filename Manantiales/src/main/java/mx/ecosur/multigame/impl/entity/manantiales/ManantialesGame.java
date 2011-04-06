@@ -159,7 +159,7 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
         return suggestions;
 

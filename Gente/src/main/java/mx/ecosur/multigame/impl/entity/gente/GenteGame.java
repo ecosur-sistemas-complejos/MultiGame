@@ -16,7 +16,6 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.MoveComparator;
@@ -28,12 +27,9 @@ import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 
-import org.drools.io.impl.InputStreamResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 import java.io.*;
@@ -44,8 +40,6 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.MessageSender;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 
 
 @Entity
@@ -153,7 +147,7 @@ public class GenteGame extends GridGame {
             moves.add((GridMove) move);
         return move;
     }
-        
+
     public GamePlayer registerPlayer(Registrant registrant) throws
             InvalidRegistrationException
     {

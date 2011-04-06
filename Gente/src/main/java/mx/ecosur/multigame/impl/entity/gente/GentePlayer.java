@@ -39,8 +39,6 @@ public class GentePlayer extends GridPlayer {
     public GentePlayer () {
         super ();
         points = 0;
-        trias = new LinkedHashSet<BeadString>();
-        tesseras = new LinkedHashSet<BeadString>();
         partner = null;
     }
 
@@ -72,7 +70,6 @@ public class GentePlayer extends GridPlayer {
         this.trias = trias;
     }
 
-    @Transient
     public void addTria (BeadString tria) {
         if (tria.size() == 3)
             getTrias().add(tria);
@@ -89,7 +86,6 @@ public class GentePlayer extends GridPlayer {
         this.tesseras = tesseras;
     }
 
-    @Transient
     public void addTessera (BeadString tessera) {
         if (tessera.size() == 4)
             getTesseras().add(tessera);
@@ -106,19 +102,7 @@ public class GentePlayer extends GridPlayer {
 
 
     public boolean containsString (BeadString comparison) {
-        boolean ret = false;
-
-        for (BeadString string : getTrias()) {
-            if (comparison.contains(string))
-                ret = true;
-        }
-
-        for (BeadString string : getTesseras()) {
-            if (comparison.contains(string))
-                ret = true;
-        }
-
-        return ret;
+        return getTrias().contains(comparison);
     }
 
     @Override

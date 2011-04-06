@@ -129,7 +129,6 @@ public class RuleFunctions {
 
     public static GridPlayer incrementTurn (ManantialesGame game, ManantialesMove move) {
         GridPlayer player = move.getPlayer();
-        player.setTurn(false);
 
         /* Find next player */
         Set<GridPlayer> players = game.getPlayers();
@@ -153,6 +152,7 @@ public class RuleFunctions {
             nextPlayer = gps [playerNumber + 1];
         }
 
+        player.setTurn(false);
         nextPlayer.setTurn (true);
         return nextPlayer;
     }

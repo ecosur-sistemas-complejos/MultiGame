@@ -68,7 +68,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
-    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -118,7 +118,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the violators
      */
-    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
     public Set<ManantialesFicha> getViolators() {
         return violators;
     }
