@@ -256,7 +256,7 @@ public abstract class GridGame implements Game, Cloneable {
         return messageSender;
     }
 
-    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
     @Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
         return moves;

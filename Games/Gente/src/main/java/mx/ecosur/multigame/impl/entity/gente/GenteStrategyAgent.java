@@ -24,6 +24,7 @@ import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridGame;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.util.Search;
 import mx.ecosur.multigame.impl.util.gente.GenteMoveComparator;
 import mx.ecosur.multigame.model.interfaces.Game;
@@ -128,8 +129,10 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
     }
 
     public void setNextMove (GenteMove next) {
+        this.setTrias(null);
+        this.setTesseras(null);
         if (next != null)
-            this.nextMove = new GenteMove (next.getPlayer(), next.getDestinationCell());
+            this.nextMove = new GenteMove (this, next.getDestinationCell());
     }
 
     @Transient
@@ -306,6 +309,39 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
         }
 
         return max;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        GenteStrategyAgent ret = new GenteStrategyAgent ();
+        ret.setPoints(getPoints());
+        ret.setStrategy(getStrategy());
+        if (getTesseras() != null) {
+            HashSet<BeadString> clones = new HashSet<BeadString>();
+            for (BeadString tessera : getTesseras()) {
+                BeadString clone = (BeadString) tessera.clone();
+                clones.add(clone);
+            }
+            ret.setTesseras(clones);
+        }
+
+        if (getTrias() != null) {
+            HashSet<BeadString> clones = new HashSet<BeadString>();
+            for (BeadString tria : getTrias()) {
+                BeadString clone = (BeadString) tria.clone();
+                clones.add(clone);
+            }
+            ret.setTrias(clones);
+        }
+
+        ret.setColor(getColor());
+
+        GridRegistrant clone = (GridRegistrant) getRegistrant().clone();
+        ret.setRegistrant(clone);
+        ret.setTurn(isTurn());
+        ret.setPoints(getPoints());
+
+        return ret;
     }
 
     @Override

@@ -61,7 +61,7 @@ public abstract class GridPlayer implements Comparable, GamePlayer {
         this.id = id;
     }
 
-    @OneToOne (cascade=CascadeType.ALL)
+    @OneToOne (cascade={CascadeType.PERSIST, CascadeType.MERGE})
     public GridRegistrant getRegistrant() {
         return registrant;
     }

@@ -69,10 +69,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
      */
     public Game getGame(int gameId) {
-        Game game = em.find(GridGame.class, gameId, LockModeType.PESSIMISTIC_WRITE);
-        game.setMessageSender(messageSender);
-        em.flush();
-        return game;
+        return em.find(GridGame.class, gameId, LockModeType.PESSIMISTIC_READ);
     }
 
     /* (non-Javadoc)
@@ -92,6 +89,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             move.setDestinationCell(null);
             /* Persist clean move with no detached, dependent entities */
             em.persist(move);
+
             move.setPlayerModel(player);
             move.setDestinationCell(destination);
             move.setCurrentCell(current);
@@ -105,7 +103,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         game.move (move);
         if (move.getStatus().equals(MoveStatus.INVALID))
             throw new InvalidMoveException ("INVALID Move. [" + move.toString() + "]");
-        em.flush();
         return move;
     }
 
@@ -143,7 +140,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))
             throw new InvalidSuggestionException ("INVALID Move suggested!");
-        em.flush();
         return suggestion;
     }
 

@@ -44,8 +44,6 @@ public class GenteMove extends GridMove {
         public GenteMove () {
             super ();
             player = null;
-            trias = new LinkedHashSet<BeadString>();
-            tesseras = new LinkedHashSet<BeadString>();
         }
         
         /**
@@ -57,20 +55,12 @@ public class GenteMove extends GridMove {
         }
         
         public void addTria(BeadString t) {
-            boolean contained = false;
-            if (trias == null)
-                trias = new LinkedHashSet<BeadString>();
-            for (BeadString tria : trias) {
-                if (tria.contains(t)) {
-                    contained = true;
-                    break;}}
-            if (!contained)
-                trias.add(t);
+            getTrias().add(t);
         }
 
         public void addTrias (BeadString... trias) {
-            for (BeadString tria : trias) {
-                addTria (tria);}
+            for (BeadString tria : trias)
+                getTrias().add(tria);
         }
 
         /**
@@ -88,40 +78,13 @@ public class GenteMove extends GridMove {
         }
         
         public void addTessera (BeadString t) {
-            boolean contained = false;
-            if (tesseras == null)
-                tesseras = new LinkedHashSet<BeadString>();
-            for (BeadString tessera : tesseras) {
-                if (tessera.contains(t)) {
-                    contained = true;
-                    break;
-                }
-            }
-                
-            if (!contained)
-                tesseras.add(t);
+            getTesseras().add(t);
         }
 
         public void addTesseras (BeadString... tesseras) {
             for (BeadString tessera : tesseras) {
-                addTessera (tessera);
+                getTesseras().add(tessera);
             }
-        }
-
-        @Transient
-        public ArrayList<Color> getTeamColors () {
-            if (teamColors == null) {
-                teamColors = new ArrayList<Color>();
-                GentePlayer player = (GentePlayer) this.player;
-                teamColors.add (player.getPartner().getColor());
-                teamColors.add(this.player.getColor());
-            }
-                
-            return teamColors;
-        }
-
-        public void setTeamColors (ArrayList<Color> colors) {
-            teamColors = colors;
         }
 
         /**
@@ -135,7 +98,23 @@ public class GenteMove extends GridMove {
         }
 
         public void setTesseras (Set<BeadString> new_tesseras) {
-                tesseras = new_tesseras;
+            tesseras = new_tesseras;
+        }
+
+        @Transient
+        public ArrayList<Color> getTeamColors () {
+            if (teamColors == null) {
+                teamColors = new ArrayList<Color>();
+                GentePlayer player = (GentePlayer) this.player;
+                teamColors.add (player.getPartner().getColor());
+                teamColors.add(this.player.getColor());
+            }
+
+            return teamColors;
+        }
+
+        public void setTeamColors (ArrayList<Color> colors) {
+            teamColors = colors;
         }
         
         /**
@@ -210,18 +189,21 @@ public class GenteMove extends GridMove {
                     ret.current = current.clone();
                 if (destination != null)
                     ret.destination = destination.clone();
-                GentePlayer p = (GentePlayer) this.player;
-                ret.player = (GridPlayer) p.clone();
+                if (player != null) {
+                    GentePlayer p = (GentePlayer) this.player;
+                    ret.player = (GridPlayer) p.clone();
+                }
                 ret.qualifier = this.qualifier;
+
                 ret.teamColors = new ArrayList<Color>();
-                if (getTesseras() != null) {
+                if (tesseras != null) {
                     ret.tesseras = new LinkedHashSet<BeadString>();
                     for (BeadString string : getTesseras()) {
                         ret.tesseras.add((BeadString) string.clone());
                     }
                 }
 
-                if (getTrias() != null) {
+                if (trias != null) {
                     ret.trias = new LinkedHashSet<BeadString>();
                     for (BeadString string : getTrias()) {
                         ret.trias.add((BeadString) string.clone());
