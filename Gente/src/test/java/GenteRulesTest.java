@@ -30,9 +30,7 @@ import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
+import mx.ecosur.multigame.impl.entity.gente.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -139,8 +137,8 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tria, game.getGrid().getLocation(tria));
 
-        Set<BeadString> set = move.getTrias();
-        assertEquals (1, set.size());
+        Set<Tria> set = move.getTrias();
+        assertEquals (set.toString(), 1, set.size());
     }
 
     @Test
@@ -163,7 +161,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tria, game.getGrid().getLocation(tria));
 
-        Set<BeadString> set = move.getTrias();
+        Set<Tria> set = move.getTrias();
         assertEquals (1, set.size());
     }
 
@@ -191,7 +189,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (tria, clone.getGrid().getLocation(tria));
         assertNull (game.getGrid().getLocation(tria));
 
-        Set<BeadString> set = move.getTrias();
+        Set<Tria> set = move.getTrias();
         assertEquals (1, set.size());
     }
 
@@ -216,7 +214,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tria, game.getGrid().getLocation(tria));
 
-        Set<BeadString> set = move.getTrias();
+        Set<Tria> set = move.getTrias();
         assertEquals (1, set.size());
     }
 
@@ -243,7 +241,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tessera, game.getGrid().getLocation(tessera));
 
-        Set<BeadString> set = move.getTesseras();
+        Set<Tessera> set = move.getTesseras();
         assertEquals (1, set.size());
 
     }
@@ -379,7 +377,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tessera, game.getGrid().getLocation(tessera));
 
-        Set<BeadString> tesseras = move.getTesseras();
+        Set<Tessera> tesseras = move.getTesseras();
 
         assertEquals (1, tesseras.size());
     }
@@ -407,7 +405,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tessera, game.getGrid().getLocation(tessera));
 
-        Set<BeadString> trias = move.getTrias();
+        Set<Tria> trias = move.getTrias();
         assertEquals (1, trias.size());
 }
 
@@ -438,7 +436,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tria, game.getGrid().getLocation(tria));
 
-        Set<BeadString> trias = move.getTrias();
+        Set<Tria> trias = move.getTrias();
         assertEquals (2, trias.size());
     }
 
@@ -475,7 +473,7 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (tess, game.getGrid().getLocation(tess));
 
-        Set<BeadString> tesseras = move.getTesseras();
+        Set<Tessera> tesseras = move.getTesseras();
         assertEquals (2, tesseras.size());
     }
 
@@ -505,74 +503,74 @@ public class GenteRulesTest extends GenteTestBase {
         GenteMove move = new GenteMove (alice, first);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,second);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (charlie,third);
         game.move(move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise,fourth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (alice,fifth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,sixth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (charlie,seventh);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise,eighth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (alice, ninth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (1, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,tenth);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (charlie, eleventh);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise, twelfth);
         move = (GenteMove) game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, move.getTrias().size());
-        assertEquals (0, move.getTesseras().size());
+        assertEquals(0, move.getTrias().size());
+        assertEquals(0, move.getTesseras().size());
         assertTrue (game.getState().equals(GameState.PLAY));
     }
 
@@ -596,7 +594,7 @@ public class GenteRulesTest extends GenteTestBase {
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (1, move.getTesseras().size());
-        assertEquals (0, move.getTrias().size());
+        assertEquals(0, move.getTrias().size());
 
     }
 
@@ -622,7 +620,7 @@ public class GenteRulesTest extends GenteTestBase {
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (1, move.getTesseras().size());
-        assertEquals (0, move.getTrias().size());
+        assertEquals(0, move.getTrias().size());
 
     }
 }

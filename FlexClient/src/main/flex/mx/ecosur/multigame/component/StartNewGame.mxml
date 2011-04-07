@@ -107,6 +107,7 @@
 <mx:ArrayCollection id="genteAgentList">
     <mx:Object label="@Resource(key='gente.agent.one', bundle='StringsBundle')" data="SIMPLE"/>
     <mx:Object label="@Resource(key='gente.agent.two', bundle='StringsBundle')" data="BLOCKER"/>
+    <mx:Object label="@Resource(key='gente.agent.three', bundle='StringsBundle')" data="RANDOM"/>
 </mx:ArrayCollection>
 <!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">
