@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* Copyright (C) 2008-2011 ECOSUR, Andrew Waterman and Max Pimm
 * 
 * Licensed under the Academic Free License v. 3.0. 
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -28,193 +28,210 @@ import mx.ecosur.multigame.grid.model.GridCell;
 
 @Entity
 public class GenteMove extends GridMove {
-        
-        private static final long serialVersionUID = -6635578671376146204L;
 
-        public enum CooperationQualifier {
-            COOPERATIVE, SELFISH, NEUTRAL
-        }
-        
-        private Set<BeadString> trias, tesseras;
+    private static final long serialVersionUID = -6635578671376146204L;
 
-        private CooperationQualifier qualifier = null;
-        
-        private ArrayList<Color> teamColors;
-        
-        public GenteMove () {
-            super ();
-            player = null;
-        }
-        
-        /**
-         * @param player
-         * @param cell
-         */
-        public GenteMove(GridPlayer player, GridCell cell) {
-            super (player, cell);
-        }
-        
-        public void addTria(BeadString t) {
-            getTrias().add(t);
-        }
+    public enum CooperationQualifier {
+        COOPERATIVE, SELFISH, NEUTRAL
+    }
 
-        public void addTrias (BeadString... trias) {
-            for (BeadString tria : trias)
-                getTrias().add(tria);
-        }
+    private Set<Tria> trias;
 
-        /**
-         * Gets the Trias that this move created.
-         */
-        @Transient
-        public Set<BeadString> getTrias () {
-            if (trias == null)
-                trias = new HashSet<BeadString>();
-            return trias;
-        }
-        
-        public void setTrias (Set<BeadString> new_trias) {
-            trias = new_trias;
-        }
-        
-        public void addTessera (BeadString t) {
-            getTesseras().add(t);
-        }
+    private Set<Tessera> tesseras;
 
-        public void addTesseras (BeadString... tesseras) {
-            for (BeadString tessera : tesseras) {
-                getTesseras().add(tessera);
-            }
+    private CooperationQualifier qualifier = null;
+
+    private ArrayList<Color> teamColors;
+
+    public GenteMove () {
+        super ();
+    }
+
+    /**
+     * @param player
+     * @param cell
+     */
+    public GenteMove(GridPlayer player, GridCell cell) {
+        super (player, cell);
+    }
+
+    public void addTria(BeadString string) throws Exception {
+        Tria t = new Tria();
+        t.setCells(string.getBeads());
+        if (trias == null)
+            trias = new HashSet<Tria>();
+        trias.add(t);
+    }
+
+    public void addTrias (BeadString... trias) throws Exception {
+        for (BeadString tria : trias)
+            addTria(tria);
+    }
+
+    public void addTessera (BeadString tessera) {
+        Tessera t = new Tessera();
+        t.setCells(tessera.getBeads());
+        if (tesseras == null)
+            tesseras = new HashSet<Tessera>();
+        tesseras.add(t);
+    }
+
+    public void addTesseras (BeadString... tesseras) {
+        for (BeadString tessera : tesseras) {
+            addTessera(tessera);
         }
-
-        /**
-         * Gets the Tesseras that this move created.
-         */
-        @Transient
-        public Set<BeadString> getTesseras () {
-            if (tesseras == null)
-                tesseras = new HashSet<BeadString>();
-            return tesseras;
-        }
-
-        public void setTesseras (Set<BeadString> new_tesseras) {
-            tesseras = new_tesseras;
-        }
-
-        @Transient
-        public ArrayList<Color> getTeamColors () {
-            if (teamColors == null) {
-                teamColors = new ArrayList<Color>();
-                GentePlayer player = (GentePlayer) this.player;
-                teamColors.add (player.getPartner().getColor());
-                teamColors.add(this.player.getColor());
-            }
-
-            return teamColors;
-        }
-
-        public void setTeamColors (ArrayList<Color> colors) {
-            teamColors = colors;
-        }
-        
-        /**
-         * Gets the qualifier
-         * 
-         * @return the qualifier
-         */
-        @Enumerated(EnumType.STRING)
-        public CooperationQualifier getQualifier() {
-            if (qualifier == null)
-                qualifier = CooperationQualifier.NEUTRAL;
-            return qualifier;
-        }
-
-        /**
-         * Sets the cooperation qualifier
-         * 
-         * @param qualifier
-         *            the cooperation qualifier
-         */
-        public void setQualifier(CooperationQualifier qualifier) {
-            this.qualifier = qualifier;
-        }
-
-        /* (non-Javadoc)
-         * @see GridMove#toString()
-         */
-        @Override
-        public String toString() {
-            StringBuffer ret = new StringBuffer();
-            ret.append("GenteMove: ");
-            ret.append("Player=" + getPlayer() + ", ");
-            ret.append("current=" + getCurrentCell() + ", ");
-            ret.append("destination=" + getDestinationCell() + ", ");
-            ret.append("qualifier=" + getQualifier() + ", ");
-            ret.append("trias=" + getTrias().size() + ", ");
-            ret.append("tesseras=" + getTesseras().size() + ", ");
-            return ret.toString();
-        }
-
-        @Override
-        public int hashCode() {
-           int curCode = 1, destCode = 1;
-           if (current != null)
-            curCode = curCode - current.hashCode();
-           if (destination != null)
-             destCode = destCode + destination.hashCode();
-           return 31 * curCode + destCode;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            boolean ret = false;
-            if (obj instanceof GenteMove) {
-                GenteMove comparison = (GenteMove) obj;
-                if (current != null && destination !=null) {
-                    ret = current.equals( (comparison.getCurrentCell())) &&
-                          destination.equals(comparison.getDestinationCell());
-                } else if (destination != null) {
-                    ret = destination.equals(comparison.getDestinationCell());
-                  }
-            }
-
-            return ret;
-        }
-
-        @Override
-        protected Object clone() {
-           GenteMove ret = new GenteMove ();
-            try {
-                if (current != null)
-                    ret.current = current.clone();
-                if (destination != null)
-                    ret.destination = destination.clone();
-                if (player != null) {
-                    GentePlayer p = (GentePlayer) this.player;
-                    ret.player = (GridPlayer) p.clone();
-                }
-                ret.qualifier = this.qualifier;
-
-                ret.teamColors = new ArrayList<Color>();
-                if (tesseras != null) {
-                    ret.tesseras = new LinkedHashSet<BeadString>();
-                    for (BeadString string : getTesseras()) {
-                        ret.tesseras.add((BeadString) string.clone());
+    }
+    
+    public boolean containsString (BeadString comparison) {
+        boolean ret = false;
+        if (comparison.size() == 3) {
+            if (trias != null) {
+                Tria comp = new Tria();
+                try {
+                    comp.setCells(comparison.getBeads());
+                    for (Tria t : trias) {
+                        ret = t.equals(comp);
+                        if (ret)
+                            break;
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                if (trias != null) {
-                    ret.trias = new LinkedHashSet<BeadString>();
-                    for (BeadString string : getTrias()) {
-                        ret.trias.add((BeadString) string.clone());
-                    }
+            }
+        } else if (comparison.size() == 4) {
+            if (tesseras != null) {
+                Tessera comp = new Tessera();
+                comp.setCells(comparison.getBeads());
+                for (Tessera t : tesseras) {
+                    ret = comp.equals(t);
+                    if (ret)
+                        break;
                 }
+            }
+        }
 
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
+        return ret;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public CooperationQualifier getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(CooperationQualifier qualifier) {
+        this.qualifier = qualifier;
+    }
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+    public Set<Tessera> getTesseras() {
+        if (tesseras == null)
+            tesseras = new HashSet<Tessera>();
+        return tesseras;
+    }
+
+    public void setTesseras(Set<Tessera> tesseras) {
+        this.tesseras = tesseras;
+    }
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+    public Set<Tria> getTrias() {
+        if (trias == null)
+            trias = new HashSet<Tria>();
+        return trias;
+    }
+
+    public void setTrias(Set<Tria> trias) {
+        this.trias = trias;
+    }
+
+    @Transient
+    public ArrayList<Color> getTeamColors () {
+        if (teamColors == null) {
+            teamColors = new ArrayList<Color>();
+            GentePlayer player = (GentePlayer) this.player;
+            teamColors.add (player.getPartner().getColor());
+            teamColors.add(this.player.getColor());
+        }
+
+        return teamColors;
+    }
+
+    @Override
+    protected Object clone() {
+       GenteMove ret = new GenteMove ();
+        try {
+            if (current != null)
+                ret.current = current.clone();
+            if (destination != null)
+                ret.destination = destination.clone();
+            if (player != null) {
+                GentePlayer p = (GentePlayer) this.player;
+                ret.player = (GridPlayer) p.clone();
+            }
+            ret.qualifier = this.qualifier;
+
+            ret.teamColors = new ArrayList<Color>();
+            if (tesseras != null) {
+                ret.tesseras = new HashSet<Tessera>();
+                for (Tessera t : tesseras) {
+                    ret.tesseras.add(t);
+                }
             }
 
-            return ret;
+            if (trias != null) {
+                ret.trias = new HashSet<Tria>();
+                for (Tria tria : trias) {
+                    ret.trias.add(tria);
+                }
+            }
+
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
+
+        return ret;
+    }
+
+    /* (non-Javadoc)
+     * @see GridMove#toString()
+     */
+    @Override
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
+        ret.append("GenteMove: ");
+        ret.append("Player=" + getPlayer() + ", ");
+        ret.append("current=" + getCurrentCell() + ", ");
+        ret.append("destination=" + getDestinationCell() + ", ");
+        ret.append("qualifier=" + qualifier + ", ");
+        ret.append("trias=" + trias + ", ");
+        ret.append("tesseras=" + tesseras + ", ");
+        return ret.toString();
+    }
+
+    @Override
+    public int hashCode() {
+       int curCode = 1, destCode = 1;
+       if (current != null)
+        curCode = curCode - current.hashCode();
+       if (destination != null)
+         destCode = destCode + destination.hashCode();
+       return 31 * curCode + destCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean ret = false;
+        if (obj instanceof GenteMove) {
+            GenteMove comparison = (GenteMove) obj;
+            if (current != null && destination !=null) {
+                ret = current.equals( (comparison.getCurrentCell())) &&
+                      destination.equals(comparison.getDestinationCell());
+            } else if (destination != null) {
+                ret = destination.equals(comparison.getDestinationCell());
+              }
+        }
+
+        return ret;
+    }
 }
 

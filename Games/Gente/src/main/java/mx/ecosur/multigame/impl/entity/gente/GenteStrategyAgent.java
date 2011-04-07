@@ -129,8 +129,6 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
     }
 
     public void setNextMove (GenteMove next) {
-        this.setTrias(null);
-        this.setTesseras(null);
         if (next != null)
             this.nextMove = new GenteMove (this, next.getDestinationCell());
     }
@@ -317,20 +315,22 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
         ret.setPoints(getPoints());
         ret.setStrategy(getStrategy());
         if (getTesseras() != null) {
-            HashSet<BeadString> clones = new HashSet<BeadString>();
-            for (BeadString tessera : getTesseras()) {
-                BeadString clone = (BeadString) tessera.clone();
+            HashSet<Tessera> clones = new HashSet<Tessera>();
+            for (Tessera tessera : getTesseras()) {
+                Tessera clone = (Tessera) tessera.clone();
                 clones.add(clone);
             }
+
             ret.setTesseras(clones);
         }
 
         if (getTrias() != null) {
-            HashSet<BeadString> clones = new HashSet<BeadString>();
-            for (BeadString tria : getTrias()) {
-                BeadString clone = (BeadString) tria.clone();
+            HashSet<Tria> clones = new HashSet<Tria>();
+            for (Tria tria : getTrias()) {
+                Tria clone = (Tria) tria.clone();
                 clones.add(clone);
             }
+
             ret.setTrias(clones);
         }
 

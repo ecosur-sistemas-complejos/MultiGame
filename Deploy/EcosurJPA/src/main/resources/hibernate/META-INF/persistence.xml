@@ -19,6 +19,8 @@
         <class>mx.ecosur.multigame.impl.entity.gente.GenteMove</class>
         <class>mx.ecosur.multigame.impl.entity.gente.GentePlayer</class>
         <class>mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent</class>
+        <class>mx.ecosur.multigame.impl.entity.gente.Tessera</class>
+        <class>mx.ecosur.multigame.impl.entity.gente.Tria</class>
         <!-- Manantiales -->
         <class>mx.ecosur.multigame.impl.entity.manantiales.CheckCondition</class>
         <class>mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha</class>

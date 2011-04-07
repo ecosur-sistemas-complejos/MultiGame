@@ -140,11 +140,6 @@ public class GenteGame extends GridGame {
         session.getAgenda().getAgendaGroup("evaluate").setFocus();
         session.fireAllRules();
         session.dispose();
-
-        if (moves == null)
-            moves = new TreeSet<GridMove>(new MoveComparator());
-        if (move != null)
-            moves.add((GridMove) move);
         return move;
     }
 

@@ -18,18 +18,17 @@
 package mx.ecosur.multigame.impl.util.gente;
 
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.enums.Vertice;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
 import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.impl.entity.gente.*;
 import mx.ecosur.multigame.impl.event.gente.MoveEvent;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 
 import java.util.*;
-import java.awt.*;
+import java.awt.Dimension;
 import java.util.List;
 
 
@@ -100,7 +99,11 @@ public class RuleFunctions {
     }
 
     public static boolean hasTria (GentePlayer player, BeadString test) {
-        for (BeadString string : player.getTrias()) {
+        for (Tria t : player.getTrias()) {
+            BeadString string = new BeadString();
+            for (GridCell c : t.getCells()) {
+                string.add(c);
+            }
             if (string.equals(test) || string.contains(test))
                 return true;
         }
@@ -109,14 +112,22 @@ public class RuleFunctions {
     }
 
     public static boolean hasTessera (GentePlayer player, BeadString test) {
-        for (BeadString string : player.getTesseras()) {
+        for (Tessera t : player.getTesseras()) {
+            BeadString string = new BeadString();
+            for (GridCell c : t.getCells()) {
+                string.add(c);
+            }
             if (string.equals(test) || string.contains(test))
                 return true;
         }
 
         /* Check Partner */
         GentePlayer partner = player.getPartner();
-        for (BeadString string : partner.getTrias()) {
+        for (Tessera t : partner.getTesseras()) {
+            BeadString string = new BeadString();
+            for (GridCell c : t.getCells()) {
+                string.add(c);
+            }
             if (test.contains(string))
                 return true;
         }
@@ -129,7 +140,7 @@ public class RuleFunctions {
         for (GridCell cell : event.getAdjacentCells()) {
             colors.add(cell.getColor());
         }
-        colors.add(event.getOrigin().getColor());        
+        colors.add(event.getOrigin().getColor());
         return (colors.size () > 1);
     }
 

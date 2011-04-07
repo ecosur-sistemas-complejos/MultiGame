@@ -39,11 +39,12 @@ package mx.ecosur.multigame.gente{
     import mx.ecosur.multigame.enum.ExceptionType;
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.gente.entity.BeadString;
     import mx.ecosur.multigame.gente.entity.GenteGame;
     import mx.ecosur.multigame.gente.entity.GenteMove;
     import mx.ecosur.multigame.gente.entity.GentePlayer;
     import mx.ecosur.multigame.gente.entity.StrategyPlayer;
+    import mx.ecosur.multigame.gente.entity.Tessera;
+    import mx.ecosur.multigame.gente.entity.Tria;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.effects.AnimateProperty;
     import mx.events.CloseEvent;
@@ -285,14 +286,15 @@ package mx.ecosur.multigame.gente{
             _gameStatus.active = false;
             
             // blink and select the winning board cells and tokens
-            var beadString:BeadString;
+            var tria:Tria;
+            var tessera:Tessera;
             var cell:Cell;
             var boardCell:BoardCell;
             if (_isSoloWin){
                 for (var j:int = 0; j < gentePlayer.trias.length; j++){
-                    beadString = BeadString(gentePlayer.trias[j]);
-                    for (var k:Number = 0; k < beadString.beads.length; k++){
-                        cell = Cell(beadString.beads[k]);
+                    tria = Tria(gentePlayer.trias[j]);
+                    for (var k:Number = 0; k < tria.cells.length; k++){
+                        cell = Cell(tria.cells[k]);
                         boardCell = _board.getBoardCell(cell.column, cell.row); 
                         boardCell.token.blink(10);
                         boardCell.select(cell.colorCode);
@@ -300,9 +302,9 @@ package mx.ecosur.multigame.gente{
                 }
             }else{
                 for (var m:int = 0; m < gentePlayer.tesseras.length; m++){
-                    beadString = BeadString(gentePlayer.tesseras[m]);
-                    for (var n:Number = 0; n < beadString.beads.length; n++){
-                        cell = Cell(beadString.beads[n]);
+                    tessera = Tessera(gentePlayer.tesseras[m]);
+                    for (var n:Number = 0; n < tessera.cells.length; n++){
+                        cell = Cell(tessera.cells[n]);
                         boardCell = _board.getBoardCell(cell.column, cell.row); 
                         boardCell.token.blink(10);
                         boardCell.select(cell.colorCode);
@@ -667,25 +669,28 @@ package mx.ecosur.multigame.gente{
         private function checkBeadStrings(move:GenteMove):void{
 
             // ifthe move contains trias or tesseras then blink them
-            var beadString:BeadString;
+            var tria:Tria;
+            var tessera:Tessera;
             var cell:Cell;
             var hasScored:Boolean = false;
-            if (move.trias != null && move.trias.length){
+
+            if (move.trias.length > 0){
                 hasScored = true;
                 for (var i:Number = 0; i < move.trias.length; i++){
-                    beadString = BeadString(move.trias[i]);
-                    for (var j:Number = 0; j < beadString.beads.length; j++){
-                        cell = Cell(beadString.beads[j]);
+                    tria = Tria(move.trias[i]);
+                    for (var j:Number = 0; j < tria.cells.length; j++){
+                        cell = Cell(tria.cells[j]);
                         _board.getBoardCell(cell.column, cell.row).token.blink(3);
                     }
                 }
             }
-            if (move.tesseras != null && move.tesseras.length){
+
+            if (move.tesseras.length > 0){
                 hasScored = true;
                 for (var k:Number = 0; k < move.tesseras.length; k++){
-                    beadString = BeadString(move.tesseras[k]);
-                    for (var l:Number = 0; l < beadString.beads.length; l++){
-                        cell = Cell(beadString.beads[l]);
+                    tessera = Tessera(move.tesseras[k]);
+                    for (var l:Number = 0; l < tessera.cells.length; l++){
+                        cell = Cell(tessera.cells[l]);
                         _board.getBoardCell(cell.column, cell.row).token.blink(3);
                     }
                 }
@@ -693,7 +698,8 @@ package mx.ecosur.multigame.gente{
             
             if(hasScored){
                 _gameStatus.showMessage(move.player.registrant.name + "  " +
-                    resourceManager.getString("StringsBundle", "gente.move.scored"), Color.getColorCode(move.player.color));
+                    resourceManager.getString("StringsBundle", "gente.move.scored"),
+                        Color.getColorCode(move.player.color));
             }
 
         }

@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.enums.Vertice;
@@ -43,6 +44,23 @@ public class BeadString implements Serializable, Cloneable {
             add(cell);
         }
     }
+
+    public Color singleColor() {
+        Color master = Color.UNKNOWN;
+        for (GridCell cell : getBeads()) {
+            if (master == Color.UNKNOWN) {
+                master = cell.getColor();
+                continue;
+            }
+            if (!cell.getColor().equals(master)) {
+                master = Color.UNKNOWN;
+                break;
+            }
+        }
+
+        return master;
+    }
+
 
     public SortedSet<GridCell> getBeads () {
         if (beads == null)

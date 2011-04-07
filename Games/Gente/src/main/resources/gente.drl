@@ -108,10 +108,7 @@ when
     move  : GenteMove (player.turn == true, status == MoveStatus.VERIFIED)  
 then 
     GameGrid modifiedGrid = game.getGrid();
-    Set<GridCell> cells = modifiedGrid.getCells();
-    if (cells == null)
-        cells = new TreeSet<GridCell>(new CellComparator());
-    cells.add(move.getDestinationCell());
+    modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
     Set<GridMove> moves = game.getMoves();
     if (moves == null)
         moves = new TreeSet<GridMove>(new MoveComparator());
@@ -139,10 +136,9 @@ rule "find-tesseras"
     salience 5
 when
     $event : MoveEvent (size == 4)
-    eval (hasMultipleColors ($event))    
-    $move  : GenteMove (status == MoveStatus.MOVED, $player : player, 
-        tesseras != null)
-    eval (!$move.getTesseras().contains($event.toBeadString()))
+    eval (hasMultipleColors ($event))
+    $move : GenteMove (status == MoveStatus.MOVED, $player : player)
+    eval (!$move.containsString($event.toBeadString()))
     eval (!hasTessera((GentePlayer) $player, $event.toBeadString()))
 then
     BeadString tessera = $event.toBeadString();
@@ -160,8 +156,9 @@ rule "find-trias"
     no-loop true    
 when
     $event : MoveEvent (size == 3)
-    $move  : GenteMove (status == MoveStatus.MOVED, $player : player, trias != null)
-    eval (!hasMultipleColors ($event))
+    $move : GenteMove (status == MoveStatus.MOVED, $player : player)
+    eval ($event.toBeadString().singleColor().equals($player.getColor()))
+    eval (!$move.containsString($event.toBeadString()))
     eval (!hasTria((GentePlayer) $player, $event.toBeadString()))
 then
     BeadString tria = $event.toBeadString();
