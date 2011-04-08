@@ -110,8 +110,6 @@ then
     GameGrid modifiedGrid = game.getGrid();
     modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
     Set<GridMove> moves = game.getMoves();
-    if (moves == null)
-        moves = new TreeSet<GridMove>(new MoveComparator());
     moves.add(move);
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }

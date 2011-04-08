@@ -41,6 +41,8 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.MessageSender;
 
+import static mx.ecosur.multigame.impl.util.gente.RuleFunctions.incrementTurn;
+
 
 @Entity
 public class GenteGame extends GridGame {
@@ -140,6 +142,12 @@ public class GenteGame extends GridGame {
         session.getAgenda().getAgendaGroup("evaluate").setFocus();
         session.fireAllRules();
         session.dispose();
+
+        /* Add the completed move */
+        Set<GridMove> moves = getMoves();
+        moves.add((GridMove) move);
+        setMoves(moves);
+
         return move;
     }
 
@@ -266,7 +274,6 @@ public class GenteGame extends GridGame {
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        super.clone();
         GenteGame ret = new GenteGame ();
         ret.grid = new GameGrid();
         ret.grid.setId(0);

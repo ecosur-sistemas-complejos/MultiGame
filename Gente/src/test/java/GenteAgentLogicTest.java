@@ -30,13 +30,6 @@ import static junit.framework.Assert.*;
 public class GenteAgentLogicTest extends GenteAgentTestBase {
         
     @Test
-    /* Simple test to check the Available move logic in GenteStrategyAgent */
-    public void testAvailableMoves () {
-        TreeSet<GenteMove> unbound = alice.determineAvailableMoves(game);
-        assertEquals (7, unbound.size());
-    }
-
-    @Test
     public void testRandomNextMove () throws InvalidMoveException {
         Set<Move> moves = alice.determineMoves(game);
         for (Move next : moves) {
@@ -57,34 +50,6 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
 
         /* Run the same code in test GridMove but on a simpler board */
         testRandomNextMove ();
-    }
-
-    @Test
-    public void testBlockerNextMove () throws InvalidMoveException {
-        alice.setTurn(false);
-        bob.setTurn(true);
-        Set<Move> moves = bob.determineMoves(game);
-        for (Move next : moves) {
-            assertNotNull (next);
-            /* Ensure that the last move blocks a score by blue or green */
-            GridCell destination = (GridCell) next.getDestinationCell();
-            if (destination.getColumn() == 11) {
-                    if (destination.getRow() != 10 && destination.getRow () != 7)
-                            fail("Destination [" + destination + "] does not block any available " +
-                            "enemy moves!");
-            } else if (destination.getColumn() == 9) {
-                    assertEquals (8, destination.getRow());
-            } else if (destination.getColumn() == 13) {
-                    assertEquals (7, destination.getRow());
-            } else
-                    fail("Destination [" + destination + "] does not block any available " +
-                                    "enemy moves!");
-            /* Validate that the next move was made, and is on the board */
-            game.move(next);
-            assertEquals (next.getDestinationCell(), game.getGrid().getLocation(
-                            (GridCell) next.getDestinationCell()));
-            break;
-        }
     }
 
     @Test

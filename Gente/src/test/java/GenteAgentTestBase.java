@@ -30,12 +30,10 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
         
     protected GenteGame game;
 
-    protected static GenteStrategy simple = GenteStrategy.SIMPLE, blocker = GenteStrategy.BLOCKER,
-        random = GenteStrategy.RANDOM;
+    protected static GenteStrategy simple = GenteStrategy.SIMPLE, random = GenteStrategy.RANDOM;
 
     static {
         simple.getRuleBase();
-        blocker.getRuleBase();
         random.getRuleBase();
     }
 
@@ -50,13 +48,8 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
         GridRegistrant d = new GridRegistrant ("denise");
 
         alice = new GenteStrategyAgent (a, Color.YELLOW, GenteStrategy.RANDOM);
-        bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.BLOCKER);
-        charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.SIMPLE);
-
-        alice.setStrategy(random);
-        bob.setStrategy (blocker);
-        charlie.setStrategy (simple);
-
+        bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.RANDOM);
+        charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.RANDOM);
         game.updatePlayer (alice);
         game.updatePlayer(bob);
         game.updatePlayer(charlie);

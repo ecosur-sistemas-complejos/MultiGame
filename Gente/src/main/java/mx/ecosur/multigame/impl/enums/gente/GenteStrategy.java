@@ -22,7 +22,7 @@ import org.drools.io.ResourceFactory;
 
 public enum GenteStrategy {
         
-    RANDOM, BLOCKER, SIMPLE;
+    RANDOM, SIMPLE;
         
     private static KnowledgeBase kbase;
 
@@ -34,10 +34,6 @@ public enum GenteStrategy {
         if (kbase == null) {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             switch (this) {
-                case BLOCKER:
-                    kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-                        "/mx/ecosur/multigame/impl/blocker-agent.xml")), ResourceType.CHANGE_SET);
-                    break;
                 case RANDOM:
                     kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
                         "/mx/ecosur/multigame/impl/random-agent.xml")), ResourceType.CHANGE_SET);
