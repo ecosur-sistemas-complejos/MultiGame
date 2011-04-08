@@ -9,24 +9,19 @@
  */
 package mx.ecosur.multigame.impl.entity.gente;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.TreeSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Transient;
 
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
+import mx.ecosur.multigame.grid.model.GameGrid;
 import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridGame;
+import mx.ecosur.multigame.grid.model.GridPlayer;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.util.Search;
-import mx.ecosur.multigame.impl.util.gente.GenteMoveComparator;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
@@ -34,40 +29,38 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.DummyMessageSender;
 
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 
 import mx.ecosur.multigame.model.interfaces.Agent;
+
+import static mx.ecosur.multigame.impl.util.gente.AgentRuleFunctions.*;
 
 @Entity
 public class GenteStrategyAgent extends GentePlayer implements Agent {
         
     private static final long serialVersionUID = 6999849272112074624L;
 
+    private KnowledgeBase kBase;
+
     private GenteStrategy strategy;
 
-    private GenteMove nextMove;
-
     public GenteStrategyAgent () {
-            super();
-            nextMove = null;
+        super();
     }
 
-    public GenteStrategyAgent (GridRegistrant player, Color color,
-                    GenteStrategy strategy)
+    public GenteStrategyAgent (GridRegistrant player, Color color, GenteStrategy strategy)
     {
-            super (player, color);
-            this.strategy = strategy;
+        super (player, color);
+        this.strategy = strategy;
     }
 
     /* (non-Javadoc)
      * @see mx.ecosur.multigame.model.interfaces.Agent#initialize()
      */
     public void initialize() {
-            nextMove = null;
+        kBase = strategy.getRuleBase();
     }
 
     public boolean ready() {
@@ -86,264 +79,56 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
     public Set<Move> determineMoves (Game impl) {
         Set<Move> ret = new LinkedHashSet<Move>();
         GenteGame game = (GenteGame) impl;
+        GameGrid grid = game.getGrid();
+        
+        if (isTurn()) {
+            if (kBase == null)
+                initialize();
+            StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+            session.setGlobal("dim", game.getSize());
+            session.insert(this);
+            session.insert(ret);
+            session.insert(grid);
 
-        try {
-            if (isTurn()) {
-                KnowledgeBase kBase = strategy.getRuleBase();
-                StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
-                session.insert(this);
-                session.insert(game.clone());
-                session.insert(new DummyMessageSender());
-                session.fireAllRules();
-                session.dispose();
-                if (getNextMove() != null)
-                    ret.add(getNextMove());
+            /* Insert any unbound adjacent cells if grid is not empty */
+            if (!grid.isEmpty()) {
+                Set<Color> colors = new HashSet<Color>();
+                colors.add(getColor());
+                colors.add(getColor().getCompliment());
 
-                for (Move moveImpl : ret) {
-                    if (moveImpl != null) {
-                        GenteMove genteMove = (GenteMove) moveImpl;
-                        GridCell destination = genteMove.getDestinationCell();
-                        destination.setColor(getColor());
-                        genteMove.setDestinationCell(destination);
-                        genteMove.setPlayer(this);
-                        if (!isTurn())
-                            throw new RuntimeException ("Move generated but agent has lost turn!");
-                        ret.remove(moveImpl);
-                        ret.add(genteMove);
-                    }
+                for (GridCell cell : findUnboundAdjacentCells(game, colors)) {
+                    session.insert(cell);
                 }
 
-                if (ret.size() == 0) {
-                  throw new RuntimeException ("GenteStrategyAgent unable to find move during turn!");
+
+                /* Bind cells adjacent to enemy team colors to global var for worst case */
+                colors.clear();
+                for (GridPlayer p : game.getPlayers()) {
+                    if (p.getColor().equals(getColor()))
+                        continue;
+                    else if (p.getColor().equals(getColor().getCompliment()))
+                        continue;
+                    colors.add(p.getColor());
                 }
+
+                Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
+                session.setGlobal("unbound", unbound);
+
+            } else {
+                session.setGlobal("unbound", Collections.EMPTY_SET);
             }
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+
+            session.fireAllRules();
+            session.dispose();
         }
 
         return ret;
     }
 
     public Suggestion processSuggestion (Game game, Suggestion suggestion) {
-        return suggestion;
+        throw new RuntimeException ("No Suggestions allowed in Gente!");
     }
-
-    public void setNextMove (GenteMove next) {
-        if (next != null)
-            this.nextMove = new GenteMove (this, next.getDestinationCell());
-    }
-
-    @Transient
-    public GenteMove getNextMove () {
-        return nextMove;
-    }
-
-    /**
-     * Returns a list of cells that are open and adjacent to cells of
-     * the colors, "colors".
-     *
-     * @param colors
-     * @return
-     */
-    private TreeSet<GridCell> findUnboundAdjacentCells (GridGame game, HashSet<Color> colors) {
-        TreeSet<GridCell> ret = new TreeSet<GridCell> (new CellComparator());
-        TreeSet<GridCell> candidates = new TreeSet<GridCell> (new CellComparator());
-        Search search = new Search(game.getGrid());
-
-        /* Get all Cells of with the targeted Colors */
-        for (GridCell cell : game.getGrid().getCells ()) {
-            if (colors.contains(cell.getColor())) {
-                candidates.add(cell);
-            }
-        }
-
-        /* Do a search with a depth of 1 for all of those cells, if a null
-         * is returned, create a new cell and add it to the unbound list */
-        for (GridCell candidate : candidates) {
-            for (Direction direction : Direction.values()) {
-                if (direction == Direction.UNKNOWN)
-                    continue;
-                GridCell result = search.searchGrid(direction, candidate, 1);
-                if (result == null) {
-                    ret.add(createDestination (direction, candidate, 1));
-                }
-            }
-        }
-
-        return ret;
-    }
-
-    public TreeSet<GenteMove> determineScoringMoves (GridGame game, Color color) throws InvalidMoveException {
-        HashSet<Color> colors = new HashSet<Color> ();
-        colors.add(color);
-        return determineScoringMoves (game, colors);
-    }
-
-    /**
-     * Returns a list of cells that would result in a Tria or Tessera for the
-     * colors, "colors".
-     *
-     * @param colors
-     * @return
-     * @throws InvalidMoveException
-     */
-    public TreeSet<GenteMove> determineScoringMoves (GridGame gridGame, HashSet<Color> colors) throws InvalidMoveException {
-        TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new GenteMoveComparator());
-        if (gridGame instanceof GenteGame) {
-            GenteGame game = (GenteGame) gridGame;
-            TreeSet<GridCell> unbound = this.findUnboundAdjacentCells(game, colors);
-            boolean currentTurn = this.isTurn();
-            for (GridCell cell : unbound){
-                try {
-                    for (Color color : colors) {
-                        this.setTurn(currentTurn);
-                        GenteGame clone = (GenteGame) (game).clone();
-                        clone.setMessageSender(new DummyMessageSender());
-                        clone.setId(0);
-                        cell.setColor(color);
-                        cell.setId(getMaxId(clone) + 1);
-                        GenteMove move = new GenteMove (this, cell);
-                        move = (GenteMove) clone.move(move);
-                        if (move.getTesseras() != null && move.getTesseras().size() >  0) {
-                            ret.add(move);
-                        } else if (move.getTrias() != null && move.getTrias().size() > 0) {
-                            ret.add(move);
-                        }
-                    }
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            this.setTurn(currentTurn);
-        }
-
-        return ret;
-    }
-
-    public TreeSet<GenteMove> determineAvailableMoves (GenteGame game) {
-        return this.determineAvailableMoves (game, this.getColor());
-    }
-
-    public TreeSet<GenteMove> determineAvailableMoves (GridGame game, HashSet<Color> colors) {
-        TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new GenteMoveComparator());
-        TreeSet<GridCell> unbound = this.findUnboundAdjacentCells(game, colors);
-        for (GridCell cell : unbound){
-                for (Color color : colors) {
-                        cell.setColor(color);
-                        ret.add(new GenteMove (this, cell));
-                }
-        }
-
-        return ret;
-    }
-
-    public TreeSet<GenteMove> determineAvailableMoves (GenteGame game, Color color) {
-        HashSet<Color> colors = new HashSet<Color> ();
-        colors.add(color);
-        return determineAvailableMoves (game, colors);
-    }
-
-    public HashSet<Color> oppositionColors () {
-        HashSet <Color> ret = new HashSet<Color> ();
-        HashSet<Color> teamColors = new HashSet<Color>();
-        teamColors.add(getColor());
-        teamColors.add (getColor().getCompliment());
-        for (Color color : Color.values()) {
-        if (!teamColors.contains(color))
-            ret.add(color);
-        }
-        return ret;
-    }
-
-    private GridCell createDestination(Direction direction, GridCell cell, int factor) {
-        int column = 0, row = 0;
-        switch (direction) {
-            case NORTH:
-                column = cell.getColumn();
-                row = cell.getRow() - factor;
-                break;
-            case SOUTH:
-                column = cell.getColumn();
-                row = cell.getRow() + factor;
-                break;
-            case EAST:
-                column = cell.getColumn() + factor;
-                row = cell.getRow();
-                break;
-            case WEST:
-                column = cell.getColumn () - factor;
-                row = cell.getRow();
-                break;
-            case NORTHEAST:
-                column = cell.getColumn() + factor;
-                row = cell.getRow() - factor;
-                break;
-            case NORTHWEST:
-                column = cell.getColumn () - factor;
-                row = cell.getRow() - factor;
-                break;
-            case SOUTHEAST:
-                column = cell.getColumn() + factor;
-                row = cell.getRow () + factor;
-                break;
-            case SOUTHWEST:
-                column = cell.getColumn () - factor;
-                row = cell.getRow() + factor;
-                break;
-            default:
-                break;
-        }
-
-        return new GridCell (column, row, Color.UNKNOWN);
-    }
-
-    private int getMaxId (GenteGame game) {
-        int max = 0;
-        Set<GridCell> cells = game.getGrid().getCells();
-        for (GridCell cell : cells) {
-            if (cell.getId() > max)
-                max = cell.getId();
-        }
-
-        return max;
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        GenteStrategyAgent ret = new GenteStrategyAgent ();
-        ret.setPoints(getPoints());
-        ret.setStrategy(getStrategy());
-        if (getTesseras() != null) {
-            HashSet<Tessera> clones = new HashSet<Tessera>();
-            for (Tessera tessera : getTesseras()) {
-                Tessera clone = (Tessera) tessera.clone();
-                clones.add(clone);
-            }
-
-            ret.setTesseras(clones);
-        }
-
-        if (getTrias() != null) {
-            HashSet<Tria> clones = new HashSet<Tria>();
-            for (Tria tria : getTrias()) {
-                Tria clone = (Tria) tria.clone();
-                clones.add(clone);
-            }
-
-            ret.setTrias(clones);
-        }
-
-        ret.setColor(getColor());
-
-        GridRegistrant clone = (GridRegistrant) getRegistrant().clone();
-        ret.setRegistrant(clone);
-        ret.setTurn(isTurn());
-        ret.setPoints(getPoints());
-
-        return ret;
-    }
-
+    
     @Override
     public String toString() {
         StringBuffer ret = new StringBuffer ();

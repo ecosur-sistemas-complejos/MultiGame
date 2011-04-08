@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright ECOSUR, Andrew Waterman and Max Pimm 2010 -->
-<change-set xmlns='http://drools.org/drools-5.0/change-set'
-    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
-    <add>
-        <resource source="classpath:mx/ecosur/multigame/impl/agent/blocker-agent.drl" type="DRL"/>
-    </add>
-</change-set>

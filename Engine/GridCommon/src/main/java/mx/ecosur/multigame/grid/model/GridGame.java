@@ -259,6 +259,8 @@ public abstract class GridGame implements Game, Cloneable {
     @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
     @Sort(type= SortType.COMPARATOR, comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
+        if (moves == null)
+            moves = new TreeSet<GridMove>(new MoveComparator());
         return moves;
     }
 
@@ -289,28 +291,6 @@ public abstract class GridGame implements Game, Cloneable {
         return ret;
     }
 
-    @Transient
-    public int getMaxPlayers() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public abstract Agent registerAgent(Agent implementation) throws InvalidRegistrationException;
-
-    public String getGameType () {
-        return gameType;
-    }
-
-    public void setGameType (String gameType) {
-        this.gameType = gameType;
-    }
-        
-    /*
-     * Clones a copy of the implemented sub-class
-     */
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     @Transient
     public List<Color> getColors() {
@@ -326,6 +306,21 @@ public abstract class GridGame implements Game, Cloneable {
 
     public void setKbase(KnowledgeBase kbase) {
         this.kbase = kbase;
+    }
+
+    @Transient
+    public int getMaxPlayers() {
+        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public abstract Agent registerAgent(Agent implementation) throws InvalidRegistrationException;
+
+    public String getGameType () {
+        return gameType;
+    }
+
+    public void setGameType (String gameType) {
+        this.gameType = gameType;
     }
     
 }

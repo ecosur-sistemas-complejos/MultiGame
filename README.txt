@@ -58,7 +58,11 @@ JBOSS CONFIGURATION
 2. Users must modify the persistence.xml file to use the "java:" + jndi naming
    convention that the JBoss server uses for finding the local datasource.
 
-3.  HornetQ. A "j2ee" user in the "admin" group must be defined to allow
+3. Derby should be installed and configured, otherwise, users must updated the
+   hibernate dialect in the persistence.xml file to work with the local database,
+   and the datasource in step 2 must be correctly configured.
+
+4. HornetQ. A "j2ee" user in the "admin" group must be created for MDB authentication.
 
 
 MAVEN CONFIGURATION

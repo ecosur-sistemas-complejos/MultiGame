@@ -17,9 +17,7 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.annotation.security.RunAs;
-import javax.ejb.EJB;
-import javax.ejb.MessageDriven;
-import javax.ejb.MessageDrivenContext;
+import javax.ejb.*;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -65,21 +63,15 @@ public class AgentListener implements MessageListener {
                 if (event.equals(possible)) {                    
                     matched = true;
                     Game game = (Game) msg.getObject();
-                    message.acknowledge();
                     List<GamePlayer> players = game.listPlayers();
                     for (GamePlayer p : players) {
                         if (p instanceof Agent) {
                             Agent agent = (Agent) p;
                             if (agent.ready()) {
                                 Set<Move> moves = agent.determineMoves(game);
-                                for (Move move : moves) {
-                                    moved = sharedBoard.doMove(game, move);
-                                    if (moved == null) {
-                                        throw new RuntimeException ("Ready Agent cannot submit move!");
-                                    }
-
-                                    break;
-                                }
+                                if (moves.isEmpty())
+                                    throw new RuntimeException ("Agent unable to find move!");
+                                moved = sharedBoard.doMove(game, moves.iterator().next());
                             }
                         }
                     }
