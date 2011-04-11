@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:gente="mx.ecosur.multigame.gente.*"
+    xmlns:component="mx.ecosur.multigame.component.*"
+    layout="absolute" implements="mx.ecosur.multigame.module.IGameModule" 
+	width="100%" height="100%">
+
+    <mx:Style source="style.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import mx.ecosur.multigame.entity.Game;
+			import mx.ecosur.multigame.entity.gente.GenteGame;
+			import mx.ecosur.multigame.event.PlayEvent;
+			import mx.ecosur.multigame.gente.GenteGameWindow;
+			
+			private var _gameWindow:GenteGameWindow;
+			
+			public function start(event:PlayEvent):void {
+				_gameWindow = new GenteGameWindow();
+				_gameWindow.currentPlayer = event.gamePlayer;
+				_gameWindow.currentGame = GenteGame(event.game);
+				addChild(_gameWindow);
+			}
+			
+			public function destroy():void{
+				_gameWindow.destroy();
+				removeChild(_gameWindow);
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:Module>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
+          title="{resourceManager.getString('Lobby', 'start.panel.title')}" creationComplete="init()">
+
+<mx:Metadata>
+    [Event(name="registered", type="mx.ecosur.multigame.event.PlayEvent")]
+    [ResourceBundle("Lobby")]
+</mx:Metadata>
+
+<mx:Script>
+    <![CDATA[
+    import mx.ecosur.multigame.event.PlayEvent;
+    import mx.ecosur.multigame.event.ServiceGameEvent;
+    import mx.managers.CursorManager;
+    import mx.rpc.events.FaultEvent;
+    import mx.rpc.events.ResultEvent;
+    import mx.controls.Alert;
+    import mx.ecosur.multigame.entity.Registrant;
+    import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.enum.Color;
+
+    public var player:Registrant;
+
+    private function doRegister(eventObj:MouseEvent):void {
+        CursorManager.setBusyCursor();
+
+        var strategies:Array;
+        if (robots.selected) {
+            strategies = [ player2.selectedItem.data,
+                player3.selectedItem.data, player4.selectedItem.data ];
+            if (gameType.selectedItem.data == "MANANTIALES") {
+
+                gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data, strategies);
+            }
+            else
+                gameService.startNewGameWithAI(player, Color.UNKNOWN, gameType.selectedItem.data, strategies);
+        } else {
+            if (gameType.selectedItem.data == "MANANTIALES")
+                gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data, mode.selectedItem.data);
+            else
+                gameService.startNewGame(player, Color.UNKNOWN, gameType.selectedItem.data);
+        }
+    }
+
+    private function resultHandler(event:ResultEvent):void {
+        var sge:ServiceGameEvent = ServiceGameEvent(event.result);
+        var gamePlayer:GamePlayer = GamePlayer(sge.player);
+        player = gamePlayer.registrant;
+        this.dispatchEvent(new PlayEvent("registered", sge.game, gamePlayer));
+    }
+
+    private function faultHandler(event:FaultEvent):void {
+        Alert.show(event.fault.faultString, "Error registering player for new game");
+    }
+
+    private function showAIPlayers(show:Boolean):void {
+        var showing:Boolean = false;
+
+        if (show) {
+            var i:int;
+            if (gameType.selectedItem.data == "GENTE") {
+                agentList.removeAll();
+                for (i = 0; i < genteAgentList.length; i++) {
+                    agentList.addItem(genteAgentList [ i ]);
+                }
+                radios.visible = true;
+                showing  = true;
+            } else if (gameType.selectedItem.data == "MANANTIALES") {
+                agentList.removeAll();
+                for (i = 0; i < manAgentList.length; i++) {
+                    agentList.addItem(manAgentList[ i ]);
+                }
+                radios.visible = true;
+                showing = true;
+            }  else if (gameType.selectedItem.data == "PASALE") {
+                showing = false;
+                radios.visible = false;
+            }
+
+            aiPlayers.visible = showing;
+            aiPlayers.percentHeight = 100;
+        } else {
+            aiPlayers.visible = false;
+            aiPlayers.height = 0;
+        }
+    }
+
+    private function evaluateAiPlayers():void {
+
+        if (gameType.selectedItem.data != "PASALE")
+            radios.visible = true;
+
+        showAIPlayers(robots.selected);
+        if (gameType.selectedItem.data == "MANANTIALES")
+            modalities.visible = true;
+        else
+            modalities.visible = false;
+    }
+
+    private function init():void {
+        showAIPlayers(true);
+    }
+
+    ]]>
+</mx:Script>
+<mx:ArrayCollection id="agentList"/>
+<!-- Gente agents -->
+<mx:ArrayCollection id="genteAgentList">
+    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.one')}" data="SIMPLE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.two')}" data="BLOCKER"/>
+</mx:ArrayCollection>
+<!-- Manantiales Agents -->
+<mx:ArrayCollection id="manAgentList">
+    <mx:Object label="{resourceManager.getString('Lobby', 'manantiales.agent')}" data="SIMPLE"/>
+</mx:ArrayCollection>
+<!-- Manantiales Modalities -->
+<mx:ArrayCollection id="manModes">
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="CLASSIC" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="BASIC_PUZZLE" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="SILVOPASTORAL"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="SILVO_PUZZLE"/>
+</mx:ArrayCollection>
+
+<mx:ArrayCollection id="gameList">
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.gente')}" data="GENTE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.manantiales')}" data="MANANTIALES"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.pasale')}" data="PASALE"/>    
+</mx:ArrayCollection>
+
+<mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
+
+<mx:Form x="0" y="0" id="form" defaultButton="{startBtn}" width="100%">
+    <mx:FormItem label="{resourceManager.getString('Lobby', 'start.choice.label')}" id="game">
+        <mx:ComboBox id="gameType" dataProvider="{gameList}" change="evaluateAiPlayers()"/>
+    </mx:FormItem>
+    <mx:FormItem id="ai" visible="true">
+        <mx:HBox id="radios">
+            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.one')}" id="robots"
+                selected="{radios.visible}" click="showAIPlayers(true)" />
+            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.two')}"
+                selected="{!radios.visible}" click="showAIPlayers(false)"/>
+        </mx:HBox>
+    </mx:FormItem>
+        <mx:HBox id="aiPlayers" visible="true" height="0">
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player2')}">
+                <mx:ComboBox id="player2" dataProvider="{agentList}"/>
+            </mx:FormItem>
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player3')}">
+                <mx:ComboBox id="player3" dataProvider ="{agentList}"/>
+            </mx:FormItem>
+            <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player4')}">
+                <mx:ComboBox id="player4" dataProvider ="{agentList}"/>
+            </mx:FormItem>
+        </mx:HBox>
+    <mx:FormItem label="Modality" id="modalities" visible="false">
+        <mx:ComboBox id="mode" dataProvider="{manModes}"/>
+    </mx:FormItem>    
+    <mx:FormItem horizontalAlign="right" width="100%">
+            <mx:Button id="startBtn" label="{resourceManager.getString('Lobby', 'start.button')}"
+                       click="doRegister(event)" />
+    </mx:FormItem>
+</mx:Form>
+</mx:Panel>

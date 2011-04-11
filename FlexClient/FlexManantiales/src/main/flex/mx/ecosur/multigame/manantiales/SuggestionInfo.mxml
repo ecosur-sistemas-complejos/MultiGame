@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300">
+    <mx:Metadata>
+        [Event(name="suggestion")]
+    </mx:Metadata>
+    <mx:Script>
+        <![CDATA[
+            import mx.ecosur.multigame.entity.manantiales.Suggestion;
+            import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
+            import mx.events.DynamicEvent;
+            
+            private var _suggestion:Suggestion;
+
+            public function set suggestion (suggestion:Suggestion):void {
+                _suggestion = suggestion;
+            }
+
+            public function get suggestion ():Suggestion {
+                return _suggestion;
+            }
+
+            private function accept (event:MouseEvent):void{
+                _suggestion.status = SuggestionStatus.ACCEPT;
+                var dEvent:DynamicEvent = new DynamicEvent("accept");
+                dEvent.data = _suggestion;
+                dispatchEvent(dEvent);
+            }
+
+            private function reject (event:MouseEvent):void {
+                _suggestion.status = SuggestionStatus.REJECT;
+                var dEvent:DynamicEvent = new DynamicEvent("reject");
+                dEvent.data = _suggestion;
+                dispatchEvent(dEvent);
+            }
+        ]]>
+    </mx:Script>
+    <mx:HBox width="100%" horizontalAlign="center">
+        <mx:Button label="Accept" click="accept(event)" />
+        <mx:Button label="Reject" click="reject(event)" />
+    </mx:HBox>
+</mx:Canvas>
