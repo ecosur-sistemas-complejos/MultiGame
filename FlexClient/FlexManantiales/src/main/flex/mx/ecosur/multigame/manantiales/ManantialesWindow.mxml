@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox 
+    xmlns:mx="http://www.adobe.com/2006/mxml" 
+    xmlns:component="mx.ecosur.multigame.component.*" 
+    xmlns:manantiales="mx.ecosur.multigame.manantiales.*" 
+    xmlns:token="mx.ecosur.multigame.manantiales.token.*"
+    width="100%" height="100%" creationComplete="init()" remove="destroy()">
+    
+    <mx:Metadata>
+        [Event(name="complete")]
+		[ResourceBundle("Manantiales")]
+        [ResourceBundle("Commons")]
+    </mx:Metadata>
+    
+    <mx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.controls.Image;
+            import mx.ecosur.multigame.component.HelpPanel;
+            import mx.ecosur.multigame.component.ImagePanel;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+            import mx.managers.PopUpManager;
+            import mx.managers.CursorManager;
+            import mx.events.MenuEvent;
+            import mx.ecosur.multigame.entity.GamePlayer;
+            import mx.ecosur.multigame.enum.manantiales.Mode;
+            import mx.resources.IResourceManager;
+            import mx.resources.ResourceBundle;
+            import mx.resources.ResourceManager;
+
+            /* required for compilation of class into runtime */
+            import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
+
+            private var _controller:ManantialesGameController;
+            protected var _currentPlayer:GamePlayer;
+            protected var _currentGame:ManantialesGame;
+            private var _helpPanel:HelpPanel;
+            private var _imagePanel:ImagePanel;
+            private var _suggestionHandler:SuggestionHandler;
+
+            /* All of the loaded images */
+            private var _images:ArrayCollection;
+            
+            public function init():void {
+                if (_controller == null)
+                    _controller = new ManantialesGameController(this);
+                CursorManager.removeBusyCursor();
+
+                /* Load images */
+                _images = new ArrayCollection ();
+                _images.addItem("img/competitive-1.png");
+                _images.addItem("img/competitive-2.png");
+                _images.addItem("img/competitive-3.png");
+                _images.addItem("img/competitive-4.png");
+                _images.addItem("img/puzzle.png");
+            }
+            
+            public function destroy():void{
+                if (_controller != null)
+                    _controller.destroy();
+            }
+            
+            [Bindable]
+            public function get suggestionHandler ():SuggestionHandler {
+                return _suggestionHandler;
+            }
+            
+            public function set suggestionHandler (suggestionHandler:SuggestionHandler):void {
+                _suggestionHandler = suggestionHandler;
+            }
+            
+            [Bindable]
+            public function get controller ():ManantialesGameController {
+                return _controller;
+            }
+            
+            [Bindable]
+            public function get currentGame ():ManantialesGame {
+                return _currentGame;
+            }
+            
+            
+            public function set currentGame (currentGame:ManantialesGame):void {
+                _currentGame = currentGame;
+            }
+            
+            public function set currentPlayer(currentPlayer:GamePlayer):void{
+                _currentPlayer = currentPlayer;
+            }
+            
+            [Bindable]
+            public function get currentPlayer():GamePlayer{
+                return _currentPlayer;
+            }
+            
+            public function get activePlayer ():ManantialesPlayer {
+                var ret:ManantialesPlayer;
+                for (var i:int = 0; i < _currentGame.players.length; i++) {
+                    var p:GamePlayer = _currentGame.players [ i ];
+                    if (p.turn) {
+                        ret = ManantialesPlayer(p);
+                        break;
+                    }
+                }
+
+                return ret;
+            }
+            
+            public function dispatchCompletion ():void {
+                dispatchEvent(new Event("complete", true));
+            }
+            
+            /* Only events that effect this container are handled, all others
+               relevent to application lifecycle should be listend to by 
+               Parent containers (event-bubbling) */
+            private function handleMenuItemClick(evt:MenuEvent):void {
+                if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.two.submenu")) {
+                    _helpPanel = new HelpPanel();
+                    _helpPanel.load("help-manantiales.html");
+                    _helpPanel.width = Math.min(width - 100, 600);
+                    _helpPanel.height = height - 20;
+                    _helpPanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_helpPanel, this, true);
+                    PopUpManager.centerPopUp(_helpPanel);                    
+
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.one")) {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 0;
+                    _imagePanel.width = width - 100;                    
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.three")) {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 1;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.four")) {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 2;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.two")) {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 3;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.three.submenu.five")) {
+                    _imagePanel = new ImagePanel();
+                    _imagePanel.images = _images;
+                    _imagePanel.index = 4;
+                    _imagePanel.width = width - 100;
+                    _imagePanel.height = height - 20;
+                    _imagePanel.addEventListener("close", closeHelp);
+                    PopUpManager.addPopUp(_imagePanel, this, true);
+                    PopUpManager.centerPopUp(_imagePanel);
+                } else if (evt.label==resourceManager.getString("Manantiales","manantiales.menu.one.submenu.one")) {
+                    dispatchCompletion();
+                } else if (evt.label == resourceManager.getString("Manantiales","manantiales.menu.one.submenu.two")) {
+                    quitGame();
+                    dispatchCompletion();
+                } else if (evt.item.@locale) {
+                    resourceManager.localeChain = [evt.item.@locale];
+                }
+            }
+            
+            private function closeHelp(event:Event):void{
+                if (_imagePanel != null) {
+                    PopUpManager.removePopUp(_imagePanel);
+                    _imagePanel = null;
+                } else if (_helpPanel != null) {
+                    PopUpManager.removePopUp(_helpPanel);
+                    _helpPanel = null;
+                }
+            }
+            
+            public function get state():String {
+                var ret:String;
+                if (_currentGame.mode == null)
+                    ret = resourceManager.getString("Manantiales","manantiales.state.setup");
+                else if (_currentGame.mode == Mode.CLASSIC)
+                    ret = resourceManager.getString("Manantiales","manantiales.state.classic");
+                else if (_currentGame.mode == Mode.BASIC_PUZZLE)
+                    ret = resourceManager.getString("Manantiales","manantiales.state.puzzle.basic");
+                else if (_currentGame.mode == Mode.SILVOPASTORAL)
+                    ret = resourceManager.getString("Manantiales","manantiales.state.silvopastoral");
+                else if (_currentGame.mode == Mode.SILVO_PUZZLE)
+                    ret = resourceManager.getString("Manantiales","manantiales.state.puzzle.silvo");
+                
+                return ret;
+            }
+            
+            public function stateMenu():XML {
+                var xml:XML = <menuitem label={state}/>;
+                return xml;
+            }
+            
+            private function quitGame():void {
+                _controller.quitGame(currentPlayer);
+            }
+         ]]>       
+    </mx:Script>
+
+    <mx:XMLList id="menuXML">
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.submenu.one')}"/>
+            <menuitem id="languageMenu" label="{resourceManager.getString('Commons', 'language')}">
+                <menuitem label="{resourceManager.getString('Commons', 'language.english')}" locale="en_US" />
+                <menuitem label="{resourceManager.getString('Commons', 'language.spanish')}" locale="es_ES" />
+            </menuitem>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.one.submenu.two')}"/>
+        </menuitem>
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.two.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.two.submenu')}"/>
+        </menuitem>
+        <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.title')}">
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.one')}" />
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.two')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.three')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.four')}"/>
+            <menuitem label="{resourceManager.getString('Manantiales', 'manantiales.menu.three.submenu.five')}"/>
+        </menuitem>
+    </mx:XMLList>
+    
+    <mx:ApplicationControlBar id="controlBar" dock="true" width="100%">
+        <mx:MenuBar height="100%" 
+            dataProvider="{menuXML}" 
+            labelField="@label" 
+            showRoot="true"            
+            itemClick="handleMenuItemClick(event)"/>
+        <mx:MenuBar id="stateMenuBar" dataProvider="{stateMenu()}" labelField="@label" showRoot="true"/>
+    </mx:ApplicationControlBar>
+    <mx:states>
+        <mx:State name="CLASSIC">
+            <mx:RemoveChild  target="{moveViewer}"/>
+            <mx:AddChild relativeTo="{leftBox}">
+                <token:ForestTokenStore id="forestStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%" />
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+                   <token:ModerateTokenStore id="moderateStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%"/>
+            </mx:AddChild>
+            <mx:AddChild relativeTo="{leftBox}">
+                <token:IntensiveTokenStore id="intensiveStore"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    width="100%"/>
+            </mx:AddChild>
+        </mx:State>
+        <mx:State name="BASIC_PUZZLE" basedOn="CLASSIC">
+            <!-- Add Check Constraint viewer here, active on turn -->
+        </mx:State>
+        <mx:State name="SILVOPASTORAL" basedOn="CLASSIC">
+           <mx:AddChild relativeTo="{leftBox}">
+               <token:ViveroTokenStore id="viveroStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                width="100%" />
+           </mx:AddChild>
+           <mx:AddChild relativeTo="{leftBox}">
+               <token:SilvopastoralTokenStore id="silvoStore"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}" 
+                width="100%"/>
+           </mx:AddChild>
+        </mx:State>
+        <mx:State name="SILVO_PUZZLE" basedOn="SILVOPASTORAL">
+            <mx:RemoveChild target="{viveroStore}"/>
+        </mx:State>
+    </mx:states> 
+    <mx:HBox width="100%" height="100%" paddingTop="10" paddingBottom="10"
+        paddingLeft="10" paddingRight="10" id="hbox">
+        <mx:VBox id="leftBox" width="200" height="100%">
+            <component:GameStatus id="gameStatus" width="100%" />
+            <manantiales:MoveViewer id="moveViewer"
+                title="{resourceManager.getString('Commons', 'move.history.title')}"
+                height="100%" width="100%"/>
+        </mx:VBox>
+        <mx:VBox id="centerBox" width="100%" height="100%">
+            <manantiales:ManantialesBoard id="board" width="100%" height="100%"
+                    currentPlayer="{currentPlayer}"/>
+        </mx:VBox>
+        <mx:VBox id="rightBox" height="100%" width="300">
+            <mx:Panel title="Info" width="100%">
+                <manantiales:PlayersViewer id="playersViewer" 
+                  currentPlayer="{currentPlayer}" width="100%"/>
+            </mx:Panel>
+           <component:ChatPanel id="chatPanel" width="100%" height="100%"
+                currentPlayer="{currentPlayer}"
+                currentGame="{currentGame}"/>
+        </mx:VBox>
+        <mx:UIComponent id="animateLayer" />
+    </mx:HBox>
+</mx:VBox>

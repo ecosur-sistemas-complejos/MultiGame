@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" title="{resourceManager.getString('Commons','chat.panel.title')}">
+
+    <mx:Metadata>
+        [ResourceBundle("Commons")]
+    </mx:Metadata>
+    
+<mx:Script>
+    <![CDATA[
+    import mx.collections.ArrayCollection;
+    import mx.ecosur.multigame.entity.Game;
+    import mx.utils.StringUtil;
+
+    import mx.controls.Alert;
+
+    import mx.messaging.messages.AsyncMessage;
+    import mx.messaging.messages.IMessage;
+    import mx.messaging.events.MessageFaultEvent;
+
+    import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.entity.ChatMessage;
+    import mx.ecosur.multigame.enum.GameEvent;
+
+    public var currentPlayer:GamePlayer;
+    public var currentGame:Game;
+    private var _messages:ArrayCollection;
+
+     /* Functions */
+    private function send():void {
+        if (StringUtil.trim(msg.text).length == 0) {
+            return;
+        }
+        var message:IMessage = new AsyncMessage();
+        var chatMessage:ChatMessage = new ChatMessage();
+        chatMessage.sender = currentPlayer;
+        chatMessage.body = msg.text;
+        chatMessage.dateSent = new Date();
+        message.body = chatMessage;
+        message.headers.GAME_ID = currentGame.id;
+        message.headers.GAME_EVENT = GameEvent.CHAT;
+        producer.send(message);
+        msg.text = "";
+    }
+
+    public function addMessage(chatMessage:ChatMessage):void {
+        if (_messages == null)
+            _messages = new ArrayCollection();
+        if (_messages.getItemIndex(chatMessage) == -1) {
+            log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
+            callLater(updateScroll);
+        }
+        _messages.addItem(chatMessage);
+
+    }
+
+    private function keyDownListener(event:KeyboardEvent):void {
+        if (event.keyCode == 13) {
+            send();
+            msg.text = "";
+        }
+    }
+
+    private function faultHandler(event:MessageFaultEvent):void {
+        Alert.show("fault in message " + event.faultString);
+    }
+
+    private function updateScroll():void {
+        log.verticalScrollPosition = log.maxVerticalScrollPosition;
+    }
+
+    private function attachKeyboardListener():void {
+        msg.addEventListener(KeyboardEvent.KEY_DOWN,keyDownListener);
+    }
+
+    ]]>
+    </mx:Script>
+
+    <mx:Producer id="producer" destination="multigame-destination" fault="faultHandler(event)"/>
+
+    <mx:TextArea id="log" width="100%" height="100%" paddingLeft="0" borderThickness="0" editable="false" />
+    <mx:ControlBar verticalAlign="top" paddingLeft="5" paddingRight="5">
+         <mx:TextArea id="msg" width="100%" height="40" creationComplete="{attachKeyboardListener()}"/>
+         <mx:Button id="sendBtn" label="{resourceManager.getString('Commons','chat.panel.button')}" click="send()" color="#ffffff"/>
+    </mx:ControlBar>
+</mx:Panel>

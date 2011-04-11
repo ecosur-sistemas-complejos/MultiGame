@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel
+        xmlns:mx="http://www.adobe.com/2006/mxml"
+        xmlns:component="mx.ecosur.multigame.component.*"
+    styleName="helpPanel"
+    title="How To"
+    creationComplete="initialize()">
+    <mx:Metadata>
+        [Event(name="close")]
+        [Event(name="loaded")]
+    </mx:Metadata>
+    <mx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.controls.Alert;
+        import mx.events.DynamicEvent;
+
+        [Bindable]
+        public var index:Number = 0;
+
+        [Bindable]
+        public var images:ArrayCollection;
+
+        [Bindable]
+        public var _width:Number;
+
+        [Bindable]
+        public var _height:Number;
+
+        [Bindable]
+        public var scale:Number = 0.98;
+
+        public override function set width (width:Number):void {
+             _width = width * scale;
+            super.width = width;
+        }
+
+        public override function set height (height:Number):void {
+            _height = height * scale;
+            super.height = height;
+        }
+
+        private function hideProgress(event:DynamicEvent):void {
+            Alert.show("Attempting to remove progress bar on smoothe image load ..");
+            this.removeChild(bar);
+        }
+
+        ]]>
+    </mx:Script>
+    <mx:ProgressBar id="bar" source="main" mode="polled"/>
+     <component:SmoothImage id="main" autoLoad="true" source="{images.getItemAt(index)}" scaleContent="true"
+            width="{_width}" height="{_height}" creationComplete="dispatchEvent(new DynamicEvent('loaded'))"/>
+    <mx:ControlBar horizontalAlign="center">
+         <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
+    </mx:ControlBar>
+</mx:Panel>

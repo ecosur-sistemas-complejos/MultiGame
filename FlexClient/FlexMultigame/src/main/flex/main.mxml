@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"  
+    xmlns:component="mx.ecosur.multigame.component.*"
+    layout="absolute">
+
+    <mx:Style source="style.css"/>
+
+    <mx:Script>
+        <![CDATA[
+            import mx.controls.Alert;
+            import mx.ecosur.multigame.entity.Registrant;
+            import mx.ecosur.multigame.entity.gente.GenteGame;
+            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
+            import mx.ecosur.multigame.entity.pasale.PasaleGame;
+            import mx.ecosur.multigame.event.PlayEvent;
+            import mx.ecosur.multigame.module.IGameModule;
+            import mx.events.ModuleEvent;
+            import mx.managers.CursorManager;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
+			
+			private var _currGame:PlayEvent;
+
+	        private function init():void {
+	            loginPrincipal();
+				gameLoader.addEventListener(ModuleEvent.READY, startGame);
+				gameLoader.addEventListener("complete", gameComplete);
+	        }
+	
+	        private function loginPrincipal():void {
+	            gameService.registerPrincipal();
+	        }
+	
+	        private function resultHandler(event:ResultEvent):void {
+	            if (event.result is Registrant) {
+	                lobby.player = Registrant(event.result);
+	            } else
+	                Alert.show("Unable to interpret event: " + event);
+	        }
+	
+	        private function faultHandler(event:FaultEvent):void {
+	            Alert.show(event.fault.faultString, "Error!");
+	        }
+	
+	        private function lobbyDone(playEvent:PlayEvent):void {
+				lobby.timer.stop();
+				_currGame = playEvent;
+				vstack.selectedChild = gameLoader;
+				if (playEvent.game is GenteGame) {
+					gameLoader.url = "Gente.swf";
+				} else if (playEvent.game is ManantialesGame) {
+                    gameLoader.url = "Manantiales.swf";
+                } else if (playEvent.game is PasaleGame) {
+                    gameLoader.url = "Pasale.swf";
+                } else {
+					Alert.show("Error!  Unknown GameType [" + playEvent.game + "]");
+					Alert.show("Game info" + playEvent.game.id + "," + playEvent.game.columns + ", " + playEvent.game.rows);
+					CursorManager.removeBusyCursor();
+				}
+	        }
+			
+			private function startGame(event:ModuleEvent):void {
+				IGameModule(event.currentTarget.child).start(_currGame);
+			}
+			
+			private function gameComplete(event:Event):void {
+				IGameModule(event.currentTarget.child).destroy();
+				lobby.reload(event);
+				vstack.selectedChild = lobby;
+				gameLoader.url = "";
+				
+				/* Restart the lobby timer to view any updates to
+				* system state ... */
+				lobby.timer.start();
+				lobby.setFocus();
+			}
+        ]]>
+    </mx:Script>
+    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
+	<mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
+		<component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
+						 gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
+		<mx:ModuleLoader id="gameLoader" applicationDomain="{ApplicationDomain.currentDomain}" />
+	</mx:ViewStack>
+</mx:Application>
