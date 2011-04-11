@@ -59,12 +59,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>grid-common</artifactId>
             <version>${project.version}</version>
