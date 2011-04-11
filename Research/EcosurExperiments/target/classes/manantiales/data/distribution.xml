@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solution type="SIMPLE">
+    <!--  BLUE -->
+    <distribution>
+        <color>BLUE</color>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
+    </distribution>
+    <!--  GREEN -->
+    <distribution>
+        <color>GREEN</color>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
+    </distribution>
+    <!-- YELLOW -->
+    <distribution>
+        <color>YELLOW</color>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
+    </distribution>
+    <!--  RED -->
+    <distribution>
+        <color>RED</color>
+        <forest>4</forest>
+        <moderate>4</moderate>
+        <intensive>4</intensive>
+    </distribution>    
+ </solution>

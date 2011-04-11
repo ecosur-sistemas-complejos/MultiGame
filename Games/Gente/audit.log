@@ -1,0 +1,87 @@
+<object-stream>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>1</factId>
+  <objectToString>GenteGame
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x R x x x x 
+x x x x x x x x x x x x x Y x x x x x 
+x x x x x x x x x x x x Y x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>2</factId>
+  <objectToString>GenteMove: Player=charlie, RED, turn=true, current=null, destination=(Column, Row) Column = 15, Row = 10, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@770537e4, qualifier=NEUTRAL, trias=0, tesseras=0, </objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>GenteMove: Player=charlie, RED, turn=true, current=null, destination=(Column, Row) Column = 15, Row = 10, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@770537e4, qualifier=NEUTRAL, trias=0, tesseras=0, </objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>1</factId>
+  <objectToString>GenteGame
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x R x x x 
+x x x x x x x x x x x x x x R x x x x 
+x x x x x x x x x x x x x Y x x x x x 
+x x x x x x x x x x x x Y x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+x x x x x x x x x x x x x x x x x x x 
+</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>GenteMove: Player=charlie, RED, turn=true, current=null, destination=(Column, Row) Column = 15, Row = 10, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@770537e4, qualifier=NEUTRAL, trias=0, tesseras=0, </objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>3</factId>
+  <objectToString>mx.ecosur.multigame.impl.event.gente.MoveEvent@2770a273</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>3</type>
+  <factId>3</factId>
+  <objectToString>mx.ecosur.multigame.impl.event.gente.MoveEvent@2770a273</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>GenteMove: Player=charlie, RED, turn=true, current=null, destination=(Column, Row) Column = 15, Row = 10, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@770537e4, qualifier=NEUTRAL, trias=0, tesseras=1, </objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>GenteMove: Player=charlie, RED, turn=true, current=null, destination=(Column, Row) Column = 15, Row = 10, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@770537e4, qualifier=NEUTRAL, trias=0, tesseras=1, </objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+</object-stream>
