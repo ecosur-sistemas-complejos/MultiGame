@@ -15,7 +15,7 @@
             color: #ffffff;
         }
         
-        Panel{
+        Panel {
             paddingTop: 10;
             paddingBottom: 10;
             paddingLeft: 10;
@@ -62,14 +62,14 @@
         }
         
         @font-face {
-			src: url("/assets/Verdana.ttf");
+            src: url("assets/Verdana.ttf");
             fontFamily: verdanaEmbed; 
             advancedAntiAliasing: true;
         }
         
         .manantialesToken {
             fontSize: 40;
-            fontFamily: verdanaEmbed;
+            fontFamily: sans-serif;
             textAlign: center;
             color: #ffffff;
         }
