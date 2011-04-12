@@ -13,19 +13,8 @@ This README requires you to have installed the following products:
 
   %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
 
-  
-  FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
-  This project is internationalized in English and Spanish, so it requires access to
-  the Spanish flex framework locale files.  These are distributed by default in the
-  3.2.0 FlexMojos maven archives, but are note available for 3.5.  You can make the
-  library available locally by using the "copylocale" utility in the Flex SDK.
-  Christopher Herremean does a great job detailing this process here:
-
-  http://www.herrodius.com/blog/123
-
-  You will then need to stage the following files from the copied locale(s) into your local
-  maven repository.  
+  FRAMEWORK RUNTIME SHARED LIBRARIES
 
   This project uses signed framework libraries distributed by adobe and not present in public repositories for legal reasons.
 
@@ -40,6 +29,9 @@ This README requires you to have installed the following products:
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
 
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
+
+
+  FLEXMOJOS FRAMEWORK LOCALIZATION
 
   Unfortunately flex mojos requires localized versions of the flashplayer core libraries. These must be imported from the us_US bundle.
 
