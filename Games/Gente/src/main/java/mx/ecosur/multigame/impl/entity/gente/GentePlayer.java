@@ -15,7 +15,6 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import com.sun.tools.corba.se.idl.ExceptionEntry;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GridRegistrant;
 import mx.ecosur.multigame.grid.Color;
