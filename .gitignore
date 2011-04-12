@@ -1938,3 +1938,8 @@ Games/Pasale/target/surefire/surefire6402616799457857184tmp
 /Games/Gente/target/
 /Games/Manantiales/target/
 /Games/Pasale/target/
+/.idea/
+/Games/FlexClient/FlexGente/target/
+/Games/FlexClient/FlexManantiales/target/
+/Games/FlexClient/FlexMultigame/target/
+/Games/FlexClient/FlexPasale/target/
