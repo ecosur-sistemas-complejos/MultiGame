@@ -16,6 +16,7 @@
         <debug>true</debug>
         <player>10.0.0</player>
         <classifier>10</classifier>
+        <services>${basedir}/../../../Deploy/MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</services>
     </properties>
     <profiles>
         <profile>
