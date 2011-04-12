@@ -14,34 +14,10 @@
    <dependencies>
     <dependency>
         <groupId>mx.ecosur</groupId>
-        <artifactId>flex-ds</artifactId>
-        <version>${project.version}</version>
-    </dependency>  
-    <dependency>
-        <groupId>mx.ecosur</groupId>
         <artifactId>flex-client</artifactId>
-        <version>${project.version}</version>
+        <version>${version}</version>
         <type>swf</type>
     </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>flex-gente</artifactId>
-        <version>${project.version}</version>
-        <type>swf</type>
-    </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>flex-manantiales</artifactId>
-        <version>${project.version}</version>
-        <type>swf</type>
-    </dependency>
-    <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>flex-pasale</artifactId>
-        <version>${project.version}</version>
-        <type>swf</type>
-    </dependency>
-
    </dependencies>
   <build>
    <finalName>MultiGame</finalName>

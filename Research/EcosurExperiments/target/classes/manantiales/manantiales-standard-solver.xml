@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localSearchSolver>
+    <scoreDrl>/mx/ecosur/experiment/multigame/solver/manantiales/manantiales-standard-score-calculator.drl</scoreDrl>
+    <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    </scoreDefinition>
+    <termination>
+        <scoreAttained>0</scoreAttained>
+    </termination>
+    <selector>
+        <moveFactoryClass>mx.ecosur.experiment.multigame.solver.manantiales.MoveFactory</moveFactoryClass>
+    </selector>
+    <acceptor>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+
+    </acceptor>
+    <forager>
+        <pickEarlyType>NEVER</pickEarlyType>
+    </forager>
+</localSearchSolver>

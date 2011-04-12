@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400"
+          title="{resourceManager.getString('Manantiales', 'manantiales.token.suggestor.title')}">
+
+    <mx:Metadata>
+        [Event(name="result")]
+        [ResourceBundle("Manantiales")]
+    </mx:Metadata>
+    
+    <mx:Script>
+      <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+        import mx.ecosur.multigame.enum.manantiales.TokenType;
+
+        private var _types:ArrayCollection;
+        private var _source:ManantialesToken;
+
+        private var _suggest:Function;
+        private var _cancel:Function;
+
+        [Bindable]
+        public function get types():ArrayCollection {
+            if (_types == null)
+                _types = new ArrayCollection();
+            return _types;
+        }
+
+        public function set types(names:ArrayCollection):void {
+            _types = new ArrayCollection();
+            for (var i:int = 0; i < names.length; i++) {
+                var obj:Object = new Object();
+                obj.data = String (names.getItemAt(i));
+                obj.label = getLabel(obj.data);
+
+                _types.addItem(obj);
+            }
+        }
+
+        public function set suggestor(value:Function):void {
+            _suggest = value;
+        }
+
+        public function set canceller(value:Function):void {
+            _cancel = value;
+        }
+
+        public function suggest():void {
+            _suggest();
+        }
+
+        public function abort():void {
+            _cancel();
+        }
+
+        public function get source():ManantialesToken {
+            return _source;
+        }
+
+        public function set source(value:ManantialesToken):void {
+            _source = value;
+        }
+
+        private function getLabel(name:String):String {
+            var ret:String = null;
+
+            switch (name) {
+                case TokenType.FOREST:
+                    ret = resourceManager.getString("Manantiales","manantiales.token.forest");
+                    break;
+                case TokenType.MODERATE:
+                    ret = resourceManager.getString("Manantiales","manantiales.token.moderate");
+                    break;
+                case TokenType.INTENSIVE:
+                    ret = resourceManager.getString("Manantiales","manantiales.token.intensive")
+                    break;
+                case TokenType.VIVERO:
+                    ret = resourceManager.getString("Manantiales","manantiales.token.vivero")
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    ret = resourceManager.getString("Manantiales","manantiales.token.silvopastoral")
+                    break;
+            }
+
+            return ret;
+        }
+      ]]>
+    </mx:Script>
+    <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+        <mx:Text width="100%"
+                 text="{resourceManager.getString('Manantiales', 'manantiales.suggestion.type')}" />
+        <mx:ComboBox id="typeBox" dataProvider="{types}"/>
+        <mx:HBox width="100%" horizontalAlign="right" verticalAlign="middle">
+            <mx:Button id="select" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.button')}"
+                       click="suggest()" />
+            <mx:Button id="cancel" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.cancel')}"
+                       click="abort()"/>
+        </mx:HBox>
+        <mx:HBox id="result" width="100%" verticalAlign="middle"/>
+    </mx:VBox>
+    
+</mx:Panel>
