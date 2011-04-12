@@ -25,7 +25,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <debug>${debug}</debug>
                 <sourceFile>Manantiales.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
-                <services>${basedir}/../../MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</services>
+                <services>${services}</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
                     <compiledLocale>en_US</compiledLocale>
