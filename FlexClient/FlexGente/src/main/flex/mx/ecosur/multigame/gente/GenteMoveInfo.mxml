@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml">
+    
+    <mx:Metadata>
+        [ResourceBundle("Commons")]
+    </mx:Metadata>
+    
+    <mx:Script>
+        <![CDATA[
+        import mx.events.DynamicEvent;
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.gente.entity.GenteMove;
+
+        public static const GOTO_MOVE_EVENT:String = "gotoMove";
+
+        [Event (name = GOTO_MOVE_EVENT, type = "mx.events.DynamicEvent")]
+
+        private var _penteMove:GenteMove;
+
+        public function set penteMove(penteMove:GenteMove):void {
+            _penteMove = penteMove;
+            txtTrias.text = booleanToText(_penteMove.trias != null && _penteMove.trias.length > 0);
+            txtTesseras.text = booleanToText(_penteMove.tesseras != null && _penteMove.tesseras.length > 0);
+        }
+
+        public function get penteMove():GenteMove {
+            return _penteMove;
+        }
+
+        private function gotoMove():void {
+            var moveEvent:DynamicEvent = new DynamicEvent(GOTO_MOVE_EVENT);
+            moveEvent.move = _penteMove;
+            dispatchEvent(moveEvent);
+        }
+
+        private function booleanToText(boolean:Boolean):String {
+            if (boolean) {
+                return "Yes";
+            } else {
+                return "No";
+            }
+        }
+
+        ]]>
+    </mx:Script>
+    
+    <mx:VBox>
+        <mx:Grid width="100%">
+            <mx:GridRow>
+                <mx:GridItem>
+                    <mx:Label text="Trias" styleName="fieldLit"/>
+                </mx:GridItem>
+                <mx:GridItem>
+                    <mx:Label id="txtTrias" styleName="field"/>
+                </mx:GridItem>
+                <mx:GridItem>
+                    <mx:Label text="Tesseras" styleName="fieldLit"/>
+                </mx:GridItem>
+                <mx:GridItem>
+                    <mx:Label id="txtTesseras" styleName="field"/>
+                </mx:GridItem>
+            </mx:GridRow>
+        </mx:Grid>
+        <mx:Box paddingBottom="5" width="100%" horizontalAlign="center">
+            <mx:Button label="{resourceManager.getString('Commons', 'move.history.go')}" click="gotoMove()"/>
+        </mx:Box>
+    </mx:VBox>
+</mx:Canvas>
