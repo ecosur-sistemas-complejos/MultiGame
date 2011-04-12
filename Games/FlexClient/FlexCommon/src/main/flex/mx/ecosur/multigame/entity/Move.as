@@ -11,13 +11,11 @@
 
 package mx.ecosur.multigame.entity {
 
-    import mx.ecosur.multigame.model.interfaces.MoveImplementation;
-
     /**
     * Represents a server side Player object.
     */
-    [RemoteClass (alias="mx.ecosur.multigame.impl.model.GridMove")]
-    public class Move implements MoveImplementation {
+    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GridMove")]
+    public class Move {
 
         protected var _id:int;
         protected var _player:GamePlayer;
