@@ -94,15 +94,18 @@ NON-MAVEN LIBRARIES
  FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
  This project is internationalized in English and Spanish, so it requires access to
- the Spanish flex framework locale files.  These are distributed by default in the
- 3.2.0 FlexMojos maven archives, but are note available for 3.5.  You can make the
- library available locally by using the "copylocale" utility in the Flex SDK.
- Christopher Herremean does a great job detailing this process here:
+ the Spanish flex framework locale files.  
 
- http://www.herrodius.com/blog/123
+ Unfortunately flex mojos requires localized versions of the flashplayer core libraries. These must be imported from the us_US bundle.
 
- You will then need to stage the 2 files from the copied locale(s) into your local
- maven repository.
+ mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
+
+ mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
+
+ For more information:
+    http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
+
+
 
  DEPLOYMENT
 
