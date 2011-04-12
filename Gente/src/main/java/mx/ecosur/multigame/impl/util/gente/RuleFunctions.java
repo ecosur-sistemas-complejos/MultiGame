@@ -18,6 +18,7 @@
 package mx.ecosur.multigame.impl.util.gente;
 
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.enums.Vertice;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.model.GameGrid;

@@ -16,7 +16,7 @@ package mx.ecosur.multigame.entity {
     /**
      * Represents a server side GameGrid object.
      */
-    [RemoteClass (alias="mx.ecosur.multigame.impl.model.GameGrid")]
+    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GameGrid")]
     public class GameGrid {
 
         private var _id:int;
