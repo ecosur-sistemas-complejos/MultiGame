@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </parent>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
-    <testSourceDirectory>src/test/flex</testSourceDirectory>
+    <!--testSourceDirectory>src/test/flex</testSourceDirectory-->
     <finalName>Pasale</finalName>
     <plugins>
         <plugin>
@@ -25,7 +25,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <debug>${debug}</debug>
                 <sourceFile>Pasale.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
-                <services>${services}</services>
+                <services>${servicesConfig}</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
                     <compiledLocale>en_US</compiledLocale>
