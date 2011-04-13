@@ -106,8 +106,7 @@
 <mx:ArrayCollection id="agentList"/>
 <!-- Gente agents -->
 <mx:ArrayCollection id="genteAgentList">
-    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.one')}" data="SIMPLE"/>
-    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.two')}" data="BLOCKER"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'gente.agent.three')}" data="RANDOM"/>
 </mx:ArrayCollection>
 <!-- Manantiales Agents -->
 <mx:ArrayCollection id="manAgentList">

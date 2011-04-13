@@ -36,18 +36,6 @@ public class Tria implements Serializable {
     }
 
     public void setCells(Set<GridCell> cells) throws Exception {
-        if (cells.size() > 3)
-            throw new RuntimeException ("Unable to create Tria with " + cells.size() + " cells!");
-        Color master = null;
-        for (GridCell cell : cells) {
-            if (master == null)
-                master = cell.getColor();
-            if (!cell.getColor().equals(master))
-                throw new Exception ("Trias can only be of the same color [" + master +
-                        " != " + cell.getColor() + "]!");
-
-        }
-
         this._cells = cells;
     }
 
