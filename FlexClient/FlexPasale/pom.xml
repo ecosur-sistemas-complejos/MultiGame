@@ -35,7 +35,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <!-- TODO: Check which of these are necessary -->
                 <configurationReport>true</configurationReport>
                 <targetPlayer>${player}</targetPlayer>
-                <coverageViewerPath/>
                 <storepass/>
             </configuration>
             <dependencies>

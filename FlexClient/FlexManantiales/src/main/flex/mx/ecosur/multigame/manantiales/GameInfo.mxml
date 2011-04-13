@@ -60,7 +60,10 @@
                 
                 undeveloped.text = "" + _undeveloped;
                 deforested.text = "" + _deforested;
-                violated.text = "" + _game.checkConditions.length;
+                if (_game.checkConditions)
+                    violated.text = "" + _game.checkConditions.length;
+                else
+                    violated.text = "0";
             }
                     
         ]]>

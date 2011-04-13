@@ -35,8 +35,6 @@ public class Tessera implements Serializable {
     }
 
     public void setCells(Set<GridCell> cells) {
-        if (cells != null && cells.size() > 4)
-            throw new RuntimeException("Unable to create tessera with " + cells.size() + " cells!");
         this._cells = cells;
     }
 
