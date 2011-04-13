@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </parent>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
-    <testSourceDirectory>src/test/flex</testSourceDirectory>
+    <!--testSourceDirectory>src/test/flex</testSourceDirectory-->
     <finalName>flex-commons</finalName>
     <plugins>
         <plugin>
@@ -30,7 +30,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 </compiledLocales>
                 <!-- TODO: Check which of these are necessary -->
                 <configurationReport>true</configurationReport>
-                <coverageViewerPath/>
                 <storepass/>
             </configuration>
             <executions>
