@@ -41,7 +41,6 @@
         <version>${project.version}</version>
         <type>swf</type>
     </dependency>
-
    </dependencies>
   <build>
    <finalName>MultiGame</finalName>

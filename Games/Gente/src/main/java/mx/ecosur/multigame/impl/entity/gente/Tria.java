@@ -47,6 +47,7 @@ public class Tria implements Serializable {
                         " != " + cell.getColor() + "]!");
 
         }
+
         this._cells = cells;
     }
 
