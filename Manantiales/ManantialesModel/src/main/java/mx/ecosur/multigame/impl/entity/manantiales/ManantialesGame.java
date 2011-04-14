@@ -124,7 +124,13 @@ public class ManantialesGame extends GridGame {
         this.moveHistory = moveHistory;
     }
 
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+=======
+    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    //TODO: Fix mapping for checkconditions.
+    @Transient
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
     public Set<CheckCondition> getCheckConditions () {
         if (checkConditions == null) {
             checkConditions = new HashSet<CheckCondition>();

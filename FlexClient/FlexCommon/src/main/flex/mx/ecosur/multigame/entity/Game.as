@@ -10,7 +10,7 @@
 */
 
 package mx.ecosur.multigame.entity {
-
+import mx.collections.ArrayCollection;
 import mx.collections.ArrayCollection;
 import mx.ecosur.multigame.model.interfaces.GameImplementation;
 
@@ -37,6 +37,8 @@ import mx.ecosur.multigame.model.interfaces.GameImplementation;
         private var _grid:GameGrid;
 
         private var _type:String;
+
+        private var _moves:ArrayCollection;
 
         /*
         private var _moves:Collection;
@@ -121,15 +123,13 @@ import mx.ecosur.multigame.model.interfaces.GameImplementation;
             _type = value;
         }
 
-        /*
-        public function get moves():Collection {
+        public function get moves():ArrayCollection {
             return _moves;
         }
 
-        public function set moves(value:Collection):void {
+        public function set moves(value:ArrayCollection):void {
             _moves = value;
         }
-        */
 
         public function get messageSender():Object {
             return _messageSender;

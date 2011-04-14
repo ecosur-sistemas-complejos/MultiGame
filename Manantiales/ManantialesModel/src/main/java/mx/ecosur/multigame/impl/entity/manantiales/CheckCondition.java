@@ -20,17 +20,27 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
 
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
 @Entity
+=======
+@Entity ()
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
 public class CheckCondition implements Condition {
     
     private static final long serialVersionUID = -9183594100309734640L;
 
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     private ConditionType reason;
 
     private GridPlayer agent;
 
     private Set<ManantialesFicha> violators;
 
+=======
+    ConditionType reason;
+    GridPlayer agent;
+    Set<ManantialesFicha> violators;
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     private boolean expired;
 
     private Integer id;
@@ -68,7 +78,11 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+=======
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -83,7 +97,10 @@ public class CheckCondition implements Condition {
     /**
      * @return the reason
      */
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     @Transient
+=======
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     public String getReason() {
         return reason.toString();
     }
@@ -114,7 +131,11 @@ public class CheckCondition implements Condition {
     /**
      * @return the violators
      */
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     @ManyToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+=======
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     public Set<ManantialesFicha> getViolators() {
         if (violators == null)
             violators = new HashSet<ManantialesFicha>();
@@ -126,6 +147,17 @@ public class CheckCondition implements Condition {
      */
     public void setViolators(Set<ManantialesFicha> violators) {
         this.violators = violators;
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
+=======
+    }
+
+    /* (non-Javadoc)
+     * @see mx.ecosur.multigame.model.interfaces.Condition#getTriggers()
+     */
+    @Transient
+    public Object[] getTriggers() {
+        return violators.toArray();
+>>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/CheckCondition.java
     }
 
     /* (non-Javadoc)
