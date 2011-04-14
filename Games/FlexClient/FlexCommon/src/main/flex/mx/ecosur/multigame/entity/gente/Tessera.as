@@ -2,23 +2,22 @@
  * Created by IntelliJ IDEA.
  * User: awaterma
  * Date: 4/6/11
- * Time: 4:57 PM
+ * Time: 4:58 PM
  * To change this template use File | Settings | File Templates.
  */
-package mx.ecosur.multigame.gente.entity {
+package mx.ecosur.multigame.entity.gente {
 
     import mx.collections.ArrayCollection;
 
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.Tria")]
-    public class Tria {
+    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.Tessera")]
+    public class Tessera {
 
         public var id:int;
 
         public var cells:ArrayCollection;
 
-        public function Tria() {
+        public function Tessera() {
             super();
         }
-
     }
 }

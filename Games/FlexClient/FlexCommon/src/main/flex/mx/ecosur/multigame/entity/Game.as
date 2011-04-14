@@ -12,15 +12,14 @@
 package mx.ecosur.multigame.entity {
 
 import mx.collections.ArrayCollection;
-import mx.ecosur.multigame.model.interfaces.GameImplementation;
 
     /**
      * Represents a server side Game object.
      * Not all server side properties are represented on
      * the client for speed of parsing
      */
-    [RemoteClass (alias="mx.ecosur.multigame.impl.model.GridGame")]
-    public class Game implements GameImplementation {
+    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GridGame")]
+    public class Game {
 
         private var _id:int;
 

@@ -61,7 +61,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         /* TODO: inject or make this query static */
         Query query = em.createNamedQuery("Registrant.GetByName");
         query.setParameter("name", registrant.getName());
-        @SuppressWarnings ("unchecked")
         List<Registrant> registrants = query.getResultList();
         if (registrants.size() == 0) {
             em.persist(registrant);
@@ -112,7 +111,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
     }
 
     public Game unregister(Game game, GamePlayer player) throws InvalidRegistrationException {
-        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+        game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
         game.removePlayer(player);
         game.setState(GameState.ENDED);

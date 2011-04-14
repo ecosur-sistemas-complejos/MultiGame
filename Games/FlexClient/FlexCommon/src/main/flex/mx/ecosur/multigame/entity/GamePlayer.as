@@ -30,7 +30,7 @@ package mx.ecosur.multigame.entity {
      * The sound has been sampled and reused as an integral part of the grid game implementations
      * in this work.
      */
-    [RemoteClass (alias="mx.ecosur.multigame.impl.model.GridPlayer")]
+    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GridPlayer")]
     public class GamePlayer {
 
         private var _id:int;

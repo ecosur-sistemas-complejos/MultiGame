@@ -69,7 +69,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardLocal#getGame(int)
      */
     public Game getGame(int gameId) {
-        return em.find(GridGame.class, gameId, LockModeType.PESSIMISTIC_READ);
+        return em.find(GridGame.class, gameId);
     }
 
     /* (non-Javadoc)
@@ -96,7 +96,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
         }
 
         move = em.merge(move);
-        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+        game = em.find(game.getClass(), game.getId());
 
         /* Now that entities are managed, execute rules on move and game */
         game.setMessageSender(messageSender);
@@ -134,7 +134,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
         move = em.merge(move);
         suggestion = em.merge(suggestion);
-        game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+        game = em.find(game.getClass(), game.getId());
 
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);
