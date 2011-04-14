@@ -98,7 +98,7 @@ public abstract class GridGame implements Game, Cloneable {
     @Transient
     public Set getFacts () {
         Set ret = new HashSet();
-        if (!grid.isEmpty())
+        if (grid != null && !grid.isEmpty())
             ret.addAll(grid.getCells());
         return ret;
     }

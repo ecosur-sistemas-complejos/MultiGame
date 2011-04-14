@@ -7,12 +7,15 @@
 
 package mx.ecosur.multigame.impl.entity.manantiales;
 
+import mx.ecosur.multigame.grid.comparator.MoveComparator;
 import mx.ecosur.multigame.grid.model.GridMove;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
+import org.hibernate.annotations.Sort;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -46,8 +49,11 @@ public class MoveHistory implements Serializable {
         this.mode = mode;
     }
 
-    @OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @ManyToMany(cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    @Sort(comparator=MoveComparator.class)
     public Set<GridMove> getMoves() {
+        if (moves == null)
+            moves = new TreeSet<GridMove>(new MoveComparator());
         return moves;
     }
 

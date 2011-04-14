@@ -60,6 +60,7 @@ public class AgentRuleFunctions {
         if (gridGame instanceof GenteGame) {
             GenteGame game = (GenteGame) gridGame;
             Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
+            /*
             for (GridCell cell : unbound){
                 try {
                     for (Color color : colors) {
@@ -79,7 +80,7 @@ public class AgentRuleFunctions {
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
         }
 
         return ret;

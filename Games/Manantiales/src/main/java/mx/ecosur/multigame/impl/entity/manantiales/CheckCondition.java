@@ -20,14 +20,14 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
 
-@Entity (name="ManantialesCheckCondition")
+@Entity ()
 public class CheckCondition implements Condition {
     
     private static final long serialVersionUID = -9183594100309734640L;
 
     ConditionType reason;
     GridPlayer agent;
-    HashSet<ManantialesFicha> violators;
+    Set<ManantialesFicha> violators;
     private boolean expired;
     private int id;
 
@@ -68,7 +68,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
-    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -83,7 +83,6 @@ public class CheckCondition implements Condition {
     /**
      * @return the reason
      */
-    @Basic
     public String getReason() {
         return reason.toString();
     }
@@ -103,7 +102,6 @@ public class CheckCondition implements Condition {
     /**
      * @return the expired
      */
-    @Basic
     public boolean isExpired() {
         return expired;
     }
@@ -118,7 +116,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the violators
      */
-    @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<ManantialesFicha> getViolators() {
         return violators;
     }
@@ -127,7 +125,7 @@ public class CheckCondition implements Condition {
      * @param violators the violators to set
      */
     public void setViolators(Set<ManantialesFicha> violators) {
-        this.violators = (HashSet<ManantialesFicha>) violators;
+        this.violators = violators;
     }
 
     /* (non-Javadoc)

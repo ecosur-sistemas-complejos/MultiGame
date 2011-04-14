@@ -304,7 +304,7 @@ package mx.ecosur.multigame.manantiales
             var token:ManantialesToken;
 
             /* TODO: Move to store objects themselves. */
-            if (_game.grid.cells && _game.grid.cells.length > 0) {
+            if (_game.grid && _game.grid.cells && _game.grid.cells.length > 0) {
                 for (var i:int = 0; i < _game.grid.cells.length; i++){
                     ficha = Ficha(_game.grid.cells[i]);
                     switch (ficha.type) {

@@ -166,34 +166,6 @@ public class GenteRulesTest extends GenteTestBase {
     }
 
     @Test
-    public void testFindCentralVerticalTriaOnClone () throws InvalidMoveException, CloneNotSupportedException {
-        GridCell start = new GridCell (10,10,alice.getColor());
-        GridCell second = new GridCell (10,11,alice.getColor());
-        GridCell tria = new GridCell (10,9, alice.getColor());
-
-        setIds (start,second,tria);
-
-        GameGrid grid = game.getGrid();
-        if (grid.getCells() == null)
-            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
-        game.getGrid().getCells().add(start);
-
-        GenteGame clone = (GenteGame) game.clone();
-        clone.setMessageSender (new DummyMessageSender());
-        clone.getGrid().getCells().add(second);
-
-        GenteMove move = new GenteMove (alice, tria);
-        clone.move(move);
-
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (tria, clone.getGrid().getLocation(tria));
-        assertNull (game.getGrid().getLocation(tria));
-
-        Set<Tria> set = move.getTrias();
-        assertEquals (1, set.size());
-    }
-
-    @Test
     public void testFindTheHorizontalTrias () throws InvalidMoveException {
         GridCell start = new GridCell (3,3,alice.getColor());
         GridCell second = new GridCell (4,3,alice.getColor());

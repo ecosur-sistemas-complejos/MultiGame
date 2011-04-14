@@ -27,7 +27,7 @@ import mx.ecosur.multigame.model.interfaces.Registrant;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @NamedQueries( {
-    @NamedQuery(name = "Registrant.GetByName",
+    @NamedQuery(name = "GridRegistrant.GetByName",
         query = "select DISTINCT gr from GridRegistrant as gr where gr.name = :name")
 })
 @Entity

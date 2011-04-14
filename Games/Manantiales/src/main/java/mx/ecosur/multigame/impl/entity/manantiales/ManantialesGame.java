@@ -124,7 +124,9 @@ public class ManantialesGame extends GridGame {
         this.moveHistory = moveHistory;
     }
 
-    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
+    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    //TODO: Fix mapping for checkconditions.
+    @Transient
     public Set<CheckCondition> getCheckConditions () {
         return checkConditions;
     }
@@ -159,7 +161,7 @@ public class ManantialesGame extends GridGame {
             this.messageSender = (ManantialesMessageSender) messageSender;
     }
 
-    @OneToMany (cascade={CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
         return suggestions;
 
@@ -334,30 +336,6 @@ public class ManantialesGame extends GridGame {
 
     @Override
     public String toString() {
-        return getGrid().toString();
-    }
-
-    /* (non-Javadoc)
-     * @see GridGame#clone()
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        ManantialesGame ret = new ManantialesGame();
-        ret.grid = new GameGrid();
-        for (GridCell cell : getGrid().getCells()) {
-            ManantialesFicha ficha = (ManantialesFicha) cell;
-            ret.grid.updateCell((GridCell) ficha.clone());
-        }
-
-        ret.setColumns (this.getColumns());
-        ret.setRows (this.getRows());
-        ret.created = new Date(System.currentTimeMillis());
-        ret.id = this.getId();
-        ret.moves = new TreeSet<GridMove>(new MoveComparator());
-        ret.state = this.state;
-        ret.setMode(this.mode);
-        ret.version = this.version;
-        ret.kbase = findKBase();
-        return ret;
+        return getMode() + ":\n" + getGrid().toString();
     }
 }

@@ -21,6 +21,8 @@ package mx.ecosur.multigame.entity.manantiales
 
         private var _version:int;
 
+        private var _moveHistory:Object;
+
         public function ManantialesGame () {
             super();
         }
@@ -84,6 +86,14 @@ package mx.ecosur.multigame.entity.manantiales
 
         public function setSuggestions(suggestions:ArrayCollection):void {
             _suggestions = suggestions;
+        }
+
+        public function get moveHistory():Object {
+            return _moveHistory;
+        }
+
+        public function set moveHistory(value:Object):void {
+            _moveHistory = value;
         }
     }
 }

@@ -59,7 +59,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      */
     public Registrant register(Registrant registrant) {
         /* TODO: inject or make this query static */
-        Query query = em.createNamedQuery("Registrant.GetByName");
+        Query query = em.createNamedQuery("GridRegistrant.GetByName");
         query.setParameter("name", registrant.getName());
         List<Registrant> registrants = query.getResultList();
         if (registrants.size() == 0) {
@@ -82,7 +82,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         if (game.getId() == 0)
             em.persist(game);
         else
-            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+            game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
         registrant = em.find(registrant.getClass(), registrant.getId());
         registrant.setLastRegistration(System.currentTimeMillis());
@@ -102,7 +102,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         if (game.getId() == 0)
             em.persist(game);
         else
-            game = em.find(game.getClass(), game.getId(), LockModeType.PESSIMISTIC_WRITE);
+            game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
         game.registerAgent (agent);
         messageSender.sendPlayerChange(game);
