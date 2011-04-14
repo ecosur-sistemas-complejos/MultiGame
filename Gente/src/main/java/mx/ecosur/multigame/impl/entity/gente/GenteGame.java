@@ -269,58 +269,6 @@ public class GenteGame extends GridGame {
         return "Gente";
     }
 
-    /* (non-Javadoc)
-     * @see GridGame#clone()
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        GenteGame ret = new GenteGame ();
-        ret.grid = new GameGrid();
-        ret.grid.setId(0);
-        if (getGrid().getCells () != null) {
-            ret.grid.setCells(new TreeSet<GridCell>(new CellComparator()));
-            for (GridCell cell : getGrid().getCells()) {
-                ret.grid.getCells().add((GridCell) cell.clone());
-            }
-        }
-
-        ret.setColumns (this.getColumns());
-        ret.setRows (this.getRows());
-
-        ret.created = new Date(System.currentTimeMillis());
-        ret.id = this.getId();
-        if (getMoves() != null) {
-            ret.moves = new TreeSet<GridMove>(new MoveComparator());
-            for (GridMove move : getMoves()) {
-                GenteMove gm = (GenteMove) move;
-                ret.moves.add((GridMove) gm.clone());
-            }
-        }
-
-        if (getPlayers() != null) {
-            ret.players = new TreeSet<GridPlayer>(new PlayerComparator());
-            for (GridPlayer player : getPlayers()) {
-                ret.players.add((GentePlayer) ((GentePlayer) player).clone());
-            }
-        }
-
-        ret.state = this.state;
-        ret.version = this.version;
-        ret.winners = new LinkedHashSet<GentePlayer>();
-        if (kbase == null)
-            kbase = findKBase();
-        ret.kbase = kbase;
-
-        if (getWinners() != null) {
-            for (GentePlayer winner : getWinners()) {
-                GentePlayer clone = (GentePlayer) winner.clone();
-                ret.winners.add(clone);
-            }
-        }
-
-        return ret;
-    }
-
     protected KnowledgeBase findKBase () {
         KnowledgeBase ret = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

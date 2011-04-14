@@ -22,14 +22,6 @@ import mx.ecosur.multigame.entity.Game;
             _maxPlayers = value;
         }
 
-        public function get moves():ArrayCollection {
-            return _moves;
-        }
-
-        public function set moves(value:ArrayCollection):void {
-            _moves = value;
-        }
-
         public function get version():int {
             return _version;
         }
