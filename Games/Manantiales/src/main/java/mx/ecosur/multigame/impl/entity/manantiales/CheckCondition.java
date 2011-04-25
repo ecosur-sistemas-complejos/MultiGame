@@ -20,16 +20,20 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
 
-@Entity ()
+@Entity
 public class CheckCondition implements Condition {
     
     private static final long serialVersionUID = -9183594100309734640L;
 
-    ConditionType reason;
-    GridPlayer agent;
-    Set<ManantialesFicha> violators;
+    private ConditionType reason;
+
+    private GridPlayer agent;
+
+    private Set<ManantialesFicha> violators;
+
     private boolean expired;
-    private int id;
+
+    private Integer id;
 
     public CheckCondition () {
         reason = null;
@@ -38,8 +42,7 @@ public class CheckCondition implements Condition {
         expired = false;
     }
 
-    public CheckCondition (ConditionType reason, GridPlayer agent,
-            ManantialesFicha...violator)
+    public CheckCondition (ConditionType reason, GridPlayer agent, ManantialesFicha...violator)
     {
         this.reason = reason;
         this.agent = agent;
@@ -53,14 +56,14 @@ public class CheckCondition implements Condition {
      * @return the id
      */
     @Id @GeneratedValue
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -68,7 +71,8 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
-    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    //@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @Transient
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -83,25 +87,25 @@ public class CheckCondition implements Condition {
     /**
      * @return the reason
      */
+    @Transient
     public String getReason() {
         return reason.toString();
     }
 
-    /**
-     * @param reason the reason to set
-     */
-    public void setReason(String reason) {
-        this.reason = ConditionType.valueOf(reason);
-    }
-
+    //@Enumerated(EnumType.STRING)
     @Transient
     public ConditionType getType () {
         return reason;
     }
 
+    public void setType(ConditionType type) {
+        this.reason = type;
+    }
+
     /**
      * @return the expired
      */
+    @Transient
     public boolean isExpired() {
         return expired;
     }
@@ -116,8 +120,10 @@ public class CheckCondition implements Condition {
     /**
      * @return the violators
      */
-    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @ManyToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<ManantialesFicha> getViolators() {
+        if (violators == null)
+            violators = new HashSet<ManantialesFicha>();
         return violators;
     }
 
@@ -129,14 +135,6 @@ public class CheckCondition implements Condition {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Condition#getTriggers()
-     */
-    @Transient
-    public Object[] getTriggers() {
-        return violators.toArray();
-    }
-
-    /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -145,6 +143,7 @@ public class CheckCondition implements Condition {
         if (obj instanceof CheckCondition) {
             CheckCondition test = (CheckCondition) obj;
             ret = ret && (test.getReason().equals(this.getReason()));
+            ret = ret && (test.getPlayer().equals(this.getPlayer()));
         }
 
         return ret;

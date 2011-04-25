@@ -31,12 +31,20 @@ package mx.ecosur.multigame.entity.manantiales
             _player = player;
         }
 
-        public function set reason (reason:String):void {
+        public function get reason ():String {
+            return _reason;
+        }
+
+        public function set reason(reason:String) {
             _reason = reason;
         }
 
-        public function get reason ():String {
+        public function get type():String {
             return _reason;
+        }
+
+        public function set type(typ:String) {
+            _reason = typ;
         }
 
         public function set violators (violators:ArrayCollection):void {

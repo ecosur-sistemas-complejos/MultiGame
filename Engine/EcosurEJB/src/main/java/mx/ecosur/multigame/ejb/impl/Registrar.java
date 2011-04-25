@@ -124,10 +124,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.model.Registrant)
      */
     public List<Game> getUnfinishedGames(Registrant player) {
+        em.clear();
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetCurrentGames");
         query.setParameter("registrant", player);
         query.setParameter("state", GameState.ENDED);
+        query.setLockMode(LockModeType.PESSIMISTIC_READ);
         List<Game> games = query.getResultList();
         for (Game game : games) {
             ret.add(game);
@@ -140,10 +142,12 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
      */
     public List<Game> getPendingGames(Registrant player) {
+        em.clear();
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetAvailableGames");
         query.setParameter("registrant", player);
         query.setParameter("state", GameState.WAITING);
+        query.setLockMode(LockModeType.PESSIMISTIC_READ);
         List<Game> joinedGames = getUnfinishedGames (player);
         List<Game> games = query.getResultList();
         for (Game impl : games) {

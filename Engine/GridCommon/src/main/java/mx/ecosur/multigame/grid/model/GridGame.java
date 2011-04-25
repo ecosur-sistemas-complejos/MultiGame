@@ -34,11 +34,11 @@ import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 
 @NamedQueries( {
-    @NamedQuery(name = "GridGame.GetCurrentGames", lockMode=LockModeType.PESSIMISTIC_READ,
+    @NamedQuery(name = "GridGame.GetCurrentGames",
         query = "SELECT gme FROM GridGame AS gme JOIN gme.players AS player " +
             "WHERE gme.state <> :state AND player.registrant = :registrant AND " +
             "player MEMBER OF gme.players"),
-    @NamedQuery(name = "GridGame.GetAvailableGames", lockMode=LockModeType.PESSIMISTIC_READ,
+    @NamedQuery(name = "GridGame.GetAvailableGames",
         query = "SELECT DISTINCT gme FROM GridGame AS gme LEFT JOIN gme.players as player " +
             "WHERE gme.state = :state AND player.registrant <> :registrant AND " +
             "player MEMBER OF gme.players")

@@ -17,6 +17,4 @@ public interface Condition extends Serializable {
 
     public String getReason();
 
-    public Object[] getTriggers();
-
 }
