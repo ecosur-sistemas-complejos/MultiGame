@@ -19,7 +19,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
-    import mx.ecosur.multigame.manantiales.enum.ConditionType;
+import mx.ecosur.multigame.enum.GameState;
+import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
     import mx.ecosur.multigame.enum.manantiales.Mode;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
@@ -148,6 +149,7 @@ package mx.ecosur.multigame.manantiales
             var call:Object = _gameService.doMove(_game, move);
             call.operation = "doMove";
             _executingMove = move;
+            endTurn();
         }
         
 
@@ -340,17 +342,18 @@ package mx.ecosur.multigame.manantiales
                _gameWindow.currentState= _game.mode;
             }
 
-            _tokenHandler.initializeTokenStores();
+            if (_game.state == GameState.PLAY) {
+                _tokenHandler.initializeTokenStores();
+                // open annual conditions generator
+                if ( (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
+                    _annCondGen = new AnnualConditionsGenerator();
+                    _annCondGen.addEventListener("result", handleAnnCondResult);
+                    PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
+                    PopUpManager.centerPopUp(_annCondGen);
+                }
 
-            // open annual conditions generator
-            if ( (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
-                _annCondGen = new AnnualConditionsGenerator();
-                _annCondGen.addEventListener("result", handleAnnCondResult);
-                PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
-                PopUpManager.centerPopUp(_annCondGen);
+                _currentPlayer.play();
             }
-
-            _currentPlayer.play();
         }
 
         private function handleAnnCondResult(event:DynamicEvent):void{
