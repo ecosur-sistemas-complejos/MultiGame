@@ -18,10 +18,9 @@ import javax.persistence.*;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
-import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.*;
 import org.drools.builder.KnowledgeBuilder;
@@ -40,8 +39,6 @@ import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.MessageSender;
-
-import static mx.ecosur.multigame.impl.util.gente.RuleFunctions.incrementTurn;
 
 
 @Entity
@@ -122,7 +119,7 @@ public class GenteGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
+      * @see GridGame#move(mx.ecosur.multigame.entity.interfaces.Move)
       */
     public Move move(Move move) throws InvalidMoveException {
         if (kbase == null)

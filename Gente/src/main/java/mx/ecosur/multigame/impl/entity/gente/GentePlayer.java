@@ -15,15 +15,13 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import javax.persistence.*;
 
-import com.sun.tools.corba.se.idl.ExceptionEntry;
 import mx.ecosur.multigame.grid.util.BeadString;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity

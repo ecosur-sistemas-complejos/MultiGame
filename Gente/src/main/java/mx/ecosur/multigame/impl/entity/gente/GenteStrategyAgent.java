@@ -15,13 +15,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
-import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.enums.Direction;
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.grid.util.Search;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
@@ -57,7 +54,7 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Agent#initialize()
+     * @see mx.ecosur.multigame.entity.interfaces.Agent#initialize()
      */
     public void initialize() {
         kBase = strategy.getRuleBase();

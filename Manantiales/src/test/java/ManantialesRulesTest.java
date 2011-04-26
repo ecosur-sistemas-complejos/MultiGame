@@ -24,27 +24,20 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.entity.*;
 
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.drools.io.ResourceFactory;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 
 public class ManantialesRulesTest extends JMSTestCaseAdapter {
         

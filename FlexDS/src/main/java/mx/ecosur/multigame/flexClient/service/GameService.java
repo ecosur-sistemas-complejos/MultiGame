@@ -13,7 +13,6 @@ import java.util.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.enums.SuggestionStatus;
@@ -23,23 +22,20 @@ import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.*;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
+import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridGame;
-import mx.ecosur.multigame.grid.model.GridMove;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridGame;
+import mx.ecosur.multigame.grid.entity.GridMove;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.enums.gente.*;
-
-import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 
 
 import flex.messaging.FlexContext;

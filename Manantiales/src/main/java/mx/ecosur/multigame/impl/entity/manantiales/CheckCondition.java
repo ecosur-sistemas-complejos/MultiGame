@@ -15,7 +15,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
@@ -36,10 +36,7 @@ public class CheckCondition implements Condition {
     private Integer id;
 
     public CheckCondition () {
-        reason = null;
-        agent = null;
-        violators = null;
-        expired = false;
+        super();
     }
 
     public CheckCondition (ConditionType reason, GridPlayer agent, ManantialesFicha...violator)
@@ -71,8 +68,7 @@ public class CheckCondition implements Condition {
     /**
      * @return the player
      */
-    //@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @Transient
+    @ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public GridPlayer getPlayer() {
         return agent;
     }
@@ -92,8 +88,7 @@ public class CheckCondition implements Condition {
         return reason.toString();
     }
 
-    //@Enumerated(EnumType.STRING)
-    @Transient
+    @Enumerated(EnumType.STRING)
     public ConditionType getType () {
         return reason;
     }
@@ -105,7 +100,6 @@ public class CheckCondition implements Condition {
     /**
      * @return the expired
      */
-    @Transient
     public boolean isExpired() {
         return expired;
     }
@@ -144,6 +138,7 @@ public class CheckCondition implements Condition {
             CheckCondition test = (CheckCondition) obj;
             ret = ret && (test.getReason().equals(this.getReason()));
             ret = ret && (test.getPlayer().equals(this.getPlayer()));
+            ret = ret && (test.getViolators().equals(this.getViolators()));
         }
 
         return ret;

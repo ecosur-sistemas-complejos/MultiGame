@@ -9,10 +9,9 @@ package mx.ecosur.multigame.impl.util.manantiales;
 
 import mx.ecosur.multigame.grid.Color;
 
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridMove;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
@@ -25,7 +24,6 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

@@ -14,7 +14,7 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.MoveComparator;
-import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.entity.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
@@ -124,10 +124,11 @@ public class ManantialesGame extends GridGame {
         this.moveHistory = moveHistory;
     }
 
-    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    //TODO: Fix mapping for checkconditions.
-    @Transient
+    @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<CheckCondition> getCheckConditions () {
+        if (checkConditions == null) {
+            checkConditions = new HashSet<CheckCondition>();
+        }
         return checkConditions;
     }
     
@@ -139,7 +140,8 @@ public class ManantialesGame extends GridGame {
     public boolean hasCondition (ConditionType type) {
         boolean ret = false;
         if (checkConditions != null) {
-            for (CheckCondition condition : checkConditions) {
+            for (Condition c : checkConditions) {
+                CheckCondition condition = (CheckCondition) c;
                 if (condition.getType().equals(type)) {
                     ret = true;}}}
         return ret;

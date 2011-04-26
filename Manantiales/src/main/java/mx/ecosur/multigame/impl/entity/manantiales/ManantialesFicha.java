@@ -12,7 +12,7 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 
 import javax.persistence.*;
 
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.grid.Color;
@@ -124,7 +124,7 @@ public class ManantialesFicha extends GridCell {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.Cell#toString()
+     * @see mx.ecosur.multigame.entity.Cell#toString()
      */
     @Override
     public String toString() {

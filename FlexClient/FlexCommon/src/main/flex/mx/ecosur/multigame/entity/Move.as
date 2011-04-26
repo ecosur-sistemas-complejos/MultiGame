@@ -14,7 +14,7 @@ package mx.ecosur.multigame.entity {
     /**
     * Represents a server side Player object.
     */
-    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GridMove")]
+    [RemoteClass (alias="mx.ecosur.multigame.grid.entity.GridMove")]
     public class Move {
 
         protected var _id:int;

@@ -16,9 +16,9 @@ import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
 import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.grid.model.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GameGrid;
 
 import org.junit.Before;
 

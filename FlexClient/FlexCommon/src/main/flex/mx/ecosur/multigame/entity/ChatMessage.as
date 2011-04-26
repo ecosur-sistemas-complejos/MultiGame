@@ -16,7 +16,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents the server side ChatMessage object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.grid.model.GridChatMessage")]
+	[RemoteClass (alias="mx.ecosur.multigame.grid.entity.GridChatMessage")]
 	public class ChatMessage{
 		
 		private var _id:int;
