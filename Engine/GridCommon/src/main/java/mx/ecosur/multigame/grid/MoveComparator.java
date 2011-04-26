@@ -1,8 +1,7 @@
 package mx.ecosur.multigame.grid;
 
 import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.model.interfaces.Cell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.model.interfaces.Move;
 
 import java.io.Serializable;

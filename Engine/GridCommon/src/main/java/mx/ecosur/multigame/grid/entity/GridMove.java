@@ -14,7 +14,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import javax.persistence.*;
 
@@ -122,14 +122,14 @@ public class GridMove implements Move, Cloneable, Comparable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Move#setCurrent(mx.ecosur.multigame.model.interfaces.Cell)
+     * @see mx.ecosur.multigame.entity.interfaces.Move#setCurrent(mx.ecosur.multigame.entity.interfaces.Cell)
      */
     public void setCurrentCell(Cell cellImpl) {
             setCurrentCell((GridCell) cellImpl);
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Move#setDestination(mx.ecosur.multigame.model.interfaces.Cell)
+     * @see mx.ecosur.multigame.entity.interfaces.Move#setDestination(mx.ecosur.multigame.entity.interfaces.Cell)
      */
     public void setDestinationCell(Cell cellImpl) {
             setDestinationCell((GridCell) cellImpl);

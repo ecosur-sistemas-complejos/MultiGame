@@ -14,7 +14,7 @@
 package mx.ecosur.multigame.grid.util;
 
 import mx.ecosur.multigame.grid.enums.Direction;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class AnnotatedCell {

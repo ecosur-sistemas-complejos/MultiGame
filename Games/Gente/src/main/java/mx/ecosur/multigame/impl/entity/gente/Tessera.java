@@ -1,7 +1,7 @@
 package mx.ecosur.multigame.impl.entity.gente;
 
 import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import org.hibernate.annotations.Sort;
 
 import javax.persistence.*;

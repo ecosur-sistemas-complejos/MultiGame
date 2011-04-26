@@ -11,14 +11,13 @@
  * @author max@alwaysunny.com
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import java.util.Date;
 
 import javax.persistence.*;
 
 import mx.ecosur.multigame.model.interfaces.ChatMessage;
-import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
 @Entity
 public class GridChatMessage implements ChatMessage {

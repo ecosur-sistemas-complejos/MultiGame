@@ -16,7 +16,7 @@
  *
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import java.io.Serializable;
 import java.util.*;

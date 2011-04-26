@@ -10,13 +10,12 @@
  */
 package mx.ecosur.multigame.impl.entity.pasale;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import mx.ecosur.multigame.impl.enums.pasale.*;
@@ -88,7 +87,7 @@ public class PasaleFicha extends GridCell {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.Cell#toString()
+     * @see mx.ecosur.multigame.entity.Cell#toString()
      */
     @Override
     public String toString() {

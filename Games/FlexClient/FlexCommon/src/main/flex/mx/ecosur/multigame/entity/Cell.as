@@ -16,7 +16,7 @@ package mx.ecosur.multigame.entity {
 	/**
 	 * Represents a server side cell object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.grid.model.GridCell")]
+	[RemoteClass (alias="mx.ecosur.multigame.grid.entity.GridCell")]
 	public class Cell {
 		
 		protected var _row:int;

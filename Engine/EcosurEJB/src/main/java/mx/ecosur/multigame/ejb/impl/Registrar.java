@@ -94,7 +94,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
 
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.model.Game, mx.ecosur.multigame.model.Agent)
+     * @see mx.ecosur.multigame.ejb.interfaces.RegistrarInterface#registerAgent(mx.ecosur.multigame.entity.Game, mx.ecosur.multigame.entity.Agent)
      */
     public Game registerAgent(Game game, Agent agent) throws
             InvalidRegistrationException
@@ -121,7 +121,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.model.Registrant)
+     * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.entity.Registrant)
      */
     public List<Game> getUnfinishedGames(Registrant player) {
         em.clear();
@@ -129,7 +129,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         Query query = em.createNamedQuery("GridGame.GetCurrentGames");
         query.setParameter("registrant", player);
         query.setParameter("state", GameState.ENDED);
-        query.setLockMode(LockModeType.PESSIMISTIC_READ);
         List<Game> games = query.getResultList();
         for (Game game : games) {
             ret.add(game);
@@ -139,7 +138,7 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.model.Registrant)
+     * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.entity.Registrant)
      */
     public List<Game> getPendingGames(Registrant player) {
         em.clear();
@@ -147,9 +146,13 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         Query query = em.createNamedQuery("GridGame.GetAvailableGames");
         query.setParameter("registrant", player);
         query.setParameter("state", GameState.WAITING);
-        query.setLockMode(LockModeType.PESSIMISTIC_READ);
-        List<Game> joinedGames = getUnfinishedGames (player);
         List<Game> games = query.getResultList();
+
+        Query q = em.createNamedQuery("GridGame.GetCurrentGames");
+        q.setParameter("registrant", player);
+        q.setParameter("state", GameState.ENDED);
+        List<Game> joinedGames = q.getResultList();
+
         for (Game impl : games) {
             Game game = impl;
             if (joinedGames.contains(game))

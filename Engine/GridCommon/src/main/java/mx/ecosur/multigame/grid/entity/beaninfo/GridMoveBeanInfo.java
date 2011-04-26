@@ -11,11 +11,11 @@
  *
  * @author awaterma@ecosur.mx
  */
-package mx.ecosur.multigame.grid.model.beaninfo;
+package mx.ecosur.multigame.grid.entity.beaninfo;
 
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridMove;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridMove;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 

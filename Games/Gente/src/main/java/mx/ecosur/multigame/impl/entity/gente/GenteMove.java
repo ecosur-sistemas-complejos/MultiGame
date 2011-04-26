@@ -15,15 +15,14 @@ package mx.ecosur.multigame.impl.entity.gente;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.util.BeadString;
-import mx.ecosur.multigame.grid.model.GridMove;
-import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridMove;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridCell;
 
 
 @Entity

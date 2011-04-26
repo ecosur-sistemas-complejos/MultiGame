@@ -25,11 +25,10 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.util.BeadString;
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.impl.entity.gente.*;
 
 import org.junit.Before;

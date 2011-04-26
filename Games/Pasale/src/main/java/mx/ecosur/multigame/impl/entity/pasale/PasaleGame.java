@@ -8,14 +8,13 @@ import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
-import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import mx.ecosur.multigame.model.interfaces.*;
 
 import static mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;
-import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
@@ -26,11 +25,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.KnowledgeBase;
 import org.drools.audit.WorkingMemoryFileLogger;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
@@ -110,7 +105,7 @@ public class PasaleGame extends GridGame {
     }
 
     /* (non-Javadoc)
-      * @see GridGame#move(mx.ecosur.multigame.model.interfaces.Move)
+      * @see GridGame#move(mx.ecosur.multigame.entity.interfaces.Move)
       */
     public Move move(Move move) throws InvalidMoveException {
         if (kbase == null) {

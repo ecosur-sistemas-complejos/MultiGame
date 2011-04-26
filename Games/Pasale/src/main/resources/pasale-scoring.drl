@@ -8,7 +8,7 @@ package mx.ecosur.multigame.pasale;
 */
 
 import mx.ecosur.multigame.grid.*;
-import mx.ecosur.multigame.grid.model.*;
+import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.impl.entity.pasale.*;
 
 import function mx.ecosur.multigame.impl.util.pasale.RuleFunctions.*;

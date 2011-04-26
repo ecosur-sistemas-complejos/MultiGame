@@ -1,6 +1,6 @@
 package mx.ecosur.experiment.multigame.solver.pasale;
 
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleFicha;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGrid;

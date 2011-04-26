@@ -36,7 +36,7 @@ import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.enums.MoveStatus;
 
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.grid.model.GridGame;
+import mx.ecosur.multigame.grid.entity.GridGame;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
 
@@ -73,7 +73,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.model.Move)
+     * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.entity.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
         if (game.getId() == 0)
@@ -156,7 +156,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.model.Move)
+     * @see mx.ecosur.multigame.ejb.interfaces.SharedBoardInterface#updateMove(mx.ecosur.multigame.entity.Move)
      */
     public Move updateMove(Move move) {
         return em.merge(move);

@@ -14,7 +14,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -23,10 +23,8 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.enums.Vertice;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import javax.persistence.*;
 
 public class BeadString implements Serializable, Cloneable {
         

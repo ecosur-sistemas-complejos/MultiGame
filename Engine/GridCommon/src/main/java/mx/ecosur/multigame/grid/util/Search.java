@@ -18,8 +18,8 @@ import java.util.*;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.enums.Direction;
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridCell;
 
 import mx.ecosur.multigame.grid.enums.Vertice;
 

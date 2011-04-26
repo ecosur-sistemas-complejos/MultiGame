@@ -14,8 +14,8 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 
 @Entity
 public class ManantialesPlayer extends GridPlayer {

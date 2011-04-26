@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import javax.persistence.*;
 
@@ -21,8 +21,6 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import java.io.IOException;
 
 @Entity
 public abstract class GridPlayer implements Comparable, GamePlayer {

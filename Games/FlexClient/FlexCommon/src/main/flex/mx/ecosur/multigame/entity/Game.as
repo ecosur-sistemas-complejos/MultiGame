@@ -18,7 +18,7 @@ import mx.collections.ArrayCollection;
      * Not all server side properties are represented on
      * the client for speed of parsing
      */
-    [RemoteClass (alias="mx.ecosur.multigame.grid.model.GridGame")]
+    [RemoteClass (alias="mx.ecosur.multigame.grid.entity.GridGame")]
     public class Game {
 
         private var _id:int;

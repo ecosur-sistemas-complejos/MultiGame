@@ -1,7 +1,7 @@
 package mx.ecosur.multigame.flexClient.service;
 
-import mx.ecosur.multigame.grid.model.GridGame;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridGame;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 
 /**
  * ServiceGameEvent.

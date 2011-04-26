@@ -9,7 +9,7 @@
  * @author awaterma@ecosur.mx
  */
 
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 
 public class GenteTestBase {
     private static int lastId;

@@ -2,7 +2,7 @@ package mx.ecosur.multigame.impl.util.pasale;
 
 import mx.ecosur.multigame.impl.entity.pasale.*;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 
 import java.util.*;
 

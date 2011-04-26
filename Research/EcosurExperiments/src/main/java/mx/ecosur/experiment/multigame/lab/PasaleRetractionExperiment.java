@@ -1,17 +1,15 @@
 package mx.ecosur.experiment.multigame.lab;
 
 import mx.ecosur.multigame.grid.DummyMessageSender;
-import mx.ecosur.multigame.grid.model.GridCell;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.pasale.*;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
-import org.drools.builder.*;
 
 import java.util.*;
 import java.io.File;

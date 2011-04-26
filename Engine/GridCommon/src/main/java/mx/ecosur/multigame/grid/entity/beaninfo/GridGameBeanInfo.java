@@ -12,7 +12,7 @@
  * @author awaterma@ecosur.mx
  */
 
-package mx.ecosur.multigame.grid.model.beaninfo;
+package mx.ecosur.multigame.grid.entity.beaninfo;
 
 import java.beans.BeanDescriptor;
 import java.beans.IntrospectionException;
@@ -21,8 +21,8 @@ import java.beans.SimpleBeanInfo;
 import java.util.Date;
 import java.util.List;
 
-import mx.ecosur.multigame.grid.model.GameGrid;
-import mx.ecosur.multigame.grid.model.GridGame;
+import mx.ecosur.multigame.grid.entity.GameGrid;
+import mx.ecosur.multigame.grid.entity.GridGame;
 
 public class GridGameBeanInfo extends SimpleBeanInfo {
 

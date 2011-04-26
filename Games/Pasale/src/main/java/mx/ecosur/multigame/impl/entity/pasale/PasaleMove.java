@@ -15,8 +15,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 
-import mx.ecosur.multigame.grid.model.GridMove;
-import mx.ecosur.multigame.grid.model.GridPlayer;
+import mx.ecosur.multigame.grid.entity.GridMove;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 
 import java.util.*;

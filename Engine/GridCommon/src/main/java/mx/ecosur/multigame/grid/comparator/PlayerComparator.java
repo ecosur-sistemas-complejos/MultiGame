@@ -1,8 +1,7 @@
 package mx.ecosur.multigame.grid.comparator;
 
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.GridPlayer;
-import mx.ecosur.multigame.model.interfaces.GamePlayer;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 
 import java.io.Serializable;
 import java.util.Comparator;

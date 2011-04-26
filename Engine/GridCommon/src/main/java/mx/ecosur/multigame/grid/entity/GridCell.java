@@ -13,7 +13,7 @@
  * 
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -1,13 +1,12 @@
 package mx.ecosur.experiment.multigame.solver.pasale;
 
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
-import mx.ecosur.multigame.grid.model.GridRegistrant;
+import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.io.ResourceFactory;
-import org.drools.builder.*;
 
 /**
  * Created by IntelliJ IDEA.

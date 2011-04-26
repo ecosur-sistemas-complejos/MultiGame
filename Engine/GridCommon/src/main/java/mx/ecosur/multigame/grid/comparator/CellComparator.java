@@ -18,8 +18,7 @@ package mx.ecosur.multigame.grid.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.model.GridCell;
+import mx.ecosur.multigame.grid.entity.GridCell;
 
 public class CellComparator implements Comparator<GridCell>, Serializable {
 

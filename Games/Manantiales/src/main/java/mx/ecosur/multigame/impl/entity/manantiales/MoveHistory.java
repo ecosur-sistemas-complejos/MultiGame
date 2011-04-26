@@ -8,7 +8,7 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.grid.comparator.MoveComparator;
-import mx.ecosur.multigame.grid.model.GridMove;
+import mx.ecosur.multigame.grid.entity.GridMove;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import org.hibernate.annotations.Sort;
 

@@ -13,7 +13,7 @@
  *
  */
 
-package mx.ecosur.multigame.grid.model;
+package mx.ecosur.multigame.grid.entity;
 
 import java.awt.Dimension;
 import java.util.*;
@@ -35,13 +35,12 @@ import org.hibernate.annotations.SortType;
 
 @NamedQueries( {
     @NamedQuery(name = "GridGame.GetCurrentGames",
-        query = "SELECT gme FROM GridGame AS gme JOIN gme.players AS player " +
+        query = "SELECT DISTINCT gme FROM GridGame AS gme JOIN gme.players AS player " +
             "WHERE gme.state <> :state AND player.registrant = :registrant AND " +
             "player MEMBER OF gme.players"),
     @NamedQuery(name = "GridGame.GetAvailableGames",
-        query = "SELECT DISTINCT gme FROM GridGame AS gme LEFT JOIN gme.players as player " +
-            "WHERE gme.state = :state AND player.registrant <> :registrant AND " +
-            "player MEMBER OF gme.players")
+        query = "SELECT DISTINCT gme FROM GridGame AS gme JOIN gme.players as player " +
+            "WHERE gme.state = :state AND player.registrant <> :registrant")
 })
 @Entity
 public abstract class GridGame implements Game, Cloneable {
@@ -229,7 +228,7 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Game#getMoves()
+     * @see mx.ecosur.multigame.entity.interfaces.Game#getMoves()
      */
     @Transient
     public Set<Move> listMoves() {
@@ -280,7 +279,7 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Game#listPlayers()
+     * @see mx.ecosur.multigame.entity.interfaces.Game#listPlayers()
      */
     public List<GamePlayer> listPlayers() {
         List<GamePlayer> ret = new ArrayList<GamePlayer>();
@@ -298,7 +297,7 @@ public abstract class GridGame implements Game, Cloneable {
     }
 
     /* (non-Javadoc)
-     * @see mx.ecosur.multigame.model.interfaces.Game#move(mx.ecosur.multigame.model.interfaces.Move)
+     * @see mx.ecosur.multigame.entity.interfaces.Game#move(mx.ecosur.multigame.entity.interfaces.Move)
      */
     public Move move(Move move) throws InvalidMoveException {
         return move;
