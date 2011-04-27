@@ -109,7 +109,8 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
         Move move = suggestion.listMove();
-        GamePlayer player = suggestion.listSuggestor();
+        GamePlayer suggestor = suggestion.listSuggestor();
+        GamePlayer player = move.getPlayerModel();
         Cell current = move.getCurrentCell();
         Cell destination = move.getDestinationCell();
 
@@ -117,25 +118,25 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
             suggestion.attachSuggestor(null);
             suggestion.attachMove(null);
             em.persist(suggestion);
+            if (move.getId() == 0) {
+                move.setPlayerModel(null);
+                move.setCurrentCell(null);
+                move.setDestinationCell(null);
+                /* Persist clean move with no detached, dependent entities */
+                em.persist(move);
+                move.setPlayerModel(player);
+                move.setDestinationCell(destination);
+                move.setCurrentCell(current);
+            }
+
+            suggestion.attachSuggestor(suggestor);
+            suggestion.attachMove(move);
         }
 
-        if (move.getId() == 0) {
-            move.setPlayerModel(null);
-            move.setCurrentCell(null);
-            move.setDestinationCell(null);
-            /* Persist clean move with no detached, dependent entities */
-            em.persist(move);
-            move.setPlayerModel(player);
-            move.setDestinationCell(destination);
-            move.setCurrentCell(current);
-        }
-        suggestion.attachSuggestor(player);
-        suggestion.attachMove(move);
-
-        move = em.merge(move);
         suggestion = em.merge(suggestion);
+        move  = em.merge(move);
+        suggestion.attachMove(move);
         game = em.find(game.getClass(), game.getId());
-
         game.setMessageSender(messageSender);
         suggestion = game.suggest(suggestion);
         if (suggestion.getStatus().equals(SuggestionStatus.INVALID))

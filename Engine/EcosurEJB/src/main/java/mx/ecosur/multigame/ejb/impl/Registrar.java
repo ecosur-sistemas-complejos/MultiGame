@@ -87,7 +87,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         registrant = em.find(registrant.getClass(), registrant.getId());
         registrant.setLastRegistration(System.currentTimeMillis());
         game.registerPlayer (registrant);
-        em.flush();
         messageSender.sendPlayerChange(game);
         return game;
     }
@@ -106,7 +105,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         game.setMessageSender(messageSender);
         game.registerAgent (agent);
         messageSender.sendPlayerChange(game);
-        em.flush();
         return game;
     }
 
@@ -116,7 +114,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
         game.removePlayer(player);
         game.setState(GameState.ENDED);
         messageSender.sendPlayerChange(game);
-        em.flush();
         return game;
     }
 
@@ -124,7 +121,6 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.RegistrarInterface#getUnfinishedGames(mx.ecosur.multigame.entity.Registrant)
      */
     public List<Game> getUnfinishedGames(Registrant player) {
-        em.clear();
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetCurrentGames");
         query.setParameter("registrant", player);
@@ -141,24 +137,26 @@ public class Registrar implements RegistrarRemote, RegistrarLocal {
      * @see mx.ecosur.multigame.ejb.RegistrarInterface#getPendingGames(mx.ecosur.multigame.entity.Registrant)
      */
     public List<Game> getPendingGames(Registrant player) {
-        em.clear();
         List<Game> ret = new ArrayList<Game>();
         Query query = em.createNamedQuery("GridGame.GetAvailableGames");
         query.setParameter("registrant", player);
         query.setParameter("state", GameState.WAITING);
         List<Game> games = query.getResultList();
 
-        Query q = em.createNamedQuery("GridGame.GetCurrentGames");
-        q.setParameter("registrant", player);
-        q.setParameter("state", GameState.ENDED);
-        List<Game> joinedGames = q.getResultList();
-
         for (Game impl : games) {
             Game game = impl;
-            if (joinedGames.contains(game))
-                continue;
-            ret.add(game);
+            boolean member = false;
+            for (GamePlayer p : game.listPlayers()) {
+                if (p.getRegistrant().equals(player)) {
+                    member = true;
+                    break;
+                }
+
+            }
+            if (!member)
+                ret.add(game);
         }
+
         return ret;
     }
 }

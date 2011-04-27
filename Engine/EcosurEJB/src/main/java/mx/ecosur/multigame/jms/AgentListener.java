@@ -84,8 +84,8 @@ public class AgentListener implements MessageListener {
                         matched = true;
                         Suggestion suggestion = (Suggestion) msg.getObject();
                         SuggestionStatus oldStatus = suggestion.getStatus();
-                        Game game = (Game) msg.getObject();
-                        message.acknowledge();
+                        int gameId = new Integer (message.getStringProperty("GAME_ID")).intValue();
+                        Game game = sharedBoard.getGame(gameId);
                         List<GamePlayer> players = game.listPlayers();
                         for (GamePlayer p : players) {
                             if (p instanceof Agent) {

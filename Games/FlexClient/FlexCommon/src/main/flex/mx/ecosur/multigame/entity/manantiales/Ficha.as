@@ -12,6 +12,8 @@ package mx.ecosur.multigame.entity.manantiales
 	[ResourceBundle("Commons")]
     public class Ficha extends Cell
     {
+        private var _id:int;
+
         protected var _type:String;
 
         public function Ficha()
@@ -19,7 +21,16 @@ package mx.ecosur.multigame.entity.manantiales
             super();
         }
 
-        public function get type():String {
+
+        public function get id():int {
+         return _id;
+         }
+
+        public function set id(value:int):void {
+            _id = value;
+        }
+
+    public function get type():String {
             return this._type;
         }
 

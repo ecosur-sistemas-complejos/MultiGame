@@ -8,8 +8,18 @@ package mx.ecosur.multigame.entity.manantiales {
 
         public var _type:String
 
+        private var _nextMove:ManantialesMove;
+
         public function SimpleAgent() {
             super();
+        }
+
+        public function get nextMove():ManantialesMove {
+            return _nextMove;
+        }
+
+        public function set nextMove(value:ManantialesMove):void {
+            _nextMove = value;
         }
 
         public function get type ():String {

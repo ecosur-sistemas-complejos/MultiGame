@@ -21,6 +21,8 @@ package mx.ecosur.multigame.entity {
 
         private var _id:int;
 
+        private var _empty:Boolean;
+
         private var _cells:ArrayCollection;
 
         public function GameGrid(){
@@ -33,6 +35,14 @@ package mx.ecosur.multigame.entity {
 
         public function set id(value:int):void {
             _id = value;
+        }
+
+        public function get empty():Boolean {
+            return _empty;
+        }
+
+        public function set empty(value:Boolean):void {
+            _empty = value;
         }
 
         public function get cells():ArrayCollection{

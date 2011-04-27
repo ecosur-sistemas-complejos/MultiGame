@@ -1,6 +1,7 @@
 package mx.ecosur.multigame.entity.manantiales
 {
-    import mx.ecosur.multigame.entity.Move;
+import mx.ecosur.multigame.entity.GamePlayer;
+import mx.ecosur.multigame.entity.Move;
     import mx.ecosur.multigame.entity.manantiales.Ficha;
 
     [RemoteClass (alias=
@@ -13,12 +14,44 @@ package mx.ecosur.multigame.entity.manantiales
         
         private var _swap:Ficha;
 
+        private var _type:String;
+
+        private var _premium:Boolean;
+
+        private var _replacementType:String;
+
+        private var _playerModel:GamePlayer;
+
         public function ManantialesMove()
         {
             super();
             _badYear = false;
         }
-        
+
+        public function get playerModel():GamePlayer {
+            return _playerModel;
+        }
+
+        public function set playerModel(value:GamePlayer):void {
+            _playerModel = value;
+        }
+
+        public function get premium():Boolean {
+            return _premium;
+        }
+
+        public function set premium(value:Boolean):void {
+            _premium = value;
+        }
+
+        public function get replacementType():String {
+            return _replacementType;
+        }
+
+        public function set replacementType(value:String):void {
+            _replacementType = value;
+        }
+
         public function get swap():Ficha {
             return _swap;
         }
@@ -41,6 +74,14 @@ package mx.ecosur.multigame.entity.manantiales
 
         public function set mode (mode:String):void {
             _mode = mode;
+        }
+
+        public function get type():String {
+            return _type;
+        }
+
+        public function set type(value:String):void {
+            _type = value;
         }
 
         public override function toString():String {
