@@ -91,7 +91,8 @@ public class PuzzleSuggestion implements Suggestion {
 
     @Override
     public String toString() {
-        return move.toString();
+        return "Suggestion [status = [" + status + "], suggestor = [" +
+                suggestor + "], move = [" + move + "]";
     }
 
     @Override

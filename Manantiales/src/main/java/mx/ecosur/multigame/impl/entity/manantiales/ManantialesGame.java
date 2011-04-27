@@ -39,7 +39,7 @@ import java.net.MalformedURLException;
 
 @Entity
 public class ManantialesGame extends GridGame {
-        
+
     private static final long serialVersionUID = -8395074059039838349L;
 
     private static transient KnowledgeBase kbase;
@@ -165,6 +165,8 @@ public class ManantialesGame extends GridGame {
 
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     public Set<PuzzleSuggestion> getSuggestions () {
+        if (suggestions == null)
+            suggestions = new HashSet<PuzzleSuggestion>();
         return suggestions;
 
     }

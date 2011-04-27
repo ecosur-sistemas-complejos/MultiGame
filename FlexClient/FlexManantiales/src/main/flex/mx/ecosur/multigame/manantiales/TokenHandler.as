@@ -173,7 +173,8 @@ import flash.events.MouseEvent;
                         (destToken.cell.color != _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
                 {
                         /* Making a suggestion to another player */
-                    suggestion = true;                    
+                    suggestion = true;
+                    move.player = null;
                     _suggestionHandler.makeSuggestion(move);
                 } else {
                     Alert.show ("Unable to create move/suggestion.  destToken.cell=" + destToken.cell + ", " +
