@@ -6,7 +6,6 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/__default</jta-data-source>
         <!-- Grid entities -->
-        <!--class>mx.ecosur.multigame.grid.Color</class-->
         <class>mx.ecosur.multigame.grid.entity.GameGrid</class>
         <class>mx.ecosur.multigame.grid.entity.GridCell</class>
         <class>mx.ecosur.multigame.grid.entity.GridChatMessage</class>
