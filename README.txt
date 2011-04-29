@@ -1,9 +1,5 @@
 GETTING STARTED
 
-This README requires you to have installed and configured the following products:
-
-
-
 GLASSFISH CONFIGURATION
 
 The following configuration changes must be made on the Glassfish server to which
@@ -43,19 +39,17 @@ JBOSS CONFIGURATION
 
 1. Hibernate is the default provider for JBoss, but Derby is not the default
    database. Users can install derby on the target system, or simply change the
-   hibernate dialect to work with the default JBoss database.
+   hibernate dialect to work with the default JBoss database (hsql):  
+
+   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
 
 2. Users must modify the persistence.xml file to use the "java:" + jndi naming
    convention that the JBoss server uses for finding the local datasource.
 
-3. Derby should be installed and configured, otherwise, users must updated the
-   hibernate dialect in the persistence.xml file to work with the local database,
-   and the datasource in step 2 must be correctly configured.
-
-4. HornetQ. A "j2ee" user in the "admin" group must be created for MDB authentication.
-
-
-
+3. HornetQ. A "j2ee" user in the "admin" group must be created for MDB authentication.
+   The connection factory, "ConnectionFactory" must be configured for publishing to the
+   Topic "MultiGame" as described above.  The ConnectionFactory must be configured to
+   participate in XATransactions within the application server.
 
  FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
@@ -74,7 +68,6 @@ JBOSS CONFIGURATION
 
   FLEX CONFIGURATION
 
-
   AS3ISOLIB
 
   as3isolib will need to be installed locally.  Please download a copy of the swc
@@ -85,7 +78,6 @@ JBOSS CONFIGURATION
   Use the maven install plugin to install the dependency locally:
 
   %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
-
 
 
   FRAMEWORK RUNTIME SHARED LIBRARIES
@@ -103,7 +95,6 @@ JBOSS CONFIGURATION
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
 
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
-
 
 
   FLEXMOJOS FRAMEWORK LOCALIZATION
@@ -141,13 +132,3 @@ JBOSS CONFIGURATION
  Before deployment, the local Glassfish Derby database must be up and running:
  
  %> asadmin start-database
-
-
- DEPLOYMENT
-
- In order to deploy the private build to a running Glassfish server, you need to
- execute with the deploy profile from the toplevel:
-
- %> mvn -P deploy clean install
- 
- 
