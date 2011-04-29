@@ -35,6 +35,7 @@ the EAR file is being deployed:
     message bean to be able to receive messages and message other secured EJB
     components.
 
+
 JBOSS CONFIGURATION
 
 1. Hibernate is the default provider for JBoss, but Derby is not the default
@@ -51,7 +52,8 @@ JBOSS CONFIGURATION
    Topic "MultiGame" as described above.  The ConnectionFactory must be configured to
    participate in XATransactions within the application server.
 
- FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
+
+FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
  This project is internationalized in English and Spanish, so it requires access to
  the Spanish flex framework locale files.  
@@ -66,7 +68,7 @@ JBOSS CONFIGURATION
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
 
-  FLEX CONFIGURATION
+FLEX CONFIGURATION
 
   AS3ISOLIB
 
@@ -80,7 +82,7 @@ JBOSS CONFIGURATION
   %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
 
 
-  FRAMEWORK RUNTIME SHARED LIBRARIES
+FRAMEWORK RUNTIME SHARED LIBRARIES
 
   This project uses signed framework libraries distributed by adobe and not present in public repositories for legal reasons.
 
@@ -97,7 +99,7 @@ JBOSS CONFIGURATION
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
 
-  FLEXMOJOS FRAMEWORK LOCALIZATION
+FLEXMOJOS FRAMEWORK LOCALIZATION
 
   Unfortunately flex mojos requires localized versions of the flashplayer 
   core libraries. These must be imported from the us_US bundle.
@@ -109,12 +111,10 @@ JBOSS CONFIGURATION
   For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
-
   All other dependencies are managed by means of Maven.
 
 
-
-  MAVEN CONFIGURATION
+MAVEN CONFIGURATION
  
   This prototype requires the following environmental changes be made, before being
   built and deployed.
@@ -127,7 +127,8 @@ JBOSS CONFIGURATION
   export GLASSFISH_HOME=/home/myuser/glassfish
 
 
- **** IMPORTANT ****
+
+**** IMPORTANT ****
  
  Before deployment, the local Glassfish Derby database must be up and running:
  
