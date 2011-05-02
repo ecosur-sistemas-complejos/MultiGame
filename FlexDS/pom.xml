@@ -7,7 +7,7 @@
   <name>MultiGame Data Services (BLAZE)</name>
   <description>BlazeDS connector for flex-client and incorporated games.</description>
   <parent>
-        <artifactId>deploy-module</artifactId>
+        <artifactId>games-module</artifactId>
         <groupId>mx.ecosur</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
