@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns="urn:hornetq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hornetq /schema/hornetq-jms.xsd">
+    <connection-factory name="NettyConnectionFactory">
+       <connectors>
+     <connector-ref connector-name="netty"/>
+       </connectors>
+            <entries>
+                <entry name="ConnectionFactory"/>
+            </entries>
+    </connection-factory>
+    <topic name="MultiGame">
+            <entry name="MultiGame"/>
+    </topic>
+    <!--security-settings>
+        <permission>
+            <type></type>
+            <roles></roles>
+
+        </permission>
+    </security-settings-->
+</configuration>
