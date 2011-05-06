@@ -5,6 +5,7 @@
     <persistence-unit name="MultiGamePU">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/__default</jta-data-source>
+        <!--jta-data-source>java:DefaultDS</jta-data-source-->
         <!-- Grid entities -->
         <class>mx.ecosur.multigame.grid.entity.GameGrid</class>
         <class>mx.ecosur.multigame.grid.entity.GridCell</class>
@@ -37,7 +38,6 @@
         <class>mx.ecosur.multigame.impl.entity.pasale.PasalePlayer</class>
         <properties>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="database"/>
