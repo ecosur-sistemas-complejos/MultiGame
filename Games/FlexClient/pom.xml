@@ -13,7 +13,7 @@
         <version>2.0-SNAPSHOT</version>
     </parent>
     <properties>
-        <debug>true</debug>
+        <debug>false</debug>
         <player>10.0.0</player>
         <classifier>10</classifier>
         <flex-version>4.1.0.16076</flex-version>

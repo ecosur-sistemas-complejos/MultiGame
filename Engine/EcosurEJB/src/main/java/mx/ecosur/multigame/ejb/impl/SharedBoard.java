@@ -76,25 +76,6 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#move(mx.ecosur.multigame.entity.Move)
      */
     public Move doMove(Game game, Move move) throws InvalidMoveException {
-        if (game.getId() == 0)
-            throw new InvalidMoveException ("Move requested by unknown game (id = 0)!");
-
-        GamePlayer player = move.getPlayerModel();
-        Cell current = move.getCurrentCell();
-        Cell destination = move.getDestinationCell();
-
-        if (move.getId() == 0) {
-            move.setPlayerModel(null);
-            move.setCurrentCell(null);
-            move.setDestinationCell(null);
-            /* Persist clean move with no detached, dependent entities */
-            em.persist(move);
-
-            move.setPlayerModel(player);
-            move.setDestinationCell(destination);
-            move.setCurrentCell(current);
-        }
-
         move = em.merge(move);
         game = em.find(game.getClass(), game.getId());
 
@@ -108,33 +89,9 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
 
 
     public Suggestion makeSuggestion(Game game, Suggestion suggestion) throws InvalidSuggestionException {
-        Move move = suggestion.listMove();
-        GamePlayer suggestor = suggestion.listSuggestor();
-        GamePlayer player = move.getPlayerModel();
-        Cell current = move.getCurrentCell();
-        Cell destination = move.getDestinationCell();
-
-        if (suggestion.getId() == 0) {
-            suggestion.attachSuggestor(null);
-            suggestion.attachMove(null);
-            em.persist(suggestion);
-            if (move.getId() == 0) {
-                move.setPlayerModel(null);
-                move.setCurrentCell(null);
-                move.setDestinationCell(null);
-                /* Persist clean move with no detached, dependent entities */
-                em.persist(move);
-                move.setPlayerModel(player);
-                move.setDestinationCell(destination);
-                move.setCurrentCell(current);
-            }
-
-            suggestion.attachSuggestor(suggestor);
-            suggestion.attachMove(move);
-        }
-
+        Move move  = em.merge(suggestion.listMove());
         suggestion = em.merge(suggestion);
-        move  = em.merge(move);
+        /* Move must be reattached as em removes it from the suggestion after the merge */
         suggestion.attachMove(move);
         game = em.find(game.getClass(), game.getId());
         game.setMessageSender(messageSender);
@@ -148,7 +105,7 @@ public class SharedBoard implements SharedBoardLocal, SharedBoardRemote {
      * @see mx.ecosur.multigame.ejb.SharedBoardRemote#getMoves(int)
      */
     public Collection<Move> getMoves(int gameId) {
-        Game game = getGame(gameId);
+        Game game = em.find(GridGame.class, gameId);
         return game.listMoves();
     }
 
