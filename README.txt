@@ -1,6 +1,6 @@
 GETTING STARTED
 
-GLASSFISH CONFIGURATION
+GLASSFISH 3.1 CONFIGURATION
 
 The following configuration changes must be made on the Glassfish server to which
 the EAR file is being deployed:
@@ -35,8 +35,17 @@ the EAR file is being deployed:
     message bean to be able to receive messages and message other secured EJB
     components.
 
+4.  Hibernate
 
-JBOSS CONFIGURATION
+    This version of MultiGame uses Hibernate as a persistence provider. In order to
+    use Hibernate on Glassfish, you need to install it via the "Update Tool" provided
+    on the bottom-left hand side of the Admin screen.  Select and check "hibernate"
+    from the available frameworks and click on install.
+
+    Restart the server to make hibernate available for the application.
+
+
+JBOSS AS6 CONFIGURATION
 
 1. Hibernate is the default provider for JBoss, but Derby is not the default
    database. Users can install derby on the target system, or simply change the
@@ -45,7 +54,10 @@ JBOSS CONFIGURATION
    <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
 
 2. Users must modify the persistence.xml file to use the "java:" + jndi naming
-   convention that the JBoss server uses for finding the local datasource.
+   convention that the JBoss server uses for finding the local datasource.  The
+   datasource name must be one mapped within JBoss, which can be modified by
+   changing value of the "jndi-name" in hsqldb-ds.xml (or your Derby configuration
+   file).
 
 3. HornetQ. A "j2ee" user in the "admin" group must be created for MDB authentication.
    The connection factory, "ConnectionFactory" must be configured for publishing to the
