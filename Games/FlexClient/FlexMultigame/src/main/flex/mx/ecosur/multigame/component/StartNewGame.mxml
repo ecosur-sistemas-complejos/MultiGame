@@ -123,8 +123,7 @@
 <mx:ArrayCollection id="gameList">
     <mx:Object label="{resourceManager.getString('Lobby', 'start.game.gente')}" data="GENTE"/>
     <mx:Object label="{resourceManager.getString('Lobby', 'start.game.manantiales')}" data="MANANTIALES"/>
-    <!-- Removed Pasale for Staging -->
-    <!--mx:Object label="{resourceManager.getString('Lobby', 'start.game.pasale')}" data="PASALE"/-->
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.game.pasale')}" data="PASALE"/>
 </mx:ArrayCollection>
 
 <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
