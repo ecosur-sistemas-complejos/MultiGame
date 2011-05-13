@@ -35,9 +35,9 @@ public class PasaleGame extends GridGame {
 
     private static final long serialVersionUID = -8395074059039838349L;
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
-    private static final int DIMENSIONS = 27;
+    private static final int DIMENSIONS = 24;
 
     private static KnowledgeBase kbase;
 
@@ -124,6 +124,8 @@ public class PasaleGame extends GridGame {
         }
 
         /* insert game and move */
+        System.out.println("Inserted move: " + move);
+
         session.insert(this);
         session.insert(move);
         session.fireAllRules();
@@ -134,6 +136,8 @@ public class PasaleGame extends GridGame {
             moves = new TreeSet<GridMove>(new MoveComparator());
 
         moves.add((PasaleMove) move);
+
+        System.out.println("Final state of move: " + move);
 
         return move;
     }

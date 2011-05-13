@@ -71,6 +71,12 @@
             <artifactId>drools-api</artifactId>
             <version>${drools.version}</version>
         </dependency>
+        <!--dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-guvnor</artifactId>
+            <version>${drools.version}</version>
+            <type>war</type>
+        </dependency-->
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>flex-ds</artifactId>
@@ -138,26 +144,16 @@
                            <groupId>mx.ecosur</groupId>
                            <artifactId>multi-game</artifactId>
                         </webModule>
+                        <!--webModule>
+                            <groupId>org.drools</groupId>
+                            <artifactId>drools-guvnor</artifactId>
+                        </webModule-->
                     </modules>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     <profiles>
-       <!--profile>
-           <id>jboss</id>
-           <activation>
-               <activeByDefault>false</activeByDefault>
-           </activation>
-           <build>
-               <resources>
-                   <resource>
-                       <directory>src/main/resources/jboss</directory>
-                       <targetPath>META-INF</targetPath>
-                   </resource>
-               </resources>
-           </build>
-       </profile-->
        <profile>
            <id>deploy-gf</id>
            <activation>
@@ -197,7 +193,4 @@
           </build>    
        </profile>
     </profiles>
-    <properties>
-        <netbeans.hint.deploy.server>gfv3ee6wc</netbeans.hint.deploy.server>
-    </properties>
 </project>

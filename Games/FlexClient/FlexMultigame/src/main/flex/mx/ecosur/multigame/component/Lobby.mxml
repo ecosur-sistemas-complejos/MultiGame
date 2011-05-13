@@ -25,11 +25,11 @@
         private var _player:Registrant;
 
         public var timer:Timer;
-			
-		// Force compilation of game objects to allow serialization of super classes
-	    // TODO: Change server side architecture so that lobby does not receive game specific subclasses
-		private var genteGame:GenteGame;
-		private var gentePlayer:GentePlayer;
+
+        // Force compilation of game objects to allow serialization of super classes
+        // TODO: Change server side architecture so that lobby does not receive game specific subclasses
+        private var genteGame:GenteGame;
+        private var gentePlayer:GentePlayer;
         private var strategyPlayer:StrategyPlayer;
         private var pasalePlayer:PasalePlayer;    
             
@@ -47,7 +47,7 @@
         }
 
         private function init():void { 
-            timer = new Timer(1000);
+            timer = new Timer(500);
             timer.addEventListener(TimerEvent.TIMER, timeout);
             timer.start();
         }
