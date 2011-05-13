@@ -24,7 +24,7 @@ import mx.ecosur.multigame.entity.GameGrid;
         }
 
         public function hasPathToWater (ficha:PasaleFicha):Boolean {
-            return getPathToWater(new ArrayCollection, new ArrayCollection, ficha).length > 0;
+            return isIndirectlyConnectedToWater(ficha,  getCross(ficha));
         }
 
         private function getSquare (ficha:PasaleFicha):ArrayCollection {

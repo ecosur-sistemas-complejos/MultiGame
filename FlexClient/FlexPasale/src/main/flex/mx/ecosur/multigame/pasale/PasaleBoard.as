@@ -21,8 +21,9 @@ package mx.ecosur.multigame.pasale {
     import flash.events.Event;
     import flash.events.MouseEvent;
     import flash.filters.GlowFilter;
-    import mx.controls.Alert;
-    import mx.ecosur.multigame.component.AbstractBoard;
+import flash.geom.Point;
+
+import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GameGrid;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
@@ -34,15 +35,14 @@ package mx.ecosur.multigame.pasale {
     import mx.ecosur.multigame.pasale.enum.UseType;
     import mx.effects.Sequence;
     import mx.events.DynamicEvent;
-    import mx.managers.PopUpManager;
+import mx.managers.CursorManager;
+import mx.managers.PopUpManager;
 
     public class PasaleBoard extends AbstractBoard {
 
         private static var DIMENSION:int = 21;
 
         protected var _pasalePlayer:PasalePlayer;
-
-        protected var _blinkAnim:Sequence;
 
         private var _alert:ColonizerAlert;
 
@@ -85,7 +85,8 @@ package mx.ecosur.multigame.pasale {
 
         public function PasaleBoard() {
             super();
-            _glow = new GlowFilter( 0xFF8000, 1, 6, 6, 64 ); 
+            _glow = new GlowFilter( 0xFF8000, 1, 6, 6, 64 );
+            _view = new IsoView();
         }
 
         public function get controller():PasaleGameController {
@@ -110,10 +111,9 @@ package mx.ecosur.multigame.pasale {
 
         public function set grid(value:GameGrid):void {
             _grid = PasaleGrid(value);
-            update();
+            init();
         }
 
-        [Bindable]
         public function get viewHeight():int {
             if (measuredHeight = 0)
                 measure();
@@ -125,7 +125,6 @@ package mx.ecosur.multigame.pasale {
             return _viewHeight;
         }
 
-        [Bindable]
         public function get viewWidth():int {
             if (measuredWidth = 0)
                 measure();
@@ -152,6 +151,7 @@ package mx.ecosur.multigame.pasale {
 
         public function panView (event:MouseEvent):void {
             if (pan) {
+                _view.mainContainer.useHandCursor = true;
                 _view.pan(lastX - event.stageX, lastY - event.stageY);
                 lastX = event.stageX;
                 lastY = event.stageY;
@@ -160,6 +160,7 @@ package mx.ecosur.multigame.pasale {
 
         public function stopPan (event:Event):void {
             pan = false;
+            _view.mainContainer.useHandCursor = false;
         }
 
         public function zoomView (event:MouseEvent):void {
@@ -172,32 +173,36 @@ package mx.ecosur.multigame.pasale {
 
 
         public function choose(event:ProxyEvent):void {
-            if (!pan && _controller.ready()) {
+             if (!pan && _controller.ready()) {
                 if (_alert != null) {
                     return;
                 }
 
                 /* Highlight the square if it's colonizable */
                 _box = PasaleBox(event.target);
+
                 if (_box.type == UseType.SOIL_PARTICLE || _box.type == UseType.WATER_PARTICLE)
                     return;
-                _box.container.filters = [ _glow ];
 
-                _alert = new ColonizerAlert();
+                if (hasPathToWater(_box)) {
+                    _box.container.filters = [ _glow ];
 
-                if (_box.type == UseType.FOREST || _box.type == UseType.UNDEVELOPED)
-                    _alert.dev = true;
-                else
-                    _alert.dev = false;
+                    _alert = new ColonizerAlert();
 
-                if (_controller.ready()) {
-                    _fill = _box.fill;
-                    _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
-                    _box.render();
-                    _alert.addEventListener("build", colonize);
-                    _alert.addEventListener("cancel", cancelAlert);
-                    PopUpManager.addPopUp(_alert, this, true);
-                    PopUpManager.centerPopUp(_alert);
+                    if (_box.type == UseType.FOREST || _box.type == UseType.UNDEVELOPED)
+                        _alert.dev = true;
+                    else
+                        _alert.dev = false;
+
+                    if (_controller.ready()) {
+                        _fill = _box.fill;
+                        _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
+                        _box.render();
+                        _alert.addEventListener("build", colonize);
+                        _alert.addEventListener("cancel", cancelAlert);
+                        PopUpManager.addPopUp(_alert, this, true);
+                        PopUpManager.centerPopUp(_alert);
+                    }
                 }
             }
         }
@@ -270,8 +275,68 @@ package mx.ecosur.multigame.pasale {
 
             grid.cells.removeItemAt(idx);
             grid.cells.addItemAt(destination, idx);
-            update();
+            init();
+            //animateMove(destination);
 
+        }
+
+        private function animateMove(ficha:PasaleFicha):void {
+            var box:PasaleBox = null;
+
+            for each (var b:PasaleBox in _scene.children) {
+                if (b.column == ficha.column && b.row == ficha.row) {
+                    box = b;
+                    break;
+                }
+            }
+
+            box = drawCell(box.column, box.row, currentPlayer.color, box.type);
+
+            /*
+            if (box != null) {
+                //define origin
+                var startPoint:Point;
+                var startSize:Number;
+                startPoint = new Point(0,0);
+                startPoint = localToGlobal(startPoint);
+                startPoint = globalToLocal(startPoint);
+
+                //define destination
+                var endPoint:Point = new Point(box.width / 2, box.height / 2);
+                endPoint = localToGlobal(endPoint);
+                endPoint = globalToLocal(endPoint);
+            }
+            */
+        }
+
+        public function countTokens ():Object {
+            var f:int = 0;
+            var p:int = 0;
+            var w:int = 0;
+            var s:int = 0;
+
+            for each (var cell:Object in grid.cells) {
+                var ficha:PasaleFicha = PasaleFicha(cell);
+                switch (ficha.type) {
+                    case UseType.FOREST:
+                        f++;
+                        break;
+                    case UseType.SOIL_PARTICLE:
+                        s++;
+                        break;
+                    case UseType.POTRERO:
+                        p++;
+                        break;
+                    case UseType.WATER_PARTICLE:
+                        w++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            var currentTime:Number = new Date().getSeconds();
+            return {Forest:f, Potrero:p, Water:w, Soil:s, Time:currentTime};
         }
 
         override protected function measure():void{
@@ -295,7 +360,6 @@ package mx.ecosur.multigame.pasale {
 
         override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
             findSize (viewWidth, viewHeight);
-            update();
         }
 
         public function get size():int {
@@ -312,53 +376,42 @@ package mx.ecosur.multigame.pasale {
         }
 
 
-        public function update ():void
+        public function init ():void
         {
-            if (_view) {
+            if (grid != null && grid.cells != null && grid.cells.length > 0) {
+
                 _view.removeAllScenes();
-            } else {
-                _view = new IsoView();
-                zoom = _view.currentZoom;
+                _scene = new IsoScene();
+
+                var pt:Pt = new Pt(width /2, height / 2);
+                IsoMath.screenToIso(pt);
+
+                var particle:int = size / 2;
+                var events:Boolean;
+
+                for (var i:int=0; i < _grid.cells.length; i++) {
+                    var cell:PasaleFicha = PasaleFicha (_grid.cells.getItemAt(i));
+                    var box:PasaleBox = drawCell (cell.column, cell.row, cell.color, cell.type);
+                    box.moveTo(box.column * size, box.row * size, height/3);
+                    _scene.addChild(box);
+                }
+                _view.setSize(viewWidth, viewHeight);
+                _view.addScene(_scene);
+                _view.showBorder = true;
+                _view.clipContent = true;
+                _view.zoom(0.65);
+                _scene.render();
+                _view.render();
+                addChild(_view);
+
                 addEventListener(MouseEvent.MOUSE_DOWN, startPan);
                 addEventListener(MouseEvent.MOUSE_UP, stopPan);
                 addEventListener(MouseEvent.MOUSE_MOVE, panView)
-                addEventListener(MouseEvent.MOUSE_WHEEL, zoomView);
-                addEventListener( Event.ENTER_FRAME, onRender, false, 0, true );                
+                //addEventListener(MouseEvent.MOUSE_WHEEL, zoomView);
+                addEventListener(Event.ENTER_FRAME, onRender, false, 0, true );
+
+                CursorManager.removeBusyCursor();
             }
-
-            if (grid == null)
-                return;
-
-            if (_scene == null) {
-                _scene = new IsoScene();
-            } else
-                _scene.removeAllChildren();
-
-            var pt:Pt = new Pt(width /2, height / 2);
-            IsoMath.screenToIso(pt);
-
-            var particle:int = size / 2;
-            var events:Boolean;
-
-            _scene.removeAllChildren();
-
-            for (var i:int=0; i < _grid.cells.length; i++) {
-                var cell:PasaleFicha = PasaleFicha (_grid.cells.getItemAt(i));
-                var box:PasaleBox = drawCell (cell.column, cell.row, cell.color, cell.type);
-                box.moveTo(box.column * size, box.row * size, height/3);
-                _scene.addChild(box);
-            }
-
-            _scene.render();
-
-            _view = new IsoView();
-            _view.setSize(viewWidth, viewHeight);
-            _view.addScene(_scene);
-            _view.showBorder = true;
-            _view.clipContent = true;
-            _view.render();
-
-            addChild(_view);
         }
 
         private function drawCell (column:int, row:int, color:String, type:String):PasaleBox {
@@ -373,10 +426,12 @@ package mx.ecosur.multigame.pasale {
                 case UseType.WATER_PARTICLE:
                     box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.48);
                     box.setSize(size,size, river);
+                    events = false;
                     break;
                 case UseType.SOIL_PARTICLE:
                     box.fill = new SolidColorFill(0xAA9C82, 0.78);
                     box.setSize(size,size, river);
+                    events = false;
                     break;
                 case UseType.FOREST:
                     box.fill = new SolidColorFill(0x2D3A28, 1);
@@ -391,7 +446,6 @@ package mx.ecosur.multigame.pasale {
                     events = true;
                     break;
                 default:
-                    Alert.show("Unknown type requested for a Cell: " + box.type);
                     break;
             }
 
@@ -406,7 +460,7 @@ package mx.ecosur.multigame.pasale {
 
         private function enterBox (event:ProxyEvent):void {
             var HLBox:PasaleBox = PasaleBox(event.target);
-            if (hasPathToWater(HLBox) && _controller.ready()) {
+            if (_controller.ready()) {
                 HLBox.container.filters = [ _glow ];
             }
         }

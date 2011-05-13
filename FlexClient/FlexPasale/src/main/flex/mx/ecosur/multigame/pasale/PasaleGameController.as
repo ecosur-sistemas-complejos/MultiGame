@@ -2,6 +2,7 @@ package mx.ecosur.multigame.pasale {
 
 import mx.collections.ArrayCollection;
 import mx.controls.Alert;
+import mx.ecosur.multigame.component.BoardCell;
 import mx.ecosur.multigame.entity.ChatMessage;
 import mx.ecosur.multigame.entity.GamePlayer;
 import mx.ecosur.multigame.enum.Color;
@@ -71,11 +72,8 @@ public class PasaleGameController {
 
             _ready = true;
 
-            // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-            var callPlayers:Object = _gameService.getPlayers(_gameId);
-            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
         }
 
         public function ready():Boolean {
@@ -113,7 +111,8 @@ public class PasaleGameController {
                     handleMove(move);
                     break;
                 case GameEvent.CONDITION_TRIGGERED:
-                    // fall through
+                    _gameWindow.board.grid = PasaleGrid(message.body);
+                    break;
                 case GameEvent.PLAYER_CHANGE:
                     var game:PasaleGame = PasaleGame(message.body);
                     updatePlayers(game.players);
@@ -129,6 +128,8 @@ public class PasaleGameController {
         private function handleMove(move:PasaleMove):void {
             _ready = true;
             _gameWindow.board.doMove(move);
+            _gameWindow.tokenGrid.addItem(_gameWindow.board.countTokens());
+            _gameWindow.tokenChart.invalidateDisplayList();
         }
 
         /*
