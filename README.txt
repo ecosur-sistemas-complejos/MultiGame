@@ -11,9 +11,10 @@ the EAR file is being deployed:
     b) "Transaction Support" set to "XATransaction"
 
 2.  A new JMS "destination resource" must be created with the following details:
-    a) "Name" set to "MultiGame"
-    b) "Resource Type" set to "javax.jms.Topic"
-    c) All other fields may remain in default state.
+    a) "JNDI Name" set to "MultiGame"
+    b) "Physical Destination Name" set to "MultiGame"
+    c) "Resource Type" set to "javax.jms.Topic"
+    d) All other fields may remain in default state.
 
 3.  Security
 
@@ -70,7 +71,8 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
  This project is internationalized in English and Spanish, so it requires access to
  the Spanish flex framework locale files.  
 
- Unfortunately flex mojos requires localized versions of the flashplayer core libraries. These must be imported from the us_US bundle.
+ Unfortunately flex mojos requires localized versions of the flashplayer core libraries. 
+ These must be imported from the us_US bundle.
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
 
@@ -109,19 +111,6 @@ FRAMEWORK RUNTIME SHARED LIBRARIES
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
 
   mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
-
-
-FLEXMOJOS FRAMEWORK LOCALIZATION
-
-  Unfortunately flex mojos requires localized versions of the flashplayer 
-  core libraries. These must be imported from the us_US bundle.
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
-
-  For more information:
-    http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
   All other dependencies are managed by means of Maven.
 
