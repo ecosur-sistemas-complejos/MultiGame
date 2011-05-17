@@ -123,7 +123,7 @@ when
     eval (isUnsupported (2, $ficha, $square, TokenType.SOIL_PARTICLE))
     eval ($grid.getLocation($ficha) != null)
 then
-    modify ($grid) { removeCell($ficha) }
+    modify ($grid) { removeCell($ficha) };
     messageSender.sendConditionTriggered($game, $event);
     retract ($event);
     ArrayList<MutationEvent> implications = findImplications ($grid, $square);

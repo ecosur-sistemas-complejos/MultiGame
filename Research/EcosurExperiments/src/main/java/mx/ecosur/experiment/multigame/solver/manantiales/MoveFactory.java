@@ -25,10 +25,9 @@ public class MoveFactory extends AbstractMoveFactory {
 
     private ColorMoveFactory colorFactory = new ColorMoveFactory();
 
-    @Override
     public List<Move> createMoveList(Solution sltn) {
-        List<Move> ret = rotateFactory.createMoveList(sltn);
-        ret.addAll(swapFactory.createMoveList(sltn));
+        List<Move> ret = swapFactory.createMoveList(sltn);
+        ret.addAll(rotateFactory.createMoveList(sltn));
         //ret.addAll(colorFactory.createMoveList(sltn));
         return ret;
     }

@@ -33,7 +33,7 @@
     </mx:Script>
     <mx:ArrayCollection id="devTypes">
         <mx:Object label="Potrero" data="POTRERO"/>
-        <!--mx:Object label="Silvopastoral" data="SILVOPASTORAL"/-->
+        <mx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
     </mx:ArrayCollection>
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:Text width="100%" text="{text}"/>

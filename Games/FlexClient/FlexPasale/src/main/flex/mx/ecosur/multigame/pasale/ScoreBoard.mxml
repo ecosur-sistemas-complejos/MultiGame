@@ -18,7 +18,6 @@
             removeAllChildren();
             for (var i:int = 0; i < _info.length; i++) {
                 var pInfo:PlayerInfo = PlayerInfo(_info.getItemAt(i));
-                var children:Array = getChildren();                
                 addChild(pInfo);
             }
         }

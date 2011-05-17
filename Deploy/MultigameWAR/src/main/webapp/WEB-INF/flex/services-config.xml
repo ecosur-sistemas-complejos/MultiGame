@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services-config>
+
     <services>
         <service-include file-path="remoting-config.xml" />
-        <service-include file-path="messaging-config.xml" />        
+        <service-include file-path="messaging-config.xml" />
     </services>
+
     <security>
         <login-command class="flex.messaging.security.TomcatLoginCommand" server="Tomcat"/>
     </security>
+
     <channels>
         <channel-definition id="my-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
@@ -17,34 +20,28 @@
                 </serialization>
             </properties>
         </channel-definition>
-
-        <channel-definition id="my-secure-amf" class="mx.messaging.channels.SecureAMFChannel">
-            <endpoint url="https://{server.name}:{server.port}/{context.root}/messagebroker/amfsecure" class="flex.messaging.endpoints.SecureAMFEndpoint"/>
-            <properties>
-                <add-no-cache-headers>false</add-no-cache-headers>
-            </properties>
-        </channel-definition>
-
         <channel-definition id="my-polling-amf" class="mx.messaging.channels.AMFChannel">
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amfpolling" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
                 <polling-enabled>true</polling-enabled>
-                <polling-interval-seconds>4</polling-interval-seconds>
+                <polling-interval-seconds>2</polling-interval-seconds>
             </properties>          
         </channel-definition>
     </channels>
 
     <logging>
-        <target class="flex.messaging.log.ConsoleTarget" level="Info">
+        <target class="flex.messaging.log.ConsoleTarget" level="Error">
             <properties>
-                <prefix>[FLEX] </prefix>
-                <includeDate>true</includeDate>
-                <includeTime>true</includeTime>
+                <prefix>[BlazeDS] </prefix>
+                <includeDate>false</includeDate>
+                <includeTime>false</includeTime>
                 <includeLevel>true</includeLevel>
-                <includeCategory>true</includeCategory>
+                <includeCategory>false</includeCategory>
             </properties>
             <filters>
-                <pattern>Message.*</pattern>
+                <pattern>Endpoint.*</pattern>
+                <!-- pattern>Service.*</pattern>
+                <pattern>Configuration</pattern-->
             </filters>
         </target>
     </logging>

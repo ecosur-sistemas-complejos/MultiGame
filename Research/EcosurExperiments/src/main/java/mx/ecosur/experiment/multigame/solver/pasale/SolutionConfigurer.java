@@ -6,6 +6,7 @@ import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.*;
 import org.drools.io.ResourceFactory;
 
 /**
@@ -42,7 +43,8 @@ public class SolutionConfigurer {
             throw new RuntimeException ("Unable to load rule base!");
         }
 
-        PasaleGame game = new PasaleGame(18,18, tablon);
+        PasaleGame game = new PasaleGame(18,18);
+        game.setKbase(tablon);
         game.setMessageSender(new DummyMessageSender());
 
 		GridRegistrant a, b, c, d;

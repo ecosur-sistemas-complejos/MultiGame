@@ -4,11 +4,13 @@ import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.impl.entity.pasale.*;
 import mx.ecosur.multigame.impl.enums.pasale.TokenType;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.enums.GameState;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.*;
 import org.drools.io.ResourceFactory;
 
 import java.util.*;
@@ -61,18 +63,18 @@ public class PasaleRetractionExperiment {
     }
 
     public void initialize () throws InvalidRegistrationException, Exception {
-        game = new PasaleGame(dimension, dimension, pasale);
+        game = new PasaleGame(dimension, dimension);
         game.setMessageSender (new DummyMessageSender());
         GridRegistrant a, b, c, d;
-		a = new GridRegistrant ("alice");
-		b = new GridRegistrant("bob");
-		c = new GridRegistrant ("charlie");
-		d = new GridRegistrant ("denise");
+        a = new GridRegistrant ("alice");
+        b = new GridRegistrant("bob");
+        c = new GridRegistrant ("charlie");
+        d = new GridRegistrant ("denise");
 
-		game.registerPlayer(a);
-		game.registerPlayer(b);
-		game.registerPlayer(c);
-		game.registerPlayer(d);
+        game.registerPlayer(a);
+        game.registerPlayer(b);
+        game.registerPlayer(c);
+        game.registerPlayer(d);
 
         retractions = 0;
         moves = 0;

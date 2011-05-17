@@ -7,10 +7,6 @@
 
 /**
  *
- * RuleFunctions.  A class that holds all of the
- * previous inline functions (as expressed previously
- * in Manantiales) in static methods for import into
- * the Oculto drl.
  *
  * @author awaterma@ecosur.mx
  */
@@ -28,6 +24,7 @@ public class MutationEvent implements Condition {
 
     SortedSet<PasaleFicha> square, octogon, cross;
     PasaleFicha ficha;
+    String reason;
 
     public MutationEvent() {
         square = new TreeSet<PasaleFicha>(new CellComparator());
@@ -80,7 +77,11 @@ public class MutationEvent implements Condition {
     }
 
     public String getReason() {
-        return "Mutation of " + ficha;
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public Object[] getTriggers() {

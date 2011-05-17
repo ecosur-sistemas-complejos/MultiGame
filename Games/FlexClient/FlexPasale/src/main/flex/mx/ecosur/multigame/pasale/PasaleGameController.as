@@ -9,6 +9,7 @@ import mx.ecosur.multigame.enum.Color;
 import mx.ecosur.multigame.enum.ExceptionType;
 import mx.ecosur.multigame.enum.GameEvent;
 import mx.ecosur.multigame.entity.pasale.PasaleGame;
+import mx.ecosur.multigame.enum.MoveStatus;
 import mx.ecosur.multigame.pasale.entity.PasaleGrid;
 import mx.ecosur.multigame.entity.pasale.PasaleMove;
 import mx.ecosur.multigame.entity.pasale.PasalePlayer;
@@ -70,10 +71,9 @@ public class PasaleGameController {
             _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
             _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
 
-            _ready = true;
-
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
+            _ready = true;
         }
 
         public function ready():Boolean {
@@ -111,7 +111,8 @@ public class PasaleGameController {
                     handleMove(move);
                     break;
                 case GameEvent.CONDITION_TRIGGERED:
-                    _gameWindow.board.grid = PasaleGrid(message.body);
+                    var me:MutationEvent = MutationEvent(message.body);
+                    handleMutation(me);
                     break;
                 case GameEvent.PLAYER_CHANGE:
                     var game:PasaleGame = PasaleGame(message.body);
@@ -121,15 +122,20 @@ public class PasaleGameController {
                     _ready = false;
                     break;
                 default:
-                    Alert.show(gameEvent);
+                    Alert.show("Unknown Event! [" + gameEvent + "]");
             }
+        }
+
+        private function handleMutation(event:MutationEvent):void {
+             _gameWindow.doMutation(event);
         }
 
         private function handleMove(move:PasaleMove):void {
             _ready = true;
-            _gameWindow.board.doMove(move);
-            _gameWindow.tokenGrid.addItem(_gameWindow.board.countTokens());
-            _gameWindow.tokenChart.invalidateDisplayList();
+            if (move.status = MoveStatus.EVALUATED)
+                _gameWindow.doMove(move);
+            else
+                Alert.show("Unhandled Move. Status:  " + move.status);
         }
 
         /*

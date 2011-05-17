@@ -52,7 +52,7 @@ public class ManantialesMatrixSolverExperiment {
     private static String asymmetricPath =
         "/mx/ecosur/experiment/multigame/solver/manantiales/data/distribution.xml";
     private static String csvPath =
-        "/mx/ecosur/experiment/multigame/solver/manantiales/data/lgb.csv";
+        "/mx/ecosur/experiment/multigame/solver/manantiales/data/matrices.csv";
 
     private XmlSolverConfigurer configurer;
     private Solution startingSolution;
@@ -62,7 +62,7 @@ public class ManantialesMatrixSolverExperiment {
         ManantialesMatrixSolverExperiment experiment = new ManantialesMatrixSolverExperiment();
         experiment.setUp();
         System.out.println ("Starting solver...");
-        experiment.testSolver();
+        experiment.testCSVMatrices();
         System.out.println ("Solution complete.");
     }
 
