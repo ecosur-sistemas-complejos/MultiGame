@@ -15,7 +15,9 @@
         import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.entity.Cell;
         import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.entity.Move;
         import mx.ecosur.multigame.entity.pasale.PasaleGame;
+        import mx.ecosur.multigame.entity.pasale.PasaleMove;
         import mx.ecosur.multigame.pasale.entity.PasaleFicha;
         import mx.ecosur.multigame.pasale.entity.PasaleGrid;
         import mx.ecosur.multigame.pasale.enum.UseType;
@@ -52,6 +54,16 @@
 
         public function dispatchCompletion():void {
             this.dispatchEvent(new Event("complete", true));
+        }
+
+        public function doMove(move:PasaleMove):void {
+            board.doMove(move);
+            tokenGrid.addItem(board.countTokens());
+            tokenChart.invalidateDisplayList();
+        }
+
+        public function doMutation(event:MutationEvent):void {
+            board.doMutation(event);
         }
 
         public function quitGame():void {
@@ -114,14 +126,20 @@
             <mx:UIComponent id="animateLayer"/>
         </mx:VBox>
         <mx:LineChart id="tokenChart"
-                dataProvider="{tokenGrid}"
-                showDataTips="true">
+                dataProvider="{tokenGrid}">
+            <mx:seriesFilters>
+                <mx:Array/>
+            </mx:seriesFilters>
             <mx:horizontalAxis>
                <mx:CategoryAxis
                     dataProvider="{tokenGrid}"
                     categoryField="time" />
             </mx:horizontalAxis>
             <mx:series>
+               <mx:LineSeries
+                   yField="Total"
+                   displayName="Total"
+                   />
                <mx:LineSeries
                     yField="Forest"
                     displayName="Forest" />
@@ -134,6 +152,9 @@
                <mx:LineSeries
                     yField="Potrero"
                     displayName="Potreros" />
+                <mx:LineSeries
+                    yField="Silvopastoral"
+                    displayName="Silvopastoral" />
             </mx:series>
         </mx:LineChart>
         <mx:Legend dataProvider="{tokenChart}"/>

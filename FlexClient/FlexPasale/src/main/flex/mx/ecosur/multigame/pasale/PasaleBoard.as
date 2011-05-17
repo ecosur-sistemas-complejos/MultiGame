@@ -13,7 +13,8 @@ package mx.ecosur.multigame.pasale {
 
     import as3isolib.display.IsoView;
     import as3isolib.display.scene.IsoScene;
-    import as3isolib.geom.IsoMath;
+import as3isolib.enum.RenderStyleType;
+import as3isolib.geom.IsoMath;
     import as3isolib.geom.Pt;
     import as3isolib.graphics.IFill;
     import as3isolib.graphics.SolidColorFill;
@@ -22,6 +23,8 @@ package mx.ecosur.multigame.pasale {
     import flash.events.MouseEvent;
     import flash.filters.GlowFilter;
 import flash.geom.Point;
+
+import mx.controls.Alert;
 
 import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.entity.GameGrid;
@@ -256,32 +259,28 @@ import mx.managers.PopUpManager;
             }
 
             _box = null;
+        }
 
-            /* render the move */
-            doMove(move);
+        public function doMutation(event:MutationEvent):void {
+            removeFicha(PasaleFicha (event.ficha));
         }
 
         public function doMove(move:PasaleMove):void {
-            var destination:PasaleFicha = PasaleFicha (move.destinationCell);
-            var idx:int = -1;
+            animateMove(move);
+        }
 
-            for (var i:int = 0; i < grid.cells.length; i++) {
-                var cell:PasaleFicha = PasaleFicha (grid.cells.getItemAt(i));
-                if (cell.column == destination.column && cell.row == destination.row) {
-                    idx = i;
+        private function removeFicha(ficha:PasaleFicha):void {
+            for each (var b:PasaleBox in _scene.children) {
+                if (b.column == ficha.column && b.row == ficha.row) {
+                    _scene.removeChildByID(b.id);
                     break;
                 }
             }
-
-            grid.cells.removeItemAt(idx);
-            grid.cells.addItemAt(destination, idx);
-            init();
-            //animateMove(destination);
-
         }
 
-        private function animateMove(ficha:PasaleFicha):void {
+        private function animateMove(move:PasaleMove):void {
             var box:PasaleBox = null;
+            var ficha:PasaleFicha = PasaleFicha(move.destinationCell);
 
             for each (var b:PasaleBox in _scene.children) {
                 if (b.column == ficha.column && b.row == ficha.row) {
@@ -290,30 +289,25 @@ import mx.managers.PopUpManager;
                 }
             }
 
-            box = drawCell(box.column, box.row, currentPlayer.color, box.type);
-
-            /*
             if (box != null) {
-                //define origin
-                var startPoint:Point;
-                var startSize:Number;
-                startPoint = new Point(0,0);
-                startPoint = localToGlobal(startPoint);
-                startPoint = globalToLocal(startPoint);
+                box.fill = new SolidColorFill(Color.getColorCode(move.player.color), 1);
 
-                //define destination
-                var endPoint:Point = new Point(box.width / 2, box.height / 2);
-                endPoint = localToGlobal(endPoint);
-                endPoint = globalToLocal(endPoint);
+                if (ficha.type == UseType.SILVOPASTORAL)
+                    var mainColor:SolidColorFill, compliment:SolidColorFill;
+                    mainColor = new SolidColorFill(Color.getColorCode(move.player.color), 1);
+                    compliment = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                    box.fills = [compliment, compliment,  compliment,  mainColor,  mainColor,  compliment];
+                box.render();
             }
-            */
         }
 
         public function countTokens ():Object {
             var f:int = 0;
+            var s:int = 0;
             var p:int = 0;
             var w:int = 0;
             var s:int = 0;
+            var t:int = 0;
 
             for each (var cell:Object in grid.cells) {
                 var ficha:PasaleFicha = PasaleFicha(cell);
@@ -327,6 +321,9 @@ import mx.managers.PopUpManager;
                     case UseType.POTRERO:
                         p++;
                         break;
+                    case UseType.SILVOPASTORAL:
+                        s++;
+                        break;
                     case UseType.WATER_PARTICLE:
                         w++;
                         break;
@@ -336,7 +333,9 @@ import mx.managers.PopUpManager;
             }
 
             var currentTime:Number = new Date().getSeconds();
-            return {Forest:f, Potrero:p, Water:w, Soil:s, Time:currentTime};
+            t = f + p + w + s;
+
+            return {Total: t,  Forest:f, Silvopastoral: s, Potrero:p, Water:w, Soil:s, Time:currentTime};
         }
 
         override protected function measure():void{
@@ -378,9 +377,10 @@ import mx.managers.PopUpManager;
 
         public function init ():void
         {
-            if (grid != null && grid.cells != null && grid.cells.length > 0) {
-
-                _view.removeAllScenes();
+            if (grid != null && grid.cells != null && grid.cells.length > 0)
+            {
+                if (_scene != null)
+                    _view.removeAllScenes();
                 _scene = new IsoScene();
 
                 var pt:Pt = new Pt(width /2, height / 2);
@@ -395,6 +395,7 @@ import mx.managers.PopUpManager;
                     box.moveTo(box.column * size, box.row * size, height/3);
                     _scene.addChild(box);
                 }
+
                 _view.setSize(viewWidth, viewHeight);
                 _view.addScene(_scene);
                 _view.showBorder = true;
@@ -407,7 +408,6 @@ import mx.managers.PopUpManager;
                 addEventListener(MouseEvent.MOUSE_DOWN, startPan);
                 addEventListener(MouseEvent.MOUSE_UP, stopPan);
                 addEventListener(MouseEvent.MOUSE_MOVE, panView)
-                //addEventListener(MouseEvent.MOUSE_WHEEL, zoomView);
                 addEventListener(Event.ENTER_FRAME, onRender, false, 0, true );
 
                 CursorManager.removeBusyCursor();
@@ -442,7 +442,11 @@ import mx.managers.PopUpManager;
                     events = true;
                     break;
                 case UseType.SILVOPASTORAL:
-                    box.fill = new SolidColorFill(Color.getColorCode(color), 0.5);
+                    box.styleType = RenderStyleType.SHADED;
+                    var mainColor:SolidColorFill, compliment:SolidColorFill;
+                    mainColor = new SolidColorFill(Color.getColorCode(color), 1);
+                    compliment = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+                    box.fills = [mainColor, compliment,  mainColor,  compliment,  mainColor,  compliment];
                     events = true;
                     break;
                 default:
