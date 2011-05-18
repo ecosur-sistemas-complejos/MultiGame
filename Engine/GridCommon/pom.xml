@@ -84,11 +84,23 @@
             <groupId>org.drools</groupId>
             <artifactId>drools-api</artifactId>
             <version>${drools.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
-            <version>3.3.1.GA</version>
+            <version>${hibernate-version}</version>
+            <!--scope>provided</scope-->
+            <exclusions>
+                <exclusion>
+                  <groupId>org.antlr</groupId>
+                  <artifactId>antlr</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>org.antlr</groupId>
+                  <artifactId>antlr-runtime</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

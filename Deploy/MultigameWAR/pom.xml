@@ -13,6 +13,12 @@
     </parent>
    <dependencies>
     <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${hibernate-version}</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-ds</artifactId>
         <version>${project.version}</version>

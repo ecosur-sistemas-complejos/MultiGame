@@ -39,27 +39,27 @@
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>multi-game-common</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>grid-common</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>gente</artifactId>
-        <version>${version}</version>
+        <version>${project.version}</version>
     </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>manantiales</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>mx.ecosur</groupId>
             <artifactId>pasale</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
