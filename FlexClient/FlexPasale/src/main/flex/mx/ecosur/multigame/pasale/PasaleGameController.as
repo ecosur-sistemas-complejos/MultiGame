@@ -33,8 +33,6 @@ public class PasaleGameController {
         public var _game:PasaleGame;
 
         public var _executingMove:PasaleMove;
-        public var _ready:Boolean;
-
 
         private var _gameId:int;
 
@@ -73,14 +71,9 @@ public class PasaleGameController {
 
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-            _ready = true;
         }
 
-        public function ready():Boolean {
-            return _ready;
-        }
-
-        public function sendMove (move:PasaleMove):void {            
+        public function sendMove (move:PasaleMove):void {
             var call:Object = _gameService.doMove(_game, move);
             call.operation = "doMove";
             _executingMove = move;
@@ -119,7 +112,6 @@ public class PasaleGameController {
                     updatePlayers(game.players);
                     var callGrid:Object = _gameService.getGameGrid(_gameId);
                     callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-                    _ready = false;
                     break;
                 default:
                     Alert.show("Unknown Event! [" + gameEvent + "]");
@@ -131,7 +123,6 @@ public class PasaleGameController {
         }
 
         private function handleMove(move:PasaleMove):void {
-            _ready = true;
             if (move.status = MoveStatus.EVALUATED)
                 _gameWindow.doMove(move);
             else
@@ -180,7 +171,6 @@ public class PasaleGameController {
 
         private function initGrid(grid:PasaleGrid):void {
             _gameWindow.board.grid = grid;
-            _ready = true;
         }
 
         private function updatePlayers(players:ArrayCollection):void {

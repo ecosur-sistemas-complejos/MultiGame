@@ -11,37 +11,37 @@
 
 package mx.ecosur.multigame.pasale {
 
-    import as3isolib.display.IsoView;
-    import as3isolib.display.scene.IsoScene;
+import as3isolib.display.IsoView;
+import as3isolib.display.scene.IsoScene;
 import as3isolib.enum.RenderStyleType;
 import as3isolib.geom.IsoMath;
-    import as3isolib.geom.Pt;
-    import as3isolib.graphics.IFill;
-    import as3isolib.graphics.SolidColorFill;
-    import eDpLib.events.ProxyEvent;
-    import flash.events.Event;
-    import flash.events.MouseEvent;
-    import flash.filters.GlowFilter;
-import flash.geom.Point;
+import as3isolib.geom.Pt;
+import as3isolib.graphics.IFill;
+import as3isolib.graphics.SolidColorFill;
 
-import mx.controls.Alert;
+import eDpLib.events.ProxyEvent;
+
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.filters.GlowFilter;
 
 import mx.ecosur.multigame.component.AbstractBoard;
-    import mx.ecosur.multigame.entity.GameGrid;
-    import mx.ecosur.multigame.entity.GamePlayer;
-    import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.pasale.entity.PasaleFicha;
-    import mx.ecosur.multigame.pasale.entity.PasaleGrid;
-    import mx.ecosur.multigame.entity.pasale.PasaleMove;
-    import mx.ecosur.multigame.entity.pasale.PasalePlayer;
-    import mx.ecosur.multigame.pasale.enum.UseType;
-    import mx.effects.Sequence;
-    import mx.events.DynamicEvent;
+import mx.ecosur.multigame.entity.Game;
+import mx.ecosur.multigame.entity.GameGrid;
+import mx.ecosur.multigame.entity.GamePlayer;
+import mx.ecosur.multigame.entity.manantiales.Ficha;
+import mx.ecosur.multigame.entity.pasale.PasaleMove;
+import mx.ecosur.multigame.entity.pasale.PasalePlayer;
+import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.enum.MoveStatus;
+import mx.ecosur.multigame.pasale.entity.PasaleFicha;
+import mx.ecosur.multigame.pasale.entity.PasaleGrid;
+import mx.ecosur.multigame.pasale.enum.UseType;
+import mx.events.DynamicEvent;
 import mx.managers.CursorManager;
 import mx.managers.PopUpManager;
 
-    public class PasaleBoard extends AbstractBoard {
+public class PasaleBoard extends AbstractBoard {
 
         private static var DIMENSION:int = 21;
 
@@ -176,7 +176,7 @@ import mx.managers.PopUpManager;
 
 
         public function choose(event:ProxyEvent):void {
-             if (!pan && _controller.ready()) {
+             if (!pan ) {
                 if (_alert != null) {
                     return;
                 }
@@ -187,26 +187,21 @@ import mx.managers.PopUpManager;
                 if (_box.type == UseType.SOIL_PARTICLE || _box.type == UseType.WATER_PARTICLE)
                     return;
 
-                if (hasPathToWater(_box)) {
-                    _box.container.filters = [ _glow ];
+                _box.container.filters = [ _glow ];
+                _alert = new ColonizerAlert();
 
-                    _alert = new ColonizerAlert();
+                if (_box.type == UseType.FOREST || _box.type == UseType.UNDEVELOPED)
+                    _alert.dev = true;
+                else
+                    _alert.dev = false;
 
-                    if (_box.type == UseType.FOREST || _box.type == UseType.UNDEVELOPED)
-                        _alert.dev = true;
-                    else
-                        _alert.dev = false;
-
-                    if (_controller.ready()) {
-                        _fill = _box.fill;
-                        _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
-                        _box.render();
-                        _alert.addEventListener("build", colonize);
-                        _alert.addEventListener("cancel", cancelAlert);
-                        PopUpManager.addPopUp(_alert, this, true);
-                        PopUpManager.centerPopUp(_alert);
-                    }
-                }
+                _fill = _box.fill;
+                _box.fill = new SolidColorFill(Color.getColorCode(currentPlayer.color), 0.2);
+                _box.render();
+                _alert.addEventListener("build", colonize);
+                _alert.addEventListener("cancel", cancelAlert);
+                PopUpManager.addPopUp(_alert, this, true);
+                PopUpManager.centerPopUp(_alert);
             }
         }
 
@@ -266,22 +261,45 @@ import mx.managers.PopUpManager;
         }
 
         public function doMove(move:PasaleMove):void {
-            animateMove(move);
+            if (move.status == MoveStatus.EVALUATED) {
+                var ficha:PasaleFicha = PasaleFicha(move.destinationCell);
+                animateMove(ficha, move.player.color);
+            } else {
+                var ficha:PasaleFicha = PasaleFicha(move.currentCell);
+                animateMove(ficha, ficha.color);
+            }
         }
 
         private function removeFicha(ficha:PasaleFicha):void {
+            /* Remove the box */
             for each (var b:PasaleBox in _scene.children) {
                 if (b.column == ficha.column && b.row == ficha.row) {
                     _scene.removeChildByID(b.id);
                     break;
                 }
             }
+
+            /* Remove the cell, if there */
+            for (var i:int = 0; i < grid.cells.length; i++) {
+                var f:PasaleFicha = PasaleFicha (grid.cells.getItemAt(i));
+                if (f.column == ficha.column && f.row == ficha.row) {
+                    grid.cells.removeItemAt(i);
+                    break;
+                }
+            }
         }
 
-        private function animateMove(move:PasaleMove):void {
-            var box:PasaleBox = null;
-            var ficha:PasaleFicha = PasaleFicha(move.destinationCell);
 
+        private function silvofills(cColor:String):Array {
+            /* Configuration for doing fills for Silvopastoral */
+            var mainColor:SolidColorFill, compliment:SolidColorFill;
+            mainColor = new SolidColorFill(Color.getColorCode(cColor), 1);
+            compliment = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
+            return [compliment,  mainColor, mainColor,  mainColor,  mainColor,  mainColor];
+        }
+
+        private function animateMove(ficha:PasaleFicha, color:String) {
+            var box:PasaleBox = null;
             for each (var b:PasaleBox in _scene.children) {
                 if (b.column == ficha.column && b.row == ficha.row) {
                     box = b;
@@ -290,13 +308,27 @@ import mx.managers.PopUpManager;
             }
 
             if (box != null) {
-                box.fill = new SolidColorFill(Color.getColorCode(move.player.color), 1);
+                switch (ficha.type) {
+                    case UseType.WATER_PARTICLE:
+                        box.fill = new SolidColorFill(Color.getColorCode(Color.BLUE), 0.48);
+                        box.setSize(size,size, river);
+                        break;
+                    case UseType.SOIL_PARTICLE:
+                        box.fill = new SolidColorFill(0xAA9C82, 0.78);
+                        box.setSize(size,size, river);
+                        break;
+                    case UseType.FOREST:
+                        box.fill = new SolidColorFill(0x2D3A28, 1);
+                        break;
+                    case UseType.POTRERO:
+                        box.fill = new SolidColorFill(Color.getColorCode(color), 1);
+                        break;
+                    case UseType.SILVOPASTORAL:
+                        box.styleType = RenderStyleType.SHADED;
+                        box.fills = silvofills(color);
+                        break;
+                }
 
-                if (ficha.type == UseType.SILVOPASTORAL)
-                    var mainColor:SolidColorFill, compliment:SolidColorFill;
-                    mainColor = new SolidColorFill(Color.getColorCode(move.player.color), 1);
-                    compliment = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                    box.fills = [compliment, compliment,  compliment,  mainColor,  mainColor,  compliment];
                 box.render();
             }
         }
@@ -410,6 +442,7 @@ import mx.managers.PopUpManager;
                 addEventListener(MouseEvent.MOUSE_MOVE, panView)
                 addEventListener(Event.ENTER_FRAME, onRender, false, 0, true );
 
+                countTokens();
                 CursorManager.removeBusyCursor();
             }
         }
@@ -443,10 +476,7 @@ import mx.managers.PopUpManager;
                     break;
                 case UseType.SILVOPASTORAL:
                     box.styleType = RenderStyleType.SHADED;
-                    var mainColor:SolidColorFill, compliment:SolidColorFill;
-                    mainColor = new SolidColorFill(Color.getColorCode(color), 1);
-                    compliment = new SolidColorFill(Color.getColorCode(Color.GREEN), 1);
-                    box.fills = [mainColor, compliment,  mainColor,  compliment,  mainColor,  compliment];
+                    box.fills = silvofills(color);
                     events = true;
                     break;
                 default:
@@ -464,18 +494,12 @@ import mx.managers.PopUpManager;
 
         private function enterBox (event:ProxyEvent):void {
             var HLBox:PasaleBox = PasaleBox(event.target);
-            if (_controller.ready()) {
-                HLBox.container.filters = [ _glow ];
-            }
+            HLBox.container.filters = [ _glow ];
         }
 
         private function exitBox (event:ProxyEvent):void {
             var HLBox:PasaleBox = PasaleBox(event.target);
             HLBox.container.filters = null;
-        }
-
-        private function hasPathToWater (box:PasaleBox):Boolean {
-            return _grid.hasPathToWater(_grid.getLocation(box.column, box.row));
         }
 
         private function onRender(event:Event):void
