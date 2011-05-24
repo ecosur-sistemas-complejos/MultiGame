@@ -18,8 +18,7 @@
         <classifier>10</classifier>
         <flex-version>4.1.0.16076</flex-version>
         <flexmojos-version>3.8</flexmojos-version>
-
-        <servicesConfig>${basedir}/../../../Deploy/MultigameWAR/src/main/webapp/WEB-INF/flex/services-config.xml</servicesConfig>
+        <servicesConfig>${basedir}/../../../Deploy/EcosurWAR/src/main/webapp/WEB-INF/flex/services-config.xml</servicesConfig>
     </properties>
     <profiles>
         <profile>
