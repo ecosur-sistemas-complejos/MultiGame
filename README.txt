@@ -40,26 +40,55 @@ In order to get the master project working, please read the following instructio
 	[http://book.git-scm.com/5_submodules.html]
 
 NOTE: this process will only work if you have access to the downstream submodules.  
+Access is currently reserved only for project committers (this should change quickly,
+as I am in the process of modifying our source code to seperate out unpublished games
+and techniques).
 
-Access is currently reserved for project committers.
+
+JBOSS AS6 CONFIGURATION
+
+1. Persistence.xml.
+
+   Hibernate is the default provider for JBoss, but Derby is not the default
+   database. Users can install derby on the target system, or simply use the
+   configured hibernate dialect to work with the default JBoss database (hsql):
+
+   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+
+   The datasource name may need to be changed.  Be sure to examine that the
+   local persistence.xml file points to the correct datasource, "java:DefaultDS"
+   for JBoss.
+
+2. Local users and roles.  The file "jbossws-users.properties" controls user access to
+   the server as part of the local file domain.  Please edit this file to contain the
+   users and passwords that you wish to authenticate.  The file "jbossws-roles.properties"
+   must be modified to contain the username + "=" and the group "admin" for all users
+   created in the jbossws-users.properties file that need access to multi-game.
 
 GLASSFISH 3.1 CONFIGURATION
 
 The following configuration changes must be made on the Glassfish server to which
 the EAR file is being deployed:
 
-1.  A JMS connection factory must be created with the following details:
+
+1.  Persistence.xml.
+
+    Hibernate must be configured as the provider in the persistence.xml file; please
+    check that the "<provider>" tag is uncommented.  In addition, the correct datasource
+    name must be specified.  For Glassfish, this should be:  "jdbc/__default".
+
+2.  A JMS connection factory must be created with the following details:
     a) "Name" set to "ConnectionFactory"
     b) "Resource Type" set to "java.jmx.TopicConnectionFactory"
     b) "Transaction Support" set to "XATransaction"
 
-2.  A new JMS "destination resource" must be created with the following details:
+3.  A new JMS "destination resource" must be created with the following details:
     a) "JNDI Name" set to "MultiGame"
     b) "Physical Destination Name" set to "MultiGame"
     c) "Resource Type" set to "javax.jms.Topic"
     d) All other fields may remain in default state.
 
-3.  Security
+4.  Security
 
     A.  The "Default Principal to role mapping" option must be checked on the security
         configuration screen.
@@ -79,7 +108,7 @@ the EAR file is being deployed:
     message bean to be able to receive messages and message other secured EJB
     components.
 
-4.  Hibernate
+5.  Hibernate
 
     This version of MultiGame uses Hibernate as a persistence provider. In order to
     use Hibernate on Glassfish, you need to install it via the "Update Tool" provided
@@ -87,26 +116,6 @@ the EAR file is being deployed:
     from the available frameworks and click on install.
 
     Restart the server to make hibernate available for the application.
-
-
-JBOSS AS6 CONFIGURATION
-
-1. Hibernate is the default provider for JBoss, but Derby is not the default
-   database. Users can install derby on the target system, or simply change the
-   hibernate dialect to work with the default JBoss database (hsql):  
-
-   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-
-2. Users must modify the persistence.xml file to use the "java:" + jndi naming
-   convention that the JBoss server uses for finding the local datasource.  The
-   datasource name must be one mapped within JBoss, which can be modified by
-   changing value of the "jndi-name" in hsqldb-ds.xml (or your Derby configuration
-   file).
-
-3. HornetQ. A "j2ee" user in the "admin" group must be created for MDB authentication.
-   The connection factory, "ConnectionFactory" must be configured for publishing to the
-   Topic "MultiGame" as described above.  The ConnectionFactory must be configured to
-   participate in XATransactions within the application server.
 
 
 FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
