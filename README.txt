@@ -158,20 +158,6 @@ FRAMEWORK RUNTIME SHARED LIBRARIES
   All other dependencies are managed by means of Maven.
 
 
-MAVEN CONFIGURATION
- 
-  This prototype requires the following environmental changes be made, before being
-  built and deployed.
-
-  The environmental property "GLASSFISH_HOME" must be set by the builder to
-  point to the top-level directory of glassfish-v2.1.
-
-  For example, in BASH, you would do the following:
-
-  export GLASSFISH_HOME=/home/myuser/glassfish
-
-
-
 **** IMPORTANT ****
  
  Before deployment, the local Glassfish Derby database must be up and running:
