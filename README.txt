@@ -9,35 +9,36 @@ and will allow us to publish our finished games and research more quickly.
 
 In order to get the master project working, please read the following instructions:
  
-        Pulling down the submodules is a two-step process. First run git submodule
-	init to add the submodule repository URLs to .git/config:
+    Pulling down the submodules is a two-step process. First run git submodule
+    init to add the submodule repository URLs to .git/config:
 
-	$ git submodule init
-	Now use git-submodule update to clone the repositories and check out the commits 
-	specified in the superproject:
+    $ git submodule init
+    Now use git-submodule update to clone the repositories and check out the commits
+    specified in the superproject:
 
-	$ git submodule update
-	$ cd a
-	$ ls -a
-	.  ..  .git  a.txt
-	
-	One major difference between git-submodule update and git-submodule add is that 
-	git-submodule update checks out a specific commit, rather than the tip of a branch. 
-	It's like checking out a tag: the head is detached, so you're not working on a branch.
+    $ git submodule update
+    $ cd a
+    $ ls -a
+    .  ..  .git  a.txt
 
-	$ git branch
-	* (no branch)
-	master
+    One major difference between git-submodule update and git-submodule add is that
+    git-submodule update checks out a specific commit, rather than the tip of a
+    branch. It's like checking out a tag: the head is detached, so you're not working
+    on a branch.
 
-	If you want to make a change within a submodule and you have a detached head, then you 
-	should create or checkout a branch, make your changes, publish the change within the submodule, 
-	and then update the superproject to reference the new commit:
+    $ git branch
+    * (no branch)
+    master
 
-	$ git checkout master
-	or
+    If you want to make a change within a submodule and you have a detached head, then
+    you should create or checkout a branch, make your changes, publish the change within
+    the submodule, and then update the superproject to reference the new commit:
 
-	$ git checkout -b fix-up
-	[http://book.git-scm.com/5_submodules.html]
+    $ git checkout master
+    or
+
+    $ git checkout -b fix-up
+    [http://book.git-scm.com/5_submodules.html]
 
 NOTE: this process will only work if you have access to the downstream submodules.  
 Access is currently reserved only for project committers (this should change quickly,
@@ -73,9 +74,19 @@ the EAR file is being deployed:
 
 1.  Persistence.xml.
 
-    Hibernate must be configured as the provider in the persistence.xml file; please
-    check that the "<provider>" tag is uncommented.  In addition, the correct datasource
-    name must be specified.  For Glassfish, this should be:  "jdbc/__default".
+    Hibernate must be configured as the provider in the persistence.xml file.
+    In addition, the correct datasource name must be specified. Please make the following
+    modifications.  From:
+
+        <!--provider>org.hibernate.ejb.HibernatePersistence</provider-->
+        <!--jta-data-source>jdbc/__default</jta-data-source-->
+        <jta-data-source>java:DefaultDS</jta-data-source>
+
+    To:
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jdbc/__default</jta-data-source>
+        <!--jta-data-source>java:DefaultDS</jta-data-source-->
 
 2.  A JMS connection factory must be created with the following details:
     a) "Name" set to "ConnectionFactory"
@@ -110,12 +121,20 @@ the EAR file is being deployed:
 
 5.  Hibernate
 
-    This version of MultiGame uses Hibernate as a persistence provider. In order to
-    use Hibernate on Glassfish, you need to install it via the "Update Tool" provided
-    on the bottom-left hand side of the Admin screen.  Select and check "hibernate"
-    from the available frameworks and click on install.
+    We use non-jpa specific Hibernate annotations in the internal ordering of several
+    entity collections, and therefore, must use hibernate as a persistence provider.
+    To deploy on Glassfish, you will need to install and enable it via the "Update Tool"
+    provided on the bottom-left hand side of the Admin screen.  Select and check "hibernate"
+    from the available frameworks and click install.
 
-    Restart the server to make hibernate available for the application.
+    You will need to restart the server to make hibernate available for the application.
+
+6.  Database.
+
+    **** IMPORTANT ****
+    Before deployment, the local Glassfish Derby database must be up and running:
+
+    %> asadmin start-database
 
 
 FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
@@ -126,9 +145,13 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
  Unfortunately flex mojos requires localized versions of the flashplayer core libraries. 
  These must be imported from the us_US bundle.
 
- mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
+ mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration
+     -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
+     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
 
- mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
+ mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal
+    -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
 
  For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
@@ -145,30 +168,36 @@ FLEX CONFIGURATION
 
   Use the maven install plugin to install the dependency locally:
 
-  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc -Dfile=as3isolib.v1.core.swc
+  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc
+    -Dfile=as3isolib.v1.core.swc
 
 
 FRAMEWORK RUNTIME SHARED LIBRARIES
 
-  This project uses signed framework libraries distributed by adobe and not present in public repositories for legal reasons.
+  This project uses signed framework libraries distributed by adobe and not present
+  in public repositories for legal reasons.
 
   These must be imported into your local repository
 
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=textLayout -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/textLayout_1.1.0.604.swz  
+  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=textLayout
+    -Dversion=4.1.0.16076 -Dpackaging=swz
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/textLayout_1.1.0.604.swz
 
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=framework -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/framework_1.1.0.604.swz
+  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=framework
+    -Dversion=4.1.0.16076 -Dpackaging=swz
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/framework_1.1.0.604.swz
 
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=spark -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/spark_1.1.0.604.swz
+  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=spark
+    -Dversion=4.1.0.16076 -Dpackaging=swz
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/spark_1.1.0.604.swz
 
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
+  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins
+    -Dversion=4.1.0.16076 -Dpackaging=swz
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
 
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc -Dversion=4.1.0.16076 -Dpackaging=swz -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
+  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc
+    -Dversion=4.1.0.16076 -Dpackaging=swz
+    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
   All other dependencies are managed by means of Maven.
 
-
-**** IMPORTANT ****
- 
- Before deployment, the local Glassfish Derby database must be up and running:
- 
- %> asadmin start-database
