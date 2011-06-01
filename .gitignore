@@ -6,3 +6,7 @@
 /.DS_Store
 /FlexClient/.DS_Store
 /Pasale/audit.log
+/FlexDS/target/
+/Gente/target/
+/Manantiales/target/
+/Pasale/target/

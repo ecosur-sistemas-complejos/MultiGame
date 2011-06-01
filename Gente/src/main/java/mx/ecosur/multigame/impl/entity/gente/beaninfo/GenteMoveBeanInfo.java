@@ -37,14 +37,11 @@ public class GenteMoveBeanInfo extends SimpleBeanInfo {
         try {
             trias = new PropertyDescriptor ("trias", HashSet.class);
             tesseras = new PropertyDescriptor ("tesseras", HashSet.class);
-            teamColors = new PropertyDescriptor ("teamColors", ArrayList.class);
-            searchCount = new PropertyDescriptor ("searchCount", Integer.class);
-            qualifier = new PropertyDescriptor ("qualifier", String.class);
         } catch (IntrospectionException e) {
             e.printStackTrace();
         }
 
-        return new PropertyDescriptor[] { trias, tesseras, teamColors, searchCount, qualifier };
+        return new PropertyDescriptor[] { trias, tesseras };
     }
 
 }

@@ -136,10 +136,6 @@ public class GameService {
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
                     Color preferredColor)
     {
-        
-        if (registrant == null)
-            registrant = registerPrincipal();
-
         ServiceGameEvent ret = null;
         RegistrarRemote registrar = getRegistrar();
         try {
