@@ -89,7 +89,7 @@ the EAR file is being deployed:
         <!--jta-data-source>java:DefaultDS</jta-data-source-->
 
 2.  A JMS connection factory must be created with the following details:
-    a) "Name" set to "ConnectionFactory"
+    a) "Name" set to "XAConnectionFactory"
     b) "Resource Type" set to "java.jmx.TopicConnectionFactory"
     b) "Transaction Support" set to "XATransaction"
 
