@@ -57,7 +57,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         /* Set up mock JMS destination for message sender */
         ejbModule = createEJBTestModule();
-        ejbModule.bindToContext("ConnectionFactory",
+        ejbModule.bindToContext("XAConnectionFactory",
                 getJMSMockObjectFactory().getMockTopicConnectionFactory());
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);
@@ -75,13 +75,13 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
         for (GridPlayer player : game.getPlayers()) {
-            if (player.getRegistrant().getName().equals("alice")) {
+            if (player.getName().equals("alice")) {
                     alice = (ManantialesPlayer) player;
-            } else if (player.getRegistrant().getName().equals("bob")) {
+            } else if (player.getName().equals("bob")) {
                     bob = (ManantialesPlayer) player;
-            } else if (player.getRegistrant().getName().equals("charlie")) {
+            } else if (player.getName().equals("charlie")) {
                     charlie = (ManantialesPlayer) player;
-            } else if (player.getRegistrant().getName().equals("denise")) {
+            } else if (player.getName().equals("denise")) {
                     denise = (ManantialesPlayer)player;
             }
         }
@@ -99,11 +99,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         Collection<GridPlayer> players = game.getPlayers();
         GridPlayer p = null;
         for (GridPlayer player : players) {
-                if (player.getRegistrant().getName().equals("alice"))
+                if (player.getName().equals("alice"))
                         p = player;
         }
         assertNotNull (p);
-        assertEquals ("alice", p.getRegistrant().getName());
+        assertEquals ("alice", p.getName());
         assertEquals (true, p.isTurn());
     }
         

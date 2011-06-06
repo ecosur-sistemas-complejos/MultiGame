@@ -117,7 +117,7 @@ package mx.ecosur.multigame.manantiales
                         if (info.manantialesPlayer.id == manPlayer.id) {
                             // Create button header if required
                             btn = getHeaderAt(j);
-                            label = manPlayer.registrant.name;
+                            label = manPlayer.name;
                             btn.label = label;
                             btn.setStyle("paddingBottom", 5);
                             btn.setStyle("paddingTop", 5);

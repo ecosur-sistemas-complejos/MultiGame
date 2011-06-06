@@ -11,7 +11,6 @@
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 import java.net.MalformedURLException;
@@ -63,14 +62,14 @@ public class GenteRulesTest extends GenteTestBase {
         Collection<GridPlayer> players = game.getPlayers();
         GentePlayer p = null;
         for (GridPlayer player : players) {
-            if (player.getRegistrant().getName().equals("alice")) {
+            if (player.getName().equals("alice")) {
                 p = (GentePlayer) player;
                 break;
             }
         }
 
         assertNotNull (p);
-        assertEquals ("alice", p.getRegistrant().getName());
+        assertEquals ("alice", p.getName());
         assertEquals (true, p.isTurn());
     }
 

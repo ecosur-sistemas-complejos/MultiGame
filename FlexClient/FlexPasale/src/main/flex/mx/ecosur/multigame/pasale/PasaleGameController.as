@@ -123,7 +123,7 @@ public class PasaleGameController {
         }
 
         private function handleMove(move:PasaleMove):void {
-            if (move.status = MoveStatus.EVALUATED)
+            if (move.status == MoveStatus.EVALUATED)
                 _gameWindow.doMove(move);
             else
                 Alert.show("Unhandled Move. Status:  " + move.status);

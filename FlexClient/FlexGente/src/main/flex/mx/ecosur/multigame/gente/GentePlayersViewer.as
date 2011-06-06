@@ -82,31 +82,31 @@ package mx.ecosur.multigame.gente {
 			
 			var ppi:GentePlayerInfo;
 			var btn:Button;
-			var pentePlayer:GentePlayer;
+			var player:GentePlayer;
 			var i:int;
 			
 			for (i = 0; i < _players.length; i++){
 				
 				// Create the player information
-				pentePlayer = GentePlayer(_players[i]);
+				player = GentePlayer(_players[i]);
 				if (getChildren().length > i) {
 					ppi = GentePlayerInfo(getChildAt(i));
 				}else{
 					ppi = new GentePlayerInfo();
 					addChild(ppi);
 				}
-				ppi.pentePlayer = pentePlayer;
+				ppi.pentePlayer = player;
 				
 				// Create button header
-				var label:String = pentePlayer.registrant.name + " (" + Color.getTeamName(pentePlayer.color) + ")"; 
+				var label:String = player.name + " (" + Color.getTeamName(player.color) + ")";
 				btn = getHeaderAt(i);
 				btn.label = label;
-				btn.setStyle("icon", Color.getCellIcon(pentePlayer.color));
+				btn.setStyle("icon", Color.getCellIcon(player.color));
 				btn.setStyle("paddingBottom", 5);
 				btn.setStyle("paddingTop", 5);
 				
 				// If player has turn highlight and select its info
-				if (pentePlayer.turn){
+				if (player.turn){
 					selectPlayer(ppi);
 				}
 			}

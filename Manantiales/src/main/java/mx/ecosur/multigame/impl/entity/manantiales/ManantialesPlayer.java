@@ -146,7 +146,7 @@ public class ManantialesPlayer extends GridPlayer {
     public boolean equals(Object obj) {
         if (obj instanceof ManantialesPlayer) {
             ManantialesPlayer testPlayer = (ManantialesPlayer) obj;
-            if (testPlayer.getRegistrant().getName().equals(this.getRegistrant().getName()))
+            if (testPlayer.getName().equals(this.getName()))
                 return true;
         }
 

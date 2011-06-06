@@ -61,11 +61,9 @@ public class PasaleBoard extends AbstractBoard {
 
         private var _controller:PasaleGameController;
 
-        /* 800 x 600 minium board size */
+        private static var WIDTH:int = 800;
 
-        private static var WIDTH = 800;
-
-        private static var HEIGHT = 600;
+        private static var HEIGHT:int = 600;
 
         private var _viewHeight:int = HEIGHT;
 
