@@ -142,12 +142,9 @@ public class GentePlayer extends GridPlayer {
         ret.tesseras = tesseras;
         ret.trias = trias;
         ret.setColor(getColor());
-
-        GridRegistrant clone = (GridRegistrant) getRegistrant().clone();
-        ret.setRegistrant(clone);
+        ret.setName(getName());
         ret.setTurn(isTurn());
         ret.points = points;
-
         return ret;
     }
 
@@ -156,7 +153,7 @@ public class GentePlayer extends GridPlayer {
         boolean ret = false;
         if (obj instanceof GentePlayer) {
             GentePlayer comp = (GentePlayer) obj;
-            if (comp.getRegistrant().getName().equals(this.getRegistrant().getName()))
+            if (comp.getName().equals(this.getName()))
                 ret = true;
         }
 

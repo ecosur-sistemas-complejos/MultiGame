@@ -265,11 +265,10 @@ public class ManantialesGame extends GridGame {
     }
 
     public GamePlayer registerPlayer(Registrant registrant) throws InvalidRegistrationException  {
-        ManantialesPlayer player = new ManantialesPlayer ();
-        player.setRegistrant((GridRegistrant) registrant);
-
         if (getPlayers() == null)
             setPlayers(new TreeSet<GridPlayer>());
+        List<Color> colors = getAvailableColors();
+        ManantialesPlayer player = new ManantialesPlayer((GridRegistrant) registrant, colors.get(0));
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
@@ -280,8 +279,7 @@ public class ManantialesGame extends GridGame {
         if (players.size() == max)
             throw new RuntimeException ("Maximum Players reached!");
 
-        List<Color> colors = getAvailableColors();
-        player.setColor(colors.get(0));
+
         if (player.getColor().equals(Color.YELLOW))
             player.setTurn(true);
         players.add(player);

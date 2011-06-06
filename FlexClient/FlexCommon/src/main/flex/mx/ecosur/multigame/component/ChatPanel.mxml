@@ -46,7 +46,7 @@
         if (_messages == null)
             _messages = new ArrayCollection();
         if (_messages.getItemIndex(chatMessage) == -1) {
-            log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.registrant.name + ": " + chatMessage.body + "\n";
+            log.text += "(" + chatMessage.dateSent.toLocaleTimeString() + ") " + chatMessage.sender.name + ": " + chatMessage.body + "\n";
             callLater(updateScroll);
         }
         _messages.addItem(chatMessage);

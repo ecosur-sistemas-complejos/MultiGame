@@ -79,7 +79,7 @@
     <mx:Panel title="{resourceManager.getString('Lobby', 'lobby.panel.title')}" paddingLeft="5" paddingRight="5" paddingBottom="5">
         <mx:Text paddingLeft="10" paddingRight="10" paddingTop="10" id="introTxt"/>
         <mx:TabNavigator width="800" height="280">
-            <component:StartNewGame  label="{resourceManager.getString('Lobby', 'lobby.tab.start')}"
+            <component:StartNewGame  player="{this.player}" label="{resourceManager.getString('Lobby', 'lobby.tab.start')}"
                  height="100%" width="100%" registered="dispatchEvent(event)"/>
             <component:JoinUnfinishedGame label="{resourceManager.getString('Lobby', 'lobby.tab.middle')}" id="gameList"
                  height="100%" width="100%"

@@ -47,7 +47,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         /* Set up mock JMS destination for message sender */
         ejbModule = createEJBTestModule();
-        ejbModule.bindToContext("ConnectionFactory",
+        ejbModule.bindToContext("XAConnectionFactory",
                 getJMSMockObjectFactory().getMockTopicConnectionFactory());
         mockTopic = getDestinationManager().createTopic("MultiGame");
         ejbModule.bindToContext("MultiGame", mockTopic);

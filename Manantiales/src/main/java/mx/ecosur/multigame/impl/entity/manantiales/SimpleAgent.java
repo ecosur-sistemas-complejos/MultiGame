@@ -319,7 +319,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         ret.setType(getType());
         ret.setNextMove(getNextMove());
         ret.setColor(getColor());
-        ret.setRegistrant(getRegistrant());
+        ret.setName(getName());
         ret.setScore(getScore());
         ret.setForested(getForested());
         ret.setIntensive(getIntensive());

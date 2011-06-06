@@ -15,10 +15,6 @@
 
         public function set pentePlayer(pentePlayer:GentePlayer):void {
             playerTeam.text = Color.getTeamName(pentePlayer.color);
-            var d:Date = new Date(pentePlayer.registrant.lastRegistration);
-            var df:DateFormatter = new DateFormatter();
-            df.formatString = "DD/MM/YYYY H:NN";
-            playerLastRegistration.text = df.format(d);
             if (pentePlayer.trias != null) {
                 playerTrias.text = pentePlayer.trias.length.toString();
             } else {
