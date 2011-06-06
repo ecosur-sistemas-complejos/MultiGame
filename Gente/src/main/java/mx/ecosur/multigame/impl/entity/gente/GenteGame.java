@@ -151,10 +151,12 @@ public class GenteGame extends GridGame {
     public GamePlayer registerPlayer(Registrant registrant) throws
             InvalidRegistrationException
     {
-        GentePlayer player = new GentePlayer ();
-        player.setRegistrant((GridRegistrant) registrant);
         if (getPlayers () == null)
             setPlayers(new TreeSet<GridPlayer>(new PlayerComparator()));
+        List<Color> colors = getAvailableColors();
+        if (colors == null)
+            throw new RuntimeException ("No colors available!  Current players: " + players);
+        GentePlayer player = new GentePlayer((GridRegistrant) registrant, colors.get(0));
 
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
@@ -165,9 +167,7 @@ public class GenteGame extends GridGame {
         if (players.size() == max)
             throw new InvalidRegistrationException ("Maximum Players reached!");
 
-        List<Color> colors = getAvailableColors();
-        if (colors == null)
-            throw new RuntimeException ("No colors available!  Current players: " + players);
+
         player.setColor(colors.get(0));
         players.add(player);
 
@@ -199,7 +199,7 @@ public class GenteGame extends GridGame {
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 throw new InvalidRegistrationException (
-                    "Duplicate Registration! " + player.getRegistrant().getName());
+                    "Duplicate Registration! " + player.getName());
         }
 
         int max = getMaxPlayers();

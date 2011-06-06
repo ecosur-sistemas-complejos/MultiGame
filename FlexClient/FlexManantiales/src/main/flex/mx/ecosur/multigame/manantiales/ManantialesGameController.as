@@ -115,7 +115,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
 
             // initialize game status
             _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales", "manantiales.welcome") + " " +
-                _currentPlayer.registrant.name + ".\n\n" + resourceManager.getString("Manantiales",
+                _currentPlayer.name + ".\n\n" + resourceManager.getString("Manantiales",
                     "manantiales.identify") + " " + 
                 Color.getColorDescription(_currentPlayer.color),
                 Color.getColorCode(_currentPlayer.color));
@@ -178,9 +178,9 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                         case ManantialesEvent.CHAT:
                             var chatMessage:ChatMessage = ChatMessage(message.body);
                             _gameWindow.chatPanel.addMessage(chatMessage);
-                            if(chatMessage.sender.id != _currentPlayer.registrant.id){
+                            if(chatMessage.sender.id != _currentPlayer.id){
                                 _gameWindow.gameStatus.showMessage(
-                                    chatMessage.sender.registrant.name + " " +
+                                    chatMessage.sender.name + " " +
                                     resourceManager.getString("Manantiales",
                                             "manantiales.panel.chat.announcement"), 0x000000);
                             }
@@ -435,7 +435,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                                 "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
                     }else{
                         _gameWindow.gameStatus.showMessage(
-                            gamePlayer.registrant.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
+                            gamePlayer.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
                                     Color.getColorCode(gamePlayer.color));
                     }
                 }

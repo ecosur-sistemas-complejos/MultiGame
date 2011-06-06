@@ -20,7 +20,7 @@
         ]]>
     </mx:Script>
     <mx:HBox borderStyle="solid" backgroundColor="white">
-        <mx:Label id="playername" text="{pasalePlayer.registrant.name}:"/>
+        <mx:Label id="playername" text="{pasalePlayer.name}:"/>
         <mx:Label id="score" text="{pasalePlayer.score}"/>
     </mx:HBox>
 </mx:Canvas>

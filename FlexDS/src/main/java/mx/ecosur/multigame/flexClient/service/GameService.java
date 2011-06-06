@@ -120,7 +120,7 @@ public class GameService {
             game = (GridGame) registrar.registerPlayer(game, player);
 
             for (GamePlayer impl : game.listPlayers()) {
-                if (impl.getRegistrant().getName().equals(player.getName())) {
+                if (impl.getName().equals(player.getName())) {
                     return new ServiceGameEvent (game, (GridPlayer) impl);
                 }
             }
@@ -142,7 +142,7 @@ public class GameService {
             Game model = registrar.registerPlayer (game, registrant);
             for (GamePlayer gp : model.listPlayers()) {
                 GridPlayer player = (GridPlayer) gp;
-                if (player.getRegistrant().equals(registrant)) {
+                if (player.getName().equals(registrant.getName())) {
                     ret = new ServiceGameEvent ((GridGame) model, player);
                     break;
                 }
@@ -201,7 +201,7 @@ public class GameService {
             if (model != null) {
                 for (GamePlayer player : model.listPlayers()) {
                     GridPlayer gp = (GridPlayer) player;
-                    if (gp.getRegistrant().equals(registrant)) {
+                    if (gp.getName().equals(registrant.getName())) {
                         ret = new ServiceGameEvent ((GridGame) model, gp);
                         break;
                     }
@@ -243,7 +243,7 @@ public class GameService {
             if (game != null) {
                 for (GamePlayer player : game.listPlayers()) {
                     GridPlayer gp = (GridPlayer) player;
-                    if (gp.getRegistrant().equals(registrant)) {
+                    if (gp.getName().equals(registrant.getName())) {
                         ret = new ServiceGameEvent ((GridGame) game, gp);
                         break;
                     }
