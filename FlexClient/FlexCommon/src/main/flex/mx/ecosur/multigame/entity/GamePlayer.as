@@ -34,9 +34,9 @@ package mx.ecosur.multigame.entity {
     public class GamePlayer {
 
         private var _id:int;
-        private var _player:Registrant;
         private var _color:String;
         private var _turn:Boolean;
+        private var _name:String;
 
         [Embed(source="/assets/30601__acclivity__Goblet_F_Soft.mp3")]
         protected var _sndCls:Class;
@@ -56,12 +56,12 @@ package mx.ecosur.multigame.entity {
             _id = id;
         }
 
-        public function get registrant():Registrant{
-            return _player;
+        public function get name():String {
+            return _name;
         }
 
-        public function set registrant(player:Registrant):void {
-            _player = player;
+        public function set name(value:String):void {
+            _name = value;
         }
 
         public function get color():String{
@@ -81,7 +81,7 @@ package mx.ecosur.multigame.entity {
         }
 
         public function toString():String{
-            return "id = " + id + ", player = {" + registrant + "}, color = " +
+            return "id = " + id + ", player = {" + name + "}, color = " +
                  color + ", turn = " + turn;
         }
 

@@ -281,6 +281,10 @@ public class ManantialesGame extends GridGame {
             setPlayers(new TreeSet<GridPlayer>());
         List<Color> colors = getAvailableColors();
         ManantialesPlayer player = new ManantialesPlayer((GridRegistrant) registrant, colors.get(0));
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
+=======
+
+>>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 throw new InvalidRegistrationException ("Duplicate Registraton!");
@@ -288,6 +292,11 @@ public class ManantialesGame extends GridGame {
         int max = getMaxPlayers();
         if (players.size() == max)
             throw new RuntimeException ("Maximum Players reached!");
+<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
+=======
+
+
+>>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
         if (player.getColor().equals(Color.YELLOW))
             player.setTurn(true);
         players.add(player);

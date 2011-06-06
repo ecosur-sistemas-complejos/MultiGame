@@ -162,7 +162,7 @@ package mx.ecosur.multigame.gente{
             
             // initialize game status
             _gameStatus.showMessage(resourceManager.getString("Gente", "gente.welcome") +
-                currentPlayer.registrant.name + "!\n\n" +
+                " " + currentPlayer.color + "!\n\n" +
                     " " + resourceManager.getString("Gente", "gente.identify") + " " + 
                 Color.getColorDescription(currentPlayer.color), 
                     Color.getColorCode(currentPlayer.color));
@@ -214,7 +214,7 @@ package mx.ecosur.multigame.gente{
             var gamePlayer:GamePlayer;
             for (var i:int = 0; i < game.players.length; i++){
                 gamePlayer = GamePlayer(game.players[i]);
-                if (gamePlayer.registrant.id == _currentPlayer.registrant.id){
+                if (gamePlayer.id == _currentPlayer.id){
                     _currentPlayer = gamePlayer;
                     _chatPanel.currentPlayer = _currentPlayer;
                     this.isTurn = _currentPlayer.turn;
@@ -225,7 +225,7 @@ package mx.ecosur.multigame.gente{
                         _gameStatus.showMessage(resourceManager.getString("Gente", "gente.currentplayer.turn"),
                                 Color.getColorCode(_currentPlayer.color));
                     }else{
-                        _gameStatus.showMessage(gamePlayer.registrant.name +
+                        _gameStatus.showMessage(gamePlayer.color +
                             " " + resourceManager.getString("Gente", "gente.tomove"),
                                 Color.getColorCode(gamePlayer.color));
                     }
@@ -262,7 +262,7 @@ package mx.ecosur.multigame.gente{
             var gentePlayer:GentePlayer = GentePlayer(_winners[0]);
             var _isSoloWin:Boolean = _winners.length == 1;
             if (_isSoloWin){
-                msg = gentePlayer.registrant.name + " " + resourceManager.getString("Gente", "gente.has.won");
+                msg = gentePlayer.name + " " + resourceManager.getString("Gente", "gente.has.won");
                 color = Color.getColorCode(gentePlayer.color);
                 if (gentePlayer.color == _currentPlayer.color)
                     sound = SoundAssets.approval;
@@ -372,8 +372,8 @@ package mx.ecosur.multigame.gente{
                 case GameEvent.CHAT:
                     var chatMessage:ChatMessage = ChatMessage(message.body); 
                     _chatPanel.addMessage(chatMessage);
-                    if(chatMessage.sender.id != _currentPlayer.registrant.id){
-                        _gameStatus.showMessage(chatMessage.sender.registrant.name + " " +
+                    if(chatMessage.sender.id != _currentPlayer.id){
+                        _gameStatus.showMessage(chatMessage.sender.name + " " +
                             resourceManager.getString("Gente", "gente.panel.chat.announcement"), 0x000000);
                     }
                     break;
@@ -685,7 +685,7 @@ package mx.ecosur.multigame.gente{
             }
             
             if(hasScored){
-                _gameStatus.showMessage(move.player.registrant.name + "  " +
+                _gameStatus.showMessage(move.player.name + "  " +
                     resourceManager.getString("Gente", "gente.move.scored"), Color.getColorCode(move.player.color));
             }
 

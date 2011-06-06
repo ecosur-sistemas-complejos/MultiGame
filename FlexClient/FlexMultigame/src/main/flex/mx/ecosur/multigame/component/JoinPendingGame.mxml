@@ -83,7 +83,7 @@
                 dataItem.players = "";
                 for (var j:Number = 0; j < game.players.length; j++) {
                     gamePlayer = GamePlayer(game.players[j]);
-                    dataItem.players += gamePlayer.registrant.name + " (" + gamePlayer.color + "), ";
+                    dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
                 }
                 if (dataItem.players.length > 2) {
                     dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);

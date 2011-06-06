@@ -9,13 +9,13 @@
 
 <mx:Script>
     <![CDATA[
+    import mx.ecosur.multigame.entity.Registrant;
     import mx.ecosur.multigame.event.PlayEvent;
     import mx.ecosur.multigame.event.ServiceGameEvent;
     import mx.managers.CursorManager;
     import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.controls.Alert;
-    import mx.ecosur.multigame.entity.Registrant;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
 
@@ -45,7 +45,6 @@
     private function resultHandler(event:ResultEvent):void {
         var sge:ServiceGameEvent = ServiceGameEvent(event.result);
         var gamePlayer:GamePlayer = GamePlayer(sge.player);
-        player = gamePlayer.registrant;
         this.dispatchEvent(new PlayEvent("registered", sge.game, gamePlayer));
     }
 

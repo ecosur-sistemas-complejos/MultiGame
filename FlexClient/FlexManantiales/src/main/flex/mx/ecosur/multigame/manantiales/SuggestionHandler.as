@@ -244,7 +244,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
             }
             
             /* Always remove the suggestion from the dictionary */
-            _currentSuggestions [suggestion.move.player.registrant] = null;
+            _currentSuggestions [suggestion.move.player] = null;
             if (suggestion == _mySuggestion)
                 _mySuggestion = null;
         }
@@ -317,7 +317,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
             
             for (var i:int = 0; i < _controller._game.players.length; i++) {
                 var player:ManantialesPlayer = ManantialesPlayer(_controller._game.players [ i ]);
-                if (player.color == color && _currentSuggestions[player.registrant] != null) {
+                if (player.color == color && _currentSuggestions[player] != null) {
                     ret = false;
                     break;
                 }
@@ -388,8 +388,8 @@ import mx.ecosur.multigame.enum.MoveStatus;
                suggestion.suggestor = _player;
                suggestion.status = SuggestionStatus.UNEVALUATED;
 
-               if (_currentSuggestions [move.player.registrant] == null)
-                _currentSuggestions [move.player.registrant] = suggestion;
+               if (_currentSuggestions [move.player] == null)
+                _currentSuggestions [move.player] = suggestion;
 
                var call:Object = new Object();
                call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
@@ -448,8 +448,8 @@ import mx.ecosur.multigame.enum.MoveStatus;
                 suggestion.suggestor = _player;
                 suggestion.status = SuggestionStatus.UNEVALUATED;
                 
-                if (_currentSuggestions [move.player.registrant] == null)
-                    _currentSuggestions [move.player.registrant] = suggestion;
+                if (_currentSuggestions [move.player] == null)
+                    _currentSuggestions [move.player] = suggestion;
     
                 var call:Object = new Object();
                 call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
