@@ -9,6 +9,7 @@
 
     <mx:Script>
         <![CDATA[
+        import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.PlayEvent;
@@ -56,6 +57,7 @@
         private function updateDataGrid():void {
             var game:Game;
             var gamePlayer:GamePlayer;
+            var agent:Agent;
             var dataProvider:ArrayCollection = new ArrayCollection();
             var dataItem:Object;
             var df:DateFormatter = new DateFormatter();
