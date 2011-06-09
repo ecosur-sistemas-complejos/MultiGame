@@ -15,7 +15,7 @@
     <mx:Script>
         <![CDATA[
             import mx.collections.ArrayCollection;
-            import mx.controls.Image;
+            import mx.controls.Alert;
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
@@ -25,9 +25,6 @@
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.enum.manantiales.Mode;
-            import mx.resources.IResourceManager;
-            import mx.resources.ResourceBundle;
-            import mx.resources.ResourceManager;
 
             /* required for compilation of class into runtime */
             import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
@@ -43,17 +40,16 @@
             private var _images:ArrayCollection;
             
             public function init():void {
-                if (_controller == null)
-                    _controller = new ManantialesGameController(this);
-                CursorManager.removeBusyCursor();
-
-                /* Load images */
+                _controller = new ManantialesGameController(this);
                 _images = new ArrayCollection ();
                 _images.addItem("img/competitive-1.png");
                 _images.addItem("img/competitive-2.png");
                 _images.addItem("img/competitive-3.png");
                 _images.addItem("img/competitive-4.png");
                 _images.addItem("img/puzzle.png");
+
+                /* Signal Ready */
+                CursorManager.removeBusyCursor();
             }
             
             public function destroy():void{

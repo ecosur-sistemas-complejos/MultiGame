@@ -10,8 +10,7 @@
 */
 
 package mx.ecosur.multigame.entity {
-import mx.collections.ArrayCollection;
-import mx.collections.ArrayCollection;
+    import mx.collections.ArrayCollection;
 
     /**
      * Represents a server side Game object.
@@ -38,12 +37,6 @@ import mx.collections.ArrayCollection;
         private var _type:String;
 
         private var _moves:ArrayCollection;
-
-        /*
-        private var _moves:Collection;
-        */
-
-        private var _messageSender:Object;
 
         public function Game() {
             super();
@@ -128,14 +121,6 @@ import mx.collections.ArrayCollection;
 
         public function set moves(value:ArrayCollection):void {
             _moves = value;
-        }
-
-        public function get messageSender():Object {
-            return _messageSender;
-        }
-
-        public function set messageSender(value:Object):void {
-            _messageSender = value;
         }
 
         public function toString():String{

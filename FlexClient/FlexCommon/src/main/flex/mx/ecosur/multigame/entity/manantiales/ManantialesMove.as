@@ -18,8 +18,6 @@ import mx.ecosur.multigame.entity.Move;
 
         private var _premium:Boolean;
 
-        private var _replacementType:String;
-
         private var _playerModel:GamePlayer;
 
         public function ManantialesMove()
@@ -42,14 +40,6 @@ import mx.ecosur.multigame.entity.Move;
 
         public function set premium(value:Boolean):void {
             _premium = value;
-        }
-
-        public function get replacementType():String {
-            return _replacementType;
-        }
-
-        public function set replacementType(value:String):void {
-            _replacementType = value;
         }
 
         public function get swap():Ficha {

@@ -88,14 +88,14 @@
             var gamePlayer:GamePlayer;
             for (var i:Number = 0; i < joinedGame.players.length; i++) {
                 var gp:GamePlayer = joinedGame.players [ i ];
-                if (gp.id == this.player.id) {
+                if (gp.name == this.player.name) {
                     gamePlayer = gp;
                     break;
                 }
             }
 
-            sendPlayerChange(joinedGame);
             dispatchEvent(new PlayEvent("gameChosen", joinedGame, gamePlayer));
+            sendPlayerChange(joinedGame);
         }
 
         private function sendPlayerChange(game:Game):void {
