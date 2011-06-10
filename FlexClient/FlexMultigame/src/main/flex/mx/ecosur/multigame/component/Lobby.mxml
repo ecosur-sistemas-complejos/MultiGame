@@ -54,6 +54,7 @@
 
         public function timeout(event:Event):void {
             pendingList.reload(event);
+            gameList.reload(event);
         }
 
         public function reload(event:Event):void {

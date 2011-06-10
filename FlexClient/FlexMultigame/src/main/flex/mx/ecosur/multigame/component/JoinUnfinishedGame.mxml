@@ -21,6 +21,7 @@
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.AsyncMessage;
         import mx.messaging.messages.IMessage;
+        import mx.rpc.AsyncToken;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
@@ -37,12 +38,16 @@
         }
 
         public function reload(event:Event):void {
-            gameService.getUnfinishedGames(player);
+            var token:AsyncToken = gameService.getUnfinishedGames(player);
+            token.resultHandler = resultHandler;
+            token.faultHandler = faultHandler;
         }
 
         private function resultHandler(event:ResultEvent):void {
-            _games = ArrayCollection(event.result);
-            updateDataGrid();
+            if (gamesDataGrid != null && gamesDataGrid.selectedItem == null) {
+                _games = ArrayCollection(event.result);
+                updateDataGrid();
+            }
         }
 
         private function messageFaultHandler (event:MessageFaultEvent):void {
@@ -85,6 +90,7 @@
         private function joinGame():void {
             CursorManager.setBusyCursor();
             var joinedGame:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
+            gamesDataGrid.selectedItem = null;
             var gamePlayer:GamePlayer;
             for (var i:Number = 0; i < joinedGame.players.length; i++) {
                 var gp:GamePlayer = joinedGame.players [ i ];
