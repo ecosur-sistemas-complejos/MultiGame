@@ -11,7 +11,8 @@ package mx.ecosur.multigame.manantiales {
     import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
-    import mx.ecosur.multigame.manantiales.token.ForestToken;
+import mx.ecosur.multigame.manantiales.ManantialesGameController;
+import mx.ecosur.multigame.manantiales.token.ForestToken;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
     import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.ModerateToken;
@@ -87,18 +88,18 @@ package mx.ecosur.multigame.manantiales {
          // if move is before the currently selected move then iterate
          // back over the moves transforming the board
          // else iterate forward
-         if(move.id < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id){
+         if(move.orderId < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId){
              do{
                  undoMove(ManantialesMove(_controller._moves[_controller._selectedMoveInd]));
                  _controller._selectedMoveInd --;
-             }while(move.id < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
+             }while(move.orderId < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
                      && _controller._selectedMoveInd > 0);
-         }else if (move.id > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
+         }else if (move.orderId > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
                      && _controller._selectedMoveInd < _controller._moves.length){
              do{
                  doMove(ManantialesMove(_controller._moves[_controller._selectedMoveInd + 1]));
                  _controller._selectedMoveInd ++;
-             } while (move.id > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
+             } while (move.orderId > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
                  && _controller._selectedMoveInd < _controller._moves.length);
          }
         }
@@ -120,7 +121,7 @@ package mx.ecosur.multigame.manantiales {
                     _controller._moves.source.push(move);
                     _controller._gameWindow.moveViewer.addMove(move);
 
-                } else if (lastMove == null || move.id > lastMove.id){
+                } else if (lastMove == null || move.orderId > lastMove.orderId){
 
                     /* Suggestions are cleared on completion of any turn based moves */
                     if (move.player.turn)
@@ -136,11 +137,12 @@ package mx.ecosur.multigame.manantiales {
                         doMove(move);
                     }
                 } else {
+
                     // Search for move in reverse order because its most likely to be the last move
                     var oldMove:ManantialesMove;
                     for (var i:Number = _controller._moves.length - 1; i >= 0; i--){
                         oldMove = ManantialesMove(_controller._moves[i]);
-                        if (oldMove.id == move.id){
+                        if (oldMove.orderId == move.orderId){
                             _controller._moves[i] = move;
                             _controller._gameWindow.moveViewer.updateMove(move);
                             break;

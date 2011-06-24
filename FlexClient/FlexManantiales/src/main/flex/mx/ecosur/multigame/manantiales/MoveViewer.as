@@ -44,7 +44,7 @@ import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
             var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
                 mi = MoveInfo(_moves.getChildAt(i));
-                if (move != null && move.id == mi.gameMove.id){                	
+                if (move != null && move.orderId == mi.gameMove.orderId){
                     
                     //deselect currently selected button
                     var btn:Button;
@@ -141,7 +141,7 @@ import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
             var mi:MoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
                 mi = MoveInfo(_moves.getChildAt(i));
-                if(mi.gameMove.id == move.id){
+                if(mi.gameMove.orderId == move.orderId){
                     mi.gameMove = move;
                     break;
                 }

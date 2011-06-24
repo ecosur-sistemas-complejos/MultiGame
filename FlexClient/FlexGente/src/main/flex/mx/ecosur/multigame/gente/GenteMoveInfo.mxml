@@ -15,21 +15,21 @@
 
         [Event (name = GOTO_MOVE_EVENT, type = "mx.events.DynamicEvent")]
 
-        private var _penteMove:GenteMove;
+        private var _genteMove:GenteMove;
 
-        public function set penteMove(penteMove:GenteMove):void {
-            _penteMove = penteMove;
-            txtTrias.text = booleanToText(_penteMove.trias != null && _penteMove.trias.length > 0);
-            txtTesseras.text = booleanToText(_penteMove.tesseras != null && _penteMove.tesseras.length > 0);
+        public function set genteMove(penteMove:GenteMove):void {
+            _genteMove = penteMove;
+            txtTrias.text = booleanToText(_genteMove.trias != null && _genteMove.trias.length > 0);
+            txtTesseras.text = booleanToText(_genteMove.tesseras != null && _genteMove.tesseras.length > 0);
         }
 
-        public function get penteMove():GenteMove {
-            return _penteMove;
+        public function get genteMove():GenteMove {
+            return _genteMove;
         }
 
         private function gotoMove():void {
             var moveEvent:DynamicEvent = new DynamicEvent(GOTO_MOVE_EVENT);
-            moveEvent.move = _penteMove;
+            moveEvent.move = _genteMove;
             dispatchEvent(moveEvent);
         }
 
@@ -40,7 +40,6 @@
                 return "No";
             }
         }
-
         ]]>
     </mx:Script>
     

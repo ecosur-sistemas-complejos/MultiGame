@@ -410,16 +410,16 @@ package mx.ecosur.multigame.gente{
             // if move is before the currently selected move then iterate
             // back over the moves transforming the board
             // else iterate forward
-            if(move.id < GenteMove(_moves[_selectedMoveInd]).id){
+            if(move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId){
                 do{
                     undoMove(GenteMove(_moves[_selectedMoveInd]));
                     _selectedMoveInd --;                    
-                }while(move.id < GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > 0);
-            }else if (move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length){
+                } while(move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd > 0);
+            } else if (move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd < _moves.length){
                 do{
                     doMove(GenteMove(_moves[_selectedMoveInd + 1]));
                     _selectedMoveInd ++;
-                }while(move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
+                } while(move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd < _moves.length);
             }
         }
         
@@ -437,8 +437,7 @@ package mx.ecosur.multigame.gente{
             
             //if move is after the last move then add moves
             //else update the move since its info may have changed
-            if (lastMove == null || move.id > lastMove.id){
-                
+            if (lastMove == null || move.orderId > lastMove.orderId){
                 //add to moves
                 _moves.source.push(move);
                 
@@ -447,13 +446,13 @@ package mx.ecosur.multigame.gente{
                     _selectedMoveInd ++;
                     doMove(move);
                 }
-            }else{
+            } else {
                 
                 // Search for move in reverse order because its most likely to be the last move
                 var oldMove:GenteMove;
                 for (var i:Number = _moves.length - 1; i >= 0; i--){
                     oldMove = GenteMove(_moves[i]);
-                    if (oldMove.id == move.id){
+                    if (oldMove.orderId == move.orderId){
                         _moves[i] = move;
                         _moveViewer.updateMove(move);
                         break;
@@ -673,7 +672,9 @@ package mx.ecosur.multigame.gente{
                     tria = Tria(move.trias[i]);
                     for (var j:Number = 0; j < tria.cells.length; j++){
                         cell = Cell(tria.cells[j]);
-                        _board.getBoardCell(cell.column, cell.row).token.blink(3);
+                        var boardCell:BoardCell = _board.getBoardCell(cell.column, cell.row);
+                        if (boardCell != null)
+                            boardCell.token.blink(3);
                     }
                 }
             }

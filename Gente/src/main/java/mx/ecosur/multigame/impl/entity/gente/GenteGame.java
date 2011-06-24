@@ -62,7 +62,7 @@ public class GenteGame extends GridGame {
     public GenteGame (KnowledgeBase kbase) {
         this.kbase = kbase;
     }
-        
+
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     @JoinColumn(nullable=true)
     public Set <GentePlayer> getWinners () {
@@ -121,12 +121,17 @@ public class GenteGame extends GridGame {
     /* (non-Javadoc)
       * @see GridGame#move(mx.ecosur.multigame.entity.interfaces.Move)
       */
-    public Move move(Move move) throws InvalidMoveException {
+    public Move move(Move m) throws InvalidMoveException {
+        GridMove move = (GridMove) m;
         if (kbase == null)
             kbase = findKBase();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
 
+        if (moves != null)
+            move.setOrderId(moves.size() + 1);
+        else
+            move.setOrderId(1);
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
@@ -157,20 +162,15 @@ public class GenteGame extends GridGame {
         if (colors == null)
             throw new RuntimeException ("No colors available!  Current players: " + players);
         GentePlayer player = new GentePlayer((GridRegistrant) registrant, colors.get(0));
-
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 return p;
         }
-
         int max = getMaxPlayers();
         if (players.size() == max)
             throw new InvalidRegistrationException ("Maximum Players reached!");
-
-
         player.setColor(colors.get(0));
         players.add(player);
-
         try {
             if (players.size() == getMaxPlayers())
                 initialize();

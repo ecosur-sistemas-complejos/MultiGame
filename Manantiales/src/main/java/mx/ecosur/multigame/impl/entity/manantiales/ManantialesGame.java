@@ -216,6 +216,12 @@ public class ManantialesGame extends GridGame {
 
         if (kbase == null)
             kbase = findKBase();
+
+        if (moves != null)
+            move.setOrderId(moves.size() + 1);
+        else
+            move.setOrderId(1);
+
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
@@ -269,21 +275,16 @@ public class ManantialesGame extends GridGame {
             setPlayers(new TreeSet<GridPlayer>());
         List<Color> colors = getAvailableColors();
         ManantialesPlayer player = new ManantialesPlayer((GridRegistrant) registrant, colors.get(0));
-
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 throw new InvalidRegistrationException ("Duplicate Registraton!");
         }
-
         int max = getMaxPlayers();
         if (players.size() == max)
             throw new RuntimeException ("Maximum Players reached!");
-
-
         if (player.getColor().equals(Color.YELLOW))
             player.setTurn(true);
         players.add(player);
-
         try {
             if (players.size() == getMaxPlayers())
                 initialize();

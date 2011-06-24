@@ -9,7 +9,6 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.PlayEvent;
@@ -17,7 +16,6 @@
 
         import mx.collections.ArrayCollection;
         import mx.managers.CursorManager;
-        import mx.messaging.Producer;
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.AsyncMessage;
         import mx.messaging.messages.IMessage;
@@ -62,7 +60,6 @@
         private function updateDataGrid():void {
             var game:Game;
             var gamePlayer:GamePlayer;
-            var agent:Agent;
             var dataProvider:ArrayCollection = new ArrayCollection();
             var dataItem:Object;
             var df:DateFormatter = new DateFormatter();
@@ -70,10 +67,10 @@
             for (var i:Number = 0; i < _games.length; i++) {
                 game = Game(_games.getItemAt(i));
                 dataItem = new Object();
-                dataItem.gameType = game.type;
                 dataItem.created = df.format(game.created);
+                dataItem.gameType = game.type;
                 dataItem.players = "";
-                for (var j:Number = 0; j < game.players.length; j++) {
+                for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
                     gamePlayer = GamePlayer(game.players[j]);
                     dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
                 }

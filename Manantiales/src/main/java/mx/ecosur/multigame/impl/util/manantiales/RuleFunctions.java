@@ -23,6 +23,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -141,7 +142,7 @@ public class RuleFunctions {
         }
 
         if (playerNumber == -1)
-            throw new RuntimeException ("Unable to find player: " + player + " in set " + gps);
+            throw new RuntimeException ("Unable to find player: " + player + " in set " + Arrays.toString(gps));
 
         GridPlayer nextPlayer = null;
         if (playerNumber == gps.length - 1) {
@@ -170,8 +171,7 @@ public class RuleFunctions {
             }
 
             if (playerNumber == -1)
-                throw new RuntimeException ("Unable to find player: " + first + 
-                        " in set " + gps);            
+                throw new RuntimeException ("Unable to find player: " + first + " in set " + Arrays.toString(gps));
             GridPlayer nextPlayer = null;
             if (playerNumber == gps.length - 1) {
                 nextPlayer = gps [ 0 ];

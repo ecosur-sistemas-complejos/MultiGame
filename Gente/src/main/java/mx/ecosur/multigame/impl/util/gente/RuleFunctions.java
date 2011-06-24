@@ -84,7 +84,7 @@ public class RuleFunctions {
         }
 
         if (playerNumber == -1)
-            throw new RuntimeException ("Unable to find player: " + player + " in set " + gps);
+            throw new RuntimeException ("Unable to find player: " + player + " in set " + Arrays.toString(gps));
 
         GridPlayer nextPlayer = null;
         if (playerNumber == gps.length - 1) {

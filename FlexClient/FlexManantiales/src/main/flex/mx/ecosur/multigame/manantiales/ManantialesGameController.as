@@ -68,12 +68,12 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         private var _messages:ArrayCollection;
 
         // constants
-        private static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
-        private static const GAME_SERVICE_DESTINATION_NAME:String = "gameService";
-        private static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
-        private static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
-        private static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
-        private static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+        static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
+        static const GAME_SERVICE_DESTINATION_NAME:String = "gameService";
+        static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
+        static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
+        static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
+        static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 
         /* Needed to force compilation of SimplePlayer in .swf file */
         private var _unUsed:SimpleAgent;
