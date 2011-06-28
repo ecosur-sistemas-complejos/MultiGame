@@ -12,9 +12,7 @@ import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
 import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,8 +23,8 @@ import java.util.TreeSet;
  */
 public class AgentRuleFunctions {
 
-    public static Set<GridCell> findUnboundAdjacentCells (GenteGame game, Set<Color> colors) {
-        Set<GridCell> ret = new TreeSet<GridCell>(new CellComparator());
+    public static List<GridCell> findUnboundAdjacentCells (GenteGame game, Set<Color> colors) {
+        List<GridCell> ret = new ArrayList<GridCell>();
         TreeSet<GridCell> candidates = new TreeSet<GridCell> (new CellComparator());
         Search search = new Search(game.getGrid());
 
@@ -57,7 +55,7 @@ public class AgentRuleFunctions {
         TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new MoveComparator());
         if (gridGame instanceof GenteGame) {
             GenteGame game = (GenteGame) gridGame;
-            Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
+            List<GridCell> unbound = findUnboundAdjacentCells(game, colors);
             /*
             for (GridCell cell : unbound){
                 try {
@@ -84,9 +82,9 @@ public class AgentRuleFunctions {
         return ret;
     }
 
-    public static TreeSet<GenteMove> determineAvailableMoves (GenteGame game, GentePlayer player, HashSet<Color> colors) {
-        TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new MoveComparator());
-        Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
+    public static List<GenteMove> determineAvailableMoves (GenteGame game, GentePlayer player, HashSet<Color> colors) {
+        ArrayList<GenteMove> ret = new ArrayList<GenteMove>();
+        List<GridCell> unbound = findUnboundAdjacentCells(game, colors);
         for (GridCell cell : unbound){
                 for (Color color : colors) {
                         cell.setColor(color);
@@ -97,14 +95,14 @@ public class AgentRuleFunctions {
         return ret;
     }
 
-    public static Set<GenteMove> determineAvailableMoves (GenteGame game, GentePlayer player, Color color) {
-        HashSet<Color> colors = new HashSet<Color> ();
+    public static List<GenteMove> determineAvailableMoves (GenteGame game, GentePlayer player, Color color) {
+        HashSet<Color> colors = new HashSet<Color>();
         colors.add(color);
         return determineAvailableMoves (game, player, colors);
     }
 
-    public static HashSet<Color> oppositionColors(GentePlayer player) {
-        HashSet <Color> ret = new HashSet<Color> ();
+    public static Set<Color> oppositionColors(GentePlayer player) {
+        Set <Color> ret = new HashSet<Color> ();
         HashSet<Color> teamColors = new HashSet<Color>();
         teamColors.add(player.getColor());
         teamColors.add (player.getColor().getCompliment());

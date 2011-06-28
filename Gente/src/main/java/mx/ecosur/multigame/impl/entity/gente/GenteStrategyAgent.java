@@ -73,8 +73,8 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
         this.strategy = strategy;
     }
 
-    public Set<Move> determineMoves (Game impl) {
-        Set<Move> ret = new LinkedHashSet<Move>();
+    public List<Move> determineMoves (Game impl) {
+        List<Move> ret = new ArrayList<Move>();
         GenteGame game = (GenteGame) impl;
         GameGrid grid = game.getGrid();
         
@@ -90,35 +90,25 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
             /* Insert any unbound adjacent cells if grid is not empty */
             if (!grid.isEmpty()) {
                 Set<Color> colors = new HashSet<Color>();
-                colors.add(getColor());
-                colors.add(getColor().getCompliment());
+                for (Color c : Color.values()) {
+                    colors.add(c);
+                }
 
                 for (GridCell cell : findUnboundAdjacentCells(game, colors)) {
                     session.insert(cell);
                 }
 
-
-                /* Bind cells adjacent to enemy team colors to global var for worst case */
-                colors.clear();
-                for (GridPlayer p : game.getPlayers()) {
-                    if (p.getColor().equals(getColor()))
-                        continue;
-                    else if (p.getColor().equals(getColor().getCompliment()))
-                        continue;
-                    colors.add(p.getColor());
-                }
-
-                Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
-                session.setGlobal("unbound", unbound);
+                session.setGlobal("unbound", new ArrayList<Move>());
 
             } else {
-                session.setGlobal("unbound", Collections.EMPTY_SET);
+                session.setGlobal("unbound", Collections.EMPTY_LIST);
             }
 
             session.fireAllRules();
             session.dispose();
         }
 
+        Collections.shuffle(ret, new Random());
         return ret;
     }
 

@@ -10,6 +10,7 @@
  */
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mx.ecosur.multigame.enums.GameState;
@@ -29,7 +30,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
         
     @Test
     public void testRandomNextMove () throws InvalidMoveException {
-        Set<Move> moves = alice.determineMoves(game);
+        List<Move> moves = alice.determineMoves(game);
         for (Move next : moves) {
             assertNotNull (next);
             game.move(next);
@@ -53,7 +54,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
     @Test
     public void testSimpleNextMove () throws InvalidMoveException {
         charlie.setTurn(true);
-        Set<Move> moves = charlie.determineMoves(game);
+        List<Move> moves = charlie.determineMoves(game);
         for (Move next : moves) {
             assertNotNull (next);
             /* Validate that the next move is possible */
@@ -74,7 +75,7 @@ public class GenteAgentLogicTest extends GenteAgentTestBase {
         game.setState(GameState.PLAY);
 
         charlie.setTurn(true);
-        Set<Move> moves = charlie.determineMoves(game);
+        List<Move> moves = charlie.determineMoves(game);
         for (Move next : moves) {
             assertNotNull (next);
             /* Validate that the next move is possible */

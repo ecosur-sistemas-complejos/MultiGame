@@ -94,9 +94,8 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
     }
 
 /* Simply returns a simple move response.  No suggestions are made by the Agent */
-    public Set<Move> determineMoves(Game impl) {
-        Set<Move> ret = new LinkedHashSet<Move>();
-
+    public List<Move> determineMoves(Game impl) {
+        List<Move> ret = new ArrayList<Move>();
         Random random = null;
         ManantialesGame game = (ManantialesGame) impl;
         boolean requiresRandom = game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL);
@@ -120,13 +119,12 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         }
 
         ManantialesMove pass = generatePassMove(game);
-
         ret.add (pass);
 
         if (getNextMove() == null)
             setNextMove(pass);
 
-
+        Collections.shuffle(ret);
         return ret;
     }
 

@@ -116,7 +116,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
         for (int i = 0; i < agents.length; i++) {
             if (agents [ i ].ready()) {
-                Set<Move> moves = agents [ i ].determineMoves(game);
+                List<Move> moves = agents [ i ].determineMoves(game);
                 assertTrue ("Not enough moves (" + moves.size() + " moves) generated for Agent [" + agents [ i ] + "]", moves.size() > 0);
                 for (Move agentMove : moves) {
                     ManantialesMove mve = (ManantialesMove) agentMove;

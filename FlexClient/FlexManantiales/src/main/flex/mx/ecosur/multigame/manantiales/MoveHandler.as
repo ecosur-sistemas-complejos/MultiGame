@@ -119,7 +119,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                 if (move.badYear) {
                     
                     _controller._moves.source.push(move);
-                    _controller._gameWindow.moveViewer.addMove(move);
 
                 } else if (lastMove == null || move.orderId > lastMove.orderId){
 
@@ -129,7 +128,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
 
                     //add to moves
                     _controller._moves.source.push(move);
-                    _controller._gameWindow.moveViewer.addMove(move);
 
                     //if current move is the last move then animate
                     if (_controller._selectedMoveInd == _controller._moves.length - 2){
@@ -144,7 +142,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                         oldMove = ManantialesMove(_controller._moves[i]);
                         if (oldMove.orderId == move.orderId){
                             _controller._moves[i] = move;
-                            _controller._gameWindow.moveViewer.updateMove(move);
                             break;
                         }
                     }
@@ -169,7 +166,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
         	
             // if was a bad year, then nothing to do
             if(move.badYear){
-                _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd + 1]);
                 return
             }
 
@@ -182,7 +178,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                     move.destinationCell.column, move.destinationCell.row));
                 if (!boardCell.token is UndevelopedToken || boardCell.token is IntensiveToken)
                 {
-                    _controller._gameWindow.moveViewer.selectedMove = move;
                     return;
                 }
             } else {
@@ -382,7 +377,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                 // Update move viewer
                 if (_controller._selectedMoveInd > 0 && _controller._moves.length > _controller._selectedMoveInd && _controller._moves[_controller._selectedMoveInd] != null) {
                     var move:ManantialesMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd])
-                    _controller._gameWindow.moveViewer.selectedMove = move;
                 }
             }
         }
@@ -395,7 +389,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
 
             // if was a bad year then nothing to undo
             if(move.badYear){
-                _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd - 1]);
                 return
             }
 
@@ -474,7 +467,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
 
             // if was a bad year then nothing to undo
             if(move.badYear){
-                _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd - 1]);
                 return
             }
 
@@ -577,8 +569,6 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
             var token:ManantialesToken = ManantialesToken(AnimateProperty(event.currentTarget).target);
             if (_controller._gameWindow.animateLayer.contains(token))
                 _controller._gameWindow.animateLayer.removeChild(token);
-            if (_controller._selectedMoveInd >= 0)
-                _controller._gameWindow.moveViewer.selectedMove = ManantialesMove(_controller._moves[_controller._selectedMoveInd]);
         }
     }
 }

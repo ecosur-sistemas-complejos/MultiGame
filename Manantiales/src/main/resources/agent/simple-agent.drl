@@ -27,7 +27,7 @@ import mx.ecosur.multigame.impl.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
+import java.util.List;
 
 rule "new-move"
     lock-on-active true

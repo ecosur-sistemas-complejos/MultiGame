@@ -125,10 +125,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             _gameWindow.board.dragDropHandler = _tokenHandler.dragDropCell;
             _gameWindow.board.dragExitHandler = _tokenHandler.dragExitCell;
 
-                        // initialize the move viewer
-            _gameWindow.moveViewer.addEventListener(MoveViewer.MOVE_EVENT_GOTO_MOVE, _moveHandler.gotoMove);
-            _gameWindow.moveViewer.board = _gameWindow.board;
-
             // get the game grid, players and moves
             var callGrid:Object = _gameService.getGameGrid(_gameId);
             callGrid.operation = GAME_SERVICE_GET_GRID_OP;
@@ -246,8 +242,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                         _moves = ArrayCollection(event.result)
                         if (!_moves)
                             _moves = new ArrayCollection();
-                        _gameWindow.moveViewer.board = _gameWindow.board;
-                        _gameWindow.moveViewer.initFromMoves(_moves);
                         _selectedMoveInd = _moves.length - 1;
                     break;
                 case GAME_SERVICE_DO_MOVE_OP:
@@ -570,9 +564,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
 
             /* Clear moves for next stage  */
             _moves = new ArrayCollection();
-                        
-            _gameWindow.moveViewer.board = _gameWindow.board;
-            _gameWindow.moveViewer.initFromMoves(_moves);
+
             _selectedMoveInd = _moves.length - 1;
 
             _gameWindow.invalidateDisplayList();

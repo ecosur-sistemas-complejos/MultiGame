@@ -29,8 +29,9 @@ import mx.ecosur.multigame.grid.Color;
 import java.awt.Dimension;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
 
-global Set unbound;
+global List unbound;
 global Dimension dim;
 
 #Yellow must move first, and that move can only be at the center of the board
@@ -39,7 +40,7 @@ rule "first-move"
 when
     $grid : GameGrid (empty == true)
     $player : GridPlayer ()
-    $moves : Set()
+    $moves : List()
 then
     GenteMove centerMove = new GenteMove ($player, new GridCell (
         (int) dim.getHeight() / 2, (int) dim.getWidth() / 2, $player.getColor()));
@@ -53,12 +54,12 @@ when
     $grid : GameGrid (empty == false)
     $player : GridPlayer ()
     $cell : GridCell ()
-    $moves : Set()    
+    $moves : List()
 then
     modify ($cell) { setColor ($player.getColor()) };
     GenteMove move = new GenteMove ($player, $cell);
     modify ($moves) { add (move) };
-    retract ($player);
+    retract ($cell);
 end
 
 rule "random-move-against-enemy"
@@ -66,7 +67,7 @@ rule "random-move-against-enemy"
 when
     not GridCell ()
     $player : GridPlayer()
-    $moves : Set()
+    $moves : List()
 then
     if (unbound.iterator().hasNext()) {
         GridCell cell = (GridCell) unbound.iterator().next();
