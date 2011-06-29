@@ -20,7 +20,12 @@
             <modules>            
                 <module>Gente</module>
                 <module>Manantiales</module>                   
+<<<<<<< HEAD
                 <module>Flex</module>
+=======
+                <module>FlexClient</module>
+                <module>FlexDS</module>
+>>>>>>> Removed bad game reference from build.
             </modules>
         </profile>
     </profiles>
