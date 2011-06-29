@@ -20,7 +20,6 @@
             <modules>            
                 <module>Gente</module>
                 <module>Manantiales</module>                   
-                <module>Pasale</module>             
                 <module>Flex</module>
             </modules>
         </profile>
