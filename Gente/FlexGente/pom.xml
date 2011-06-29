@@ -5,7 +5,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 <artifactId>flex-gente</artifactId>
 <packaging>swf</packaging>
 <name>Flex Gente</name>
-<description>Flex UI implementation for Gente game.</description>
+<description>Flex UI for Gente game.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
     <artifactId>multi-game-flex-client</artifactId>

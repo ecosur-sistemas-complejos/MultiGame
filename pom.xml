@@ -21,8 +21,7 @@
                 <module>Gente</module>
                 <module>Manantiales</module>                   
                 <module>Pasale</module>             
-                <module>FlexClient</module>
-                <module>FlexDS</module>
+                <module>Flex</module>
             </modules>
         </profile>
     </profiles>
