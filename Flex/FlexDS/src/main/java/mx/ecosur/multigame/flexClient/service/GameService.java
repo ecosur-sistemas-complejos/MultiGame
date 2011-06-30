@@ -25,7 +25,6 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
-import mx.ecosur.multigame.impl.entity.pasale.PasaleGame;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.grid.entity.GameGrid;
