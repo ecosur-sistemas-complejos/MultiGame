@@ -122,7 +122,10 @@
 <mx:ArrayCollection id="gameList">
     <mx:Object label="{resourceManager.getString('Lobby', 'start.game.gente')}" data="GENTE"/>
     <mx:Object label="{resourceManager.getString('Lobby', 'start.game.manantiales')}" data="MANANTIALES"/>
+<<<<<<< HEAD
     <mx:Object label="{resourceManager.getString('Lobby', 'start.game.pasale')}" data="PASALE"/>    
+=======
+>>>>>>> Removed references to "pasale" after module has been removed from history (rebase).
 </mx:ArrayCollection>
 
 <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
