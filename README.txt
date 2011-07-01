@@ -159,18 +159,6 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
 FLEX CONFIGURATION
 
-  AS3ISOLIB
-
-  as3isolib will need to be installed locally.  Please download a copy of the swc
-  file from google code:
-
-  http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
-
-  Use the maven install plugin to install the dependency locally:
-
-  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc
-    -Dfile=as3isolib.v1.core.swc
-
 
 FRAMEWORK RUNTIME SHARED LIBRARIES
 
@@ -199,5 +187,19 @@ FRAMEWORK RUNTIME SHARED LIBRARIES
     -Dversion=4.1.0.16076 -Dpackaging=swz
     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
-  All other dependencies are managed by means of Maven.
+PASALE COMPADRE!
+
+   In order to work with Pasale Compadre, as3isolib will need to be installed locally.  
+   Please download a copy of the swc file from google code:
+
+        http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
+
+  Use the maven install plugin to install the dependency locally:
+
+  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc
+    -Dfile=as3isolib.v1.core.swc
+
+
+**  All other dependencies are managed by means of Maven and repositories included in 
+    the top-level pom.xml. **
 
