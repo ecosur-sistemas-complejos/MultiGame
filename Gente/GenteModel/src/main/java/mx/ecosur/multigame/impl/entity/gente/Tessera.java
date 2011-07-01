@@ -35,14 +35,6 @@ public class Tessera implements Serializable {
     }
 
     public void setCells(Set<GridCell> cells) {
-<<<<<<< HEAD:Gente/GenteModel/src/main/java/mx/ecosur/multigame/impl/entity/gente/Tessera.java
-<<<<<<< HEAD:Gente/GenteModel/src/main/java/mx/ecosur/multigame/impl/entity/gente/Tessera.java
-=======
-        if (cells != null && cells.size() > 4)
-            throw new RuntimeException("Unable to create tessera with " + cells.size() + " cells!");
->>>>>>> Minor changes to Tria and Tessera entities, updates to Flex modules to be a) more explicit about variable to services-config.xml and b) correct issue in FlexMultigame where services was not being passed to the compiler by FlexMojos.:Gente/src/main/java/mx/ecosur/multigame/impl/entity/gente/Tessera.java
-=======
->>>>>>> Fixes for Manantiales (games couldn't load) and updates to Tria and Tessera code for Gente in order to avoid Hibernate's lazy instantiation exceptions on calling size().:Gente/src/main/java/mx/ecosur/multigame/impl/entity/gente/Tessera.java
         this._cells = cells;
     }
 

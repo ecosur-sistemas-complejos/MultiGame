@@ -112,8 +112,6 @@ public class GameService {
                     else
                         game = new ManantialesGame(Mode.valueOf(mode.toUpperCase()));
                     break;
-                case PASALE:
-                    game = new PasaleGame();
             }
 
             game = (GridGame) registrar.registerPlayer(game, player);

@@ -49,8 +49,6 @@
 					gameLoader.url = "Gente.swf";
 				} else if (playEvent.game is ManantialesGame) {
                     gameLoader.url = "Manantiales.swf";
-                } else if (playEvent.game is PasaleGame) {
-                    gameLoader.url = "Pasale.swf";
                 } else {
 					Alert.show("Error!  Unknown GameType [" + playEvent.game + "]");
 					Alert.show("Game info" + playEvent.game.id + "," + playEvent.game.columns + ", " + playEvent.game.rows);

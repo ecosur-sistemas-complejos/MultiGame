@@ -162,10 +162,6 @@ public class GenteGame extends GridGame {
         if (colors == null)
             throw new RuntimeException ("No colors available!  Current players: " + players);
         GentePlayer player = new GentePlayer((GridRegistrant) registrant, colors.get(0));
-<<<<<<< HEAD:Gente/GenteModel/src/main/java/mx/ecosur/multigame/impl/entity/gente/GenteGame.java
-=======
-
->>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Gente/src/main/java/mx/ecosur/multigame/impl/entity/gente/GenteGame.java
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 return p;
@@ -173,11 +169,6 @@ public class GenteGame extends GridGame {
         int max = getMaxPlayers();
         if (players.size() == max)
             throw new InvalidRegistrationException ("Maximum Players reached!");
-<<<<<<< HEAD:Gente/GenteModel/src/main/java/mx/ecosur/multigame/impl/entity/gente/GenteGame.java
-=======
-
-
->>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Gente/src/main/java/mx/ecosur/multigame/impl/entity/gente/GenteGame.java
         player.setColor(colors.get(0));
         players.add(player);
         try {

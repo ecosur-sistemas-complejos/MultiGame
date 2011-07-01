@@ -55,11 +55,7 @@ public class AgentRuleFunctions {
         TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new MoveComparator());
         if (gridGame instanceof GenteGame) {
             GenteGame game = (GenteGame) gridGame;
-<<<<<<< HEAD:Gente/GenteModel/src/main/java/mx/ecosur/multigame/impl/util/gente/AgentRuleFunctions.java
             List<GridCell> unbound = findUnboundAdjacentCells(game, colors);
-=======
-            Set<GridCell> unbound = findUnboundAdjacentCells(game, colors);
->>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Gente/src/main/java/mx/ecosur/multigame/impl/util/gente/AgentRuleFunctions.java
             /*
             for (GridCell cell : unbound){
                 try {

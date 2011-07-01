@@ -8,11 +8,7 @@
 package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.grid.comparator.MoveComparator;
-<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/MoveHistory.java
 import mx.ecosur.multigame.grid.entity.GridMove;
-=======
-import mx.ecosur.multigame.grid.model.GridMove;
->>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/MoveHistory.java
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import org.hibernate.annotations.Sort;
 

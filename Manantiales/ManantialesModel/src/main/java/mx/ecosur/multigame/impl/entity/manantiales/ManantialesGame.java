@@ -124,13 +124,7 @@ public class ManantialesGame extends GridGame {
         this.moveHistory = moveHistory;
     }
 
-<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-=======
-    //@OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    //TODO: Fix mapping for checkconditions.
-    @Transient
->>>>>>> Fixes for Manantiales. Sourced OptimsticLockException down to CheckConditions Set in ManantialesGame.  With this getter marked @Transient, games can now be loaded and played with out the exception.  Will correct on return from semana santa.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
     public Set<CheckCondition> getCheckConditions () {
         if (checkConditions == null) {
             checkConditions = new HashSet<CheckCondition>();
@@ -281,10 +275,6 @@ public class ManantialesGame extends GridGame {
             setPlayers(new TreeSet<GridPlayer>());
         List<Color> colors = getAvailableColors();
         ManantialesPlayer player = new ManantialesPlayer((GridRegistrant) registrant, colors.get(0));
-<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
-=======
-
->>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
         for (GridPlayer p : this.getPlayers()) {
             if (p.equals (player))
                 throw new InvalidRegistrationException ("Duplicate Registraton!");
@@ -292,11 +282,6 @@ public class ManantialesGame extends GridGame {
         int max = getMaxPlayers();
         if (players.size() == max)
             throw new RuntimeException ("Maximum Players reached!");
-<<<<<<< HEAD:Manantiales/ManantialesModel/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
-=======
-
-
->>>>>>> Updates to handle modifications to GamePlayer and Registrant.:Manantiales/src/main/java/mx/ecosur/multigame/impl/entity/manantiales/ManantialesGame.java
         if (player.getColor().equals(Color.YELLOW))
             player.setTurn(true);
         players.add(player);
