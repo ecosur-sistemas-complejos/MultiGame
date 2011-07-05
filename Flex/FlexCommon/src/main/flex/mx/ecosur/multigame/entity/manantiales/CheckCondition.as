@@ -35,7 +35,7 @@ package mx.ecosur.multigame.entity.manantiales
             return _reason;
         }
 
-        public function set reason(reason:String) {
+        public function set reason(reason:String):void {
             _reason = reason;
         }
 
@@ -43,7 +43,7 @@ package mx.ecosur.multigame.entity.manantiales
             return _reason;
         }
 
-        public function set type(typ:String) {
+        public function set type(typ:String):void {
             _reason = typ;
         }
 
