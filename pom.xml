@@ -17,7 +17,15 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <modules>            
+            <properties>
+                <debug>true</debug>
+                <player>10.0.0</player>
+                <classifier>10</classifier>
+                <flex-version>4.1.0.16076</flex-version>
+                <flexmojos-version>3.8</flexmojos-version>
+                <servicesConfig>${basedir}/../../../Deploy/EcosurWAR/src/main/webapp/WEB-INF/flex/services-config.xml</servicesConfig>
+            </properties>
+            <modules>
                 <module>Gente</module>
                 <module>Manantiales</module>                   
                 <module>Flex</module>
