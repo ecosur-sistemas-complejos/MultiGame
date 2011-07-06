@@ -19,6 +19,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
+                <module>FlexConfig</module>
                 <module>FlexCommon</module>
                 <module>FlexMultigame</module>
                 <module>FlexDS</module>

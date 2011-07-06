@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services-config>
+
+    <services>
+        <service-include file-path="remoting-config.xml" />
+        <service-include file-path="messaging-config.xml" />
+    </services>
+
+    <channels>
+        <channel-definition id="amf" class="mx.messaging.channels.AMFChannel">
+            <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/amf" class="flex.messaging.endpoints.AMFEndpoint"/>
+            <properties>
+                <serialization>
+                    <log-property-errors>true</log-property-errors>
+                    <ignore-property-errors>true</ignore-property-errors>
+                </serialization>
+            </properties>
+        </channel-definition>
+    </channels>
+
+    <logging>
+        <target class="flex.messaging.log.ConsoleTarget" level="Error">
+            <properties>
+                <prefix>[BlazeDS]</prefix>
+                <includeDate>true</includeDate>
+                <includeTime>true</includeTime>
+                <includeLevel>false</includeLevel>
+                <includeCategory>false</includeCategory>
+            </properties>
+            <filters>
+                <pattern>Endpoint.*</pattern>
+                <pattern>Service.*</pattern>
+                <pattern>Configuration</pattern>
+                <pattern>Service.Message.JMS</pattern>
+            </filters>
+        </target>
+    </logging>
+    <system>
+        <redeploy>
+            <enabled>true</enabled>
+        </redeploy>
+    </system>
+</services-config>

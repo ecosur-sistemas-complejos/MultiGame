@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="message-service" 
+    class="flex.messaging.services.MessageService">
+
+    <adapters>
+        <adapter-definition id="actionscript" class="flex.messaging.services.messaging.adapters.ActionScriptAdapter" default="true" />
+        <adapter-definition id="jms" class="flex.messaging.services.messaging.adapters.JMSAdapter"/>
+    </adapters>
+
+    <default-channels>
+        <channel ref="amf"/>
+    </default-channels>
+    
+    <destination id="multigame-destination">
+        <properties>
+            <jms>
+                <destination-type>Topic</destination-type>
+                <message-type>javax.jms.ObjectMessage</message-type>
+                <connection-factory>MultiGameConnectionFactory</connection-factory>
+                <destination-jndi-name>MultiGame</destination-jndi-name>
+                <delivery-mode>NON_PERSISTENT</delivery-mode>
+                <message-priority>DEFAULT_PRIORITY</message-priority>
+                <preserve-jms-headers>"true"</preserve-jms-headers>
+                <acknowledge-mode>AUTO_ACKNOWLEDGE</acknowledge-mode>
+            </jms>
+        </properties>
+
+        <adapter ref="jms"/>
+    </destination>
+
+</service>
