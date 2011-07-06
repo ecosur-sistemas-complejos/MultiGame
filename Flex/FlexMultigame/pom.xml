@@ -17,6 +17,27 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <finalName>main</finalName>
     <plugins>
         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>unpack-dependencies</goal>
+                    </goals>
+                    <phase>generate-resources</phase>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                        <includeArtifactIds>flex-config</includeArtifactIds>
+                        <includeGroupIds>${project.groupId}</includeGroupIds>
+                        <classifier>resources</classifier>
+                        <type>tar.gz</type>
+                        <excludeTypes>jar</excludeTypes>
+                        <excludeTransitive>true</excludeTransitive>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
             <groupId>org.sonatype.flexmojos</groupId>
             <artifactId>flexmojos-maven-plugin</artifactId>
             <version>${flexmojos-version}</version>
@@ -25,7 +46,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <debug>${debug}</debug>
                 <sourceFile>main.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
-                <services>${servicesConfig}</services>
+                <services>${project.build.directory}/generated-resources/services-config.xml</services>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
                     <compiledLocale>en_US</compiledLocale>
@@ -64,7 +85,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </plugins>
 </build>
 <dependencies>
-   
+    <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>flex-config</artifactId>
+        <version>${project.version}</version>
+        <classifier>resources</classifier>
+        <type>tar.gz</type>
+    </dependency>
    <!-- Cached rsl dependencies -->
 	<dependency>
 		<groupId>com.adobe.flex.framework</groupId>
