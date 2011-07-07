@@ -114,7 +114,7 @@
                 </exclusion>
                 <exclusion>
                     <groupId>jboss</groupId>
-                    <artifactId>jboss-j2ee</artifactId>
+                    <artifactId>jboss-jee</artifactId>
                 </exclusion>
             </exclusions>
             <scope>test</scope>
