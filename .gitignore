@@ -194,3 +194,14 @@
 /Manantiales/ManantialesModel/target/
 /games-module.iml
 /Flex/FlexConfig/target/
+/Flex/flex-module.iml
+/Flex/FlexCommon/flex-commons.iml
+/Flex/FlexConfig/flex-config.iml
+/Flex/FlexDS/flex-ds.iml
+/Flex/FlexMultigame/flex-client.iml
+/Gente/FlexGente/flex-gente.iml
+/Gente/gente-module.iml
+/Gente/GenteModel/gente.iml
+/Manantiales/FlexManantiales/flex-manantiales.iml
+/Manantiales/manantiales-module.iml
+/Manantiales/ManantialesModel/manantiales.iml

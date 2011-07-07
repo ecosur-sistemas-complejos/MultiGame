@@ -107,7 +107,31 @@
             <groupId>com.mockrunner</groupId>
             <artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
             <version>0.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib-nodep</groupId>
+                    <artifactId>cglib-nodep</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jboss</groupId>
+                    <artifactId>jboss-j2ee</artifactId>
+                </exclusion>
+            </exclusions>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>nodep</artifactId>
+            <version>2.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/cglib-nodep-2.1_3.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jboss</groupId>
+            <artifactId>javaee-modified</artifactId>
+            <version>4.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jboss-j2ee.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javax.jms</groupId>
