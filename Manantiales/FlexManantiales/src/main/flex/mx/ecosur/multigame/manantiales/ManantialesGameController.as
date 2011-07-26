@@ -457,6 +457,8 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                 if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
                     var fnc:Function = function (event:CloseEvent):void{
                         _moveHandler.invalidMove(_executingMove);
+                        _gameWindow.currentState = _game.mode;
+                        _tokenHandler.initializeTokenStores();
                     }
                     Alert.show(resourceManager.getString("Manantiales","manantiales.move.invalid"),
                             resourceManager.getString("Manantiales","manantiales.move.error.title"), Alert.OK, null,
