@@ -162,6 +162,6 @@ public class GentePlayer extends GridPlayer {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getId()).append(points).append(tesseras).append(trias).append(getColor()).toHashCode();
+        return new HashCodeBuilder().append(getId()).append(getName()).append(points).append(getColor()).toHashCode();
     }
 }
