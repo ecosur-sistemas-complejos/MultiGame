@@ -29,7 +29,7 @@
             private function updatePlayers ():void {
                 _deforested = 0, _undeveloped = TERRITORY;
                 for (var i:int = 0; i < _game.players.length; i++) {
-                    var player:ManantialesPlayer = ManantialesPlayer(_game.players.getItemAt(i));
+                    var player:ManantialesPlayer = ManantialesPlayer(_game.players[i]);
                     var forested:int = player.forested;
                     var moderate:int = player.moderate;
                     var intensive:int = player.intensive;
@@ -76,13 +76,13 @@
                 <mx:Image source="@Embed(source='/assets/icons.swf#cellIconYELLOW')" />
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconRED')" />
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconPURPLE')" />
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconBLACK')" />
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconRED')" />
             </mx:GridItem> 
             <mx:GridItem>
-                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconPURPLE')" />
+                <mx:Image source="@Embed(source='/assets/icons.swf#cellIconBLACK')" />
             </mx:GridItem>                                   
         </mx:GridRow>
         <mx:GridRow>
