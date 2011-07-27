@@ -111,18 +111,20 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
                     move.setDestinationCell(ficha);
                     move.setMode (game.getMode());
                     ret.add(move);
-                    setNextMove(move);
+                    if (getNextMove() == null)
+                        setNextMove(move);
                 }
             }
 
             ret.addAll(findUpgradeMoves(game));
         }
 
-        ManantialesMove pass = generatePassMove(game);
-        ret.add (pass);
-
-        if (getNextMove() == null)
-            setNextMove(pass);
+        if (game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL)) {
+            ManantialesMove pass = generatePassMove(game);
+            ret.add (pass);
+            if (getNextMove() == null)
+                setNextMove(pass);
+        }
 
         Collections.shuffle(ret);
         return ret;
