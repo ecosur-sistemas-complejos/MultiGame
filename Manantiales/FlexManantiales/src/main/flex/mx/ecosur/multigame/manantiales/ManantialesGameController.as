@@ -142,10 +142,12 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         public function sendMove (move:ManantialesMove):void {
             /* forcibly set the mode to that current state */
             move.mode = _game.mode;
+            _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                    "Manantiales", "manantiales.move.processing"), Color.getColorCode(_currentPlayer.color));
             var call:Object = _gameService.doMove(_game, move);
             call.operation = "doMove";
             _executingMove = move;
-            endTurn();
+            _gameWindow.currentState = "";
         }
         
 
@@ -354,12 +356,13 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             PopUpManager.removePopUp(_annCondGen);
             _annCondGen = null;
             if(!event.isGoodYear){
+                /* retract tokens */
+                _gameWindow.currentState = "";
                 var move:ManantialesMove = new ManantialesMove ();
                 move.badYear = true;
                 move.player = _currentPlayer;
                 move.mode = _game.mode;
-                var call:Object = _gameService.doMove(_game, move);
-                call.operation = GAME_SERVICE_DO_MOVE_OP;
+                sendMove(move);
             }
         }
 
@@ -387,18 +390,11 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             this._gameWindow.dispatchCompletion();
         }
 
-        private function endTurn():void {                                    
-               /* return the window to the default state */
-            _gameWindow.currentState = "";
-        }
-
         public function set isTurn(isTurn:Boolean):void{
             if(_isTurn != isTurn){
                 _isTurn = isTurn;
                 if (_isTurn){
                     initTurn();
-                }else{
-                    endTurn();
                 }
             }
         }
