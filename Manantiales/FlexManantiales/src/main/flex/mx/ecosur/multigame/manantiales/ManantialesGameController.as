@@ -419,18 +419,23 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                     _gameWindow.chatPanel.currentPlayer = _currentPlayer;
                     this.isTurn = _currentPlayer.turn;
                 }
-                if (gamePlayer.turn){
-                    if (gamePlayer.id == _currentPlayer.id){
-                        _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                                "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
-                    }else{
-                        _gameWindow.gameStatus.showMessage(
-                            gamePlayer.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
-                                    Color.getColorCode(gamePlayer.color));
-                    }
+                if (game.state == GameState.PLAY) {
+                        if (gamePlayer.turn){
+                            if (gamePlayer.id == _currentPlayer.id){
+                                _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                                    "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
+                                initTurn();
+                            }else{
+                                _gameWindow.gameStatus.showMessage(
+                                    gamePlayer.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
+                                            Color.getColorCode(gamePlayer.color));
+                            }
+                        }
+                } else {
+                    _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                        "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
                 }
             }
-
             _gameWindow.currentGame = game;
             _players = _game.players;
 
