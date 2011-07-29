@@ -744,32 +744,6 @@ then
     messageSender.sendConditionTriggered ($game, $constraint);
 end
 
-rule "puzzle-solved"
-    agenda-group "evaluate"
-    no-loop true
-    salience -5
-when
-    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode in (
-        Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
-    eval (isSolved ($mode, $game))
-then
-    Set<GridPlayer> players = $game.getPlayers();
-    Random random = new Random();
-    int index = random.nextInt(4);
-    for (GridPlayer p : players) {
-        ManantialesPlayer player = (ManantialesPlayer) p;
-        player.reset();
-        if (player.getColor().equals(Color.YELLOW))
-            player.setTurn(true);
-        else
-            player.setTurn(false);
-    }
-    GameGrid grid = new GameGrid ();
-    Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
-    messageSender.sendStateChange($game);
-end
-
 rule "invalid-move"
     agenda-group "evaluate"
     no-loop true
@@ -781,41 +755,14 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "stage-won"
-    agenda-group "evaluate"
-    no-loop true
-    salience -5
-when
-    $game  : ManantialesGame (state == GameState.PLAY, mode in (Mode.CLASSIC,
-        Mode.SILVOPASTORAL))
-    $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
-    eval (isWinner ($game.getMode(), (ManantialesPlayer) $player))
-then
-    Set<GridPlayer> players = $game.getPlayers();
-    Random random = new Random();
-    int index = random.nextInt(4);
-    for (GridPlayer p : players) {
-        ManantialesPlayer player = (ManantialesPlayer) p;
-        player.reset();
-        if (player.getColor().equals(Color.YELLOW))
-            player.setTurn(true);
-        else
-            player.setTurn(false);
-    }
-    GameGrid grid = new GameGrid ();
-    Mode mode = incrementMode($game.getMode());
-    modify ($game) { setGrid (grid), setPlayers (players), setMode (mode) }
-    messageSender.sendStateChange($game);
-end
-
 rule "game-won"
     agenda-group "evaluate"
     no-loop true
     salience -10
 when
-    $game  : ManantialesGame (state == GameState.PLAY, mode == Mode.SILVO_PUZZLE)
+    $game  : ManantialesGame (state == GameState.PLAY, checkConditions.size == 0)
     $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
-    eval (isSolved (Mode.SILVO_PUZZLE, $game))
+    eval (isSolved ($game.getMode(), $game) || isWinner($game.getMode(), (ManantialesPlayer) $player))
 then
     modify ($game) { setState (GameState.ENDED) };
     messageSender.sendEndGame ($game);

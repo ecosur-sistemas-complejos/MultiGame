@@ -60,7 +60,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         private var _annCondGen:AnnualConditionsGenerator;
         private var _alerts:ArrayCollection;
         private var _endAlert:GraphicAlert;
-        private var _stageChangeAlert:GraphicAlert;
 
         private var _msgReceiver:MessageReceiver;
         private var _isEnded:Boolean;
@@ -74,6 +73,9 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
         static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
         static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+
+        static const CLASSIC_WINNING_SCORE = 24;
+        static const SILVO_WINNING_SCORE = 32;
 
         /* Needed to force compilation of SimplePlayer in .swf file */
         private var _unUsed:SimpleAgent;
@@ -185,6 +187,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                             break;
                         case ManantialesEvent.END:
                             game = ManantialesGame(message.body);
+                            updatePlayers(game);
                             handleGameEnd (game);
                             break;
                         case ManantialesEvent.MOVE_COMPLETE:
@@ -207,10 +210,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                         case ManantialesEvent.CONDITION_TRIGGERED:
                             checkCondition = CheckCondition(message.body);
                             handleCheckConstraintTriggered (checkCondition);
-                            break;
-                        case ManantialesEvent.STATE_CHANGE:
-                            game = ManantialesGame(message.body);
-                            handleStateChange (game);
                             break;
                         case ManantialesEvent.SUGGESTION_EVALUATED:
                             suggestion = Suggestion(message.body);
@@ -264,10 +263,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
          * Called when game ends
          */
         private function end():void{
-
-            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales","manantiales.have.won"),
-               0x000000);
-
             if(_isEnded){
                 return;
             }
@@ -431,7 +426,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                                             Color.getColorCode(gamePlayer.color));
                             }
                         }
-                } else {
+                } else if (game.state != GameState.ENDED) {
                     _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
                         "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
                 }
@@ -518,86 +513,12 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             }
         }
 
-        private function handleStateChange (game:ManantialesGame):void {
-            _stateChange = true;
-            _gameWindow.currentState = "";
-            _game = game;
-            if (_stageChangeAlert == null) {
-                /* Set the mode */
-                _gameWindow.currentState = "";
-                var winner:Boolean = _isTurn;
-
-                /* update state */
-                updatePlayers (_game);
-                
-                _stageChangeAlert = new GraphicAlert();
-                if (_game.mode == Mode.BASIC_PUZZLE || _game.mode == Mode.SILVO_PUZZLE) {
-                    if (winner) {
-                        _stageChangeAlert.text = " '" +
-                            game.mode + "'";
-                        _stageChangeAlert.positive = true;
-
-                    } else {
-                        _stageChangeAlert.text = resourceManager.getString("Manantiales",
-                                "manantiales.competitive.lose") + " '" +
-                            game.mode + "'";
-                        _stageChangeAlert.positive = false;
-                    }
-                } else {
-                    _stageChangeAlert.text = resourceManager.getString("Manantiales","manantiales.puzzle.solved") +
-                            " '" + game.mode + "'";
-                    _stageChangeAlert.positive = true;
-                }
-
-                _stageChangeAlert.addEventListener ("result", handleStateChangeResult);
-
-                /* Announce change */
-                PopUpManager.addPopUp(_stageChangeAlert, _gameWindow, true);
-                PopUpManager.centerPopUp(_stageChangeAlert);
-
-                _stageChangeAlert.play();
-            }
-        }
-
-        private function handleStateChangeResult (event:DynamicEvent):void {
-            PopUpManager.removePopUp(_stageChangeAlert);
-            _stageChangeAlert = null;
-
-            _gameWindow.currentState = _game.mode;
-
-            /* Clear moves for next stage  */
-            _moves = new ArrayCollection();
-
-            _selectedMoveInd = _moves.length - 1;
-
-            _gameWindow.invalidateDisplayList();
-            _gameWindow.leftBox.invalidateDisplayList();
-            _gameWindow.leftBox.invalidateProperties();
-            _gameWindow.invalidateSize();
-            _tokenHandler.resetTokenStores();
-
-            /* Init Game Grid with clear grid */
-            _stateChange = false;
-            _msgReceiver.destroy();
-
-            /* Reinitialize the message reciever */
-            _msgReceiver = new MessageReceiver(MESSAGING_DESTINATION_NAME, _game.id);
-            _msgReceiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, processMessage);
-
-            /* Reset game state */
-            _gameWindow.currentState = _game.mode;
-
-            // get the game grid, players and moves
-            var callGrid:Object = _gameService.getGameGrid(_gameId);
-            callGrid.operation = GAME_SERVICE_GET_GRID_OP;
-            var callPlayers:Object = _gameService.getPlayers(_gameId);
-            callPlayers.operation = GAME_SERVICE_GET_PLAYERS_OP;
-            var callMoves:Object = _gameService.getMoves(_gameId, _game.mode);
-            callMoves.operation = GAME_SERVICE_GET_MOVES_OP;
-        }        
-
         private function handleGameEnd (game:ManantialesGame):void {
                 var i:int;
+
+                    /* Remove all alert conditions from the PopUpManager */
+                for (i = 0; i < _alerts.length; i++)
+                        PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
 
                 if (_endAlert == null) {
                         _endAlert = new GraphicAlert();
@@ -620,21 +541,35 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                           _endAlert.text = resourceManager.getString("Manantiales","manantiales.severe.expiration") +
                                   " ('" + expiredCondition.reason + "')";
                           _endAlert.positive = false;
-                        } else {
-                            _endAlert.text = resourceManager.getString("Manantiales","manantiales.all.winners");
-                            _endAlert.positive = true;
-                            end();
+                        } else
+                        {
+                            if (puzzleMode) {
+                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.all.winners");
+                                _endAlert.positive = true;
+                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                        "Manantiales","manantiales.have.won"), 0x000000);
+                            } else if (isWinner()) {
+                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.competitive.win");
+                                _endAlert.positive = true;
+                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                        "Manantiales","manantiales.have.won"), 0x000000);
+                            } else {
+                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.competitive.lose");
+                                _endAlert.positive = false;
+                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                        "Manantiales","manantiales.competitive.lose"), 0x000000);
+                            }
                         }
 
                     _endAlert.addEventListener("result",handleEndResult);
+                    PopUpManager.addPopUp(_endAlert, _gameWindow, true);
+                    PopUpManager.centerPopUp(_endAlert);
                 }
+        }
 
-                    /* Remove all alert conditions from the PopUpManager */
-                for (i = 0; i < _alerts.length; i++)
-                        PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
-
-            PopUpManager.addPopUp(_endAlert, _gameWindow, true);
-            PopUpManager.centerPopUp(_endAlert);
+        private function isWinner():Boolean {
+            return (_game.mode == Mode.CLASSIC && _currentPlayer.score >= CLASSIC_WINNING_SCORE) ||
+                  (_game.mode == Mode.SILVOPASTORAL && _currentPlayer.score >= SILVO_WINNING_SCORE);
         }
 
         public function destroy():void{
