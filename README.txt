@@ -48,17 +48,20 @@ and techniques).
 
 JBOSS AS6 CONFIGURATION
 
-1. Persistence.xml.
+1. MySQL-DS.xml and Persistence.xml.
 
-   Hibernate is the default provider for JBoss, but Derby is not the default
-   database. Users can install derby on the target system, or simply use the
-   configured hibernate dialect to work with the default JBoss database (hsql):
+   Hibernate is the default database provider for JBoss BUT Multi-Game is configured to run
+   with MySQL.
 
-   <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+   For convenience, we have placed a sample mysql-ds.xml file in the resources of the
+   EcosurJPA module, which can be used to configure a properly configured MySQL server
+   as a datasource. Please only hot deploy the Multi-Game EAR file to JBoss in this
+   configuration, as an existing issue may cause problems on start
+   [http://community.jboss.org/message/552054?tstart=0].
 
-   The datasource name may need to be changed.  Be sure to examine that the
-   local persistence.xml file points to the correct datasource, "java:DefaultDS"
-   for JBoss.
+   NOTE:  Users may also use the default hibernate dialect to work with the default JBoss
+   database (hsql) by modifying the marked and commented areas of the persistence.xml file
+   and commenting out the mysql specific locations.
 
 2. Local users and roles.  The file "jbossws-users.properties" controls user access to
    the server as part of the local file domain.  Please edit this file to contain the
