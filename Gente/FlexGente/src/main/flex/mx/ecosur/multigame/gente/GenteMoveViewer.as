@@ -55,7 +55,7 @@ package mx.ecosur.multigame.gente {
             var pmi:GenteMoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
                 pmi = GenteMoveInfo(_moves.getChildAt(i))
-                if (move.orderId == pmi.genteMove.orderId){
+                if (move.id == pmi.genteMove.id){
                     
                     //deselect currently selected button
                     var btn:Button;
@@ -106,7 +106,7 @@ package mx.ecosur.multigame.gente {
             
             //check that move has not already been added
             for (var i:int = 0; i < _moves.numChildren; i++){
-                if (GenteMoveInfo(_moves.getChildAt(i)).genteMove.orderId == move.orderId){
+                if (GenteMoveInfo(_moves.getChildAt(i)).genteMove.id == move.id){
                     return;
                 }
             }
@@ -138,7 +138,7 @@ package mx.ecosur.multigame.gente {
             var pmi:GenteMoveInfo;
             for (var i:int = 0; i < _moves.numChildren; i++){
                 pmi = GenteMoveInfo(_moves.getChildAt(i));
-                if(pmi.genteMove.orderId == move.orderId){
+                if(pmi.genteMove.id == move.id){
                     pmi.genteMove = move;
                     break;
                 }
