@@ -38,14 +38,19 @@
         }
 
         public function set currentGame(currentGame:GenteGame):void {
-            _currentGame = currentGame;
-			rows = currentGame.rows;
-			columns = currentGame.columns;
+            if (currentGame != null) {
+                _currentGame = currentGame;
+                rows = currentGame.rows;
+                columns = currentGame.columns;
+            }
+
         }
 
         public function set currentPlayer(currentPlayer:GamePlayer):void {
-            _currentPlayer = currentPlayer;
-            CursorManager.removeBusyCursor();
+            if (currentPlayer != null) {
+                _currentPlayer = currentPlayer;
+                CursorManager.removeBusyCursor();
+            }
         }
 
         [Bindable]
