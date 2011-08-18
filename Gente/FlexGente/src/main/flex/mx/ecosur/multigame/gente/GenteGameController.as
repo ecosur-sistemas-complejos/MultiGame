@@ -410,16 +410,16 @@ package mx.ecosur.multigame.gente{
             // if move is before the currently selected move then iterate
             // back over the moves transforming the board
             // else iterate forward
-            if(move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId){
+            if(move.id < GenteMove(_moves[_selectedMoveInd]).id){
                 do{
                     undoMove(GenteMove(_moves[_selectedMoveInd]));
                     _selectedMoveInd --;                    
-                } while(move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd > 0);
-            } else if (move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd < _moves.length){
+                } while(move.id < GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > 0);
+            } else if (move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length){
                 do{
                     doMove(GenteMove(_moves[_selectedMoveInd + 1]));
                     _selectedMoveInd ++;
-                } while(move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd < _moves.length);
+                } while(move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
             }
         }
         
@@ -437,7 +437,7 @@ package mx.ecosur.multigame.gente{
             
             //if move is after the last move then add moves
             //else update the move since its info may have changed
-            if (lastMove == null || move.orderId > lastMove.orderId){
+            if (lastMove == null || move.id > lastMove.id){
                 //add to moves
                 _moves.source.push(move);
                 
@@ -452,7 +452,7 @@ package mx.ecosur.multigame.gente{
                 var oldMove:GenteMove;
                 for (var i:Number = _moves.length - 1; i >= 0; i--){
                     oldMove = GenteMove(_moves[i]);
-                    if (oldMove.orderId == move.orderId){
+                    if (oldMove.id == move.id){
                         _moves[i] = move;
                         _moveViewer.updateMove(move);
                         break;

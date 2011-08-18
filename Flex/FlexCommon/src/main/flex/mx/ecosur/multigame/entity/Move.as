@@ -18,7 +18,6 @@ package mx.ecosur.multigame.entity {
     public class Move {
 
         protected var _id:int;
-        private var _orderId:int;
         protected var _player:GamePlayer;
         protected var _current:Cell;
         protected var _destination:Cell;
@@ -34,14 +33,6 @@ package mx.ecosur.multigame.entity {
 
         public function set id(id:int):void{
             _id = id;
-        }
-
-        public function get orderId():int {
-            return _orderId;
-        }
-
-        public function set orderId(value:int):void {
-            _orderId = value;
         }
 
         public function get status():String{

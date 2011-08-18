@@ -9,6 +9,7 @@
 
     <mx:Script>
         <![CDATA[
+        import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.enum.GameState;
         import mx.ecosur.multigame.event.PlayEvent;
         import mx.ecosur.multigame.entity.Registrant;
@@ -25,6 +26,7 @@
         import mx.rpc.events.ResultEvent;
         import mx.controls.Alert;
 
+        public var agent:Agent;
         public var player:Registrant;
         private var _games:ArrayCollection;
 

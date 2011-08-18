@@ -134,16 +134,16 @@ package mx.ecosur.multigame.gente{
 		
 		private function gotoMove(move:GenteMove):void{
 
-			if(_selectedMoveInd > -1 && move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId){
+			if(_selectedMoveInd > -1 && move.id < GenteMove(_moves[_selectedMoveInd]).id){
 				do{
 					undoMove(GenteMove(_moves[_selectedMoveInd]));
 					_selectedMoveInd --;					
-				} while (move.orderId < GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd > -1);
-			}else if ((_selectedMoveInd < 0 || move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId) && _selectedMoveInd < _moves.length){
+				} while (move.id < GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd > -1);
+			}else if ((_selectedMoveInd < 0 || move.id > GenteMove(_moves[_selectedMoveInd]).id) && _selectedMoveInd < _moves.length){
 				do{
 					doMove(GenteMove(_moves[_selectedMoveInd + 1]));
 					_selectedMoveInd ++;
-				} while(move.orderId > GenteMove(_moves[_selectedMoveInd]).orderId && _selectedMoveInd < _moves.length);
+				} while(move.id > GenteMove(_moves[_selectedMoveInd]).id && _selectedMoveInd < _moves.length);
 			}
 		}
 		

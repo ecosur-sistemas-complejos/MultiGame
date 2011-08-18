@@ -128,10 +128,6 @@ public class GenteGame extends GridGame {
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
 
-        if (moves != null)
-            move.setOrderId(moves.size() + 1);
-        else
-            move.setOrderId(1);
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);

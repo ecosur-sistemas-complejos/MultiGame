@@ -88,18 +88,18 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
          // if move is before the currently selected move then iterate
          // back over the moves transforming the board
          // else iterate forward
-         if(move.orderId < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId){
+         if(move.id < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id){
              do{
                  undoMove(ManantialesMove(_controller._moves[_controller._selectedMoveInd]));
                  _controller._selectedMoveInd --;
-             }while(move.orderId < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
+             }while(move.id < ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
                      && _controller._selectedMoveInd > 0);
-         }else if (move.orderId > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
+         }else if (move.id > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
                      && _controller._selectedMoveInd < _controller._moves.length){
              do{
                  doMove(ManantialesMove(_controller._moves[_controller._selectedMoveInd + 1]));
                  _controller._selectedMoveInd ++;
-             } while (move.orderId > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).orderId
+             } while (move.id > ManantialesMove(_controller._moves[_controller._selectedMoveInd]).id
                  && _controller._selectedMoveInd < _controller._moves.length);
          }
         }
@@ -120,7 +120,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                     
                     _controller._moves.source.push(move);
 
-                } else if (lastMove == null || move.orderId > lastMove.orderId){
+                } else if (lastMove == null || move.id > lastMove.id){
 
                     /* Suggestions are cleared on completion of any turn based moves */
                     if (move.player.turn)
@@ -140,7 +140,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                     var oldMove:ManantialesMove;
                     for (var i:Number = _controller._moves.length - 1; i >= 0; i--){
                         oldMove = ManantialesMove(_controller._moves[i]);
-                        if (oldMove.orderId == move.orderId){
+                        if (oldMove.id == move.id){
                             _controller._moves[i] = move;
                             break;
                         }

@@ -217,11 +217,6 @@ public class ManantialesGame extends GridGame {
         if (kbase == null)
             kbase = findKBase();
 
-        if (moves != null)
-            move.setOrderId(moves.size() + 1);
-        else
-            move.setOrderId(1);
-
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
