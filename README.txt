@@ -66,7 +66,7 @@ JBOSS AS6 CONFIGURATION
 2. Local users and roles.  The file "jbossws-users.properties" controls user access to
    the server as part of the local file domain.  Please edit this file to contain the
    users and passwords that you wish to authenticate.  The file "jbossws-roles.properties"
-   must be modified to contain the username + "=" and the group "admin" for all users
+   must be modified to contain the username + "=" and the group "MultiGame" for all users
    created in the jbossws-users.properties file that need access to multi-game.
 
 
@@ -135,7 +135,7 @@ the EAR file is being deployed:
         and playing the games.
         1.  Click on the "file" security realm.
         2.  Click on manage existing users.
-        3.  Add a user with the group admin, the username you want and the password.
+        3.  Add a user with the group MultiGame, the username you want and the password.
 
     Note:  security can be modified within the build to work with any other JAAS
     components available on the Server.  The "j2ee" user is required for the
