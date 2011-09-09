@@ -162,7 +162,6 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
 FLEX CONFIGURATION
 
-
 FRAMEWORK RUNTIME SHARED LIBRARIES
 
   This project uses signed framework libraries distributed by adobe and not present
@@ -190,17 +189,15 @@ FRAMEWORK RUNTIME SHARED LIBRARIES
     -Dversion=4.1.0.16076 -Dpackaging=swz
     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
-PASALE COMPADRE!
+FLEX UNIT 4
 
-   In order to work with Pasale Compadre, as3isolib will need to be installed locally.  
-   Please download a copy of the swc file from google code:
+  We are currently using FlexUnit 4 for the Flex based part of our unit tests. In order
+  to run these tests (and have the build successfully complete), you will need the flash
+  player on your build path, referenced as "flashplayer". There is an excellent write-up on
+  what to do if you have any troubles, especially if you're using OSX, in the following blog
+  post:
 
-        http://as3isolib.googlecode.com/svn/trunk/fp10/download/as3isolib.zip
-
-  Use the maven install plugin to install the dependency locally:
-
-  %> mvn install:install-file -DgroupId=as3isolib -DartifactId=as3isolib -Dversion=1.0 -Dpackaging=swc
-    -Dfile=as3isolib.v1.core.swc
+  http://seanp33.wordpress.com/2010/09/16/flexmojos-mac-osx-and-the-stand-alone-flash-player-debugger/
 
 
 **  All other dependencies are managed by means of Maven and repositories included in 
