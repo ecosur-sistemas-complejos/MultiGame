@@ -98,16 +98,6 @@
     <repositories>
     <repository>
         <id>repository.jboss.com</id>
-        <url>http://repository.jboss.com/</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-    <repository>
-        <id>repository2.jboss.com</id>
         <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
         <releases>
             <enabled>true</enabled>
@@ -117,14 +107,18 @@
         </snapshots>
     </repository>
     <repository>
-        <id>repository3.jboss.org</id>
-        <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
+        <id>maven-nuxeo</id>
+        <name>Maven Nuxeo Repository</name>
+        <url>https://maven.nuxeo.org/nexus/content/groups/public/</url>
+        <layout>default</layout>
         <releases>
             <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
         </releases>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+        </snapshots>
     </repository>
     <repository>
         <id>flex-mojos-repository</id>
