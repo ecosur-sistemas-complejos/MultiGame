@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </parent>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
-    <!--testSourceDirectory>src/test/flex</testSourceDirectory-->
+    <testSourceDirectory>src/test/flex</testSourceDirectory>
     <finalName>flex-commons</finalName>
     <plugins>
         <plugin>
@@ -22,6 +22,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <version>${flexmojos-version}</version>
             <extensions>true</extensions>
             <configuration>
+                <flashPlayerCommand>flashplayer</flashPlayerCommand>
                 <debug>${debug}</debug>
                 <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
                 <compiledLocales>
