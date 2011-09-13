@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>mx.ecosur</groupId>
     <artifactId>manantiales</artifactId>
     <name>Manantiales/Sierra Springs</name>
     <description>Implementation of the game Manantiales.</description>
@@ -77,7 +76,7 @@
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-api</artifactId>
+            <artifactId>knowledge-api</artifactId>
             <version>${drools.version}</version>
             <scope>provided</scope>
         </dependency>

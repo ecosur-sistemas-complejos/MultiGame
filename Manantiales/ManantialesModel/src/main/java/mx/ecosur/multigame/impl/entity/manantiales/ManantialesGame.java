@@ -213,6 +213,8 @@ public class ManantialesGame extends GridGame {
     @Override
     public Move move(Move impl) throws InvalidMoveException {
         ManantialesMove move = (ManantialesMove) impl;
+        if (move.getMode()== null)
+            move.setMode(getMode());
 
         if (kbase == null)
             kbase = findKBase();
@@ -243,7 +245,11 @@ public class ManantialesGame extends GridGame {
     @Override
     public Suggestion suggest (Suggestion suggestion) {
         if (kbase == null)
-            kbase = findKBase();        
+            kbase = findKBase();
+        ManantialesMove move = (ManantialesMove) suggestion.listMove();
+        if (move.getMode() == null)
+            move.setMode(getMode());
+
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);

@@ -113,7 +113,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (play, game.getGrid().getLocation(play));
@@ -130,7 +129,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         setIds (mod, intensive);
 
         ManantialesMove move = new ManantialesMove (alice, mod);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -145,7 +143,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         /* Replace the mod with an intensive */
         move = new ManantialesMove (alice, mod, intensive);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -163,15 +160,12 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha contig2 = new ManantialesFicha(6, 4, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
         setIds (contig1, contig2);
-
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>());
         game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
-        move.setMode(game.getMode());
         game.move (move);
-
         assertEquals (MoveStatus.INVALID, move.getStatus());
     }
         
@@ -182,15 +176,12 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha contig2 = new ManantialesFicha(5, 5, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
         setIds (contig1, contig2);
-
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>());
         game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
-        move.setMode(game.getMode());
         game.move (move);
-
         assertEquals (MoveStatus.INVALID, move.getStatus());
     }
 
@@ -208,9 +199,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
             grid.setCells(new TreeSet<GridCell>());
         game.getGrid().getCells().add(contig1);
         ManantialesMove move = new ManantialesMove (alice, contig2);
-        move.setMode(game.getMode());
         game.move (move);
-
         assertEquals (MoveStatus.INVALID, move.getStatus());
     }
 
@@ -234,7 +223,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         ArrayList filter = new ArrayList();
@@ -265,11 +253,9 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
         ManantialesFicha terminator = new ManantialesFicha(1,4, denise.getColor(), TokenType.MANAGED_FOREST);
         move = new ManantialesMove (bob, terminator);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (GameState.ENDED, game.getState());
         ArrayList filter = new ArrayList();
@@ -311,7 +297,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         /* Fix the first condition and relieve the checkConstraint
@@ -320,7 +305,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha resolver = new ManantialesFicha(4,3, alice.getColor(),
                         TokenType.MANAGED_FOREST);
         move = new ManantialesMove (alice, man1, resolver);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (0, game.getCheckConditions().size());
@@ -345,7 +329,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         ArrayList filter = new ArrayList();
@@ -376,7 +359,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         game.getGrid().getCells().add(man1);
         game.getGrid().getCells().add(man2);
         ManantialesMove move = new ManantialesMove (alice, man3);
-        move.setMode(game.getMode());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         ArrayList filter = new ArrayList();
@@ -410,7 +392,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());        
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         ArrayList filter = new ArrayList();
@@ -441,7 +422,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn(false);
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -461,7 +441,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove ();
         move.setPlayer(alice);
         move.setBadYear(true);
-        move.setMode(game.getMode());        
         game.move (move);
         assertEquals (MoveStatus.UNVERIFIED, move.getStatus());
     }
@@ -497,7 +476,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove ();
         move.setPlayer (alice);
         move.setDestinationCell(deforest);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -547,7 +525,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesMove move = new ManantialesMove ();
         move.setPlayer (alice);
         move.setDestinationCell(deforest);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -569,7 +546,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha terminator = new ManantialesFicha(0,6, charlie.getColor(),
                         TokenType.MANAGED_FOREST);
         move = new ManantialesMove (denise, terminator);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (GameState.ENDED, game.getState());
@@ -602,70 +578,67 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue (filter.size() > 0);
     }
         
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testDeforestedCheckConstraintRelief () throws JMSException, InvalidMoveException {
-        List<ManantialesFicha> fichas = new LinkedList<ManantialesFicha>();
-
-        /* Populate board with MODERATE tokens */
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 4; j++) {
-                /* skip the last ficha */
-                if (i == 7 && j==3)
-                    continue;
-                ManantialesFicha ficha = new ManantialesFicha(i, j, Color.BLACK,
-                    TokenType.MODERATE_PASTURE);
-                fichas.add(ficha);
-            }
-        }
-
-        ManantialesFicha deforest = new ManantialesFicha(0,5, Color.RED,
-                                        TokenType.MODERATE_PASTURE);
-        fichas.add(deforest);
-        ManantialesFicha reforest = new ManantialesFicha(0, 5, alice.getColor(),
-                                TokenType.MANAGED_FOREST);
-        fichas.add(reforest);
-        setIds (fichas.toArray(new ManantialesFicha[] {}));
-        fichas.remove(deforest);
-        fichas.remove(reforest);
-        GameGrid grid = game.getGrid();
-        if (grid.isEmpty())
-            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
-
-
-        for (ManantialesFicha ficha : fichas) {
-            game.getGrid().getCells().add(ficha);
-        }
-
-        ManantialesMove move = new ManantialesMove ();
-        move.setPlayer (alice);
-        move.setDestinationCell(deforest);
-        move.setMode(game.getMode());
-        game.move (move);
-
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        ArrayList filter = new ArrayList();
-        List<Message> messageList = mockTopic.getReceivedMessageList();
-        for (Message  message : messageList) {
-                if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
-                                filter.add(message);
-        }
-
-        assertTrue ("Condition not raised!", filter.size() > 0);
-        assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]",
-                        filter.size() == 1);
-
-        /* Now, relieve the constraint */
-        bob.setTurn(false);
-        alice.setTurn(true);
-        move = new ManantialesMove (alice, deforest, reforest);
-        move.setMode(game.getMode());
-        game.move (move);
-
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-        assertEquals (0, game.getCheckConditions().size());
-    }
-        
+//    @SuppressWarnings("unchecked")
+//    public void testDeforestedCheckConstraintRelief () throws JMSException, InvalidMoveException {
+//        List<ManantialesFicha> fichas = new LinkedList<ManantialesFicha>();
+//
+//        /* Populate board with MODERATE tokens */
+//        for (int i = 0; i < 8; i++) {
+//            for (int j = 0; j < 4; j++) {
+//                /* skip the last ficha */
+//                if (i == 7 && j==3)
+//                    continue;
+//                ManantialesFicha ficha = new ManantialesFicha(i, j, Color.BLACK,
+//                    TokenType.MODERATE_PASTURE);
+//                fichas.add(ficha);
+//            }
+//        }
+//
+//        ManantialesFicha deforest = new ManantialesFicha(0,5, Color.RED,
+//                                        TokenType.MODERATE_PASTURE);
+//        fichas.add(deforest);
+//        ManantialesFicha reforest = new ManantialesFicha(0, 5, alice.getColor(),
+//                                TokenType.MANAGED_FOREST);
+//        fichas.add(reforest);
+//        setIds (fichas.toArray(new ManantialesFicha[] {}));
+//        fichas.remove(deforest);
+//        fichas.remove(reforest);
+//        GameGrid grid = game.getGrid();
+//        if (grid.isEmpty())
+//            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+//
+//
+//        for (ManantialesFicha ficha : fichas) {
+//            game.getGrid().getCells().add(ficha);
+//        }
+//
+//        ManantialesMove move = new ManantialesMove ();
+//        move.setPlayer (alice);
+//        move.setDestinationCell(deforest);
+//        game.move (move);
+//
+//        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+//        ArrayList filter = new ArrayList();
+//        List<Message> messageList = mockTopic.getReceivedMessageList();
+//        for (Message  message : messageList) {
+//                if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+//                                filter.add(message);
+//        }
+//
+//        assertTrue ("Condition not raised!", filter.size() > 0);
+//        assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]",
+//                        filter.size() == 1);
+//
+//        /* Now, relieve the constraint */
+//        bob.setTurn(false);
+//        alice.setTurn(true);
+//        move = new ManantialesMove (alice, deforest, reforest);
+//        game.move (move);
+//
+//        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+//        assertEquals (0, game.getCheckConditions().size());
+//    }
+//        
     @SuppressWarnings("unchecked")
     @Test
     public void testSouthernBorderRelief() throws JMSException, InvalidMoveException {
@@ -687,7 +660,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -705,7 +677,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
 
         move = new ManantialesMove (alice, man3, resolve);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -735,7 +706,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -754,7 +724,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         alice.setTurn (true);
 
         move = new ManantialesMove (alice, man3, resolve);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -784,7 +753,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -805,7 +773,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
 
         move = new ManantialesMove (alice, resolve);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -834,7 +801,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -854,7 +820,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
 
         move = new ManantialesMove (alice, resolve);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -882,7 +847,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -901,7 +865,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
 
         move = new ManantialesMove (bob, terminator);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertTrue (isTerritoryCleared (BorderType.WEST, game.getGrid()));
@@ -949,7 +912,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -967,7 +929,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         bob.setTurn (true);
 
         move = new ManantialesMove (bob, terminator);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertTrue (isTerritoryCleared (BorderType.EAST, game.getGrid()));
@@ -1014,7 +975,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -1030,7 +990,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         bob.setTurn (true);
         move = new ManantialesMove (bob, terminator);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertTrue (isTerritoryCleared (BorderType.SOUTH, game.getGrid()));
@@ -1078,7 +1037,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         charlie.setTurn(true);
         ManantialesMove move = new ManantialesMove (charlie, man3);
-        move.setMode(game.getMode());
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -1094,7 +1052,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         bob.setTurn (true);
         move = new ManantialesMove (bob, terminator);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertTrue (isTerritoryCleared (BorderType.NORTH, game.getGrid()));
@@ -1147,7 +1104,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         move.setPlayer(bob);
         move.setCurrentCell(man2);
         move.setDestinationCell(man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -1180,7 +1136,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
         bob.setTurn(true);
         ManantialesMove move = new ManantialesMove (bob, man1, man3);
-        move.setMode(game.getMode());        
         game.move (move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -1244,35 +1199,30 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     @Test
     public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        ManantialesFicha change = new ManantialesFicha(4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
-
-        setIds(play, change);
+        ManantialesFicha moved = new ManantialesFicha(4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
+        setIds(play, moved);
         ManantialesMove move = new ManantialesMove (alice, play);
-        move.setMode(game.getMode());
-        game.move (move);
-
+        move = (ManantialesMove) game.move (move);
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
         mockTopic.clear();
-
         PuzzleSuggestion suggestion = new PuzzleSuggestion();
         suggestion.setSuggestor(bob);
         suggestion.setStatus(SuggestionStatus.UNEVALUATED);
-        move = new ManantialesMove (alice, play, change);
+        move = new ManantialesMove (alice, play, moved);
         suggestion.setMove (move);
         suggestion = (PuzzleSuggestion) game.suggest(suggestion);
-
         assertTrue (suggestion.getStatus() == SuggestionStatus.EVALUATED);
         assertTrue (move.getStatus () == MoveStatus.UNVERIFIED);
-
         suggestion.setStatus(SuggestionStatus.ACCEPT);
         suggestion = (PuzzleSuggestion) game.suggest (suggestion);
-
+        assertEquals(MoveStatus.EVALUATED,suggestion.getMove().getStatus());
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();
         for (Message  message : messageList) {
             if (message.getStringProperty("GAME_EVENT").equals("MOVE_COMPLETE")) {
                 MockObjectMessage objMessage = (MockObjectMessage) message;
                 ManantialesMove temp = (ManantialesMove) objMessage.getObject();
-                if (temp.getDestinationCell().equals(change)) {
+                if (temp.getDestinationCell().equals(moved)) {
                     move = temp;
                     filter.add(message);
                     break;
@@ -1281,13 +1231,12 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
 
         assertTrue ("Move not evaluted.  Status [" + move.getStatus() + "]", move.getStatus().equals(
-                MoveStatus.MOVED));
+                MoveStatus.EVALUATED));
         assertTrue(filter.size() > 0);
-
         GameGrid grid = game.getGrid();
         GridCell location =  grid.getLocation(move.getDestinationCell());
         assertTrue ("Destination not populated!", location != null);
-        assertTrue ("Destination not populated!", location.equals(change));        
+        assertTrue ("Destination not populated!", location.equals(moved));        
         assertTrue ("Location remains!", grid.getLocation(move.getCurrentCell()) == null);
         assertTrue ("Gamegrid is contains both tokens!", grid.getCells().size() == 1);
     }
@@ -1299,7 +1248,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
         setIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
-        move.setMode(game.getMode());        
         game.move (move);
 
         PuzzleSuggestion suggestion = new PuzzleSuggestion();

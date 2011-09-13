@@ -10,12 +10,10 @@
  */
 package mx.ecosur.multigame.impl.entity.manantiales;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
 import mx.ecosur.multigame.grid.entity.GridPlayer;
+import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.grid.entity.GridMove;
@@ -130,6 +128,25 @@ public class ManantialesMove extends GridMove implements Comparable {
         this.mode = mode;
     }
 
+    @Transient
+    public BorderType getBorder() {
+    	BorderType ret = null;
+    	if (destination != null) {
+    		ManantialesFicha f = (ManantialesFicha) destination;
+    		ret = f.getBorder();
+    	}
+    	return ret;
+    }
+
+    @Transient
+    public boolean isManantial () {
+    	boolean ret = false;
+    	if (destination != null) {
+    		ManantialesFicha f = (ManantialesFicha) destination;
+    		ret = f.isManantial();
+    	}
+    	return ret;
+    }
 
     @Override
     public String toString() {
