@@ -8,7 +8,7 @@ Research.  Each submodule contains it's entire history from the onset of the pro
 and will allow us to publish our finished games and research more quickly.
 
 For some background on submodules, please take a look at the following example, involving 
-submodules "a" and "b", or just scroll down to the star to get started right away.
+submodules "a" and "b", or just scroll down to get started right away.
 
     Pulling down the submodules is a two-step process. First run git submodule
     init to add the submodule repository URLs to .git/config:
@@ -42,7 +42,7 @@ submodules "a" and "b", or just scroll down to the star to get started right awa
     $ git checkout -b fix-up
     [http://book.git-scm.com/5_submodules.html]
 
-To get started, simply do the following from the top of this project (MultiGame): 
+To get started right away, simply do the following from the top of this project (MultiGame): 
 
     $git submodule init
     $git submodule update
