@@ -53,7 +53,7 @@
         <url>http://www.ecosur.mx</url>
     </organization>    
     <properties>
-        <drools.version>5.2.0.M1</drools.version>
+        <drools.version>5.2.0.Final</drools.version>
         <hibernate-version>3.3.1.GA</hibernate-version>
         <flexmojos-version>3.9</flexmojos-version>
     </properties>
