@@ -578,67 +578,68 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue (filter.size() > 0);
     }
         
-//    @SuppressWarnings("unchecked")
-//    public void testDeforestedCheckConstraintRelief () throws JMSException, InvalidMoveException {
-//        List<ManantialesFicha> fichas = new LinkedList<ManantialesFicha>();
-//
-//        /* Populate board with MODERATE tokens */
-//        for (int i = 0; i < 8; i++) {
-//            for (int j = 0; j < 4; j++) {
-//                /* skip the last ficha */
-//                if (i == 7 && j==3)
-//                    continue;
-//                ManantialesFicha ficha = new ManantialesFicha(i, j, Color.BLACK,
-//                    TokenType.MODERATE_PASTURE);
-//                fichas.add(ficha);
-//            }
-//        }
-//
-//        ManantialesFicha deforest = new ManantialesFicha(0,5, Color.RED,
-//                                        TokenType.MODERATE_PASTURE);
-//        fichas.add(deforest);
-//        ManantialesFicha reforest = new ManantialesFicha(0, 5, alice.getColor(),
-//                                TokenType.MANAGED_FOREST);
-//        fichas.add(reforest);
-//        setIds (fichas.toArray(new ManantialesFicha[] {}));
-//        fichas.remove(deforest);
-//        fichas.remove(reforest);
-//        GameGrid grid = game.getGrid();
-//        if (grid.isEmpty())
-//            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
-//
-//
-//        for (ManantialesFicha ficha : fichas) {
-//            game.getGrid().getCells().add(ficha);
-//        }
-//
-//        ManantialesMove move = new ManantialesMove ();
-//        move.setPlayer (alice);
-//        move.setDestinationCell(deforest);
-//        game.move (move);
-//
-//        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-//        ArrayList filter = new ArrayList();
-//        List<Message> messageList = mockTopic.getReceivedMessageList();
-//        for (Message  message : messageList) {
-//                if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
-//                                filter.add(message);
-//        }
-//
-//        assertTrue ("Condition not raised!", filter.size() > 0);
-//        assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]",
-//                        filter.size() == 1);
-//
-//        /* Now, relieve the constraint */
-//        bob.setTurn(false);
-//        alice.setTurn(true);
-//        move = new ManantialesMove (alice, deforest, reforest);
-//        game.move (move);
-//
-//        assertEquals (MoveStatus.EVALUATED, move.getStatus());
-//        assertEquals (0, game.getCheckConditions().size());
-//    }
-//        
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testDeforestedCheckConstraintRelief () throws JMSException, InvalidMoveException {
+        List<ManantialesFicha> fichas = new LinkedList<ManantialesFicha>();
+
+        /* Populate board with MODERATE tokens */
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 4; j++) {
+                /* skip the last ficha */
+                if (i == 7 && j==3)
+                    continue;
+                ManantialesFicha ficha = new ManantialesFicha(i, j, Color.BLACK,
+                    TokenType.MODERATE_PASTURE);
+                fichas.add(ficha);
+            }
+        }
+
+        ManantialesFicha deforest = new ManantialesFicha(0,5, Color.RED,
+                                        TokenType.MODERATE_PASTURE);
+        fichas.add(deforest);
+        ManantialesFicha reforest = new ManantialesFicha(0, 5, alice.getColor(),
+                                TokenType.MANAGED_FOREST);
+        fichas.add(reforest);
+        setIds (fichas.toArray(new ManantialesFicha[] {}));
+        fichas.remove(deforest);
+        fichas.remove(reforest);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+
+
+        for (ManantialesFicha ficha : fichas) {
+            game.getGrid().getCells().add(ficha);
+        }
+
+        ManantialesMove move = new ManantialesMove ();
+        move.setPlayer (alice);
+        move.setDestinationCell(deforest);
+        game.move (move);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        ArrayList filter = new ArrayList();
+        List<Message> messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+                if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+                                filter.add(message);
+        }
+
+        assertTrue ("Condition not raised!", filter.size() > 0);
+        assertTrue ("Filter size incorrect! [filter.size==" + filter.size() +"]",
+                        filter.size() == 1);
+
+        /* Now, relieve the constraint */
+        bob.setTurn(false);
+        alice.setTurn(true);
+        move = new ManantialesMove (alice, deforest, reforest);
+        game.move (move);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals (0, game.getCheckConditions().size());
+    }
+        
     @SuppressWarnings("unchecked")
     @Test
     public void testSouthernBorderRelief() throws JMSException, InvalidMoveException {
