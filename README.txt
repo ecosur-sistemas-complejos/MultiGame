@@ -66,7 +66,7 @@ JBOSS AS6 CONFIGURATION
    with MySQL.
 
    For convenience, we have placed a sample mysql-ds.xml file in the resources of the
-   EcosurJPA module, which can be used to configure a properly configured MySQL server
+   EcosurJPA module, which can be used with a properly configured MySQL server
    
    NOTE:  Users may also use the default hibernate dialect to work with the default JBoss
    database (hsql) by modifying the marked and commented areas of the persistence.xml file
