@@ -13,7 +13,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 </parent>
 <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
-    <!--testSourceDirectory>src/test/flex</testSourceDirectory-->
+    <testSourceDirectory>src/test/flex</testSourceDirectory>
     <finalName>Manantiales</finalName>
     <plugins>
         <plugin>
@@ -43,6 +43,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <version>${flexmojos-version}</version>
             <extensions>true</extensions>
             <configuration>
+                <flashPlayerCommand>flashplayer</flashPlayerCommand>
                 <debug>${debug}</debug>
                 <sourceFile>Manantiales.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
@@ -146,5 +147,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		  <scope>rsl</scope>        
     </dependency>
 
+    <!-- Unit testing -->
+    <dependency>
+        <groupId>com.adobe.flexunit</groupId>
+        <artifactId>flexunit</artifactId>
+        <version>4.0-beta-2</version>
+        <type>swc</type>
+        <scope>test</scope>
+    </dependency>
 </dependencies>    
 </project>

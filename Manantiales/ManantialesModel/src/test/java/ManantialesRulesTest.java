@@ -36,6 +36,8 @@ import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 
+import static util.TestUtilities.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,8 +51,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
     private EJBTestModule ejbModule;    
 
-    private static int lastId;
-        
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -87,11 +87,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         }
     }
 
-    public static void setIds (GridCell... cells) {
-        for (GridCell cell : cells) {
-            cell.setId(++lastId);
-        }
-    }
+
         
     @Test
     public void testInitialize () {
@@ -111,7 +107,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     public void testExecuteMove () throws InvalidMoveException {
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds(play);
+        SetIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -126,7 +122,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha intensive = new ManantialesFicha(5,4, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (mod, intensive);
+        SetIds(mod, intensive);
 
         ManantialesMove move = new ManantialesMove (alice, mod);
         game.move (move);
@@ -159,7 +155,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha contig2 = new ManantialesFicha(6, 4, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (contig1, contig2);
+        SetIds(contig1, contig2);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>());
@@ -175,7 +171,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha contig2 = new ManantialesFicha(5, 5, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (contig1, contig2);
+        SetIds(contig1, contig2);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>());
@@ -192,7 +188,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha contig2 = new ManantialesFicha(5, 5, alice.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (contig1, contig2);
+        SetIds(contig1, contig2);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -212,7 +208,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(3,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -244,7 +240,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(3,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -288,7 +284,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(3,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -320,7 +316,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(4,8, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -352,7 +348,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(8,4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2,man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -383,7 +379,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(0,4, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -413,7 +409,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.INTENSIVE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(4,2, charlie.getColor(),
                         TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
             grid.setCells(new TreeSet<GridCell>(new CellComparator()));
@@ -465,7 +461,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         fichas.add(deforest);
         ManantialesFicha[] fichaArr = fichas.toArray(new ManantialesFicha[] {});
-        setIds (fichaArr);
+        SetIds(fichaArr);
         fichas.remove(deforest);
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -511,7 +507,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha deforest = new ManantialesFicha(0,5, Color.RED,
             TokenType.MODERATE_PASTURE);
         fichas.add(deforest);
-        setIds (fichas.toArray(new ManantialesFicha[] {}));
+        SetIds(fichas.toArray(new ManantialesFicha[]{}));
         fichas.remove(deforest);
 
         GameGrid grid = game.getGrid();
@@ -601,7 +597,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha reforest = new ManantialesFicha(0, 5, alice.getColor(),
                                 TokenType.MANAGED_FOREST);
         fichas.add(reforest);
-        setIds (fichas.toArray(new ManantialesFicha[] {}));
+        SetIds(fichas.toArray(new ManantialesFicha[]{}));
         fichas.remove(deforest);
         fichas.remove(reforest);
         GameGrid grid = game.getGrid();
@@ -651,7 +647,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha resolve = new ManantialesFicha(4,6, alice.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1, man2, man3, resolve);
+        SetIds(man1, man2, man3, resolve);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -697,7 +693,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha resolve = new ManantialesFicha(4,0, alice.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1, man2, man3, resolve);
+        SetIds(man1, man2, man3, resolve);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -744,7 +740,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha resolve = new ManantialesFicha(6,4, alice.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1, man2, man3, resolve);
+        SetIds(man1, man2, man3, resolve);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -792,7 +788,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha resolve = new ManantialesFicha(2,4, alice.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1, man2, man3, resolve);
+        SetIds(man1, man2, man3, resolve);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -838,7 +834,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha terminator = new ManantialesFicha(0,2, bob.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1, man2, man3, terminator);
+        SetIds(man1, man2, man3, terminator);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -903,7 +899,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha terminator = new ManantialesFicha(0,2, bob.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1,man2,man3,terminator);
+        SetIds(man1, man2, man3, terminator);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -966,7 +962,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha terminator = new ManantialesFicha(0,2, bob.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1,man2,man3,terminator);
+        SetIds(man1, man2, man3, terminator);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -1028,7 +1024,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha terminator = new ManantialesFicha(0,2, bob.getColor(),
                         TokenType.MANAGED_FOREST);
-        setIds (man1,man2,man3,terminator);
+        SetIds(man1, man2, man3, terminator);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -1092,7 +1088,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(4,5, bob.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -1127,7 +1123,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
                         TokenType.MODERATE_PASTURE);
         ManantialesFicha man3 = new ManantialesFicha(0,4, bob.getColor(),
                         TokenType.INTENSIVE_PASTURE);
-        setIds (man1, man2, man3);
+        SetIds(man1, man2, man3);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -1165,7 +1161,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha man5 = new ManantialesFicha(4,1, alice.getColor(), TokenType.MODERATE_PASTURE);
         ManantialesFicha man6 = new ManantialesFicha(8,4, charlie.getColor(), TokenType.MODERATE_PASTURE);
         ManantialesFicha man7 = new ManantialesFicha(7,4, charlie.getColor(), TokenType.MODERATE_PASTURE);
-        setIds (man1, man2, man3, man4, man5, man6, man7);
+        SetIds(man1, man2, man3, man4, man5, man6, man7);
 
         GameGrid grid = game.getGrid();
         if (grid.isEmpty())
@@ -1201,7 +1197,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     public void testSuggestionAccepted () throws InvalidMoveException, JMSException {
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
         ManantialesFicha moved = new ManantialesFicha(4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
-        setIds(play, moved);
+        SetIds(play, moved);
         ManantialesMove move = new ManantialesMove (alice, play);
         move = (ManantialesMove) game.move (move);
         assertEquals(MoveStatus.EVALUATED, move.getStatus());
@@ -1247,7 +1243,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     @Test
     public void testSuggestionRejected () throws InvalidMoveException, JMSException {
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(), TokenType.MODERATE_PASTURE);
-        setIds(play);
+        SetIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
@@ -1292,7 +1288,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha play = new ManantialesFicha (5, 4, alice.getColor(), TokenType.INTENSIVE_PASTURE);
         ManantialesFicha change = new ManantialesFicha (4, 0, alice.getColor(), TokenType.MODERATE_PASTURE);
 
-        setIds(play, change);
+        SetIds(play, change);
         ManantialesMove move = new ManantialesMove (alice, play);
         game.move (move);
 
