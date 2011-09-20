@@ -179,7 +179,7 @@ public class RuleFunctions {
                 nextPlayer = gps [playerNumber + 1];
             }
             
-            ret = nextPlayer.equals(second);
+            ret = nextPlayer.getColor().equals(second.getColor());
         }
         return ret;
     }
@@ -262,26 +262,4 @@ public class RuleFunctions {
 
         return ret;
     }
-
-    public static  Mode incrementMode (Mode mode) {
-        if (mode == null) {
-            mode = Mode.CLASSIC;
-        } else {
-            switch (mode) {
-                case CLASSIC:
-                    mode = Mode.BASIC_PUZZLE;
-                    break;
-                case BASIC_PUZZLE:
-                    mode = Mode.SILVOPASTORAL;
-                    break;
-                case SILVOPASTORAL:
-                    mode = Mode.SILVO_PUZZLE;
-                    break;
-                default:
-                    break;
-            }
-        }
-        return mode;
-    }
-
 }

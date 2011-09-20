@@ -395,8 +395,7 @@ when
         mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
     $move      : ManantialesMove ($player : player)
     $condition : CheckCondition  (expired == false, $player2 : player, 
-        type not in (ConditionType.MANANTIALES_DRY, 
-            ConditionType.TERRITORY_DEFORESTED))
+        type not in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
     eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
 then
     GameGrid grid = clearBorder ($game, $condition.getType());

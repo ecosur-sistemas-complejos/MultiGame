@@ -12,7 +12,8 @@ import flash.events.MouseEvent;
     import mx.ecosur.multigame.entity.manantiales.Ficha;
     import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
+import mx.ecosur.multigame.enum.manantiales.Mode;
+import mx.ecosur.multigame.enum.manantiales.TokenType;
     import mx.ecosur.multigame.manantiales.token.ForestToken;
     import mx.ecosur.multigame.manantiales.token.ForestTokenStore;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
@@ -151,7 +152,7 @@ import flash.events.MouseEvent;
                 move.destinationCell = destination;
                 move.mode = _mode;
 
-                if (_currentPlayer.turn && move.currentCell == null
+                if (move.currentCell == null
                         && (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
                 {
                         /* Regular Move */
@@ -160,8 +161,7 @@ import flash.events.MouseEvent;
 
                      _gameWindow.controller.sendMove(move);
 
-                } else if (_currentPlayer.turn &&
-                        (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN) &&
+                } else if ((destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN) &&
                         move.currentCell != null)
                 {
                     decrementStore(Ficha (move.destinationCell));
@@ -169,8 +169,7 @@ import flash.events.MouseEvent;
                     move.player = _currentPlayer;
                     _gameWindow.controller.sendMove(move);
 
-                }else if (_currentPlayer.turn &&
-                        (destToken.cell.color != _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
+                } else if (destToken.cell.color != _currentPlayer.color || destToken.cell.color == Color.UNKNOWN)
                 {
                         /* Making a suggestion to another player */
                     suggestion = true;
@@ -273,23 +272,26 @@ import flash.events.MouseEvent;
 
         public function startMove(evt:MouseEvent):void{
 
-            if (!_isMoving && isTurn()){
+            if (_isMoving)
+                return;
 
-                // initialize drag source
-                var token:ManantialesToken = ManantialesToken(evt.currentTarget);
-                var ds:DragSource = new DragSource();
-                ds.addData(token, "token");
+            if ((_mode == Mode.CLASSIC || _mode == Mode.SILVOPASTORAL) && !isTurn())
+                return;
 
-                // create proxy image and start drag
-                var dragImage:IFlexDisplayObject = token.createDragImage();
-                DragManager.doDrag(token, ds, evt, dragImage);
-                _isMoving = true;
+            // initialize drag source
+            var token:ManantialesToken = ManantialesToken(evt.currentTarget);
+            var ds:DragSource = new DragSource();
+            ds.addData(token, "token");
 
-                var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
-                // Add previous to the drag source
-                ds.addData(previous,"source");
+            // create proxy image and start drag
+            var dragImage:IFlexDisplayObject = token.createDragImage();
+            DragManager.doDrag(token, ds, evt, dragImage);
+            _isMoving = true;
 
-            }
+            var previous:ManantialesToken = ManantialesToken(evt.currentTarget);
+            // Add previous to the drag source
+            ds.addData(previous,"source");
+
         }
 
         public function endMove(evt:DragEvent):void{
