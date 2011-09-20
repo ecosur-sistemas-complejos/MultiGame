@@ -137,7 +137,7 @@ rule "evaluate-regular-move"
 when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
         mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
-    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
     eval (isValidReplacement($game.getGrid(), $move))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
@@ -148,7 +148,7 @@ rule "mark-invalid-regular-move"
 when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
         mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
-    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
     eval (!isValidReplacement($game.getGrid(), $move))
 then
     modify ($move) { setStatus (MoveStatus.INVALID) }
@@ -160,7 +160,7 @@ rule "evaluate-puzzle-move"
 when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
         mode in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
-    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED, player.turn == true)
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
 end
@@ -271,7 +271,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             border == BorderType.NORTH, type == TokenType.MODERATE_PASTURE)  
-        eval (!$game.hasCondition (ConditionType.NORTHERN_BORDER_DEFORESTED));
+        not CheckCondition (type == ConditionType.NORTHERN_BORDER_DEFORESTED)
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
@@ -297,7 +297,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             border == BorderType.EAST, type == TokenType.MODERATE_PASTURE)
-        eval (!$game.hasCondition (ConditionType.EASTERN_BORDER_DEFORESTED))       
+        not CheckCondition (type == ConditionType.EASTERN_BORDER_DEFORESTED)       
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
@@ -322,7 +322,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
             border == BorderType.SOUTH, type == TokenType.MODERATE_PASTURE) 
-        eval (!$game.hasCondition (ConditionType.SOUTHERN_BORDER_DEFORESTED))        
+        not CheckCondition (type == ConditionType.SOUTHERN_BORDER_DEFORESTED)        
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
@@ -348,7 +348,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             border == BorderType.WEST, type == TokenType.MODERATE_PASTURE)   
-        eval (!$game.hasCondition (ConditionType.WESTERN_BORDER_DEFORESTED))
+        not CheckCondition (type == ConditionType.WESTERN_BORDER_DEFORESTED)
     then
         CheckCondition constraint = new CheckCondition(
             ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
@@ -372,7 +372,7 @@ rule "manantiales"
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
         $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
             manantial == true, type == TokenType.MODERATE_PASTURE)
-        eval (!$game.hasCondition (ConditionType.MANANTIALES_DRY))
+        not CheckCondition (type == ConditionType.MANANTIALES_DRY)
     then 
         CheckCondition constraint = new CheckCondition(
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
@@ -587,7 +587,7 @@ rule "remove-replaced-token-from-player"
     no-loop true
 when
     $game  : ManantialesGame (state == GameState.PLAY)
-    $move : ManantialesMove (player.turn == true, badYear == false, status == MoveStatus.MOVED, 
+    $move : ManantialesMove (badYear == false, status == MoveStatus.MOVED, 
         status == MoveStatus.MOVED, currentCell != null, destinationCell != null)
 then
     ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
