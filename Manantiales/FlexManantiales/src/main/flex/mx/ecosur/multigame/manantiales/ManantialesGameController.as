@@ -329,9 +329,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         }
 
         private function initTurn():void {
-            if (_game.mode != null)  {
-               _gameWindow.currentState= _game.mode;
-            }
+            _gameWindow.currentState= _game.mode;
 
             if (_game.state == GameState.PLAY) {
                 _tokenHandler.initializeTokenStores();
@@ -430,6 +428,9 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                         } else if (game.mode == Mode.BASIC_PUZZLE || game.mode == Mode.SILVO_PUZZLE) {
                             if (_gameWindow.currentState != _game.mode)
                                 _gameWindow.currentState= _game.mode;
+                            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                                "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
+                            initTurn();
                         }
                 } else if (game.state != GameState.ENDED) {
                     _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
@@ -438,8 +439,6 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             }
             _gameWindow.currentGame = game;
             _players = _game.players;
-
-            _gameWindow.stateMenuBar.dataProvider = _gameWindow.stateMenu;
             _tokenHandler.update(_currentPlayer);
         }
         
