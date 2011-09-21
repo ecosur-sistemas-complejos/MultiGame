@@ -194,6 +194,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                             move= ManantialesMove(message.body);
                             _gameWindow.playersViewer.updatePlayers();
                             _moveHandler.addMove(move);
+                            updatePlayersFromMove(move);
                             break;
                         case ManantialesEvent.PLAYER_CHANGE:
                             game = ManantialesGame(message.body);
@@ -341,7 +342,8 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
                     PopUpManager.centerPopUp(_annCondGen);
                 }
 
-                _currentPlayer.play();
+                if (_game.mode != Mode.BASIC_PUZZLE && _game.mode != Mode.SILVO_PUZZLE)
+                    _currentPlayer.play();
             }
         }
 
@@ -405,43 +407,58 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             var gamePlayer:ManantialesPlayer;
             var i:int;
 
-            for (i = 0; i < game.players.length; i++){
-                gamePlayer = ManantialesPlayer(game.players[i]);
-                if (gamePlayer.id == _currentPlayer.id){
-                    _currentPlayer = gamePlayer;
-                    _gameWindow.chatPanel.currentPlayer = _currentPlayer;
-                    this.isTurn = _currentPlayer.turn;
-                }
-                if (game.state == GameState.PLAY) {
-                        if ((game.mode == Mode.CLASSIC || game.mode == Mode.SILVOPASTORAL) &&
-                                gamePlayer.turn)
-                        {
-                            if (gamePlayer.id == _currentPlayer.id){
+            if (game.state == GameState.PLAY && (
+                    game.mode == Mode.CLASSIC ||
+                    game.mode == Mode.SILVOPASTORAL ||
+                    game.mode == Mode.RELOADED))
+            {
+                for (i = 0; i < game.players.length; i++) {
+                    gamePlayer = ManantialesPlayer(game.players[i]);
+                    if (gamePlayer.id == _currentPlayer.id) {
+                        _currentPlayer = gamePlayer;
+                        _gameWindow.chatPanel.currentPlayer = _currentPlayer;
+                        this.isTurn = _currentPlayer.turn;
+                    }
+                    if (game.state == GameState.PLAY) {
+                        if ( gamePlayer.turn) {
+                            if (gamePlayer.id == _currentPlayer.id) {
                                 _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                                    "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
+                                        "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
                                 initTurn();
-                            }else{
+                            } else {
                                 _gameWindow.gameStatus.showMessage(
-                                    gamePlayer.name + " " + resourceManager.getString("Manantiales","manantiales.tomove"),
-                                            Color.getColorCode(gamePlayer.color));
+                                        gamePlayer.name + " " + resourceManager.getString("Manantiales",
+                                        "manantiales.tomove"), Color.getColorCode(gamePlayer.color));
                             }
-                        } else if (game.mode == Mode.BASIC_PUZZLE || game.mode == Mode.SILVO_PUZZLE) {
-                            if (_gameWindow.currentState != _game.mode)
-                                _gameWindow.currentState= _game.mode;
-                            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                                "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
-                            initTurn();
                         }
-                } else if (game.state != GameState.ENDED) {
-                    _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                        "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
+                    }
                 }
+            } else {
+                if (game.state == GameState.PLAY) {
+                    _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                    "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
+                    initTurn()
+                } else if (game.state == GameState.WAITING) {
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                                "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
+                    }
             }
+
             _gameWindow.currentGame = game;
             _players = _game.players;
             _tokenHandler.update(_currentPlayer);
         }
-        
+
+        public function updatePlayersFromMove(move:ManantialesMove):void {
+            if (move.mode == Mode.BASIC_PUZZLE || move.mode == Mode.SILVO_PUZZLE) {
+                if (_gameWindow.currentState != move.mode)
+                    _gameWindow.currentState = move.mode;
+                _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                    "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
+                _gameWindow.playersViewer.setTurn(ManantialesPlayer(move.playerModel));
+            }
+        }
+
         public function quitGame (gamePlayer:GamePlayer):void {
             var call:Object = _gameService.quitGame(_game, gamePlayer);
             call.operation = "quitGame";

@@ -45,7 +45,10 @@ package mx.ecosur.multigame.manantiales
         public function setTurn(player:ManantialesPlayer):void{
             var pi:PlayerInfo;
             for (var i:int = 0; i < getChildren().length; i++){
-                pi = PlayerInfo(getChildAt(i))
+                if (getChildAt(i) instanceof GameInfo)
+                    continue;
+                pi = PlayerInfo(getChildAt(i));
+
                 if (pi.manantialesPlayer.id == player.id){
                     selectPlayer(pi);
                     return;
