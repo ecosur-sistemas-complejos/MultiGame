@@ -1,13 +1,24 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.mock.jms.MockTopic;
+
+import mx.ecosur.multigame.enums.GameEvent;
+import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
+import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
+import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
@@ -26,6 +37,18 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
     private MockTopic mockTopic;
 
     private EJBTestModule ejbModule;
+
+    private List<Message> filterForEvent (GameEvent event) throws JMSException {
+        ArrayList ret = new ArrayList();
+        List<Message> ml = mockTopic.getReceivedMessageList();
+        for (Message msg : ml) {
+            if (msg.getStringProperty("GAME_EVENT").equals(event.name()))
+                ret.add(msg);
+        }
+        
+        return ret;
+    }
+    
 
     @Before
     public void setUp() throws Exception {
@@ -46,8 +69,6 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
 
 
     /** Test on ManantialesGame for setting check constraints
-    *
-    * Needs a rewrite. Removed from test cycle pending rewrite.
     *
     * @throws InvalidMoveException */
    @Test
@@ -74,6 +95,58 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
        assertEquals(3, game.getMoves().size());
        assertEquals(1, game.getCheckConditions().size());
    }
+   
+   @Test
+   public void testManantialesCheckConstriantsRelieved () throws InvalidMoveException, JMSException {
+       ManantialesFicha ficha = new ManantialesFicha(4,3, alice.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha ficha2 = new ManantialesFicha(4,5, bob.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha ficha3 = new ManantialesFicha(3,4, charlie.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha relief = new ManantialesFicha(4,3, alice.getColor(),
+               TokenType.MANAGED_FOREST);
+       ManantialesFicha retrigger = new ManantialesFicha (4,3, alice.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha terminate = new ManantialesFicha (5,5,denise.getColor(),
+               TokenType.MODERATE_PASTURE);
+       SetIds(ficha, ficha2, ficha3, retrigger, terminate);
+       ManantialesMove move = new ManantialesMove (alice, ficha);
+       move.setMode(game.getMode());
+       Move mv = game.move(move);
+       assertEquals(MoveStatus.EVALUATED, mv.getStatus());
+       bob.setTurn(true);
+       move = new ManantialesMove (bob, ficha2);
+       mv = game.move(move);
+       assertEquals(MoveStatus.EVALUATED, mv.getStatus());
+       charlie.setTurn(true);
+       move = new ManantialesMove (charlie, ficha3);
+       mv = game.move(move);
+       assertEquals(MoveStatus.EVALUATED, mv.getStatus());
+       List filtered = filterForEvent(GameEvent.CONDITION_RAISED);
+       assertTrue(filtered.size() == 1);
+       alice.setTurn(true);
+       move = new ManantialesMove (alice, ficha, relief);
+       game.move(move);
+       filtered = filterForEvent(GameEvent.CONDITION_RESOLVED);
+       assertTrue(filtered.size () == 1);
+       filtered = filterForEvent(GameEvent.CONDITION_TRIGGERED);
+       assertTrue(filtered.size() == 0);
+       
+       /* retrigger condition */
+       alice.setTurn(true);
+       move = new ManantialesMove(alice, relief, retrigger);
+       game.move(move);
+       filtered = filterForEvent(GameEvent.CONDITION_RAISED);
+       assertTrue("filter size is: " + filtered.size(), filtered.size() == 2);
+       /* allow condition to terminate game, i.e., TRIGGER */
+       denise.setTurn(true);
+       move = new ManantialesMove (denise, terminate);
+       game.move(move);
+       filtered = filterForEvent(GameEvent.CONDITION_TRIGGERED);
+       assertTrue(filtered.size() == 1);
+       assertTrue(game.getState().equals(GameState.ENDED));
+  }
 
   @Test
    public void testWestCheckConstraints () throws InvalidMoveException {

@@ -117,8 +117,9 @@ then
         $moves = new LinkedHashSet<Move>();
     $moves.add($move);
     modify ($game) { setMoves ($moves), setGrid (modifiedGrid)}
-    messageSender.sendSuggestionApplied ($game, $suggestion);
     insert ($move);
+    retract($suggestion);
+    messageSender.sendSuggestionApplied ($game, $suggestion);
 end
 
 rule "reject-suggestion"
@@ -279,8 +280,7 @@ rule
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);
-        $game.setCheckConditions($checks);
-        GridPlayer player = $move.getPlayer();
+        modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -305,7 +305,7 @@ rule
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);
-        $game.setCheckConditions($checks);
+        modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -330,7 +330,7 @@ rule
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);
-        $game.setCheckConditions($checks);
+        modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -356,7 +356,7 @@ rule
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);
-        $game.setCheckConditions($checks);
+        modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -380,7 +380,7 @@ rule "manantiales"
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);        
-        $game.setCheckConditions($checks);
+        modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
 end
@@ -401,11 +401,11 @@ then
     GameGrid grid = clearBorder ($game, $condition.getType());
     Set<CheckCondition> conditions = $game.getCheckConditions();
     conditions.remove ($condition);
-    $game.setCheckConditions (conditions);
-    $game.setGrid (grid);
-    messageSender.sendConditionTriggered ($game, $condition);
-    retract ($condition);
+    modify ($game) { setCheckConditions (conditions)};
+    modify ($game) { setGrid (grid) };
+    modify ($condition) { setExpired (true) };
     modify ($game) { setCheckConditions (conditions), setGrid (grid) };
+    messageSender.sendConditionTriggered ($game, $condition);
 end  
 
 rule "expire-terminal-condition"
@@ -420,9 +420,9 @@ when
             ConditionType.TERRITORY_DEFORESTED))
     eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
 then
-    $condition.setExpired(true);
-    $game.getCheckConditions().add($condition);
-    $game.setState (GameState.ENDED);
+    modify ($game) {getCheckConditions().add($condition)};
+    modify ($game) {setState (GameState.ENDED)};
+    modify ($condition) { setExpired (true) };
     messageSender.sendConditionTriggered ($game, $condition);
     messageSender.sendEndGame ($game);
 end
@@ -434,6 +434,7 @@ when
     $game  : ManantialesGame (state == GameState.PLAY)
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.EVALUATED)
 then
+    retract($suggestion);
     messageSender.sendSuggestionEvaluated ($game, $suggestion);
 end
 
@@ -517,6 +518,8 @@ then
     swap1.setStatus(MoveStatus.MOVED);
     swap2.setStatus(MoveStatus.MOVED);
     retract ($move);
+    insert(swap1);
+    insert(swap2);
     messageSender.sendMoveComplete ($game, swap1);
     messageSender.sendMoveComplete ($game, swap2);
 end
@@ -540,7 +543,7 @@ rule "territory-deforested"
         if ($checks == null)
             $checks = new HashSet<CheckCondition>();
         $checks.add(constraint);
-        $game.setCheckConditions($checks);
+        modify ($game) {setCheckConditions($checks)};
         messageSender.sendConditionRaised ($game, constraint);
 end
 
