@@ -33,9 +33,6 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.event.DebugAgendaEventListener;
-import org.drools.event.DebugWorkingMemoryEventListener;
-import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
@@ -49,8 +46,6 @@ public class ManantialesGame extends GridGame {
 
     private static transient KnowledgeBase kbase;
     
-    private static final boolean DEBUG = true;
-        
     private Mode mode;
         
     private Set<CheckCondition> checkConditions;
@@ -116,7 +111,6 @@ public class ManantialesGame extends GridGame {
     }
 
     public void setMode (Mode mode) {
-        this.checkConditions = null;
         this.mode = mode;
     }
 
@@ -218,10 +212,6 @@ public class ManantialesGame extends GridGame {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         KnowledgeRuntimeLogger klogger = null;
         
-        if (DEBUG) {
-            klogger = KnowledgeRuntimeLoggerFactory.newFileLogger(
-                    session,"manantiales");
-        }
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
@@ -235,10 +225,6 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("evaluate").setFocus();
         session.fireAllRules();
-        
-        if (DEBUG) {
-            klogger.close();
-        }
         
         session.dispose();
 

@@ -15,17 +15,10 @@ import mx.ecosur.multigame.model.interfaces.Agent;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Transient;
 import java.util.*;
 
 /**
@@ -35,8 +28,6 @@ import java.util.*;
 public class SimpleAgent extends ManantialesPlayer implements Agent {
 
     private static final long serialVersionUID = 8878695200931762776L;
-
-    private static KnowledgeBase kbase;
 
     private AgentType type;
 
@@ -110,23 +101,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         
         Collections.shuffle(ret);
         
-        return ret;
-    }
-
-    @Transient
-    private KnowledgeBase getRuleBase() {
-        if (kbase == null)
-            kbase = findKBase();
-        return kbase;
-    }
-
-    protected KnowledgeBase findKBase () {
-        KnowledgeBase ret = null;
-        ret = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            "/mx/ecosur/multigame/impl/simple-agent.xml")), ResourceType.CHANGE_SET);
-        ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
         return ret;
     }
 
@@ -304,7 +278,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         ret.setModerate(getModerate());
         ret.setSilvo(getSilvo());
         ret.setVivero(getVivero());
-        ret.kbase = this.kbase;
         return ret;                
     }
 
