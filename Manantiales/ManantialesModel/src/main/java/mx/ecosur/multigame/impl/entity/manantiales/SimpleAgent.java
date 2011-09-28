@@ -27,7 +27,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * @author awaterma@ecosur.mx
@@ -41,10 +40,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
 
     private AgentType type;
 
-    private ManantialesMove _nextMove;
-
-    private static final Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
-
     public SimpleAgent() {
         super();        
     }
@@ -55,7 +50,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
     }
 
     public void initialize() {
-        _nextMove = null;
+        // do nothing 
     }   
 
     @Enumerated(EnumType.STRING)
@@ -84,16 +79,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         return isTurn();
     }
 
-    @Transient
-    public ManantialesMove getNextMove() {
-        return _nextMove;
-    }
-
-    public void setNextMove(ManantialesMove move) {
-        _nextMove = move;
-    }
-
-/* Simply returns a simple move response.  No suggestions are made by the Agent */
+    /* Simply returns a simple move response.  No suggestions are made by the Agent */
     public List<Move> determineMoves(Game impl) {
         List<Move> ret = new ArrayList<Move>();
         Random random = null;
@@ -102,7 +88,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         if (requiresRandom)
             random = new Random();
 
-        if (!requiresRandom || random.nextInt(6) != 5) {
+        if (!requiresRandom || random.nextInt(6) != 3) {
             List<ManantialesFicha> fichas = generateCandidates(game);
             for (ManantialesFicha ficha : fichas) {
                 if (this.isGoodLocation(ficha)) {
@@ -111,22 +97,19 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
                     move.setDestinationCell(ficha);
                     move.setMode (game.getMode());
                     ret.add(move);
-                    if (getNextMove() == null)
-                        setNextMove(move);
                 }
             }
-
+            if (!game.getGrid().isEmpty())                
             ret.addAll(findUpgradeMoves(game));
         }
 
         if (game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL)) {
             ManantialesMove pass = generatePassMove(game);
             ret.add (pass);
-            if (getNextMove() == null)
-                setNextMove(pass);
         }
-
+        
         Collections.shuffle(ret);
+        
         return ret;
     }
 
@@ -178,7 +161,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
 
         Set<GridCell> filter = new HashSet<GridCell>();
         for (GridCell cell : game.getGrid().getCells()) {
-            if ( cell.getColor().equals(this.getColor()) ) {
+            if (cell != null && getColor() != null && cell.getColor().equals(this.getColor()) ) {
                 filter.add (cell);
             }
         }
@@ -195,19 +178,15 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
                 destination.setType(TokenType.INTENSIVE_PASTURE);
                 move.setCurrentCell (ficha);
                 move.setDestinationCell(destination);
-                break;
             } else if (ficha.getType().equals(TokenType.MANAGED_FOREST) && getModerate() < 6) {
                 ManantialesFicha destination = new ManantialesFicha(ficha.getColumn(),ficha.getRow(),ficha.getColor(),ficha.getType());
                 destination.setType(TokenType.MODERATE_PASTURE);
                 move.setCurrentCell (ficha);
                 move.setDestinationCell(destination);
             }
-
             if (move.getDestinationCell() != null) {
                 move.setPlayer(this);
                 ret.add(move);
-                if (getNextMove() == null)
-                    setNextMove(move);
             }
         }
 
@@ -317,7 +296,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         ret.setId(getId());
         ret.setTurn(isTurn());
         ret.setType(getType());
-        ret.setNextMove(getNextMove());
         ret.setColor(getColor());
         ret.setName(getName());
         ret.setScore(getScore());

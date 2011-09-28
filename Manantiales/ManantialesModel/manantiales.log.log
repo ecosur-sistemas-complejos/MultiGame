@@ -1,0 +1,254 @@
+<object-stream>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>1</factId>
+  <objectToString>CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R]</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: UNVERIFIED(2); $grid=GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>invalid-move [2, 1]</activationId>
+  <rule>invalid-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: UNVERIFIED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: UNVERIFIED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>4</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 4, Row = 0, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@3ac67f69</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>5</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 7, Row = 4, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@673ceab3</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>6</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 8, Row = 4, Color = R, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@6cbbe73b</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>7</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 4, Row = 1, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@78e785aa</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>8</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 1, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@3240a47f</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>9</factId>
+  <objectToString>[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: UNVERIFIED(2); $grid=GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>execute-replace-move [2, 1]</activationId>
+  <rule>execute-replace-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $current=[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f(2); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: VERIFIED(2); $player=bob, PURPLE, turn=true(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: VERIFIED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: VERIFIED(2); $grid=GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>execute-replace-move [2, 1]</activationId>
+  <rule>execute-replace-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $current=[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f(2); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: VERIFIED(2); $player=bob, PURPLE, turn=true(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>1</factId>
+  <objectToString>CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R]</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>remove-replaced-token-from-player [2, 1]</activationId>
+  <rule>remove-replaced-token-from-player</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>score [2, 1]</activationId>
+  <rule>score</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>execute-replace-move [2, 1]</activationId>
+  <rule>execute-replace-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $current=[Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f(2); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2); $player=bob, PURPLE, turn=true(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>remove-replaced-token-from-player [2, 1]</activationId>
+  <rule>remove-replaced-token-from-player</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>remove-replaced-token-from-player [2, 1]</activationId>
+  <rule>remove-replaced-token-from-player</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>score [2, 1]</activationId>
+  <rule>score</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: MOVED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>increment-turn [2, 1]</activationId>
+  <rule>increment-turn</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $mode=CLASSIC(1); move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>5</type>
+  <activationId>invalid-move [2, 1]</activationId>
+  <rule>invalid-move</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>score [2, 1]</activationId>
+  <rule>score</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>increment-turn [2, 1]</activationId>
+  <rule>increment-turn</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $mode=CLASSIC(1); move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=true
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>increment-turn [2, 1]</activationId>
+  <rule>increment-turn</rule>
+  <declarations>$game=CLASSIC:
+GameGrid: [column: 4, row: 0, color: Y; column: 4, row: 1, color: Y; column: 0, row: 4, color: P; column: 1, row: 4, color: P; column: 7, row: 4, color: R; column: 8, row: 4, color: R](1); $mode=CLASSIC(1); move=Mode = CLASSIC, BadYear=false, Registrant: bob, PURPLE, turn=false
+Current: [Ficha, type = MODERATE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@5f3d285f
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 0, Row = 4, Color = P, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@2825a5d2
+Status: EVALUATED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+</object-stream>

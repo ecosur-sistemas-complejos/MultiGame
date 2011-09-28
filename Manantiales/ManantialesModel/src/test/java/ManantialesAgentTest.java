@@ -77,9 +77,6 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
     @Test
     public void testExecuteMove () throws InvalidMoveException {
-        alice.setTurn (true);
-        game.setState(GameState.PLAY);
-
         ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
@@ -96,9 +93,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
      @Test
     public void testBasicAgentMoves () throws InvalidMoveException, JMSException {
-        alice.setTurn (true);
-        game.setState(GameState.PLAY);
-
+        game.setMode(Mode.CLASSIC);
         ManantialesFicha play = new ManantialesFicha(3,3, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
@@ -151,8 +146,6 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
             ManantialesFicha ficha = (ManantialesFicha) cell;
             assertTrue ("Location is incorrect! " + ficha, isGoodLocation (ficha));
         }
-
-        assertEquals (4, game.getGrid().getCells().size());         
     }
 
     private boolean isGoodLocation (ManantialesFicha ficha) {
@@ -194,5 +187,12 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         }
 
         return ret;
+    }
+    
+    public void testEmptyMoves () {
+        game.setMode(Mode.CLASSIC);
+        ManantialesFicha ficha = new ManantialesFicha (2,0,alice.getColor(),
+                TokenType.MANAGED_FOREST);
+        
     }
 }

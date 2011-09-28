@@ -31,6 +31,7 @@ import mx.ecosur.multigame.impl.entity.manantiales.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.impl.util.manantiales.RuleFunctions;
 
 import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
@@ -460,7 +461,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         move.setPlayer(alice);
         move.setBadYear(true);
         game.move (move);
-        assertEquals (MoveStatus.UNVERIFIED, move.getStatus());
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
     }
         
         
@@ -1331,7 +1332,14 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         ManantialesFicha location2 =  (ManantialesFicha) grid.getLocation(play);
         assertTrue ("Destination not populated!", location2 != null);
     }
-        
+    
+    public void testIsPrecedingPlayer () {
+        assertTrue (RuleFunctions.isPrecedingPlayer(game, alice, bob));
+        assertTrue (RuleFunctions.isPrecedingPlayer(game, bob, charlie));
+        assertTrue (RuleFunctions.isPrecedingPlayer(game, charlie, denise));
+        assertTrue (RuleFunctions.isPrecedingPlayer(game, denise, alice));
+    }
+
     /**
     * @param borderType
     * @param grid

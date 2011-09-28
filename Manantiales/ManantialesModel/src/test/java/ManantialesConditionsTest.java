@@ -247,4 +247,96 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
        assertTrue ("CheckConstraint not fired!", game.getCheckConditions() != null);
        assertEquals(1, game.getCheckConditions().size());
    }
+   
+   /* Tests for a constraint triggered by red, and ensure that it will expire 
+    * Bug seen in UI.*/
+   @Test
+   public void testYellowYellowRed() throws InvalidMoveException, JMSException {
+       ManantialesFicha a1 = new ManantialesFicha (3,4, alice.getColor(),
+                   TokenType.MODERATE_PASTURE);
+       ManantialesFicha a2 = new ManantialesFicha (2,4, alice.getColor(), 
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha trigger = new ManantialesFicha (0,4, charlie.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha sp1 = new ManantialesFicha (5,7, denise.getColor(),
+               TokenType.MANAGED_FOREST);
+       ManantialesFicha sp2 = new ManantialesFicha (1,1, alice.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha expiry = new ManantialesFicha (6,0, bob.getColor(),
+               TokenType.MANAGED_FOREST);
+       SetIds(a1,a2,trigger,sp1, sp2, expiry);
+       ManantialesMove move = new ManantialesMove(alice, a1);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       alice.setTurn(true);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       move = new ManantialesMove(alice, a2);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       charlie.setTurn(true);
+       move = new ManantialesMove(charlie, trigger);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       List<Message> messages = filterForEvent(GameEvent.CONDITION_RAISED);
+       assertEquals(1, messages.size());
+       move = new ManantialesMove(denise, sp1);
+       game.move(move);
+       move = new ManantialesMove(alice, sp2);
+       game.move(move);
+       move = new ManantialesMove(bob, expiry);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       messages = filterForEvent(GameEvent.CONDITION_TRIGGERED);
+       assertEquals(1, messages.size());
+   }
+   
+   /* Tests for a constraint triggered by red, and ensure that it will expire 
+    * Bug seen in UI.*/
+   @Test
+   public void testYellowYellowRedWithPassMove() throws InvalidMoveException, JMSException {
+       ManantialesFicha a1 = new ManantialesFicha (3,4, alice.getColor(),
+                   TokenType.MODERATE_PASTURE);
+       ManantialesFicha a2 = new ManantialesFicha (2,4, alice.getColor(), 
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha trigger = new ManantialesFicha (0,4, charlie.getColor(),
+               TokenType.MODERATE_PASTURE);
+       ManantialesFicha sp1 = new ManantialesFicha (5,7, denise.getColor(),
+               TokenType.MANAGED_FOREST);
+       ManantialesFicha sp2 = new ManantialesFicha (1,1, alice.getColor(),
+               TokenType.MODERATE_PASTURE);
+       SetIds(a1,a2,trigger,sp1, sp2);
+       ManantialesMove move = new ManantialesMove(alice, a1);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       alice.setTurn(true);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       move = new ManantialesMove(alice, a2);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       charlie.setTurn(true);
+       move = new ManantialesMove(charlie, trigger);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       List<Message> messages = filterForEvent(GameEvent.CONDITION_RAISED);
+       assertEquals(1, messages.size());
+       move = new ManantialesMove(denise, sp1);
+       game.move(move);
+       move = new ManantialesMove(alice, sp2);
+       game.move(move);
+       move = generatePassMove(bob);
+       game.move(move);
+       assertEquals(MoveStatus.EVALUATED, move.getStatus());
+       messages = filterForEvent(GameEvent.CONDITION_TRIGGERED);
+       assertEquals(1, messages.size());
+   }
+   
+   private ManantialesMove generatePassMove(ManantialesPlayer p) {
+       ManantialesMove ret = new ManantialesMove ();
+       ret.setPlayer(p);
+       ret.setBadYear(true);
+       ret.setStatus(MoveStatus.UNVERIFIED);
+       ret.setMode(game.getMode());
+       return ret;   
+   }
+   
 }

@@ -80,7 +80,7 @@ public class ManantialesMove extends GridMove implements Comparable {
 
     @Enumerated
     public TokenType getReplacementType() {
-        if (replacementType == null) {
+        if (getCurrentCell() != null && replacementType == null) {
             replacementType = TokenType.UNKNOWN;
             if (getCurrentCell() instanceof ManantialesFicha) {
                     ManantialesFicha current = (ManantialesFicha) getCurrentCell();

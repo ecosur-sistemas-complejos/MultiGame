@@ -33,6 +33,8 @@ public class CheckCondition implements Condition {
 
     private boolean expired;
 
+    private boolean resolved;
+    
     private Integer id;
 
     public CheckCondition () {
@@ -110,6 +112,20 @@ public class CheckCondition implements Condition {
     public void setExpired(boolean expired) {
         this.expired = expired;
     }
+    
+    /**
+     * @return the expired
+     */
+    public boolean isResolved() {
+        return expired;
+    }
+
+    /**
+     * @param expired the expired to set
+     */
+    public void setResolved(boolean expired) {
+        this.expired = expired;
+    }    
 
     /**
      * @return the violators

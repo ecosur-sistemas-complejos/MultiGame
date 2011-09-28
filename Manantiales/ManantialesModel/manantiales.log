@@ -1,0 +1,138 @@
+<object-stream>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>1</factId>
+  <objectToString>mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: UNVERIFIED(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>invalid-move [2, 1]</activationId>
+  <rule>invalid-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: UNVERIFIED(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>1</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: UNVERIFIED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: UNVERIFIED(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>intensive-replaces-moderate [2, 1]</activationId>
+  <rule>intensive-replaces-moderate</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: VERIFIED(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>4</type>
+  <activationId>execute-new-move [2, 1]</activationId>
+  <rule>execute-new-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: VERIFIED(2); $player=alice, YELLOW, turn=true(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: VERIFIED</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>evaluate-regular-move [2, 1]</activationId>
+  <rule>evaluate-regular-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: VERIFIED(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>intensive-replaces-moderate [2, 1]</activationId>
+  <rule>intensive-replaces-moderate</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: VERIFIED(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>5</type>
+  <activationId>execute-new-move [2, 1]</activationId>
+  <rule>execute-new-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID(2); $player=alice, YELLOW, turn=true(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>intensive-replaces-moderate [2, 1]</activationId>
+  <rule>intensive-replaces-moderate</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID(2); $grid=GameGrid: [(1)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>6</type>
+  <activationId>invalid-move [2, 1]</activationId>
+  <rule>invalid-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+<org.drools.audit.event.ObjectLogEvent>
+  <type>2</type>
+  <factId>2</factId>
+  <objectToString>Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID</objectToString>
+</org.drools.audit.event.ObjectLogEvent>
+<org.drools.audit.event.ActivationLogEvent>
+  <type>7</type>
+  <activationId>invalid-move [2, 1]</activationId>
+  <rule>invalid-move</rule>
+  <declarations>$game=mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame@144f1ada(1); $mode=CLASSIC(1); $move=Mode = CLASSIC, BadYear=false, Registrant: alice, YELLOW, turn=true
+Current: null
+Destination: [Ficha, type = INTENSIVE_PASTURE, (Column, Row) Column = 5, Row = 4, Color = Y, comparator = mx.ecosur.multigame.grid.comparator.CellComparator@1f758c30
+Status: INVALID(2)</declarations>
+</org.drools.audit.event.ActivationLogEvent>
+</object-stream>

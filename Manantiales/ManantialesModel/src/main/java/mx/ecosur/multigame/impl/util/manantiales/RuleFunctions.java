@@ -157,6 +157,7 @@ public class RuleFunctions {
     }
 
     public static  boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
+        System.out.println("Evaluating precession: " +first.getColor() + " and " + second.getColor());
         boolean ret = false;
         if (!first.equals(second)) {
             Set<GridPlayer> players = game.getPlayers();
@@ -180,6 +181,9 @@ public class RuleFunctions {
             }
             
             ret = nextPlayer.getColor().equals(second.getColor());
+            
+            if (ret)
+                System.out.println(first.getColor () + " precedes " + second.getColor());
         }
         return ret;
     }

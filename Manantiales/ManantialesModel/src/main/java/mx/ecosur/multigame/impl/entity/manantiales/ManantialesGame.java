@@ -28,9 +28,14 @@ import javax.persistence.*;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
@@ -43,6 +48,8 @@ public class ManantialesGame extends GridGame {
     private static final long serialVersionUID = -8395074059039838349L;
 
     private static transient KnowledgeBase kbase;
+    
+    private static final boolean DEBUG = true;
         
     private Mode mode;
         
@@ -51,8 +58,6 @@ public class ManantialesGame extends GridGame {
     private transient ManantialesMessageSender messageSender;
 
     private Set<PuzzleSuggestion> suggestions;
-
-    private Map<Mode,MoveHistory> moveHistory;
 
     private Color[] colors = { Color.YELLOW, Color.PURPLE, Color.RED, Color.BLACK,  };
 
@@ -113,15 +118,6 @@ public class ManantialesGame extends GridGame {
     public void setMode (Mode mode) {
         this.checkConditions = null;
         this.mode = mode;
-    }
-
-    @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
-    public Map<Mode, MoveHistory> getMoveHistory() {
-        return moveHistory;
-    }
-
-    public void setMoveHistory(Map<Mode, MoveHistory> moveHistory) {
-        this.moveHistory = moveHistory;
     }
 
     @OneToMany (cascade=CascadeType.ALL, fetch=FetchType.EAGER)
@@ -220,6 +216,12 @@ public class ManantialesGame extends GridGame {
             kbase = findKBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        KnowledgeRuntimeLogger klogger = null;
+        
+        if (DEBUG) {
+            klogger = KnowledgeRuntimeLoggerFactory.newFileLogger(
+                    session,"manantiales");
+        }
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
@@ -233,12 +235,17 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("evaluate").setFocus();
         session.fireAllRules();
+        
+        if (DEBUG) {
+            klogger.close();
+        }
+        
         session.dispose();
 
         if (getMoves() == null)
             setMoves(new TreeSet<GridMove>(new MoveComparator()));
         getMoves().add(move);
-
+        
         return move;
     }
 
@@ -305,19 +312,23 @@ public class ManantialesGame extends GridGame {
         if (agent instanceof SimpleAgent) {
             SimpleAgent player = (SimpleAgent) agent;
 
-            for (GridPlayer p : this.getPlayers()) {
-                if (p.equals (player))
-                    throw new InvalidRegistrationException ("Duplicate Registraton!");
+            if (getPlayers () != null) {
+                for (GridPlayer p : this.getPlayers()) {
+                    if (p.equals (player))
+                        throw new InvalidRegistrationException ("Duplicate Registraton!");
+                }
+                
+                int max = getMaxPlayers();
+                if (players.size() == max)
+                    throw new RuntimeException ("Maximum Players reached!");
             }
-
-            int max = getMaxPlayers();
-            if (players.size() == max)
-                throw new RuntimeException ("Maximum Players reached!");
 
             List<Color> colors = getAvailableColors();
             player.setColor(colors.get(0));
             if (player.getColor().equals(Color.YELLOW))
                 player.setTurn(true);
+            if (players == null)
+                players = new LinkedHashSet<GridPlayer>();
             players.add(player);
             if (players.size() == getMaxPlayers())
             try {
@@ -340,6 +351,7 @@ public class ManantialesGame extends GridGame {
 
     @Override
     public String toString() {
-        return getMode() + ":\n" + getGrid().toString();
+        return super.toString();
+        //return getMode() + ":\n" + getGrid().toString();
     }
 }
