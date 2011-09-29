@@ -208,10 +208,11 @@ rule "row contiguous intensive"
     no-loop true
 when
         $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
+        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, $tok2 : destinationCell != null, 
             destinationCell.row == $row, type == TokenType.INTENSIVE_PASTURE)
-        eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell()))
-        eval (Math.abs ($col - $move.getDestinationCell().getColumn()) <= 2) 
+        eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell())) 
+        eval (!hasInterveningBorder($tok1, $tok2)) 
+        eval (Math.abs ($col - $move.getDestinationCell().getColumn()) < 3) 
     then 
         modify ($move) { setStatus (MoveStatus.INVALID) }
 end
@@ -221,10 +222,11 @@ rule "column contiguous intensive"
     no-loop true
 when
         $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
+        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, $tok2 : destinationCell != null, 
             destinationCell.column == $col, type == TokenType.INTENSIVE_PASTURE)
         eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell()))
-        eval (Math.abs ($row - $move.getDestinationCell().getRow()) <= 2) 
+        eval (!hasInterveningBorder($tok1, $tok2)) 
+        eval (Math.abs ($row - $move.getDestinationCell().getRow()) < 3) 
     then 
         modify ($move) { setStatus (MoveStatus.INVALID) }
 end
@@ -393,51 +395,6 @@ rule "manantiales"
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
-end
-
-# Conditions only expire in the classic or silvopastoral games.
-
-rule "expire-condition"
-    agenda-group "verify"
-    no-loop true
-when
-    $game : ManantialesGame (state == GameState.PLAY, 
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
-    $move      : ManantialesMove ($player : player, status == MoveStatus.VERIFIED)
-    $condition : CheckCondition  (expired == false, $player2 : player, 
-        type not in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
-    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
-then
-    GameGrid grid = clearBorder ($game, $condition.getType());
-    Set<CheckCondition> conditions = $game.getCheckConditions();
-    conditions.remove ($condition);
-    modify ($condition) { setExpired (true) };
-    modify ($game) { 
-        setCheckConditions (conditions),
-        setGrid (grid), 
-        setCheckConditions (conditions)
-    };
-    messageSender.sendConditionTriggered ($game, $condition);
-end  
-
-rule "expire-terminal-condition"
-    agenda-group "verify"
-    no-loop true
-when
-    $game : ManantialesGame (state == GameState.PLAY, mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
-    $move : ManantialesMove ($player : player, status == MoveStatus.VERIFIED)
-    $condition : CheckCondition  (expired == false, $player2 : player, 
-        type in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
-    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));
-then
-    modify ($condition) { setExpired (true) };
-    modify ($game) {
-        getCheckConditions().add($condition),
-        setState (GameState.ENDED)
-    };
-    retract ($move)
-    messageSender.sendConditionTriggered ($game, $condition);
-    messageSender.sendEndGame ($game);
 end
 
 rule "evaluated-suggestion-notify"
@@ -610,7 +567,50 @@ then
     messageSender.sendConditionResolved ($game, $constraint);
 end
 
+# Conditions only expire in the classic or silvopastoral games.
 
+rule "expire-condition"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, 
+        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+    $move      : ManantialesMove ($player : player, status == MoveStatus.MOVED)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type not in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
+then
+    GameGrid grid = clearBorder ($game, $condition.getType());
+    Set<CheckCondition> conditions = $game.getCheckConditions();
+    conditions.remove ($condition);
+    modify ($condition) { setExpired (true) };
+    modify ($game) { 
+        setCheckConditions (conditions),
+        setGrid (grid), 
+        setCheckConditions (conditions)
+    };
+    messageSender.sendConditionTriggered ($game, $condition);
+end  
+
+rule "expire-terminal-condition"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+    $move : ManantialesMove ($player : player, status == MoveStatus.MOVED)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));
+then
+    modify ($condition) { setExpired (true) };
+    modify ($game) {
+        getCheckConditions().add($condition),
+        setState (GameState.ENDED)
+    };
+    retract ($move)
+    messageSender.sendConditionTriggered ($game, $condition);
+    messageSender.sendEndGame ($game);
+end
 
 rule "remove-replaced-token-from-player"
     agenda-group "evaluate"

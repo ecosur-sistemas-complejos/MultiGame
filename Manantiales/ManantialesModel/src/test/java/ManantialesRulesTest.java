@@ -113,7 +113,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         
     @Test
     public void testExecuteMove () throws InvalidMoveException {
-        ManantialesFicha play = new ManantialesFicha(5, 4, alice.getColor(),
+        ManantialesFicha play = new ManantialesFicha(1, 1, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         SetIds(play);
         ManantialesMove move = new ManantialesMove (alice, play);
@@ -1333,11 +1333,66 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue ("Destination not populated!", location2 != null);
     }
     
+    @Test
     public void testIsPrecedingPlayer () {
         assertTrue (RuleFunctions.isPrecedingPlayer(game, alice, bob));
         assertTrue (RuleFunctions.isPrecedingPlayer(game, bob, charlie));
         assertTrue (RuleFunctions.isPrecedingPlayer(game, charlie, denise));
         assertTrue (RuleFunctions.isPrecedingPlayer(game, denise, alice));
+    }
+    
+    @Test
+    public void testBorderColumnSeperatedIntensives () throws InvalidMoveException {
+        ManantialesFicha a1 = new ManantialesFicha (3,1,alice.getColor(), 
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha a2 = new ManantialesFicha (3,1, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha b1 = new ManantialesFicha (5,1, bob.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha b2 = new ManantialesFicha (5,1, bob.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        SetIds (a1,b1,a2,b2);
+        ManantialesMove m = new ManantialesMove (alice, a1);
+        game.move (m);        
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(bob, b1);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        alice.setTurn(true);
+        m = new ManantialesMove (alice, a1, a2);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(bob, b1, b2);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+    }
+   
+    @Test
+    public void testBorderRowSeperatedIntensives() throws InvalidMoveException {
+        ManantialesFicha a1 = new ManantialesFicha (3,3, alice.getColor(), 
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha c1 = new ManantialesFicha (3,5, charlie.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha a2 = new ManantialesFicha (3,3, alice.getColor(), 
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha c2 = new ManantialesFicha (3,5, charlie.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        SetIds (a1,c1,a2,c2);
+        ManantialesMove m = new ManantialesMove (alice, a1);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        charlie.setTurn(true);
+        m = new ManantialesMove(charlie,c1);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        alice.setTurn(true);
+        m = new ManantialesMove (alice, a1, a2);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        charlie.setTurn(true);
+        m = new ManantialesMove(charlie, c1, c2);
+        game.move (m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
     }
 
     /**

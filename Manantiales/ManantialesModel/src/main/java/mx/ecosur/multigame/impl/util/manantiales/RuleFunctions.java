@@ -243,6 +243,13 @@ public class RuleFunctions {
 
         return ret;
     }
+    
+    public static boolean hasInterveningBorder (GridCell a, GridCell b) {
+        return ( (a.getRow() == 3 && b.getRow() == 5) || 
+                (b.getRow() == 3 && a.getRow() == 5) ||
+                (a.getColumn() == 3 && b.getColumn() == 5) ||
+                (b.getColumn() == 3 && b.getColumn() == 5));
+    }
 
     public static  GameGrid clearTerritory (ManantialesGame game, Color color) {
         GameGrid ret = game.getGrid();
