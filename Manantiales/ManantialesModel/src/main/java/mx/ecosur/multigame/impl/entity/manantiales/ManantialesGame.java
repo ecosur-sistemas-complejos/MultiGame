@@ -28,8 +28,6 @@ import javax.persistence.*;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLogger;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -210,8 +208,7 @@ public class ManantialesGame extends GridGame {
             kbase = findKBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        KnowledgeRuntimeLogger klogger = null;
-        
+
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
