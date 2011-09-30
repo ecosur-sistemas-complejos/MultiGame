@@ -41,8 +41,7 @@ package mx.ecosur.multigame.component {
         protected static const DEFAULT_CELL_BORDER_COLOR:uint = 0x000000;
         protected static const DEFAULT_CELL_BORDER_THICKNESS:uint = 1;
         protected static const DEFAULT_CELL_PADDING:Number = 2.5;
-        protected static const LABEL_SIZE:Number = 0;
-        
+
         // Flags
         protected var _cellsCreated:Boolean;
         

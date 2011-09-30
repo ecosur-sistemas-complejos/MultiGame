@@ -113,43 +113,44 @@
             var counter:int = 0;
             var boardCell:RoundCell;
 
-            for (var i:int = 0; i < 9; i++) {
-                _boardCells[i] = new Array();
-                for (var j:int = 0; j < 9; j++) {
+            for (var row:int = 0; row < 9; row++) {
+                _boardCells[row] = new Array();
+                for (var column:int = 0; column < 9; column++) {
                     boardCell = null;
 
-                    if (i == 4) {
+                    if (row == 4) {
                         this.setStyle("cellBgColor", 0xA0A0A0);
-                    } else if (j == 4) {
+                    } else if (column == 4) {
                         this.setStyle("cellBgColor", 0xA0A0A0);
-                    } else if (i < 4 && j < 4) {
+                    } else if (column < 4 && row < 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
-                    } else if (i < 4 && j > 4) {
+                    } else if (column > 4 && row < 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.PURPLE));
-                    } else if (i > 4 && j < 4) {
+                    } else if (column < 4 && row > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
-                    } else if (i > 4 && j > 4) {
+                    } else if (column > 4 && row > 4 && column > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.BLACK));
                     }
 
-                    if (i == 4 && j == 4) {
+                    /* Center Manantial */
+                    if (column == 4 && row == 4) {
                         continue;
                     }
-                    else if ( i % 2 == 0 && j % 2 == 0) {
-                        boardCell = new RoundCell(j,i, cellBgColor,
+                    else if ( row % 2 == 0 && column % 2 == 0) {
+                        boardCell = new RoundCell(column,row, cellBgColor,
                             cellBorderColor, cellBorderThickness);
-                    } else if ( i % 2 != 0 && j % 2 != 0 ) {
-                        boardCell = new RoundCell(j, i, cellBgColor,
+                    } else if ( row % 2 != 0 && column % 2 != 0 ) {
+                        boardCell = new RoundCell(column, row, cellBgColor,
                             cellBorderColor, cellBorderThickness);
-                    } else if (i == 4 || j == 4) {
-                        boardCell = new RoundCell(j,i, cellBgColor,
+                    } else if (row == 4 || column == 4) {
+                        boardCell = new RoundCell(column,row, cellBgColor,
                             cellBorderColor, cellBorderThickness);
                     }
 
                     if (boardCell != null) {
-                        boardCell.toolTip = j + "," + i;
+                        boardCell.toolTip = column + "," + row;
                         addChild(boardCell);
-                        _boardCells[i][j] = boardCell;
+                        _boardCells[row][column] = boardCell;
                         boardCell.setStyle("padding", cellPadding);
                         boardCell.alpha = 0.70;
                     }
@@ -319,7 +320,7 @@
             _centerY = centerY;*/
         }
 
-       protected function get boardRotation():int {
+        protected function get boardRotation():int {
             var ret:int = 0;
 
             if (_currentPlayer.color == Color.BLACK) {

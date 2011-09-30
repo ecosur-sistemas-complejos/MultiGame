@@ -17,6 +17,7 @@ import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         GridRegistrant registrant = new GridRegistrant ("alice");
         alice = (ManantialesPlayer) game.registerPlayer(registrant);
         agents = new SimpleAgent [ 3 ];
-        Color [] colors = { Color.BLUE, Color.RED, Color.PURPLE };
+        Color [] colors = { Color.PURPLE, Color.RED, Color.BLACK };
 
         for (int i = 0; i < 3; i++) {
             registrant = new GridRegistrant ("Agent-" + (i + 1));
@@ -146,6 +147,25 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
             ManantialesFicha ficha = (ManantialesFicha) cell;
             assertTrue ("Location is incorrect! " + ficha, isGoodLocation (ficha));
         }
+    }
+
+    /* A  test for confirming that the purple agent creates moves for both borders.
+       Test for bug MG-20.
+     */
+    @Test
+    public void testAgentPurple () {
+        assertTrue(true);
+        SimpleAgent purpleAgent = null;
+        for (GamePlayer p : game.listPlayers()) {
+            if (((ManantialesPlayer) p).getColor().equals(Color.PURPLE)) {
+                SimpleAgent purple = (SimpleAgent) p;
+                for (int i = 5; i < 9; i++) {
+                    ManantialesFicha f = new ManantialesFicha (4,i, Color.PURPLE, TokenType.MANAGED_FOREST);
+                    assertTrue(purple.isGoodLocation(f));
+                }
+            }
+        }
+
     }
 
     private boolean isGoodLocation (ManantialesFicha ficha) {

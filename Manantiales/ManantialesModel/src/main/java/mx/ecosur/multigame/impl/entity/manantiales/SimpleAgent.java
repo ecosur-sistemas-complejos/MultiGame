@@ -202,7 +202,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         }
 
         for (int row = startrow; row <= endrow; row++) {
-            for (int col = startcol; col < endcol; col++) {
+            for (int col = startcol; col <= endcol; col++) {
                 ManantialesFicha ficha = new ManantialesFicha(col, row, getColor(), TokenType.UNKNOWN);
                 if (isGoodLocation (ficha)  && grid.getLocation(ficha) == null) {
                     if (this.getForested() < 6)
@@ -219,23 +219,23 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         return ret;
     }
 
-    private boolean isGoodLocation (ManantialesFicha ficha) {
+    public boolean isGoodLocation (ManantialesFicha ficha) {
         boolean ret;
         Color color = ficha.getColor();
         int column = ficha.getColumn(), row = ficha.getRow();
 
         switch (color) {
             case YELLOW:
-                ret = (column <= 4 && row <= 4);
+                ret = (column < 5 && row < 5);
                 break;
             case PURPLE:
-                ret = (column <= 4 && row >= 4);
+                ret = (column < 5 && row > 3);
                 break;
             case RED:
-                ret = (column >= 4 && row <= 4);
+                ret = (column > 3 && row < 5);
                 break;
             case BLACK:
-                ret = (column >= 4 && row >= 4);
+                ret = (column > 3 && row > 3);
                 break;
             default:
                 ret = false;
