@@ -7,56 +7,21 @@ We have split off the project into four separate aspects: Deploy, Engine, Games 
 Research.  Each submodule contains it's entire history from the onset of the project
 and will allow us to publish our finished games and research more quickly.
 
-For some background on submodules, please take a look at the following example, involving 
-submodules "a" and "b", or just scroll down to get started right away.
-
-    Pulling down the submodules is a two-step process. First run git submodule
-    init to add the submodule repository URLs to .git/config:
-
-    $ git submodule init
-
-    Now use git-submodule update to clone the repositories and check out the commits
-    specified in the superproject:
-
-    $ git submodule update
-    $ cd a
-    $ ls -a
-    .  ..  .git  a.txt
-
-    One major difference between git-submodule update and git-submodule add is that
-    git-submodule update checks out a specific commit, rather than the tip of a
-    branch. It's like checking out a tag: the head is detached, so you're not working
-    on a branch.
-
-    $ git branch
-    * (no branch)
-    master
-
-    If you want to make a change within a submodule and you have a detached head, then
-    you should create or checkout a branch, make your changes, publish the change within
-    the submodule, and then update the superproject to reference the new commit:
-
-    $ git checkout master
-    or
-
-    $ git checkout -b fix-up
-    [http://book.git-scm.com/5_submodules.html]
-
-To get started right away, simply do the following from the top of this project (MultiGame): 
+To get started right away, simply do the following from the top of this project (MultiGame):
 
     $git submodule init
     $git submodule update
-    $git submodule foreach git pull
 
-Then checkout the development branch and you're ready to go:
+Then checkout the development branch and you're ready to contribute!
 
-    $git checkout development; git submodule foreach git checkout development
+    $git checkout development
+    $git submodule update
+    $git submodule foreach git checkout development
 
 If you're using git-flow, you could then start work on "featureName" with the following:
 
     $git flow init
     $git flow feature start "featureName"
- 
 
 JBOSS AS6 CONFIGURATION
 
