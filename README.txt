@@ -23,6 +23,8 @@ If you're using git-flow, you could then start work on "featureName" with the fo
     $git flow init
     $git flow feature start "featureName"
 
+NOTE: Be sure to use "git submodule update" when moving in-between branches at the top-level.
+
 JBOSS AS6 CONFIGURATION
 
 1. MySQL-DS.xml and Persistence.xml.
