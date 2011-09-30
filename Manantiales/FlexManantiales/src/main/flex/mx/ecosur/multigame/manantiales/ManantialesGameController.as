@@ -2,10 +2,13 @@
 
 package mx.ecosur.multigame.manantiales
 {
+    import flash.media.Sound;
+import flash.media.SoundChannel;
 
-    import mx.collections.ArrayCollection;
+import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.IFlexDisplayObject;
+    import mx.ecosur.multigame.component.SoundAssets;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.GameGrid;
@@ -19,8 +22,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
-import mx.ecosur.multigame.enum.GameState;
-import mx.ecosur.multigame.manantiales.enum.ConditionType;
+    import mx.ecosur.multigame.enum.GameState;
+    import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
     import mx.ecosur.multigame.enum.manantiales.Mode;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
@@ -65,6 +68,7 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
         private var _isEnded:Boolean;
         private var _stateChange:Boolean;
         private var _messages:ArrayCollection;
+        private var _sndChannel:SoundChannel;
 
         // constants
         static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
@@ -407,10 +411,9 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             var gamePlayer:ManantialesPlayer;
             var i:int;
 
-            if (game.state == GameState.PLAY && (
-                    game.mode == Mode.CLASSIC ||
-                    game.mode == Mode.SILVOPASTORAL ||
-                    game.mode == Mode.RELOADED))
+            if (game.mode == Mode.CLASSIC ||
+                game.mode == Mode.SILVOPASTORAL ||
+                game.mode == Mode.RELOADED)
             {
                 for (i = 0; i < game.players.length; i++) {
                     gamePlayer = ManantialesPlayer(game.players[i]);
@@ -533,63 +536,78 @@ import mx.ecosur.multigame.manantiales.enum.ConditionType;
             }
         }
 
-        private function handleGameEnd (game:ManantialesGame):void {
-                var i:int;
+        private function handleGameEnd(game:ManantialesGame):void {
+            var i:int;
 
-                    /* Remove all alert conditions from the PopUpManager */
-                for (i = 0; i < _alerts.length; i++)
-                        PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
+            /* Remove all alert conditions from the PopUpManager */
+            for (i = 0; i < _alerts.length; i++)
+                PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
 
-                if (_endAlert == null) {
-                        _endAlert = new GraphicAlert();
+            if (_endAlert == null) {
+                _endAlert = new GraphicAlert();
+                var expiredCondition:CheckCondition = null;
+                var sound:Sound = null;
 
-                        var expiredCondition:CheckCondition = null;
-
-                        /* See if any checkConstraints are expired and if so, Post a
-                        different end condition alert */
-                        for (i = 0; i < game.checkConditions.length; i++) {
-                                var checkCondition:CheckCondition = CheckCondition(
-                                     game.checkConditions.getItemAt(i));
-                                if (checkCondition.expired && (checkCondition.reason == ConditionType.MANANTIALES_DRY ||
-                                     checkCondition.reason == ConditionType.TERRITORY_DEFORESTED))
-                            {
-                                expiredCondition = checkCondition;
-                                }
-                        }
-
-                        if (expiredCondition != null) {
-                          _endAlert.text = resourceManager.getString("Manantiales","manantiales.severe.expiration") +
-                                  " ('" + expiredCondition.reason + "')";
-                          _endAlert.positive = false;
-                        } else
-                        {
-                            if (puzzleMode) {
-                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.all.winners");
-                                _endAlert.positive = true;
-                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
-                                        "Manantiales","manantiales.have.won"), 0x000000);
-                            } else if (isWinner()) {
-                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.competitive.win");
-                                _endAlert.positive = true;
-                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
-                                        "Manantiales","manantiales.have.won"), 0x000000);
-                            } else {
-                                _endAlert.text = resourceManager.getString("Manantiales","manantiales.competitive.lose");
-                                _endAlert.positive = false;
-                                _gameWindow.gameStatus.showMessage(resourceManager.getString(
-                                        "Manantiales","manantiales.competitive.lose"), 0x000000);
-                            }
-                        }
-
-                    _endAlert.addEventListener("result",handleEndResult);
-                    PopUpManager.addPopUp(_endAlert, _gameWindow, true);
-                    PopUpManager.centerPopUp(_endAlert);
+                /* See if any checkConstraints are expired and if so, Post a
+                 different end condition alert */
+                for (i = 0; i < game.checkConditions.length; i++) {
+                    var checkCondition:CheckCondition = CheckCondition(
+                            game.checkConditions.getItemAt(i));
+                    if (checkCondition.expired && (checkCondition.reason == ConditionType.MANANTIALES_DRY ||
+                            checkCondition.reason == ConditionType.TERRITORY_DEFORESTED)) {
+                        expiredCondition = checkCondition;
+                    }
                 }
+
+                if (expiredCondition != null) {
+                    _endAlert.text = resourceManager.getString("Manantiales", "manantiales.severe.expiration") +
+                            " ('" + expiredCondition.reason + "')";
+                    _endAlert.positive = false;
+                } else {
+                    if (puzzleMode) {
+                        _endAlert.text = resourceManager.getString("Manantiales", "manantiales.all.winners");
+                        _endAlert.positive = true;
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                "Manantiales", "manantiales.have.won"), 0x000000);
+                    } else if (isWinner()) {
+                        _endAlert.text = resourceManager.getString("Manantiales", "manantiales.competitive.win");
+                        _endAlert.positive = true;
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                "Manantiales", "manantiales.have.won"), Color.getColorCode(_currentPlayer.color));
+                    } else {
+                        _endAlert.text = resourceManager.getString("Manantiales", "manantiales.competitive.lose");
+                        _endAlert.positive = false;
+                        _gameWindow.gameStatus.showMessage(resourceManager.getString(
+                                "Manantiales", "manantiales.competitive.lose"), Color.getColorCode(_currentPlayer.color));
+                    }
+                }
+
+                if (_endAlert.positive)
+                    sound = SoundAssets.approval;
+                else
+                    sound = SoundAssets.failure;
+
+                _endAlert.addEventListener("result", handleEndResult);
+                PopUpManager.addPopUp(_endAlert, _gameWindow, true);
+                PopUpManager.centerPopUp(_endAlert);
+                _sndChannel = sound.play();
+            }
         }
 
         private function isWinner():Boolean {
-            return (_game.mode == Mode.CLASSIC && _currentPlayer.score >= CLASSIC_WINNING_SCORE) ||
-                  (_game.mode == Mode.SILVOPASTORAL && _currentPlayer.score >= SILVO_WINNING_SCORE);
+            var ret:Boolean = false;
+            switch (_game.mode) {
+                case Mode.CLASSIC:
+                    ret = _currentPlayer.score >= CLASSIC_WINNING_SCORE;
+                    break;
+                case Mode.SILVOPASTORAL:
+                    ret = _currentPlayer.score >= SILVO_WINNING_SCORE;
+                    break;
+                case Mode.RELOADED:
+                    // left for later implementation
+                    break;
+            }
+            return ret;
         }
 
         public function destroy():void{
