@@ -30,6 +30,7 @@ import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.impl.entity.manantiales.*;
 
 import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
+import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.util.manantiales.RuleFunctions;
 
@@ -38,6 +39,7 @@ import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 
 import static util.TestUtilities.*;
+import static mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -1393,6 +1395,100 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         m = new ManantialesMove(charlie, c1, c2);
         game.move (m);
         assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+    }
+    
+    @Test
+    public void testConditionsEffected () {
+        CheckCondition cond;
+        ManantialesMove m;
+        
+        /* Case 1 */
+        cond = new CheckCondition();
+        cond.setExpired(false);
+        cond.setType(ConditionType.NORTHERN_BORDER_DEFORESTED);
+        m = new ManantialesMove();
+        m.setDestinationCell(new ManantialesFicha(4,0,Color.YELLOW, TokenType.MODERATE_PASTURE));
+        assertTrue(effectsCondition (cond, m));
+        
+        /* Case 2 */
+        cond = new CheckCondition();
+        cond.setExpired(false);
+        cond.setType(ConditionType.EASTERN_BORDER_DEFORESTED);
+        m = new ManantialesMove();
+        m.setDestinationCell(new ManantialesFicha(5,4,Color.RED, TokenType.MODERATE_PASTURE));
+        assertTrue(effectsCondition (cond, m));
+        
+        /* Case 3 */
+        cond = new CheckCondition();
+        cond.setExpired(false);
+        cond.setType(ConditionType.WESTERN_BORDER_DEFORESTED);
+        m = new ManantialesMove();
+        m.setDestinationCell(new ManantialesFicha(1,4,Color.YELLOW, TokenType.MODERATE_PASTURE));
+        assertTrue(effectsCondition (cond, m));
+        
+        /* Case 4 */
+        cond = new CheckCondition();
+        cond.setExpired(false);
+        cond.setType(ConditionType.SOUTHERN_BORDER_DEFORESTED);
+        m = new ManantialesMove();
+        m.setDestinationCell(new ManantialesFicha(4,5,Color.PURPLE, TokenType.MODERATE_PASTURE));
+        assertTrue(effectsCondition (cond, m));        
+        
+        /* Case 5 */
+        cond = new CheckCondition();
+        cond.setExpired(false);
+        cond.setType(ConditionType.MANANTIALES_DRY);
+        m = new ManantialesMove();
+        m.setDestinationCell(new ManantialesFicha(3,4,Color.YELLOW, TokenType.MODERATE_PASTURE));
+        assertTrue(effectsCondition (cond, m));
+    }
+    
+    @Test
+    public void testMoveEffectsNorthernBorderCondition () throws InvalidMoveException, JMSException {
+        ManantialesFicha man1 = new ManantialesFicha(4,0, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha man2 = new ManantialesFicha(4,1, bob.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha man3 = new ManantialesFicha(4,2, charlie.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha man4 = new ManantialesFicha(4,3, bob.getColor(),
+                TokenType.MODERATE_PASTURE);
+        SetIds(man1, man2, man3, man4);
+        GameGrid grid = game.getGrid();
+        if (grid.isEmpty())
+            grid.setCells(new TreeSet<GridCell>(new CellComparator()));
+        game.getGrid().getCells().add(man1);
+        game.getGrid().getCells().add(man2);
+        alice.setTurn(false);
+        charlie.setTurn(true);
+        ManantialesMove move = new ManantialesMove (charlie, man3);
+        game.move (move);
+
+        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        ArrayList filter = new ArrayList();
+        List<Message> messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_RAISED"))
+                filter.add(message);
+        }
+        assertTrue ("No RAISED_CONDITION message intercepted!", filter.size() == 1);
+        assertTrue ("Filter.size()==" + filter.size(), filter.size() == 1);
+        
+        /*  Trigger the condition with a pasture token */
+        move = new ManantialesMove(bob, man4);
+        bob.setTurn(true);
+        game.move(move);
+        
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
+        filter = new ArrayList();
+        messageList = mockTopic.getReceivedMessageList();
+        for (Message  message : messageList) {
+            if (message.getStringProperty("GAME_EVENT").equals("CONDITION_TRIGGERED"))
+                filter.add(message);
+        }
+        assertTrue ("No TRIGGERED_CONDITION message intercepted!", filter.size() == 1);
+        assertTrue ("Filter.size()==" + filter.size(), filter.size() == 1);
+        assertTrue(game.getGrid().isEmpty());
     }
 
     /**

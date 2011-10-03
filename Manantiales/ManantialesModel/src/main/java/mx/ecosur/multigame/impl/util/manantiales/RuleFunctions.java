@@ -13,6 +13,7 @@ import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
 
+import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
@@ -100,6 +101,31 @@ public class RuleFunctions {
         int silvo = player.getSilvo() * 4;
 
         return forested + moderate + intensive + silvo;
+    }
+    
+    public static boolean effectsCondition (CheckCondition condition, ManantialesMove move) {
+        boolean ret = false;
+        
+        switch (condition.getType()) {
+            case NORTHERN_BORDER_DEFORESTED:
+                ret = move.getBorder().equals(BorderType.NORTH);
+                break;
+            case SOUTHERN_BORDER_DEFORESTED:
+                ret = move.getBorder().equals(BorderType.SOUTH);
+                break;
+            case WESTERN_BORDER_DEFORESTED:
+                ret = move.getBorder().equals(BorderType.WEST);
+                break;
+            case EASTERN_BORDER_DEFORESTED:
+                ret = move.getBorder().equals(BorderType.EAST);
+                break;
+            case MANANTIALES_DRY:
+                ret = move.isManantial();
+            default:
+                break;
+        }
+        
+        return ret;
     }
 
     public static  boolean isWinner (Mode mode, ManantialesPlayer gamePlayer) {

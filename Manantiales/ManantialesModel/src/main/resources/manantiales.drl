@@ -302,7 +302,7 @@ rule
     agenda-group "verify"    
     no-loop true
     when
-        not CheckCondition (expired == false, type == ConditionType.EASTERN_BORDER_DEFORESTED)       
+        not CheckCondition (expired == false, type == ConditionType.EASTERN_BORDER_DEFORESTED)
         $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
         $tok1 : ManantialesFicha ($id : id, border == BorderType.EAST, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
@@ -395,6 +395,17 @@ rule "manantiales"
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule "move-effects-cleared-area"
+    agenda-group "evaluate"
+when
+    $condition : CheckCondition (expired == false)
+    $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, 
+        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+    eval (effectsCondition ($condition, $move))
+then
+    modify ($move) { setBadYear(true) };
 end
 
 rule "evaluated-suggestion-notify"
