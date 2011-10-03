@@ -53,13 +53,6 @@
 
     }
 
-    private function keyDownListener(event:KeyboardEvent):void {
-        if (event.keyCode == 13) {
-            send();
-            msg.text = "";
-        }
-    }
-
     private function faultHandler(event:MessageFaultEvent):void {
         Alert.show("fault in message " + event.faultString);
     }
@@ -67,11 +60,6 @@
     private function updateScroll():void {
         log.verticalScrollPosition = log.maxVerticalScrollPosition;
     }
-
-    private function attachKeyboardListener():void {
-        msg.addEventListener(KeyboardEvent.KEY_DOWN,keyDownListener);
-    }
-
     ]]>
     </mx:Script>
 
@@ -79,7 +67,7 @@
 
     <mx:TextArea id="log" width="100%" height="100%" paddingLeft="0" borderThickness="0" editable="false" />
     <mx:ControlBar verticalAlign="top" paddingLeft="5" paddingRight="5">
-         <mx:TextArea id="msg" width="100%" height="40" creationComplete="{attachKeyboardListener()}"/>
+         <mx:TextArea id="msg" width="100%" height="40"/>
          <mx:Button id="sendBtn" label="{resourceManager.getString('Commons','chat.panel.button')}" click="send()" color="#ffffff"/>
     </mx:ControlBar>
 </mx:Panel>
