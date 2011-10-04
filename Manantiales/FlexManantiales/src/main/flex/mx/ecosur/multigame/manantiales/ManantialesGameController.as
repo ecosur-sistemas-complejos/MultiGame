@@ -8,7 +8,8 @@ import flash.media.SoundChannel;
 import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.IFlexDisplayObject;
-    import mx.ecosur.multigame.component.SoundAssets;
+import mx.ecosur.multigame.component.BoardCell;
+import mx.ecosur.multigame.component.SoundAssets;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.GameGrid;
@@ -164,67 +165,64 @@ import mx.collections.ArrayCollection;
          */
         private function processMessage(evt:DynamicEvent):void {
             _messages.addItem(evt);
+            for (var i:int = 0; i < _messages.length; i++) {
+                var event:DynamicEvent = DynamicEvent(_messages.getItemAt(i));
+                var message:IMessage = event.message;
+                var gameEvent:String = message.headers.GAME_EVENT;
+                var checkCondition:CheckCondition;
+                var game:ManantialesGame;
+                var move:ManantialesMove;
+                var suggestion:Suggestion;
 
-            if (!_stateChange) {
-                for (var i:int = 0; i < _messages.length; i++) {
-                    var event:DynamicEvent = DynamicEvent(_messages.getItemAt(i));
-                    var message:IMessage = event.message;
-                    var gameEvent:String = message.headers.GAME_EVENT;
-                    var checkCondition:CheckCondition;
-                    var game:ManantialesGame;
-                    var move:ManantialesMove;
-                    var suggestion:Suggestion;
-
-                    switch (gameEvent) {
-                        case ManantialesEvent.BEGIN:
-                            begin();
-                            break;
-                        case ManantialesEvent.CHAT:
-                            var chatMessage:ChatMessage = ChatMessage(message.body);
-                            _gameWindow.chatPanel.addMessage(chatMessage);
-                            if(chatMessage.sender.id != _currentPlayer.id){
-                                _gameWindow.gameStatus.showMessage(
-                                    chatMessage.sender.name + " " +
-                                    resourceManager.getString("Manantiales",
-                                            "manantiales.panel.chat.announcement"), 0x000000);
-                            }
-                            break;
-                        case ManantialesEvent.END:
-                            game = ManantialesGame(message.body);
-                            updatePlayers(game);
-                            handleGameEnd (game);
-                            break;
-                        case ManantialesEvent.MOVE_COMPLETE:
-                            move= ManantialesMove(message.body);
-                            _gameWindow.playersViewer.updatePlayers();
-                            _moveHandler.addMove(move);
-                            updatePlayersFromMove(move);
-                            break;
-                        case ManantialesEvent.PLAYER_CHANGE:
-                            game = ManantialesGame(message.body);
-                            updatePlayers(game);
-                            break;
-                        case ManantialesEvent.CONDITION_RAISED:
-                            checkCondition = CheckCondition(message.body);
-                            handleCheckConstraint (checkCondition);
-                            break;
-                        case ManantialesEvent.CONDITION_RESOLVED:
-                            checkCondition = CheckCondition(message.body);
-                            handleCheckConstraintResolved (checkCondition);
-                            break;
-                        case ManantialesEvent.CONDITION_TRIGGERED:
-                            checkCondition = CheckCondition(message.body);
-                            handleCheckConstraintTriggered (checkCondition);
-                            break;
-                        case ManantialesEvent.SUGGESTION_EVALUATED:
-                            suggestion = Suggestion(message.body);
-                            _suggestionHandler.addSuggestion (suggestion);
-                            break;
-                        case ManantialesEvent.SUGGESTION_APPLIED:
-                            suggestion = Suggestion(message.body);
-                            _suggestionHandler.removeSuggestion (suggestion);
-                            break;
-                    }
+                switch (gameEvent) {
+                    case ManantialesEvent.BEGIN:
+                        begin();
+                        break;
+                    case ManantialesEvent.CHAT:
+                        var chatMessage:ChatMessage = ChatMessage(message.body);
+                        _gameWindow.chatPanel.addMessage(chatMessage);
+                        if(chatMessage.sender.id != _currentPlayer.id){
+                            _gameWindow.gameStatus.showMessage(
+                                chatMessage.sender.name + " " +
+                                resourceManager.getString("Manantiales",
+                                        "manantiales.panel.chat.announcement"), 0x000000);
+                        }
+                        break;
+                    case ManantialesEvent.END:
+                        game = ManantialesGame(message.body);
+                        updatePlayers(game);
+                        handleGameEnd (game);
+                        break;
+                    case ManantialesEvent.MOVE_COMPLETE:
+                        move= ManantialesMove(message.body);
+                        _gameWindow.playersViewer.updatePlayers();
+                        _moveHandler.addMove(move);
+                        updatePlayersFromMove(move);
+                        break;
+                    case ManantialesEvent.PLAYER_CHANGE:
+                        game = ManantialesGame(message.body);
+                        updatePlayers(game);
+                        break;
+                    case ManantialesEvent.CONDITION_RAISED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraint (checkCondition);
+                        break;
+                    case ManantialesEvent.CONDITION_RESOLVED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraintResolved (checkCondition);
+                        break;
+                    case ManantialesEvent.CONDITION_TRIGGERED:
+                        checkCondition = CheckCondition(message.body);
+                        handleCheckConstraintTriggered (checkCondition);
+                        break;
+                    case ManantialesEvent.SUGGESTION_EVALUATED:
+                        suggestion = Suggestion(message.body);
+                        _suggestionHandler.addSuggestion (suggestion);
+                        break;
+                    case ManantialesEvent.SUGGESTION_APPLIED:
+                        suggestion = Suggestion(message.body);
+                        _suggestionHandler.removeSuggestion (suggestion);
+                        break;
                 }
 
                 _messages = new ArrayCollection();
@@ -386,7 +384,6 @@ import mx.collections.ArrayCollection;
         private function handleEndResult (event:DynamicEvent):void {
             PopUpManager.removePopUp(this._endAlert);
             _endAlert = null;
-            this._gameWindow.dispatchCompletion();
         }
 
         public function set isTurn(isTurn:Boolean):void{
@@ -574,6 +571,9 @@ import mx.collections.ArrayCollection;
                         _endAlert.positive = true;
                         _gameWindow.gameStatus.showMessage(resourceManager.getString(
                                 "Manantiales", "manantiales.have.won"), Color.getColorCode(_currentPlayer.color));
+                        for (var j:int = 0; j < _gameWindow.board.boardCells.length; j++) {
+                            var f:ManantialesToken = ManantialesToken(_gameWindow.board.boardCells[j]);
+                        }
                     } else {
                         _endAlert.text = resourceManager.getString("Manantiales", "manantiales.competitive.lose");
                         _endAlert.positive = false;

@@ -400,12 +400,14 @@ end
 rule "move-effects-cleared-area"
     agenda-group "evaluate"
 when
-    $condition : CheckCondition (expired == false)
-    $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, 
-        type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+    $move : ManantialesMove ($cell : destinationCell, badYear == false, 
+        status != MoveStatus.INVALID, type in 
+            (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+    $condition : CheckCondition (expired == false, $violators : violators)
+    not GridCell ($cell.row == row, $cell.column == column) from $violators 
     eval (effectsCondition ($condition, $move))
 then
-    modify ($move) { setBadYear(true) };
+    modify ($move) { setBadYear(true), setDestinationCell(null)};
 end
 
 rule "evaluated-suggestion-notify"

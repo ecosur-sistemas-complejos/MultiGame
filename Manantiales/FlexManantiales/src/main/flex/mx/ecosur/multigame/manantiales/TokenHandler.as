@@ -74,7 +74,6 @@ import mx.ecosur.multigame.enum.manantiales.TokenType;
             for (var i:int = 0; i < _tokenStores.length; i++) {
                 var store:ManantialesTokenStore = ManantialesTokenStore(_tokenStores.getItemAt(i));
                 store.fill();
-
             }
         }
 
