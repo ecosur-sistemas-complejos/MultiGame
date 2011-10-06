@@ -13,16 +13,16 @@
     {
     import flash.display.Shape;
     import flash.geom.Point;
+    import flash.geom.Rectangle;
 
     import mx.collections.ArrayCollection;
+    import mx.controls.Alert;
     import mx.ecosur.multigame.component.AbstractBoard;
+    import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
     import mx.ecosur.multigame.manantiales.token.ManantialesToken;
-    import mx.states.State;
 
     /**
     * A ManantialesBoard is similar to the GenteBoard interfaces,
@@ -55,7 +55,7 @@
           _manantial:Shape, _spring:Shape;
         protected var _currentPlayer:GamePlayer;
         protected var _centerX:int, _centerY:int;
-        protected var classicMode:State, silvoMode:State;
+        protected var _graph:AdjGraph;
 
         public function ManantialesBoard () {
             super();
@@ -109,6 +109,13 @@
             _vl = new Shape();
             addChild(_vl);
 
+            createCells();
+
+            _graph = createGraph();
+            _cellsCreated = true;
+        }
+
+        public function createCells():void {
             _boardCells = new Array();
             var counter:int = 0;
             var boardCell:RoundCell;
@@ -150,17 +157,13 @@
                     if (boardCell != null) {
                         boardCell.toolTip = column + "," + row;
                         addChild(boardCell);
-                        _boardCells[row][column] = boardCell;
                         boardCell.setStyle("padding", cellPadding);
                         boardCell.alpha = 0.70;
+                        _boardCells[row][column] = boardCell;
+                        counter++;
                     }
-
-                    counter = counter + 1;
-
                 }
             }
-
-            _cellsCreated = true;
         }
 
         override protected function updateDisplayList(unscaledWidth:Number,
@@ -192,81 +195,27 @@
                     if (boardCell != null) {
                         boardCell.width = cellSize * 1.5;
                         boardCell.height = cellSize * 1.5;
-
-                        /* starting value for displacement */
                         xPos = cellSize * factor;
                         yPos = cellSize * factor;
-
-                        /* Hand adjustments for the staggered cells */
-                        if (col == 1 || col == 3) {
-                            if( row == 1 || row == 3) {
-                                xPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                                yPos  = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-
-                            } else if (row == 5 || row == 7) {
-                                xPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                            }
-                        } else if (col == 2) {
-                            if (row == 2) {
-                                xPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                            } else if (row == 6) {
-                                xPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                            }
-                        } else if (col == 5 || col == 7) {
-                            if (row == 1 || row == 3) {
-                                xPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                            } if (row == 5 || row == 7) {
-                                xPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                            }
-
-                        } else if (col == 6) {
-                            if (row == 2) {
-                                xPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize - cellSize/positioningFactor)
-                                    * factor;
-                            } else if (row == 6) {
-                                xPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                                yPos = (cellSize + cellSize/positioningFactor)
-                                    * factor;
-                            }
-                        } else if (col == 8) {
-                            xPos = xPos + (cellSize/positioningFactor);
-                            endX = xPos * col + (cellSize + cellSize/2);
-                        }
-
-                        if (row == 8) {
-                            yPos = yPos + (cellSize/positioningFactor);
-                            endY = yPos * row + (cellSize + cellSize/2);
-                        }
-
-                        if (row == 4) {
-                            centerY = (yPos * row) + boardCell.height/3;
-                        } else if (col == 4) {
-                            centerX = (xPos * col) + boardCell.width/3;
-                        }
-
                         boardCell.x = xPos * col;
                         boardCell.y = yPos * row;
 
+                        /* Find corners and center */
+                        if (col == 8) {
+                            xPos = xPos + (cellSize / positioningFactor);
+                            endX = xPos * col + (cellSize + cellSize / 2);
+                        }
+
+                        if (row == 8) {
+                            yPos = yPos + (cellSize / positioningFactor);
+                            endY = yPos * row + (cellSize + cellSize / 2);
+                        }
+
+                        if (row == 4) {
+                            centerY = (yPos * row) + boardCell.height / 3;
+                        } else if (col == 4) {
+                            centerX = (xPos * col) + boardCell.width / 3;
+                        }
                     }
                 }
             }
@@ -311,6 +260,9 @@
             _vl.graphics.drawRect(centerX, 0, boardCell.width/3, endY);
             _vl.graphics.endFill();
 
+           /* Connect the Dots */
+           drawGraph();
+
             /* Flip the board to the player's perspective */
            /*
             this.rotation = boardRotation;
@@ -346,6 +298,172 @@
                 ret.x = x + _bg.height;
             }
 
+            return ret;
+        }
+
+        /* Draws the edges of the game graph */
+        protected function drawGraph():void {
+            if (_graph == null)
+                return;
+            var nodes:Array = _graph.getNodes();
+            var N:int = nodes.length;
+            for (var i:int = 0; i < N; i++) {
+                var a:Point, origin:RoundCell;
+                a = _graph.findPoint(nodes [ i ]);
+                origin = _boardCells [a.y] [a.x];
+                for (var j:int = (i + 10); j > i; j--) {
+                    if (nodes [ j ] != undefined && _graph.containsEdge(nodes [ i ], nodes [ j ])) {
+                        var b:Point, dest:RoundCell;
+                        b = _graph.findPoint(nodes [ j ]);
+                        dest = _boardCells [ b.y ] [ b. x ];
+                        origin.graphics.beginFill(Color.getColorCode(Color.RED));
+                        origin.graphics.lineStyle(3, Color.getColorCode(Color.RED));
+                        origin.graphics.moveTo(origin.y + (origin.height / 2), origin.x + (origin.width / 2));
+                        origin.graphics.lineTo(dest.y + (dest.height /2 ), dest.x + (dest.width / 2));
+
+                    }
+                }
+            }
+        }
+
+        /* Nodes are numbered from left to right, then down, and repeat. E.G. (0,0) = 0th node, (0,2) == 5th node */
+        public function createGraph():AdjGraph {
+            var ret:AdjGraph = new AdjGraph(48);
+            var counter:int = 0;
+            for (var col:int = 0; col < _nCols; col++) {
+                for (var row:int = 0; row < _nRows; row++) {
+                    var cell:BoardCell = _boardCells [ col ] [ row ];
+                    if (cell != null) {
+                        var pt:Point = new Point();
+                        pt.x = cell.row;
+                        pt.y = cell.column;
+                        ret.addPoint(counter++,  pt);
+                    }
+                }
+           }
+
+            /* Edges only valid if _nRows = 9 and _nCols = 9, e.g. 8x8 grid ; */
+
+            ret.addEdge(0, 1);
+            ret.addEdge(0, 5);
+            ret.addEdge(0, 10);
+            ret.addEdge(1, 5);
+            ret.addEdge(1, 6);
+            ret.addEdge(1, 11);
+            ret.addEdge(1, 2);
+            ret.addEdge(2, 6);
+            ret.addEdge(2, 7);
+            ret.addEdge(2, 8);
+            ret.addEdge(2, 3);
+            ret.addEdge(3, 8);
+            ret.addEdge(3, 13);
+            ret.addEdge(3, 9);
+            ret.addEdge(3, 4);
+            ret.addEdge(4, 9);
+            ret.addEdge(4, 14);
+            ret.addEdge(5, 10);
+            ret.addEdge(5, 11);
+            ret.addEdge(5, 6);
+            ret.addEdge(6, 11);
+            ret.addEdge(6, 16);
+            ret.addEdge(6, 12);
+            ret.addEdge(6, 7);
+            ret.addEdge(7, 12);
+            ret.addEdge(7, 8);
+            ret.addEdge(8, 12);
+            ret.addEdge(8, 18);
+            ret.addEdge(8, 13);
+            ret.addEdge(8, 9);
+            ret.addEdge(9, 13);
+            ret.addEdge(9, 19);
+            ret.addEdge(9, 14);
+            ret.addEdge(10, 20);
+            ret.addEdge(10, 15);
+            ret.addEdge(10, 11);
+            ret.addEdge(11, 15);
+            ret.addEdge(11, 16);
+            ret.addEdge(11, 12);
+            ret.addEdge(12, 16);
+            ret.addEdge(12, 17);
+            ret.addEdge(12, 18);
+            ret.addEdge(12, 13);
+            ret.addEdge(13, 18);
+            ret.addEdge(13, 19);
+            ret.addEdge(13, 14);
+            ret.addEdge(14, 19);
+            ret.addEdge(15, 20);
+            ret.addEdge(15, 21);
+            ret.addEdge(15, 22);
+            ret.addEdge(16, 22);
+            ret.addEdge(16, 23);
+            ret.addEdge(16, 17);
+            ret.addEdge(17, 23);
+            ret.addEdge(17, 24);
+            ret.addEdge(17, 18);
+            ret.addEdge(18, 24);
+            ret.addEdge(18, 25);
+            ret.addEdge(18, 19);
+            ret.addEdge(19, 26);
+            ret.addEdge(19, 27);
+            ret.addEdge(20, 33);
+            ret.addEdge(20, 28);
+            ret.addEdge(20, 21);
+            ret.addEdge(22, 28);
+            ret.addEdge(22, 34);
+            ret.addEdge(22, 29);
+            ret.addEdge(22, 23);
+            ret.addEdge(23, 29);
+            ret.addEdge(23, 30);
+            ret.addEdge(24, 30);
+            ret.addEdge(24, 31);
+            ret.addEdge(24, 25);
+            ret.addEdge(25, 31);
+            ret.addEdge(25, 36);
+            ret.addEdge(25, 26);
+            ret.addEdge(26, 32);
+            ret.addEdge(26, 27);
+            ret.addEdge(27, 32);
+            ret.addEdge(27, 37);
+            ret.addEdge(28, 33);
+            ret.addEdge(28, 38);
+            ret.addEdge(28, 34);
+            ret.addEdge(28, 29);
+            ret.addEdge(29, 34);
+            ret.addEdge(29, 39);
+            ret.addEdge(29, 35);
+            ret.addEdge(29, 30);
+            ret.addEdge(30, 35);
+            ret.addEdge(30, 35);
+            ret.addEdge(30, 31);
+            ret.addEdge(31, 35);
+            ret.addEdge(31, 41);
+            ret.addEdge(31, 36);
+            ret.addEdge(31, 32);
+            ret.addEdge(32, 36);
+            ret.addEdge(32, 42);
+            ret.addEdge(32, 37);
+            ret.addEdge(33, 43);
+            ret.addEdge(33, 38);
+            ret.addEdge(33, 34);
+            ret.addEdge(34, 38);
+            ret.addEdge(34, 44);
+            ret.addEdge(34, 39);
+            ret.addEdge(34, 35);
+            ret.addEdge(35, 39);
+            ret.addEdge(35, 40);
+            ret.addEdge(35, 31);
+            ret.addEdge(35, 41);
+            ret.addEdge(35, 36);
+            ret.addEdge(36, 41);
+            ret.addEdge(36, 46);
+            ret.addEdge(36, 42);
+            ret.addEdge(36, 37);
+            ret.addEdge(37, 42);
+            ret.addEdge(37, 47);
+            ret.addEdge(43, 44);
+            ret.addEdge(44, 45);
+            ret.addEdge(45, 46);
+            ret.addEdge(46, 47);
             return ret;
         }
     }

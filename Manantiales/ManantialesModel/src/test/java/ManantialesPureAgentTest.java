@@ -66,8 +66,7 @@ public class ManantialesPureAgentTest extends JMSTestCaseAdapter {
         assertEquals(16, game.getMoves().size());
     }
     
-    @Test
-    public void testMixedMoves() throws InvalidMoveException {
+/*    public void testMixedMoves() throws InvalidMoveException {
         int counter = 1;
         Random rnd = new Random();
         Move move = null;
@@ -82,5 +81,5 @@ public class ManantialesPureAgentTest extends JMSTestCaseAdapter {
         }
         
         assertEquals (32, game.getMoves().size());
-    }
+    }*/
 }

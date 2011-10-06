@@ -1,8 +1,10 @@
 package mx.ecosur.multigame.manantiales
     {
     import flash.filters.DropShadowFilter;
-    
-    import mx.ecosur.multigame.component.BoardCell;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
+import mx.ecosur.multigame.component.BoardCell;
 import mx.ecosur.multigame.component.Token;
 import mx.ecosur.multigame.enum.Color;
 import mx.ecosur.multigame.manantiales.token.ManantialesToken;
@@ -10,7 +12,7 @@ import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 public class RoundCell extends BoardCell
     {
         private var _factor:int;
-        
+
         public function RoundCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number)
         {
             super(column, row, bgColor, borderColor, borderThickness);
@@ -45,8 +47,6 @@ public class RoundCell extends BoardCell
         override protected function updateDisplayList(unscaledWidth:Number,
             unscaledHeight:Number):void 
         {
-            super.updateDisplayList(unscaledWidth, unscaledHeight);
-
             //redraw bg
             _bg.graphics.clear();
             _bg.graphics.beginFill(_bgColor, 1);
@@ -73,6 +73,14 @@ public class RoundCell extends BoardCell
                 _token.x = (tokenSize) / 2;
                 _token.y = (tokenSize) / 2;
             }
+
+            var c:Point = new Point();
+            c.x = scaleX + (width / 2);
+            c.y = scaleY + (height /2);
+
+            _bg.graphics.beginFill(Color.getColorCode(Color.BLUE));
+            _bg.graphics.drawEllipse (c.x, c.y, 5, 5);
+            _bg.graphics.endFill();
         }
 
         override public function set token(token:Token):void{
