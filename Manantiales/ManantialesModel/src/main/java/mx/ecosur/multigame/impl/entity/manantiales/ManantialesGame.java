@@ -19,6 +19,7 @@ import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 
+import mx.ecosur.multigame.impl.util.manantiales.AdjGraph;
 import mx.ecosur.multigame.impl.util.manantiales.ManantialesMessageSender;
 import mx.ecosur.multigame.model.interfaces.*;
 import mx.ecosur.multigame.MessageSender;
@@ -34,8 +35,10 @@ import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
+import java.awt.*;
 import java.util.*;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @Entity
 public class ManantialesGame extends GridGame {
@@ -51,6 +54,8 @@ public class ManantialesGame extends GridGame {
     private transient ManantialesMessageSender messageSender;
 
     private Set<PuzzleSuggestion> suggestions;
+
+    private transient AdjGraph graph;
 
     private Color[] colors = { Color.YELLOW, Color.PURPLE, Color.RED, Color.BLACK,  };
 
@@ -77,6 +82,169 @@ public class ManantialesGame extends GridGame {
         messageSender.sendStartGame(this);
     }
 
+    private AdjGraph createGraph() {
+        AdjGraph ret = new AdjGraph(48);
+        int counter = 0;
+        for (int column = 0; column < getColumns(); column++) {
+            for (int row = 0; row < getRows(); row++) {
+                if (row == 4 && column == 4)
+                    continue;
+
+                if ( (row % 2 == 0 && column % 2 == 0) ||
+                     (row % 2 != 0 && column % 2 !=0) ||
+                     (row == 4 || column == 4))
+                {
+                    Point pt = new Point(row, column);
+                    ret.addPoint(counter++, pt);
+                }
+            }
+        }
+
+        assert(counter == 48);
+
+        /* Edges only valid if _nRows = 9 and _nCols = 9, e.g. 8x8 grid ; */
+
+        ret.addEdge(0, 1);
+        ret.addEdge(0, 5);
+        ret.addEdge(0, 10);
+        ret.addEdge(1, 5);
+        ret.addEdge(1, 6);
+        ret.addEdge(1, 11);
+        ret.addEdge(1, 2);
+        ret.addEdge(2, 6);
+        ret.addEdge(2, 7);
+        ret.addEdge(2, 8);
+        ret.addEdge(2, 3);
+        ret.addEdge(3, 8);
+        ret.addEdge(3, 13);
+        ret.addEdge(3, 9);
+        ret.addEdge(3, 4);
+        ret.addEdge(4, 9);
+        ret.addEdge(4, 14);
+        ret.addEdge(5, 10);
+        ret.addEdge(5, 11);
+        ret.addEdge(5, 6);
+        ret.addEdge(5, 15);
+        ret.addEdge(6, 11);
+        ret.addEdge(6, 16);
+        ret.addEdge(6, 12);
+        ret.addEdge(6, 7);
+        ret.addEdge(7, 12);
+        ret.addEdge(7, 8);
+        ret.addEdge(8, 12);
+        ret.addEdge(8, 18);
+        ret.addEdge(8, 13);
+        ret.addEdge(8, 9);
+        ret.addEdge(9, 13);
+        ret.addEdge(9, 19);
+        ret.addEdge(9, 14);
+        ret.addEdge(10, 20);
+        ret.addEdge(10, 15);
+        ret.addEdge(10, 11);
+        ret.addEdge(11, 15);
+        ret.addEdge(11, 16);
+        ret.addEdge(11, 12);
+        ret.addEdge(12, 16);
+        ret.addEdge(12, 17);
+        ret.addEdge(12, 18);
+        ret.addEdge(12, 13);
+        ret.addEdge(13, 18);
+        ret.addEdge(13, 19);
+        ret.addEdge(13, 14);
+        ret.addEdge(14, 19);
+        ret.addEdge(14, 27);
+        ret.addEdge(15, 16);
+        ret.addEdge(15, 20);
+        ret.addEdge(15, 21);
+        ret.addEdge(15, 22);
+        ret.addEdge(16, 22);
+        ret.addEdge(16, 23);
+        ret.addEdge(16, 17);
+        ret.addEdge(17, 23);
+        ret.addEdge(17, 24);
+        ret.addEdge(17, 18);
+        ret.addEdge(18, 24);
+        ret.addEdge(18, 25);
+        ret.addEdge(18, 19);
+        ret.addEdge(19, 25);
+        ret.addEdge(19, 26);
+        ret.addEdge(19, 27);
+        ret.addEdge(20, 33);
+        ret.addEdge(20, 28);
+        ret.addEdge(20, 21);
+        ret.addEdge(21, 22);
+        ret.addEdge(21, 28);
+        ret.addEdge(22, 28);
+        ret.addEdge(22, 29);
+        ret.addEdge(22, 23);
+        ret.addEdge(23, 29);
+        ret.addEdge(23, 30);
+        ret.addEdge(24, 30);
+        ret.addEdge(24, 31);
+        ret.addEdge(24, 25);
+        ret.addEdge(25, 31);
+        ret.addEdge(25, 32);
+        ret.addEdge(25, 26);
+        ret.addEdge(26, 32);
+        ret.addEdge(26, 27);
+        ret.addEdge(27, 32);
+        ret.addEdge(27, 37);
+        ret.addEdge(28, 33);
+        ret.addEdge(28, 38);
+        ret.addEdge(28, 34);
+        ret.addEdge(28, 29);
+        ret.addEdge(29, 34);
+        ret.addEdge(29, 39);
+        ret.addEdge(29, 35);
+        ret.addEdge(29, 30);
+        ret.addEdge(30, 35);
+        ret.addEdge(30, 35);
+        ret.addEdge(30, 31);
+        ret.addEdge(31, 35);
+        ret.addEdge(31, 41);
+        ret.addEdge(31, 36);
+        ret.addEdge(31, 32);
+        ret.addEdge(32, 36);
+        ret.addEdge(32, 42);
+        ret.addEdge(32, 37);
+        ret.addEdge(33, 43);
+        ret.addEdge(33, 38);
+        ret.addEdge(33, 34);
+        ret.addEdge(34, 38);
+        ret.addEdge(34, 44);
+        ret.addEdge(34, 39);
+        ret.addEdge(34, 35);
+        ret.addEdge(35, 39);
+        ret.addEdge(35, 40);
+        ret.addEdge(35, 31);
+        ret.addEdge(35, 41);
+        ret.addEdge(35, 36);
+        ret.addEdge(36, 41);
+        ret.addEdge(36, 46);
+        ret.addEdge(36, 42);
+        ret.addEdge(36, 37);
+        ret.addEdge(37, 42);
+        ret.addEdge(37, 47);
+        ret.addEdge(38, 43);
+        ret.addEdge(38, 44);
+        ret.addEdge(38, 39);
+        ret.addEdge(39, 44);
+        ret.addEdge(39, 45);
+        ret.addEdge(39, 40);
+        ret.addEdge(40, 41);
+        ret.addEdge(40, 45);
+        ret.addEdge(41, 45);
+        ret.addEdge(41, 46);
+        ret.addEdge(41, 42);
+        ret.addEdge(42, 46);
+        ret.addEdge(42, 47);
+        ret.addEdge(43, 44);
+        ret.addEdge(44, 45);
+        ret.addEdge(45, 46);
+        ret.addEdge(46, 47);
+        return ret;
+    }
+
     @Override
     @Transient
     public Set getFacts() {
@@ -85,6 +253,9 @@ public class ManantialesGame extends GridGame {
             facts = new HashSet();
         if (checkConditions != null)
             facts.addAll(checkConditions);
+        if (graph == null)
+            graph = createGraph();
+        facts.add(graph);
         return facts;
     }
 

@@ -63,6 +63,13 @@ public class AdjGraphTest extends TestCase {
         assertTrue(graph.containsEdge(3,2));
         assertTrue(graph.containsEdge(2,4));
         assertTrue(graph.containsEdge(4,2));
+
+        /* Negative assertions */
+
+        assertTrue(!graph.containsEdge(4,0));
+        assertTrue(!graph.containsEdge(0,4));
+        assertTrue(!graph.containsEdge(3,1));
+        assertTrue(!graph.containsEdge(1,3));
     }
 }
 }

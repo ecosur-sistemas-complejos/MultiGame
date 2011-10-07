@@ -73,14 +73,6 @@ public class RoundCell extends BoardCell
                 _token.x = (tokenSize) / 2;
                 _token.y = (tokenSize) / 2;
             }
-
-            var c:Point = new Point();
-            c.x = scaleX + (width / 2);
-            c.y = scaleY + (height /2);
-
-            _bg.graphics.beginFill(Color.getColorCode(Color.BLUE));
-            _bg.graphics.drawEllipse (c.x, c.y, 5, 5);
-            _bg.graphics.endFill();
         }
 
         override public function set token(token:Token):void{

@@ -1344,6 +1344,85 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     }
     
     @Test
+    public void testRowContiguousIntensives() throws InvalidMoveException {
+        ManantialesFicha a1 = new ManantialesFicha (4,0,alice.getColor(), 
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha a2 = new ManantialesFicha (4,0, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha b1 = new ManantialesFicha (4,1, alice.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha b2 = new ManantialesFicha (4,1, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        InvalidMoveException exception = null;
+        SetIds(a1,b1,a2,b2);
+        ManantialesMove m = new ManantialesMove(alice, a1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, b1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,a1,a2);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,b1,b2);
+        game.move(m);
+        assertTrue("Unexpected Status! " + m.getStatus().name(),
+                m.getStatus().equals(MoveStatus.INVALID));
+    }
+    
+    public void testColumnContiguousIntensives() throws InvalidMoveException {
+        ManantialesFicha a1 = new ManantialesFicha (3,1,alice.getColor(), 
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha a2 = new ManantialesFicha (3,1, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha b1 = new ManantialesFicha (4,1, alice.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha b2 = new ManantialesFicha (4,1, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        InvalidMoveException exception = null;
+        SetIds(a1,b1,a2,b2);
+        ManantialesMove m = new ManantialesMove(alice, a1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, b1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,a1,a2);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,b1,b2);
+        game.move(m);
+        assertTrue("Unexpected Status! " + m.getStatus().name(),
+                m.getStatus().equals(MoveStatus.INVALID));
+    }
+    
+    public void testNotConnectedRowContiguousIntensiveS() throws InvalidMoveException {
+        ManantialesFicha a1 = new ManantialesFicha (2,2,alice.getColor(), 
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha a2 = new ManantialesFicha (2,2, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        ManantialesFicha b1 = new ManantialesFicha (4,2, alice.getColor(),
+                TokenType.MODERATE_PASTURE);
+        ManantialesFicha b2 = new ManantialesFicha (4,2, alice.getColor(),
+                TokenType.INTENSIVE_PASTURE);
+        InvalidMoveException exception = null;
+        SetIds(a1,b1,a2,b2);
+        ManantialesMove m = new ManantialesMove(alice, a1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, b1);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,a1,a2);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice,b1,b2);
+        game.move(m);
+        assertTrue("Unexpected Status! " + m.getStatus().name(), 
+                m.getStatus().equals(MoveStatus.EVALUATED));
+    }
+    
+    @Test
     public void testBorderColumnSeperatedIntensives () throws InvalidMoveException {
         ManantialesFicha a1 = new ManantialesFicha (3,1,alice.getColor(), 
                 TokenType.MODERATE_PASTURE);

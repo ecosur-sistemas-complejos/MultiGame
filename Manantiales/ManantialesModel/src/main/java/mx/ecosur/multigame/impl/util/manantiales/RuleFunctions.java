@@ -7,6 +7,7 @@
 
 package mx.ecosur.multigame.impl.util.manantiales;
 
+import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
 
 import mx.ecosur.multigame.grid.entity.GridCell;
@@ -24,6 +25,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 
+import java.awt.Point;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -270,13 +272,14 @@ public class RuleFunctions {
         return ret;
     }
     
-    public static boolean hasInterveningBorder (GridCell a, GridCell b) {
-        return ( (a.getRow() == 3 && b.getRow() == 5) || 
-                (b.getRow() == 3 && a.getRow() == 5) ||
-                (a.getColumn() == 3 && b.getColumn() == 5) ||
-                (b.getColumn() == 3 && b.getColumn() == 5));
+    public static boolean isContiguous (AdjGraph graph, GridCell a, GridCell b) throws InvalidMoveException {
+        int nodeA = graph.findNode(new Point (a.getRow(), a.getColumn()));
+        int nodeB = graph.findNode(new Point (b.getRow(), b.getColumn()));
+        if (nodeA == -1 || nodeB == -1)
+            throw new InvalidMoveException ("Unable to find Node!");
+        return graph.containsEdge(nodeA, nodeB); 
     }
-
+    
     public static  GameGrid clearTerritory (ManantialesGame game, Color color) {
         GameGrid ret = game.getGrid();
         HashSet<ManantialesFicha> deletions = new HashSet<ManantialesFicha>();

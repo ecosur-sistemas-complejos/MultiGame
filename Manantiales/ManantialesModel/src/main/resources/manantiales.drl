@@ -27,7 +27,7 @@ dialect "java"
 
 #Rule to enforce only 6 of each type of token
 
-rule "only six intensives"
+rule "only six intensives per player"
     agenda-group "verify"
     no-loop true
 when
@@ -40,7 +40,7 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "only six moderates"
+rule "only six moderates per player"
     agenda-group "verify"
     no-loop true
 when
@@ -53,7 +53,7 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "only six managed forest"
+rule "only six managed forest per player"
     agenda-group "verify"
     no-loop true
 when
@@ -66,7 +66,7 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "only six viveros"
+rule "only six viveros per player"
     agenda-group "verify"
     no-loop true
 when
@@ -79,7 +79,7 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "only six silvopastorales"
+rule "only six silvopastorales per player"
     agenda-group "verify"
     no-loop true
 when
@@ -203,72 +203,18 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-rule "row contiguous intensive"
+rule "contiguous intensive"
     agenda-group "verify"
     no-loop true
 when
-        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, $tok2 : destinationCell != null, 
-            destinationCell.row == $row, type == TokenType.INTENSIVE_PASTURE)
-        eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell())) 
-        eval (!hasInterveningBorder($tok1, $tok2)) 
-        eval (Math.abs ($col - $move.getDestinationCell().getColumn()) < 3) 
+        $graph : AdjGraph ()
+        $tok1  : ManantialesFicha (type == TokenType.INTENSIVE_PASTURE)
+        $move  : ManantialesMove ($tok2 : destinationCell != null, status != MoveStatus.INVALID,
+            type == TokenType.INTENSIVE_PASTURE)
+        eval (isContiguous ($graph, $tok1, $tok2))
     then 
         modify ($move) { setStatus (MoveStatus.INVALID) }
 end
-
-rule "column contiguous intensive"
-    agenda-group "verify"
-    no-loop true
-when
-        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, $tok2 : destinationCell != null, 
-            destinationCell.column == $col, type == TokenType.INTENSIVE_PASTURE)
-        eval (!isBorder($tok1)) or eval (!isBorder($move.getDestinationCell()))
-        eval (!hasInterveningBorder($tok1, $tok2)) 
-        eval (Math.abs ($row - $move.getDestinationCell().getRow()) < 3) 
-    then 
-        modify ($move) { setStatus (MoveStatus.INVALID) }
-end
-
-rule "border row contiguous intensive"
-    agenda-group "verify"
-    no-loop true
-when
-        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
-            destinationCell.row == $row, type == TokenType.INTENSIVE_PASTURE)
-        eval (isBorder($move.getDestinationCell())) and eval (isBorder($tok1))
-        eval (Math.abs ($col - $move.getDestinationCell().getColumn()) == 1) 
-    then 
-        modify ($move) { setStatus (MoveStatus.INVALID) }
-end
-
-rule "border column contiguous intensive"
-    agenda-group "verify"
-    no-loop true
-    when
-        $tok1 : ManantialesFicha ($row : row, $col : column, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
-            destinationCell.column == $col, type == TokenType.INTENSIVE_PASTURE)
-        eval (isBorder($move.getDestinationCell())) and eval (isBorder($tok1))
-        eval (Math.abs ($row - $move.getDestinationCell().getRow()) == 1) 
-    then 
-        modify ($move) { setStatus (MoveStatus.INVALID) }
-end 
-
-rule "diagonal contiguous intensive"
-    agenda-group "verify"
-    no-loop true
-    when
-        $tok1 : ManantialesFicha ($col : column, $row : row, type == TokenType.INTENSIVE_PASTURE)
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
-            $destination : destinationCell, type == TokenType.INTENSIVE_PASTURE)
-        eval (Math.abs($row - $destination.getRow()) == 1)
-        eval (Math.abs($col - $destination.getColumn()) == 1)
-    then
-        modify ($move) { setStatus (MoveStatus.INVALID) }
-end 
 
 # CHECK CONDITIONS
 

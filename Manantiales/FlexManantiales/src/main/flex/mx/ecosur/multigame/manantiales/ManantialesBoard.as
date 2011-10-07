@@ -80,15 +80,15 @@
             return ret;
         }
 
-        public function get center ():Point {
+        private function get center ():Point {
             return new Point (_centerX, _centerY);
         }
         
-        public function get currentPlayer ():GamePlayer {
+        function get currentPlayer ():GamePlayer {
             return _currentPlayer;
         }
 
-        public function set currentPlayer (currentPlayer:GamePlayer):void {
+        function set currentPlayer (currentPlayer:GamePlayer):void {
             this._currentPlayer = currentPlayer;
         }
 
@@ -115,7 +115,7 @@
             _cellsCreated = true;
         }
 
-        public function createCells():void {
+        protected function createCells():void {
             _boardCells = new Array();
             var counter:int = 0;
             var boardCell:RoundCell;
@@ -158,7 +158,6 @@
                         boardCell.toolTip = column + "," + row;
                         addChild(boardCell);
                         boardCell.setStyle("padding", cellPadding);
-                        boardCell.alpha = 0.70;
                         _boardCells[row][column] = boardCell;
                         counter++;
                     }
@@ -272,7 +271,7 @@
             _centerY = centerY;*/
         }
 
-        protected function get boardRotation():int {
+        private function get boardRotation():int {
             var ret:int = 0;
 
             if (_currentPlayer.color == Color.BLACK) {
@@ -302,7 +301,7 @@
         }
 
         /* Draws the edges of the game graph */
-        protected function drawGraph():void {
+        private function drawGraph():void {
             if (_graph == null)
                 return;
             var nodes:Array = _graph.getNodes();
@@ -311,16 +310,16 @@
                 var a:Point, origin:RoundCell;
                 a = _graph.findPoint(nodes [ i ]);
                 origin = _boardCells [a.y] [a.x];
-                for (var j:int = (i + 10); j > i; j--) {
+                for (var j:int = (i + 15); j > i; j--) {
                     if (nodes [ j ] != undefined && _graph.containsEdge(nodes [ i ], nodes [ j ])) {
                         var b:Point, dest:RoundCell;
                         b = _graph.findPoint(nodes [ j ]);
                         dest = _boardCells [ b.y ] [ b. x ];
-                        origin.graphics.beginFill(Color.getColorCode(Color.RED));
-                        origin.graphics.lineStyle(3, Color.getColorCode(Color.RED));
-                        origin.graphics.moveTo(origin.y + (origin.height / 2), origin.x + (origin.width / 2));
-                        origin.graphics.lineTo(dest.y + (dest.height /2 ), dest.x + (dest.width / 2));
-
+                        _bg.graphics.beginFill(Color.getColorCode(Color.BLUE));
+                        _bg.graphics.lineStyle(3, Color.getColorCode(Color.BLUE), 0.70);
+                        _bg.graphics.moveTo(origin.y + (origin.height / 2), origin.x + (origin.width / 2));
+                        _bg.graphics.lineTo(dest.y + (dest.height /2 ), dest.x + (dest.width / 2));
+                        _bg.graphics.endFill();
                     }
                 }
             }
@@ -364,6 +363,7 @@
             ret.addEdge(5, 10);
             ret.addEdge(5, 11);
             ret.addEdge(5, 6);
+            ret.addEdge(5, 15);
             ret.addEdge(6, 11);
             ret.addEdge(6, 16);
             ret.addEdge(6, 12);
@@ -391,6 +391,8 @@
             ret.addEdge(13, 19);
             ret.addEdge(13, 14);
             ret.addEdge(14, 19);
+            ret.addEdge(14, 27);
+            ret.addEdge(15, 16);
             ret.addEdge(15, 20);
             ret.addEdge(15, 21);
             ret.addEdge(15, 22);
@@ -403,13 +405,15 @@
             ret.addEdge(18, 24);
             ret.addEdge(18, 25);
             ret.addEdge(18, 19);
+            ret.addEdge(19, 25);
             ret.addEdge(19, 26);
             ret.addEdge(19, 27);
             ret.addEdge(20, 33);
             ret.addEdge(20, 28);
             ret.addEdge(20, 21);
+            ret.addEdge(21, 22);
+            ret.addEdge(21, 28);
             ret.addEdge(22, 28);
-            ret.addEdge(22, 34);
             ret.addEdge(22, 29);
             ret.addEdge(22, 23);
             ret.addEdge(23, 29);
@@ -418,7 +422,7 @@
             ret.addEdge(24, 31);
             ret.addEdge(24, 25);
             ret.addEdge(25, 31);
-            ret.addEdge(25, 36);
+            ret.addEdge(25, 32);
             ret.addEdge(25, 26);
             ret.addEdge(26, 32);
             ret.addEdge(26, 27);
@@ -460,6 +464,19 @@
             ret.addEdge(36, 37);
             ret.addEdge(37, 42);
             ret.addEdge(37, 47);
+            ret.addEdge(38, 43);
+            ret.addEdge(38, 44);
+            ret.addEdge(38, 39);
+            ret.addEdge(39, 44);
+            ret.addEdge(39, 45);
+            ret.addEdge(39, 40);
+            ret.addEdge(40, 41);
+            ret.addEdge(40, 45);
+            ret.addEdge(41, 45);
+            ret.addEdge(41, 46);
+            ret.addEdge(41, 42);
+            ret.addEdge(42, 46);
+            ret.addEdge(42, 47);
             ret.addEdge(43, 44);
             ret.addEdge(44, 45);
             ret.addEdge(45, 46);
