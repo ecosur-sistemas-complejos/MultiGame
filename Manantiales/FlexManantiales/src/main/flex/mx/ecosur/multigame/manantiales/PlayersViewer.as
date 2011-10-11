@@ -163,7 +163,6 @@ package mx.ecosur.multigame.manantiales
             btn.setStyle("borderColor", 0xFF3300);
             
             _selectedPlayer = pi;
-            selectedChild = pi;
         }
         
         override protected function createChildren():void {

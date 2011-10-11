@@ -1,6 +1,5 @@
 package mx.ecosur.multigame.manantiales.token
 {
-    import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
 
     [ResourceBundle("Manantiales")]

@@ -20,11 +20,11 @@ public class AdjGraphTest extends TestCase {
     public override function setUp():void {
         super.setUp();
         graph = new AdjGraph(5);
-        graph.addPoint(0, new Point(0, 0));
-        graph.addPoint(1, new Point(0, 2));
-        graph.addPoint(2, new Point(1, 1));
-        graph.addPoint(3, new Point(2, 0));
-        graph.addPoint(4, new Point(2, 2));
+        graph.setPoint(0, new Point(0, 0));
+        graph.setPoint(1, new Point(0, 2));
+        graph.setPoint(2, new Point(1, 1));
+        graph.setPoint(3, new Point(2, 0));
+        graph.setPoint(4, new Point(2, 2));
 
         graph.addEdge(0,1);
         graph.addEdge(0,2);
@@ -44,11 +44,12 @@ public class AdjGraphTest extends TestCase {
 
     [Test]
     public function testFindPoint():void {
-        assertTrue(graph.findPoint(0).equals(new Point (0,0)));
-        assertTrue(graph.findPoint(1).equals(new Point (0,2)));
-        assertTrue(graph.findPoint(2).equals(new Point (1,1)));
-        assertTrue(graph.findPoint(3).equals(new Point (2,0)));
-        assertTrue(graph.findPoint(4).equals(new Point (2,2)));
+        var nodes:Array = graph.getNodes();
+        assertTrue(nodes [0].equals(new Point (0,0)));
+        assertTrue(nodes [1].equals(new Point (0,2)));
+        assertTrue(nodes [2].equals(new Point (1,1)));
+        assertTrue(nodes [3].equals(new Point (2,0)));
+        assertTrue(nodes [4].equals(new Point (2,2)));
     }
 
     [Test]

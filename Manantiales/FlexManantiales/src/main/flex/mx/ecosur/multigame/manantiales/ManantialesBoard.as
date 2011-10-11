@@ -69,8 +69,8 @@
             for (var row:int = 0; row < _nRows; row++) {
                 for (var col:int = 0; col < _nCols; col++) {
                     if (_boardCells [ col ][ row ] != null) {
-                        var cell:RoundCell = RoundCell (_boardCells[col][row]);
-                        var token:ManantialesToken = ManantialesToken (cell.token);
+                        var cell:RoundCell = RoundCell(_boardCells[col][row]);
+                        var token:ManantialesToken = ManantialesToken(cell.token);
                         if (token && token.type != TokenType.UNDEVELOPED)
                             ret.addItem(token);
                     }
@@ -119,10 +119,9 @@
             _boardCells = new Array();
             var counter:int = 0;
             var boardCell:RoundCell;
-
-            for (var row:int = 0; row < 9; row++) {
-                _boardCells[row] = new Array();
-                for (var column:int = 0; column < 9; column++) {
+            for (var column:int = 0; column < 9; column++) {
+                _boardCells[column] = new Array();
+                for (var row:int = 0; row < 9; row++) {
                     boardCell = null;
 
                     if (row == 4) {
@@ -132,9 +131,9 @@
                     } else if (column < 4 && row < 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.YELLOW));
                     } else if (column > 4 && row < 4) {
-                        this.setStyle("cellBgColor", Color.getColorCode(Color.PURPLE));
-                    } else if (column < 4 && row > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.RED));
+                    } else if (column < 4 && row > 4) {
+                        this.setStyle("cellBgColor", Color.getColorCode(Color.PURPLE));
                     } else if (column > 4 && row > 4 && column > 4) {
                         this.setStyle("cellBgColor", Color.getColorCode(Color.BLACK));
                     }
@@ -143,22 +142,21 @@
                     if (column == 4 && row == 4) {
                         continue;
                     }
-                    else if ( row % 2 == 0 && column % 2 == 0) {
-                        boardCell = new RoundCell(column,row, cellBgColor,
-                            cellBorderColor, cellBorderThickness);
-                    } else if ( row % 2 != 0 && column % 2 != 0 ) {
+                    else if (row % 2 == 0 && column % 2 == 0) {
                         boardCell = new RoundCell(column, row, cellBgColor,
-                            cellBorderColor, cellBorderThickness);
+                                cellBorderColor, cellBorderThickness);
+                    } else if (row % 2 != 0 && column % 2 != 0) {
+                        boardCell = new RoundCell(column, row, cellBgColor,
+                                cellBorderColor, cellBorderThickness);
                     } else if (row == 4 || column == 4) {
-                        boardCell = new RoundCell(column,row, cellBgColor,
-                            cellBorderColor, cellBorderThickness);
+                        boardCell = new RoundCell(column, row, cellBgColor,
+                                cellBorderColor, cellBorderThickness);
                     }
 
                     if (boardCell != null) {
-                        boardCell.toolTip = column + "," + row;
                         addChild(boardCell);
                         boardCell.setStyle("padding", cellPadding);
-                        _boardCells[row][column] = boardCell;
+                        _boardCells[column][row] = boardCell;
                         counter++;
                     }
                 }
@@ -180,8 +178,8 @@
             var xPos:Number, yPos:Number, centerY:Number, centerX:Number;
             var endY:Number, endX:Number;
 
-            factor = 2;
-            positioningFactor = 14.5;
+            factor = 3;
+            positioningFactor = 10;
 
             this.measure();
             cellSize =  (this.measuredWidth/_nCols)/factor;
@@ -308,12 +306,12 @@
             var N:int = nodes.length;
             for (var i:int = 0; i < N; i++) {
                 var a:Point, origin:RoundCell;
-                a = _graph.findPoint(nodes [ i ]);
+                a = nodes [ i ];
                 origin = _boardCells [a.y] [a.x];
-                for (var j:int = (i + 15); j > i; j--) {
-                    if (nodes [ j ] != undefined && _graph.containsEdge(nodes [ i ], nodes [ j ])) {
+                for (var j:int = N; j > i; j--) {
+                    if ( _graph.containsEdge(i, j)) {
                         var b:Point, dest:RoundCell;
-                        b = _graph.findPoint(nodes [ j ]);
+                        b = nodes [ j ];
                         dest = _boardCells [ b.y ] [ b. x ];
                         _bg.graphics.beginFill(Color.getColorCode(Color.BLUE));
                         _bg.graphics.lineStyle(3, Color.getColorCode(Color.BLUE), 0.70);
@@ -329,14 +327,17 @@
         public function createGraph():AdjGraph {
             var ret:AdjGraph = new AdjGraph(48);
             var counter:int = 0;
-            for (var col:int = 0; col < _nCols; col++) {
-                for (var row:int = 0; row < _nRows; row++) {
-                    var cell:BoardCell = _boardCells [ col ] [ row ];
+            for (var row:int = 0; row < _nRows; row++) {
+                for (var col:int = 0; col < _nCols; col++) {
+                    var cell:BoardCell = _boardCells [col][row];
                     if (cell != null) {
                         var pt:Point = new Point();
                         pt.x = cell.row;
                         pt.y = cell.column;
-                        ret.addPoint(counter++,  pt);
+                        cell.toolTip = counter + "[" + pt.y + "," + pt.x + "] @ "
+                                + "(" + cell.y + "," + cell.x + ")";
+                        ret.setPoint(counter,  pt);
+                        counter = counter + 1;
                     }
                 }
            }
@@ -348,14 +349,12 @@
             ret.addEdge(0, 10);
             ret.addEdge(1, 5);
             ret.addEdge(1, 6);
-            ret.addEdge(1, 11);
             ret.addEdge(1, 2);
             ret.addEdge(2, 6);
             ret.addEdge(2, 7);
             ret.addEdge(2, 8);
             ret.addEdge(2, 3);
             ret.addEdge(3, 8);
-            ret.addEdge(3, 13);
             ret.addEdge(3, 9);
             ret.addEdge(3, 4);
             ret.addEdge(4, 9);
@@ -379,17 +378,13 @@
             ret.addEdge(9, 14);
             ret.addEdge(10, 20);
             ret.addEdge(10, 15);
-            ret.addEdge(10, 11);
             ret.addEdge(11, 15);
             ret.addEdge(11, 16);
-            ret.addEdge(11, 12);
             ret.addEdge(12, 16);
             ret.addEdge(12, 17);
             ret.addEdge(12, 18);
-            ret.addEdge(12, 13);
             ret.addEdge(13, 18);
             ret.addEdge(13, 19);
-            ret.addEdge(13, 14);
             ret.addEdge(14, 19);
             ret.addEdge(14, 27);
             ret.addEdge(15, 16);
@@ -429,8 +424,8 @@
             ret.addEdge(27, 32);
             ret.addEdge(27, 37);
             ret.addEdge(28, 33);
-            ret.addEdge(28, 38);
             ret.addEdge(28, 34);
+            ret.addEdge(28, 38);
             ret.addEdge(28, 29);
             ret.addEdge(29, 34);
             ret.addEdge(29, 39);
@@ -448,20 +443,14 @@
             ret.addEdge(32, 37);
             ret.addEdge(33, 43);
             ret.addEdge(33, 38);
-            ret.addEdge(33, 34);
             ret.addEdge(34, 38);
-            ret.addEdge(34, 44);
             ret.addEdge(34, 39);
-            ret.addEdge(34, 35);
             ret.addEdge(35, 39);
             ret.addEdge(35, 40);
             ret.addEdge(35, 31);
             ret.addEdge(35, 41);
-            ret.addEdge(35, 36);
             ret.addEdge(36, 41);
-            ret.addEdge(36, 46);
             ret.addEdge(36, 42);
-            ret.addEdge(36, 37);
             ret.addEdge(37, 42);
             ret.addEdge(37, 47);
             ret.addEdge(38, 43);

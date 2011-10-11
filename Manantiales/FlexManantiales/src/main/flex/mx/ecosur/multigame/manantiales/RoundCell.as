@@ -13,7 +13,7 @@ public class RoundCell extends BoardCell
     {
         private var _factor:int;
 
-        public function RoundCell(row:int, column:int, bgColor:uint, borderColor:uint, borderThickness:Number)
+        public function RoundCell(column:int, row:int,  bgColor:uint, borderColor:uint, borderThickness:Number)
         {
             super(column, row, bgColor, borderColor, borderThickness);
             this.filters.concat(new DropShadowFilter());

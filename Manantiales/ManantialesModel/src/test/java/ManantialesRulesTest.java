@@ -1475,7 +1475,79 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         game.move (m);
         assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
     }
-    
+
+    /* Tests the "special cases" due to the boards underlying graph, in 2,2 -> 4,2, 4,2->6,2,
+     * 2,6 -> 4,6 4,6->6,6.
+     */
+    @Test
+    public void testLeftAdjacentIntensiveSpecialCases() throws InvalidMoveException {
+        ManantialesFicha fichas [] = {
+            new ManantialesFicha(2,2, Color.YELLOW, TokenType.MODERATE_PASTURE),  //0
+            new ManantialesFicha(4,2, Color.YELLOW, TokenType.MODERATE_PASTURE),  //1
+            new ManantialesFicha(6,2, Color.PURPLE, TokenType.MODERATE_PASTURE),  //2
+            new ManantialesFicha(2,2, Color.YELLOW, TokenType.INTENSIVE_PASTURE), //3
+            new ManantialesFicha(6,2, Color.PURPLE, TokenType.INTENSIVE_PASTURE), //4
+            new ManantialesFicha(4,2, Color.YELLOW, TokenType.INTENSIVE_PASTURE), //5
+        };
+
+        SetIds(fichas);
+
+        /* Left side */
+        ManantialesMove m = new ManantialesMove(alice, fichas [ 0 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, fichas [ 1 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(bob, fichas [ 2 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, fichas[0], fichas[3]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(bob, fichas[2], fichas [4] );
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(alice, fichas [1], fichas [5]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+    }
+
+    @Test
+    public void testRightAdjacentIntensiveSpecialCases () throws InvalidMoveException {
+        ManantialesFicha [] fichas = {
+            new ManantialesFicha(2,6, Color.RED, TokenType.MODERATE_PASTURE),     //0
+            new ManantialesFicha(4,6, Color.BLACK, TokenType.MODERATE_PASTURE),   //1
+            new ManantialesFicha(6,6, Color.BLACK, TokenType.MODERATE_PASTURE),   //2
+            new ManantialesFicha(2,6, Color.RED, TokenType.INTENSIVE_PASTURE),    //3
+            new ManantialesFicha(4,6, Color.BLACK, TokenType.INTENSIVE_PASTURE),  //4
+            new ManantialesFicha(6,6, Color.BLACK, TokenType.INTENSIVE_PASTURE)   //5
+        };
+
+        SetIds(fichas);
+
+        /* Right side */
+        ManantialesMove m = new ManantialesMove(charlie, fichas [ 0 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(denise, fichas [ 1 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(denise, fichas [ 2 ]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(charlie, fichas[0],fichas[3]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(denise, fichas[2], fichas [4] );
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+        m = new ManantialesMove(denise, fichas [1], fichas [5]);
+        game.move(m);
+        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
+
+    }
+
     @Test
     public void testConditionsEffected () {
         CheckCondition cond;

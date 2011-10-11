@@ -90,17 +90,16 @@ public class ManantialesGame extends GridGame {
                 if (row == 4 && column == 4)
                     continue;
 
-                if ( (row % 2 == 0 && column % 2 == 0) ||
-                     (row % 2 != 0 && column % 2 !=0) ||
-                     (row == 4 || column == 4))
-                {
+                if ((row % 2 == 0 && column % 2 == 0) ||
+                        (row % 2 != 0 && column % 2 != 0) ||
+                        (row == 4 || column == 4)) {
                     Point pt = new Point(row, column);
                     ret.addPoint(counter++, pt);
                 }
             }
         }
 
-        assert(counter == 48);
+        assert (counter == 48);
 
         /* Edges only valid if _nRows = 9 and _nCols = 9, e.g. 8x8 grid ; */
 
@@ -109,14 +108,12 @@ public class ManantialesGame extends GridGame {
         ret.addEdge(0, 10);
         ret.addEdge(1, 5);
         ret.addEdge(1, 6);
-        ret.addEdge(1, 11);
         ret.addEdge(1, 2);
         ret.addEdge(2, 6);
         ret.addEdge(2, 7);
         ret.addEdge(2, 8);
         ret.addEdge(2, 3);
         ret.addEdge(3, 8);
-        ret.addEdge(3, 13);
         ret.addEdge(3, 9);
         ret.addEdge(3, 4);
         ret.addEdge(4, 9);
@@ -140,17 +137,13 @@ public class ManantialesGame extends GridGame {
         ret.addEdge(9, 14);
         ret.addEdge(10, 20);
         ret.addEdge(10, 15);
-        ret.addEdge(10, 11);
         ret.addEdge(11, 15);
         ret.addEdge(11, 16);
-        ret.addEdge(11, 12);
         ret.addEdge(12, 16);
         ret.addEdge(12, 17);
         ret.addEdge(12, 18);
-        ret.addEdge(12, 13);
         ret.addEdge(13, 18);
         ret.addEdge(13, 19);
-        ret.addEdge(13, 14);
         ret.addEdge(14, 19);
         ret.addEdge(14, 27);
         ret.addEdge(15, 16);
@@ -190,8 +183,8 @@ public class ManantialesGame extends GridGame {
         ret.addEdge(27, 32);
         ret.addEdge(27, 37);
         ret.addEdge(28, 33);
-        ret.addEdge(28, 38);
         ret.addEdge(28, 34);
+        ret.addEdge(28, 38);
         ret.addEdge(28, 29);
         ret.addEdge(29, 34);
         ret.addEdge(29, 39);
@@ -209,20 +202,14 @@ public class ManantialesGame extends GridGame {
         ret.addEdge(32, 37);
         ret.addEdge(33, 43);
         ret.addEdge(33, 38);
-        ret.addEdge(33, 34);
         ret.addEdge(34, 38);
-        ret.addEdge(34, 44);
         ret.addEdge(34, 39);
-        ret.addEdge(34, 35);
         ret.addEdge(35, 39);
         ret.addEdge(35, 40);
         ret.addEdge(35, 31);
         ret.addEdge(35, 41);
-        ret.addEdge(35, 36);
         ret.addEdge(36, 41);
-        ret.addEdge(36, 46);
         ret.addEdge(36, 42);
-        ret.addEdge(36, 37);
         ret.addEdge(37, 42);
         ret.addEdge(37, 47);
         ret.addEdge(38, 43);
@@ -242,6 +229,7 @@ public class ManantialesGame extends GridGame {
         ret.addEdge(44, 45);
         ret.addEdge(45, 46);
         ret.addEdge(46, 47);
+
         return ret;
     }
 

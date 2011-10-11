@@ -30,8 +30,7 @@ package mx.ecosur.multigame.component {
         protected var _nCols:int; //number of cells on X axis
         protected var _nRows:int; //number of cells of Y axis
         protected var _boardCells:Array; //two dimensional array of BoardCell
-        protected var _columnLabels:Array; //array of text field column labels
-        
+
         [Bindable]
         public var tokenSize:Number; //size of tokens
         
@@ -148,8 +147,8 @@ package mx.ecosur.multigame.component {
          * 
          */
         public function getCellDescription(column:Number, row:Number):String{
-            return resourceManager.getString("Commons", "move.history.row") + " " + (nRows - row) +
-                    ", " + resourceManager.getString("Commons", "move.history.column") + " " + (column + 1);
+            return resourceManager.getString("Commons", "move.history.column") + " " + (column + 1) +
+                    ", " + resourceManager.getString("Commons", "move.history.row") + " " + (nRows - row);
         }
         
         override protected function measure():void{

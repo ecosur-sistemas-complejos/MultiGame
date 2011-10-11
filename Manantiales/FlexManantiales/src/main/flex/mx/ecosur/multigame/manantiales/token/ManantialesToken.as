@@ -100,6 +100,7 @@ public class ManantialesToken extends Token
 
             // Position label
             if (_txt != null) {
+                _txt.truncateToFit = true;
                 _txt.setActualSize(unscaledWidth, _txt.getExplicitOrMeasuredHeight());
                 _txt.x = - unscaledWidth / 2;
                 _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2;

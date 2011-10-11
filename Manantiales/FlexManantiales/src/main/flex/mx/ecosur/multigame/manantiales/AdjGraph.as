@@ -11,9 +11,7 @@ public class AdjGraph {
 
         var E:int,  V:int;
 
-        var adj:Array;
-
-        var dict:Dictionary;
+        var adj:Array, dict:Array;
 
         public function AdjGraph(V:int) {
             this.V = V;
@@ -21,7 +19,7 @@ public class AdjGraph {
         }
 
         private function init():void {
-            dict = new Dictionary();
+            dict = new Array(V);
             adj = new Array(V);
             for (var i:int = 0; i < V; i++) {
                 adj [ i ] = new Array();
@@ -41,21 +39,12 @@ public class AdjGraph {
             return (adj [v][w]);
         }
 
-        public function findPoint(node:int):Point {
-           return dict[node];
-        }
-
-        public function addPoint(node:int,  point:Point):void {
+        public function setPoint(node:int,  point:Point):void {
             dict[node] = point;
         }
 
         public function getNodes():Array {
-            var ret:Array = new Array();
-            for (var obj:Object in dict) {
-                    ret.push(obj);
-            }
-
-            return ret;
+            return dict;
         }
     }
 }
