@@ -81,8 +81,8 @@ public class ManantialesToken extends Token
         }
 
         override protected function updateDisplayList(unscaledWidth:Number,
-            unscaledHeight:Number):void {
-
+            unscaledHeight:Number):void
+        {
             // Do nothing if color not set
             if (_cell == null || _cell.color == null){
                 return;
@@ -101,8 +101,8 @@ public class ManantialesToken extends Token
             // Position label
             if (_txt != null) {
                 _txt.truncateToFit = true;
-                _txt.setActualSize(unscaledWidth, _txt.getExplicitOrMeasuredHeight());
-                _txt.x = - unscaledWidth / 2;
+                _txt.setActualSize(_txt.getExplicitOrMeasuredWidth(), _txt.getExplicitOrMeasuredHeight());
+                _txt.x = - _txt.getExplicitOrMeasuredWidth() / 2;
                 _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2;
             }
 

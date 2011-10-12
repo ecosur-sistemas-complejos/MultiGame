@@ -24,6 +24,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.model.interfaces.Cell;
 
 import java.awt.Point;
 import java.util.Arrays;
@@ -272,7 +273,7 @@ public class RuleFunctions {
         return ret;
     }
     
-    public static boolean isContiguous (AdjGraph graph, GridCell a, GridCell b) throws InvalidMoveException {
+    public static boolean isContiguous (AdjGraph graph, Cell a, Cell b) throws InvalidMoveException {
         int nodeA = graph.findNode(new Point (a.getRow(), a.getColumn()));
         int nodeB = graph.findNode(new Point (b.getRow(), b.getColumn()));
         if (nodeA == -1 || nodeB == -1)
