@@ -32,6 +32,8 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
         * */
         private var _controller:ManantialesGameController;
 
+        private var _lastMove:ManantialesMove;
+
         public function MoveHandler (controller:ManantialesGameController) {
             _controller = controller;
         }
@@ -163,11 +165,12 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
-        	
-            // if was a bad year, then nothing to do
-            if(move.badYear){
+
+            if (move.badYear || move.playerModel.color == _controller._currentPlayer.color ||
+                    (_lastMove != undefined && _lastMove.id == move.id))
                 return
-            }
+
+            _lastMove = move;
 
             var boardCell:RoundCell;
             var token:ManantialesToken;
@@ -191,7 +194,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
             var current:Ficha;
             var currentCell:RoundCell;
 
-            if (move.currentCell != null && move.currentCell is Ficha){
+            if (move.currentCell != null) {
                 current = Ficha (move.currentCell);
                 currentCell = RoundCell(_controller._gameWindow.board.getBoardCell(current.column, current.row));
             }

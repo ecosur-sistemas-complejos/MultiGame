@@ -8,6 +8,7 @@ package mx.ecosur.multigame.manantiales;
 */
 
 import mx.ecosur.multigame.enums.*;
+import mx.ecosur.multigame.model.interfaces.*
 import mx.ecosur.multigame.grid.*;
 import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.grid.util.*;
@@ -15,15 +16,11 @@ import mx.ecosur.multigame.impl.entity.manantiales.*;
 import mx.ecosur.multigame.impl.enums.manantiales.*;
 import mx.ecosur.multigame.impl.util.manantiales.*;
 
-import mx.ecosur.multigame.model.interfaces.Move;
-
 import java.util.*;
 
 import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 
 global ManantialesMessageSender messageSender;
-
-dialect "java"
 
 #Rule to enforce only 6 of each type of token
 

@@ -26,12 +26,10 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.builder.*;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.KnowledgeBase;
 
@@ -349,6 +347,14 @@ public class ManantialesGame extends GridGame {
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
             "/mx/ecosur/multigame/impl/manantiales.xml")), ResourceType.CHANGE_SET);
         ret.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (!errors.isEmpty()) {
+            for (KnowledgeBuilderError error : errors) {
+                System.out.println(error.getMessage());
+                System.out.println("@" + error.getErrorLines());
+            }
+        }
+
         return ret;
     }
 
