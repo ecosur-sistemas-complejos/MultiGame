@@ -144,13 +144,6 @@ import mx.ecosur.multigame.enum.MoveStatus;
         public function addSuggestion (suggestion:Suggestion):void {
             _mySuggestion = suggestion;
 
-            /*
-            if (_timer == null) {
-                _timer = new Timer(2000, _animations);
-                _timer.addEventListener("timer", timerHandler);
-            }
-            */
-
             var move:ManantialesMove = suggestion.move;
             
             /* Check for an unintended suggestion */
@@ -158,8 +151,8 @@ import mx.ecosur.multigame.enum.MoveStatus;
                 return;
             
             /* Animate suggestion */
-            if (_currentSuggestions [ move.player ] == null)
-                _currentSuggestions [move.player] = suggestion;
+            if (_currentSuggestions [ move.player.color ] == null)
+                _currentSuggestions [move.player.color] = suggestion;
 
             animateSuggestion (suggestion);
 
@@ -244,7 +237,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
             }
             
             /* Always remove the suggestion from the dictionary */
-            _currentSuggestions [suggestion.move.player] = null;
+            _currentSuggestions [suggestion.move.player.color] = null;
             if (suggestion == _mySuggestion)
                 _mySuggestion = null;
         }
@@ -313,17 +306,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
         }
         
         private function freePlayer (color:String):Boolean {
-            var ret:Boolean = true;
-            
-            for (var i:int = 0; i < _controller._game.players.length; i++) {
-                var player:ManantialesPlayer = ManantialesPlayer(_controller._game.players [ i ]);
-                if (player.color == color && _currentSuggestions[player] != null) {
-                    ret = false;
-                    break;
-                }
-            }
-            
-            return ret;
+            return (_currentSuggestions[color] == null);
         }
 
         /* Drag/drop handlers for making suggestions on other player's boards */
@@ -331,8 +314,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
         {
             var token:ManantialesToken = ManantialesToken(evt.currentTarget);
             
-            if (freePlayer (token.cell.color) && _controller._currentPlayer.turn &&
-                _controller._currentPlayer.color == _player.color)
+            if (freePlayer (token.cell.color) && _controller._currentPlayer.color == _player.color)
             {
                 var ds:DragSource = new DragSource();
                 ds.addData(token, "token");
@@ -388,8 +370,8 @@ import mx.ecosur.multigame.enum.MoveStatus;
                suggestion.suggestor = _player;
                suggestion.status = SuggestionStatus.UNEVALUATED;
 
-               if (_currentSuggestions [move.player] == null)
-                _currentSuggestions [move.player] = suggestion;
+               if (_currentSuggestions [move.player.color] == null)
+                _currentSuggestions [move.player.color] = suggestion;
 
                var call:Object = new Object();
                call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
@@ -448,8 +430,8 @@ import mx.ecosur.multigame.enum.MoveStatus;
                 suggestion.suggestor = _player;
                 suggestion.status = SuggestionStatus.UNEVALUATED;
                 
-                if (_currentSuggestions [move.player] == null)
-                    _currentSuggestions [move.player] = suggestion;
+                if (_currentSuggestions [move.player.color] == null)
+                    _currentSuggestions [move.player.color] = suggestion;
     
                 var call:Object = new Object();
                 call = _controller._gameService.makeSuggestion(_controller._game, suggestion);
