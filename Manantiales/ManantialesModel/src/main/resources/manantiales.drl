@@ -28,8 +28,17 @@ declare Bonus
 	type : TokenType
 end
 
-#Rule to enforce only 6 of each type of token
+rule "bonuses reset and awarded each time"
+	agenda-group "initialize"
+when
+	$move: ManantialesMove (premium == true)	
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	player.setPremiums(0);
+	modify ($move) { setPlayer(player) };
+end
 
+#Rule to enforce only 6 of each type of token
 rule "only six intensives per player"
     agenda-group "verify"
     no-loop true

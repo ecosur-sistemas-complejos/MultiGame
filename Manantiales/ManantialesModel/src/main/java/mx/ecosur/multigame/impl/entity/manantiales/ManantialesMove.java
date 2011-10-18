@@ -104,14 +104,12 @@ public class ManantialesMove extends GridMove implements Comparable {
         badYear = year;
     }
 
-    @Basic
+    @Transient
     public boolean isPremium () {
-        return premium;
+    	ManantialesPlayer player = (ManantialesPlayer) getPlayerModel();
+    	return player.getPremiums() > 0;
     }
 
-    public void setPremium (boolean premium) {
-        this.premium = premium;
-    }
 
     /**
      * @return the mode

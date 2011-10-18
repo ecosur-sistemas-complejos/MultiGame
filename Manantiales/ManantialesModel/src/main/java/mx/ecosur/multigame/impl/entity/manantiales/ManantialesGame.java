@@ -379,7 +379,6 @@ public class ManantialesGame extends GridGame {
             kbase = findKBase();
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-
         session.setGlobal("messageSender", getMessageSender());
         session.insert(this);
         session.insert(move);
@@ -387,6 +386,8 @@ public class ManantialesGame extends GridGame {
             session.insert(fact);
         }
 
+        session.getAgenda().getAgendaGroup("initialize").setFocus();
+        session.fireAllRules();
         session.getAgenda().getAgendaGroup("verify").setFocus();
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("move").setFocus();
