@@ -6,7 +6,7 @@ package mx.ecosur.multigame.entity.manantiales
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer")]
     public class ManantialesPlayer extends GamePlayer
     {
-        private var _score:int, _forested:int, _moderate:int, _intensive:int,
+        private var _score:int, _premiums:int, _forested:int, _moderate:int, _intensive:int,
           _vivero:int, _silvo:int;
 
         private var _badYear:Boolean;
@@ -70,7 +70,11 @@ package mx.ecosur.multigame.entity.manantiales
         }
 
         public function get premiums():int {
-            return (forested / 6) + (intensive / 6) + (silvo / 6);
+            return _premiums;
+        }
+
+        public function set premiums (prems:int):void {
+            _premiums = prems;
         }
     }
 }

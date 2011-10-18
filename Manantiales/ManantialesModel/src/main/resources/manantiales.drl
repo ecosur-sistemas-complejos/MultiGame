@@ -22,6 +22,12 @@ import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 
 global ManantialesMessageSender messageSender;
 
+declare Bonus
+    @role (event)
+	color : Color
+	type : TokenType
+end
+
 #Rule to enforce only 6 of each type of token
 
 rule "only six intensives per player"
@@ -375,9 +381,11 @@ when
     eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
-    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
-    modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.MOVED) }
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.updateCell (cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED) };
+    insert ((ManantialesFicha) cell);
     messageSender.sendMoveComplete ($game, $move);
 end
 
@@ -391,7 +399,7 @@ when
     eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
     eval (!isSolved ($mode, $game))
 then
-    modify ($move) { setStatus (MoveStatus.MOVED) }
+    modify ($move) { setStatus (MoveStatus.MOVED)};
 end
 
 rule "execute-replace-move"
@@ -399,16 +407,20 @@ rule "execute-replace-move"
     lock-on-active
 when 
     $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
-    $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
-        destinationCell != null, swap != true, $player : player)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell != null,
+    	destinationCell != null, swap != true, $player : player)
+    $current : ManantialesFicha (column == $move.currentCell.column, row == $move.currentCell.row)    
     eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
     eval (!isSolved ($mode, $game))
 then
     GameGrid modifiedGrid = $game.getGrid();
-    modifiedGrid.removeCell ((GridCell) $current);
-    modifiedGrid.updateCell ((GridCell) $move.getDestinationCell());
-    modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.MOVED) }
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.removeCell ($move.getCurrentCell());
+    modifiedGrid.updateCell (cell);
+    retract ($current);
+    insert ((ManantialesFicha) cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED)};
     messageSender.sendMoveComplete ($game, $move);
 end
 
@@ -417,13 +429,17 @@ rule "execute-remove-move"
     lock-on-active
 when 
     $game  : ManantialesGame (state == GameState.PLAY)
-    $move  : ManantialesMove (status == MoveStatus.VERIFIED, $current : currentCell != null,
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell != null,
         destinationCell == null)
+    $current : ManantialesFicha (column == $move.currentCell.column, row == $move.currentCell.row)
 then
     GameGrid modifiedGrid = $game.getGrid();
-    modifiedGrid.removeCell ((GridCell) $current);
-    modify ($game) { setGrid (modifiedGrid) }
-    modify ($move) { setStatus (MoveStatus.MOVED) }
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.removeCell (cell);
+    retract ($current);
+    insert ((ManantialesFicha) cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED) };
     messageSender.sendMoveComplete ($game, $move);
 end
 
@@ -599,29 +615,7 @@ then
     modify ($move) { setPlayer (player) };
 end
 
-rule "reward-forested-premium"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (premium == false, $player : player, 
-        status == MoveStatus.MOVED, type ==  TokenType.MANAGED_FOREST)
-    $manPlayer : ManantialesPlayer (forested == 5) from $player
-then
-    modify ($move) { setPremium (true), setPlayer ($manPlayer) };
-end
-
-rule "reward-intensive-premium"
-    agenda-group "evaluate"
-    no-loop true
-when
-    $move : ManantialesMove (premium == false, $player : player,
-        status == MoveStatus.MOVED, type == TokenType.INTENSIVE_PASTURE)
-    $manPlayer : ManantialesPlayer (intensive == 5) from $player
-then
-    modify ($move) { setPremium (true), setPlayer ($manPlayer) };
-end
-
-rule "score"
+rule "score-points"
     agenda-group "evaluate"
     no-loop true
     salience -5
@@ -635,10 +629,56 @@ then
     modify ($move) { setPlayer (player), setStatus (MoveStatus.EVALUATED) };
 end 
 
+rule "award-intensive-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.INTENSIVE_PASTURE)	
+    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    	type == TokenType.INTENSIVE_PASTURE, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 3);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.INTENSIVE_PASTURE));
+end	
+
+rule "award-forested-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.MANAGED_FOREST)	
+    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    	type == TokenType.MANAGED_FOREST, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 3);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.MANAGED_FOREST));
+end	
+
+rule "award-silvopastoral-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.SILVOPASTORAL)	
+    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    	type == TokenType.SILVOPASTORAL, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 3);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.SILVOPASTORAL));
+end	
+
 rule "score-bad-year"
     agenda-group "evaluate"
-    no-loop true
-    salience -5
 when
     $game  : ManantialesGame (state == GameState.PLAY)
     $move  : ManantialesMove (status == MoveStatus.MOVED, badYear == true)

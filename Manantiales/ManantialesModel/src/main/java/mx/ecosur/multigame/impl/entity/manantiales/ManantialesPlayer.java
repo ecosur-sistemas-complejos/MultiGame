@@ -22,7 +22,7 @@ public class ManantialesPlayer extends GridPlayer {
 
     private static final long serialVersionUID = 2815240265995571202L;
 
-    private int points, forested, moderate, intensive, vivero, silvo;
+    private int points, premiums, forested, moderate, intensive, vivero, silvo;
 
     public ManantialesPlayer () {
         super();
@@ -132,6 +132,15 @@ public class ManantialesPlayer extends GridPlayer {
         else
             this.silvo = 0;
     }
+    
+    @Basic
+    public int getPremiums() {
+    	return premiums;
+    }
+    
+    public void setPremiums(int prems) {
+    	this.premiums = prems;
+    }
 
     public void reset() {
         this.forested = 0;
@@ -140,6 +149,7 @@ public class ManantialesPlayer extends GridPlayer {
         this.silvo = 0;
         this.vivero = 0;
         this.points = 0;
+        this.premiums = 0;
     }
 
     @Override

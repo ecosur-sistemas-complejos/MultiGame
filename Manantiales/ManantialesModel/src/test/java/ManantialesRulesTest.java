@@ -1514,41 +1514,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     }
 
     @Test
-    public void testRightAdjacentIntensiveSpecialCases () throws InvalidMoveException {
-        ManantialesFicha [] fichas = {
-            new ManantialesFicha(2,6, Color.RED, TokenType.MODERATE_PASTURE),     //0
-            new ManantialesFicha(4,6, Color.BLACK, TokenType.MODERATE_PASTURE),   //1
-            new ManantialesFicha(6,6, Color.BLACK, TokenType.MODERATE_PASTURE),   //2
-            new ManantialesFicha(2,6, Color.RED, TokenType.INTENSIVE_PASTURE),    //3
-            new ManantialesFicha(4,6, Color.BLACK, TokenType.INTENSIVE_PASTURE),  //4
-            new ManantialesFicha(6,6, Color.BLACK, TokenType.INTENSIVE_PASTURE)   //5
-        };
-
-        SetIds(fichas);
-
-        /* Right side */
-        ManantialesMove m = new ManantialesMove(charlie, fichas [ 0 ]);
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-        m = new ManantialesMove(denise, fichas [ 1 ]);
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-        m = new ManantialesMove(denise, fichas [ 2 ]);
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-        m = new ManantialesMove(charlie, fichas[0],fichas[3]);
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-        m = new ManantialesMove(denise, fichas[2], fichas [4] );
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-        m = new ManantialesMove(denise, fichas [1], fichas [5]);
-        game.move(m);
-        assertTrue (m.getStatus().name(), m.getStatus().equals(MoveStatus.EVALUATED));
-
-    }
-
-    @Test
     public void testConditionsEffected () {
         CheckCondition cond;
         ManantialesMove m;
@@ -1640,6 +1605,29 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         assertTrue ("No TRIGGERED_CONDITION message intercepted!", filter.size() == 1);
         assertTrue ("Filter.size()==" + filter.size(), filter.size() == 1);
         assertTrue(game.getGrid().isEmpty());
+    }
+    
+    @Test
+    public void testBasicBonuses() throws InvalidMoveException {
+        ManantialesFicha [] fichas = {
+                new ManantialesFicha(5,1, Color.RED, TokenType.MANAGED_FOREST),   //0  
+                new ManantialesFicha(5,3, Color.RED, TokenType.MANAGED_FOREST),   //1
+                new ManantialesFicha(7,1, Color.RED, TokenType.MANAGED_FOREST),
+                new ManantialesFicha(7,3, Color.RED, TokenType.MODERATE_PASTURE)
+        };
+        
+        SetIds(fichas);
+        game.getGrid().updateCell(fichas [ 0 ]);
+        game.getGrid().updateCell(fichas [ 1 ]);
+        charlie.setTurn(true);
+        ManantialesMove move = new ManantialesMove(charlie, fichas[2]);
+        game.move(move);
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
+        assertEquals(1, charlie.getPremiums());
+        move = new ManantialesMove(charlie,fichas[3]);
+        game.move(move);
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
+        assertEquals(1, charlie.getPremiums());
     }
 
     /**

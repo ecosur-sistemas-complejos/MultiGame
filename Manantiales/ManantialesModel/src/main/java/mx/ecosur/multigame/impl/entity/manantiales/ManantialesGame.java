@@ -234,9 +234,15 @@ public class ManantialesGame extends GridGame {
     @Override
     @Transient
     public Set getFacts() {
-        Set facts = super.getFacts();
-        if (facts == null)
-            facts = new HashSet();
+        Set facts = new HashSet();
+
+        if (!grid.isEmpty()) {
+            for (GridCell cell : grid.getCells()) {
+                ManantialesFicha ficha = (ManantialesFicha) cell;
+                facts.add(ficha);
+            }
+        }
+
         if (checkConditions != null)
             facts.addAll(checkConditions);
         if (graph == null)
