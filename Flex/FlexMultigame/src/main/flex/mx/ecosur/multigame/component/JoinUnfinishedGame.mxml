@@ -51,10 +51,12 @@
         }
 
         private function messageFaultHandler (event:MessageFaultEvent):void {
+            CursorManager.removeBusyCursor();
             Alert.show("Error [" + event.faultString + "]");
         }
 
         private function faultHandler(event:FaultEvent):void {
+            CursorManager.removeBusyCursor();
             Alert.show(event.fault.faultString,
                     "Error [" + event.fault.faultString + "]");
         }

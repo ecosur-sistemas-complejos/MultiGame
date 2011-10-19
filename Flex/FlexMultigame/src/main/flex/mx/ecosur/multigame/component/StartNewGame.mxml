@@ -45,10 +45,12 @@
     private function resultHandler(event:ResultEvent):void {
         var sge:ServiceGameEvent = ServiceGameEvent(event.result);
         var gamePlayer:GamePlayer = GamePlayer(sge.player);
+        CursorManager.removeBusyCursor();
         this.dispatchEvent(new PlayEvent("registered", sge.game, gamePlayer));
     }
 
     private function faultHandler(event:FaultEvent):void {
+        CursorManager.removeBusyCursor();
         Alert.show(event.fault.faultString, "Error registering player for new game");
     }
 

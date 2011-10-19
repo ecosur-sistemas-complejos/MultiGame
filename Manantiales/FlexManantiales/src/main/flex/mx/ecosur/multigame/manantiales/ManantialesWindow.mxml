@@ -15,13 +15,11 @@
     <mx:Script>
         <![CDATA[
             import mx.collections.ArrayCollection;
-            import mx.controls.Alert;
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
             import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
             import mx.managers.PopUpManager;
-            import mx.managers.CursorManager;
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.enum.manantiales.Mode;
@@ -47,9 +45,6 @@
                 _images.addItem("img/competitive-3.png");
                 _images.addItem("img/competitive-4.png");
                 _images.addItem("img/puzzle.png");
-
-                /* Signal Ready */
-                CursorManager.removeBusyCursor();
             }
             
             public function destroy():void{

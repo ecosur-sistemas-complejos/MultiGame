@@ -13,14 +13,11 @@
     
     <mx:Script>
         <![CDATA[
-            import mx.controls.Alert;
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.gente.GenteGame;
             import mx.events.MenuEvent;
-            import mx.managers.CursorManager;
             import mx.managers.PopUpManager;
-            import mx.resources.ResourceBundle;
 
         private var _controller:GenteGameController;
         private var _currentGame:GenteGame;
@@ -49,7 +46,6 @@
         public function set currentPlayer(currentPlayer:GamePlayer):void {
             if (currentPlayer != null) {
                 _currentPlayer = currentPlayer;
-                CursorManager.removeBusyCursor();
             }
         }
 

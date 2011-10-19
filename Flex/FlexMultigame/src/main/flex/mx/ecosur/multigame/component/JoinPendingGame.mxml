@@ -48,9 +48,9 @@
         }
 
         private function updateFaultHandler(event:FaultEvent):void {
+            CursorManager.removeBusyCursor();
             Alert.show(event.fault.faultString, "Error getting pending games!");
         }
-
 
         private function joinResultHandler(event:ResultEvent):void {
             var serviceEvent:ServiceGameEvent = ServiceGameEvent(event.result);
@@ -58,6 +58,7 @@
         }
 
         private function joinFaultHandler(event:FaultEvent):void {
+            CursorManager.removeBusyCursor();
             Alert.show(event.fault.faultString, "Error joining pending game!");
         }
 

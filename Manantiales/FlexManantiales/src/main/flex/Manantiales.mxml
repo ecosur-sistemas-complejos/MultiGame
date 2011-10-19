@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Module xmlns:mx="http://www.adobe.com/2006/mxml" 
-    xmlns:gente="mx.ecosur.multigame.gente.*"
-    xmlns:component="mx.ecosur.multigame.component.*"
-    layout="absolute" implements="mx.ecosur.multigame.module.IGameModule" 
+    layout="absolute" implements="mx.ecosur.multigame.module.IGameModule"
 	width="100%" height="100%">
 
     <mx:Style source="style.css"/>
@@ -13,11 +11,13 @@
             
             import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
             import mx.ecosur.multigame.event.PlayEvent;
-            
-			
-			private var _gameWindow:ManantialesWindow;
+            import mx.managers.CursorManager;
+
+
+            private var _gameWindow:ManantialesWindow;
 			
 			public function start(event:PlayEvent):void {
+                CursorManager.removeBusyCursor();
 				_gameWindow = new ManantialesWindow();
 				_gameWindow.currentPlayer = event.gamePlayer;
 				_gameWindow.currentGame = ManantialesGame(event.game);
