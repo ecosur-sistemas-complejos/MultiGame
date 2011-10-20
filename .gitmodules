@@ -1,0 +1,12 @@
+[submodule "Deploy"]
+	path = Deploy
+	url = git@github.com:ecosur-sistemas-complejos/MultiGame-Deploy.git
+[submodule "Engine"]
+	path = Engine
+	url = git@github.com:ecosur-sistemas-complejos/MultiGame-Engine.git
+[submodule "Games"]
+	path = Games
+	url = git@github.com:ecosur-sistemas-complejos/MultiGame-Games.git
+[submodule "Research"]
+	path = Research
+	url = git@github.com:ecosur-sistemas-complejos/MultiGame-Research.git
