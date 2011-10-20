@@ -13,6 +13,7 @@ import java.util.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.enums.SuggestionStatus;
@@ -42,6 +43,8 @@ import flex.messaging.FlexSession;
 import mx.ecosur.multigame.model.interfaces.*;
 
 public class GameService {
+
+    private MessageSender sender = new MessageSender();
 
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
@@ -97,11 +100,23 @@ public class GameService {
     {
         if (player == null)
             player = registerPrincipal();
+
         try {
             RegistrarRemote registrar = getRegistrar();
-            GridGame game = null;
             GameType type = GameType.valueOf(gameTypeStr.toUpperCase());
-            
+            List<Game> unfinished = registrar.getUnfinishedGames(player);
+            for (Game g : unfinished) {
+                if (type.equals(GameType.GENTE) && g instanceof GenteGame)
+                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
+                    ManantialesGame test = (ManantialesGame) g;
+                    if ( (mode == null && test.getMode().equals(Mode.CLASSIC) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
+                        throw new RuntimeException("Only one game of each type and mode may be created!");
+                }
+            }
+
+            GridGame game = null;
+
             switch (type) {
                 case GENTE:
                     game = new GenteGame();
@@ -122,6 +137,13 @@ public class GameService {
                 }
             }
 
+
+            if (game != null) {
+               sender.initialize();
+               sender.sendCreateGame(game);
+            }
+
+
         } catch (InvalidRegistrationException e) {
             e.printStackTrace();
             throw new GameException(e);
@@ -133,16 +155,25 @@ public class GameService {
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
                     Color preferredColor)
     {
+
+        GamePlayer player = null;
         ServiceGameEvent ret = null;
         RegistrarRemote registrar = getRegistrar();
+
         try {
             Game model = registrar.registerPlayer (game, registrant);
             for (GamePlayer gp : model.listPlayers()) {
-                GridPlayer player = (GridPlayer) gp;
-                if (player.getName().equals(registrant.getName())) {
-                    ret = new ServiceGameEvent ((GridGame) model, player);
+                GridPlayer p = (GridPlayer) gp;
+                if (p.getName().equals(registrant.getName())) {
+                    ret = new ServiceGameEvent ((GridGame) model, p);
+                    player = p;
                     break;
                 }
+            }
+
+            if (player != null) {
+                sender.initialize();
+                sender.sendPlayerJoin(game, player);
             }
 
         } catch (InvalidRegistrationException e) {
@@ -164,6 +195,9 @@ public class GameService {
             e.printStackTrace();
         }
 
+        sender.initialize();
+        sender.sendGameDestroy(game);
+
         return ret;
     }
 
@@ -173,23 +207,34 @@ public class GameService {
     public ServiceGameEvent startNewGameWithAI (GridRegistrant registrant, Color preferredColor,
         String gameTypeStr, String [] strategies)
     {
+        GridGame game = null;
+
+
         if (registrant == null)
             registrant = registerPrincipal();        
 
         ServiceGameEvent ret = null;
         try {
             RegistrarRemote registrar = getRegistrar();
+            GameType type = GameType.valueOf(gameTypeStr.toUpperCase());
+            List<Game> unfinished = registrar.getUnfinishedGames(registrant);
+            for (Game g : unfinished) {
+                if (type.equals(GameType.GENTE) && g instanceof GenteGame)
+                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame)
+                    throw new RuntimeException("Only one game of each type and mode may be created!");
+            }
+
             Game model = null;
-            GameType gameType = GameType.valueOf(gameTypeStr);
-            if (gameType.equals(GameType.GENTE)) {
-                GridGame game = new GenteGame ();
+            if (type.equals(GameType.GENTE)) {
+                game = new GenteGame ();
                 model = registrar.registerPlayer(game, registrant);
                 for (int i = 0; i < strategies.length; i++) {
                     if (strategies [ i ].equals("HUMAN"))
                         continue;
                     GenteStrategy strategy = GenteStrategy.valueOf(
                         strategies [ i ]);
-                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
+                    GridRegistrant robot = new GridRegistrant (type + "-" + strategy.name() + "-" + (i + 1));
                     GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
                     model = registrar.registerAgent (model, agent);
                 }
@@ -209,6 +254,10 @@ public class GameService {
             throw new GameException (e);
         }
 
+        if (game != null) {
+            sender.initialize();
+            sender.sendCreateGame(game);
+        }
         return ret;
     }
 
@@ -216,22 +265,32 @@ public class GameService {
         String gameTypeStr, String mode, String [] strategies)
     {
         ServiceGameEvent ret = null;
+        Game game = null;
 
         try {
             if (registrant == null)
                 registrant = registerPrincipal();
 
             RegistrarRemote registrar = getRegistrar();
-            Game game = null;
-            GameType gameType = GameType.valueOf(gameTypeStr);
+            GameType type = GameType.valueOf(gameTypeStr.toUpperCase());
+            List<Game> unfinished = registrar.getUnfinishedGames(registrant);
+            for (Game g : unfinished) {
+                if (type.equals(GameType.GENTE) && g instanceof GenteGame)
+                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
+                    ManantialesGame test = (ManantialesGame) g;
+                    if ( (mode == null && test.getMode().equals(Mode.CLASSIC) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
+                        throw new RuntimeException("Only one game of each type and mode may be created!");
+                }
+            }
 
-            if (gameType.equals(GameType.MANANTIALES)) {
+            if (type.equals(GameType.MANANTIALES)) {
                 ManantialesGame mg = new ManantialesGame ();
                 mg.setMode(Mode.valueOf(mode));
                 game = registrar.registerPlayer(mg, registrant);
                 for (int i = 0; i < strategies.length; i++) {
                     AgentType strategy = AgentType.valueOf(strategies [ i ]);
-                    GridRegistrant robot = new GridRegistrant (gameType + "-" + strategy.name() + "-" + (i + 1));
+                    GridRegistrant robot = new GridRegistrant (type + "-" + strategy.name() + "-" + (i + 1));
                     SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, strategy);
                     game = registrar.registerAgent (game, agent);
                 }
@@ -249,6 +308,11 @@ public class GameService {
 
         } catch (InvalidRegistrationException e) {
             throw new GameException (e);
+        }
+
+        if (game != null) {
+            sender.initialize();
+            sender.sendCreateGame(game);
         }
 
         return ret;
