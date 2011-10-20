@@ -257,45 +257,9 @@
             _vl.graphics.drawRect(centerX, 0, boardCell.width/3, endY);
             _vl.graphics.endFill();
 
-           /* Connect the Dots */
            drawGraph();
-
-            /* Flip the board to the player's perspective */
-           /*
-            this.rotation = boardRotation;
-            var destPos:Point = findDestination();
-            this.move(destPos.x, destPos.y);
             _centerX = centerX;
-            _centerY = centerY;*/
-        }
-
-        private function get boardRotation():int {
-            var ret:int = 0;
-
-            if (_currentPlayer.color == Color.BLACK) {
-                ret = 90 * 3;
-            } else if (_currentPlayer.color == Color.YELLOW) {
-                ret = 90 * 2;
-            } else if (_currentPlayer.color == Color.RED) {
-                ret = 90 * 1;
-            }
-
-            return ret;
-        }
-
-        protected function findDestination ():Point {
-            var ret:Point = new Point();
-
-            if (_currentPlayer.color == Color.BLACK) {
-                ret.y = y + _bg.width;
-            } else if (_currentPlayer.color == Color.YELLOW) {
-                ret.x = x + _bg.height;
-                ret.y = y + _bg.width;
-            } else if (_currentPlayer.color == Color.RED) {
-                ret.x = x + _bg.height;
-            }
-
-            return ret;
+            _centerY = centerY;
         }
 
         /* Draws the edges of the game graph */

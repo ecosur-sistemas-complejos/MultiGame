@@ -25,6 +25,7 @@ package mx.ecosur.multigame.component {
     [Style(name="cellBorderThickness", type="int", format="Length")]
     [Style(name="cellPadding", type="int", format="Length")]
     [ResourceBundle("Commons")]
+
     public class AbstractBoard extends UIComponent {
         
         protected var _nCols:int; //number of cells on X axis

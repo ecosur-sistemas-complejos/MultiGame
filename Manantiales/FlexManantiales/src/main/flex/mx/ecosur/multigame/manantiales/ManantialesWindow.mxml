@@ -19,6 +19,7 @@
             import mx.ecosur.multigame.component.ImagePanel;
             import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
             import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+            import mx.ecosur.multigame.enum.Color;
             import mx.managers.PopUpManager;
             import mx.events.MenuEvent;
             import mx.ecosur.multigame.entity.GamePlayer;
@@ -205,7 +206,38 @@
             private function quitGame():void {
                 _controller.quitGame(currentPlayer);
             }
-         ]]>       
+
+            private function get boardRotation():int {
+                var ret:int = 0;
+                if (_currentPlayer != null) {
+                    if (_currentPlayer.color == Color.PURPLE)
+                        ret = 90;
+                    else if (_currentPlayer.color == Color.BLACK)
+                        ret = 180;
+                    else if (_currentPlayer.color == Color.RED)
+                        ret = 270;
+                }
+
+                return ret;
+            }
+
+            protected function get destination ():Point {
+                var ret:Point = new Point();
+
+                if (_currentPlayer.color == Color.BLACK) {
+                    ret.y = y + board.width;
+
+                } else if (_currentPlayer.color == Color.YELLOW) {
+                    ret.x = x + board.height;
+                    ret.y = y + board.width;
+                } else if (_currentPlayer.color == Color.RED) {
+                    ret.x = x + board.height;
+                }
+
+                return ret;
+            }
+
+        ]]>
     </mx:Script>
 
     <mx:XMLList id="menuXML">
@@ -280,8 +312,11 @@
             <component:GameStatus id="gameStatus" width="100%" />
         </mx:VBox>
         <mx:VBox id="centerBox" width="100%" height="100%">
-            <manantiales:ManantialesBoard id="board" width="100%" height="100%"
+            <mx:Canvas clipContent="true" width="100%" height="100%">
+<!--                       x="{destination.x}" y="destination.y}" rotation="{boardRotation}"-->
+                 <manantiales:ManantialesBoard id="board" width="100%" height="100%"
                     currentPlayer="{currentPlayer}"/>
+            </mx:Canvas>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
             <mx:Panel title="Info" width="100%">
