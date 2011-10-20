@@ -166,8 +166,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
          */
         private function doMove(move:ManantialesMove):void{
 
-            if (move.badYear || move.playerModel.color == _controller._currentPlayer.color ||
-                    (_lastMove != undefined && _lastMove.id == move.id))
+            if (move.badYear || (_lastMove != undefined && _lastMove.id == move.id))
                 return
 
             _lastMove = move;
