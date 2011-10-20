@@ -1,4 +1,0 @@
-<jboss-web>
-    <context-root>multi-game</context-root>
-    <security-domain>java:/jaas/JBossWS</security-domain>
-</jboss-web>
