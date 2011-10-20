@@ -49,7 +49,7 @@
             <mx:Text width="100%" id="reason" text="{resourceManager.getString('Manantiales', 'manantiales.suggestion.accept')}"/>
         </mx:HBox>
         <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-            <mx:Button id="acpt" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.button')}" click="accept(event)"/>
+            <mx:Button id="acpt" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.button.accept')}" click="accept(event)"/>
             <mx:Button id="rjct" label="{resourceManager.getString('Manantiales', 'manantiales.suggestion.cancel')}" click="reject(event)"/>
         </mx:HBox>
     </mx:VBox>
