@@ -99,11 +99,13 @@ public class ManantialesToken extends Token
             _bgDirty = false;
 
             // Position label
-            if (_txt != null) {
-                _txt.truncateToFit = true;
+            if (_txt != null && _txt.getExplicitOrMeasuredWidth() && _txt.getExplicitOrMeasuredHeight()) {
+				var scale:Number = Math.min(unscaledWidth / _txt.getExplicitOrMeasuredWidth(), unscaledHeight / _txt.getExplicitOrMeasuredHeight());
+				_txt.scaleX = scale;
+				_txt.scaleY = scale;
                 _txt.setActualSize(_txt.getExplicitOrMeasuredWidth(), _txt.getExplicitOrMeasuredHeight());
-                _txt.x = - _txt.getExplicitOrMeasuredWidth() / 2;
-                _txt.y = - _txt.getExplicitOrMeasuredHeight() / 2;
+				_txt.x = - unscaledWidth / 2;
+				_txt.y = - unscaledHeight / 2;
             }
 
             // Set filters acording to whether the token is selected or not
