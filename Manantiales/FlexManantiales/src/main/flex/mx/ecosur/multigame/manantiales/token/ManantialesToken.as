@@ -8,8 +8,8 @@ package mx.ecosur.multigame.manantiales.token
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.entity.manantiales.Ficha;
     import mx.ecosur.multigame.enum.manantiales.TokenType;
-import mx.resources.IResourceManager;
-import mx.resources.ResourceManager;
+    import mx.resources.IResourceManager;
+    import mx.resources.ResourceManager;
 
 public class ManantialesToken extends Token
     {
@@ -100,12 +100,12 @@ public class ManantialesToken extends Token
 
             // Position label
             if (_txt != null && _txt.getExplicitOrMeasuredWidth() && _txt.getExplicitOrMeasuredHeight()) {
-				var scale:Number = Math.min(unscaledWidth / _txt.getExplicitOrMeasuredWidth(), unscaledHeight / _txt.getExplicitOrMeasuredHeight());
-				_txt.scaleX = scale;
-				_txt.scaleY = scale;
+                var scale:Number = Math.min(unscaledWidth / _txt.getExplicitOrMeasuredWidth(), unscaledHeight / _txt.getExplicitOrMeasuredHeight());
+                _txt.scaleX = scale;
+                _txt.scaleY = scale;
                 _txt.setActualSize(_txt.getExplicitOrMeasuredWidth(), _txt.getExplicitOrMeasuredHeight());
-				_txt.x = - unscaledWidth / 2;
-				_txt.y = - unscaledHeight / 2;
+                _txt.x = - unscaledWidth / 2;
+                _txt.y = - unscaledHeight / 2;
             }
 
             // Set filters acording to whether the token is selected or not
