@@ -3,13 +3,11 @@
 package mx.ecosur.multigame.manantiales
 {
     import flash.media.Sound;
-import flash.media.SoundChannel;
-
-import mx.collections.ArrayCollection;
+    import flash.media.SoundChannel;
+    import mx.collections.ArrayCollection;
     import mx.controls.Alert;
     import mx.core.IFlexDisplayObject;
-import mx.ecosur.multigame.component.BoardCell;
-import mx.ecosur.multigame.component.SoundAssets;
+    import mx.ecosur.multigame.component.SoundAssets;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.entity.ChatMessage;
     import mx.ecosur.multigame.entity.GameGrid;
@@ -67,7 +65,6 @@ import mx.ecosur.multigame.component.SoundAssets;
 
         private var _msgReceiver:MessageReceiver;
         private var _isEnded:Boolean;
-        private var _stateChange:Boolean;
         private var _messages:ArrayCollection;
         private var _sndChannel:SoundChannel;
 
@@ -87,7 +84,7 @@ import mx.ecosur.multigame.component.SoundAssets;
 
         /* Internationalization */
         private var resourceManager:IResourceManager = ResourceManager.getInstance();
-        
+
 
         public function ManantialesGameController (gameWindow:ManantialesWindow)
         {

@@ -29,12 +29,77 @@
         import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.entity.Game;
 
+        /* Needed for rendering player information */
+        import mx.ecosur.multigame.entity.gente.StrategyPlayer;
+        import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
+
         public var agent:Agent;
         public var player:Registrant;
         private var _games:ArrayCollection;
 
         public function init(event:Event):void {
             gameService.getUnfinishedGames(player);
+        }
+
+        public function addGame(game:Game):Boolean {
+            var ret:Boolean = false;
+
+            for (var i:int = 0; i < game.players.length; i++) {
+                var t:GamePlayer = GamePlayer(game.players.getItemAt(i));
+                if (t.name == player.name) {
+                    if (_games == null)
+                        _games = new ArrayCollection();
+                    _games.addItem(game);
+                    updateDataGrid();
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
+        public function removeGame(game:Game):Boolean {
+            var ret:Boolean = (_games != null);
+            if (ret) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var g:Game = Game(_games.getItemAt(i));
+                    if (g.id == game.id) {
+                        idx = i;
+                    }
+                }
+
+                if (idx >= 0) {
+                    _games.removeItemAt(idx);
+                    updateDataGrid();
+                } else
+                    ret = false;
+
+            }
+
+            return ret;
+        }
+
+        public function updateGame(game:Game):Boolean {
+              var ret:Boolean = (_games != null);
+              if (ret) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var g:Game = Game(_games.getItemAt(i));
+                    if (g.id == game.id) {
+                        idx = i;
+                    }
+                }
+
+                if (idx >= 0) {
+                    _games.addItemAt(game, idx);
+                    updateDataGrid();
+                } else
+                    ret = false;
+
+              }
+
+            return ret;
         }
 
         public function reload(event:Event):void {
@@ -75,8 +140,13 @@
                 dataItem.gameType = game.type;
                 dataItem.players = "";
                 for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
-                    gamePlayer = GamePlayer(game.players[j]);
-                    dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
+                    if (game.players[j] instanceof GamePlayer) {
+                        gamePlayer = GamePlayer(game.players[j]);
+                        dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
+                    } else if (game.players[j] instanceof SimpleAgent) {
+                        var agent:SimpleAgent = SimpleAgent(game.players[j]);
+                        dataItem.players += agent.name + "(" + agent.color + "). ";
+                    }
                 }
                 if (dataItem.players.length > 2) {
                     dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);

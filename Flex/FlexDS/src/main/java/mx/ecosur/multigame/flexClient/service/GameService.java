@@ -98,6 +98,8 @@ public class GameService {
 
     public ServiceGameEvent startNewGame(GridRegistrant player, Color preferedColor, String gameTypeStr, String mode)
     {
+        ServiceGameEvent ret = null;
+
         if (player == null)
             player = registerPrincipal();
 
@@ -133,23 +135,22 @@ public class GameService {
 
             for (GamePlayer impl : game.listPlayers()) {
                 if (impl.getName().equals(player.getName())) {
-                    return new ServiceGameEvent (game, (GridPlayer) impl);
+                    ret = new ServiceGameEvent (game, (GridPlayer) impl);
                 }
             }
 
 
-            if (game != null) {
+            if (ret != null) {
                sender.initialize();
-               sender.sendCreateGame(game);
+               sender.sendCreateGame(ret.getGame());
             }
 
+            return ret;
 
         } catch (InvalidRegistrationException e) {
             e.printStackTrace();
             throw new GameException(e);
         }
-
-        throw new RuntimeException ("Issue registering player!  Please check logs for details.");
     }
 
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
@@ -171,9 +172,9 @@ public class GameService {
                 }
             }
 
-            if (player != null) {
+            if (ret != null) {
                 sender.initialize();
-                sender.sendPlayerJoin(game, player);
+                sender.sendPlayerJoin(ret.getGame());
             }
 
         } catch (InvalidRegistrationException e) {
@@ -254,9 +255,9 @@ public class GameService {
             throw new GameException (e);
         }
 
-        if (game != null) {
+        if (ret != null) {
             sender.initialize();
-            sender.sendCreateGame(game);
+            sender.sendCreateGame(ret.getGame());
         }
         return ret;
     }
@@ -310,9 +311,9 @@ public class GameService {
             throw new GameException (e);
         }
 
-        if (game != null) {
+        if (ret != null) {
             sender.initialize();
-            sender.sendCreateGame(game);
+            sender.sendCreateGame(ret.getGame());
         }
 
         return ret;

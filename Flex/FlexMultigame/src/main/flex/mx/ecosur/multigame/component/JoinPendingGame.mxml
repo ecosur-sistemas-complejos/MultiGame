@@ -36,6 +36,63 @@
             token.faultHandler = updateFaultHandler;
         }
 
+        public function addGame(game:Game):Boolean {
+            var ret:Boolean = false;
+
+            if (game.players.length < 4 && !containsPlayer(game)) {
+                if (_games == null)
+                    _games = new ArrayCollection();
+                _games.addItem(game);
+                ret = true;
+            }
+            updateDataGrid();
+            return ret;
+        }
+
+        public function removeGame(game:Game):Boolean {
+            var ret:Boolean = (_games != null) && containsPlayer(game);
+            var idx:int = -1;
+            if (ret) {
+                for (var i:int = 0; i < _games.length; i++) {
+                    var g:Game = Game(_games.getItemAt(i));
+                    if (g.id == game.id)
+                        idx = i;
+                }
+                if (idx >= 0) {
+                    _games.removeItemAt(idx);
+                    updateDataGrid();
+                }
+            }
+
+            return ret;
+        }
+
+
+        public function updateGame(game:Game):Boolean {
+            if (containsPlayer(game))
+                    return removeGame(game);
+
+            var ret:Boolean = (_games != null);
+            var idx:int = -1;
+              if (ret) {
+                for (var i:int = 0; i < _games.length; i++) {
+                    var g:Game = Game(_games.getItemAt(i));
+                    if (g.id == game.id) {
+                        idx = i;
+                        break;
+                    }
+                }
+
+                if (idx >= 0) {
+                    _games.addItemAt(game, idx);
+                    updateDataGrid();
+                } else
+                    ret = false;
+              }
+
+            return ret;
+        }
+
         public function reload(event:Event):void {
             var token:AsyncToken = gameService.getPendingGames(player);
             token.resultHandler = updateResultHandler;
@@ -45,6 +102,19 @@
         private function updateResultHandler(event:ResultEvent):void {
             _games = ArrayCollection(event.result);
             updateDataGrid();
+        }
+
+        private function containsPlayer(game:Game):Boolean {
+            var ret:Boolean = false;
+            for (var i:int = 0; i < game.players.length; i++) {
+                var t:GamePlayer = GamePlayer(game.players.getItemAt(i));
+                if (t.name == player.name) {
+                    ret = true;
+                    break;
+                }
+            }
+
+            return ret;
         }
 
         private function updateFaultHandler(event:FaultEvent):void {

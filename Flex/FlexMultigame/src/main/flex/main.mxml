@@ -42,7 +42,6 @@
 	        }
 	
 	        private function lobbyDone(playEvent:PlayEvent):void {
-				lobby.timer.stop();
 				_currGame = playEvent;
 				vstack.selectedChild = gameLoader;
 				if (playEvent.game is GenteGame) {
@@ -65,10 +64,6 @@
 				lobby.reload(event);
 				vstack.selectedChild = lobby;
 				gameLoader.url = "";
-				
-				/* Restart the lobby timer to view any updates to
-				* system state ... */
-				lobby.timer.start();
 				lobby.setFocus();
 			}
         ]]>

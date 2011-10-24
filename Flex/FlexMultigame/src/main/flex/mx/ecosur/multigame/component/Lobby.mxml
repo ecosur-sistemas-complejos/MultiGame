@@ -11,19 +11,32 @@
         [ResourceBundle("Lobby")]
     </mx:Metadata>
 
+    <mx:Consumer
+        id="listener"
+        destination="multigame-destination"
+        fault="messageFaultHandler(event)"
+        message="messageResultHandler(event)"
+        selector="GAME_EVENT in ('CREATE','PLAYER_JOIN','DESTROY')"
+     />
+
     <mx:Script>
         <![CDATA[
-            import mx.controls.Alert;
-            import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.entity.gente.GenteGame;
-            import mx.ecosur.multigame.entity.gente.GentePlayer;
-            import mx.ecosur.multigame.entity.gente.StrategyPlayer;
-            import mx.rpc.events.FaultEvent;
-            import mx.rpc.events.ResultEvent;
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.entity.Game;
+        import mx.ecosur.multigame.entity.Registrant;
+        import mx.ecosur.multigame.entity.gente.GenteGame;
+        import mx.ecosur.multigame.entity.gente.GentePlayer;
+        import mx.ecosur.multigame.entity.gente.StrategyPlayer;
+        import mx.ecosur.multigame.enum.GameEvent;
+        import mx.ecosur.multigame.util.MessageReceiver;
+        import mx.messaging.Consumer;
+        import mx.messaging.events.MessageEvent;
+        import mx.messaging.events.MessageFaultEvent;
+        import mx.messaging.messages.IMessage;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
 
         private var _player:Registrant;
-
-        public var timer:Timer;
 
         // Force compilation of game objects to allow serialization of super classes
         // TODO: Change server side architecture so that lobby does not receive game specific subclasses
@@ -40,13 +53,7 @@
             _player = newPlayer;
             gameList.player = _player;
             pendingList.player = _player;
-            init();
-        }
-
-        private function init():void { 
-            timer = new Timer(500);
-            timer.addEventListener(TimerEvent.TIMER, timeout);
-            timer.start();
+            listener.subscribe();
         }
 
         public function timeout(event:Event):void {
@@ -70,7 +77,31 @@
         private function faultHandler(event:FaultEvent):void {
             Alert.show(event.fault.faultString, "Error");
         }
-          
+
+        private function messageFaultHandler(event:MessageFaultEvent):void {
+            Alert.show("Fault: " + event);
+        }
+
+        private function messageResultHandler(event:MessageEvent):void {
+            var message:IMessage = IMessage(event.message);
+            var game:Game = Game(message.body);
+            switch (message.headers.GAME_EVENT) {
+                case GameEvent.CREATE:
+                    if (!pendingList.addGame(game))
+                        gameList.addGame(game);
+                    break;
+                case GameEvent.DESTROY:
+                    pendingList.removeGame(game);
+                    gameList.removeGame(game);
+                    break;
+                case GameEvent.PLAYER_JOIN:
+                    if (pendingList.updateGame(game))
+                        gameList.updateGame(game);
+                    break;
+                default:
+                    break;
+            }
+        }
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
