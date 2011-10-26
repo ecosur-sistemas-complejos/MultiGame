@@ -1,0 +1,37 @@
+ALPHA-2 Release Date: 29/Jul/11 
+	MG-1     FIXED  When Turn skipped in Competitive Mode, Token Box doesn't disappear right away
+	MG-2     FIXED  Score panel keeping track of wrong players
+	MG-4     FIXED  After Invalid move, Fichas are gone
+	MG-6     FIXED  Robot players in Puzzle mode should never offer empty moves
+	MG-14    FIXED  Before game has enough players to begin, announcement that player 1 has the turn	
+	MG-8     FIXED  Configure Database connectivity to use MySQL	
+	MG-7     FIXED  Remove mode changes
+
+ALPHA-3 Release Date: 18/Aug/11
+	MG-10    FIXED  Chat Broken
+	MG-11    FIXED  UI Gets Stuck on Earlier Player
+	MG-16    FIXED  Move History Display Incorrect and Misleading
+	MG-18    FIXED  Suggested token types in puzzle mode, are accepted, and stored on the board but UI does not animate or show accepted changes
+	MG-19    FIXED  Game stuck on RED after Lobby
+
+BETA Release Date: 12/Oct/11 
+	MG-42	 FIXED	After winning Manantiales, Screen Should Return to Board not Lobby		
+	MG-33	 FIXED	Board UI Needs to Include Connecting Lines between Patches (Circles)		
+	MG-40	 FIXED	Certain Messages are sent out of order		
+	MG-34	 FIXED	Change "Admin" role in secured EJBs to "MultiGame" role		
+	MG-38	 FIXED	Check Conditions sometimes not being triggered, and expirations sometimes passing with no consequences		
+	MG-47	 FIXED	Column and Row reversed inside of Manantiales Flex Implementation		
+	MG-45	 FIXED	Development Branch Manantiales Broken on Ubuntu Server		
+	MG-43	 FIXED	Enter Key Should not send Message in Chat		
+	MG-25	 FIXED	FlexUnit Tests		
+	MG-28	 FIXED	Get Jenkins CI working again		
+	MG-46	 FIXED	Implement AdjacencyGraph for the Board determing "next-to" poistions for pieces in the rules		
+	MG-37	 FIXED	Incoming M or I moves could be out of sync with board after Condition Expiry		
+	MG-41	 FIXED	Intensive Move Restrictions Broken Around Border		
+	MG-29	 FIXED	README requires update for MySQL		
+	MG-22	 FIXED	Remove Turns from Puzzle Modalities		
+	MG-26	 FIXED	Update Integration Tests to work with JAAS		
+	MG-36	 FIXED	Upgrade FlexMojos to 3.9 or 4.x in Preparation for Flex 4.5 SDK		
+	MG-20	 FIXED	Purple Robot not playing both rivers		
+	MG-21	 FIXED	No Celebration Music After Win		
+	MG-30	 FIXED	README should be updated with instructions on how to install Flash Player for FlexUnit tests		
