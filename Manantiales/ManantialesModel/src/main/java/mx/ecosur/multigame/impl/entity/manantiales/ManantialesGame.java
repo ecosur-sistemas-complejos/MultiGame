@@ -357,7 +357,6 @@ public class ManantialesGame extends GridGame {
         if (!errors.isEmpty()) {
             for (KnowledgeBuilderError error : errors) {
                 System.out.println(error.getMessage());
-                System.out.println("@" + error.getErrorLines());
             }
         }
 

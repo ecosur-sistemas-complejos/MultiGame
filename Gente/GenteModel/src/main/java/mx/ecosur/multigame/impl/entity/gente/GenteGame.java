@@ -23,9 +23,7 @@ import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.model.interfaces.*;
 import org.drools.*;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 
@@ -274,6 +272,13 @@ public class GenteGame extends GridGame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (!errors.isEmpty()) {
+            for (KnowledgeBuilderError error : errors) {
+                System.out.println(error.getMessage());
+            }
+        }
+
         return ret;
     }
 
