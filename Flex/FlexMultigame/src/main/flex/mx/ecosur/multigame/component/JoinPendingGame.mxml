@@ -84,6 +84,7 @@
                 }
 
                 if (idx >= 0) {
+                    _games.removeItemAt(idx);
                     _games.addItemAt(game, idx);
                     updateDataGrid();
                 } else
