@@ -6,7 +6,6 @@ import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
 import mx.ecosur.multigame.enums.GameEvent;
-import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
@@ -26,7 +25,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import java.util.List;
-import java.util.Set;
 
 public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
@@ -94,7 +92,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
 
      @Test
     public void testBasicAgentMoves () throws InvalidMoveException, JMSException {
-        game.setMode(Mode.CLASSIC);
+        game.setMode(Mode.COMPETITIVE);
         ManantialesFicha play = new ManantialesFicha(3,3, alice.getColor(),
                         TokenType.MODERATE_PASTURE);
         setIds(play);
@@ -210,7 +208,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
     }
     
     public void testEmptyMoves () {
-        game.setMode(Mode.CLASSIC);
+        game.setMode(Mode.COMPETITIVE);
         ManantialesFicha ficha = new ManantialesFicha (2,0,alice.getColor(),
                 TokenType.MANAGED_FOREST);
         

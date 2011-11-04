@@ -10,6 +10,7 @@
 <mx:Script>
     <![CDATA[
     import mx.ecosur.multigame.entity.Registrant;
+    import mx.ecosur.multigame.enum.manantiales.Mode;
     import mx.ecosur.multigame.event.PlayEvent;
     import mx.ecosur.multigame.event.ServiceGameEvent;
     import mx.managers.CursorManager;
@@ -115,10 +116,10 @@
 </mx:ArrayCollection>
 <!-- Manantiales Modalities -->
 <mx:ArrayCollection id="manModes">
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="CLASSIC" />
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="BASIC_PUZZLE" />
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="SILVOPASTORAL"/>
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="SILVO_PUZZLE"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="{Mode.COMPETITIVE}" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="{Mode.BASIC_PUZZLE}" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="{Mode.SILVOPASTORAL}"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="{Mode.SILVO_PUZZLE}"/>
 </mx:ArrayCollection>
 
 <mx:ArrayCollection id="gameList">

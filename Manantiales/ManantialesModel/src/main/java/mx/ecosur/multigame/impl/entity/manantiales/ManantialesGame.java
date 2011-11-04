@@ -59,7 +59,7 @@ public class ManantialesGame extends GridGame {
 
     public ManantialesGame () {
         super();
-        mode = Mode.CLASSIC;
+        mode = Mode.COMPETITIVE;
         messageSender = new ManantialesMessageSender();
     }
 
@@ -75,7 +75,7 @@ public class ManantialesGame extends GridGame {
         setRows(9);
         setState(GameState.PLAY);
         if (mode == null)
-            mode = Mode.CLASSIC;
+            mode = Mode.COMPETITIVE;
         messageSender.initialize();
         messageSender.sendStartGame(this);
     }

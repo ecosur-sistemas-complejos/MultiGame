@@ -1,5 +1,3 @@
-import java.util.Random;
-
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
@@ -17,8 +15,6 @@ import org.junit.Test;
 import com.mockrunner.ejb.EJBTestModule;
 import com.mockrunner.jms.JMSTestCaseAdapter;
 import com.mockrunner.mock.jms.MockTopic;
-
-import static org.junit.Assert.*;
 
 public class ManantialesPureAgentTest extends JMSTestCaseAdapter {
 
@@ -48,7 +44,7 @@ public class ManantialesPureAgentTest extends JMSTestCaseAdapter {
             agents [ i ] = (SimpleAgent) game.registerAgent(new SimpleAgent(registrant, colors[i], AgentType.SIMPLE));
         }
 
-        game.setMode(Mode.CLASSIC);
+        game.setMode(Mode.COMPETITIVE);
     }
     
     @Test

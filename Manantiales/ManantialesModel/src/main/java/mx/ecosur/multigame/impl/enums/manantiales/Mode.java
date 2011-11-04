@@ -12,13 +12,13 @@ package mx.ecosur.multigame.impl.enums.manantiales;
  */
 public enum Mode {
 
-    CLASSIC, BASIC_PUZZLE, SILVOPASTORAL, SILVO_PUZZLE;
+    COMPETITIVE, BASIC_PUZZLE, SILVOPASTORAL, SILVO_PUZZLE, RELOADED;
     
     public int getWinningScore() {
         int ret = 0;
 
         switch (this) {
-            case CLASSIC:
+            case COMPETITIVE:
                 ret = 24;
                 break;
             case BASIC_PUZZLE:
@@ -35,22 +35,4 @@ public enum Mode {
         return ret;
     }
 
-    public Mode decrement() {
-        Mode ret = null;
-
-        switch (this) {
-            case BASIC_PUZZLE:
-                ret = CLASSIC;
-                break;
-            case SILVOPASTORAL:
-                ret = BASIC_PUZZLE;
-                break;
-            case SILVO_PUZZLE:
-                ret = SILVOPASTORAL;
-                break;
-        }
-
-        return ret;
-
-    }
 }

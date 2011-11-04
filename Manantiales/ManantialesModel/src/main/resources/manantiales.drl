@@ -196,7 +196,7 @@ rule "intensive-replaces-moderate"
     agenda-group "verify"
 when
     $game : ManantialesGame (state == GameState.PLAY, $grid : grid,
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL) )
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL) )
     $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED,
         type == TokenType.INTENSIVE_PASTURE, replacementType != TokenType.MODERATE_PASTURE)
 then
@@ -208,7 +208,7 @@ rule "silvopastoral-replaces-vivero"
     agenda-group "verify"
 when
     $game : ManantialesGame (state == GameState.PLAY, $grid : grid, 
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL) )
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL) )
     $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID,
         type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
 then
@@ -555,7 +555,7 @@ rule "expire-condition"
     no-loop true
 when
     $game : ManantialesGame (state == GameState.PLAY, 
-        mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL))
     $move      : ManantialesMove ($player : player, status == MoveStatus.MOVED)
     $condition : CheckCondition  (expired == false, $player2 : player, 
         type not in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
@@ -577,7 +577,7 @@ rule "expire-terminal-condition"
     agenda-group "evaluate"
     no-loop true
 when
-    $game : ManantialesGame (state == GameState.PLAY, mode in (Mode.CLASSIC, Mode.SILVOPASTORAL))
+    $game : ManantialesGame (state == GameState.PLAY, mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL))
     $move : ManantialesMove ($player : player, status == MoveStatus.MOVED)
     $condition : CheckCondition  (expired == false, $player2 : player, 
         type in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))

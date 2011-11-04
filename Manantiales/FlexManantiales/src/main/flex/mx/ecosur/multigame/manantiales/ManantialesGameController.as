@@ -334,7 +334,7 @@ package mx.ecosur.multigame.manantiales
             if (_game.state == GameState.PLAY) {
                 _tokenHandler.initializeTokenStores();
                 // open annual conditions generator
-                if ( (_game.mode == Mode.CLASSIC || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
+                if ( (_game.mode == Mode.COMPETITIVE || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
                     _annCondGen = new AnnualConditionsGenerator();
                     _annCondGen.addEventListener("result", handleAnnCondResult);
                     PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
@@ -405,7 +405,7 @@ package mx.ecosur.multigame.manantiales
             var gamePlayer:ManantialesPlayer;
             var i:int;
 
-            if (game.mode == Mode.CLASSIC ||
+            if (game.mode == Mode.COMPETITIVE ||
                 game.mode == Mode.SILVOPASTORAL ||
                 game.mode == Mode.RELOADED)
             {
@@ -594,7 +594,7 @@ package mx.ecosur.multigame.manantiales
         private function isWinner():Boolean {
             var ret:Boolean = false;
             switch (_game.mode) {
-                case Mode.CLASSIC:
+                case Mode.COMPETITIVE:
                     ret = _currentPlayer.score >= CLASSIC_WINNING_SCORE;
                     break;
                 case Mode.SILVOPASTORAL:

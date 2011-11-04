@@ -274,7 +274,7 @@ import mx.ecosur.multigame.enum.manantiales.TokenType;
             if (_isMoving)
                 return;
 
-            if ((_mode == Mode.CLASSIC || _mode == Mode.SILVOPASTORAL) && !isTurn())
+            if ((_mode == Mode.COMPETITIVE || _mode == Mode.SILVOPASTORAL) && !isTurn())
                 return;
 
             // initialize drag source

@@ -112,7 +112,7 @@ public class GameService {
                     throw new RuntimeException("Only one game of each type and mode may be created!");
                 else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
                     ManantialesGame test = (ManantialesGame) g;
-                    if ( (mode == null && test.getMode().equals(Mode.CLASSIC) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
+                    if ( (mode == null && test.getMode().equals(Mode.COMPETITIVE) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
                         throw new RuntimeException("Only one game of each type and mode may be created!");
                 }
             }
@@ -280,7 +280,7 @@ public class GameService {
                     throw new RuntimeException("Only one game of each type and mode may be created!");
                 else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
                     ManantialesGame test = (ManantialesGame) g;
-                    if ( (mode == null && test.getMode().equals(Mode.CLASSIC) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
+                    if ( (mode == null && test.getMode().equals(Mode.COMPETITIVE) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
                         throw new RuntimeException("Only one game of each type and mode may be created!");
                 }
             }

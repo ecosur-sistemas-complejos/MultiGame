@@ -75,7 +75,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
         List<Move> ret = new ArrayList<Move>();
         Random random = null;
         ManantialesGame game = (ManantialesGame) impl;
-        boolean requiresRandom = game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL);
+        boolean requiresRandom = game.getMode().equals(Mode.COMPETITIVE) || game.getMode().equals(Mode.SILVOPASTORAL);
         if (requiresRandom)
             random = new Random();
 
@@ -94,7 +94,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
             ret.addAll(findUpgradeMoves(game));
         }
 
-        if (game.getMode().equals(Mode.CLASSIC) || game.getMode().equals(Mode.SILVOPASTORAL)) {
+        if (game.getMode().equals(Mode.COMPETITIVE) || game.getMode().equals(Mode.SILVOPASTORAL)) {
             ManantialesMove pass = generatePassMove(game);
             ret.add (pass);
         }
