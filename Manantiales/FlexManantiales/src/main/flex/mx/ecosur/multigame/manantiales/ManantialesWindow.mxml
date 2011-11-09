@@ -111,7 +111,7 @@
         private function handleMenuItemClick(evt:MenuEvent):void {
             if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.two.submenu")) {
                 _helpPanel = new HelpPanel();
-                _helpPanel.load("help-manantiales.html");
+                _helpPanel.load("help-manantiales.jsp");
                 _helpPanel.width = Math.min(width - 100, 600);
                 _helpPanel.height = height - 20;
                 _helpPanel.addEventListener("close", closeHelp);
