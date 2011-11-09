@@ -318,7 +318,7 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
          */
         move = new ManantialesMove (alice, man1, resolver);
         game.move (move);
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals(MoveStatus.EVALUATED, move.getStatus());
         assertEquals (0, game.getCheckConditions().size());
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();
@@ -1338,9 +1338,9 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     @Test
     public void testIsPrecedingPlayer () {
         assertTrue (RuleFunctions.isPrecedingPlayer(game, alice, bob));
-        assertTrue (RuleFunctions.isPrecedingPlayer(game, bob, charlie));
-        assertTrue (RuleFunctions.isPrecedingPlayer(game, charlie, denise));
-        assertTrue (RuleFunctions.isPrecedingPlayer(game, denise, alice));
+        assertTrue(RuleFunctions.isPrecedingPlayer(game, bob, charlie));
+        assertTrue(RuleFunctions.isPrecedingPlayer(game, charlie, denise));
+        assertTrue(RuleFunctions.isPrecedingPlayer(game, denise, alice));
     }
     
     @Test
@@ -1628,6 +1628,18 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         game.move(move);
         assertEquals(MoveStatus.EVALUATED, move.getStatus());
         assertEquals(1, charlie.getPremiums());
+    }
+
+    @Test
+    public void testIncrementTurn() {
+        ManantialesMove move = new ManantialesMove(alice, new ManantialesFicha (4,4, alice.getColor(), TokenType.UNDEVELOPED));
+        assertEquals(bob,incrementTurn(game,move));
+        move = new ManantialesMove(bob, new ManantialesFicha (4,4, bob.getColor(), TokenType.UNDEVELOPED));
+        assertEquals(charlie, incrementTurn(game,move));
+        move = new ManantialesMove(charlie, new ManantialesFicha (4,4, charlie.getColor(), TokenType.UNDEVELOPED));
+        assertEquals(denise, incrementTurn(game,move));
+        move = new ManantialesMove(denise, new ManantialesFicha (4,4, denise.getColor(), TokenType.UNDEVELOPED));
+        assertEquals(bob, incrementTurn(game,move));
     }
 
     /**

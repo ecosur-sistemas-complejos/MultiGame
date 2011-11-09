@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="400" title="Check Constraint"
+	creationComplete="init()">
+    <mx:Metadata>
+        [Event(name="result")]
+    </mx:Metadata>
+
+    <mx:Script>
+        <![CDATA[
+        import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+        import mx.events.DynamicEvent;
+
+        [Embed(source='/assets/icons.swf#thumbsUp')]
+        private var thumbsUp:Class
+
+        private var _player:ManantialesPlayer;
+
+        public function get player():ManantialesPlayer {
+            return _player;
+        }
+
+        public function set player(value:ManantialesPlayer):void {
+            _player = value;
+        }
+
+        private function init():void {
+            this.indicator.source = thumbsUp;
+            this.reason.text = player.name + " has started a new round.";
+        }
+
+        private function acknowledge(event:MouseEvent):void {
+            var dEvent:DynamicEvent = new DynamicEvent("result");
+            dispatchEvent(dEvent);
+        }
+        ]]>
+    </mx:Script>
+
+
+    <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+        <mx:Text width="100%" id="reason" text="" />
+        <mx:HBox width="100%">
+            <mx:Image id="indicator" />
+        </mx:HBox>
+        <mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+            <mx:Button id="ack" label="Acknowledge" click="acknowledge(event)" />
+        </mx:HBox>
+    </mx:VBox>
+</mx:Panel>
+

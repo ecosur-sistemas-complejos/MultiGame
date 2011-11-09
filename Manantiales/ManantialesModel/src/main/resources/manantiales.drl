@@ -729,8 +729,7 @@ when
      move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
         badYear == false, destinationCell != null, mode == $mode)
 then
-    GridPlayer player = incrementTurn ($game, move);
-    messageSender.sendPlayerChange($game);
+    incrementTurn ($game, move);
 end
 
 rule "skip-turn"
@@ -742,6 +741,5 @@ when
     $move   : ManantialesMove (player.turn == true, badYear == true,
         mode == $mode)
 then
-    GridPlayer player = incrementTurn ($game, $move);
-    messageSender.sendPlayerChange($game);
+    incrementTurn ($game, $move);
 end

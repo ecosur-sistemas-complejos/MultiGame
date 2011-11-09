@@ -10,6 +10,7 @@ package mx.ecosur.multigame.impl.util.manantiales;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
 
+import mx.ecosur.multigame.grid.comparator.PlayerComparator;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
@@ -27,14 +28,26 @@ import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.model.interfaces.Cell;
 
 import java.awt.Point;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author awaterma@ecosur.mx
  */
 public class RuleFunctions {
+
+    public static boolean isWithinTimeLimit(ManantialesGame game, ManantialesMove move) {
+       return true;
+        /*
+        long maxTime = (long) 2700 * 1000; // 45 minutes
+        boolean ret = game.elapsedTime() < maxTime;
+
+        if (!ret) {
+            System.out.println("Time Limit Exceeded! " + game.elapsedTime() + " !< " + maxTime);
+        }
+
+        return game.elapsedTime() < maxTime;
+        */
+    }
 
     public static  boolean isValidReplacement (GameGrid grid, ManantialesMove move) {
         boolean ret = false;
@@ -156,30 +169,34 @@ public class RuleFunctions {
     }
 
     public static GridPlayer incrementTurn (ManantialesGame game, ManantialesMove move) {
+        game.setTurns(game.getTurns() + 1);
         GridPlayer player = move.getPlayer();
+        GridPlayer nextPlayer = null;
+        TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
+        sorted.addAll(game.getPlayers());
 
-        /* Find next player */
-        Set<GridPlayer> players = game.getPlayers();
-        GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
-        int playerNumber = -1;
+        boolean activeCondition = false;
+        for (CheckCondition c : game.getCheckConditions()) {
+            if (!c.isResolved() && !c.isExpired())
+                activeCondition = true;
+        }
 
-        for (int i = 0; i < gps.length; i++) {
-            if (gps [ i ].equals(player)) {
-                playerNumber = i;
-                break;
+        /* Test if this is the start of a new round;
+           modulus test must be met, and game must have no active conditions! */
+        if (!activeCondition && ((game.getTurns()) % game.getMaxPlayers() == 0) ) {
+            int startingPlayerPos = ((game.getTurns() / game.getMaxPlayers()) % game.getMaxPlayers());
+            GridPlayer[] gps = sorted.toArray(new GridPlayer[game.getMaxPlayers()]);
+            nextPlayer = gps [ startingPlayerPos ];
+            ManantialesMessageSender sender = (ManantialesMessageSender) game.getMessageSender();
+            sender.sendRoundChange(game, (ManantialesPlayer) nextPlayer);
+        } else {
+            if (sorted.last().equals(player))
+                nextPlayer = sorted.first();
+            else {
+                SortedSet<GridPlayer> tail = sorted.tailSet(player, false);
+                nextPlayer = tail.iterator().next();
             }
         }
-
-        if (playerNumber == -1)
-            throw new RuntimeException ("Unable to find player: " + player + " in set " + Arrays.toString(gps));
-
-        GridPlayer nextPlayer = null;
-        if (playerNumber == gps.length - 1) {
-            nextPlayer = gps [ 0 ];
-        } else {
-            nextPlayer = gps [playerNumber + 1];
-        }
-
         player.setTurn(false);
         nextPlayer.setTurn (true);
         return nextPlayer;
@@ -187,29 +204,19 @@ public class RuleFunctions {
 
     public static  boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
         boolean ret = false;
+
         if (!first.equals(second)) {
-            Set<GridPlayer> players = game.getPlayers();
-            GridPlayer [] gps = players.toArray(new GridPlayer[players.size()]);
-            int playerNumber = -1;
-
-            for (int i = 0; i < gps.length; i++) {
-                if (gps [ i ].equals(first)) {
-                    playerNumber = i;
-                    break;
-                }
+            TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
+            sorted.addAll(game.getPlayers());
+            if (sorted.last().equals(first) && sorted.first().equals(second))
+                ret = true;
+            else {
+                SortedSet<GridPlayer> tail = sorted.tailSet(first, false);
+                if (!tail.isEmpty())
+                    ret = tail.first().equals(second);
             }
-
-            if (playerNumber == -1)
-                throw new RuntimeException ("Unable to find player: " + first + " in set " + Arrays.toString(gps));
-            GridPlayer nextPlayer = null;
-            if (playerNumber == gps.length - 1) {
-                nextPlayer = gps [ 0 ];
-            } else {
-                nextPlayer = gps [playerNumber + 1];
-            }
-            
-            ret = nextPlayer.getColor().equals(second.getColor());
         }
+
         return ret;
     }
 

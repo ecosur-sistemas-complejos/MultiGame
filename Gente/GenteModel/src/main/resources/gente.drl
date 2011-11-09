@@ -222,6 +222,5 @@ when
     game  : GenteGame (state == GameState.PLAY)
     move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
 then
-    GridPlayer player = incrementTurn (game, move);
-    messageSender.sendPlayerChange(game);
+    incrementTurn (game, move);
 end

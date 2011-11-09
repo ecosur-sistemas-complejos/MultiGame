@@ -73,13 +73,7 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
     /* Simply returns a simple move response.  No suggestions are made by the Agent */
     public List<Move> determineMoves(Game impl) {
         List<Move> ret = new ArrayList<Move>();
-        Random random = null;
         ManantialesGame game = (ManantialesGame) impl;
-        boolean requiresRandom = game.getMode().equals(Mode.COMPETITIVE) || game.getMode().equals(Mode.SILVOPASTORAL);
-        if (requiresRandom)
-            random = new Random();
-
-        if (!requiresRandom || random.nextInt(6) != 3) {
             List<ManantialesFicha> fichas = generateCandidates(game);
             for (ManantialesFicha ficha : fichas) {
                 if (this.isGoodLocation(ficha)) {
@@ -89,16 +83,10 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
                     move.setMode (game.getMode());
                     ret.add(move);
                 }
-            }
-            if (!game.getGrid().isEmpty())                
+            if (!game.getGrid().isEmpty())
             ret.addAll(findUpgradeMoves(game));
         }
 
-        if (game.getMode().equals(Mode.COMPETITIVE) || game.getMode().equals(Mode.SILVOPASTORAL)) {
-            ManantialesMove pass = generatePassMove(game);
-            ret.add (pass);
-        }
-        
         Collections.shuffle(ret);
         
         return ret;
@@ -118,15 +106,6 @@ public class SimpleAgent extends ManantialesPlayer implements Agent {
             }
         }
 
-        return ret;
-    }
-
-    public ManantialesMove generatePassMove (ManantialesGame game) {
-        ManantialesMove ret = new ManantialesMove ();
-        ret.setPlayer(this);
-        ret.setBadYear(true);
-        ret.setStatus(MoveStatus.UNVERIFIED);
-        ret.setMode(game.getMode());
         return ret;
     }
 

@@ -2,6 +2,7 @@ package mx.ecosur.multigame.impl.util.manantiales;
 
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.enums.GameEvent;
+import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
 import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
 import mx.ecosur.multigame.model.interfaces.Game;
 
@@ -20,5 +21,9 @@ public class ManantialesMessageSender extends MessageSender {
 
     public void sendSuggestionApplied (Game game, PuzzleSuggestion suggestion) {
         sendMessage(game.getId(), GameEvent.SUGGESTION_APPLIED, suggestion);
+    }
+
+    public void sendRoundChange (Game game, ManantialesPlayer initiator) {
+        sendMessage(game.getId(), GameEvent.GAME_CHANGE, initiator);
     }
 }

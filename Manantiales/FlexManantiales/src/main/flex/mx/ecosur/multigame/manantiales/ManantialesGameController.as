@@ -21,7 +21,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
-    import mx.ecosur.multigame.enum.GameState;
+import mx.ecosur.multigame.enum.GameEvent;
+import mx.ecosur.multigame.enum.GameState;
     import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
     import mx.ecosur.multigame.enum.manantiales.Mode;
@@ -61,6 +62,7 @@ package mx.ecosur.multigame.manantiales
         private var _gameId:int;
         private var _annCondGen:AnnualConditionsGenerator;
         private var _alerts:ArrayCollection;
+        private var _roundAlert:RoundAlert;
         private var _endAlert:GraphicAlert;
 
         private var _msgReceiver:MessageReceiver;
@@ -169,6 +171,7 @@ package mx.ecosur.multigame.manantiales
                 var checkCondition:CheckCondition;
                 var game:ManantialesGame;
                 var move:ManantialesMove;
+                var player:ManantialesPlayer;
                 var suggestion:Suggestion;
 
                 switch (gameEvent) {
@@ -220,6 +223,9 @@ package mx.ecosur.multigame.manantiales
                         suggestion = Suggestion(message.body);
                         _suggestionHandler.removeSuggestion (suggestion);
                         break;
+                    case GameEvent.GAME_CHANGE:
+                        player = ManantialesPlayer(message.body);
+                        handleRoundChange(player);
                 }
 
                 _messages = new ArrayCollection();
@@ -330,19 +336,9 @@ package mx.ecosur.multigame.manantiales
 
         private function initTurn():void {
             _gameWindow.currentState= _game.mode;
-
             if (_game.state == GameState.PLAY) {
                 _tokenHandler.initializeTokenStores();
-                // open annual conditions generator
-                if ( (_game.mode == Mode.COMPETITIVE || _game.mode == Mode.SILVOPASTORAL) &&_annCondGen == null) {
-                    _annCondGen = new AnnualConditionsGenerator();
-                    _annCondGen.addEventListener("result", handleAnnCondResult);
-                    PopUpManager.addPopUp(_annCondGen, _gameWindow, true);
-                    PopUpManager.centerPopUp(_annCondGen);
-                }
-
-                if (_game.mode != Mode.BASIC_PUZZLE && _game.mode != Mode.SILVO_PUZZLE)
-                    _currentPlayer.play();
+                _currentPlayer.play();
             }
         }
 
@@ -481,6 +477,22 @@ package mx.ecosur.multigame.manantiales
                 Alert.show(event.fault.faultString, resourceManager.getString("Manantiales",
                         "manantiales.controller.server.error"));
             }
+        }
+
+        private function handleRoundChange (player:ManantialesPlayer):void {
+            if (_roundAlert != null) {
+                PopUpManager.removePopUp(_roundAlert);
+            }
+            _roundAlert = new RoundAlert();
+            _roundAlert.player = player;
+            _roundAlert.addEventListener("result", handleRoundResult);
+            PopUpManager.addPopUp(_roundAlert,  _gameWindow,  true);
+            PopUpManager.centerPopUp(_roundAlert);
+        }
+
+        private function handleRoundResult(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_roundAlert);
+            _roundAlert = null;
         }
 
         private function handleCheckConstraint (checkCondition:CheckCondition):void {

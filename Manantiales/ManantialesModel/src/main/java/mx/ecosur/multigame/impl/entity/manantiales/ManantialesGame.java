@@ -55,11 +55,14 @@ public class ManantialesGame extends GridGame {
 
     private transient AdjGraph graph;
 
+    private Date lastOpened;
+
     private Color[] colors = { Color.YELLOW, Color.PURPLE, Color.RED, Color.BLACK,  };
+
+    private int turns;
 
     public ManantialesGame () {
         super();
-        mode = Mode.COMPETITIVE;
         messageSender = new ManantialesMessageSender();
     }
 
@@ -78,6 +81,14 @@ public class ManantialesGame extends GridGame {
             mode = Mode.COMPETITIVE;
         messageSender.initialize();
         messageSender.sendStartGame(this);
+    }
+
+    public int getTurns() {
+        return turns;
+    }
+
+    public void setTurns(int turns) {
+        this.turns = turns;
     }
 
     private AdjGraph createGraph() {
@@ -231,6 +242,17 @@ public class ManantialesGame extends GridGame {
         return ret;
     }
 
+    @Transient
+    public long elapsedTime() {
+        Date start = getLastOpened();
+        if (start == null) {
+            start = getCreated();
+        }
+
+        return System.currentTimeMillis() - start.getTime();
+
+    }
+
     @Override
     @Transient
     public Set getFacts() {
@@ -336,6 +358,14 @@ public class ManantialesGame extends GridGame {
         }
     }
 
+    public Date getLastOpened() {
+        return lastOpened;
+    }
+
+    public void setLastOpened(Date lastOpened) {
+        this.lastOpened = lastOpened;
+    }
+
     @Transient
     public Resource getResource() {
         return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
@@ -399,7 +429,7 @@ public class ManantialesGame extends GridGame {
         if (getMoves() == null)
             setMoves(new TreeSet<GridMove>(new MoveComparator()));
         getMoves().add(move);
-        
+
         return move;
     }
 
