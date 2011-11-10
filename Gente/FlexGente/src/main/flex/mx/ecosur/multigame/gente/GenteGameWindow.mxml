@@ -76,7 +76,7 @@
             if (evt.label == resourceManager.getString("Gente","gente.menu.two.submenu"))
             {
                 _helpPanel = new HelpPanel();
-                _helpPanel.load("help-gente.html");
+                _helpPanel.load("help-gente.jsp");
                 _helpPanel.width = Math.min(width - 100, 600);
                 _helpPanel.height = height - 20;
                 _helpPanel.addEventListener("close", closeHelp);
