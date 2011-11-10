@@ -111,6 +111,7 @@ when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid)
     $suggestion : PuzzleSuggestion ($suggestor : suggestor, status == SuggestionStatus.UNEVALUATED, $move : move)
     eval ((ManantialesPlayer) $suggestor != (ManantialesPlayer) $move.getPlayer())
+    eval (isWithinTimeLimit($game, $move))
 then
     modify ($suggestion) { setStatus (SuggestionStatus.EVALUATED) }
 end
@@ -121,6 +122,7 @@ rule "accept-suggestion"
 when
     $game : ManantialesGame (state == GameState.PLAY, $moves : moves)
     $suggestion : PuzzleSuggestion (status == SuggestionStatus.ACCEPT, $move : move)
+    eval (isWithinTimeLimit($game, $move))
 then
     GameGrid modifiedGrid = $game.getGrid();
     modifiedGrid.removeCell ($move.getCurrentCell());
@@ -152,6 +154,7 @@ when
         mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
     eval (isValidReplacement($game.getGrid(), $move))
+    eval (isWithinTimeLimit($game, $move))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
 end
@@ -162,6 +165,7 @@ when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
         mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     $move  : ManantialesMove (badYear == true, status == MoveStatus.UNVERIFIED)
+    eval (isWithinTimeLimit($game, $move))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
 end
@@ -177,17 +181,28 @@ then
     modify ($move) { setStatus (MoveStatus.INVALID) }
 end
 
-
 rule "evaluate-puzzle-move"
     agenda-group "verify"
 when
     $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
         mode in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
     $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
+    eval (isWithinTimeLimit($game, $move))
 then
     modify ($move) { setStatus (MoveStatus.VERIFIED) }
 end
 
+rule "message-time-limit-exceeded"
+    agenda-group "verify"
+when
+    $game : ManantialesGame (state == GameState.PLAY)
+    $move : ManantialesMove ()
+    eval (!isWithinTimeLimit($game, $move))
+then
+    modify ($move) { setStatus(MoveStatus.EXPIRED)};
+    modify ($game) { setState(GameState.ENDED)};
+    messageSender.sendTimeLimitExpired ($game, $move);
+end
 
 # MOVE RESTRICTIONS
 

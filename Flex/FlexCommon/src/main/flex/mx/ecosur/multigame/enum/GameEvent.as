@@ -29,6 +29,7 @@ package mx.ecosur.multigame.enum {
         public static const CONDITION_TRIGGERED:String = "CONDITION_TRIGGERED";
         public static const STATE_CHANGE:String = "STATE_CHANGE";
         public static const GAME_CHANGE:String = "GAME_CHANGE";
+        public static const EXPIRED:String = "EXPIRED";
         public static const DESTROY:String = "DESTROY";
     }
 }

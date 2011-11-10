@@ -15,6 +15,7 @@
     <mx:Script>
         <![CDATA[
         import mx.collections.ArrayCollection;
+        import mx.controls.Alert;
         import mx.ecosur.multigame.component.HelpPanel;
         import mx.ecosur.multigame.component.ImagePanel;
         import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
@@ -35,6 +36,8 @@
         private var _helpPanel:HelpPanel;
         private var _imagePanel:ImagePanel;
         private var _suggestionHandler:SuggestionHandler;
+        private var _elapsed:Number;
+        private var _timer:Timer;
 
         /* All of the loaded images */
         private var _images:ArrayCollection;
@@ -47,6 +50,10 @@
             _images.addItem("img/competitive-3.png");
             _images.addItem("img/competitive-4.png");
             _images.addItem("img/puzzle.png");
+            _timer = new Timer(1000);
+            _timer.addEventListener(TimerEvent.TIMER, updateTimer);
+            _elapsed = currentGame.elapsedTime;
+            _timer.start();
         }
 
         public function destroy():void {
@@ -183,6 +190,34 @@
             }
         }
 
+        private function updateTimer(event:TimerEvent):void {
+            _elapsed = _elapsed + 1000;
+            var time:String = format (_elapsed);
+            timer.showMessage(time, Color.getColorCode(_currentPlayer.color));
+        }
+
+        function format(ms:Number):String {
+            var ret:String;
+            var minutes:int, seconds:Number;
+            seconds = Math.floor(ms/1000);
+            if(seconds > 59) {
+                minutes = Math.floor(seconds / 60);
+                if (minutes >= 45)
+                    ret = "45:00";
+                else if (seconds %  60 > 9)
+                    ret = String(minutes) + ":" + String(seconds % 60);
+                else
+                    ret = String(minutes) + ":0" + String(seconds % 60);
+            } else {
+                if (seconds > 9)
+                    ret = "0:" + String(Math.floor(seconds));
+                else
+                    ret = "0:0" + String(Math.floor(seconds));
+            }
+
+            return ret;
+       }
+
         public function get state():String {
             var ret:String;
             if (_currentGame.mode == null)
@@ -312,6 +347,7 @@
             </mx:Canvas>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
+            <manantiales:TimerStatus id="timer" width="100%"/>
             <mx:Panel title="Info" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
                   currentPlayer="{currentPlayer}" width="100%"/>

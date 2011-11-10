@@ -244,13 +244,23 @@ public class ManantialesGame extends GridGame {
 
     @Transient
     public long elapsedTime() {
-        Date start = getLastOpened();
-        if (start == null) {
-            start = getCreated();
+        long ret = 0;
+        if (getLastOpened() == null) {
+            ret = System.currentTimeMillis() - getCreated().getTime();
+        } else {
+           ret = System.currentTimeMillis() - getLastOpened().getTime();
+           TreeSet<ManantialesMove> moveSet = new TreeSet<ManantialesMove>(new MoveComparator());
+           for (GridMove g : moves) {
+               moveSet.add((ManantialesMove) g);
+           }
+           if (!moveSet.isEmpty()) {
+               ManantialesMove last = moveSet.last();
+               long currentElapsed = last.getCreationDate().getTime() - getCreated().getTime();
+                /* Add the currently elapsed time to where we are now for a continuous game */
+               ret += currentElapsed;
+           }
         }
-
-        return System.currentTimeMillis() - start.getTime();
-
+        return ret;
     }
 
     @Override
@@ -401,6 +411,7 @@ public class ManantialesGame extends GridGame {
     @Override
     public Move move(Move impl) throws InvalidMoveException {
         ManantialesMove move = (ManantialesMove) impl;
+        move.setCreationDate(new Date(System.currentTimeMillis()));
         if (move.getMode()== null)
             move.setMode(getMode());
 

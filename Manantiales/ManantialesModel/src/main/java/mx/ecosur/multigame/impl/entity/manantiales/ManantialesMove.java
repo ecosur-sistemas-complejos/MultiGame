@@ -18,6 +18,8 @@ import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.grid.entity.GridMove;
 
+import java.util.Date;
+
 @Entity
 public class ManantialesMove extends GridMove implements Comparable {
 
@@ -30,6 +32,8 @@ public class ManantialesMove extends GridMove implements Comparable {
     private boolean badYear, premium;
 
     private Mode mode;
+
+    private Date creationDate;
 
     public ManantialesMove () {
         super();
@@ -51,6 +55,15 @@ public class ManantialesMove extends GridMove implements Comparable {
             Boolean swap) {
         super (player, current, destination);
         this.swap = swap;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Basic

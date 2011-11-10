@@ -19,20 +19,10 @@ package mx.ecosur.multigame.entity.manantiales
 
         private var _maxPlayers:int;
 
-        private var _version:int;
-
-        private var _moveHistory:Object;
+        private var _lastOpened:Date;
 
         public function ManantialesGame () {
             super();
-        }
-
-        public function get version():int {
-            return _version;
-        }
-
-        public function set version(value:int):void {
-            _version = value;
         }
 
         public function get suggestions():ArrayCollection {
@@ -88,12 +78,41 @@ package mx.ecosur.multigame.entity.manantiales
             _suggestions = suggestions;
         }
 
-        public function get moveHistory():Object {
-            return _moveHistory;
+
+        public function get lastOpened():Date {
+            return _lastOpened;
         }
 
-        public function set moveHistory(value:Object):void {
-            _moveHistory = value;
+        public function set lastOpened(value:Date):void {
+            _lastOpened = value;
+        }
+
+        public function get elapsedTime():Number {
+            var now:Date = new Date();
+            var elapsed:Number = new Number();
+            if (_lastOpened == null) {
+                elapsed = now.getMilliseconds() - created.getMilliseconds();
+            } else {
+                var highestId:int = -1;
+                var idx:int = -1;
+                for (var i:int = 0; i < moves.length; i++) {
+                    if (moves [ i ].id > highestId) {
+                        highestId = moves [ i ].id;
+                        idx = i;
+                    }
+                }
+
+                if (idx > 0) {
+                    var lastMove = ManantialesMove(moves [ idx ]);
+                    elapsed = now.getMilliseconds() - _lastOpened.getMilliseconds();
+                    var previous:Number = lastMove.creationDate.getMilliseconds() - created.getMilliseconds();
+                    elapsed = elapsed + previous;
+                } else {
+                    elapsed = now.getMilliseconds() - _lastOpened.getMilliseconds();
+                }
+            }
+
+            return elapsed;
         }
     }
 }

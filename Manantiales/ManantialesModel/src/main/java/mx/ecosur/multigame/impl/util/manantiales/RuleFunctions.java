@@ -31,22 +31,16 @@ import java.awt.Point;
 import java.util.*;
 
 /**
+ * RuleFunctions specific to the Manantiales de La Sierra DRL.
+ *
  * @author awaterma@ecosur.mx
  */
 public class RuleFunctions {
 
     public static boolean isWithinTimeLimit(ManantialesGame game, ManantialesMove move) {
-       return true;
-        /*
         long maxTime = (long) 2700 * 1000; // 45 minutes
         boolean ret = game.elapsedTime() < maxTime;
-
-        if (!ret) {
-            System.out.println("Time Limit Exceeded! " + game.elapsedTime() + " !< " + maxTime);
-        }
-
         return game.elapsedTime() < maxTime;
-        */
     }
 
     public static  boolean isValidReplacement (GameGrid grid, ManantialesMove move) {

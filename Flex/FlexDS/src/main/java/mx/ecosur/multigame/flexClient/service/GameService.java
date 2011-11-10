@@ -347,10 +347,6 @@ public class GameService {
     public GridGame getGame(int gameId) {
         SharedBoardRemote sharedBoard = getSharedBoard();
         Game game = sharedBoard.getGame(gameId);
-        if (game instanceof ManantialesGame) {
-            ManantialesGame mg = (ManantialesGame) game;
-            mg.setLastOpened(new Date(System.currentTimeMillis()));
-        }
         return (GridGame) game;
     }
 

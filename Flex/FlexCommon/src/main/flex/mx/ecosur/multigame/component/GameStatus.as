@@ -24,10 +24,10 @@ package mx.ecosur.multigame.component {
 	public class GameStatus extends UIComponent {
 		
 		private var _bg:Shape;
-		private var _txtField:TextField;
-		private var _message:String;
-		private var _color:uint;
-		private var _active:Boolean;
+		protected var _txtField:TextField;
+		protected var _message:String;
+		protected var _color:uint;
+		protected var _active:Boolean;
 		
 		private const PADDING:Number = 10;
 		private const BORDER_THICKNESS:Number = 2;

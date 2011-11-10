@@ -63,6 +63,7 @@ import mx.ecosur.multigame.enum.GameState;
         private var _annCondGen:AnnualConditionsGenerator;
         private var _alerts:ArrayCollection;
         private var _roundAlert:RoundAlert;
+        private var _expiredAlert:TimeExpiredAlert;
         private var _endAlert:GraphicAlert;
 
         private var _msgReceiver:MessageReceiver;
@@ -226,8 +227,14 @@ import mx.ecosur.multigame.enum.GameState;
                     case GameEvent.GAME_CHANGE:
                         player = ManantialesPlayer(message.body);
                         handleRoundChange(player);
+                        break;
+                    case GameEvent.EXPIRED:
+                        move = ManantialesMove(message.body);
+                        handleExpiredMove(move);
+                        break;
+                    default:
+                        break;
                 }
-
                 _messages = new ArrayCollection();
             }
         }
@@ -493,6 +500,21 @@ import mx.ecosur.multigame.enum.GameState;
         private function handleRoundResult(event:DynamicEvent):void {
             PopUpManager.removePopUp(_roundAlert);
             _roundAlert = null;
+        }
+
+        private function handleExpiredMove(move:ManantialesMove):void {
+            if (_expiredAlert != null)
+                PopUpManager.removePopUp(_expiredAlert);
+            _expiredAlert = new TimeExpiredAlert();
+            _expiredAlert.triggerMove = move;
+            _expiredAlert.addEventListener("result", handleExpiredResult);
+            PopUpManager.addPopUp(_expiredAlert,  _gameWindow,  true);
+            PopUpManager.centerPopUp(_expiredAlert);
+        }
+
+        public function handleExpiredResult(event:DynamicEvent):void {
+            PopUpManager.removePopUp(_expiredAlert);
+            _expiredAlert = null;
         }
 
         private function handleCheckConstraint (checkCondition:CheckCondition):void {
