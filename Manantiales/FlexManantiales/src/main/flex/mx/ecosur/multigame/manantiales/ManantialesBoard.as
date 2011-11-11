@@ -14,8 +14,9 @@
     import flash.display.Shape;
     import flash.geom.Point;
     import flash.geom.Rectangle;
-
+    
     import mx.collections.ArrayCollection;
+    import mx.containers.Canvas;
     import mx.controls.Alert;
     import mx.ecosur.multigame.component.AbstractBoard;
     import mx.ecosur.multigame.component.BoardCell;
@@ -52,7 +53,7 @@
     public class ManantialesBoard extends AbstractBoard {
 
         protected var _bg:Shape, _hl:Shape, _vl:Shape,
-          _manantial:Shape, _spring:Shape;
+          _manantial:Canvas, _spring:Shape;
         protected var _currentPlayer:GamePlayer;
         protected var _centerX:int, _centerY:int;
         protected var _graph:AdjGraph;
@@ -96,8 +97,11 @@
         override protected function createChildren():void {
             _bg = new Shape();
             addChild(_bg);
-
-            _manantial = new Shape();
+			
+            _manantial = new Canvas();
+            _manantial.clipContent = false;
+            _manantial.rotation = 45;
+            _manantial.alpha = .55;
             addChild(_manantial);
 
             _spring = new Shape();
@@ -227,14 +231,14 @@
             var size:Number = cellSize * 4;
             var linecompensation:Number = boardCell.height/ 3;
 
-                /* Inlay the Manantial */
+				/* Inlay the Manantial */
+            _manantial.x = centerX + linecompensation/2;
+            _manantial.y = centerY + linecompensation/2;
             _manantial.graphics.clear();
             _manantial.graphics.beginFill(0x6CA5E5);
             _manantial.graphics.lineStyle(1, 0xE4961A, 0.65);
-            _manantial.graphics.drawRect(centerX - size/2 + linecompensation/2,
-                centerY - size/2 + linecompensation/2, size, size);
+            _manantial.graphics.drawRect(-size/2, -size/2, size, size);
             _manantial.graphics.endFill();
-            _manantial.alpha = .55;
 
             _spring.graphics.clear();
             _spring.graphics.beginFill(0x2e83bc);
