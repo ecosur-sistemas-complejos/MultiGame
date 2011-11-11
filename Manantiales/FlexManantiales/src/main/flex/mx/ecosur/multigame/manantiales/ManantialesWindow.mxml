@@ -34,7 +34,6 @@
         protected var _currentPlayer:GamePlayer;
         protected var _currentGame:ManantialesGame;
         private var _helpPanel:HelpPanel;
-        private var _imagePanel:ImagePanel;
         private var _suggestionHandler:SuggestionHandler;
         private var _elapsed:Number;
         private var _timer:Timer;
@@ -44,16 +43,11 @@
 
         public function init():void {
             _controller = new ManantialesGameController(this);
-            _images = new ArrayCollection();
-            _images.addItem("img/competitive-1.png");
-            _images.addItem("img/competitive-2.png");
-            _images.addItem("img/competitive-3.png");
-            _images.addItem("img/competitive-4.png");
-            _images.addItem("img/puzzle.png");
             _timer = new Timer(1000);
             _timer.addEventListener(TimerEvent.TIMER, updateTimer);
-            _elapsed = currentGame.elapsedTime;
             _timer.start();
+            /* Ask the timer to dispaly the current time elapsed */
+            timer.displayTime(Color.getColorCode(_currentPlayer.color));
         }
 
         public function destroy():void {
@@ -124,52 +118,6 @@
                 _helpPanel.addEventListener("close", closeHelp);
                 PopUpManager.addPopUp(_helpPanel, this, true);
                 PopUpManager.centerPopUp(_helpPanel);
-
-            } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.three.submenu.one")) {
-                _imagePanel = new ImagePanel();
-                _imagePanel.images = _images;
-                _imagePanel.index = 0;
-                _imagePanel.width = width - 100;
-                _imagePanel.height = height - 20;
-                _imagePanel.addEventListener("close", closeHelp);
-                PopUpManager.addPopUp(_imagePanel, this, true);
-                PopUpManager.centerPopUp(_imagePanel);
-            } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.three.submenu.three")) {
-                _imagePanel = new ImagePanel();
-                _imagePanel.images = _images;
-                _imagePanel.index = 1;
-                _imagePanel.width = width - 100;
-                _imagePanel.height = height - 20;
-                _imagePanel.addEventListener("close", closeHelp);
-                PopUpManager.addPopUp(_imagePanel, this, true);
-                PopUpManager.centerPopUp(_imagePanel);
-            } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.three.submenu.four")) {
-                _imagePanel = new ImagePanel();
-                _imagePanel.images = _images;
-                _imagePanel.index = 2;
-                _imagePanel.width = width - 100;
-                _imagePanel.height = height - 20;
-                _imagePanel.addEventListener("close", closeHelp);
-                PopUpManager.addPopUp(_imagePanel, this, true);
-                PopUpManager.centerPopUp(_imagePanel);
-            } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.three.submenu.two")) {
-                _imagePanel = new ImagePanel();
-                _imagePanel.images = _images;
-                _imagePanel.index = 3;
-                _imagePanel.width = width - 100;
-                _imagePanel.height = height - 20;
-                _imagePanel.addEventListener("close", closeHelp);
-                PopUpManager.addPopUp(_imagePanel, this, true);
-                PopUpManager.centerPopUp(_imagePanel);
-            } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.three.submenu.five")) {
-                _imagePanel = new ImagePanel();
-                _imagePanel.images = _images;
-                _imagePanel.index = 4;
-                _imagePanel.width = width - 100;
-                _imagePanel.height = height - 20;
-                _imagePanel.addEventListener("close", closeHelp);
-                PopUpManager.addPopUp(_imagePanel, this, true);
-                PopUpManager.centerPopUp(_imagePanel);
             } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.one.submenu.one")) {
                 dispatchCompletion();
             } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.one.submenu.two")) {
@@ -181,42 +129,16 @@
         }
 
         private function closeHelp(event:Event):void {
-            if (_imagePanel != null) {
-                PopUpManager.removePopUp(_imagePanel);
-                _imagePanel = null;
-            } else if (_helpPanel != null) {
+            if (_helpPanel != null) {
                 PopUpManager.removePopUp(_helpPanel);
                 _helpPanel = null;
             }
         }
 
         private function updateTimer(event:TimerEvent):void {
-            _elapsed = _elapsed + 1000;
-            var time:String = format (_elapsed);
-            timer.showMessage(time, Color.getColorCode(_currentPlayer.color));
+            currentGame.elapsedTime = timer.current;
+            timer.displayTime(Color.getColorCode(currentPlayer.color));
         }
-
-        function format(ms:Number):String {
-            var ret:String;
-            var minutes:int, seconds:Number;
-            seconds = Math.floor(ms/1000);
-            if(seconds > 59) {
-                minutes = Math.floor(seconds / 60);
-                if (minutes >= 45)
-                    ret = "45:00";
-                else if (seconds %  60 > 9)
-                    ret = String(minutes) + ":" + String(seconds % 60);
-                else
-                    ret = String(minutes) + ":0" + String(seconds % 60);
-            } else {
-                if (seconds > 9)
-                    ret = "0:" + String(Math.floor(seconds));
-                else
-                    ret = "0:0" + String(Math.floor(seconds));
-            }
-
-            return ret;
-       }
 
         public function get state():String {
             var ret:String;
@@ -347,7 +269,8 @@
             </mx:Canvas>
         </mx:VBox>
         <mx:VBox id="rightBox" height="100%" width="300">
-            <manantiales:TimerStatus id="timer" width="100%"/>
+            <manantiales:TimerStatus id="timer" width="100%" maximum="{(45 * 60 * 1000)}"
+                    current="{_currentGame.elapsedTime}"/>
             <mx:Panel title="Info" width="100%">
                 <manantiales:PlayersViewer id="playersViewer" 
                   currentPlayer="{currentPlayer}" width="100%"/>

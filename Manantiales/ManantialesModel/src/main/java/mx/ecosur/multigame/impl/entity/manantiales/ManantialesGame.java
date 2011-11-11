@@ -55,11 +55,13 @@ public class ManantialesGame extends GridGame {
 
     private transient AdjGraph graph;
 
-    private Date lastOpened;
-
     private Color[] colors = { Color.YELLOW, Color.PURPLE, Color.RED, Color.BLACK,  };
 
     private int turns;
+
+    private long elapsedTime;
+
+    private Date lastTouched;
 
     public ManantialesGame () {
         super();
@@ -73,7 +75,8 @@ public class ManantialesGame extends GridGame {
 
     public void initialize() throws MalformedURLException {
         setGrid(new GameGrid());
-        setCreated(new Date());
+        setCreated(new Date(System.currentTimeMillis()));
+
         setColumns(9);
         setRows(9);
         setState(GameState.PLAY);
@@ -81,6 +84,12 @@ public class ManantialesGame extends GridGame {
             mode = Mode.COMPETITIVE;
         messageSender.initialize();
         messageSender.sendStartGame(this);
+    }
+
+    @PostLoad
+    public void postLoad() {
+        setElapsedTime(calculateElapsedTime());
+        setLastTouched(new Date(System.currentTimeMillis()));
     }
 
     public int getTurns() {
@@ -242,25 +251,37 @@ public class ManantialesGame extends GridGame {
         return ret;
     }
 
+    public long getElapsedTime() {
+        return elapsedTime;
+    }
+
+    public void setElapsedTime(long elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
     @Transient
-    public long elapsedTime() {
+    public long calculateElapsedTime()
+    {
         long ret = 0;
-        if (getLastOpened() == null) {
-            ret = System.currentTimeMillis() - getCreated().getTime();
-        } else {
-           ret = System.currentTimeMillis() - getLastOpened().getTime();
-           TreeSet<ManantialesMove> moveSet = new TreeSet<ManantialesMove>(new MoveComparator());
-           for (GridMove g : moves) {
-               moveSet.add((ManantialesMove) g);
-           }
-           if (!moveSet.isEmpty()) {
-               ManantialesMove last = moveSet.last();
-               long currentElapsed = last.getCreationDate().getTime() - getCreated().getTime();
-                /* Add the currently elapsed time to where we are now for a continuous game */
-               ret += currentElapsed;
-           }
-        }
+        if (getCreated() == null)
+            setCreated(new Date(System.currentTimeMillis()));
+        if (getLastTouched() == null)
+            setLastTouched(new Date(System.currentTimeMillis()));
+        ret = System.currentTimeMillis() - getCreated().getTime();
+        if (elapsedTime != 0)
+            ret = elapsedTime + (System.currentTimeMillis() - getLastTouched().getTime());
+        setElapsedTime(ret);
         return ret;
+
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getLastTouched() {
+        return lastTouched;
+    }
+
+    public void setLastTouched(Date lastTouched) {
+        this.lastTouched = lastTouched;
     }
 
     @Override
@@ -368,14 +389,6 @@ public class ManantialesGame extends GridGame {
         }
     }
 
-    public Date getLastOpened() {
-        return lastOpened;
-    }
-
-    public void setLastOpened(Date lastOpened) {
-        this.lastOpened = lastOpened;
-    }
-
     @Transient
     public Resource getResource() {
         return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
@@ -411,7 +424,6 @@ public class ManantialesGame extends GridGame {
     @Override
     public Move move(Move impl) throws InvalidMoveException {
         ManantialesMove move = (ManantialesMove) impl;
-        move.setCreationDate(new Date(System.currentTimeMillis()));
         if (move.getMode()== null)
             move.setMode(getMode());
 

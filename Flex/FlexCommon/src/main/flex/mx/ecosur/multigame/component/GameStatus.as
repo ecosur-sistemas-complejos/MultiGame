@@ -60,7 +60,7 @@ package mx.ecosur.multigame.component {
 			flashMessage();
 		}
 		
-		private function flashMessage():void{
+		protected function flashMessage():void{
 			if (!_active){
 				return;
 			}

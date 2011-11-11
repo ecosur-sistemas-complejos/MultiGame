@@ -33,8 +33,6 @@ public class ManantialesMove extends GridMove implements Comparable {
 
     private Mode mode;
 
-    private Date creationDate;
-
     public ManantialesMove () {
         super();
         badYear = false;
@@ -55,15 +53,6 @@ public class ManantialesMove extends GridMove implements Comparable {
             Boolean swap) {
         super (player, current, destination);
         this.swap = swap;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
     }
 
     @Basic

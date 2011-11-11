@@ -8,8 +8,6 @@ import mx.ecosur.multigame.entity.Move;
         "mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove")]
     public class ManantialesMove extends Move
     {
-        private var _creationDate:Date;
-
         private var _badYear:Boolean;
 
         private var _mode:String;
@@ -74,14 +72,6 @@ import mx.ecosur.multigame.entity.Move;
 
         public function set type(value:String):void {
             _type = value;
-        }
-
-        public function get creationDate():Date {
-            return _creationDate;
-        }
-
-        public function set creationDate(value:Date):void {
-            _creationDate = value;
         }
 
         public override function toString():String {

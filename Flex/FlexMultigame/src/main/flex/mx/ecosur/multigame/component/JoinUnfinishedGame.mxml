@@ -9,7 +9,6 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
         import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.PlayEvent;
@@ -172,13 +171,6 @@
                     break;
                 }
             }
-
-            if (joinedGame instanceof ManantialesGame) {
-                var mg:ManantialesGame = ManantialesGame(joinedGame);
-                mg.lastOpened = new Date();
-                joinedGame = Game(mg);
-            }
-
             dispatchEvent(new PlayEvent("gameChosen", joinedGame, gamePlayer));
             sendPlayerChange(joinedGame);
         }

@@ -38,9 +38,8 @@ import java.util.*;
 public class RuleFunctions {
 
     public static boolean isWithinTimeLimit(ManantialesGame game, ManantialesMove move) {
-        long maxTime = (long) 2700 * 1000; // 45 minutes
-        boolean ret = game.elapsedTime() < maxTime;
-        return game.elapsedTime() < maxTime;
+        long maxTime = (long) (45 * 60) * 1000; // 45 minutes in ms
+        return game.calculateElapsedTime() < maxTime;
     }
 
     public static  boolean isValidReplacement (GameGrid grid, ManantialesMove move) {

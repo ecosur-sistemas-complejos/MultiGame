@@ -252,6 +252,7 @@ public class GameService {
             }
 
         } catch (InvalidRegistrationException e) {
+            e.printStackTrace();
             throw new GameException (e);
         }
 
@@ -308,6 +309,7 @@ public class GameService {
             }
 
         } catch (InvalidRegistrationException e) {
+            e.printStackTrace();
             throw new GameException (e);
         }
 
