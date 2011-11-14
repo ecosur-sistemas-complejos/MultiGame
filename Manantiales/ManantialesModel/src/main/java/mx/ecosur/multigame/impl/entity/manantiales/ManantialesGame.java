@@ -270,7 +270,6 @@ public class ManantialesGame extends GridGame {
         ret = System.currentTimeMillis() - getCreated().getTime();
         if (elapsedTime != 0)
             ret = elapsedTime + (System.currentTimeMillis() - getLastTouched().getTime());
-        setElapsedTime(ret);
         return ret;
 
     }
