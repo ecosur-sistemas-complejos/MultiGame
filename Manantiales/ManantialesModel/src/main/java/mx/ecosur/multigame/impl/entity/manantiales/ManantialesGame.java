@@ -62,8 +62,6 @@ public class ManantialesGame extends GridGame {
 
     private long elapsedTime;
 
-    private Date lastTouched;
-
     public ManantialesGame () {
         super();
         messageSender = new ManantialesMessageSender();
@@ -74,15 +72,9 @@ public class ManantialesGame extends GridGame {
         this.mode = mode;
     }
 
-    @PrePersist
-    public void preCreate() {
-        /* Set last touched to time at first persist */
-        setLastTouched(new Date(System.currentTimeMillis()));
-    }
-
     @PostLoad
     public void postLoad() {
-        /* Elapsed time is calculated each after load */
+        /* Elapsed time is calculated each time after load */
         setElapsedTime(calculateElapsedTime());
     }
 
@@ -267,19 +259,10 @@ public class ManantialesGame extends GridGame {
 
     @Transient
     public long calculateElapsedTime() {
-        if (getLastTouched()  != null)
-            return System.currentTimeMillis() - getLastTouched().getTime();
+        if (getCreated()  != null)
+            return System.currentTimeMillis() - getCreated().getTime();
         else
             return 0;
-    }
-
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date getLastTouched() {
-        return lastTouched;
-    }
-
-    public void setLastTouched(Date lastTouched) {
-        this.lastTouched = lastTouched;
     }
 
     @Override
