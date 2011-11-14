@@ -76,7 +76,6 @@ public class ManantialesGame extends GridGame {
     public void initialize() throws MalformedURLException {
         setGrid(new GameGrid());
         setCreated(new Date(System.currentTimeMillis()));
-
         setColumns(9);
         setRows(9);
         setState(GameState.PLAY);
@@ -263,15 +262,14 @@ public class ManantialesGame extends GridGame {
     public long calculateElapsedTime()
     {
         long ret = 0;
-        if (getCreated() == null)
-            setCreated(new Date(System.currentTimeMillis()));
-        if (getLastTouched() == null)
-            setLastTouched(new Date(System.currentTimeMillis()));
-        ret = System.currentTimeMillis() - getCreated().getTime();
         if (elapsedTime != 0)
             ret = elapsedTime + (System.currentTimeMillis() - getLastTouched().getTime());
+        else {
+            if (getCreated() == null)
+                setCreated(new Date(System.currentTimeMillis()));
+            ret = System.currentTimeMillis() - getCreated().getTime();
+        }
         return ret;
-
     }
 
     @Temporal(TemporalType.TIMESTAMP)
