@@ -15,9 +15,7 @@
     <mx:Script>
         <![CDATA[
         import mx.collections.ArrayCollection;
-        import mx.controls.Alert;
         import mx.ecosur.multigame.component.HelpPanel;
-        import mx.ecosur.multigame.component.ImagePanel;
         import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
         import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
         import mx.ecosur.multigame.enum.Color;

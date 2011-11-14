@@ -26,6 +26,7 @@ import mx.ecosur.multigame.MessageSender;
 
 import javax.persistence.*;
 
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.builder.*;
 import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -73,6 +74,18 @@ public class ManantialesGame extends GridGame {
         this.mode = mode;
     }
 
+    @PrePersist
+    public void preCreate() {
+        /* Set last touched to time at first persist */
+        setLastTouched(new Date(System.currentTimeMillis()));
+    }
+
+    @PostLoad
+    public void postLoad() {
+        /* Elapsed time is calculated each after load */
+        setElapsedTime(calculateElapsedTime());
+    }
+
     public void initialize() throws MalformedURLException {
         setGrid(new GameGrid());
         setCreated(new Date(System.currentTimeMillis()));
@@ -83,12 +96,6 @@ public class ManantialesGame extends GridGame {
             mode = Mode.COMPETITIVE;
         messageSender.initialize();
         messageSender.sendStartGame(this);
-    }
-
-    @PostLoad
-    public void postLoad() {
-        setElapsedTime(calculateElapsedTime());
-        setLastTouched(new Date(System.currentTimeMillis()));
     }
 
     public int getTurns() {
@@ -259,17 +266,11 @@ public class ManantialesGame extends GridGame {
     }
 
     @Transient
-    public long calculateElapsedTime()
-    {
-        long ret = 0;
-        if (elapsedTime > 0)
-            ret = elapsedTime + (System.currentTimeMillis() - getLastTouched().getTime());
-        else {
-            if (getCreated() == null)
-                setCreated(new Date(System.currentTimeMillis()));
-            ret = System.currentTimeMillis() - getCreated().getTime();
-        }
-        return ret;
+    public long calculateElapsedTime() {
+        if (getLastTouched()  != null)
+            return System.currentTimeMillis() - getLastTouched().getTime();
+        else
+            return 0;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -443,13 +444,11 @@ public class ManantialesGame extends GridGame {
         session.fireAllRules();
         session.getAgenda().getAgendaGroup("evaluate").setFocus();
         session.fireAllRules();
-        
         session.dispose();
 
         if (getMoves() == null)
             setMoves(new TreeSet<GridMove>(new MoveComparator()));
         getMoves().add(move);
-
         return move;
     }
 

@@ -66,7 +66,7 @@ package mx.ecosur.multigame.entity.manantiales
 
         public function addSuggestion (suggestion:Suggestion):void {
             if (_suggestions == null)
-                _suggestions = new ArrayCollection();            
+                _suggestions = new ArrayCollection();
             _suggestions.addItem(suggestion);
         }
 

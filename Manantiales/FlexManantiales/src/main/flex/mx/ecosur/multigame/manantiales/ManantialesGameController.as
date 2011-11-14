@@ -403,6 +403,9 @@ import mx.ecosur.multigame.enum.GameState;
          */
         public function updatePlayers(game:ManantialesGame):void {
             this._game = game;
+            _gameWindow.timer.current = game.elapsedTime;
+            _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
+            _gameWindow.timer.flashMessage();
             _gameWindow.playersViewer.game = _game;      
 
             var gamePlayer:ManantialesPlayer;
