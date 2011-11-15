@@ -24,8 +24,8 @@ global ManantialesMessageSender messageSender;
 
 declare Bonus
     @role (event)
-	color : Color
-	type : TokenType
+    color : Color
+    type : TokenType
 end
 
 rule "bonuses reset and awarded each time"

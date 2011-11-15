@@ -346,6 +346,11 @@ import mx.ecosur.multigame.enum.GameState;
             if (_game.state == GameState.PLAY) {
                 _tokenHandler.initializeTokenStores();
                 _currentPlayer.play();
+                _gameWindow.begin();
+                if (_roundAlert != null) {
+                    PopUpManager.removePopUp(_roundAlert);
+                    _roundAlert = null;
+                }
             }
         }
 
@@ -403,10 +408,12 @@ import mx.ecosur.multigame.enum.GameState;
          */
         public function updatePlayers(game:ManantialesGame):void {
             this._game = game;
-            _gameWindow.timer.current = game.elapsedTime;
-            _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
-            _gameWindow.timer.flashMessage();
-            _gameWindow.playersViewer.game = _game;      
+            if (game.state == GameState.PLAY) {
+                _gameWindow.timer.current = game.elapsedTime;
+                _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
+                _gameWindow.timer.flashMessage();
+                _gameWindow.playersViewer.game = _game;
+            }
 
             var gamePlayer:ManantialesPlayer;
             var i:int;
@@ -569,6 +576,9 @@ import mx.ecosur.multigame.enum.GameState;
 
         private function handleGameEnd(game:ManantialesGame):void {
             var i:int;
+
+            /* Message the Window to END */
+            _gameWindow.end();
 
             /* Remove all alert conditions from the PopUpManager */
             for (i = 0; i < _alerts.length; i++)

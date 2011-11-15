@@ -43,14 +43,22 @@
             _controller = new ManantialesGameController(this);
             _timer = new Timer(1000);
             _timer.addEventListener(TimerEvent.TIMER, updateTimer);
-            _timer.start();
-            /* Ask the timer to dispaly the current time elapsed */
-            timer.displayTime(Color.getColorCode(_currentPlayer.color));
         }
 
         public function destroy():void {
             if (_controller != null)
                 _controller.destroy();
+        }
+
+        public function begin():void {
+            _timer.start();
+            /* Ask the timer to dispaly the current time elapsed */
+            timer.displayTime(Color.getColorCode(_currentPlayer.color));
+        }
+
+        public function end():void {
+            _timer.stop();
+            timer.flashMessage();
         }
 
         [Bindable]
