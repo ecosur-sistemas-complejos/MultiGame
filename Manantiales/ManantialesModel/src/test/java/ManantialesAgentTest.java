@@ -159,7 +159,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
                 SimpleAgent purple = (SimpleAgent) p;
                 for (int i = 5; i < 9; i++) {
                     ManantialesFicha f = new ManantialesFicha (4,i, Color.PURPLE, TokenType.MANAGED_FOREST);
-                    assertTrue(purple.isGoodLocation(f));
+                    assertTrue(isGoodLocation(f));
                 }
             }
         }

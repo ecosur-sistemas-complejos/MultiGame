@@ -2,6 +2,7 @@ package mx.ecosur.multigame.impl.util.manantiales;
 
 import java.awt.Point;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * An adjacency graph as a bean.
@@ -38,9 +39,26 @@ public class AdjGraph {
         return map.get(point);
     }
 
+    public Point findPoint(int node) {
+        Point ret = null;
+        for (Point p : map.keySet()) {
+            Integer i = map.get(p);
+            if (i.intValue() == node) {
+                ret = p;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public void addPoint(int node, Point point) {
         if (map == null)
             map = new LinkedHashMap();
         map.put(point, node);
     }
+
+    public int size() {
+        return V;
+    }
+
 }

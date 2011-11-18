@@ -28,8 +28,6 @@
         import mx.ecosur.multigame.entity.gente.GentePlayer;
         import mx.ecosur.multigame.entity.gente.StrategyPlayer;
         import mx.ecosur.multigame.enum.GameEvent;
-        import mx.ecosur.multigame.util.MessageReceiver;
-        import mx.messaging.Consumer;
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.IMessage;

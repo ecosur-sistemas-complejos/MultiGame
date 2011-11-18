@@ -207,51 +207,40 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
             var startSize:Number;
             var playerBtn:Button;
 
-            if(move.player.id == _controller._currentPlayer.id && _controller._isTurn){
-                if (currentCell == null) {
-                    switch (destination.type) {
-                        case TokenType.FOREST:
-                           startPoint = new Point(_controller._gameWindow.forestStore.width, _controller._gameWindow.forestStore.height);
-                           startPoint = _controller._gameWindow.forestStore.localToGlobal(startPoint);
-                           break;
-                        case TokenType.INTENSIVE:
-                            startPoint = new Point(_controller._gameWindow.intensiveStore.width, _controller._gameWindow.intensiveStore.height);
-                            startPoint = _controller._gameWindow.intensiveStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.MODERATE:
-                            startPoint = new Point(_controller._gameWindow.moderateStore.width, _controller._gameWindow.moderateStore.height);
-                            startPoint = _controller._gameWindow.moderateStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.SILVOPASTORAL:
-                            startPoint = new Point(_controller._gameWindow.silvoStore.width, _controller._gameWindow.silvoStore.height);
-                            startPoint = _controller._gameWindow.silvoStore.localToGlobal(startPoint);
-                            break;
-                        case TokenType.VIVERO:
-                            startPoint = new Point(_controller._gameWindow.viveroStore.width, _controller._gameWindow.viveroStore.height);
-                            startPoint = _controller._gameWindow.viveroStore.localToGlobal(startPoint);
-                            break;
-                       default:
-                            break;
-                    }
-                } else {
-                    startPoint = new Point(currentCell.width, currentCell.height);
-                    startPoint = currentCell.localToGlobal(startPoint);
+            if (move.player.id == _controller._currentPlayer.id && _controller._isTurn) {
+                switch (destination.type) {
+                    case TokenType.FOREST:
+                        startPoint = new Point(_controller._gameWindow.forestStore.width, _controller._gameWindow.forestStore.height);
+                        startPoint = _controller._gameWindow.forestStore.localToGlobal(startPoint);
+                        break;
+                    case TokenType.INTENSIVE:
+                        startPoint = new Point(_controller._gameWindow.intensiveStore.width, _controller._gameWindow.intensiveStore.height);
+                        startPoint = _controller._gameWindow.intensiveStore.localToGlobal(startPoint);
+                        break;
+                    case TokenType.MODERATE:
+                        startPoint = new Point(_controller._gameWindow.moderateStore.width, _controller._gameWindow.moderateStore.height);
+                        startPoint = _controller._gameWindow.moderateStore.localToGlobal(startPoint);
+                        break;
+                    case TokenType.SILVOPASTORAL:
+                        startPoint = new Point(_controller._gameWindow.silvoStore.width, _controller._gameWindow.silvoStore.height);
+                        startPoint = _controller._gameWindow.silvoStore.localToGlobal(startPoint);
+                        break;
+                    case TokenType.VIVERO:
+                        startPoint = new Point(_controller._gameWindow.viveroStore.width, _controller._gameWindow.viveroStore.height);
+                        startPoint = _controller._gameWindow.viveroStore.localToGlobal(startPoint);
+                        break;
+                    default:
+                        break;
                 }
-
                 startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
                 startSize = _controller._gameWindow.board.tokenSize;
 
-            } else if (currentCell != null) {
-                startPoint = new Point(currentCell.width / 2, currentCell.height / 2);
-                startSize = _controller._gameWindow.board.tokenSize;
-                startPoint = currentCell.localToGlobal(startPoint);
-                startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
             } else {
                 playerBtn = _controller._gameWindow.playersViewer.getPlayerButton(
-                    ManantialesPlayer(move.player));
+                        ManantialesPlayer(move.player));
                 startPoint = new Point(
-                    playerBtn.x + Color.getCellIconSize() / 2 + 5,
-                    playerBtn.y + Color.getCellIconSize() / 2 + 5);
+                        playerBtn.x + Color.getCellIconSize() / 2 + 5,
+                        playerBtn.y + Color.getCellIconSize() / 2 + 5);
                 startPoint = _controller._gameWindow.playersViewer.localToGlobal(startPoint);
                 startPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
                 startSize = Color.getCellIconSize();
@@ -272,8 +261,8 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                 endPoint = new Point(
                     playerBtn.x + Color.getCellIconSize() / 2 + 5,
                     playerBtn.y + Color.getCellIconSize() / 2 + 5);
-                endPoint = _controller._gameWindow.playersViewer.localToGlobal(startPoint);
-                endPoint = _controller._gameWindow.animateLayer.globalToLocal(startPoint);
+                endPoint = _controller._gameWindow.playersViewer.localToGlobal(endPoint);
+                endPoint = _controller._gameWindow.animateLayer.globalToLocal(endPoint);
                 endSize = Color.getCellIconSize();
             }
             

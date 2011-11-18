@@ -342,15 +342,17 @@ import mx.ecosur.multigame.enum.GameState;
         }
 
         private function initTurn():void {
-            _gameWindow.currentState= _game.mode;
+            if (_roundAlert != null) {
+                PopUpManager.removePopUp(_roundAlert);
+                _roundAlert = null;
+            }
+
             if (_game.state == GameState.PLAY) {
+                _gameWindow.currentState= _game.mode;
                 _tokenHandler.initializeTokenStores();
-                _currentPlayer.play();
                 _gameWindow.begin();
-                if (_roundAlert != null) {
-                    PopUpManager.removePopUp(_roundAlert);
-                    _roundAlert = null;
-                }
+                if ( _game.mode == Mode.COMPETITIVE || _game.mode == Mode.SILVOPASTORAL || _game.moves.length == 0)
+                    _currentPlayer.play();
             }
         }
 
@@ -408,6 +410,7 @@ import mx.ecosur.multigame.enum.GameState;
          */
         public function updatePlayers(game:ManantialesGame):void {
             this._game = game;
+
             if (game.state == GameState.PLAY) {
                 _gameWindow.timer.current = game.elapsedTime;
                 _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
@@ -429,9 +432,10 @@ import mx.ecosur.multigame.enum.GameState;
                         _gameWindow.chatPanel.currentPlayer = _currentPlayer;
                         this.isTurn = _currentPlayer.turn;
                     }
+
                     if (game.state == GameState.PLAY) {
-                        if ( gamePlayer.turn) {
-                            if (gamePlayer.id == _currentPlayer.id) {
+                        if (gamePlayer.turn) {
+                            if (_currentPlayer.turn) {
                                 _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
                                         "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
                                 initTurn();
@@ -500,6 +504,7 @@ import mx.ecosur.multigame.enum.GameState;
             if (_roundAlert != null) {
                 PopUpManager.removePopUp(_roundAlert);
             }
+
             _roundAlert = new RoundAlert();
             _roundAlert.player = player;
             _roundAlert.addEventListener("result", handleRoundResult);

@@ -540,4 +540,11 @@ public class ManantialesGame extends GridGame {
         return super.toString();
         //return getMode() + ":\n" + getGrid().toString();
     }
+
+    @Transient
+    public AdjGraph getGraph() {
+        if (graph == null)
+            graph = createGraph();
+        return graph;
+    }
 }
