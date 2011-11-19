@@ -180,8 +180,6 @@ public class RuleFunctions {
             int startingPlayerPos = ((game.getTurns() / game.getMaxPlayers()) % game.getMaxPlayers());
             GridPlayer[] gps = sorted.toArray(new GridPlayer[game.getMaxPlayers()]);
             nextPlayer = gps [ startingPlayerPos ];
-            ManantialesMessageSender sender = (ManantialesMessageSender) game.getMessageSender();
-            sender.sendRoundChange(game, (ManantialesPlayer) nextPlayer);
         } else {
             if (sorted.last().equals(player))
                 nextPlayer = sorted.first();
