@@ -12,11 +12,10 @@ To get started right away, simply do the following from the top of this project 
     $git submodule init
     $git submodule update
 
-Then checkout the development branch and you're ready to contribute!
+Then checkout the development branch in the module you want and you're ready to contribute!
 
-    $git checkout development
-    $git submodule update
-    $git submodule foreach git checkout development
+    $cd "SUB_MODULE"
+    $git checkout -B development
 
 If you're using git-flow, you could then start work on "featureName" with the following:
 
