@@ -26,6 +26,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.model.interfaces.Cell;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 
 import java.awt.Point;
 import java.util.*;
@@ -165,6 +166,10 @@ public class RuleFunctions {
         game.setTurns(game.getTurns() + 1);
         GridPlayer player = move.getPlayer();
         GridPlayer nextPlayer = null;
+
+        /* Set all players to no turn */
+        for (GridPlayer p : game.getPlayers())
+            p.setTurn(false);
         TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
         sorted.addAll(game.getPlayers());
 
@@ -188,7 +193,8 @@ public class RuleFunctions {
                 nextPlayer = tail.iterator().next();
             }
         }
-        player.setTurn(false);
+
+        /* Now that we know who the next player is, give him the turn */
         nextPlayer.setTurn (true);
         return nextPlayer;
     }
