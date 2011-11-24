@@ -19,6 +19,8 @@ package mx.ecosur.multigame.entity.manantiales
 
         private var _maxPlayers:int;
 
+        private var _turns:int;
+
         private var _elapsedTime:Number;
 
         public function ManantialesGame () {
@@ -84,6 +86,14 @@ package mx.ecosur.multigame.entity.manantiales
 
         public function set elapsedTime(value:Number):void {
             _elapsedTime = value;
+        }
+
+        public function get turns():int {
+            return _turns;
+        }
+
+        public function set turns(value:int):void {
+            _turns = value;
         }
     }
 }

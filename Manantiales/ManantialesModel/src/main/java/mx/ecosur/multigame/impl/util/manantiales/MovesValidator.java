@@ -1,6 +1,5 @@
 package mx.ecosur.multigame.impl.util.manantiales;
 
-import mx.ecosur.multigame.grid.*;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import static mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
 /**
+ * Not threadsafe.
  */
 public class MovesValidator {
 
@@ -25,27 +25,25 @@ public class MovesValidator {
 
     private List<Move> moves;
 
-    private List<Move> validated;
+    private List<Move> invalid;
+
+    private boolean validated;
 
     public MovesValidator(ManantialesGame game, List<Move> moves) {
         this.game = game;
         this.moves = moves;
-        this.validated = Collections.EMPTY_LIST;
-    }
-
-    public List<Move> getValidated() {
-        return validated;
+        this.invalid = Collections.EMPTY_LIST;
+        this.validated = false;
     }
 
     /* Vists and validates moves that were given to this visitor on Construction */
     public void visit () {
         for (Move m : moves) {
             ManantialesMove move = (ManantialesMove) m;
-            if (valid(move)) {
-                if (validated == Collections.EMPTY_LIST)
-                    validated = new ArrayList<Move>();
-                if (!validated.contains(move))
-                    validated.add(move);
+            if (!valid(move)) {
+                if (invalid == Collections.EMPTY_LIST)
+                    invalid = new ArrayList<Move>();
+                invalid.add(move);
             }
         }
     }
@@ -61,9 +59,11 @@ public class MovesValidator {
             List<Point> connected = getConnections(destination);
             for (Point p : connected) {
                 ManantialesFicha test = (ManantialesFicha) game.getGrid().getLocation(new GridCell(p.y,p.x, Color.UNKNOWN));
-                if (test.getType().equals(TokenType.INTENSIVE_PASTURE)) {
-                    ret = false;
-                    break;
+                if (test != null && test.getType() != null) {
+                    if (test.getType().equals(TokenType.INTENSIVE_PASTURE)) {
+                        ret = false;
+                        break;
+                    }
                 }
             }
         }
@@ -83,6 +83,7 @@ public class MovesValidator {
         ret = ret && isValidReplacement(game.getGrid(), move);
         ret = ret && isWithinTimeLimit(game, move);
 
+        validated = true;
         return ret;
     }
 
@@ -99,11 +100,18 @@ public class MovesValidator {
                 }
         }
 
-        return Collections.EMPTY_LIST;
+        return connections;
     }
 
+    public List<Move> getMoves() {
+        if (!validated)
+            throw new RuntimeException("Moves not validated!");
+        if (!invalid.equals(Collections.EMPTY_LIST)) {
+            for (Move i : invalid) {
+                moves.remove(i);
+            }
+        }
 
-    public List<Move> getValidMoves() {
-        return validated;
+        return moves;
     }
 }

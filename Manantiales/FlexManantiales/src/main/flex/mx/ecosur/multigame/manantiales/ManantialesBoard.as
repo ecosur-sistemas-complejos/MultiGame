@@ -95,26 +95,24 @@
 
         /* Component overrides */
         override protected function createChildren():void {
+            /* Create background layer */
             _bg = new Shape();
             addChild(_bg);
-			
+            /* Add in manantial */
             _manantial = new Canvas();
             _manantial.clipContent = false;
             _manantial.rotation = 45;
             _manantial.alpha = .55;
             addChild(_manantial);
-
+            /* Create the spring */
             _spring = new Shape();
             addChild(_spring);
-
             _hl = new Shape();
             addChild(_hl);
-
             _vl = new Shape();
             addChild(_vl);
-
+            /* Create the game grid */
             createCells();
-
             _graph = createGraph();
             _cellsCreated = true;
         }
@@ -302,8 +300,7 @@
                         var pt:Point = new Point();
                         pt.x = cell.row;
                         pt.y = cell.column;
-                        cell.toolTip = counter + "[" + pt.y + "," + pt.x + "] @ "
-                                + "(" + cell.y + "," + cell.x + ")";
+                        cell.toolTip = counter + "[" + pt.y + "," + pt.x + "]";
                         ret.setPoint(counter,  pt);
                         counter = counter + 1;
                     }

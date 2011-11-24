@@ -144,6 +144,9 @@
         private function updateTimer(event:TimerEvent):void {
             currentGame.elapsedTime = timer.current;
             timer.displayTime(Color.getColorCode(currentPlayer.color));
+            if (timer.current >= (45 * 60 * 1000)) {
+                timer.flashMessage();
+            }
         }
 
         public function get state():String {

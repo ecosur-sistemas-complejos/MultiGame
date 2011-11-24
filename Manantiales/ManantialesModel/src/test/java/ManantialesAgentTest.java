@@ -211,6 +211,5 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
         game.setMode(Mode.COMPETITIVE);
         ManantialesFicha ficha = new ManantialesFicha (2,0,alice.getColor(),
                 TokenType.MANAGED_FOREST);
-        
     }
 }

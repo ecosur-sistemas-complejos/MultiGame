@@ -79,17 +79,48 @@ public abstract class AbstractAgent extends ManantialesPlayer implements Agent, 
 
     protected Set<Move> findSwapMoves(ManantialesGame game) {
         Set<Move> ret = Collections.EMPTY_SET;
-        Set<GridCell> filter = new HashSet<GridCell>();
+        Set<ManantialesFicha> forested = new HashSet<ManantialesFicha>();
+        Set<ManantialesFicha> moderate = new HashSet<ManantialesFicha>();
         for (GridCell cell : game.getGrid().getCells()) {
             ManantialesFicha ficha = (ManantialesFicha) cell;
             if (getColor() != null && ficha.getColor().equals(getColor()) &&
                     ficha.getType().equals(TokenType.MANAGED_FOREST)) {
-                filter.add(cell);
+                forested.add(ficha);
+            } else if (getColor() != null && ficha.getColor().equals(getColor()) &&
+                    ficha.getType().equals(TokenType.MODERATE_PASTURE)) {
+                moderate.add(ficha);
             }
         }
 
-        /* Remove two fichas from the list, create a new Swap move based on those fichas and continue */
-
+        /* Add in forested */
+        if (this.getForested() < 6) {
+          int remaining = 6 - getForested();
+          for (ManantialesFicha forest : forested) {
+              if (remaining > 0) {
+                  ManantialesMove m = new ManantialesMove(this, forest, forest);
+                  if (ret == Collections.EMPTY_SET)
+                      ret = new HashSet<Move>();
+                  ret.add(m);
+                  remaining--;
+              } else {
+                  break;
+              }
+          }
+        }
+        
+        /* Add in moderate */
+        if (this.getModerate() < 6) {
+            int remaining = 6 - getModerate();
+            for (ManantialesFicha managed : moderate) {
+                if (remaining > 0) {
+                    ManantialesMove m = new ManantialesMove (this, managed, managed);
+                    if (ret == Collections.EMPTY_SET)
+                        ret = new HashSet<Move>();
+                    ret.add(m);
+                    remaining--;
+                }
+            }
+        }
 
         return ret;
     }

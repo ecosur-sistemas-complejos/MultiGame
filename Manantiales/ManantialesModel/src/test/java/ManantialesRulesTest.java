@@ -1337,10 +1337,10 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
     
     @Test
     public void testIsPrecedingPlayer () {
-        assertTrue (RuleFunctions.isPrecedingPlayer(game, alice, bob));
-        assertTrue(RuleFunctions.isPrecedingPlayer(game, bob, charlie));
-        assertTrue(RuleFunctions.isPrecedingPlayer(game, charlie, denise));
-        assertTrue(RuleFunctions.isPrecedingPlayer(game, denise, alice));
+        assertTrue("Next player is: " + RuleFunctions.nextPlayer(game, alice), RuleFunctions.isPrecedingPlayer(game, alice, bob));
+        assertTrue("Next player is: " + RuleFunctions.nextPlayer(game, bob), RuleFunctions.isPrecedingPlayer(game, bob, charlie));
+        assertTrue("Next player is: " + RuleFunctions.nextPlayer(game, charlie), RuleFunctions.isPrecedingPlayer(game, charlie, denise));
+        assertTrue("Next player is: " + RuleFunctions.nextPlayer(game, denise), RuleFunctions.isPrecedingPlayer(game, denise, alice));
     }
     
     @Test

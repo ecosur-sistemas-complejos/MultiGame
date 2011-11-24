@@ -256,7 +256,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.NORTH, 
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
             border == BorderType.NORTH, type == TokenType.MODERATE_PASTURE)  
     then
         CheckCondition constraint = new CheckCondition(
@@ -272,7 +272,7 @@ end
 
 rule
     "eastern border deforested"
-    agenda-group "verify"    
+    agenda-group "verify"
     no-loop true
     when
         not CheckCondition (expired == false, type == ConditionType.EASTERN_BORDER_DEFORESTED)
@@ -281,7 +281,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.EAST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
             border == BorderType.EAST, type == TokenType.MODERATE_PASTURE)
     then
         CheckCondition constraint = new CheckCondition(
@@ -306,7 +306,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.SOUTH,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null,
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
             border == BorderType.SOUTH, type == TokenType.MODERATE_PASTURE) 
     then
         CheckCondition constraint = new CheckCondition(
@@ -332,7 +332,7 @@ rule
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.WEST,
             type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
             border == BorderType.WEST, type == TokenType.MODERATE_PASTURE)
     then
         CheckCondition constraint = new CheckCondition(
@@ -356,7 +356,7 @@ rule "manantiales"
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
         $tok2 : ManantialesFicha (id > $id, $id2 : id, manantial == true, type in (
             TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
-        $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID, destinationCell != null, 
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
             manantial == true, type == TokenType.MODERATE_PASTURE)
     then 
         CheckCondition constraint = new CheckCondition(
@@ -368,19 +368,6 @@ rule "manantiales"
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
         messageSender.sendConditionRaised ($game, constraint);
-end
-
-rule "move-effects-cleared-area"
-    agenda-group "evaluate"
-when
-    $move : ManantialesMove ($cell : destinationCell, badYear == false, 
-        status != MoveStatus.INVALID, type in 
-            (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
-    $condition : CheckCondition (expired == false, $violators : violators)
-    not GridCell ($cell.row == row, $cell.column == column) from $violators 
-    eval (effectsCondition ($condition, $move))
-then
-    modify ($move) { setBadYear(true), setDestinationCell(null)};
 end
 
 rule "evaluated-suggestion-notify"
@@ -501,6 +488,19 @@ then
     insert(swap2);
     messageSender.sendMoveComplete ($game, swap1);
     messageSender.sendMoveComplete ($game, swap2);
+end
+
+rule "move-effects-cleared-area"
+    agenda-group "evaluate"
+when
+    $move : ManantialesMove ($cell : destinationCell, badYear == false,
+        status != MoveStatus.INVALID, type in
+            (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+    $condition : CheckCondition (expired == false, $violators : violators)
+    not GridCell ($cell.row == row, $cell.column == column) from $violators
+    eval (effectsCondition ($condition, $move))
+then
+    modify ($move) { setBadYear(true), setDestinationCell(null)};
 end
 
 rule "territory-deforested"
@@ -709,18 +709,6 @@ when
 then
     modify ($move) { setStatus (MoveStatus.EVALUATED) };
 end 
-
-
-rule "invalid-move"
-    agenda-group "evaluate"
-    no-loop true
-    salience -15
-when
-    $game   : ManantialesGame (state == GameState.PLAY, $mode : mode)
-    $move   : ManantialesMove (status != MoveStatus.EVALUATED, mode == $mode, badYear != true)
-then
-    modify ($move) { setStatus (MoveStatus.INVALID) }
-end
 
 rule "game-won"
     agenda-group "evaluate"

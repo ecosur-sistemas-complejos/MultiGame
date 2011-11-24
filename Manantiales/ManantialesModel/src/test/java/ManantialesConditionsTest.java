@@ -92,7 +92,6 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
        move = new ManantialesMove (charlie, ficha3);
        mv = game.move(move);
        assertEquals(MoveStatus.EVALUATED, mv.getStatus());
-       assertEquals(3, game.getMoves().size());
        assertEquals(1, game.getCheckConditions().size());
    }
    
@@ -129,7 +128,7 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
        move = new ManantialesMove (alice, ficha, relief);
        game.move(move);
        filtered = filterForEvent(GameEvent.CONDITION_RESOLVED);
-       assertTrue(filtered.size () == 1);
+       assertTrue("Actual size of filtered (expected 1): " + filtered.size(), filtered.size () == 1);
        filtered = filterForEvent(GameEvent.CONDITION_TRIGGERED);
        assertTrue(filtered.size() == 0);
        

@@ -62,7 +62,6 @@ import mx.ecosur.multigame.enum.GameState;
         private var _gameId:int;
         private var _annCondGen:AnnualConditionsGenerator;
         private var _alerts:ArrayCollection;
-        private var _roundAlert:RoundAlert;
         private var _expiredAlert:TimeExpiredAlert;
         private var _endAlert:GraphicAlert;
 
@@ -224,10 +223,6 @@ import mx.ecosur.multigame.enum.GameState;
                         suggestion = Suggestion(message.body);
                         _suggestionHandler.removeSuggestion (suggestion);
                         break;
-                    case GameEvent.GAME_CHANGE:
-                        player = ManantialesPlayer(message.body);
-                        handleRoundChange(player);
-                        break;
                     case GameEvent.EXPIRED:
                         move = ManantialesMove(message.body);
                         handleExpiredMove(move);
@@ -342,16 +337,11 @@ import mx.ecosur.multigame.enum.GameState;
         }
 
         private function initTurn():void {
-            if (_roundAlert != null) {
-                PopUpManager.removePopUp(_roundAlert);
-                _roundAlert = null;
-            }
-
             if (_game.state == GameState.PLAY) {
                 _gameWindow.currentState= _game.mode;
                 _tokenHandler.initializeTokenStores();
                 _gameWindow.begin();
-                if ( _game.mode == Mode.COMPETITIVE || _game.mode == Mode.SILVOPASTORAL || _game.moves.length == 0)
+                if ( _game.mode == Mode.COMPETITIVE || _game.mode == Mode.SILVOPASTORAL || _game.turns == 0)
                     _currentPlayer.play();
             }
         }
@@ -498,23 +488,6 @@ import mx.ecosur.multigame.enum.GameState;
                 Alert.show(event.fault.faultString, resourceManager.getString("Manantiales",
                         "manantiales.controller.server.error"));
             }
-        }
-
-        private function handleRoundChange (player:ManantialesPlayer):void {
-            if (_roundAlert != null) {
-                PopUpManager.removePopUp(_roundAlert);
-            }
-
-            _roundAlert = new RoundAlert();
-            _roundAlert.player = player;
-            _roundAlert.addEventListener("result", handleRoundResult);
-            PopUpManager.addPopUp(_roundAlert,  _gameWindow,  true);
-            PopUpManager.centerPopUp(_roundAlert);
-        }
-
-        private function handleRoundResult(event:DynamicEvent):void {
-            PopUpManager.removePopUp(_roundAlert);
-            _roundAlert = null;
         }
 
         private function handleExpiredMove(move:ManantialesMove):void {

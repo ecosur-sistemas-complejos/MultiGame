@@ -7,6 +7,7 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
+import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.util.manantiales.MovesValidator;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
@@ -71,12 +72,33 @@ public class SimpleAgent extends AbstractAgent {
         Random r = new Random();
         ManantialesGame game = (ManantialesGame) impl;
         ret = new ArrayList<Move>();
-        ret.addAll(findNewMoves(game));
-        ret.addAll(findUpgradeMoves(game));
-        ret.addAll(findSwapMoves(game));
+        /* Calculate new positions */
+        Set<Move> newMoves = findNewMoves(game);
+        ret.addAll(newMoves);
+        /* Calculate upgrades */
+        Set<Move> upgradeMoves = findUpgradeMoves(game);
+        ret.addAll(upgradeMoves);
+
+        int proposedIntensives = 0;
+        for (Move m : upgradeMoves) {
+            ManantialesMove move = (ManantialesMove) m;
+            if (move.getType().equals(TokenType.INTENSIVE_PASTURE))
+                proposedIntensives++;
+        }
+
+
+        /* Visit an validate all suggested moves */
         MovesValidator v = new MovesValidator(game, ret);
         v.visit();
-        ret = v.getValidMoves();
+        /* Get the list of invalid moves and strike them from the return list */
+        ret = v.getMoves();
+
+        /* Only in the case of new moves being proposed, or only intensive upgrades, add in swap moves
+        * (failsafe if MovValidator fails) */
+        if (ret.equals(Collections.EMPTY_SET) || ret.size() == 0 || newMoves.size() + upgradeMoves.size() - proposedIntensives <= 0)
+            ret.addAll(findSwapMoves(game));
+
+        /* Randomize moves */
         Collections.shuffle(ret);
         return ret;
     }

@@ -163,58 +163,53 @@ public class RuleFunctions {
     }
 
     public static GridPlayer incrementTurn (ManantialesGame game, ManantialesMove move) {
-        game.setTurns(game.getTurns() + 1);
-        GridPlayer player = move.getPlayer();
-        GridPlayer nextPlayer = null;
+        /* Current player "player" and next "nextPlayer" */
+        ManantialesPlayer player = (ManantialesPlayer) move.getPlayer();
+        ManantialesPlayer nextPlayer = null;
 
         /* Set all players to no turn */
         for (GridPlayer p : game.getPlayers())
             p.setTurn(false);
-        TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
-        sorted.addAll(game.getPlayers());
 
-        boolean activeCondition = false;
-        for (CheckCondition c : game.getCheckConditions()) {
-            if (!c.isResolved() && !c.isExpired())
-                activeCondition = true;
-        }
+        /* Determine who's next */
+        nextPlayer = nextPlayer(game, player);
 
-        /* Test if this is the start of a new round;
-           modulus test must be met, and game must have no active conditions! */
-        if (!activeCondition && ((game.getTurns()) % game.getMaxPlayers() == 0) ) {
-            int startingPlayerPos = ((game.getTurns() / game.getMaxPlayers()) % game.getMaxPlayers());
-            GridPlayer[] gps = sorted.toArray(new GridPlayer[game.getMaxPlayers()]);
-            nextPlayer = gps [ startingPlayerPos ];
-        } else {
-            if (sorted.last().equals(player))
-                nextPlayer = sorted.first();
-            else {
-                SortedSet<GridPlayer> tail = sorted.tailSet(player, false);
-                nextPlayer = tail.iterator().next();
-            }
-        }
+        /* Accounting required due to refactor */
+        game.setTurns(game.getTurns() + 1);
 
-        /* Now that we know who the next player is, give him the turn */
+        /* Give him the turn */
         nextPlayer.setTurn (true);
         return nextPlayer;
     }
 
-    public static  boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
-        boolean ret = false;
+     public static ManantialesPlayer nextPlayer(ManantialesGame game, ManantialesPlayer player) {
+        int turns = game.getTurns() + 1;
+        TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
+        sorted.addAll(game.getPlayers());
+        ManantialesPlayer nextPlayer;
 
-        if (!first.equals(second)) {
-            TreeSet<GridPlayer> sorted = new TreeSet<GridPlayer>(new PlayerComparator());
-            sorted.addAll(game.getPlayers());
-            if (sorted.last().equals(first) && sorted.first().equals(second))
-                ret = true;
+        /* Test if this is the start of a new round;
+           modulus test must be met, and game must have no active conditions! */
+        if ((turns % game.getMaxPlayers() == 0)) {
+            int startingPlayerPos = ((turns / game.getMaxPlayers()) % game.getMaxPlayers());
+            GridPlayer[] gps = sorted.toArray(new GridPlayer[game.getMaxPlayers()]);
+            nextPlayer = (ManantialesPlayer) gps [ startingPlayerPos ];
+        } else {
+            if (sorted.last().equals(player))
+                nextPlayer = (ManantialesPlayer) sorted.first();
             else {
-                SortedSet<GridPlayer> tail = sorted.tailSet(first, false);
-                if (!tail.isEmpty())
-                    ret = tail.first().equals(second);
+                SortedSet<GridPlayer> tail = sorted.tailSet(player, false);
+                nextPlayer = (ManantialesPlayer) tail.iterator().next();
             }
         }
 
-        return ret;
+        return nextPlayer;
+    }
+
+    /* Determines if player "first" is before player "second". */
+    public static  boolean isPrecedingPlayer (ManantialesGame game, GridPlayer first, GridPlayer second) {
+        ManantialesPlayer next = nextPlayer(game,(ManantialesPlayer) first);
+        return (next.equals(second));
     }
 
 
