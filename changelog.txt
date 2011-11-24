@@ -60,4 +60,11 @@ BETA-2 Release Date: 15/Nov/11
     MG-68    FIXED  Rename Game Mode ENUMS
     MG-69    FIXED  Implement 45 Minute Time Limit
 
+RC-1 Release Date: 25/11/11
+    MG-73    FIXED   SimpleAgent suggesting moves that are INVALID
+    MG-75    FIXED   After passing an INVALID move, Robots create problems for determing NextPlayer
+    MG-76    FIXED   Check Conditions Triggered Incorrectly
+    MG-74    FIXED   Update Manantiales Documentation to reflect UserGuide from Luis
+    MG-77    FIXED   Bonuses Awarded After 3 NOT 4 Points in Silvopastoral Modalities
+
 
