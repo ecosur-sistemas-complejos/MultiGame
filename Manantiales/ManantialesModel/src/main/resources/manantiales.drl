@@ -653,10 +653,12 @@ then
     modify ($move) { setPlayer (player), setStatus (MoveStatus.EVALUATED) };
 end 
 
-rule "award-intensive-bonus"
+rule "award-regular-intensive-bonus"
 	agenda-group "evaluate"
 	salience 50
 when
+	exists (ManantialesGame (
+		mode in (Mode.COMPETITIVE, Mode.BASIC_PUZZLE)))
 	$move : ManantialesMove (status == MoveStatus.EVALUATED)
 	not Bonus (color == $move.player.color, type == TokenType.INTENSIVE_PASTURE)	
     $list : ArrayList (size >= 3) from collect (ManantialesFicha (
@@ -669,10 +671,12 @@ then
 	insert (new Bonus(player.getColor(), TokenType.INTENSIVE_PASTURE));
 end	
 
-rule "award-forested-bonus"
+rule "award-regular-forested-bonus"
 	agenda-group "evaluate"
 	salience 50
-when
+when	
+	exists (ManantialesGame (
+		mode in (Mode.COMPETITIVE, Mode.BASIC_PUZZLE)))
 	$move : ManantialesMove (status == MoveStatus.EVALUATED)
 	not Bonus (color == $move.player.color, type == TokenType.MANAGED_FOREST)	
     $list : ArrayList (size >= 3) from collect (ManantialesFicha (
@@ -685,17 +689,54 @@ then
 	insert (new Bonus(player.getColor(), TokenType.MANAGED_FOREST));
 end	
 
+rule "award-silvo-intensive-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	exists (ManantialesGame (
+		mode in (Mode.SILVOPASTORAL, Mode.SILVO_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.INTENSIVE_PASTURE)	
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
+    	type == TokenType.INTENSIVE_PASTURE, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 4);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.INTENSIVE_PASTURE));
+end	
+
+rule "award-silvo-forested-bonus"
+	agenda-group "evaluate"
+	salience 50
+when	
+	exists (ManantialesGame (
+		mode in (Mode.SILVOPASTORAL, Mode.SILVO_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.MANAGED_FOREST)	
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
+    	type == TokenType.MANAGED_FOREST, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 4);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.MANAGED_FOREST));
+end	
+
+
 rule "award-silvopastoral-bonus"
 	agenda-group "evaluate"
 	salience 50
 when
 	$move : ManantialesMove (status == MoveStatus.EVALUATED)
 	not Bonus (color == $move.player.color, type == TokenType.SILVOPASTORAL)	
-    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
     	type == TokenType.SILVOPASTORAL, $move.player.color == color))
 then
 	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
-	int value = player.getPremiums() + ($list.size() / 3);
+	int value = player.getPremiums() + ($list.size() / 4);
 	player.setPremiums(value);	
 	modify ($move) { setPlayer (player) };
 	insert (new Bonus(player.getColor(), TokenType.SILVOPASTORAL));
