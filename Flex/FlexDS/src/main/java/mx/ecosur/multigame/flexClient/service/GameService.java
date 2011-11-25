@@ -44,7 +44,7 @@ import mx.ecosur.multigame.model.interfaces.*;
 
 public class GameService {
 
-    private MessageSender sender = new MessageSender();
+    private MessageSender sender = new MessageSender("Lobby");
 
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
@@ -144,13 +144,12 @@ public class GameService {
                sender.initialize();
                sender.sendCreateGame(ret.getGame());
             }
-
-            return ret;
-
         } catch (InvalidRegistrationException e) {
             e.printStackTrace();
             throw new GameException(e);
         }
+
+        return ret;
     }
 
     public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,

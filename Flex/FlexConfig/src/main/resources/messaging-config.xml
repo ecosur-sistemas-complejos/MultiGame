@@ -10,7 +10,8 @@
     <default-channels>
         <channel ref="amf"/>
     </default-channels>
-    
+
+    <!-- Main MultiGame Topic -->
     <destination id="multigame-destination">
         <properties>
             <jms>
@@ -24,8 +25,23 @@
                 <acknowledge-mode>AUTO_ACKNOWLEDGE</acknowledge-mode>
             </jms>
         </properties>
-
         <adapter ref="jms"/>
     </destination>
 
+    <!-- Lobby Topic -->
+    <destination id="lobby-destination">
+        <properties>
+            <jms>
+                <destination-type>Topic</destination-type>
+                <message-type>javax.jms.ObjectMessage</message-type>
+                <connection-factory>MultiGameConnectionFactory</connection-factory>
+                <destination-jndi-name>Lobby</destination-jndi-name>
+                <delivery-mode>NON_PERSISTENT</delivery-mode>
+                <message-priority>DEFAULT_PRIORITY</message-priority>
+                <preserve-jms-headers>"true"</preserve-jms-headers>
+                <acknowledge-mode>AUTO_ACKNOWLEDGE</acknowledge-mode>
+            </jms>
+        </properties>
+        <adapter ref="jms"/>
+    </destination>
 </service>

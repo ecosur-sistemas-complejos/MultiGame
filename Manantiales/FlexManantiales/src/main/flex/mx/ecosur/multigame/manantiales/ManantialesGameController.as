@@ -21,8 +21,8 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
     import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
-import mx.ecosur.multigame.enum.GameEvent;
-import mx.ecosur.multigame.enum.GameState;
+    import mx.ecosur.multigame.enum.GameEvent;
+    import mx.ecosur.multigame.enum.GameState;
     import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
     import mx.ecosur.multigame.enum.manantiales.Mode;
@@ -56,7 +56,7 @@ import mx.ecosur.multigame.enum.GameState;
 
         public var _executingMove:ManantialesMove;
         public var _isTurn:Boolean;
-        public var _previousToken:Token;        
+        public var _previousToken:Token;
 
         private var _players:ArrayCollection;
         private var _gameId:int;
@@ -386,9 +386,6 @@ import mx.ecosur.multigame.enum.GameState;
         public function set isTurn(isTurn:Boolean):void{
             if(_isTurn != isTurn){
                 _isTurn = isTurn;
-                if (_isTurn){
-                    initTurn();
-                }
             }
         }
 
@@ -400,57 +397,57 @@ import mx.ecosur.multigame.enum.GameState;
          */
         public function updatePlayers(game:ManantialesGame):void {
             this._game = game;
+            _gameWindow.currentGame = game;
+            _players = _game.players;
+            _tokenHandler.update(_currentPlayer);
+            _gameWindow.playersViewer.game = _game;
 
             if (game.state == GameState.PLAY) {
                 _gameWindow.timer.current = game.elapsedTime;
                 _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
                 _gameWindow.timer.flashMessage();
-                _gameWindow.playersViewer.game = _game;
-            }
 
-            var gamePlayer:ManantialesPlayer;
-            var i:int;
+                var gamePlayer:ManantialesPlayer;
 
-            if (game.mode == Mode.COMPETITIVE ||
-                game.mode == Mode.SILVOPASTORAL ||
-                game.mode == Mode.RELOADED)
-            {
-                for (i = 0; i < game.players.length; i++) {
-                    gamePlayer = ManantialesPlayer(game.players[i]);
-                    if (gamePlayer.id == _currentPlayer.id) {
-                        _currentPlayer = gamePlayer;
-                        _gameWindow.chatPanel.currentPlayer = _currentPlayer;
-                        this.isTurn = _currentPlayer.turn;
-                    }
-
-                    if (game.state == GameState.PLAY) {
+                if (game.mode == Mode.COMPETITIVE ||
+                    game.mode == Mode.SILVOPASTORAL ||
+                    game.mode == Mode.RELOADED)
+                {
+                    for (var i = 0; i < game.players.length; i++) {
+                        gamePlayer = ManantialesPlayer(game.players[i]);
                         if (gamePlayer.turn) {
-                            if (_currentPlayer.turn) {
-                                _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                                        "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
-                                initTurn();
+                            if (gamePlayer.id == _currentPlayer.id) {
+                                _currentPlayer.turn = true;
+                                isTurn = true;
+                                break;
                             } else {
-                                _gameWindow.gameStatus.showMessage(
-                                        gamePlayer.name + " " + resourceManager.getString("Manantiales",
-                                        "manantiales.tomove"), Color.getColorCode(gamePlayer.color));
+                                _currentPlayer.turn = false;
+                                isTurn = false;
+                                break;
                             }
                         }
                     }
-                }
-            } else {
-                if (game.state == GameState.PLAY) {
-                    _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                    "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
-                    initTurn()
-                } else if (game.state == GameState.WAITING) {
-                        _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
-                                "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
-                    }
-            }
 
-            _gameWindow.currentGame = game;
-            _players = _game.players;
-            _tokenHandler.update(_currentPlayer);
+                    if (game.state == GameState.PLAY) {
+                        if (_currentPlayer.turn) {
+                            _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                                    "manantiales.currentplayer.turn"), Color.getColorCode(_currentPlayer.color));
+                            initTurn();
+                        } else {
+                            _gameWindow.gameStatus.showMessage(
+                                    gamePlayer.name + " " + resourceManager.getString("Manantiales",
+                                    "manantiales.tomove"), Color.getColorCode(gamePlayer.color));
+                        }
+                    }
+                } else {
+                    _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                        "manantiales.freeplay"), Color.getColorCode(_currentPlayer.color));
+                    initTurn()
+                }
+            } else if (game.state == GameState.WAITING) {
+                _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
+                "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
+            }
         }
 
         public function updatePlayersFromMove(move:ManantialesMove):void {

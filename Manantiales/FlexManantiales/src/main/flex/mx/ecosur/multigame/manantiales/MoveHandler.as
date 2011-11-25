@@ -107,7 +107,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
         }
 
         public function addMove(move:ManantialesMove):void {
-            if (move.mode == _controller._game.mode && !_controller._isTurn)
+            if (move.mode == _controller._game.mode && !_controller._currentPlayer.turn)
                 _controller._gameWindow.currentState = "";
 
             if (move.mode == _controller._game.mode) {
@@ -207,7 +207,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
             var startSize:Number;
             var playerBtn:Button;
 
-            if (move.player.id == _controller._currentPlayer.id && _controller._isTurn) {
+            if (move.player.id == _controller._currentPlayer.id && _controller._currentPlayer.turn) {
                 switch (destination.type) {
                     case TokenType.FOREST:
                         startPoint = new Point(_controller._gameWindow.forestStore.width, _controller._gameWindow.forestStore.height);
@@ -342,7 +342,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
                 _controller._gameWindow.animateLayer.removeChild(token);
 
                 //remove from token store if necessary
-                if(token.cell.color == _controller._currentPlayer.color && _controller._isTurn){
+                if(token.cell.color == _controller._currentPlayer.color && _controller._currentPlayer.turn){
                     if (token is ForestToken) {
                         _controller._gameWindow.forestStore.removeToken();
                     }

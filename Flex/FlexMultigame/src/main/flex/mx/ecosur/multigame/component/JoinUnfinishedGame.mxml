@@ -12,13 +12,10 @@
         import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.PlayEvent;
-        import mx.ecosur.multigame.enum.GameEvent;
 
         import mx.collections.ArrayCollection;
         import mx.managers.CursorManager;
         import mx.messaging.events.MessageFaultEvent;
-        import mx.messaging.messages.AsyncMessage;
-        import mx.messaging.messages.IMessage;
         import mx.rpc.AsyncToken;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
@@ -172,22 +169,12 @@
                 }
             }
             dispatchEvent(new PlayEvent("gameChosen", joinedGame, gamePlayer));
-            sendPlayerChange(joinedGame);
-        }
-
-        private function sendPlayerChange(game:Game):void {
-            var message:IMessage = new AsyncMessage();
-            message.headers.GAME_ID = game.id;
-            message.headers.GAME_EVENT = GameEvent.PLAYER_CHANGE;
-            message.body = game;
-            _producer.send(message);
         }
 
         ]]>
     </mx:Script>
     
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
-    <mx:Producer id="_producer" destination="multigame-destination" fault="messageFaultHandler(event)"/>
 
     <mx:VBox width="100%">
         <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
