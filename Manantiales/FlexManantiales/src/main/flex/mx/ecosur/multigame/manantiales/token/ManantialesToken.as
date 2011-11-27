@@ -108,7 +108,10 @@ public class ManantialesToken extends Token
                 _txt.y = - unscaledHeight / 2;
             }
 
-            this.toolTip = "[" + ficha.column + "," + ficha.row + "]";
+            if (ficha != null)
+                toolTip = "[" + ficha.column + "," + ficha.row + "]";
+            else
+                toolTip = "Null ficha.";
 
             // Set filters acording to whether the token is selected or not
             if (_selected){

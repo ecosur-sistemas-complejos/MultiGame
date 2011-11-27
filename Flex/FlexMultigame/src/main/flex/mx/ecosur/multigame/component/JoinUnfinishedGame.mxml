@@ -159,7 +159,6 @@
         private function joinGame():void {
             CursorManager.setBusyCursor();
             var joinedGame:Game = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
-            gamesDataGrid.selectedItem = null;
             var gamePlayer:GamePlayer;
             for (var i:Number = 0; i < joinedGame.players.length; i++) {
                 var gp:GamePlayer = joinedGame.players [ i ];

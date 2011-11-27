@@ -4,12 +4,15 @@ package mx.ecosur.multigame.impl.entity.manantiales;
 
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.grid.Color;
+import mx.ecosur.multigame.grid.entity.GridCell;
+import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.impl.util.manantiales.MovesValidator;
 import mx.ecosur.multigame.model.interfaces.Game;
+import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
 
@@ -17,6 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author awaterma@ecosur.mx
@@ -26,7 +30,11 @@ public class SimpleAgent extends AbstractAgent {
 
     private static final long serialVersionUID = 8878695200931762776L;
 
+    private static Random R;
+
     private AgentType type;
+
+    private Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
     public SimpleAgent() {
         super();        
@@ -38,7 +46,7 @@ public class SimpleAgent extends AbstractAgent {
     }
 
     public void initialize() {
-        // do nothing 
+        R = new Random(System.currentTimeMillis());
     }   
 
     @Enumerated(EnumType.STRING)
@@ -100,6 +108,42 @@ public class SimpleAgent extends AbstractAgent {
 
         /* Randomize moves */
         Collections.shuffle(ret);
+        return ret;
+    }
+
+    /* For testing suggestions in single-player */
+    public Suggestion offerSuggestion(Game g) {
+        PuzzleSuggestion ret = null;
+        ManantialesGame game = (ManantialesGame) g;
+
+        if (game.getMode().equals(Mode.BASIC_PUZZLE) || game.getMode().equals(Mode.SILVO_PUZZLE) &&
+                game.getSuggestions() == Collections.EMPTY_SET || game.getSuggestions().size() == 0)
+        {
+
+            ManantialesPlayer p = null;
+            for (GridPlayer gp : game.getPlayers()) {
+                if (gp.getColor().equals(Color.YELLOW)) {
+                    p = (ManantialesPlayer) gp;
+                    break;
+                }
+            }
+
+            List<ManantialesFicha> filter = new LinkedList<ManantialesFicha>();
+            for (GridCell c : game.getGrid().getCells()) {
+                if (c.getColor().equals(p.getColor()))
+                    filter.add((ManantialesFicha) c);
+            }
+
+            if (!filter.isEmpty() && filter.size() > 1 && R.nextBoolean()) {
+                Collections.shuffle(filter);
+                ret = new PuzzleSuggestion();
+                ret.setSuggestor(this);
+                ret.setStatus(SuggestionStatus.UNEVALUATED);
+                /* Suggest a swap move */
+                ret.setMove(new ManantialesMove(p, filter.get(0), filter.get(1)));
+            }
+        }
+
         return ret;
     }
 
