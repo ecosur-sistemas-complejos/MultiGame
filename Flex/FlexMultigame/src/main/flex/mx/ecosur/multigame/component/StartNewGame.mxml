@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
-          title="{resourceManager.getString('Lobby', 'start.panel.title')}" creationComplete="init()">
+          title="{resourceManager.getString('Lobby', 'start.panel.title')}">
 
 <mx:Metadata>
     [Event(name="registered", type="mx.ecosur.multigame.event.PlayEvent")]
@@ -99,10 +99,6 @@
             modalities.visible = false;
     }
 
-    private function init():void {
-        showAIPlayers(true);
-    }
-
     ]]>
 </mx:Script>
 <mx:ArrayCollection id="agentList"/>
@@ -135,13 +131,13 @@
     </mx:FormItem>
     <mx:FormItem id="ai" visible="true">
         <mx:HBox id="radios">
+            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.two')}" id="humans"
+                            selected="true" click="showAIPlayers(false)"/>
             <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.one')}" id="robots"
-                selected="{radios.visible}" click="showAIPlayers(true)" />
-            <mx:RadioButton label="{resourceManager.getString('Lobby', 'start.radio.two')}"
-                selected="{!radios.visible}" click="showAIPlayers(false)"/>
+                selected="false" click="showAIPlayers(true)" />
         </mx:HBox>
     </mx:FormItem>
-        <mx:HBox id="aiPlayers" visible="true" height="0">
+        <mx:HBox id="aiPlayers" visible="false" height="0">
             <mx:FormItem label="{resourceManager.getString('Lobby', 'start.player2')}">
                 <mx:ComboBox id="player2" dataProvider="{agentList}"/>
             </mx:FormItem>

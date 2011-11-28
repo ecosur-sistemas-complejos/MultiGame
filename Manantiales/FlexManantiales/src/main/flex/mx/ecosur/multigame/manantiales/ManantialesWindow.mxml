@@ -19,6 +19,7 @@
         import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
         import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
         import mx.ecosur.multigame.enum.Color;
+        import mx.ecosur.multigame.enum.GameState;
         import mx.managers.PopUpManager;
         import mx.events.MenuEvent;
         import mx.ecosur.multigame.entity.GamePlayer;
@@ -125,6 +126,10 @@
                 PopUpManager.addPopUp(_helpPanel, this, true);
                 PopUpManager.centerPopUp(_helpPanel);
             } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.one.submenu.one")) {
+                if (currentGame.state == GameState.ENDED)
+                    quitGame();
+                else
+                    dispatchEvent(new Event("complete", true));
                 dispatchCompletion();
             } else if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.one.submenu.two")) {
                 quitGame();

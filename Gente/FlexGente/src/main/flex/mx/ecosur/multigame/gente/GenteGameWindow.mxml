@@ -16,6 +16,7 @@
             import mx.ecosur.multigame.component.HelpPanel;
             import mx.ecosur.multigame.entity.GamePlayer;
             import mx.ecosur.multigame.entity.gente.GenteGame;
+            import mx.ecosur.multigame.enum.GameState;
             import mx.events.MenuEvent;
             import mx.managers.PopUpManager;
 
@@ -83,11 +84,14 @@
                 PopUpManager.addPopUp(_helpPanel, this, true);
                 PopUpManager.centerPopUp(_helpPanel);
             } else if (evt.label == resourceManager.getString("Gente","gente.menu.one.submenu.one")) {
-                this.destroy();
-                this.dispatchEvent(new Event("complete", true));
+                if (currentGame.state == GameState.ENDED)
+                    quitGame();
+                else
+                    destroy();
+                dispatchEvent(new Event("complete", true));
             } else if (evt.label == resourceManager.getString("Gente","gente.menu.one.submenu.two")) {
                 quitGame();
-                this.dispatchEvent(new Event("complete", true));
+                dispatchEvent(new Event("complete", true));
             } else if (evt.item.@locale) {
                 resourceManager.localeChain = [evt.item.@locale];
             }
