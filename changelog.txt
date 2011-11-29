@@ -34,4 +34,37 @@ BETA Release Date: 12/Oct/11
 	MG-36	 FIXED	Upgrade FlexMojos to 3.9 or 4.x in Preparation for Flex 4.5 SDK		
 	MG-20	 FIXED	Purple Robot not playing both rivers		
 	MG-21	 FIXED	No Celebration Music After Win		
-	MG-30	 FIXED	README should be updated with instructions on how to install Flash Player for FlexUnit tests		
+	MG-30	 FIXED	README should be updated with instructions on how to install Flash Player for FlexUnit tests
+
+BETA-2 Release Date: 15/Nov/11
+    MG-35    FIXED  Insufficient Integration Tests for Check Conditions
+    MG-44    FIXED  Black Token Animation Needs to be Fixed
+    MG-48    FIXED  Lobby out of Sync with Server (MG-9 Type Conversion Failed)
+    MG-51    FIXED  INVALID MOVE Error Not Translated
+    MG-52    FIXED  "Bonus" Scores are not Counted Correctly
+    MG-53    FIXED  Cursor Wait Not Always Cleared
+    MG-54    FIXED  Translation: "Algun Extra" needs to be changed to "Puntos Extra"
+    MG-55    FIXED  Moves that are Accepted Suggestions are not illustrated for the accepting player
+    MG-56    FIXED  Only one player (yellow) allowed to make suggestions
+    MG-58    FIXED  Jenkins issues with running FlashPlayer tests
+    MG-60    FIXED  Central Spring needs to be rotated to match area between center 4 Cellls
+    MG-63    FIXED  Login Mechanism Unreliable
+    MG-64    FIXED  Limit Number of Games Players May Create
+    MG-70    FIXED  PLAYER_JOIN in Lobby Adds a new Game to the List and Doesn't remove previous game
+    MG-71    FIXED  Help needs to be in both Spanish and English
+    MG-72    FIXED  Agents Playing Out of Turn
+    MG-59    FIXED  Token Font Incorrectly Sized
+    MG-61    FIXED  Translation: ChiapasGames.org/.net/.com needs Spanish Version of main HTML Page
+    MG-62    FIXED  Translate: Main login page for MultiGame needs translation into Spanish
+    MG-67    FIXED  Implement Round Based Turn Changes
+    MG-68    FIXED  Rename Game Mode ENUMS
+    MG-69    FIXED  Implement 45 Minute Time Limit
+
+RC-1 Release Date: 25/11/11
+    MG-73    FIXED   SimpleAgent suggesting moves that are INVALID
+    MG-75    FIXED   After passing an INVALID move, Robots create problems for determing NextPlayer
+    MG-76    FIXED   Check Conditions Triggered Incorrectly
+    MG-74    FIXED   Update Manantiales Documentation to reflect UserGuide from Luis
+    MG-77    FIXED   Bonuses Awarded After 3 NOT 4 Points in Silvopastoral Modalities
+
+
