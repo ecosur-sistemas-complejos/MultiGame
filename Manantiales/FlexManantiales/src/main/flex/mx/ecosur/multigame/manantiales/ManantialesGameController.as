@@ -396,13 +396,10 @@ package mx.ecosur.multigame.manantiales
          * @param players the new list of players
          */
         public function updatePlayers(game:ManantialesGame):void {
-            this._game = game;
-            _gameWindow.currentGame = game;
-            _players = _game.players;
-            _tokenHandler.update(_currentPlayer);
+            _game = game;
             _gameWindow.playersViewer.game = _game;
 
-            if (game.state == GameState.PLAY) {
+            if (game.state != GameState.WAITING) {
                 _gameWindow.timer.current = game.elapsedTime;
                 _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
                 _gameWindow.timer.flashMessage();
@@ -417,7 +414,7 @@ package mx.ecosur.multigame.manantiales
                         gamePlayer = ManantialesPlayer(game.players[i]);
                         if (gamePlayer.turn) {
                             if (gamePlayer.id == _currentPlayer.id) {
-                                _currentPlayer.turn = true;
+                                _currentPlayer = gamePlayer;
                                 isTurn = true;
                                 break;
                             } else {
@@ -448,6 +445,10 @@ package mx.ecosur.multigame.manantiales
                 _gameWindow.gameStatus.showMessage(resourceManager.getString("Manantiales",
                 "manantiales.wait.message"), Color.getColorCode(_currentPlayer.color));
             }
+
+            _gameWindow.currentGame = game;
+            _players = _game.players;
+            _tokenHandler.update(_currentPlayer);
         }
 
         public function updatePlayersFromMove(move:ManantialesMove):void {
@@ -550,13 +551,13 @@ package mx.ecosur.multigame.manantiales
         }
 
         private function handleGameEnd(game:ManantialesGame):void {
-            var i:int;
+            _game = game;
 
             /* Message the Window to END */
             _gameWindow.end();
 
             /* Remove all alert conditions from the PopUpManager */
-            for (i = 0; i < _alerts.length; i++)
+            for (var i:int = 0; i < _alerts.length; i++)
                 PopUpManager.removePopUp(IFlexDisplayObject(_alerts.getItemAt(i)));
 
             if (_endAlert == null) {
@@ -566,7 +567,7 @@ package mx.ecosur.multigame.manantiales
 
                 /* See if any checkConstraints are expired and if so, Post a
                  different end condition alert */
-                for (i = 0; i < game.checkConditions.length; i++) {
+                for (var i:int = 0; i < game.checkConditions.length; i++) {
                     var checkCondition:CheckCondition = CheckCondition(
                             game.checkConditions.getItemAt(i));
                     if (checkCondition.expired && (checkCondition.reason == ConditionType.MANANTIALES_DRY ||

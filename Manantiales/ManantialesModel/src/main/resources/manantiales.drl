@@ -534,13 +534,13 @@ when
         status == MoveStatus.MOVED, $cell : currentCell, type in
         (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE),
             destinationCell == null)
-    $constraint : CheckCondition ($violators : violators)
+    $constraint : CheckCondition ($violators : violators, expired != true)
     GridCell ($cell.row == row, $cell.column == column) from $violators
     $game   : ManantialesGame ()
 then
+    modify ($constraint) { setExpired (true) };
     Set<CheckCondition> constraints = $game.getCheckConditions();
     constraints.remove ($constraint);
-    retract ($constraint);
     modify ($game) { setCheckConditions (constraints) };
     messageSender.sendConditionResolved ($game, $constraint);
 end
@@ -552,13 +552,13 @@ when
     $move   : ManantialesMove (badYear == false, status == MoveStatus.MOVED,
         status == MoveStatus.MOVED, $cell : destinationCell, type in
         (TokenType.MANAGED_FOREST, TokenType.VIVERO, TokenType.SILVOPASTORAL))
-    $constraint : CheckCondition ($violators : violators)
+    $constraint : CheckCondition ($violators : violators, expired != true)
     GridCell ($cell.row == row, $cell.column == column) from $violators
     $game   : ManantialesGame ()
 then
+    modify($constraint) { setExpired(true) };
     Set<CheckCondition> constraints = $game.getCheckConditions();
     constraints.remove ($constraint);
-    retract ($constraint);
     modify ($game) { setCheckConditions (constraints) };
     messageSender.sendConditionResolved ($game, $constraint);
 end

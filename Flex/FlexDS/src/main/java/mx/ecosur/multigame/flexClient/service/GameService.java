@@ -365,13 +365,14 @@ public class GameService {
     }
 
     public Move doMove(GridGame game, GridMove move) {
+        Move ret = null;
         SharedBoardRemote sharedBoard = getSharedBoard();
         try {
-            return sharedBoard.doMove(game, move);
+            ret = sharedBoard.doMove(game, move);
         } catch (InvalidMoveException e) {
-            e.printStackTrace();
             throw new GameException(e);
         }
+        return ret;
     }
 
     public Set<GridMove> getMoves(int gameId) {

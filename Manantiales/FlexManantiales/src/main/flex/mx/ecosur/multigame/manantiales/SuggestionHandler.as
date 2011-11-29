@@ -9,13 +9,12 @@ package mx.ecosur.multigame.manantiales
     import flash.utils.Dictionary;
     import flash.utils.Timer;
 
-import mx.collections.ArrayCollection;
-import mx.core.DragSource;
+    import mx.collections.ArrayCollection;
+    import mx.core.DragSource;
     import mx.core.IFlexDisplayObject;
     import mx.controls.Alert;
     import mx.ecosur.multigame.component.BoardCell;
-import mx.ecosur.multigame.enum.Color;
-import mx.ecosur.multigame.enum.MoveStatus;
+    import mx.ecosur.multigame.enum.MoveStatus;
     import mx.ecosur.multigame.entity.manantiales.Ficha;
     import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
     import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
@@ -382,8 +381,7 @@ import mx.ecosur.multigame.enum.MoveStatus;
         public function typeSuggestion(evt:MouseEvent):void {
             var token:ManantialesToken = ManantialesToken(evt.currentTarget);
 
-            if (freePlayer (token.cell.color) && _controller._currentPlayer.turn
-                    && _controller._currentPlayer.color == _player.color)
+            if (freePlayer (token.cell.color) && _controller._currentPlayer.color == _player.color)
             {
                 _tokenSuggestor = new TokenSuggestor();
                 var _types:ArrayCollection = new ArrayCollection();
