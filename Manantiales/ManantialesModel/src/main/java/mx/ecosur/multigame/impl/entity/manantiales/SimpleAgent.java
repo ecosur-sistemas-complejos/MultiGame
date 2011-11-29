@@ -82,28 +82,22 @@ public class SimpleAgent extends AbstractAgent {
         ret = new ArrayList<Move>();
         /* Calculate new positions */
         Set<Move> newMoves = findNewMoves(game);
-        ret.addAll(newMoves);
         /* Calculate upgrades */
         Set<Move> upgradeMoves = findUpgradeMoves(game);
+
+
+        /* Add in all generated moves */
+        ret.addAll(newMoves);
         ret.addAll(upgradeMoves);
 
-        int proposedIntensives = 0;
-        for (Move m : upgradeMoves) {
-            ManantialesMove move = (ManantialesMove) m;
-            if (move.getType().equals(TokenType.INTENSIVE_PASTURE))
-                proposedIntensives++;
-        }
-
-
-        /* Visit an validate all suggested moves */
+        /* Visit an validate suggested moves */
         MovesValidator v = new MovesValidator(game, ret);
         v.visit();
         /* Get the list of invalid moves and strike them from the return list */
         ret = v.getMoves();
 
-        /* Only in the case of new moves being proposed, or only intensive upgrades, add in swap moves
-        * (failsafe if MovValidator fails) */
-        if (ret.equals(Collections.EMPTY_SET) || ret.size() == 0 || newMoves.size() + upgradeMoves.size() - proposedIntensives <= 0)
+        /* Add in swap moves (failsafe if MoveValidator fails). Give at least three tries. */
+        if (ret.equals(Collections.EMPTY_SET) || ret.size() < 3)
             ret.addAll(findSwapMoves(game));
 
         /* Randomize moves */

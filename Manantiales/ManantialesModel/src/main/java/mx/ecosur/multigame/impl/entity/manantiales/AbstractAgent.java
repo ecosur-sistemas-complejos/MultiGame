@@ -94,31 +94,21 @@ public abstract class AbstractAgent extends ManantialesPlayer implements Agent, 
 
         /* Add in forested */
         if (this.getForested() < 6) {
-          int remaining = 6 - getForested();
           for (ManantialesFicha forest : forested) {
-              if (remaining > 0) {
-                  ManantialesMove m = new ManantialesMove(this, forest, forest);
-                  if (ret == Collections.EMPTY_SET)
-                      ret = new HashSet<Move>();
-                  ret.add(m);
-                  remaining--;
-              } else {
-                  break;
-              }
+              ManantialesMove m = new ManantialesMove(this, forest, forest);
+              if (ret == Collections.EMPTY_SET)
+                  ret = new HashSet<Move>();
+              ret.add(m);
           }
         }
         
         /* Add in moderate */
         if (this.getModerate() < 6) {
-            int remaining = 6 - getModerate();
             for (ManantialesFicha managed : moderate) {
-                if (remaining > 0) {
                     ManantialesMove m = new ManantialesMove (this, managed, managed);
                     if (ret == Collections.EMPTY_SET)
                         ret = new HashSet<Move>();
                     ret.add(m);
-                    remaining--;
-                }
             }
         }
 
