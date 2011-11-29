@@ -383,12 +383,6 @@ package mx.ecosur.multigame.manantiales
             _endAlert = null;
         }
 
-        public function set isTurn(isTurn:Boolean):void{
-            if(_isTurn != isTurn){
-                _isTurn = isTurn;
-            }
-        }
-
         /**
          * Updates the list of players. Also updates the chat panel and
          * players viewer components.
@@ -398,31 +392,25 @@ package mx.ecosur.multigame.manantiales
         public function updatePlayers(game:ManantialesGame):void {
             _game = game;
             _gameWindow.playersViewer.game = _game;
+            var playerWithTurn:ManantialesPlayer;
 
             if (game.state != GameState.WAITING) {
                 _gameWindow.timer.current = game.elapsedTime;
                 _gameWindow.timer.displayTime(Color.getColorCode(_gameWindow.currentPlayer.color));
                 _gameWindow.timer.flashMessage();
 
-                var gamePlayer:ManantialesPlayer;
-
                 if (game.mode == Mode.COMPETITIVE ||
                     game.mode == Mode.SILVOPASTORAL ||
                     game.mode == Mode.RELOADED)
                 {
                     for (var i = 0; i < game.players.length; i++) {
-                        gamePlayer = ManantialesPlayer(game.players[i]);
-                        if (gamePlayer.turn) {
-                            if (gamePlayer.id == _currentPlayer.id) {
-                                _currentPlayer = gamePlayer;
-                                isTurn = true;
-                                break;
-                            } else {
-                                _currentPlayer.turn = false;
-                                isTurn = false;
-                                break;
-                            }
+                        var gamePlayer:ManantialesPlayer = ManantialesPlayer(game.players.getItemAt(i));
+                        if (gamePlayer.id == _currentPlayer.id) {
+                            _currentPlayer = gamePlayer;
                         }
+
+                        if (gamePlayer.turn)
+                            playerWithTurn = gamePlayer;
                     }
 
                     if (game.state == GameState.PLAY) {
@@ -432,7 +420,7 @@ package mx.ecosur.multigame.manantiales
                             initTurn();
                         } else {
                             _gameWindow.gameStatus.showMessage(
-                                    gamePlayer.name + " " + resourceManager.getString("Manantiales",
+                                    playerWithTurn.name + " " + resourceManager.getString("Manantiales",
                                     "manantiales.tomove"), Color.getColorCode(gamePlayer.color));
                         }
                     }
