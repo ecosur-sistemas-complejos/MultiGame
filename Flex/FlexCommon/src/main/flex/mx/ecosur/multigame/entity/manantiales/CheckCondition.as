@@ -2,7 +2,9 @@ package mx.ecosur.multigame.entity.manantiales
 {
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.entity.GamePlayer;
+import mx.resources.ResourceManager;
 
+[ResourceBundle("Commons")]
     [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.CheckCondition")]
     public class CheckCondition
     {
@@ -10,6 +12,7 @@ package mx.ecosur.multigame.entity.manantiales
         private var _violators:ArrayCollection
         private var _player:GamePlayer;
         private var _expired:Boolean;
+        private var resourceManager:ResourceManager;
 
         public function CheckCondition () {
             super();
@@ -56,8 +59,8 @@ package mx.ecosur.multigame.entity.manantiales
         }
 
         public function toString():String {
-            return _player.name + " initiated the check '"
-             + _reason +"' which must be resolved before his/her next turn.";
+            return _player.name +  " " + ResourceManager.getInstance().getString("Commons", "check.start") +" " + _reason + " " +
+                    ResourceManager.getInstance().getString("Commons", "check.end");
         }
     }
 }

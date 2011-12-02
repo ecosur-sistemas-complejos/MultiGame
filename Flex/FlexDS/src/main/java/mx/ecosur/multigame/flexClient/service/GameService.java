@@ -44,7 +44,20 @@ import mx.ecosur.multigame.model.interfaces.*;
 
 public class GameService {
 
+    private ResourceBundle bundle;
+
     private MessageSender sender = new MessageSender("Lobby");
+
+    public GameService() {
+        super();
+    }
+
+    private ResourceBundle getBundle () {
+       if (bundle == null) {
+           bundle = ResourceBundle.getBundle("service", FlexContext.getHttpRequest().getLocale());
+       }
+       return bundle;
+    }
 
     private SharedBoardRemote getSharedBoard() {
         FlexSession session = FlexContext.getFlexSession();
@@ -109,11 +122,11 @@ public class GameService {
             List<Game> unfinished = registrar.getUnfinishedGames(player);
             for (Game g : unfinished) {
                 if (type.equals(GameType.GENTE) && g instanceof GenteGame)
-                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                    throw new RuntimeException(getBundle().getString("one.game"));
                 else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
                     ManantialesGame test = (ManantialesGame) g;
                     if ( (mode == null && test.getMode().equals(Mode.COMPETITIVE) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
-                        throw new RuntimeException("Only one game of each type and mode may be created!");
+                        throw new RuntimeException(getBundle().getString("one.game"));
                 }
             }
 
@@ -220,9 +233,9 @@ public class GameService {
             List<Game> unfinished = registrar.getUnfinishedGames(registrant);
             for (Game g : unfinished) {
                 if (type.equals(GameType.GENTE) && g instanceof GenteGame)
-                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                    throw new RuntimeException(getBundle().getString("one.game"));
                 else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame)
-                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                    throw new RuntimeException(getBundle().getString("one.game"));
             }
 
             Game model = null;
@@ -277,11 +290,11 @@ public class GameService {
             List<Game> unfinished = registrar.getUnfinishedGames(registrant);
             for (Game g : unfinished) {
                 if (type.equals(GameType.GENTE) && g instanceof GenteGame)
-                    throw new RuntimeException("Only one game of each type and mode may be created!");
+                    throw new RuntimeException(getBundle().getString("one.game"));
                 else if (type.equals(GameType.MANANTIALES) && g instanceof ManantialesGame) {
                     ManantialesGame test = (ManantialesGame) g;
                     if ( (mode == null && test.getMode().equals(Mode.COMPETITIVE) || (mode != null && test.getMode().equals(Mode.valueOf(mode)))))
-                        throw new RuntimeException("Only one game of each type and mode may be created!");
+                        throw new RuntimeException(getBundle().getString("one.game"));
                 }
             }
 
