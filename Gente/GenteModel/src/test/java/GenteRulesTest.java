@@ -42,6 +42,7 @@ public class GenteRulesTest extends GenteTestBase {
     @Before
     public void setUp() throws Exception {
         game = new GenteGame();
+        game.setId(1);
         game.setMessageSender(new DummyMessageSender());
 
         GridRegistrant a, b, c, d;
@@ -54,6 +55,12 @@ public class GenteRulesTest extends GenteTestBase {
         bob = (GentePlayer) game.registerPlayer(b);
         charlie = (GentePlayer) game.registerPlayer(c);
         denise = (GentePlayer) game.registerPlayer(d);
+
+        /* Set Player ids */
+        alice.setId(1);
+        bob.setId(2);
+        charlie.setId(3);
+        denise.setId(4);
     }
 
     @Test
@@ -450,11 +457,11 @@ public class GenteRulesTest extends GenteTestBase {
     @Test
     public void testMalformedTesseras () throws InvalidMoveException, MalformedURLException {
 
-        GridCell first = new GridCell (10, 10, alice.getColor());
+        GridCell first = new GridCell (9, 9, alice.getColor());
         GridCell second = new GridCell (10,11, bob.getColor());
         GridCell third = new GridCell (9,12, charlie.getColor());
         GridCell fourth = new GridCell (8, 12, denise.getColor());
-        GridCell fifth = new GridCell (9,9, alice.getColor());
+        GridCell fifth = new GridCell (10,10, alice.getColor());
         GridCell sixth = new GridCell (8, 13, bob.getColor());
         GridCell seventh = new GridCell (7,14, charlie.getColor());
         GridCell eighth = new GridCell (6, 15, denise.getColor());
@@ -463,13 +470,6 @@ public class GenteRulesTest extends GenteTestBase {
         GridCell eleventh = new GridCell (5,16, charlie.getColor());
         GridCell twelfth = new GridCell (4,17, denise.getColor());
 
-        /* Center cell */
-        GameGrid grid = game.getGrid();
-        if (grid.getCells() == null)
-            grid.setCells (new TreeSet<GridCell>(new CellComparator()));
-        game.getGrid().getCells().add(new GridCell(1, 1, Color.UNKNOWN));
-
-        alice.setTurn(true);
         GenteMove move = new GenteMove (alice, first);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
@@ -477,66 +477,77 @@ public class GenteRulesTest extends GenteTestBase {
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,second);
+        assertTrue(bob.isTurn());
         game.move (move);
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals ("Move: " + move, MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
+        assertTrue(charlie.isTurn());
         move = new GenteMove (charlie,third);
         game.move(move);
-        assertEquals (MoveStatus.EVALUATED, move.getStatus());
+        assertEquals ("Move: " + move, MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise,fourth);
+        assertTrue(denise.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (alice,fifth);
+        assertTrue(alice.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,sixth);
+        assertTrue(bob.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (charlie,seventh);
+        assertTrue(charlie.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise,eighth);
+        assertTrue(denise.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (alice, ninth);
+        assertTrue(alice.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals (1, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (bob,tenth);
+        assertTrue(bob.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (charlie, eleventh);
+        assertTrue(charlie.isTurn());
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());
         assertEquals(0, move.getTesseras().size());
 
         move = new GenteMove (denise, twelfth);
+        assertTrue(denise.isTurn());
         move = (GenteMove) game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         assertEquals(0, move.getTrias().size());

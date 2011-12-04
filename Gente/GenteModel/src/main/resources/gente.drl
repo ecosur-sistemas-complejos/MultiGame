@@ -81,7 +81,7 @@ rule "evaluate-first-move"
     agenda-group "verify"
 when
     game  : GenteGame (state == GameState.PLAY, $grid : grid)
-    move  : GenteMove (status != MoveStatus.VERIFIED, player.turn == true, player.color == Color.YELLOW)
+    move  : GenteMove (status == MoveStatus.UNVERIFIED, player.turn == true, player.color == Color.YELLOW)
     eval ($grid.isEmpty())
     eval (isCenter (game, move))    
 then
@@ -128,6 +128,17 @@ then
     }    
 end
 
+rule "increment-turn"
+    agenda-group "evaluate"
+when
+    $game  : GenteGame (state == GameState.PLAY)
+    $move  : GenteMove (player.turn == true, status == MoveStatus.MOVED)
+then
+    incrementTurn ($game, $move);
+    modify ($move) { setStatus (MoveStatus.EVALUATED)}
+end
+
+
 rule "find-tesseras"
     agenda-group "evaluate"
     no-loop true
@@ -166,24 +177,12 @@ then
     modify ($move) { addTria (tria), setPlayer (player) };
 end
 
-
-rule "mark-evaluated-move"
-    agenda-group "evaluate"
-    salience -10
-when
-    $game : GenteGame (state == GameState.PLAY)
-    $move : GenteMove (player.turn == true, status == MoveStatus.MOVED)
-then
-    modify ($move) { setStatus (MoveStatus.EVALUATED)}
-    messageSender.sendMoveComplete($game, $move);    
-end
-
 rule "score"
     agenda-group "evaluate"
     no-loop true
 when
     game  : GenteGame (state == GameState.PLAY)
-    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+    move  : GenteMove (status == MoveStatus.EVALUATED)
 then
     int score = scorePlayer (move);
     GentePlayer player = (GentePlayer) move.getPlayer ();
@@ -199,6 +198,7 @@ then
         modify (move) { setPlayer (player) }
         modify (game) { setWinners (winners) }
     }
+    messageSender.sendMoveComplete(game, move);
 end
 
 # Finds the winner 
@@ -208,19 +208,9 @@ rule "find-the-winner"
     salience -15
 when
     game  : GenteGame (state == GameState.PLAY, winners.size >0)
-    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
+    move  : GenteMove (status == MoveStatus.EVALUATED)
 then
     modify (game) { setState (GameState.ENDED) }
-        messageSender.sendEndGame (game);
+    messageSender.sendEndGame (game);
 end
 
-rule "increment-turn"
-    agenda-group "evaluate"
-    no-loop true
-    salience -20
-when
-    game  : GenteGame (state == GameState.PLAY)
-    move  : GenteMove (player.turn == true, status == MoveStatus.EVALUATED)
-then
-    incrementTurn (game, move);
-end

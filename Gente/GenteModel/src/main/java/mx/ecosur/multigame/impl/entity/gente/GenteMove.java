@@ -198,6 +198,7 @@ public class GenteMove extends GridMove {
     public String toString() {
         StringBuffer ret = new StringBuffer();
         ret.append("GenteMove: ");
+        ret.append("Status=" + getStatus() + ", ");
         ret.append("Player=" + getPlayer() + ", ");
         ret.append("current=" + getCurrentCell() + ", ");
         ret.append("destination=" + getDestinationCell() + ", ");

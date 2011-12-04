@@ -36,14 +36,10 @@ public class RuleFunctions {
     public static boolean isCenter (GenteGame game, GenteMove move) {
         Dimension size = game.getSize();
         GridCell destination = (GridCell) move.getDestinationCell ();
-
         int centerWidth = (int) size.getWidth()/2;
         int centerHeight = (int) size.getHeight()/2;
-
         boolean ret = (destination.getRow () == centerHeight &&
             destination.getColumn() == centerWidth);
-        if (!ret)
-            move.setStatus (MoveStatus.INVALID);
         return ret;
     }
 
@@ -51,8 +47,6 @@ public class RuleFunctions {
         GridCell destination = (GridCell) move.getDestinationCell();
         GridCell current = grid.getLocation (destination);
         boolean ret = (current == null);
-        if (!ret)
-            move.setStatus (MoveStatus.INVALID);
         return ret;
     }
 
@@ -68,8 +62,6 @@ public class RuleFunctions {
     }
 
     public static GridPlayer incrementTurn (GenteGame game, GenteMove move) {
-        GridPlayer player = move.getPlayer();
-        player.setTurn(false);
 
         /* Find next player */
         Set<GridPlayer> players = game.getPlayers();
@@ -77,14 +69,14 @@ public class RuleFunctions {
         int playerNumber = -1;
 
         for (int i = 0; i < gps.length; i++) {
-            if (gps [ i ].equals(player)) {
+            gps[i].setTurn(false);
+            if (gps [ i ].getId() == move.getPlayer().getId()) {
                 playerNumber = i;
-                break;
             }
         }
 
         if (playerNumber == -1)
-            throw new RuntimeException ("Unable to find player: " + player + " in set " + Arrays.toString(gps));
+            throw new RuntimeException ("Unable to find player: " + move.getPlayer() + " in set " + Arrays.toString(gps));
 
         GridPlayer nextPlayer = null;
         if (playerNumber == gps.length - 1) {
