@@ -10,12 +10,12 @@
  */
 
 import static junit.framework.Assert.*;
-import static mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
+import static mx.ecosur.multigame.gente.util.RuleFunctions.*;
 
+import mx.ecosur.multigame.gente.event.MoveEvent;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.grid.entity.GridCell;
-import mx.ecosur.multigame.impl.event.gente.MoveEvent;
 import org.junit.Test;
 
 import java.util.Set;

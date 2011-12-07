@@ -9,7 +9,7 @@ package mx.ecosur.multigame.entity.gente  {
 
     import mx.collections.ArrayCollection;
 
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.Tria")]
+    [RemoteClass (alias="mx.ecosur.multigame.gente.entity.Tria")]
     public class Tria {
 
         public var id:int;

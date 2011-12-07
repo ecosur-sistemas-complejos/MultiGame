@@ -8,7 +8,7 @@ package mx.ecosur.multigame.entity.manantiales
     import mx.resources.ResourceManager;
 
 [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha")]
+        "mx.ecosur.multigame.manantiales.entity.ManantialesFicha")]
 	[ResourceBundle("Commons")]
     public class Ficha extends Cell
     {

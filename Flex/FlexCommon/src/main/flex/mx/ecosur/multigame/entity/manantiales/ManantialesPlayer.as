@@ -3,7 +3,7 @@ package mx.ecosur.multigame.entity.manantiales
     import mx.ecosur.multigame.entity.GamePlayer;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer")]
+        "mx.ecosur.multigame.manantiales.entity.ManantialesPlayer")]
     public class ManantialesPlayer extends GamePlayer
     {
         private var _score:int, _premiums:int, _forested:int, _moderate:int, _intensive:int,

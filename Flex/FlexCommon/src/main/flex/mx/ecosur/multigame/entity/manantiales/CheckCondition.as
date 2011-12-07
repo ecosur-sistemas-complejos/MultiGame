@@ -5,7 +5,7 @@ package mx.ecosur.multigame.entity.manantiales
 import mx.resources.ResourceManager;
 
 [ResourceBundle("Commons")]
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.manantiales.CheckCondition")]
+    [RemoteClass (alias="mx.ecosur.multigame.manantiales.entity.CheckCondition")]
     public class CheckCondition
     {
         private var _reason:String;

@@ -24,18 +24,18 @@ import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.entity.*;
-import mx.ecosur.multigame.impl.entity.manantiales.PuzzleSuggestion;
-import mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent;
-import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
-import mx.ecosur.multigame.impl.enums.manantiales.Mode;
+import mx.ecosur.multigame.manantiales.entity.PuzzleSuggestion;
+import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
+import mx.ecosur.multigame.manantiales.enums.AgentType;
+import mx.ecosur.multigame.manantiales.enums.Mode;
 import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridGame;
 import mx.ecosur.multigame.grid.entity.GridMove;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.enums.gente.*;
+import mx.ecosur.multigame.gente.entity.GenteGame;
+import mx.ecosur.multigame.gente.entity.GenteStrategyAgent;
+import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+import mx.ecosur.multigame.gente.enums.*;
 
 
 import flex.messaging.FlexContext;
@@ -301,7 +301,7 @@ public class GameService {
                 mg.setMode(Mode.valueOf(mode));
                 game = registrar.registerPlayer(mg, registrant);
                 for (int i = 0; i < strategies.length; i++) {
-                    AgentType strategy = AgentType.valueOf(strategies [ i ]);
+                    AgentType strategy = AgentType.valueOf(strategies[i]);
                     GridRegistrant robot = new GridRegistrant (type + "-" + strategy.name() + "-" + (i + 1));
                     SimpleAgent agent = new SimpleAgent(robot, Color.UNKNOWN, strategy);
                     game = registrar.registerAgent (game, agent);

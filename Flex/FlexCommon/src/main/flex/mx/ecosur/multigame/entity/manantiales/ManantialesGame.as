@@ -8,7 +8,7 @@ package mx.ecosur.multigame.entity.manantiales
     import mx.ecosur.multigame.entity.manantiales.Suggestion;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame")]
+        "mx.ecosur.multigame.manantiales.entity.ManantialesGame")]
     public class ManantialesGame extends Game
     {
         private var _mode:String;

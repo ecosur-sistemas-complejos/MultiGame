@@ -9,7 +9,7 @@ package mx.ecosur.multigame.entity.gente {
 
     import mx.collections.ArrayCollection;
 
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.Tessera")]
+    [RemoteClass (alias="mx.ecosur.multigame.gente.entity.Tessera")]
     public class Tessera {
 
         public var id:int;

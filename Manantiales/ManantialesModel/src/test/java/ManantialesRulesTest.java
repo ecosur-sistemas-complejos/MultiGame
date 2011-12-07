@@ -27,19 +27,19 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.entity.*;
 
-import mx.ecosur.multigame.impl.entity.manantiales.*;
+import mx.ecosur.multigame.manantiales.entity.*;
 
-import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
-import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
-import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
-import mx.ecosur.multigame.impl.util.manantiales.RuleFunctions;
+import mx.ecosur.multigame.manantiales.enums.BorderType;
+import mx.ecosur.multigame.manantiales.enums.ConditionType;
+import mx.ecosur.multigame.manantiales.enums.TokenType;
+import mx.ecosur.multigame.manantiales.util.RuleFunctions;
 
 import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 
 import static util.TestUtilities.*;
-import static mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
+import static mx.ecosur.multigame.manantiales.util.RuleFunctions.*;
 
 import org.junit.Before;
 import org.junit.Test;

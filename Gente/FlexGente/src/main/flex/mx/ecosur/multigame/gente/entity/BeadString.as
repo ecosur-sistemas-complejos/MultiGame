@@ -16,7 +16,7 @@ package mx.ecosur.multigame.gente.entity {
 	/**
 	 * Represents a server side BeadString object.
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.impl.util.BeadString")]
+	[RemoteClass (alias="mx.ecosur.multigame.gente.util.BeadString")]
 	public class BeadString{
 		
 		private var _beads:ArrayCollection;

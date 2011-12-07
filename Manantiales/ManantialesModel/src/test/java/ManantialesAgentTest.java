@@ -12,10 +12,10 @@ import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.DummyMessageSender;
-import mx.ecosur.multigame.impl.entity.manantiales.*;
-import mx.ecosur.multigame.impl.enums.manantiales.AgentType;
-import mx.ecosur.multigame.impl.enums.manantiales.Mode;
-import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.manantiales.entity.*;
+import mx.ecosur.multigame.manantiales.enums.AgentType;
+import mx.ecosur.multigame.manantiales.enums.Mode;
+import mx.ecosur.multigame.manantiales.enums.TokenType;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
@@ -209,7 +209,7 @@ public class ManantialesAgentTest extends JMSTestCaseAdapter {
     
     public void testEmptyMoves () {
         game.setMode(Mode.COMPETITIVE);
-        ManantialesFicha ficha = new ManantialesFicha (2,0,alice.getColor(),
+        ManantialesFicha ficha = new ManantialesFicha(2,0,alice.getColor(),
                 TokenType.MANAGED_FOREST);
     }
 }

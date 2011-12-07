@@ -17,7 +17,7 @@ package mx.ecosur.multigame.entity.gente {
 	/**
 	 * Represents a server side PenteGame object. 
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteGame")]
+	[RemoteClass (alias="mx.ecosur.multigame.gente.entity.GenteGame")]
 	public class GenteGame extends Game {
 		
 		private var _winners:ArrayCollection;

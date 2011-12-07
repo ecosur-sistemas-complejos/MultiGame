@@ -12,13 +12,13 @@ import mx.ecosur.multigame.model.interfaces.*
 import mx.ecosur.multigame.grid.*;
 import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.grid.util.*;
-import mx.ecosur.multigame.impl.entity.manantiales.*;
-import mx.ecosur.multigame.impl.enums.manantiales.*;
-import mx.ecosur.multigame.impl.util.manantiales.*;
+import mx.ecosur.multigame.manantiales.entity.*;
+import mx.ecosur.multigame.manantiales.enums.*;
+import mx.ecosur.multigame.manantiales.util.*;
 
 import java.util.*;
 
-import function mx.ecosur.multigame.impl.util.manantiales.RuleFunctions.*;
+import function mx.ecosur.multigame.manantiales.util.RuleFunctions.*;
 
 global ManantialesMessageSender messageSender;
 

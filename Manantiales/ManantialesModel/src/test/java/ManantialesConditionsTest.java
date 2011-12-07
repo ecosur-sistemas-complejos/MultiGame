@@ -13,13 +13,11 @@ import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.manantiales.CheckCondition;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesFicha;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesGame;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove;
-import mx.ecosur.multigame.impl.entity.manantiales.ManantialesPlayer;
-import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
-import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
+import mx.ecosur.multigame.manantiales.entity.ManantialesFicha;
+import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+import mx.ecosur.multigame.manantiales.enums.TokenType;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
@@ -330,7 +328,7 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
    }
    
    private ManantialesMove generatePassMove(ManantialesPlayer p) {
-       ManantialesMove ret = new ManantialesMove ();
+       ManantialesMove ret = new ManantialesMove();
        ret.setPlayer(p);
        ret.setBadYear(true);
        ret.setStatus(MoveStatus.UNVERIFIED);

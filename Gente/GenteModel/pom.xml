@@ -54,19 +54,19 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <targetPath>mx/ecosur/multigame/impl/</targetPath>
+                <targetPath>mx/ecosur/multigame/gente/</targetPath>
             </resource>            
             <resource>
                 <directory>src/main/resources/ruleflow</directory>
-                <targetPath>mx/ecosur/multigame/impl/ruleflow</targetPath>
+                <targetPath>mx/ecosur/multigame/gente/ruleflow</targetPath>
             </resource>            
             <resource>
                 <directory>src/main/resources/agent</directory>
-                <targetPath>mx/ecosur/multigame/impl/agent</targetPath>
+                <targetPath>mx/ecosur/multigame/gente/agent</targetPath>
             </resource>
             <resource>
                 <directory>src/main/resources/changesets</directory>
-                <targetPath>mx/ecosur/multigame/impl</targetPath>
+                <targetPath>mx/ecosur/multigame/gente</targetPath>
             </resource>
         </resources>
     </build>

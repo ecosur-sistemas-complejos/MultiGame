@@ -5,7 +5,7 @@ import mx.ecosur.multigame.entity.Move;
     import mx.ecosur.multigame.entity.manantiales.Ficha;
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.ManantialesMove")]
+        "mx.ecosur.multigame.manantiales.entity.ManantialesMove")]
     public class ManantialesMove extends Move
     {
         private var _badYear:Boolean;

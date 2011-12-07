@@ -11,19 +11,18 @@
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
+import mx.ecosur.multigame.gente.entity.GenteGame;
+import mx.ecosur.multigame.gente.entity.GenteStrategyAgent;
+import mx.ecosur.multigame.gente.enums.GenteStrategy;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
-import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 import mx.ecosur.multigame.model.interfaces.Move;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.Assert.*;
 

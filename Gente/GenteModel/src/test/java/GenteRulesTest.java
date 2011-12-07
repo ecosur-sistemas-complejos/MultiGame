@@ -21,6 +21,7 @@ import java.util.TreeSet;
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.enums.MoveStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
+import mx.ecosur.multigame.gente.entity.*;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
@@ -28,7 +29,6 @@ import mx.ecosur.multigame.grid.entity.GameGrid;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
-import mx.ecosur.multigame.impl.entity.gente.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -596,7 +596,7 @@ public class GenteRulesTest extends GenteTestBase {
         game.getGrid().getCells().add(c);
 
         charlie.setTurn(true);
-        GenteMove move = new GenteMove (charlie, d);
+        GenteMove move = new GenteMove(charlie, d);
         game.move(move);
 
         assertEquals (MoveStatus.EVALUATED, move.getStatus());

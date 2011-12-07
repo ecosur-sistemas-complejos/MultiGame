@@ -19,11 +19,11 @@
  * @author awaterma@ecosur.mx
 */
 
-package mx.ecosur.multigame.impl.entity.gente;
+package mx.ecosur.multigame.gente.entity;
 
 import mx.ecosur.multigame.enums.GameState;
 import mx.ecosur.multigame.grid.entity.*;
-import mx.ecosur.multigame.impl.entity.gente.*;
+import mx.ecosur.multigame.gente.entity.*;
 import mx.ecosur.multigame.grid.Color;
 
 import java.awt.Dimension;

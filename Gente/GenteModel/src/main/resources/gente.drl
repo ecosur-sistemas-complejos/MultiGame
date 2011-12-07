@@ -28,13 +28,13 @@ import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.grid.util.BeadString;
 import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.Move;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
-import mx.ecosur.multigame.impl.entity.gente.GenteMove;
-import mx.ecosur.multigame.impl.event.gente.MoveEvent;
+import mx.ecosur.multigame.gente.entity.GenteGame;
+import mx.ecosur.multigame.gente.entity.GentePlayer;
+import mx.ecosur.multigame.gente.entity.GenteMove;
+import mx.ecosur.multigame.gente.event.MoveEvent;
 
 
-import function mx.ecosur.multigame.impl.util.gente.RuleFunctions.*;
+import function mx.ecosur.multigame.gente.util.RuleFunctions.*;
 
 dialect "java"
 

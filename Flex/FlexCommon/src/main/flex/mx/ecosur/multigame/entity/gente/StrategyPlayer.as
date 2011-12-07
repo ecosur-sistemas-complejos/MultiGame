@@ -14,7 +14,7 @@ package mx.ecosur.multigame.entity.gente {
     /**
      * Represents a server side StrategyPlayer object
      */
-    [RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent")]
+    [RemoteClass (alias="mx.ecosur.multigame.gente.entity.GenteStrategyAgent")]
     public class StrategyPlayer extends GentePlayer {
    
     	private var _strategy:String;

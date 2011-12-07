@@ -17,7 +17,7 @@ package mx.ecosur.multigame.entity.gente {
 	/**
 	 * Represents a server side GamePlayer object
 	 */
-	[RemoteClass (alias="mx.ecosur.multigame.impl.entity.gente.GentePlayer")]
+	[RemoteClass (alias="mx.ecosur.multigame.gente.entity.GentePlayer")]
 	public class GentePlayer extends GamePlayer{
 		
 		private var _points:int;

@@ -3,7 +3,7 @@
 package mx.ecosur.multigame.entity.manantiales {
 
     [RemoteClass (alias=
-        "mx.ecosur.multigame.impl.entity.manantiales.SimpleAgent")]
+        "mx.ecosur.multigame.manantiales.entity.SimpleAgent")]
     public class SimpleAgent extends ManantialesPlayer {
 
         public var _type:String

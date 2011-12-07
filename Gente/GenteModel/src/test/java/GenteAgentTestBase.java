@@ -9,13 +9,13 @@
  * @author awaterma@ecosur.mx
  */
 
+import mx.ecosur.multigame.gente.entity.GenteGame;
+import mx.ecosur.multigame.gente.entity.GentePlayer;
+import mx.ecosur.multigame.gente.entity.GenteStrategyAgent;
+import mx.ecosur.multigame.gente.enums.GenteStrategy;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.DummyMessageSender;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
-import mx.ecosur.multigame.impl.entity.gente.GenteGame;
-import mx.ecosur.multigame.impl.entity.gente.GentePlayer;
-import mx.ecosur.multigame.impl.entity.gente.GenteStrategyAgent;
-import mx.ecosur.multigame.impl.enums.gente.GenteStrategy;
 import mx.ecosur.multigame.grid.entity.GridCell;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.entity.GameGrid;
@@ -49,11 +49,11 @@ public abstract class GenteAgentTestBase extends GenteTestBase {
 
         alice = new GenteStrategyAgent (a, Color.YELLOW, GenteStrategy.RANDOM);
         bob = new GenteStrategyAgent (b, Color.BLUE, GenteStrategy.RANDOM);
-        charlie = new GenteStrategyAgent (c, Color.RED, GenteStrategy.RANDOM);
+        charlie = new GenteStrategyAgent(c, Color.RED, GenteStrategy.RANDOM);
         game.updatePlayer (alice);
         game.updatePlayer(bob);
         game.updatePlayer(charlie);
-        game.updatePlayer(new GentePlayer (d, Color.GREEN));
+        game.updatePlayer(new GentePlayer(d, Color.GREEN));
         game.initialize();
 
         setupBoard(game);

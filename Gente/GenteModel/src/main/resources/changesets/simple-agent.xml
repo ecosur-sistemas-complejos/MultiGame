@@ -4,6 +4,6 @@
     xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
     xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >
     <add>
-        <resource source="classpath:mx/ecosur/multigame/impl/agent/simple-agent.drl" type="DRL"/>
+        <resource source="classpath:mx/ecosur/multigame/gente/agent/simple-agent.drl" type="DRL"/>
     </add>
 </change-set>
