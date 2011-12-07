@@ -57,10 +57,6 @@ public class GenteGame extends GridGame {
         winners = new LinkedHashSet<GentePlayer>();
     }
 
-    public GenteGame (KnowledgeBase kbase) {
-        this.kbase = kbase;
-    }
-
     @OneToMany (cascade={CascadeType.ALL}, fetch=FetchType.EAGER)
     @JoinColumn(nullable=true)
     public Set <GentePlayer> getWinners () {
@@ -284,7 +280,7 @@ public class GenteGame extends GridGame {
 
     @Transient
     public void setKbase(KnowledgeBase kbase) {
-        this.kbase = kbase;
+        // do nothing
     }
 
     @Transient

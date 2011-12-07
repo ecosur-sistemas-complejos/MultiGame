@@ -11,6 +11,7 @@ import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 
@@ -93,6 +94,15 @@ public class PuzzleSuggestion implements Suggestion {
     public String toString() {
         return "Suggestion [status = [" + status + "], suggestor = [" +
                 suggestor + "], move = [" + move + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().
+            append(getId()).
+            append(getStatus()).
+            append(getMove()).
+            toHashCode();
     }
 
     @Override

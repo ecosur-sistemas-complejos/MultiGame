@@ -50,7 +50,7 @@ public class Tria implements Serializable {
             try {
                 clone.setCells(cc);
             } catch (Exception e) {
-                clone = null;
+                throw new CloneNotSupportedException(e.getLocalizedMessage());
             }
         }
 

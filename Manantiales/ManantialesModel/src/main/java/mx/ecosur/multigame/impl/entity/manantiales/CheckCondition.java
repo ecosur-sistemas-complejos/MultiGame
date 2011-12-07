@@ -19,6 +19,7 @@ import mx.ecosur.multigame.grid.entity.GridPlayer;
 import mx.ecosur.multigame.impl.enums.manantiales.ConditionType;
 
 import mx.ecosur.multigame.model.interfaces.Condition;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 public class CheckCondition implements Condition {
@@ -144,9 +145,19 @@ public class CheckCondition implements Condition {
         this.violators = violators;
     }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().
+            append(getId()).
+            append(getPlayer()).
+            append(getReason()).
+            append(getType()).
+            toHashCode();
+    }
+
     /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
     @Override
     public boolean equals(Object obj) {
         boolean ret = true;

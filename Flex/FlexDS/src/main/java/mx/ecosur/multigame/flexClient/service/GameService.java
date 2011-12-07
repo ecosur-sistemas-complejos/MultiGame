@@ -169,7 +169,6 @@ public class GameService {
                     Color preferredColor)
     {
 
-        GamePlayer player = null;
         ServiceGameEvent ret = null;
         RegistrarRemote registrar = getRegistrar();
 
@@ -179,7 +178,6 @@ public class GameService {
                 GridPlayer p = (GridPlayer) gp;
                 if (p.getName().equals(registrant.getName())) {
                     ret = new ServiceGameEvent ((GridGame) model, p);
-                    player = p;
                     break;
                 }
             }

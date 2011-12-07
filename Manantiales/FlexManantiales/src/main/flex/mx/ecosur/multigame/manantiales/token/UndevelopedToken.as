@@ -15,6 +15,7 @@ package mx.ecosur.multigame.manantiales.token {
        {
             // Redraw background
             _bg.graphics.clear();
+            _bg.alpha = 0.50;
             _bg.x = - unscaledWidth / 2;
             _bg.y = - unscaledHeight / 2;
             _bg.graphics.beginFill(colorCode, 1);

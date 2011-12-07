@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import mx.ecosur.multigame.grid.Color;
 import mx.ecosur.multigame.grid.entity.GridRegistrant;
 import mx.ecosur.multigame.grid.entity.GridPlayer;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 public class ManantialesPlayer extends GridPlayer {
@@ -150,6 +151,15 @@ public class ManantialesPlayer extends GridPlayer {
         this.vivero = 0;
         this.points = 0;
         this.premiums = 0;
+    }
+
+    @Override
+    public int hashCode() {
+       return new HashCodeBuilder().
+           append(getName()).
+           append(getColor()).
+           append(getId()).
+           toHashCode();
     }
 
     @Override

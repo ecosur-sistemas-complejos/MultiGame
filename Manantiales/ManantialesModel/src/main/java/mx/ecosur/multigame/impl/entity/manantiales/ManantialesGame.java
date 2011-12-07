@@ -371,12 +371,6 @@ public class ManantialesGame extends GridGame {
     }
 
     @Transient
-    public Resource getResource() {
-        return ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
-            getChangeSet()));
-    }
-
-    @Transient
     public String getGameType() {
         return "Manantiales";
     }

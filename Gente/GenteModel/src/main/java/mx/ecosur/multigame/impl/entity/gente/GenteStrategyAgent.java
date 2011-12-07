@@ -39,7 +39,7 @@ public class GenteStrategyAgent extends GentePlayer implements Agent {
         
     private static final long serialVersionUID = 6999849272112074624L;
 
-    private KnowledgeBase kBase;
+    private transient KnowledgeBase kBase;
 
     private GenteStrategy strategy;
 

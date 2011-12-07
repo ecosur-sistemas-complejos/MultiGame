@@ -138,10 +138,10 @@
                 dataItem.gameType = game.type;
                 dataItem.players = "";
                 for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
-                    if (game.players[j] instanceof GamePlayer) {
+                    if (game.players[j] is GamePlayer) {
                         gamePlayer = GamePlayer(game.players[j]);
                         dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
-                    } else if (game.players[j] instanceof SimpleAgent) {
+                    } else if (game.players[j] is SimpleAgent) {
                         var agent:SimpleAgent = SimpleAgent(game.players[j]);
                         dataItem.players += agent.name + "(" + agent.color + "). ";
                     }

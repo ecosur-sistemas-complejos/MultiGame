@@ -17,6 +17,7 @@ import mx.ecosur.multigame.impl.enums.manantiales.BorderType;
 import mx.ecosur.multigame.impl.enums.manantiales.Mode;
 import mx.ecosur.multigame.impl.enums.manantiales.TokenType;
 import mx.ecosur.multigame.grid.entity.GridMove;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.Date;
 
@@ -156,12 +157,13 @@ public class ManantialesMove extends GridMove implements Comparable {
 
     @Override
     public int hashCode() {
-       int curCode = 1, destCode = 1;
-       if (current != null)
-        curCode = curCode - current.hashCode();
-       if (destination != null)
-         destCode = destCode + destination.hashCode();
-       return 31 * curCode + destCode;
+        return new HashCodeBuilder().
+                append(getId()).
+                append(getPlayer()).
+                append(getStatus()).
+                append(getBorder()).
+                append(getDestinationCell()).
+                toHashCode();
     }
 
     @Override

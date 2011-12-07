@@ -24,15 +24,16 @@ public enum GenteStrategy {
         
     RANDOM, SIMPLE;
         
-    private static KnowledgeBase kbase;
+    private transient KnowledgeBase kbase;
 
     private static Logger logger = Logger.getLogger(GenteStrategy.class
             .getCanonicalName());
 
     public KnowledgeBase getRuleBase() {
         /* Check that rule set has not already been created */
+        KnowledgeBuilder kbuilder  = null;
         if (kbase == null) {
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             switch (this) {
                 case RANDOM:
                     kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream (
@@ -46,20 +47,21 @@ public enum GenteStrategy {
                     break;
             }
 
-            kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            KnowledgeBuilderErrors errors = kbuilder.getErrors();
-            StringBuffer message = new StringBuffer ();
-            for (KnowledgeBuilderError error : errors) {
-                message.append (error.getMessage());
-            }
+            if (kbuilder != null) {
+                kbase = KnowledgeBaseFactory.newKnowledgeBase();
+                KnowledgeBuilderErrors errors = kbuilder.getErrors();
+                StringBuffer message = new StringBuffer ();
+                for (KnowledgeBuilderError error : errors) {
+                    message.append (error.getMessage());
+                }
 
-            if (message.length() > 0) {
-                kbase = null;
-                logger.warning("Errors creating knowledge builder " + message.toString());
-                throw new RuntimeException (message.toString());
+                if (message.length() > 0) {
+                    kbase = null;
+                    logger.warning("Errors creating knowledge builder " + message.toString());
+                  throw new RuntimeException (message.toString());
+                } else
+                    kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
             }
-
-            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         }
 
         return kbase;

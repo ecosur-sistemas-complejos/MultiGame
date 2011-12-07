@@ -15,6 +15,7 @@ import mx.ecosur.multigame.model.interfaces.Game;
 import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 import mx.ecosur.multigame.model.interfaces.Suggestion;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,11 +31,9 @@ public class SimpleAgent extends AbstractAgent {
 
     private static final long serialVersionUID = 8878695200931762776L;
 
-    private static Random R;
+    private static Random R = new Random();
 
     private AgentType type;
-
-    private Logger logger = Logger.getLogger(SimpleAgent.class.getCanonicalName());
 
     public SimpleAgent() {
         super();        
@@ -46,8 +45,8 @@ public class SimpleAgent extends AbstractAgent {
     }
 
     public void initialize() {
-        R = new Random(System.currentTimeMillis());
-    }   
+        // do nothing
+    }
 
     @Enumerated(EnumType.STRING)
     public AgentType getType() {
@@ -59,9 +58,7 @@ public class SimpleAgent extends AbstractAgent {
     }
 
     public Suggestion processSuggestion (Game impl, Suggestion suggestionImpl) {
-
         /* Evaluated Suggestions are automatically acknowledged and accepted */
-        ManantialesGame game = (ManantialesGame) impl;
         PuzzleSuggestion suggestion = (PuzzleSuggestion) suggestionImpl;
         if (suggestion.getMove().getPlayer().equals(this)) {
             suggestionImpl.setStatus(SuggestionStatus.ACCEPT);
@@ -76,10 +73,8 @@ public class SimpleAgent extends AbstractAgent {
 
     /* Simply returns a simple move response.  No suggestions are made by the Agent */
     public List<Move> determineMoves(Game impl) {
-        List<Move> ret = Collections.EMPTY_LIST;      // Set to an empty list as there is an intention to sometimes return no moves (puzzle games)
-        Random r = new Random();
+        List<Move> ret = new ArrayList<Move>();
         ManantialesGame game = (ManantialesGame) impl;
-        ret = new ArrayList<Move>();
         /* Calculate new positions */
         Set<Move> newMoves = findNewMoves(game);
         /* Calculate upgrades */
@@ -97,7 +92,7 @@ public class SimpleAgent extends AbstractAgent {
         ret = v.getMoves();
 
         /* Add in swap moves (failsafe if MoveValidator fails). Give at least three tries. */
-        if (ret.equals(Collections.EMPTY_SET) || ret.size() < 3)
+        if (ret.equals(Collections.EMPTY_LIST) || ret.size() < 3)
             ret.addAll(findSwapMoves(game));
 
         /* Randomize moves */
@@ -158,5 +153,18 @@ public class SimpleAgent extends AbstractAgent {
         return ret;                
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);    //To change body of overridden methods use File | Settings | File Templates.
+    }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().
+        append(getType()).
+        append(getId()).
+        append(getColor()).
+        append(getName()).
+        toHashCode();
+    }
 }

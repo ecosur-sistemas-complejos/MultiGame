@@ -1,12 +1,9 @@
 package mx.ecosur.multigame.impl.util.gente;
 
-import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.grid.Color;
-import mx.ecosur.multigame.grid.MoveComparator;
 import mx.ecosur.multigame.grid.comparator.CellComparator;
 import mx.ecosur.multigame.grid.enums.Direction;
 import mx.ecosur.multigame.grid.entity.GridCell;
-import mx.ecosur.multigame.grid.entity.GridGame;
 import mx.ecosur.multigame.grid.util.Search;
 import mx.ecosur.multigame.impl.entity.gente.GenteGame;
 import mx.ecosur.multigame.impl.entity.gente.GenteMove;
@@ -46,37 +43,6 @@ public class AgentRuleFunctions {
                     ret.add(createDestination (direction, candidate, 1));
                 }
             }
-        }
-
-        return ret;
-    }
-
-    public static TreeSet<GenteMove> determineScoringMoves (GridGame gridGame, GentePlayer player, HashSet<Color> colors) throws InvalidMoveException {
-        TreeSet<GenteMove> ret = new TreeSet<GenteMove>(new MoveComparator());
-        if (gridGame instanceof GenteGame) {
-            GenteGame game = (GenteGame) gridGame;
-            List<GridCell> unbound = findUnboundAdjacentCells(game, colors);
-            /*
-            for (GridCell cell : unbound){
-                try {
-                    for (Color color : colors) {
-                        GenteGame clone = (GenteGame) (game).clone();
-                        clone.setMessageSender(new DummyMessageSender());
-                        clone.setId(0);
-                        cell.setColor(color);
-                        cell.setId(getMaxId(clone) + 1);
-                        GenteMove move = new GenteMove (player, cell);
-                        move = (GenteMove) clone.move(move);
-                        if (move.getTesseras() != null && move.getTesseras().size() >  0) {
-                            ret.add(move);
-                        } else if (move.getTrias() != null && move.getTrias().size() > 0) {
-                            ret.add(move);
-                        }
-                    }
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
-            }*/
         }
 
         return ret;
