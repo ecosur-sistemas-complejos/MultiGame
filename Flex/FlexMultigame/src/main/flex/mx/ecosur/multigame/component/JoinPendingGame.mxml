@@ -69,7 +69,8 @@
 
 
         public function updateGame(game:Game):Boolean {
-            if (containsPlayer(game))
+            // TODO: Have this rely upon "maxPlayers" in Games
+            if (containsPlayer(game) || game.players.length == 4)
                     return removeGame(game);
 
             var ret:Boolean = (_games != null);
