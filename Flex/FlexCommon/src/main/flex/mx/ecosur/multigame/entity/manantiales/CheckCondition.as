@@ -58,9 +58,5 @@ import mx.resources.ResourceManager;
             return _violators;
         }
 
-        public function toString():String {
-            return _player.name +  " " + ResourceManager.getInstance().getString("Commons", "check.start") +" " + _reason + " " +
-                    ResourceManager.getInstance().getString("Commons", "check.end");
-        }
     }
 }

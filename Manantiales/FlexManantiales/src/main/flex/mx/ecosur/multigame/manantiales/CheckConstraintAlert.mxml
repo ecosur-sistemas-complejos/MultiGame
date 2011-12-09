@@ -55,16 +55,17 @@
             
             private function init():void {
                 if (raised) {
-                   this.reason.text = _constraint.toString();
+                   this.reason.text = constraint.player.name +  " " + resourceManager.getString("Commons", "check.start") +" '" + resourceManager.getString("Manantiales", constraint.reason)
+                           + "' " + resourceManager.getString("Commons", "check.end");
                    this.indicator.source=thumbsDown;
                 } else if (triggered) {
                     this.indicator.source=thumbsDown;
-                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " " +
-                            resourceManager.getString ("Manantiales", constraint.reason) + "!";
+                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " '" +
+                            resourceManager.getString ("Manantiales", constraint.reason) + "'!";
                 }else {
                     this.indicator.source=thumbsUp;
-                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " " +
-                            resourceManager.getString ("Manantiales", constraint.reason) + "!";
+                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " '" +
+                            resourceManager.getString ("Manantiales", constraint.reason) + "'!";
                 }
             }            
             
