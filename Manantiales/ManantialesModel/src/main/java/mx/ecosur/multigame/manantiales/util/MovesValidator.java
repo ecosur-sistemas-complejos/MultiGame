@@ -11,8 +11,7 @@ import mx.ecosur.multigame.model.interfaces.GamePlayer;
 import mx.ecosur.multigame.model.interfaces.Move;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -104,7 +103,8 @@ public class MovesValidator {
 
     public List<Move> getMoves() {
         if (!validated)
-            throw new RuntimeException("Moves not validated!");
+            throw new RuntimeException (ResourceBundle.getBundle("Manantiales",
+                    Locale.getDefault()).getString("manantiales.moves.not.validated") + "!");
         if (!invalid.equals(Collections.EMPTY_LIST)) {
             for (Move i : invalid) {
                 moves.remove(i);

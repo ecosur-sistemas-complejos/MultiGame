@@ -171,7 +171,6 @@ package mx.ecosur.multigame.manantiales
                 var checkCondition:CheckCondition;
                 var game:ManantialesGame;
                 var move:ManantialesMove;
-                var player:ManantialesPlayer;
                 var suggestion:Suggestion;
 
                 switch (gameEvent) {
@@ -566,7 +565,7 @@ package mx.ecosur.multigame.manantiales
 
                 if (expiredCondition != null) {
                     _endAlert.text = resourceManager.getString("Manantiales", "manantiales.severe.expiration") +
-                            " ('" + expiredCondition.reason + "')";
+                            " ('" + resourceManager.getString("Manantiales", expiredCondition.reason) + "')";
                     _endAlert.positive = false;
                 } else {
                     if (puzzleMode) {

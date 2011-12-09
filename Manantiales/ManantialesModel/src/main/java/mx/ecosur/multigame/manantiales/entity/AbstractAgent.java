@@ -14,7 +14,6 @@ import java.util.*;
 
 public abstract class AbstractAgent extends ManantialesPlayer implements Agent, Serializable {
 
-
     public AbstractAgent() {
         super();
     }
@@ -146,7 +145,8 @@ public abstract class AbstractAgent extends ManantialesPlayer implements Agent, 
                 endcol = game.getColumns();
                 break;
             default:
-                throw new RuntimeException("Unknown Color!!");
+                throw new RuntimeException (ResourceBundle.getBundle("Manantiales",
+                        Locale.getDefault()).getString("unknown.color") + "!");
         }
 
         for (int row = startrow; row <= endrow; row++) {

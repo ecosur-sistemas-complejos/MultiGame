@@ -3,45 +3,44 @@
 	creationComplete="init()">
     <mx:Metadata>
         [Event(name="result")]
+        [ResourceBundle("Manantiales")]
     </mx:Metadata>
 
     <mx:Script>
         <![CDATA[
-        	import mx.ecosur.multigame.entity.manantiales.CheckCondition;
+            import mx.ecosur.multigame.entity.manantiales.CheckCondition;
             import mx.events.DynamicEvent;
-            import mx.containers.Box;
-            import mx.controls.Image;
-            
+
             private var _constraint:CheckCondition;
             private var _raised:Boolean = false, _triggered:Boolean = false,
                _acknowledged:Boolean = false;
-	        
-	        public function get acknowledged():Boolean {
-	            return _acknowledged;
-	        }
-	        
-	        public function set acknowledged(ack:Boolean):void {
-	            _acknowledged = ack;
-	        }            
+
+            public function get acknowledged():Boolean {
+                return _acknowledged;
+            }
+
+            public function set acknowledged(ack:Boolean):void {
+                _acknowledged = ack;
+            }
             
             public function set constraint (violation:CheckCondition):void {
-            	_constraint = violation;            	
+                _constraint = violation;
             }
             
             public function get constraint():CheckCondition {
-            	return _constraint;
+                return _constraint;
             }
             
             public function get triggered():Boolean {
-            	return _triggered;
+                return _triggered;
             }
             
             public function set triggered(triggered:Boolean):void {
-            	_triggered = triggered;
+                _triggered = triggered;
             }
             
             public function set raised (raised:Boolean):void {
-            	_raised = raised;
+                _raised = raised;
             }
             
             public function get raised():Boolean {
@@ -55,20 +54,22 @@
             private var thumbsUp:Class
             
             private function init():void {
-            	if (raised) {
-            	   this.reason.text = _constraint.toString();
-            	   this.indicator.source=thumbsDown;
-            	} else if (triggered) {
-            		this.indicator.source=thumbsDown;
-            	   this.reason.text = "Constraint Triggered! {" + constraint.toString() + "]";
-            	}else {
-            		this.indicator.source=thumbsUp;
-            		this.reason.text = "Constraint Relieved! [" + constraint.toString() + "]";
-            	}            	
+                if (raised) {
+                   this.reason.text = _constraint.toString();
+                   this.indicator.source=thumbsDown;
+                } else if (triggered) {
+                    this.indicator.source=thumbsDown;
+                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " " +
+                            resourceManager.getString ("Manantiales", constraint.reason) + "!";
+                }else {
+                    this.indicator.source=thumbsUp;
+                    this.reason.text = resourceManager.getString("Manantiales", "manantiales.check.triggered") + " " +
+                            resourceManager.getString ("Manantiales", constraint.reason) + "!";
+                }
             }            
             
             private function acknowledge (event:MouseEvent):void{
-            	acknowledged = true;
+                acknowledged = true;
                 var dEvent:DynamicEvent = new DynamicEvent("result");
                 dispatchEvent(dEvent);            	
             }

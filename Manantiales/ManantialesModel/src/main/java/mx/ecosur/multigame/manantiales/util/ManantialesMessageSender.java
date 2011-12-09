@@ -2,10 +2,7 @@ package mx.ecosur.multigame.manantiales.util;
 
 import mx.ecosur.multigame.MessageSender;
 import mx.ecosur.multigame.enums.GameEvent;
-import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
-import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-import mx.ecosur.multigame.manantiales.entity.PuzzleSuggestion;
+import mx.ecosur.multigame.manantiales.entity.*;
 
 import java.util.logging.Logger;
 
@@ -13,6 +10,18 @@ import java.util.logging.Logger;
  * @author awaterma@ecosur.mx
  */
 public class ManantialesMessageSender extends MessageSender {
+
+    public void sendConditionRaised (ManantialesGame game, CheckCondition condition) {
+        sendMessage(game.getId(), GameEvent.CONDITION_RAISED, condition);
+    }
+
+    public void sendConditionResolved (ManantialesGame game, CheckCondition condition) {
+        sendMessage (game.getId(), GameEvent.CONDITION_RESOLVED, condition);
+    }
+
+    public void sendConditionTriggered (ManantialesGame game, CheckCondition condition) {
+        sendMessage (game.getId(), GameEvent.CONDITION_TRIGGERED, condition);
+    }
 
     private static final Logger logger = Logger.getLogger(ManantialesMessageSender.class.getCanonicalName());
 
