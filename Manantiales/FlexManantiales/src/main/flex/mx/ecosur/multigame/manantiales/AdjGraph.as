@@ -5,7 +5,6 @@
  */
 package mx.ecosur.multigame.manantiales {
 import flash.geom.Point;
-import flash.utils.Dictionary;
 
 public class AdjGraph {
 
