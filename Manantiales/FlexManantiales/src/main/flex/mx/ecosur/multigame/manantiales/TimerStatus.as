@@ -16,8 +16,8 @@ package mx.ecosur.multigame.manantiales {
         private var _current:Number;
 
         public function TimerStatus(){
-                                         super();
-                                         }
+            super();
+        }
 
         public function displayTime(color:uint):void {
             _current += 1000;

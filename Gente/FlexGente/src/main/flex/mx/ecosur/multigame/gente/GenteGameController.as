@@ -310,7 +310,8 @@ package mx.ecosur.multigame.gente{
 
             _sndChannel = sound.play();
             _isEnded = true;
-            
+            /* Message Controller to tear down message receiver (game is over) */
+            destroy()
         }
         
         /*
@@ -363,7 +364,6 @@ package mx.ecosur.multigame.gente{
          */
         private function processMessage(event:DynamicEvent):void {
             var message:IMessage = event.message;
-            var gameId:Number = message.headers.GAME_ID;
             var gameEvent:String = message.headers.GAME_EVENT;
             var game:GenteGame = null;
         
@@ -381,7 +381,7 @@ package mx.ecosur.multigame.gente{
                     break;
                 case GameEvent.END:
                     game = GenteGame (message.body);
-                    _winners = game.winners;                
+                    _winners = game.winners;
                     if (_isTurn){
                         end();
                     }

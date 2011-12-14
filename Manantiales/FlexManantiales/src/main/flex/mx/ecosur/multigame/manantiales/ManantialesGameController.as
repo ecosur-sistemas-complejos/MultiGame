@@ -599,6 +599,9 @@ package mx.ecosur.multigame.manantiales
                 PopUpManager.centerPopUp(_endAlert);
                 _sndChannel = sound.play();
             }
+
+            /* Remove message listener */
+            destroy();
         }
 
         private function isWinner():Boolean {
