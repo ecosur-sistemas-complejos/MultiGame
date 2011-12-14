@@ -67,4 +67,9 @@ RC-1 Release Date: 25/11/11
     MG-74    FIXED   Update Manantiales Documentation to reflect UserGuide from Luis
     MG-77    FIXED   Bonuses Awarded After 3 NOT 4 Points in Silvopastoral Modalities
 
-
+FINAL Release Date: 14/12/11
+    MG-50    FIXED   Runtime and Custom Exception Reasons Only in English
+    MG-83    FIXED   Out of Memory Error
+    MG-84    FIXED   Full Games available to other players to JOIN
+    MG-85    FIXED   Fix naming scheme
+    MG-88    FIXED   JMeter Integration Tests
