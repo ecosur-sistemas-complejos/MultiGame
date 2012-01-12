@@ -5,10 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>mx.ecosur</groupId>
     <artifactId>multi-game</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.0.0.FINAL</version>
     <packaging>pom</packaging>
     <name>Participatory Gaming Project</name>
     <inceptionYear>June 2008</inceptionYear>
+    <url>http://chiapasgames.net/project</url>
     <licenses>
         <license>
             <name>Academic Free License ("AFL") v. 3.0</name>
@@ -53,6 +54,7 @@
         <url>http://www.ecosur.mx</url>
     </organization>    
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.2.0.Final</drools.version>
         <hibernate-version>3.3.1.GA</hibernate-version>
         <flexmojos-version>3.9</flexmojos-version>
@@ -167,6 +169,24 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0-beta-2</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>findbugs-maven-plugin</artifactId>
+                            <version>2.3.3</version>
+                            <configuration>
+                              <xmlOutput>true</xmlOutput>
+                              <xmlOutputDirectory>target/site</xmlOutputDirectory>
+                            </configuration>
+                        </plugin>
+                    </reportPlugins>
                 </configuration>
             </plugin>
         </plugins>
