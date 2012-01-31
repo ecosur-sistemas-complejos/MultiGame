@@ -2,9 +2,9 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>mx.ecosur</groupId>
-<artifactId>flex-client</artifactId>
+<artifactId>flex-multigame</artifactId>
 <packaging>swf</packaging>
-<name>Flex Client</name>
+<name>Flex MultiGame</name>
 <description>Flex UI implementation for our participatory modeling games.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
@@ -47,11 +47,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <sourceFile>main.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
                 <services>${project.build.directory}/generated-resources/services-config.xml</services>
-                <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
-                <compiledLocales>
-                    <compiledLocale>en_US</compiledLocale>
-                    <compiledLocale>es_ES</compiledLocale>
-                </compiledLocales>
                 <includeFiles>
                     <includeFile>
                        <includes>
@@ -60,9 +55,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                        </includes>
                     </includeFile>
                 </includeFiles>
-                
-                <!-- TODO: Check which of these are necessary -->
-                <configurationReport>true</configurationReport>
+                <includeResourceBundles>
+                    <bundle>Lobby</bundle>
+                </includeResourceBundles>
+                <localesCompiled>
+                    <compiled>en_US</compiled>
+                    <compiled>es_ES</compiled>
+                </localesCompiled>
+                <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
                 <targetPlayer>${player}</targetPlayer>
                 <storepass/>
             </configuration>
@@ -85,6 +85,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </plugins>
 </build>
 <dependencies>
+    <!-- Flex compiler -->
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${flex-version}</version>
+        <type>pom</type>
+    </dependency>
     <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>flex-config</artifactId>
@@ -93,43 +100,42 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>tar.gz</type>
     </dependency>
    <!-- Cached rsl dependencies -->
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>textLayout</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>framework</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>spark</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>sparkskins</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>rpc</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-
-	<dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>textLayout</artifactId>
+        <version>${flex-version}</version>
+        <type>swc</type>
+        <scope>caching</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>framework</artifactId>
+        <version>${flex-version}</version>
+        <type>swc</type>
+        <scope>caching</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>spark</artifactId>
+        <version>${flex-version}</version>
+        <type>swc</type>
+        <scope>caching</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>sparkskins</artifactId>
+        <version>${flex-version}</version>
+        <type>swc</type>
+        <scope>caching</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>rpc</artifactId>
+        <version>${flex-version}</version>
+        <type>swc</type>
+        <scope>caching</scope>
+    </dependency>
+    <dependency>
          <groupId>com.adobe.flex.framework</groupId>
          <artifactId>halo</artifactId>
          <version>${flex-version}</version>
@@ -137,14 +143,20 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <scope>theme</scope>
          <classifier>theme</classifier>
     </dependency>
-
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>playerglobal</artifactId>
+        <version>${flex-version}</version>
+        <classifier>10.0</classifier>
+        <type>swc</type>
+    </dependency>
     <!-- Multigame -->
     <dependency>
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
-		  <type>swc</type>
-		  <scope>rsl</scope>
+        <type>swc</type>
+        <scope>rsl</scope>
     </dependency>
 </dependencies>    
 </project>

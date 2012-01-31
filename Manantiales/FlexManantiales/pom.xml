@@ -48,14 +48,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                 <sourceFile>Manantiales.mxml</sourceFile>
                 <contextRoot>multi-game</contextRoot>
                 <services>${project.build.directory}/generated-resources/services-config.xml</services>
-                <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
-                <compiledLocales>
-                    <compiledLocale>en_US</compiledLocale>
-                    <compiledLocale>es_ES</compiledLocale>
-                </compiledLocales>
-                
-                <!-- TODO: Check which of these are necessary -->
-                <configurationReport>true</configurationReport>
+                <includeResourceBundles>
+                    <bundle>Manantiales</bundle>
+                </includeResourceBundles>
+                <localesCompiled>
+                    <compiled>en_US</compiled>
+                    <compiled>es_ES</compiled>
+                </localesCompiled>
+                <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
                 <targetPlayer>${player}</targetPlayer>
                 <storepass/>
             </configuration>
@@ -78,6 +78,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </plugins>
 </build>
 <dependencies>
+    <!-- Flex compiler -->
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${flex-version}</version>
+        <type>pom</type>
+    </dependency>
     <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>flex-config</artifactId>

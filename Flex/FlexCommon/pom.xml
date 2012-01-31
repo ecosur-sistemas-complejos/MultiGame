@@ -21,25 +21,26 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <artifactId>flexmojos-maven-plugin</artifactId>
             <version>${flexmojos-version}</version>
             <extensions>true</extensions>
-            <configuration>
-                <flashPlayerCommand>flashplayer</flashPlayerCommand>
-                <debug>${debug}</debug>
-                <resourceBundlePath>${basedir}/src/main/resources/locales/{locale}</resourceBundlePath>
-                <compiledLocales>
-                    <compiledLocale>en_US</compiledLocale>
-                    <compiledLocale>es_ES</compiledLocale>
-                </compiledLocales>
-                <!-- TODO: Check which of these are necessary -->
-                <configurationReport>true</configurationReport>
-                <storepass/>
-            </configuration>
             <executions>
                 <execution>
                     <goals>
-                        <goal>optimize</goal>
+                        <goal>create-rsl</goal>
                     </goals>
                 </execution>
             </executions>
+            <configuration>
+                <flashPlayerCommand>flashplayer</flashPlayerCommand>
+                <debug>${debug}</debug>
+                <includeResourceBundles>
+                    <bundle>Commons</bundle>
+                </includeResourceBundles>
+                <localesCompiled>
+                    <compiled>en_US</compiled>
+                    <compiled>es_ES</compiled>
+                </localesCompiled>
+                <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
+                <storepass/>
+            </configuration>
             <dependencies>
                 <dependency>
                   <groupId>com.adobe.flex</groupId>
@@ -59,6 +60,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </plugins>
 </build>
 <dependencies>
+    <!-- Flex compiler -->
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${flex-version}</version>
+        <type>pom</type>
+    </dependency>
     <dependency>
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>flex-framework</artifactId>
