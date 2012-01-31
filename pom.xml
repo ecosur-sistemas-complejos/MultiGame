@@ -57,9 +57,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.2.0.Final</drools.version>
         <hibernate-version>3.3.1.GA</hibernate-version>
-        <flexmojos-version>3.9</flexmojos-version>
+        <flexmojos-version>4.1-beta</flexmojos-version>
     </properties>
     <dependencies>
+
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
         <!--  Use slf4j-jcl to show solver logging -->
         <dependency>
