@@ -114,7 +114,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
 		  <type>swc</type>
-		  <scope>rsl</scope>        
+		  <scope>merged</scope>
     </dependency>
     <!-- Unit testing -->
     <dependency>

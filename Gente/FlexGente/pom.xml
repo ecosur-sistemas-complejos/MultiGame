@@ -128,8 +128,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
-		  <type>swc</type>
-		  <scope>rsl</scope>        
+        <type>swc</type>
+        <scope>merged</scope>
     </dependency>
     
 </dependencies>    

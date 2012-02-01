@@ -140,7 +140,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <groupId>com.adobe.flex.framework</groupId>
         <artifactId>playerglobal</artifactId>
         <version>${flex-version}</version>
-        <classifier>10.0</classifier>
+        <classifier>10.2</classifier>
         <type>swc</type>
     </dependency>
     <!-- Multigame -->
@@ -149,7 +149,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
         <type>swc</type>
-        <scope>rsl</scope>
+        <scope>merged</scope>
     </dependency>
 </dependencies>    
 </project>
