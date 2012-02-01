@@ -68,12 +68,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>pom</type>
     </dependency>
     <dependency>
-        <groupId>com.adobe.flex.framework</groupId>
-        <artifactId>flex-framework</artifactId>
-        <version>${flex-version}</version>
-        <type>pom</type>
-    </dependency>
-    <dependency>
          <groupId>com.adobe.flex.framework</groupId>
          <artifactId>halo</artifactId>
          <version>${flex-version}</version>

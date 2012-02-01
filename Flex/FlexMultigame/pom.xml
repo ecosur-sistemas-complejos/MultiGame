@@ -129,13 +129,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <scope>caching</scope>
     </dependency>
     <dependency>
-        <groupId>com.adobe.flex.framework</groupId>
-        <artifactId>rpc</artifactId>
-        <version>${flex-version}</version>
-        <type>swc</type>
-        <scope>caching</scope>
-    </dependency>
-    <dependency>
          <groupId>com.adobe.flex.framework</groupId>
          <artifactId>halo</artifactId>
          <version>${flex-version}</version>

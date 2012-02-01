@@ -86,7 +86,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>pom</type>
     </dependency>
     <dependency>
-        <groupId>${project.groupId}</groupId>
+        <groupId>mx.ecosur</groupId>
         <artifactId>flex-config</artifactId>
         <version>${project.version}</version>
         <classifier>resources</classifier>
@@ -95,46 +95,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
    <!-- Cached rsl dependencies -->
 	<dependency>
 		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>textLayout</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>framework</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>spark</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
 		<artifactId>sparkskins</artifactId>
 		<version>${flex-version}</version>
 		<type>swc</type>
 		<scope>caching</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.adobe.flex.framework</groupId>
-		<artifactId>rpc</artifactId>
-		<version>${flex-version}</version>
-		<type>swc</type>
-		<scope>caching</scope>
-	</dependency>
-
-	<!-- Framework -->
-	<dependency>
-	   <groupId>com.adobe.flex.framework</groupId>
-		<artifactId>flex-framework</artifactId>
-		<version>${flex-version}</version>
-		<type>pom</type>
 	</dependency>
    <dependency>
          <groupId>com.adobe.flex.framework</groupId>
@@ -144,7 +108,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <scope>theme</scope>
          <classifier>theme</classifier>
     </dependency>
-
     <!-- Multigame -->
     <dependency>
         <groupId>mx.ecosur</groupId>
@@ -153,7 +116,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		  <type>swc</type>
 		  <scope>rsl</scope>        
     </dependency>
-
     <!-- Unit testing -->
     <dependency>
         <groupId>com.adobe.flexunit</groupId>
