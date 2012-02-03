@@ -2,12 +2,10 @@
 
 package mx.ecosur.multigame.manantiales.token
 {
-    import flash.events.MouseEvent;
-
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
-    import mx.ecosur.multigame.entity.manantiales.Suggestion;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
+import mx.ecosur.multigame.manantiales.entity.Ficha;
+import mx.ecosur.multigame.manantiales.entity.Suggestion;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
 
     [ResourceBundle("Manantiales")]
     public class SuggestionToken extends ManantialesToken {

@@ -4,11 +4,10 @@ package mx.ecosur.multigame.manantiales.token
     import flash.events.MouseEvent;
 
     import mx.collections.ArrayCollection;
-    import mx.controls.Alert;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 

@@ -1,5 +1,5 @@
-package mx.ecosur.multigame.entity.manantiales
-{
+package mx.ecosur.multigame.manantiales.entity {
+
     import mx.ecosur.multigame.entity.GamePlayer;
 
     [RemoteClass (alias=

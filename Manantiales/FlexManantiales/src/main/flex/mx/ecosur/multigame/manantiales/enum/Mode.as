@@ -1,5 +1,5 @@
-package mx.ecosur.multigame.enum.manantiales
-{
+package mx.ecosur.multigame.manantiales.enum {
+
 	public class Mode
 	{
 		public static const COMPETITIVE:String = "COMPETITIVE";

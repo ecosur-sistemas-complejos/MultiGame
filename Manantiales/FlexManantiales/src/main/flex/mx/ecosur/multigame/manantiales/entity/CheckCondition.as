@@ -1,8 +1,8 @@
-package mx.ecosur.multigame.entity.manantiales
-{
+package mx.ecosur.multigame.manantiales.entity {
+
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.entity.GamePlayer;
-import mx.resources.ResourceManager;
+    import mx.resources.ResourceManager;
 
 [ResourceBundle("Commons")]
     [RemoteClass (alias="mx.ecosur.multigame.manantiales.entity.CheckCondition")]

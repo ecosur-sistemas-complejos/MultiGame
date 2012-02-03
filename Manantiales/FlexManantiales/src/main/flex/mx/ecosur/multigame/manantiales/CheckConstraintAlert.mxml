@@ -8,7 +8,7 @@
 
     <mx:Script>
         <![CDATA[
-            import mx.ecosur.multigame.entity.manantiales.CheckCondition;
+            import mx.ecosur.multigame.manantiales.entity.CheckCondition;
             import mx.events.DynamicEvent;
 
             private var _constraint:CheckCondition;

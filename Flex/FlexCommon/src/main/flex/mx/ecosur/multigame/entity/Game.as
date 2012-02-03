@@ -1,12 +1,12 @@
 /*
-* Copyright (C) 2008 ECOSUR, Andrew Waterman and Max Pimm
+* Copyright (C) 2008-2012 ECOSUR, Andrew Waterman and Max Pimm
 *
 * Licensed under the Academic Free License v. 3.2.
 * http://www.opensource.org/licenses/afl-3.0.php
 */
 
 /**
-* @author max@alwayssunny.com
+* @author max@alwayssunny.com, awaterma@ecosur.mx
 */
 
 package mx.ecosur.multigame.entity {
@@ -106,25 +106,12 @@ package mx.ecosur.multigame.entity {
             _type = gameType;
         }
 
-
-        public function get type():String {
-            return _type;
-        }
-
-        public function set type(value:String):void {
-            _type = value;
-        }
-
         public function get moves():ArrayCollection {
             return _moves;
         }
 
         public function set moves(value:ArrayCollection):void {
             _moves = value;
-        }
-
-        public function toString():String{
-            return "id = " + _id + ", rows = " + _rows + ", columns = " +  _columns + ", players = " + _players + ", created = " + _created + ", state = " + _state;
         }
 
     }

@@ -11,46 +11,44 @@
 
     package mx.ecosur.multigame.manantiales
     {
-    import flash.display.Shape;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    
-    import mx.collections.ArrayCollection;
-    import mx.containers.Canvas;
-    import mx.controls.Alert;
-    import mx.ecosur.multigame.component.AbstractBoard;
-    import mx.ecosur.multigame.component.BoardCell;
-    import mx.ecosur.multigame.entity.GamePlayer;
-    import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
-    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+        import flash.display.Shape;
+        import flash.geom.Point;
 
-    /**
-    * A ManantialesBoard is similar to the GenteBoard interfaces,
-    * but cells are spaced in a much different manner, and not all
-    * iumns and rows are filled in with actionable BoardCells.
-    *
-    * Generating a board like:
-    *
-    *
-    *  M[B]  I[B]       M[B]   I[G]   M[G]
-    *    M[B]  M[B]     I[B]  M[G]  M[G]
-    *  I[B]  I[B]       F[G]   I[G]   I[G]
-    *    F[B]  F[B]     F[G]  M[G]  F[G]
-    *  F[B] F[B] M[R] M[R]  F[Y]  F[Y]  I[G]  F[G]
-    *    F[R]  F[R]     F[R]  M[Y]  M[Y]
-    *  I[R]  I[R]       M[R]   I[Y]   I[Y]
-    *    I[R]  F[R]     I[Y]  F[Y]  M[Y]
-    *   M[R]  I[R]      F[Y]   I[Y]   M[Y]
-    *
-    * This represents a 9x9 grid, but with spacing staggered
-    * except for the center column and row.
-    *
-    * The center position of the board is always empty, acting
-    * as the location of the Manantial or Spring for individuals
-    * living in the Ejido.
-    */
-    public class ManantialesBoard extends AbstractBoard {
+        import mx.collections.ArrayCollection;
+        import mx.containers.Canvas;
+        import mx.ecosur.multigame.component.AbstractBoard;
+        import mx.ecosur.multigame.component.BoardCell;
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.enum.Color;
+        import mx.ecosur.multigame.manantiales.enum.TokenType;
+        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+
+        /**
+        * A ManantialesBoard is similar to the GenteBoard interfaces,
+        * but cells are spaced in a much different manner, and not all
+        * iumns and rows are filled in with actionable BoardCells.
+        *
+        * Generating a board like:
+        *
+        *
+        *  M[B]  I[B]       M[B]   I[G]   M[G]
+        *    M[B]  M[B]     I[B]  M[G]  M[G]
+        *  I[B]  I[B]       F[G]   I[G]   I[G]
+        *    F[B]  F[B]     F[G]  M[G]  F[G]
+        *  F[B] F[B] M[R] M[R]  F[Y]  F[Y]  I[G]  F[G]
+        *    F[R]  F[R]     F[R]  M[Y]  M[Y]
+        *  I[R]  I[R]       M[R]   I[Y]   I[Y]
+        *    I[R]  F[R]     I[Y]  F[Y]  M[Y]
+        *   M[R]  I[R]      F[Y]   I[Y]   M[Y]
+        *
+        * This represents a 9x9 grid, but with spacing staggered
+        * except for the center column and row.
+        *
+        * The center position of the board is always empty, acting
+        * as the location of the Manantial or Spring for individuals
+        * living in the Ejido.
+        */
+        public class ManantialesBoard extends AbstractBoard {
 
         protected var _bg:Shape, _hl:Shape, _vl:Shape,
           _manantial:Canvas, _spring:Shape;
@@ -85,11 +83,11 @@
             return new Point (_centerX, _centerY);
         }
         
-        function get currentPlayer ():GamePlayer {
+        internal function get currentPlayer ():GamePlayer {
             return _currentPlayer;
         }
 
-        function set currentPlayer (currentPlayer:GamePlayer):void {
+        internal function set currentPlayer (currentPlayer:GamePlayer):void {
             this._currentPlayer = currentPlayer;
         }
 

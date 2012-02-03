@@ -7,8 +7,8 @@
     
     <mx:Script> 
         <![CDATA[
-            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
-            import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             
             private static const TERRITORY:int = 48; 
             

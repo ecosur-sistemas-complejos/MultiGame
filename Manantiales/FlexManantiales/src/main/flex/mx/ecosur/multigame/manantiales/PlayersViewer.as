@@ -6,8 +6,8 @@ package mx.ecosur.multigame.manantiales
     import mx.controls.Button;
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
     import mx.resources.IResourceManager;
     import mx.resources.ResourceManager;
 
@@ -45,7 +45,7 @@ package mx.ecosur.multigame.manantiales
         public function setTurn(player:ManantialesPlayer):void{
             var pi:PlayerInfo;
             for (var i:int = 0; i < getChildren().length; i++){
-                if (getChildAt(i) instanceof GameInfo)
+                if (getChildAt(i) is GameInfo)
                     continue;
                 pi = PlayerInfo(getChildAt(i));
 

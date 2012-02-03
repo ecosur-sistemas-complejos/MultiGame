@@ -1,8 +1,7 @@
-package mx.ecosur.multigame.entity.manantiales
-{
-import mx.ecosur.multigame.entity.GamePlayer;
-import mx.ecosur.multigame.entity.Move;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
+package mx.ecosur.multigame.manantiales.entity {
+
+    import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.entity.Move;
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.manantiales.entity.ManantialesMove")]

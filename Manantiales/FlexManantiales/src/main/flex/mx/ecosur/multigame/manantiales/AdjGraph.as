@@ -4,13 +4,12 @@
  * @author: awaterma@ecosur.mx
  */
 package mx.ecosur.multigame.manantiales {
-import flash.geom.Point;
 
-public class AdjGraph {
+    import flash.geom.Point;
 
-        var E:int,  V:int;
+    public class AdjGraph {
 
-        var adj:Array, dict:Array;
+        private var E:int,  V:int, adj:Array, dict:Array;
 
         public function AdjGraph(V:int) {
             this.V = V;

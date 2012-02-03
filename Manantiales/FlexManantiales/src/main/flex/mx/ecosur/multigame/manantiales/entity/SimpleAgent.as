@@ -1,6 +1,6 @@
 //copyright
 
-package mx.ecosur.multigame.entity.manantiales {
+package mx.ecosur.multigame.manantiales.entity {
 
     [RemoteClass (alias=
         "mx.ecosur.multigame.manantiales.entity.SimpleAgent")]

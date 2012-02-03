@@ -9,7 +9,7 @@
  * @author max@alwayssunny.com
 */
 
-package mx.ecosur.multigame.entity.gente {
+package mx.ecosur.multigame.gente.entity {
 	
 	import mx.collections.ArrayCollection;
 	import mx.ecosur.multigame.entity.Game;
@@ -34,8 +34,5 @@ package mx.ecosur.multigame.entity.gente {
 			_winners = winners;
 		}	
 		
-		override public function toString():String{
-			return super.toString() + " winners = {" + winners + "}";
-		}
 	}
 }

@@ -11,20 +11,28 @@
 
 package mx.ecosur.multigame.event {
 
-    import mx.ecosur.multigame.entity.Game;
     import mx.ecosur.multigame.entity.GamePlayer;
 
-/**
+    /**
      * Represents a server side ServiceGameEvent.
     */
     [RemoteClass (alias="mx.ecosur.multigame.flexClient.service.ServiceGameEvent")]
     public class ServiceGameEvent {
 
         private var _gamePlayer:GamePlayer;
-        private var _game:Game;
+        private var _gameId:int;
+        private var _gameType:String;
 
         public function ServiceGameEvent() {
             super();
+        }
+
+        public function get gameType():String {
+            return _gameType;
+        }
+
+        public function set gameType(value:String):void {
+            _gameType = value;
         }
 
         public function get player ():GamePlayer {
@@ -35,12 +43,12 @@ package mx.ecosur.multigame.event {
             _gamePlayer = gamePlayer;
         }
 
-        public function get game ():Game {
-            return _game;
+        public function get gameId ():int {
+            return _gameId;
         }
 
-        public function set game (game:Game):void {
-            _game = game;
+        public function set gameId (gameId:int):void {
+            _gameId = gameId;
         }
     }
 }

@@ -1,9 +1,8 @@
-package mx.ecosur.multigame.enum.manantiales
-{
-import mx.collections.ArrayCollection;
-import mx.ecosur.multigame.enum.manantiales.Mode;
+package mx.ecosur.multigame.manantiales.enum {
 
-public class TokenType
+    import mx.collections.ArrayCollection;
+
+    public class TokenType
     {
         public static const UNDEVELOPED:String = "UNDEVELOPED";
         public static const INTENSIVE:String = "INTENSIVE_PASTURE";
@@ -27,5 +26,5 @@ public class TokenType
             return ret;
         }
 
-	}
+    }
 }

@@ -9,6 +9,7 @@
 
     <mx:Script>
         <![CDATA[
+        import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.enum.GameState;
         import mx.ecosur.multigame.event.PlayEvent;
@@ -67,15 +68,14 @@
             return ret;
         }
 
-
         public function updateGame(game:Game):Boolean {
             // TODO: Have this rely upon "maxPlayers" in Games
             if (containsPlayer(game) || game.players.length == 4)
-                    return removeGame(game);
+                return removeGame(game);
 
             var ret:Boolean = (_games != null);
             var idx:int = -1;
-              if (ret) {
+            if (ret) {
                 for (var i:int = 0; i < _games.length; i++) {
                     var g:Game = Game(_games.getItemAt(i));
                     if (g.id == game.id) {
@@ -90,10 +90,12 @@
                     updateDataGrid();
                 } else
                     ret = false;
-              }
+            }
 
             return ret;
         }
+
+
 
         public function reload(event:Event):void {
             var token:AsyncToken = gameService.getPendingGames(player);
@@ -126,7 +128,7 @@
 
         private function joinResultHandler(event:ResultEvent):void {
             var serviceEvent:ServiceGameEvent = ServiceGameEvent(event.result);
-            dispatchEvent(new PlayEvent("gameJoined", serviceEvent.game, serviceEvent.player));
+            dispatchEvent(new PlayEvent("gameJoined", serviceEvent.gameId, serviceEvent.gameType, player));
         }
 
         private function joinFaultHandler(event:FaultEvent):void {
@@ -137,8 +139,7 @@
         private function updateDataGrid():void {
             if (gamesDataGrid == null)
                 return
-            var game:Game, selected:Game;
-            var gamePlayer:GamePlayer;
+            var game:GameDAO, selected:GameDAO;
             var dataProvider:ArrayCollection = new ArrayCollection();
             var dataItem:Object, selectedItem:Object;
             var df:DateFormatter = new DateFormatter();
@@ -147,25 +148,24 @@
             /* Get the currently selected game */
             if (gamesDataGrid.selectedIndex > -1) {
                 if (_games.length > gamesDataGrid.selectedIndex)
-                    selected = Game(_games.getItemAt(gamesDataGrid.selectedIndex));
+                    selected = GameDAO(_games.getItemAt(gamesDataGrid.selectedIndex));
             }
 
             for (var i:Number = 0; i < _games.length; i++) {
-                game = Game(_games.getItemAt(i));
+                game = GameDAO(_games.getItemAt(i));
                 dataItem = new Object();
-                dataItem.gameType = game.type;
-                dataItem.created = df.format(game.created);
-                dataItem.players = "";
-                for (var j:Number = 0; j < game.players.length; j++) {
-                    gamePlayer = GamePlayer(game.players[j]);
-                    dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
+                dataItem.gameType = game.gameType;
+                dataItem.created = df.format(game.creationDate);
+                dataItem.players = "";                
+                for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
+                    dataItem.players += game.players[i];
                 }
                 if (dataItem.players.length > 2) {
                     dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
                 }
-                dataItem.status = GameState.getDescription(game.state);
+                dataItem.status = GameState.getDescription(game.status);
                 dataProvider.addItem(dataItem);
-                if (selected != null && selected.id == game.id && game.state == GameState.WAITING)
+                if (selected != null && selected.gameId == game.gameId && game.status == GameState.WAITING)
                     selectedItem = dataItem;
             }
             gamesDataGrid.dataProvider = dataProvider;
@@ -179,12 +179,11 @@
             var idx:int = gamesDataGrid.selectedIndex;
             /* Catch the case where no item is selected, and select the first */
             if (idx < 0) idx = 0;
-            var game:Game = Game(_games.getItemAt(idx));
-            var pendingToken:AsyncToken = gameService.joinPendingGame(game, player, Color.UNKNOWN);
+            var dao:GameDAO = GameDAO(_games.getItemAt(idx));
+            var pendingToken:AsyncToken = gameService.joinPendingGame(dao.gameId, player, Color.UNKNOWN);
             pendingToken.resultHandler = joinResultHandler;
             pendingToken.faultHandler = joinFaultHandler;
         }
-
         ]]>
     </mx:Script>
     

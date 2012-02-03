@@ -15,7 +15,7 @@ package mx.ecosur.multigame.gente {
 	import mx.containers.Accordion;
 	import mx.controls.Button;
 	import mx.ecosur.multigame.enum.Color;
-	import mx.ecosur.multigame.entity.gente.GentePlayer;
+	import mx.ecosur.multigame.gente.entity.GentePlayer;
 	
 	/**
 	 * Visual component representing the players that are in the current

@@ -9,6 +9,7 @@
 
     <mx:Script>
         <![CDATA[
+        import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.enum.GameState;
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.event.PlayEvent;
@@ -25,10 +26,6 @@
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.entity.Game;
-
-        /* Needed for rendering player information */
-        import mx.ecosur.multigame.entity.gente.StrategyPlayer;
-        import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
 
         public var agent:Agent;
         public var player:Registrant;
@@ -125,31 +122,24 @@
         }
 
         private function updateDataGrid():void {
-            var game:Game;
-            var gamePlayer:GamePlayer;
+            var game:GameDAO;
             var dataProvider:ArrayCollection = new ArrayCollection();
             var dataItem:Object;
             var df:DateFormatter = new DateFormatter();
             df.formatString = "DD/MM/YYYY H:NN";
             for (var i:Number = 0; i < _games.length; i++) {
-                game = Game(_games.getItemAt(i));
+                game = GameDAO (_games.getItemAt(i));
                 dataItem = new Object();
-                dataItem.created = df.format(game.created);
-                dataItem.gameType = game.type;
+                dataItem.created = df.format(game.creationDate);
+                dataItem.gameType = game.gameType;
                 dataItem.players = "";
                 for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
-                    if (game.players[j] is GamePlayer) {
-                        gamePlayer = GamePlayer(game.players[j]);
-                        dataItem.players += gamePlayer.name + " (" + gamePlayer.color + "), ";
-                    } else if (game.players[j] is SimpleAgent) {
-                        var agent:SimpleAgent = SimpleAgent(game.players[j]);
-                        dataItem.players += agent.name + "(" + agent.color + "). ";
-                    }
+                    dataItem.players += game.players [ i ];
                 }
                 if (dataItem.players.length > 2) {
                     dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
                 }
-                dataItem.status = GameState.getDescription(game.state);
+                dataItem.status = GameState.getDescription(game.status);
                 dataProvider.addItem(dataItem);
             }
             if (gamesDataGrid)
@@ -160,17 +150,8 @@
             CursorManager.setBusyCursor();
             var idx:int = gamesDataGrid.selectedIndex;
             if (idx < 0) idx = 0;
-            var joinedGame:Game = Game(_games.getItemAt(idx));
-            var gamePlayer:GamePlayer;
-            for (var i:Number = 0; i < joinedGame.players.length; i++) {
-                var gp:GamePlayer = joinedGame.players [ i ];
-                if (gp.name == this.player.name) {
-                    gamePlayer = gp;
-                    break;
-                }
-            }
-            if (gamePlayer != null)
-                dispatchEvent(new PlayEvent("gameChosen", joinedGame, gamePlayer));
+            var dao:GameDAO = GameDAO(_games.getItemAt(idx));
+            dispatchEvent(new PlayEvent("gameChosen", dao.gameId, dao.gameType, player));
         }
 
         ]]>

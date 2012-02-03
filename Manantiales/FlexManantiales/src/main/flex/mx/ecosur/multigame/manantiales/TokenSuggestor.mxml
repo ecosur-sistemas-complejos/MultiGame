@@ -11,7 +11,7 @@
       <![CDATA[
         import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.manantiales.token.ManantialesToken;
-        import mx.ecosur.multigame.enum.manantiales.TokenType;
+        import mx.ecosur.multigame.manantiales.enum.TokenType;
 
         private var _types:ArrayCollection;
         private var _source:ManantialesToken;

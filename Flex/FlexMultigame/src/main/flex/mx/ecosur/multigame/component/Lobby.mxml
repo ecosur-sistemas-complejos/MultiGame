@@ -24,12 +24,7 @@
         import mx.controls.Alert;
         import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.entity.Registrant;
-        import mx.ecosur.multigame.entity.gente.GenteGame;
-        import mx.ecosur.multigame.entity.gente.GentePlayer;
-        import mx.ecosur.multigame.entity.gente.StrategyPlayer;
         import mx.ecosur.multigame.enum.GameEvent;
-        import mx.ecosur.multigame.util.MessageReceiver;
-        import mx.events.DynamicEvent;
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.IMessage;
@@ -37,12 +32,7 @@
         import mx.rpc.events.ResultEvent;
 
         private var _player:Registrant;
-
-        // Force compilation of game objects to allow serialization of super classes
-        // TODO: Change server side architecture so that lobby does not receive game specific subclasses
-        private var genteGame:GenteGame;
-        private var gentePlayer:GentePlayer;
-        private var strategyPlayer:StrategyPlayer;
+        private var game:Game;
 
         [Bindable]
         public function get player():Registrant {

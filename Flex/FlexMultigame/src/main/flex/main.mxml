@@ -9,8 +9,6 @@
         <![CDATA[
             import mx.controls.Alert;
             import mx.ecosur.multigame.entity.Registrant;
-            import mx.ecosur.multigame.entity.gente.GenteGame;
-            import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
             import mx.ecosur.multigame.event.PlayEvent;
             import mx.ecosur.multigame.module.IGameModule;
             import mx.events.ModuleEvent;
@@ -18,7 +16,7 @@
             import mx.rpc.events.FaultEvent;
             import mx.rpc.events.ResultEvent;
 			
-			private var _currGame:PlayEvent;
+			private var _playEvt:PlayEvent;
 
 	        private function init():void {
 	            loginPrincipal();
@@ -42,21 +40,20 @@
 	        }
 	
 	        private function lobbyDone(playEvent:PlayEvent):void {
-				_currGame = playEvent;
+				_playEvt = playEvent;
 				vstack.selectedChild = gameLoader;
-				if (playEvent.game is GenteGame) {
+				if (_playEvt.gameType == "Gente") {
 					gameLoader.url = "Gente.swf";
-				} else if (playEvent.game is ManantialesGame) {
+				} else if (_playEvt.gameType == "Manantiales") {
                     gameLoader.url = "Manantiales.swf";
                 } else {
-					Alert.show("Error!  Unknown GameType [" + playEvent.game + "]");
-					Alert.show("Game info" + playEvent.game.id + "," + playEvent.game.columns + ", " + playEvent.game.rows);
+					Alert.show("Error!  Unknown GameType [" + _playEvt.gameType + "]");
 					CursorManager.removeBusyCursor();
 				}
 	        }
 			
 			private function startGame(event:ModuleEvent):void {
-				IGameModule(event.currentTarget.child).start(_currGame);
+				IGameModule(event.currentTarget.child).start(_playEvt);
 			}
 			
 			private function gameComplete(event:Event):void {

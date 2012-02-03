@@ -7,12 +7,11 @@ package mx.ecosur.multigame.manantiales {
     import mx.controls.Button;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.Color;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
-import mx.ecosur.multigame.manantiales.ManantialesGameController;
-import mx.ecosur.multigame.manantiales.token.ForestToken;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.manantiales.token.ForestToken;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
     import mx.ecosur.multigame.manantiales.token.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.ModerateToken;
@@ -166,7 +165,7 @@ import mx.ecosur.multigame.manantiales.token.ForestToken;
          */
         private function doMove(move:ManantialesMove):void{
 
-            if (move.badYear || (_lastMove != undefined && _lastMove.id == move.id))
+            if (move.badYear || _lastMove.id == move.id)
                 return
 
             _lastMove = move;

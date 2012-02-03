@@ -13,15 +13,18 @@
     
     <mx:Script>
         <![CDATA[
-            import mx.ecosur.multigame.component.HelpPanel;
-            import mx.ecosur.multigame.entity.GamePlayer;
-            import mx.ecosur.multigame.entity.gente.GenteGame;
-            import mx.ecosur.multigame.enum.GameState;
-            import mx.events.MenuEvent;
-            import mx.managers.PopUpManager;
+        import mx.ecosur.multigame.component.HelpPanel;
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.enum.GameState;
+        import mx.events.MenuEvent;
+        import mx.managers.PopUpManager;
+        import mx.ecosur.multigame.gente.entity.GenteMove;
+        import mx.ecosur.multigame.gente.entity.GenteGame;
+        import mx.ecosur.multigame.gente.entity.GentePlayer;
 
         private var _controller:GenteGameController;
         private var _currentGame:GenteGame;
+        private var _currentGameId:int;
         private var _currentPlayer:GamePlayer;
         private var _helpPanel:HelpPanel;
 
@@ -29,6 +32,14 @@
         public var rows:int;
         [Bindable]
         public var columns:int;
+        
+        public function get currentGameId():int {
+            return _currentGameId;
+        }
+        
+        public function set currentGameId(id:int):void {
+            _currentGameId = id;
+        }
 
         [Bindable]
         public function get currentGame():GenteGame {
@@ -54,7 +65,7 @@
         public function get currentPlayer():GamePlayer {
             return _currentPlayer;
         }
-			
+
         public function reload(event:Event):void {
             // do nothing
         }
@@ -104,7 +115,7 @@
         private function quitGame():void {
             _controller.quitGame(currentPlayer);
         }
-            
+
         ]]>
     </mx:Script>
 

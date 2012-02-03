@@ -1,13 +1,12 @@
 //copyright
 
-package mx.ecosur.multigame.entity.manantiales
-{
-    import mx.controls.PopUpButton;
+package mx.ecosur.multigame.manantiales.entity {
+
     import mx.ecosur.multigame.entity.Cell;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.resources.ResourceManager;
 
-[RemoteClass (alias=
+    [RemoteClass (alias=
         "mx.ecosur.multigame.manantiales.entity.ManantialesFicha")]
 	[ResourceBundle("Commons")]
     public class Ficha extends Cell

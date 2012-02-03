@@ -7,7 +7,7 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
         import mx.events.DynamicEvent;
 
         [Embed(source='/assets/icons.swf#thumbsDown')]

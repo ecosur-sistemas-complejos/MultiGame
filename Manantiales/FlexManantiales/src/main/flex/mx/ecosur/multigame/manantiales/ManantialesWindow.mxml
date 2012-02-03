@@ -16,22 +16,23 @@
         <![CDATA[
         import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.component.HelpPanel;
-        import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
-        import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.enum.GameState;
         import mx.managers.PopUpManager;
         import mx.events.MenuEvent;
         import mx.ecosur.multigame.entity.GamePlayer;
-        import mx.ecosur.multigame.enum.manantiales.Mode;
+        import mx.ecosur.multigame.manantiales.enum.Mode;
 
         /* required for compilation of class into runtime */
 
-        import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
+        import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
 
         private var _controller:ManantialesGameController;
         protected var _currentPlayer:GamePlayer;
         protected var _currentGame:ManantialesGame;
+        protected var _currentGameId:int;
         private var _helpPanel:HelpPanel;
         private var _suggestionHandler:SuggestionHandler;
         private var _elapsed:Number;
@@ -75,11 +76,18 @@
             return _controller;
         }
 
+        public function get currentGameId():int {
+            return _currentGameId;
+        }
+
+        public function set currentGameId(id:int) {
+            _currentGameId = id;
+        }
+        
         [Bindable]
         public function get currentGame():ManantialesGame {
             return _currentGame;
         }
-
 
         public function set currentGame(currentGame:ManantialesGame):void {
             if (currentGame != null)

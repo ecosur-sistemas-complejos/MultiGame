@@ -10,7 +10,6 @@
 <mx:Script>
     <![CDATA[
     import mx.ecosur.multigame.entity.Registrant;
-    import mx.ecosur.multigame.enum.manantiales.Mode;
     import mx.ecosur.multigame.event.PlayEvent;
     import mx.ecosur.multigame.event.ServiceGameEvent;
     import mx.managers.CursorManager;
@@ -47,7 +46,7 @@
         var sge:ServiceGameEvent = ServiceGameEvent(event.result);
         var gamePlayer:GamePlayer = GamePlayer(sge.player);
         CursorManager.removeBusyCursor();
-        this.dispatchEvent(new PlayEvent("registered", sge.game, gamePlayer));
+        this.dispatchEvent(new PlayEvent("registered", sge.gameId, sge.gameType, player));
     }
 
     private function faultHandler(event:FaultEvent):void {
@@ -112,10 +111,10 @@
 </mx:ArrayCollection>
 <!-- Manantiales Modalities -->
 <mx:ArrayCollection id="manModes">
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="{Mode.COMPETITIVE}" />
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="{Mode.BASIC_PUZZLE}" />
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="{Mode.SILVOPASTORAL}"/>
-    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="{Mode.SILVO_PUZZLE}"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode1')}" data="COMPETITIVE" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode2')}" data="BASIC_PUZZLE" />
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode3')}" data="SILVOPASTORAL"/>
+    <mx:Object label="{resourceManager.getString('Lobby', 'start.mode4')}" data="SILVO_PUZZLE"/>
 </mx:ArrayCollection>
 
 <mx:ArrayCollection id="gameList">

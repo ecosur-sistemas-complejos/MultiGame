@@ -15,12 +15,12 @@ package mx.ecosur.multigame.manantiales
     import mx.controls.Alert;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.MoveStatus;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
-    import mx.ecosur.multigame.entity.manantiales.Suggestion;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
     import mx.effects.AnimateProperty;
     import mx.events.DragEvent;
@@ -53,7 +53,7 @@ package mx.ecosur.multigame.manantiales
 
         public function SuggestionHandler (controller:ManantialesGameController) {
             _controller = controller;
-            _player = controller._currentPlayer;
+            _player = ManantialesPlayer(controller._currentPlayer);
             _currentSuggestions = new Dictionary();
             _animations = 5;
         }

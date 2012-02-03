@@ -12,21 +12,21 @@ import mx.ecosur.multigame.grid.entity.GridPlayer;
  */
 public class ServiceGameEvent {
 
-    private GridGame game;
-
+    private int gameId;
+    
     private GridPlayer player;
 
     public ServiceGameEvent (GridGame game, GridPlayer player) {
-        this.game = game;
+        this.gameId = game.getId();
         this.player = player;
     }
 
-    public GridGame getGame() {
-        return game;
+    public int getGameId() {
+        return gameId;
     }
 
-    public void setGame(GridGame game) {
-        this.game = game;
+    public void setGameId(int id) {
+        gameId = id;
     }
 
     public GridPlayer getPlayer() {

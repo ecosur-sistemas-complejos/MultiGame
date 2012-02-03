@@ -9,7 +9,7 @@
         <![CDATA[
             import mx.formatters.DateFormatter;
             import mx.ecosur.multigame.enum.Color;
-            import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.controls.Alert;
             
             private var _manantialesPlayer:ManantialesPlayer;

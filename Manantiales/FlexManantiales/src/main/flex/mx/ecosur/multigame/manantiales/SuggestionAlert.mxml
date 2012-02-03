@@ -7,7 +7,7 @@
 
     <mx:Script>
         <![CDATA[
-        import mx.ecosur.multigame.entity.manantiales.Suggestion;
+        import mx.ecosur.multigame.manantiales.entity.Suggestion;
         import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
         import mx.events.DynamicEvent;
 

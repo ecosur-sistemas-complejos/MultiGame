@@ -14,19 +14,19 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.ExceptionType;
-    import mx.ecosur.multigame.entity.manantiales.CheckCondition;
-    import mx.ecosur.multigame.entity.manantiales.Ficha;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesGame;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesMove;
-    import mx.ecosur.multigame.entity.manantiales.ManantialesPlayer;
-    import mx.ecosur.multigame.entity.manantiales.SimpleAgent;
-    import mx.ecosur.multigame.entity.manantiales.Suggestion;
+    import mx.ecosur.multigame.manantiales.entity.CheckCondition;
+    import mx.ecosur.multigame.manantiales.entity.Ficha;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+    import mx.ecosur.multigame.manantiales.entity.SimpleAgent;
+    import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.ecosur.multigame.enum.GameState;
     import mx.ecosur.multigame.manantiales.enum.ConditionType;
     import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
-    import mx.ecosur.multigame.enum.manantiales.Mode;
-    import mx.ecosur.multigame.enum.manantiales.TokenType;
+    import mx.ecosur.multigame.manantiales.enum.Mode;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
     import mx.ecosur.multigame.util.MessageReceiver;
     import mx.events.CloseEvent;
@@ -71,15 +71,15 @@ package mx.ecosur.multigame.manantiales
         private var _sndChannel:SoundChannel;
 
         // constants
-        static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
-        static const GAME_SERVICE_DESTINATION_NAME:String = "gameService";
-        static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
-        static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
-        static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
-        static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
+        protected static const MESSAGING_DESTINATION_NAME:String = "multigame-destination";
+        protected static const GAME_SERVICE_DESTINATION_NAME:String = "gameService";
+        protected static const GAME_SERVICE_GET_GRID_OP:String = "getGameGrid";
+        protected static const GAME_SERVICE_GET_PLAYERS_OP:String = "getPlayers";
+        protected static const GAME_SERVICE_GET_MOVES_OP:String = "getMoves";
+        protected static const GAME_SERVICE_DO_MOVE_OP:String = "doMove";
 
-        static const CLASSIC_WINNING_SCORE = 24;
-        static const SILVO_WINNING_SCORE = 32;
+        protected static const CLASSIC_WINNING_SCORE:int = 24;
+        protected static const SILVO_WINNING_SCORE:int = 32;
 
         /* Needed to force compilation of SimplePlayer in .swf file */
         private var _unUsed:SimpleAgent;
@@ -402,7 +402,7 @@ package mx.ecosur.multigame.manantiales
                     game.mode == Mode.SILVOPASTORAL ||
                     game.mode == Mode.RELOADED)
                 {
-                    for (var i = 0; i < game.players.length; i++) {
+                    for (var i:int = 0; i < game.players.length; i++) {
                         var gamePlayer:ManantialesPlayer = ManantialesPlayer(game.players.getItemAt(i));
                         if (gamePlayer.id == _currentPlayer.id) {
                             _currentPlayer = gamePlayer;

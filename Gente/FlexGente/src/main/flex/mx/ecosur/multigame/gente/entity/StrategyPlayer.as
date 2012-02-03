@@ -9,7 +9,7 @@
  * @author awaterma@ecosur.mx
 */
 
-package mx.ecosur.multigame.entity.gente {
+package mx.ecosur.multigame.gente.entity {
     
     /**
      * Represents a server side StrategyPlayer object

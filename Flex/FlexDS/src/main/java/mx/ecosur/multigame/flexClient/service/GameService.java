@@ -20,6 +20,7 @@ import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
+import mx.ecosur.multigame.flexClient.dao.GameDAO;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.grid.Color;
@@ -155,7 +156,7 @@ public class GameService {
 
             if (ret != null) {
                sender.initialize();
-               sender.sendCreateGame(ret.getGame());
+               sender.sendCreateGame(game);
             }
         } catch (InvalidRegistrationException e) {
             e.printStackTrace();
@@ -165,12 +166,12 @@ public class GameService {
         return ret;
     }
 
-    public ServiceGameEvent joinPendingGame (GridGame game, GridRegistrant registrant,
-                    Color preferredColor)
+    public ServiceGameEvent joinPendingGame (int gameId, GridRegistrant registrant, Color preferredColor)
     {
-
         ServiceGameEvent ret = null;
         RegistrarRemote registrar = getRegistrar();
+        SharedBoardRemote sharedBoard = getSharedBoard();
+        Game game = sharedBoard.getGame(gameId);
 
         try {
             Game model = registrar.registerPlayer (game, registrant);
@@ -184,7 +185,7 @@ public class GameService {
 
             if (ret != null) {
                 sender.initialize();
-                sender.sendPlayerJoin(ret.getGame());
+                sender.sendPlayerJoin((GridGame) model);
             }
 
         } catch (InvalidRegistrationException e) {
@@ -236,10 +237,9 @@ public class GameService {
                     throw new RuntimeException(getBundle().getString("one.game"));
             }
 
-            Game model = null;
             if (type.equals(GameType.GENTE)) {
                 game = new GenteGame ();
-                model = registrar.registerPlayer(game, registrant);
+                game = (GridGame) registrar.registerPlayer(game, registrant);
                 for (int i = 0; i < strategies.length; i++) {
                     if (strategies [ i ].equals("HUMAN"))
                         continue;
@@ -247,15 +247,15 @@ public class GameService {
                         strategies [ i ]);
                     GridRegistrant robot = new GridRegistrant (type + "-" + strategy.name() + "-" + (i + 1));
                     GenteStrategyAgent agent = new GenteStrategyAgent (robot, Color.UNKNOWN, strategy);
-                    model = registrar.registerAgent (model, agent);
+                    game = (GridGame) registrar.registerAgent (game, agent);
                 }
             }
 
-            if (model != null) {
-                for (GamePlayer player : model.listPlayers()) {
+            if (game != null) {
+                for (GamePlayer player : game.listPlayers()) {
                     GridPlayer gp = (GridPlayer) player;
                     if (gp.getName().equals(registrant.getName())) {
-                        ret = new ServiceGameEvent ((GridGame) model, gp);
+                        ret = new ServiceGameEvent ((GridGame) game, gp);
                         break;
                     }
                 }
@@ -266,9 +266,9 @@ public class GameService {
             throw new GameException (e);
         }
 
-        if (ret != null) {
+        if (game != null) {
             sender.initialize();
-            sender.sendCreateGame(ret.getGame());
+            sender.sendCreateGame(game);
         }
         return ret;
     }
@@ -323,36 +323,38 @@ public class GameService {
             throw new GameException (e);
         }
 
-        if (ret != null) {
+        if (game != null) {
             sender.initialize();
-            sender.sendCreateGame(ret.getGame());
+            sender.sendCreateGame(game);
         }
 
         return ret;
     }
 
 
-    public List<GridGame> getUnfinishedGames(GridRegistrant player){
+    public List<GameDAO> getUnfinishedGames(GridRegistrant player){
         if (player == null)
             player = registerPrincipal();
 
         RegistrarRemote registrar = getRegistrar();
         Collection<Game> games = registrar.getUnfinishedGames(player);
-        List<GridGame> ret = new ArrayList<GridGame>();
-        for (Game game : games)
-            ret.add((GridGame) game);
+        List<GameDAO> ret = new ArrayList<GameDAO>();
+        for (Game game : games) {
+            ret.add(new GameDAO((GridGame) game));
+        }
         return ret;
     }
 
-    public List<GridGame> getPendingGames(GridRegistrant player){
+    public List<GameDAO> getPendingGames(GridRegistrant player){
         if (player == null)
             player = registerPrincipal();
                 
         RegistrarRemote registrar = getRegistrar();
         Collection<Game> games = registrar.getPendingGames(player);
-        List<GridGame> ret = new ArrayList<GridGame>();
-        for (Game game : games)
-           ret.add((GridGame) game);
+        List<GameDAO> ret = new ArrayList<GameDAO>();
+        for (Game game : games) {
+           ret.add(new GameDAO((GridGame) game));
+        }
         return ret;
     }
 

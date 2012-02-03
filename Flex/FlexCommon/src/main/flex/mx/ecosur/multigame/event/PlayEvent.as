@@ -1,27 +1,27 @@
-package mx.ecosur.multigame.event
-{
-	import flash.events.Event;
+package mx.ecosur.multigame.event {
 
-    import mx.ecosur.multigame.entity.Game;
+    import flash.events.Event;
     import mx.ecosur.multigame.entity.GamePlayer;
+    import mx.ecosur.multigame.entity.Registrant;
 
-	public class PlayEvent extends Event
-	{
-		public var gamePlayer:GamePlayer;
-
-        public var game:Game;
-		
-		public function PlayEvent(type:String, game:Game, gamePlayer:GamePlayer, bubbles:Boolean=false,
-                                        cancelable:Boolean=false)
-		{
-			super(type, bubbles, cancelable);
-			this.gamePlayer = gamePlayer;
-            this.game = game;
-		}
-		
-        override public function clone():Event {
-            return new PlayEvent(type, game, gamePlayer, bubbles, cancelable);
+public class PlayEvent extends Event
+    {
+        public var registeredPlayer:Registrant;
+    
+        public var gameId:int;
+        
+        public var gameType:String;
+        
+        public function PlayEvent(type:String, gameId:int, gameType:String, player:Registrant, bubbles:Boolean=false, cancelable:Boolean=false)
+        {
+            super(type, bubbles, cancelable);
+            this.gameType = gameType;
+            this.registeredPlayer = player;
+            this.gameId = gameId;
         }
-		
-	}
+        
+        override public function clone():Event {
+            return new PlayEvent(type, gameId, gameType, registeredPlayer, bubbles, cancelable);
+        }
+    }
 }
