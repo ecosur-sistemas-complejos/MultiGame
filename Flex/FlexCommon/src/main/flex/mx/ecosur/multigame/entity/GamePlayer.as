@@ -37,6 +37,7 @@ package mx.ecosur.multigame.entity {
         private var _color:String;
         private var _turn:Boolean;
         private var _name:String;
+        private var _registrant:Registrant;
 
         [Embed(source="/assets/30601__acclivity__Goblet_F_Soft.mp3")]
         protected var _sndCls:Class;
@@ -78,6 +79,14 @@ package mx.ecosur.multigame.entity {
 
         public function set turn(turn:Boolean):void {
             _turn = turn;
+        }
+
+        public function get registrant():Registrant {
+            return _registrant;
+        }
+
+        public function set registrant(value:Registrant):void {
+            _registrant = value;
         }
 
         public function toString():String{

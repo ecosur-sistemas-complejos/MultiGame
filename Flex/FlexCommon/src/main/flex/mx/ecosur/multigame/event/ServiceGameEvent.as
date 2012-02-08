@@ -11,7 +11,8 @@
 
 package mx.ecosur.multigame.event {
 
-    import mx.ecosur.multigame.entity.GamePlayer;
+import mx.ecosur.multigame.entity.Game;
+import mx.ecosur.multigame.entity.GamePlayer;
 
     /**
      * Represents a server side ServiceGameEvent.
@@ -22,16 +23,19 @@ package mx.ecosur.multigame.event {
         private var _gamePlayer:GamePlayer;
         private var _gameId:int;
         private var _gameType:String;
+        private var _game:Game;
 
         public function ServiceGameEvent() {
             super();
         }
 
-        public function get gameType():String {
+        public function get gameType ():String {
+            if (_gameType == null)
+                _gameType = game.gameType;
             return _gameType;
         }
 
-        public function set gameType(value:String):void {
+        public function set gameType (value:String):void {
             _gameType = value;
         }
 
@@ -49,6 +53,14 @@ package mx.ecosur.multigame.event {
 
         public function set gameId (gameId:int):void {
             _gameId = gameId;
+        }
+        
+        public function set game (game:Game):void {
+            _game = game;
+        }
+        
+        public function get game ():Game {
+            return _game;
         }
     }
 }

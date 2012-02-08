@@ -39,11 +39,13 @@
 
         public function addGame(game:Game):Boolean {
             var ret:Boolean = false;
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
 
             if (game.players.length < 4 && !containsPlayer(game)) {
                 if (_games == null)
                     _games = new ArrayCollection();
-                _games.addItem(game);
+                _games.addItem(dao);
                 ret = true;
             }
             updateDataGrid();
@@ -55,8 +57,8 @@
             var idx:int = -1;
             if (ret) {
                 for (var i:int = 0; i < _games.length; i++) {
-                    var g:Game = Game(_games.getItemAt(i));
-                    if (g.id == game.id)
+                    var g:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (g.gameId == game.id)
                         idx = i;
                 }
                 if (idx >= 0) {
@@ -69,6 +71,10 @@
         }
 
         public function updateGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            
+            
             // TODO: Have this rely upon "maxPlayers" in Games
             if (containsPlayer(game) || game.players.length == 4)
                 return removeGame(game);
@@ -77,8 +83,8 @@
             var idx:int = -1;
             if (ret) {
                 for (var i:int = 0; i < _games.length; i++) {
-                    var g:Game = Game(_games.getItemAt(i));
-                    if (g.id == game.id) {
+                    var g:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (g.gameId == game.id) {
                         idx = i;
                         break;
                     }
@@ -86,7 +92,7 @@
 
                 if (idx >= 0) {
                     _games.removeItemAt(idx);
-                    _games.addItemAt(game, idx);
+                    _games.addItemAt(dao, idx);
                     updateDataGrid();
                 } else
                     ret = false;
@@ -94,7 +100,6 @@
 
             return ret;
         }
-
 
 
         public function reload(event:Event):void {
@@ -128,7 +133,7 @@
 
         private function joinResultHandler(event:ResultEvent):void {
             var serviceEvent:ServiceGameEvent = ServiceGameEvent(event.result);
-            dispatchEvent(new PlayEvent("gameJoined", serviceEvent.gameId, serviceEvent.gameType, player));
+            dispatchEvent(new PlayEvent("gameJoined", serviceEvent.gameId,  serviceEvent.gameType, player));
         }
 
         private function joinFaultHandler(event:FaultEvent):void {
@@ -156,13 +161,7 @@
                 dataItem = new Object();
                 dataItem.gameType = game.gameType;
                 dataItem.created = df.format(game.creationDate);
-                dataItem.players = "";                
-                for (var j:Number = 0; game.players != null && j < game.players.length; j++) {
-                    dataItem.players += game.players[i];
-                }
-                if (dataItem.players.length > 2) {
-                    dataItem.players = dataItem.players.substring(0, dataItem.players.length - 2);
-                }
+                dataItem.players = extractPlayers(game);
                 dataItem.status = GameState.getDescription(game.status);
                 dataProvider.addItem(dataItem);
                 if (selected != null && selected.gameId == game.gameId && game.status == GameState.WAITING)
@@ -172,6 +171,16 @@
             if (selectedItem != null) {
                 gamesDataGrid.selectedItem = selectedItem;
             }
+        }
+        
+        private function extractPlayers(game:GameDAO):String {
+            var ret:String = "";
+            for (var i:Number = 0; game.players != null && i < game.players.length; i++) {
+                ret += game.players[i] + ", ";
+            }
+
+            ret = ret.substring(0, ret.length - 2);
+            return ret;
         }
 
         private function joinPending():void {

@@ -34,7 +34,6 @@ public class GameDAO {
         this.players = new ArrayList<String>();
         for (GridPlayer p : game.getPlayers()) {
             this.players.add(p.getName());
-            System.out.println("Adding player to DAO: " + p.getName());
         }
     }
 

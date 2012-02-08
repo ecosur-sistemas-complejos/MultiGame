@@ -15,60 +15,60 @@
             import mx.managers.CursorManager;
             import mx.rpc.events.FaultEvent;
             import mx.rpc.events.ResultEvent;
-			
-			private var _playEvt:PlayEvent;
 
-	        private function init():void {
-	            loginPrincipal();
-				gameLoader.addEventListener(ModuleEvent.READY, startGame);
-				gameLoader.addEventListener("complete", gameComplete);
-	        }
-	
-	        private function loginPrincipal():void {
-	            gameService.registerPrincipal();
-	        }
-	
-	        private function resultHandler(event:ResultEvent):void {
-	            if (event.result is Registrant) {
-	                lobby.player = Registrant(event.result);
-	            } else
-	                Alert.show("Unable to interpret event: " + event);
-	        }
-	
-	        private function faultHandler(event:FaultEvent):void {
-	            Alert.show(event.fault.faultString, "Error!");
-	        }
-	
-	        private function lobbyDone(playEvent:PlayEvent):void {
-				_playEvt = playEvent;
-				vstack.selectedChild = gameLoader;
-				if (_playEvt.gameType == "Gente") {
-					gameLoader.url = "Gente.swf";
-				} else if (_playEvt.gameType == "Manantiales") {
+            private var _playEvt:PlayEvent;
+
+            private function init():void {
+                loginPrincipal();
+                gameLoader.addEventListener(ModuleEvent.READY, startGame);
+                gameLoader.addEventListener("complete", gameComplete);
+            }
+
+            private function loginPrincipal():void {
+                gameService.registerPrincipal();
+            }
+
+            private function resultHandler(event:ResultEvent):void {
+                if (event.result is Registrant) {
+                    lobby.player = Registrant(event.result);
+                } else
+                    Alert.show("Unable to interpret event: " + event);
+            }
+
+            private function faultHandler(event:FaultEvent):void {
+                Alert.show(event.fault.faultString, "Error!");
+            }
+
+            private function lobbyDone(playEvent:PlayEvent):void {
+                _playEvt = playEvent;
+                vstack.selectedChild = gameLoader;
+                if (_playEvt.gameType == "Gente") {
+                    gameLoader.url = "Gente.swf";
+                } else if (_playEvt.gameType == "Manantiales") {
                     gameLoader.url = "Manantiales.swf";
                 } else {
-					Alert.show("Error!  Unknown GameType [" + _playEvt.gameType + "]");
-					CursorManager.removeBusyCursor();
-				}
-	        }
-			
-			private function startGame(event:ModuleEvent):void {
-				IGameModule(event.currentTarget.child).start(_playEvt);
-			}
-			
-			private function gameComplete(event:Event):void {
-				IGameModule(event.currentTarget.child).destroy();
-				lobby.reload(event);
-				vstack.selectedChild = lobby;
-				gameLoader.url = "";
-				lobby.setFocus();
-			}
+                    Alert.show("Error!  Unknown GameType [" + _playEvt.gameType + "]");
+                    CursorManager.removeBusyCursor();
+                }
+            }
+
+            private function startGame(event:ModuleEvent):void {
+                IGameModule(event.currentTarget.child).start(_playEvt);
+            }
+
+            private function gameComplete(event:Event):void {
+                IGameModule(event.currentTarget.child).destroy();
+                lobby.reload(event);
+                vstack.selectedChild = lobby;
+                gameLoader.url = "";
+                lobby.setFocus();
+            }
         ]]>
     </mx:Script>
     <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)"/>
-	<mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
-		<component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
-						 gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
-		<mx:ModuleLoader id="gameLoader" applicationDomain="{ApplicationDomain.currentDomain}" />
-	</mx:ViewStack>
+    <mx:ViewStack id="vstack" width="100%" height="100%" verticalCenter="0">
+        <component:Lobby id="lobby" creationComplete="init()" registered="lobbyDone(event)"
+                         gameChosen="lobbyDone(event)" gameJoined="lobbyDone(event)" />
+        <mx:ModuleLoader id="gameLoader" applicationDomain="{ApplicationDomain.currentDomain}" />
+    </mx:ViewStack>
 </mx:Application>

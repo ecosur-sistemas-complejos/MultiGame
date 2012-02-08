@@ -16,7 +16,6 @@
     import mx.rpc.events.FaultEvent;
     import mx.rpc.events.ResultEvent;
     import mx.controls.Alert;
-    import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
 
     public var player:Registrant;
@@ -44,9 +43,8 @@
 
     private function resultHandler(event:ResultEvent):void {
         var sge:ServiceGameEvent = ServiceGameEvent(event.result);
-        var gamePlayer:GamePlayer = GamePlayer(sge.player);
         CursorManager.removeBusyCursor();
-        this.dispatchEvent(new PlayEvent("registered", sge.gameId, sge.gameType, player));
+        dispatchEvent(new PlayEvent("registered", sge.gameId, sge.gameType, player));
     }
 
     private function faultHandler(event:FaultEvent):void {

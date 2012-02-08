@@ -55,7 +55,7 @@ public class GameService {
 
     private ResourceBundle getBundle () {
        if (bundle == null) {
-           bundle = ResourceBundle.getBundle("service", FlexContext.getHttpRequest().getLocale());
+           bundle = ResourceBundle.getBundle("service", (Locale) FlexContext.getHttpRequest().getLocale());
        }
        return bundle;
     }
@@ -359,6 +359,8 @@ public class GameService {
     }
 
     public GridGame getGame(int gameId) {
+        if (gameId == 0)
+            throw new RuntimeException("BAD ID: 0");
         SharedBoardRemote sharedBoard = getSharedBoard();
         Game game = sharedBoard.getGame(gameId);
         return (GridGame) game;

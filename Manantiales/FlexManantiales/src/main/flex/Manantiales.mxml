@@ -7,24 +7,68 @@
 
     <mx:Script>
         <![CDATA[
+            import mx.controls.Alert;
             import mx.ecosur.multigame.manantiales.ManantialesWindow;
             import mx.ecosur.multigame.event.PlayEvent;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+            import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
             import mx.managers.CursorManager;
+            import mx.messaging.messages.ErrorMessage;
+            import mx.rpc.events.FaultEvent;
+            import mx.rpc.events.ResultEvent;
+            import mx.rpc.remoting.RemoteObject;
+
+            private static const DESTINATION_NAME:String = "gameService";
+
+            private static const GET_GAME_OP:String = "getGame";
 
             private var _gameWindow:ManantialesWindow;
 
+            private var _gameService:RemoteObject;
+
+            private var _playEvent:PlayEvent;
+
             public function start(event:PlayEvent):void {
+                _playEvent = event;
+                _gameService = new RemoteObject();
+                _gameService.destination = DESTINATION_NAME;
+                _gameService.addEventListener(ResultEvent.RESULT,eventHandler);
+                _gameService.addEventListener(FaultEvent.FAULT, faultHandler);
+                // Populate the Game object
+                var call:Object = _gameService.getGame(event.gameId);
+                call.operation = GET_GAME_OP;
+            }
+
+            public function eventHandler(event:ResultEvent):void {
                 CursorManager.removeBusyCursor();
-                _gameWindow = new ManantialesWindow();
-                _gameWindow.currentGameId = event.gameId;
+
+                if (_gameWindow == null) {
+                    _gameWindow = new ManantialesWindow();
+                }
+
+                var game:ManantialesGame = ManantialesGame(event.result);
+                _gameWindow.currentGame = game;
+                for (var i:int = 0; i < game.players.length; i++) {
+                    var player:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
+                    if (player.name == _playEvent.registrant.name) {
+                        _gameWindow.currentPlayer = player;
+                        break;
+                    }
+                }
+
                 addChild(_gameWindow);
             }
 
+            public function faultHandler(faultEvent:FaultEvent):void {
+                var errorMessage:ErrorMessage = ErrorMessage(faultEvent.message);
+                Alert.show(faultEvent.fault.faultString, "Server Error");
+            }
+
             public function destroy():void{
-                                              _gameWindow.destroy();
-                                              removeChild(_gameWindow);
-                                              }
+                _gameWindow.destroy();
+                removeChild(_gameWindow);
+            }
 
         ]]>
-    </mx:Script>
+	</mx:Script>
 </mx:Module>

@@ -16,7 +16,7 @@
         destination="lobby-destination"
         fault="messageFaultHandler(event)"
         message="messageResultHandler(event)"
-        selector="GAME_EVENT in ('CREATE','PLAYER_JOIN','DESTROY')"
+        selector="GAME_EVENT in ('CREATE','DESTROY')"
      />
 
     <mx:Script>
