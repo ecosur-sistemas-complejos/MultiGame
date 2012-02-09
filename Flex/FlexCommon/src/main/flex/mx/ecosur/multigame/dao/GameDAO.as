@@ -16,7 +16,7 @@ package mx.ecosur.multigame.dao {
     import mx.ecosur.multigame.entity.Game;
     import mx.ecosur.multigame.entity.GamePlayer;
 
-    [RemoteClass (alias="mx.ecosur.multigame.flexClient.dao.GameDAO")]
+    [RemoteClass (alias="mx.ecosur.multigame.dao.GameDAO")]
     public class GameDAO {
         
         private var _gameId:int;

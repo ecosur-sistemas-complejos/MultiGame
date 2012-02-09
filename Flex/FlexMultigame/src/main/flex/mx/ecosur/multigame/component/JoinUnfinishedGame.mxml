@@ -23,7 +23,6 @@
 
         import mx.controls.Alert;
         import mx.ecosur.multigame.entity.Registrant;
-        import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.entity.Agent;
         import mx.ecosur.multigame.entity.Game;
 
@@ -32,35 +31,55 @@
         private var _games:ArrayCollection;
 
         public function init(event:Event):void {
+            _games = new ArrayCollection();
             gameService.getUnfinishedGames(player);
         }
 
         public function addGame(game:Game):Boolean {
-            var ret:Boolean = false;
             var dao:GameDAO = new GameDAO();
             dao.initialize(game);
-
-            for (var i:int = 0; i < game.players.length; i++) {
-                var t:GamePlayer = GamePlayer(game.players.getItemAt(i));
-                if (t.name == player.name) {
-                    if (_games == null)
-                        _games = new ArrayCollection();
-                    _games.addItem(dao);
-                    updateDataGrid();
-                    break;
-                }
-            }
-
-            return ret;
+            return addDAO(dao);
         }
 
         public function removeGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            return removeDAO(dao);
+        }
+
+        public function updateGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            return updateDAO(dao);
+        }
+
+        function addDAO(dao:GameDAO):Boolean {
+            var ret:Boolean = false;
+            if (containsPlayer(dao)) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var d:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (d.gameId == dao.gameId) {
+                        idx = i;
+                    }
+                }
+
+                if (idx == -1) {
+                    _games.addItem(dao);
+                    updateDataGrid();
+                } else
+                    ret = false;
+            }
+            return ret;
+        }
+
+        function removeDAO(dao:GameDAO):Boolean {
             var ret:Boolean = (_games != null);
             if (ret) {
                 var idx:int = -1;
                 for (var i:int = 0; i < _games.length; i++) {
-                    var g:GameDAO = GameDAO(_games.getItemAt(i));
-                    if (g.gameId == game.id) {
+                    var d:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (d.gameId == dao.gameId) {
                         idx = i;
                     }
                 }
@@ -76,16 +95,13 @@
             return ret;
         }
 
-        public function updateGame(game:Game):Boolean {
-              var ret:Boolean = (_games != null);
-              var dao:GameDAO = new GameDAO();
-              dao.initialize(game);
-
-              if (ret) {
+        function updateDAO(dao:GameDAO):Boolean {
+            var ret:Boolean = (_games != null);
+            if (ret && containsPlayer(dao)) {
                 var idx:int = -1;
                 for (var i:int = 0; i < _games.length; i++) {
                     var g:GameDAO = GameDAO(_games.getItemAt(i));
-                    if (g.gameId == game.id) {
+                    if (g.gameId == dao.gameId) {
                         idx = i;
                     }
                 }
@@ -96,9 +112,7 @@
                     updateDataGrid();
                 } else
                     ret = false;
-
-              }
-
+            }
             return ret;
         }
 
@@ -163,6 +177,19 @@
             var dao:GameDAO = GameDAO(_games.getItemAt(idx));
             dispatchEvent(new PlayEvent("gameChosen", dao.gameId,  dao.gameType, player));
         }
+
+        private function containsPlayer(dao:GameDAO):Boolean {
+            var ret:Boolean = false;
+            for (var i:int = 0; i < dao.players.length; i++) {
+                if (dao.players[i] == player.name) {
+                    ret = true;
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
 
         ]]>
     </mx:Script>

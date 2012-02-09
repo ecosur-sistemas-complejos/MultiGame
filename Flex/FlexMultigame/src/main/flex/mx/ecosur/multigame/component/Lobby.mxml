@@ -16,15 +16,16 @@
         destination="lobby-destination"
         fault="messageFaultHandler(event)"
         message="messageResultHandler(event)"
-        selector="GAME_EVENT in ('CREATE','DESTROY')"
+        selector="NOTIFICATION_EVENT in ('CREATE','JOIN', 'DESTROY')"
      />
 
     <mx:Script>
         <![CDATA[
         import mx.controls.Alert;
+        import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.entity.Game;
         import mx.ecosur.multigame.entity.Registrant;
-        import mx.ecosur.multigame.enum.GameEvent;
+        import mx.ecosur.multigame.enum.NotificationEvent;
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.IMessage;
@@ -74,19 +75,19 @@
 
         private function messageResultHandler(event:MessageEvent):void {
             var message:IMessage = IMessage(event.message);
-            var game:Game = Game(message.body);
-            switch (message.headers.GAME_EVENT) {
-                case GameEvent.CREATE:
-                    if (!pendingList.addGame(game))
-                        gameList.addGame(game);
+            var dao:GameDAO = GameDAO(message.body);
+            switch (message.headers.NOTIFICATION_EVENT) {
+                case NotificationEvent.CREATE:
+                    if (!pendingList.addDAO(dao))
+                        gameList.addDAO(dao);
                     break;
-                case GameEvent.DESTROY:
-                    pendingList.removeGame(game);
-                    gameList.removeGame(game);
+                case NotificationEvent.DESTROY:
+                    pendingList.removeDAO(dao);
+                    gameList.removeDAO(dao);
                     break;
-                case GameEvent.PLAYER_JOIN:
-                    if (pendingList.updateGame(game))
-                        gameList.updateGame(game);
+                case NotificationEvent.JOIN:
+                    if (pendingList.updateDAO(dao))
+                        gameList.updateDAO(dao);
                     break;
                 default:
                     break;

@@ -14,13 +14,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import mx.ecosur.multigame.MessageSender;
+import mx.ecosur.multigame.dao.GameDAO;
 import mx.ecosur.multigame.ejb.interfaces.RegistrarRemote;
 import mx.ecosur.multigame.ejb.interfaces.SharedBoardRemote;
 import mx.ecosur.multigame.enums.SuggestionStatus;
 import mx.ecosur.multigame.exception.InvalidMoveException;
 import mx.ecosur.multigame.exception.InvalidRegistrationException;
 import mx.ecosur.multigame.exception.InvalidSuggestionException;
-import mx.ecosur.multigame.flexClient.dao.GameDAO;
 import mx.ecosur.multigame.flexClient.exception.GameException;
 
 import mx.ecosur.multigame.grid.Color;
