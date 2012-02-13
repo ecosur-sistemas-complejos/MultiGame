@@ -143,48 +143,21 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
  the Spanish flex framework locale files.  
 
  Unfortunately flex mojos requires localized versions of the flashplayer core libraries. 
- These must be imported from the us_US bundle.
+ These must be imported from the us_US bundle. (Please replace "${flex-version}" below
+ with the current version as defined in the games-module POM.)
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration
-     -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
+     -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
      -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal
-    -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
+    -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
 
  For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
-
 FLEX CONFIGURATION
-
-FRAMEWORK RUNTIME SHARED LIBRARIES
-
-  This project uses signed framework libraries distributed by adobe and not present
-  in public repositories for legal reasons.
-
-  These must be imported into your local repository
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=textLayout
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/textLayout_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=framework
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/framework_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=spark
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/spark_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
 FLEX UNIT 4
 
