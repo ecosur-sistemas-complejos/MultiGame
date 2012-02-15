@@ -3,8 +3,10 @@
 package mx.ecosur.multigame.manantiales {
 
     import flash.geom.Point;
-    
-    import mx.controls.Button;
+
+import mx.controls.Alert;
+
+import mx.controls.Button;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
@@ -164,10 +166,8 @@ package mx.ecosur.multigame.manantiales {
          * Animates a move
          */
         private function doMove(move:ManantialesMove):void{
-
-            if (move.badYear || _lastMove.id == move.id)
+            if (_lastMove != null && _lastMove.id == move.id)
                 return
-
             _lastMove = move;
 
             var boardCell:RoundCell;

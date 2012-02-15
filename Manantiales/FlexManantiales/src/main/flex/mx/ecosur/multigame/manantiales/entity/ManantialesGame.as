@@ -3,9 +3,9 @@
 package mx.ecosur.multigame.manantiales.entity {
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.entity.Game;
+import mx.ecosur.multigame.util.MessageReceiver;
 
-    [RemoteClass (alias=
-        "mx.ecosur.multigame.manantiales.entity.ManantialesGame")]
+    [RemoteClass (alias="mx.ecosur.multigame.manantiales.entity.ManantialesGame")]
     public class ManantialesGame extends Game
     {
         private var _mode:String;
@@ -19,6 +19,9 @@ package mx.ecosur.multigame.manantiales.entity {
         private var _turns:int;
 
         private var _elapsedTime:Number;
+
+        [Transient]
+        public var _reciever:MessageReceiver;
 
         public function ManantialesGame () {
             super();

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel
-        xmlns:mx="http://www.adobe.com/2006/mxml"
-        xmlns:component="mx.ecosur.multigame.component.*"
-    styleName="helpPanel"
-    title="How To"
-    creationComplete="initialize()">
-    <mx:Metadata>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:component="mx.ecosur.multigame.component.*"
+         styleName="helpPanel" title="How To" creationComplete="initialize()">
+    <fx:Metadata>
         [Event(name="close")]
         [Event(name="loaded")]
-    </mx:Metadata>
-    <mx:Script>
+    </fx:Metadata>
+    <fx:Script>
         <![CDATA[
         import mx.collections.ArrayCollection;
         import mx.controls.Alert;
@@ -40,17 +37,11 @@
             super.height = height;
         }
 
-        private function hideProgress(event:DynamicEvent):void {
-            Alert.show("Attempting to remove progress bar on smoothe image load ..");
-            this.removeChild(bar);
-        }
-
         ]]>
-    </mx:Script>
-    <mx:ProgressBar id="bar" source="main" mode="polled"/>
+    </fx:Script>
      <component:SmoothImage id="main" autoLoad="true" source="{images.getItemAt(index)}" scaleContent="true"
             width="{_width}" height="{_height}" creationComplete="dispatchEvent(new DynamicEvent('loaded'))"/>
-    <mx:ControlBar horizontalAlign="center">
-         <mx:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
-    </mx:ControlBar>
-</mx:Panel>
+    <s:controlBarContent>
+        <s:Button label="Close" click="dispatchEvent(new Event('close'))" color="#ffffff"/>
+    </s:controlBarContent>
+</s:Panel>

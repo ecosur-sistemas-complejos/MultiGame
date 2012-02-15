@@ -18,6 +18,8 @@ package mx.ecosur.multigame.manantiales.entity {
         private var _premium:Boolean;
 
         private var _playerModel:GamePlayer;
+        
+        private var _replacementType:String;
 
         public function ManantialesMove()
         {
@@ -71,6 +73,14 @@ package mx.ecosur.multigame.manantiales.entity {
 
         public function set type(value:String):void {
             _type = value;
+        }
+
+        public function get replacementType():String {
+            return _replacementType;
+        }
+
+        public function set replacementType(value:String):void {
+            _replacementType = value;
         }
 
         public override function toString():String {
