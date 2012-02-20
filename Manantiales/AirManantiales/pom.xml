@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>mx.ecosur</groupId>
+  <parent> 
+      <artifactId>games-module</artifactId> 
+      <groupId>mx.ecosur</groupId> 
+      <version>2.1.0-SNAPSHOT</version> 
+  </parent> 
+  <artifactId>air-manantiales</artifactId>
+  <packaging>air</packaging>
+  <name>Manantiales Mobile Air</name>
+
+  <properties>
+      <flex-version>4.5.1.21328</flex-version>
+  </properties>
+
+  <build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.flexmojos</groupId>
+        <artifactId>flexmojos-maven-plugin</artifactId>
+        <version>4.1-beta</version>
+        <extensions>true</extensions>
+        <configuration>
+            <storepass>secret</storepass>
+            <debug>true</debug>
+            <sourceFile>Manantiales.mxml</sourceFile>
+            <descriptorTemplate>target/classes/descriptor.xml</descriptorTemplate>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>flex-framework</artifactId>
+      <version>${flex-version}</version>
+      <type>pom</type>
+    </dependency>
+
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>mobilecomponents</artifactId>
+      <version>${flex-version}</version>
+      <type>swc</type>
+    </dependency>
+
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>mobile</artifactId>
+      <version>${flex-version}</version>
+      <scope>theme</scope>
+      <type>swc</type>
+    </dependency>
+
+    <dependency>
+        <groupId>mx.ecosur</groupId>
+        <artifactId>flex-commons</artifactId>
+        <version>${project.version}</version>
+        <type>swc</type>
+    </dependency>
+
+  </dependencies>
+</project>

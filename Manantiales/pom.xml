@@ -18,8 +18,23 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>            
+                <module>ManantialesModel</module>   
+                <module>FlexManantialesCommon</module>
+                <module>FlashManantiales</module>                   
+            </modules>
+        </profile>
+        <profile>
+            <id>mobile</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>mobile</name>
+                </property>
+            </activation>
+            <modules>
                 <module>ManantialesModel</module>
-                <module>FlexManantiales</module>                   
+                <module>FlexManantialesCommon</module>
+                <module>AirManantiales</module>
             </modules>
         </profile>
     </profiles>

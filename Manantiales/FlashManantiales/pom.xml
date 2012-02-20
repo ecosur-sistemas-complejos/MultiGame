@@ -2,10 +2,10 @@
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 <modelVersion>4.0.0</modelVersion>
 <groupId>mx.ecosur</groupId>
-<artifactId>flex-manantiales</artifactId>
+<artifactId>flash-manantiales</artifactId>
 <packaging>swf</packaging>
-<name>Flex Manantiales</name>
-<description>Flex UI implementation for Manantiales game.</description>
+<name>Flash Manantiales</name>
+<description>Flash UI implementation for Manantiales game.</description>
 <parent>
     <groupId>mx.ecosur</groupId>
     <artifactId>manantiales-module</artifactId>
@@ -113,8 +113,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <groupId>mx.ecosur</groupId>
         <artifactId>flex-commons</artifactId>
         <version>${project.version}</version>
-		  <type>swc</type>
-		  <scope>merged</scope>
+        <type>swc</type>
+        <scope>merged</scope>
+    </dependency>
+    <dependency>
+        <groupId>mx.ecosur</groupId>
+        <artifactId>flex-manantiales-commons</artifactId>
+        <version>${project.version}</version>
+        <type>swc</type>
+        <scope>merged</scope>
     </dependency>
     <!-- Unit testing -->
     <dependency>

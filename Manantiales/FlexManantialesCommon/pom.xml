@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>mx.ecosur</groupId>
+  <parent> 
+      <artifactId>games-module</artifactId> 
+      <groupId>mx.ecosur</groupId> 
+      <version>2.1.0-SNAPSHOT</version>
+  </parent> 
+  <artifactId>flex-manantiales-commons</artifactId>
+  <packaging>swc</packaging>
+  <name>Flex Manantiales Common Library</name>
+  <build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <plugins>
+      <plugin>
+          <groupId>org.sonatype.flexmojos</groupId>
+          <artifactId>flexmojos-maven-plugin</artifactId>
+          <version>${flexmojos-version}</version>
+          <extensions>true</extensions>
+          <executions>
+              <execution>
+                  <goals>
+                      <goal>create-rsl</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <debug>${debug}</debug>
+              <includeResourceBundles>
+                  <bundle>Commons</bundle>
+              </includeResourceBundles>
+              <localesCompiled>
+                  <compiled>en_US</compiled>
+                  <compiled>es_ES</compiled>
+              </localesCompiled>
+              <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
+              <storepass/>
+          </configuration>
+          <dependencies>
+              <dependency>
+                  <groupId>com.adobe.flex</groupId>
+                  <artifactId>compiler</artifactId>
+                  <version>${flex-version}</version>
+                  <type>pom</type>
+              </dependency>
+              <dependency>
+                  <groupId>com.adobe.flex.compiler</groupId>
+                  <artifactId>asdoc</artifactId>
+                  <version>${flex-version}</version>
+                  <classifier>template</classifier>
+                  <type>zip</type>
+              </dependency>
+          </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.adobe.flex.framework</groupId>
+      <artifactId>flex-framework</artifactId>
+      <version>${flex-version}</version>
+      <type>pom</type>
+    </dependency>
+
+    <!-- Common flex code -->
+    <dependency>
+      <groupId>mx.ecosur</groupId>
+      <artifactId>flex-commons</artifactId>
+      <version>${project.version}</version>
+      <type>swc</type>
+      <scope>external</scope>
+    </dependency>
+  </dependencies>
+</project>
