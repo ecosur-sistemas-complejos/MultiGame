@@ -54,6 +54,8 @@
         }
 
         function addDAO(dao:GameDAO):Boolean {
+            if (_games == null) 
+                _games = new ArrayCollection();
             var ret:Boolean = false;
             if (containsPlayer(dao)) {
                 var idx:int = -1;

@@ -13,6 +13,7 @@ import mx.ecosur.multigame.grid.*;
 import mx.ecosur.multigame.grid.entity.*;
 import mx.ecosur.multigame.grid.util.*;
 import mx.ecosur.multigame.manantiales.entity.*;
+import mx.ecosur.multigame.manantiales.entity.ManantialesFicha;
 import mx.ecosur.multigame.manantiales.enums.*;
 import mx.ecosur.multigame.manantiales.util.*;
 
@@ -128,7 +129,7 @@ then
     modifiedGrid.removeCell ($move.getCurrentCell());
     $move.setStatus (MoveStatus.VERIFIED);
     if ($moves == null)
-        $moves = new LinkedHashSet<Move>();
+        $moves = new LinkedHashSet();
     $moves.add($move);
     modify ($game) { setMoves ($moves), setGrid (modifiedGrid)}
     insert ($move);
@@ -263,7 +264,7 @@ rule
             ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
                 (ManantialesFicha) $move.getDestinationCell());
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
@@ -288,7 +289,7 @@ rule
             ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
@@ -313,7 +314,7 @@ rule
             ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
             $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
@@ -339,7 +340,7 @@ rule
             ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
                 $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
@@ -363,7 +364,7 @@ rule "manantiales"
             ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
             (ManantialesFicha) $move.getDestinationCell());
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);        
         modify ($game) {setCheckConditions($checks)};
         insert (constraint);
@@ -516,11 +517,10 @@ rule "territory-deforested"
         eval (!$game.hasCondition (ConditionType.TERRITORY_DEFORESTED))
     then      
         $list.add($move.getDestinationCell());  
-        ManantialesFicha [] cells = (ManantialesFicha []) $list.toArray(new ManantialesFicha [ 0 ]);
         CheckCondition constraint = new CheckCondition(
-            ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), cells);
+            ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), $list);
         if ($checks == null)
-            $checks = new HashSet<CheckCondition>();
+            $checks = new HashSet();
         $checks.add(constraint);
         modify ($game) {setCheckConditions($checks)};
         messageSender.sendConditionRaised ($game, constraint);
@@ -539,7 +539,7 @@ when
     $game   : ManantialesGame ()
 then
     modify ($constraint) { setExpired (true) };
-    Set<CheckCondition> constraints = $game.getCheckConditions();
+    Set constraints = $game.getCheckConditions();
     constraints.remove ($constraint);
     modify ($game) { setCheckConditions (constraints) };
     messageSender.sendConditionResolved ($game, $constraint);
@@ -557,7 +557,7 @@ when
     $game   : ManantialesGame ()
 then
     modify($constraint) { setExpired(true) };
-    Set<CheckCondition> constraints = $game.getCheckConditions();
+    Set constraints = $game.getCheckConditions();
     constraints.remove ($constraint);
     modify ($game) { setCheckConditions (constraints) };
     messageSender.sendConditionResolved ($game, $constraint);
@@ -577,7 +577,7 @@ when
     eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
 then
     GameGrid grid = clearBorder ($game, $condition.getType());
-    Set<CheckCondition> conditions = $game.getCheckConditions();
+    Set conditions = $game.getCheckConditions();
     conditions.remove ($condition);
     modify ($condition) { setExpired (true) };
     modify ($game) { 

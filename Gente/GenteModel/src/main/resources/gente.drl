@@ -55,8 +55,9 @@ rule "setup"
 when
     game : GenteGame (state == GameState.BEGIN)
 then
-    Set<GridPlayer> players = game.getPlayers();
-    for (GridPlayer p : players) {
+    Set players = game.getPlayers();
+    for (Object o : players) {
+        GridPlayer p = (GridPlayer) o;
         if (p.getColor() == Color.YELLOW)
             p.setTurn(true);
         else
@@ -71,7 +72,7 @@ then
         }          
     }
     GameGrid grid = new GameGrid ();
-    modify (game) { setGrid (grid), setState (GameState.PLAY), setPlayers (players) }
+    modify (game) { setGrid (grid), setState (GameState.PLAY)}
     messageSender.sendPlayerChange(game);
     messageSender.sendStartGame(game);
 end
@@ -109,7 +110,7 @@ when
 then 
     GameGrid modifiedGrid = game.getGrid();
     modifiedGrid.updateCell ((GridCell) move.getDestinationCell());
-    Set<GridMove> moves = game.getMoves();
+    Set moves = game.getMoves();
     moves.add(move);
     modify (game) { setGrid (modifiedGrid), setMoves (moves) }
     modify (move) { setStatus (MoveStatus.MOVED) }
@@ -187,7 +188,7 @@ then
     int score = scorePlayer (move);
     GentePlayer player = (GentePlayer) move.getPlayer ();
     if (score > 0) {
-        Set<GentePlayer> winners = new HashSet<GentePlayer>();
+        Set winners = new HashSet();
         if (score == 5) {
             GentePlayer teammate = player.getPartner();
             teammate.setPoints (score);

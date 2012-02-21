@@ -10,6 +10,7 @@
  */
 package mx.ecosur.multigame.manantiales.entity;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,15 @@ public class CheckCondition implements Condition {
         this.violators = new HashSet<ManantialesFicha>();
         for (ManantialesFicha cell : violator) {
             this.violators.add(cell);
+        }
+    }
+    
+    public CheckCondition (ConditionType reason, GridPlayer agent, Collection<ManantialesFicha> v) {
+        this.reason = reason;
+        this.agent = agent;
+        this.violators = new HashSet<ManantialesFicha>();
+        for (ManantialesFicha ficha : v) {
+            this.violators.add(ficha);
         }
     }
 

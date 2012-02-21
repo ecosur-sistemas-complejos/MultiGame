@@ -324,7 +324,7 @@ public class ManantialesConditionsTest extends JMSTestCaseAdapter {
        game.move(move);
        assertEquals(MoveStatus.EVALUATED, move.getStatus());
        messages = filterForEvent(GameEvent.CONDITION_TRIGGERED);
-       assertEquals(1, messages.size());
+       assertEquals(0, messages.size());
    }
    
    private ManantialesMove generatePassMove(ManantialesPlayer p) {

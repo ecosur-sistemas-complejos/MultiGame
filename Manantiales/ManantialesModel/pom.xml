@@ -80,6 +80,14 @@
             <version>${drools.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.2.v_883_R34x</version>
+            <scope>test</scope>
+        </dependency>
+
          <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
