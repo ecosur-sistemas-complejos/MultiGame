@@ -55,7 +55,7 @@
     </organization>    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <drools.version>5.2.0.Final</drools.version>
+        <drools.version>5.4.0.Beta2</drools.version>
         <hibernate-version>3.3.1.GA</hibernate-version>
         <flexmojos-version>4.1-beta</flexmojos-version>
     </properties>
@@ -85,13 +85,6 @@
             <id>deploy</id>
             <modules>
                 <module>Deploy</module>
-            </modules>
-        </profile>
-         <profile>
-            <id>experiment</id>
-            <modules>
-                <module>Games</module>
-                <module>Research</module>
             </modules>
         </profile>
         <profile>
