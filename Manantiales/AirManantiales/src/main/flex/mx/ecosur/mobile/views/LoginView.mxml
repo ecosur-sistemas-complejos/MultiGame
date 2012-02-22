@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+        title="Manantiales De La Sierra" backgroundColor="0xC0C0C0" backgroundAlpha="0.7">
+    <fx:Script>
+    <![CDATA[
+        import mx.core.FlexGlobals;
+
+        protected function handleLogin(event:MouseEvent):void {
+            if(username.text == "user" && password.text == "password") {
+                FlexGlobals.topLevelApplication.loadMain();
+            } else {
+                statusLabel.text = "Incorrect. (Try user/password)";
+            }
+        }
+        
+        protected function clearLabel(event:Event):void {
+            statusLabel.text = "";
+        }
+        
+        ]]>
+    </fx:Script>
+
+    <s:Group horizontalCenter="0" verticalCenter="100">
+
+        <s:layout>
+            <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
+        </s:layout>
+
+        <s:Label text="Chiapasgames.org" fontSize="18" textAlign="center" width="80%" horizontalCenter="400"/>
+
+        <s:Label text="Username: " />
+        <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>
+
+        <s:Label text="Password: "/>
+        <s:TextInput id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"/>
+
+        <s:Button label="Log In" click="handleLogin(event)"/>
+
+        <s:Label id="statusLabel" color="#FF0000" fontWeight="bold" textAlign="center"/>
+    </s:Group>
+
+</s:View>
