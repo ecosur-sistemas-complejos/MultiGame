@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-  minWidth="800" minHeight="600" backgroundColor="0xC0C0C0" backgroundAlpha="0.7" >
+<s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+  minWidth="800" minHeight="600" backgroundColor="0xC0C0C0" firstView="mx.ecosur.mobile.views.LoginView">
     <fx:Script>
     <![CDATA[
         import mx.ecosur.mobile.views.*;
@@ -10,5 +10,16 @@
         }
         ]]>
     </fx:Script>
-    <s:ViewNavigator label="Login" firstView="mx.ecosur.mobile.views.LoginView" width="100%" />
-</s:Application>
+    <fx:Style>
+        @namespace s "library://ns.adobe.com/flex/spark";
+        s|ActionBar {
+            defaultButtonAppearance: "beveled";
+            titleAlign: center;
+        }
+
+        s:button {
+            textAlign: left
+        }
+
+    </fx:Style>
+</s:ViewNavigatorApplication>

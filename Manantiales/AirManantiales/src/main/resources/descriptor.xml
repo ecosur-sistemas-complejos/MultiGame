@@ -11,6 +11,7 @@
         <content>${project.build.finalName}.swf</content>
         <title>Manantiales de La Sierra</title>
         <systemChrome>standard</systemChrome>
+        <aspectRatio>landscape</aspectRatio>
         <transparent>false</transparent>
         <visible>true</visible>
         <minimizable>true</minimizable>

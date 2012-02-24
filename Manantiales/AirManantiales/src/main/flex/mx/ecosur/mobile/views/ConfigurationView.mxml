@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" >
+    <fx:Script>
+        <![CDATA[
+        override public function createReturnObject():Object {
+            return server.text;
+        }
+        
+        protected function updateChoice(event:Event):void {
+
+        }
+
+        ]]>
+    </fx:Script>
+
+    <s:navigationContent>
+        <s:Button label="Back" buttonDown="navigator.popView()" />
+    </s:navigationContent>
+
+    <s:Group horizontalCenter="0" verticalCenter="0">
+
+        <s:layout>
+            <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
+        </s:layout>
+
+        <s:Label text="Remote Server: " />
+        <s:TextInput id="server" width="80%" focusIn="" text="{data}"/>
+
+        <s:DropDownList id="language" prompt="Change Language" width="140" change="updateChoice(event)">
+            <s:dataProvider>
+                <s:ArrayList>
+                    <fx:String>English</fx:String>
+                    <fx:String>Español</fx:String>
+                </s:ArrayList>
+            </s:dataProvider>
+        </s:DropDownList>
+
+    </s:Group>
+
+</s:View>
+
+

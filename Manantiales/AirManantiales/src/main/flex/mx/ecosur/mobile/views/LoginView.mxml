@@ -1,32 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-        title="Manantiales De La Sierra" backgroundColor="0xC0C0C0" backgroundAlpha="0.7">
+        title="Manantiales De La Sierra" backgroundColor="0xC0C0C0" backgroundAlpha="0.7"
+        add="addHandler(event)" >
+    <fx:Declarations>
+
+        <s:HTTPService id="loginRequest" url="http://{remoteServer}:8080/multi-game/j_security_check" useProxy="true"
+                        method="POST" result="handleLoginResult(event)" fault="handleLoginFault(event)">
+            <s:request >
+                <j_username>{username.text}</j_username>
+                <j_password>{password.text}</j_password>
+            </s:request>
+        </s:HTTPService>
+
+    </fx:Declarations>
     <fx:Script>
     <![CDATA[
-        import mx.core.FlexGlobals;
+        import mx.messaging.ChannelSet;
+        import mx.messaging.channels.AMFChannel;
+        import mx.rpc.AsyncResponder;
+        import mx.rpc.AsyncToken;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        [Bindable]
+        private var remoteServer:String = "localhost";
+
+        private var amfChannelSet:ChannelSet = new ChannelSet();
 
         protected function handleLogin(event:MouseEvent):void {
-            if(username.text == "user" && password.text == "password") {
-                FlexGlobals.topLevelApplication.loadMain();
-            } else {
-                statusLabel.text = "Incorrect. (Try user/password)";
-            }
+            //loginRequest.send();
+            establishAMF();
         }
-        
+
         protected function clearLabel(event:Event):void {
             statusLabel.text = "";
         }
+
+        protected function configure(event:Event):void {
+            this.navigator.pushView(ConfigurationView, remoteServer);
+        }
+
+        override public function createReturnObject():Object {
+            return remoteServer;
+        }
+
+        protected function addHandler(event:Event):void {
+            if (!navigator.poppedViewReturnedObject) return;
+            remoteServer = String(navigator.poppedViewReturnedObject.object);
+        }
+        
+        protected function handleLoginResult(event:ResultEvent):void {
+            trace("Logged in: " + event.result.message);
+
+        }
+
+        protected function handleLoginFault(event:FaultEvent):void {
+            trace ("Login error:" + event.fault.message);
+        }
+
+        protected function establishAMF():void {
+            var amfChannel:AMFChannel = new AMFChannel("amf", "http://" + remoteServer + ":8080/multi-game/messagebroker/amf");
+            amfChannelSet.addChannel(amfChannel);
+            var token:AsyncToken = amfChannelSet.login(username.text, password.text);
+            var responder:AsyncResponder = new AsyncResponder(resultHandler,  faultHandler);
+            token.addResponder(responder);
+        }
+
+        protected function resultHandler(event:ResultEvent, token:Object = null):void {
+            trace("Channel connect successfull: " + event.toString());
+        }
+
+        protected function faultHandler(event:FaultEvent, token:Object = null):void {
+            trace("Channel connect failed: " + event.fault.message);
+            statusLabel.text = "Connection failed. Please see log.";
+        }
+
         
         ]]>
     </fx:Script>
 
-    <s:Group horizontalCenter="0" verticalCenter="100">
+    <s:actionContent>
+        <s:Button label="Configure Remote" buttonDown="configure(event)"/>
+    </s:actionContent>
+
+    <s:Group horizontalCenter="0" verticalCenter="0">
 
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
 
-        <s:Label text="Chiapasgames.org" fontSize="18" textAlign="center" width="80%" horizontalCenter="400"/>
+        <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" />
 
         <s:Label text="Username: " />
         <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>

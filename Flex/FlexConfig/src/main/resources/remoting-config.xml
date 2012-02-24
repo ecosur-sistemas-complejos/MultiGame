@@ -14,5 +14,8 @@
         <properties>
             <source>mx.ecosur.multigame.flexClient.service.GameService</source>
         </properties>
+        <security>
+           <security-constraint ref="custom-access"/>
+        </security>
     </destination>
 </service>

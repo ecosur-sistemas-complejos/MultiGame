@@ -40,4 +40,19 @@
             <enabled>true</enabled>
         </redeploy>
     </system>
+
+    <security>
+        <login-command class="flex.messaging.security.TomcatLoginCommand" server="JBoss">
+            <per-client-authentication>false</per-client-authentication>
+        </login-command>
+
+        <security-constraint id="custom-access">
+            <auth-method>Form</auth-method>
+            <roles>
+                <role>MultiGame</role>
+            </roles>
+        </security-constraint>
+
+    </security>
+
 </services-config>
