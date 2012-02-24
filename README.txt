@@ -24,6 +24,7 @@ If you're using git-flow, you could then start work on "featureName" with the fo
 
 NOTE: Be sure to use "git submodule update" when moving in-between branches at the top-level.
 
+
 JBOSS AS6 CONFIGURATION
 
 1. MySQL-DS.xml and Persistence.xml.
@@ -137,6 +138,29 @@ the EAR file is being deployed:
     if you use the "_default" Glassfish Derby datasource.
 
 
+FLEX CONFIGURATION
+
+BLAZEDS
+
+Two jar files from the "blazeds-3.3 turnkey distribution" are required to be placed in an accessible
+"lib" directory on the JBoss server (this has not been tested on Glassfish). These files are
+"flex-tomcat-common.jar" and "flex-tomcat-server.jar". They are used by BLAZEDS to perform remote
+authentication for the AdobeAIR/mobile client.
+
+On my development machine, I place both files into the <<JBOSS_HOME>>/server/default/lib folder.
+
+As the 2.1 project evolves, these files will be placed/located into a suitable maven repository
+for downstream use.
+
+Please see the following link for context:
+
+    http://livedocs.adobe.com/blazeds/1/blazeds_devguide/help.html?content=services_security_2.html
+
+And the following link to download the "turnkey" install:
+
+    http://opensource.adobe.com/wiki/display/blazeds/download+blazeds+3
+
+
 FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
  This project is internationalized in English and Spanish, so it requires access to
@@ -157,7 +181,6 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
  For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
-FLEX CONFIGURATION
 
 FLEX UNIT 4
 
@@ -172,4 +195,3 @@ FLEX UNIT 4
 
 **  All other dependencies are managed by means of Maven and repositories included in 
     the top-level pom.xml. **
-
