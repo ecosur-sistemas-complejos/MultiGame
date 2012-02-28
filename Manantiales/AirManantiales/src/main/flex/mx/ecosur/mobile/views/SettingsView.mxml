@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+        title="Manantiales de La Sierra" backgroundColor="#275837" backgroundAlpha="0.7"
+        creationComplete="loadInitial(event)">
+    <fx:Declarations>
+        <s:RemoteObject id="gameService" destination="gameService"
+                        channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+                        result="resultHandler(event)"
+                        fault="faultHandler(event)" />
+        <s:Consumer
+                id="listener"
+                destination="lobby-destination"
+                fault="messageFaultHandler(event)"
+                message="messageResultHandler(event)"
+                selector="NOTIFICATION_EVENT in ('CREATE','JOIN', 'DESTROY')"
+                />
+
+        <fx:Component className="AlertMsg">
+            <s:SkinnablePopUpContainer x="70" y="300">
+                <s:TitleWindow title="Alert!" close="close()">
+                    <s:VGroup horizontalAlign="center" paddingTop="8" paddingBottom="8" paddingLeft="8"
+                              paddingRight="8" gap="5" width="100%">
+                        <s:Label id="alertMessage"/>
+                        <s:Button label="OK" click="close()"/>
+                    </s:VGroup>
+                </s:TitleWindow>
+            </s:SkinnablePopUpContainer>
+        </fx:Component>
+
+        <s:ArrayCollection id="manModes">
+            <fx:Object label="Competitive" data="COMPETITIVE" />
+            <fx:Object label="Basic Puzzle" data="BASIC_PUZZLE" />
+            <fx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
+            <fx:Object label="Final Puzzle" data="SILVO_PUZZLE"/>
+        </s:ArrayCollection>
+
+        <fx:Array id="strategies">
+            <fx:Object data="SIMPLE"/>
+            <fx:Object data="SIMPLE"/>
+            <fx:Object data="SIMPLE"/>
+        </fx:Array>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.core.FlexGlobals;
+        import mx.ecosur.multigame.dao.GameDAO;
+        import mx.ecosur.multigame.enum.Color;
+        import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.manantiales.enum.Mode;
+
+        import mx.messaging.events.MessageEvent;
+        import mx.messaging.events.MessageFaultEvent;
+
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        protected var modalities:ArrayCollection = new ArrayCollection();
+
+        private var _games:ArrayCollection = new ArrayCollection();
+
+        private var _modes:ArrayCollection = new ArrayCollection();
+
+        protected function loadInitial(event:Event):void {
+            /* Load save and pending games */
+            gameService.getUnfinishedGames(FlexGlobals.topLevelApplication.registrant);
+            gameService.getPendingGames(FlexGlobals.topLevelApplication.registrant);
+        }
+
+        protected function createGame(event:Event):void {
+            /* Only one type of Manantiales agent, so choice is not displayed in mobile client */
+            if (ai.selected) {
+                gameService.startNewGameWithAI(FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN, "Manantiales", modeList.selectedItem.data, strategies);
+            } else {
+                gameService.startNewGame(FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN, "Manantiales", modeList.selectedItem.data);
+            }
+        }
+
+        protected function resultHandler(event:ResultEvent):void {
+            if (event.result == null)
+                return;
+            var response:Array = Array(event.result);
+
+            for (var i:int = 0; i < response.length; i++) {
+                if (response[i] is ArrayCollection) {
+                    var games:ArrayCollection = ArrayCollection(response[ i ]);
+                    _games.addAll(games);
+                    updateGrid(gameGrid, _games);
+                } else if (response [ i ] is GameDAO) {
+                    var dao:GameDAO = GameDAO(response [ i ]);
+                    var added:Boolean = false;
+                    for (var j:int = 0; j < _games.length; j++) {
+                        var c:GameDAO = GameDAO(_games [ j ]);
+                        if (c.gameId == dao.gameId) {
+                            c = dao;
+                            added = true;
+                            break;
+                        }
+                    }
+                    if (!added)
+                        _games.addItem(dao);
+                    updateGrid(gameGrid, _games);
+                } else {
+                    trace ("Is MG? " + response[i] is ManantialesGame)
+                }
+            }
+        }
+
+        protected function faultHandler(event:FaultEvent):void {
+            trace("Fault! [" + event.fault.message + "]");
+        }
+
+        protected function messageFaultHandler(event:MessageFaultEvent):void {
+            trace("MessageFault! [" + event.faultString);
+        }
+
+        protected function messageResultHandler(event:MessageEvent):void {
+            trace("Message received: " + event.message);
+        }
+
+        protected function joinGame(event:MouseEvent):void {
+
+
+            trace("JoinGame, Event: [" + event + "]");
+            trace("Event target: [" + event.currentTarget);
+            trace("Event related object: [" + event.relatedObject);
+
+
+        }
+
+        private function updateGrid(grid:DataGrid, list:ArrayCollection):void {
+            var dataSource:ArrayCollection = new ArrayCollection();
+            for (var i:int = 0; i < list.length; i++) {
+                var dao:GameDAO = GameDAO(list [ i ]);
+                dataSource.addItem(model(dao));
+            }
+            grid.dataProvider = dataSource;
+        }
+
+        private function containsPlayer(dao:GameDAO):Boolean {
+            var ret:Boolean = false;
+            for (var i:int = 0; i < dao.players.length; i++) {
+                if (dao.players[i] == FlexGlobals.topLevelApplication.registrant.name) {
+                    ret = true;
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
+        private function model(dao:GameDAO):Object {
+            var dataItem:Object = new Object();
+            dataItem.gameType = dao.gameType;
+            dataItem.created = dao.creationDate;
+            var p:String = "";
+            for (var i:Number = 0; dao.players != null && i < dao.players.length; i++) {
+                p += dao.players[i] + ", ";
+            }
+            p = p.substring(0, p.length - 2);
+            dataItem.players = p;
+            dataItem.status = GameState.getDescription(dao.status);
+            return dataItem;
+        }
+        ]]>
+    </fx:Script>
+
+    <s:layout>
+        <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
+    </s:layout>
+
+    <s:Button label="Start networked game" id="start" buttonDown="{createGame(event)}"
+        skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" alpha="0.7"/>
+    <s:Group id="robotButtons">
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:DropDownList id="modeList" prompt="Select a modality" dataProvider="{manModes}" width="150"/>
+        <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
+        <s:RadioButton groupName="robots" id="ai" label="Robots"/>
+    </s:Group>
+
+    <s:Spacer/>
+
+    <s:Group id="availableGroup" width="100%" >
+        <s:Spacer/>
+        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)">
+            <s:columns>
+                <s:ArrayList>
+                    <s:GridColumn dataField="created" headerText="Date"/>
+                    <s:GridColumn dataField="players" headerText="Players"/>
+                    <s:GridColumn dataField="status" headerText="Status"/>
+                </s:ArrayList>
+            </s:columns>
+        </s:DataGrid>
+    </s:Group>
+
+    <s:Group id="settingsGroup">
+
+    </s:Group>
+
+</s:View>

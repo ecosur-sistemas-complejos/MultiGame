@@ -13,6 +13,7 @@
 
   <properties>
       <flex-version>4.5.1.21328</flex-version>
+      <air-sdk>/Users/awaterma/util/AdobeAIRSDK</air-sdk>
   </properties>
 
   <build>
@@ -23,20 +24,69 @@
             <filtering>true</filtering>
         </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.flexmojos</groupId>
-        <artifactId>flexmojos-maven-plugin</artifactId>
-        <version>4.1-beta</version>
-        <extensions>true</extensions>
-        <configuration>
-            <storepass>secret</storepass>
-            <debug>true</debug>
-            <sourceFile>Manantiales.mxml</sourceFile>
-            <descriptorTemplate>target/classes/descriptor.xml</descriptorTemplate>
-        </configuration>
-      </plugin>
-    </plugins>
+      <plugins>
+          <plugin>
+              <groupId>org.sonatype.flexmojos</groupId>
+              <artifactId>flexmojos-maven-plugin</artifactId>
+              <version>4.1-beta</version>
+              <extensions>true</extensions>
+              <configuration>
+                  <storepass>secret</storepass>
+                  <debug>true</debug>
+                  <sourceFile>Manantiales.mxml</sourceFile>
+                  <descriptorTemplate>target/classes/descriptor.xml</descriptorTemplate>
+              </configuration>
+          </plugin>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>2.3</version>
+              <executions>
+                  <execution>
+                      <id>copy-datasource</id>
+                      <phase>process-resources</phase>
+                      <goals>
+                          <goal>copy-resources</goal>
+                      </goals>
+                      <configuration>
+                          <resources>
+                              <resource>
+                                  <directory>src/main/resources</directory>
+                                  <filtering>true</filtering>
+                              </resource>
+                          </resources>
+                          <!-- Copy to the "target" directory for ADL testing -->
+                          <outputDirectory>${project.build.directory}</outputDirectory>
+                      </configuration>
+                  </execution>
+              </executions>
+          </plugin>
+        <!--
+        <plugin>
+             <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <id>run-adl</id>
+                    <goals>
+                        <goal>exec</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <executable>${air-sdk}/bin/adl</executable>
+                <workingDirectory>${project.basedir}</workingDirectory>
+                <arguments>
+                    <argument>-profile mobileDevice</argument>
+                    <argument>-screensize iPad</argument>
+                    <argument>${project.build.directory}/descriptor.xml</argument>
+                </arguments>
+            </configuration>
+        </plugin>
+        -->
+      </plugins>
   </build>
 
   <dependencies>
@@ -63,10 +113,17 @@
     </dependency>
 
     <dependency>
-        <groupId>mx.ecosur</groupId>
-        <artifactId>flex-commons</artifactId>
-        <version>${project.version}</version>
-        <type>swc</type>
+      <groupId>mx.ecosur</groupId>
+      <artifactId>flex-commons</artifactId>
+      <version>${project.version}</version>
+      <type>swc</type>
+    </dependency>
+
+    <dependency>
+      <groupId>mx.ecosur</groupId>
+      <artifactId>flex-manantiales-common</artifactId>
+      <version>${project.version}</version>
+      <type>swc</type>
     </dependency>
 
   </dependencies>

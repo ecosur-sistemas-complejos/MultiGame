@@ -1,24 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-  minWidth="800" minHeight="600" backgroundColor="0xC0C0C0" firstView="mx.ecosur.mobile.views.LoginView">
+  minWidth="800" minHeight="600" firstView="mx.ecosur.mobile.views.LoginView" splashScreenImage="@Embed('assets/splash.png')">
+    <fx:Declarations>
+        <s:RemoteObject id="gameService" destination="gameService" channelSet="{amfChannelSet}"
+                        result="resultHandler(event)" fault="faultHandler(event)" />
+    </fx:Declarations>
     <fx:Script>
     <![CDATA[
         import mx.ecosur.mobile.views.*;
+        import mx.messaging.ChannelSet;
+        import mx.ecosur.multigame.entity.*;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        [Bindable]
+        public var amfChannelSet:ChannelSet = new ChannelSet();
+        
+        public var registrant:Registrant;
 
         public function loadMain():void {
-            trace('succesfully logged in');
+            gameService.channelSet = amfChannelSet;
+            gameService.registerPrincipal();
         }
+
+        protected function resultHandler(event:ResultEvent):void {
+            registrant = Registrant(event.result);
+            navigator.pushView(SettingsView);
+        }
+
+        protected function faultHandler(event:FaultEvent):void {
+            trace("Login Error: " + event.fault.message);
+        }
+        
         ]]>
     </fx:Script>
     <fx:Style>
         @namespace s "library://ns.adobe.com/flex/spark";
         s|ActionBar {
+            chromeColor: #94ac9c ;
             defaultButtonAppearance: "beveled";
             titleAlign: center;
         }
 
-        s:button {
-            textAlign: left
+        .backButton {
+          skinClass:ClassReference("spark.skins.mobile.BeveledBackButtonSkin");
         }
 
     </fx:Style>
