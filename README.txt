@@ -172,11 +172,11 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration
      -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
-     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
+     -Dfile=/path/to/flex-sdk/frameworks/locale/en_US/flash-integration_rb.swc
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal
     -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
+    -Dfile=/path/to/flex-sdk/frameworks/locale/en_US/playerglobal_rb.swc
 
  For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
