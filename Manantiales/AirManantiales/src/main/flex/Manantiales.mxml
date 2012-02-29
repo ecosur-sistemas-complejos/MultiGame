@@ -15,7 +15,7 @@
 
         [Bindable]
         public var amfChannelSet:ChannelSet = new ChannelSet();
-        
+
         public var registrant:Registrant;
 
         public function loadMain():void {
@@ -25,13 +25,12 @@
 
         protected function resultHandler(event:ResultEvent):void {
             registrant = Registrant(event.result);
-            navigator.pushView(SettingsView);
+            navigator.pushView(LobbyView);
         }
 
         protected function faultHandler(event:FaultEvent):void {
             trace("Login Error: " + event.fault.message);
         }
-        
         ]]>
     </fx:Script>
     <fx:Style>

@@ -12,7 +12,6 @@
   <name>Manantiales Mobile Air</name>
 
   <properties>
-      <flex-version>4.5.1.21328</flex-version>
       <air-sdk>/Users/awaterma/util/AdobeAIRSDK</air-sdk>
   </properties>
 
@@ -30,6 +29,14 @@
               <artifactId>flexmojos-maven-plugin</artifactId>
               <version>4.1-beta</version>
               <extensions>true</extensions>
+              <dependencies>
+                  <dependency>
+                      <groupId>com.adobe.flex</groupId>
+                      <artifactId>compiler</artifactId>
+                      <version>${flex-version}</version>
+                      <type>pom</type>
+                  </dependency>
+              </dependencies>
               <configuration>
                   <storepass>secret</storepass>
                   <debug>true</debug>

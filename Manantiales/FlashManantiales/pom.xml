@@ -118,7 +118,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     </dependency>
     <dependency>
         <groupId>mx.ecosur</groupId>
-        <artifactId>flex-manantiales-commons</artifactId>
+        <artifactId>flex-manantiales-common</artifactId>
         <version>${project.version}</version>
         <type>swc</type>
         <scope>merged</scope>

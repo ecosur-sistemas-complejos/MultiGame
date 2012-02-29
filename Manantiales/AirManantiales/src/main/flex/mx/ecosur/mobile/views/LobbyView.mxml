@@ -173,19 +173,6 @@
         <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
     </s:layout>
 
-    <s:Button label="Start networked game" id="start" buttonDown="{createGame(event)}"
-        skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" alpha="0.7"/>
-    <s:Group id="robotButtons">
-        <s:layout>
-            <s:HorizontalLayout/>
-        </s:layout>
-        <s:DropDownList id="modeList" prompt="Select a modality" dataProvider="{manModes}" width="150"/>
-        <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
-        <s:RadioButton groupName="robots" id="ai" label="Robots"/>
-    </s:Group>
-
-    <s:Spacer/>
-
     <s:Group id="availableGroup" width="100%" >
         <s:Spacer/>
         <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)">
@@ -197,6 +184,19 @@
                 </s:ArrayList>
             </s:columns>
         </s:DataGrid>
+    </s:Group>
+
+    <s:Group id="startGroup">
+        <s:layout>
+            <s:HorizontalLayout/>
+        </s:layout>
+        <s:SpinnerListContainer>
+            <s:SpinnerList id="modeList" dataProvider="{manModes}"/>
+        </s:SpinnerListContainer>
+        <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
+        <s:RadioButton groupName="robots" id="ai" label="Robots"/>
+        <s:Button label="Start Game" id="start" buttonDown="{createGame(event)}"
+                  skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" />
     </s:Group>
 
     <s:Group id="settingsGroup">

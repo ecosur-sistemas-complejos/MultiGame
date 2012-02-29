@@ -7,7 +7,7 @@ The "mobile" theme is available with the Flex SDK, under the frameworks/mobile p
 version with the install plugin.  For example, the following command would work for 4.5.1:
 
 mvn install:install-file -Dfile=mobile.swc -DgroupId=com.adobe.flex.framework -DartifactId=mobile
-    -Dpackaging=swc -Dversion=4.5.1.21328  -DgeneratePom=true
+    -Dpackaging=swc -Dversion={flex-version}  -DgeneratePom=true
 
 
 NOTE: This application is signed by a self-generated 2048-RSA keyfile "src/main/resources/sign.p12" created with
