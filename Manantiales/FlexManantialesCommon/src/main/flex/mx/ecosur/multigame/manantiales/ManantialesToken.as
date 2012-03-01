@@ -1,5 +1,6 @@
-package mx.ecosur.multigame.manantiales.token
+package mx.ecosur.multigame.manantiales
 {
+    //import mx.ecosur.multigame.manantiales.token.*;
     import mx.controls.Image;
     import mx.controls.Label;
     import mx.core.IFlexDisplayObject;
@@ -126,6 +127,7 @@ public class ManantialesToken extends Token
          *
          * @return the drag image
          */
+        /*
         override public function createDragImage():IFlexDisplayObject{
             var token:ManantialesToken;
             switch (_type) {
@@ -155,7 +157,7 @@ public class ManantialesToken extends Token
             token.width = width;
             token.height = height;
             return IFlexDisplayObject(token);
-        }
+        } */
 
         public function get placed():Boolean {
             return _placed;

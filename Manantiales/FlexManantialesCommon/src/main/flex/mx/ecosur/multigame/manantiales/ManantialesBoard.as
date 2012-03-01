@@ -21,7 +21,6 @@
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
-        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
         /**
         * A ManantialesBoard is similar to the GenteBoard interfaces,
@@ -227,7 +226,7 @@
             var size:Number = cellSize * 4;
             var linecompensation:Number = boardCell.height/ 3;
 
-				/* Inlay the Manantial */
+            /* Inlay the Manantial */
             _manantial.x = centerX + linecompensation/2;
             _manantial.y = centerY + linecompensation/2;
             _manantial.graphics.clear();
@@ -243,21 +242,22 @@
                 centerY + linecompensation/2, size/4);
             _spring.graphics.endFill();
 
-
-                /* Inlay the water feature */
+                /* Inlay the rivers */
             _hl.graphics.clear();
             _hl.graphics.beginFill(0x2E83BC);
             _hl.graphics.lineStyle(2, 0x2E83BC, 0.65);
-            _hl.graphics.drawRect(0, centerY, endX, boardCell.height/3);
+                /* x, y, width, height */
+            _hl.graphics.drawRect(1, centerY, (endX - 25), 10);
             _hl.graphics.endFill();
 
             _vl.graphics.clear();
             _vl.graphics.beginFill(0x2E83BC);
             _vl.graphics.lineStyle(2, 0x2E83BC, 0.65);
-            _vl.graphics.drawRect(centerX, 0, boardCell.width/3, endY);
+                /* x, y, width, height */
+            _vl.graphics.drawRect(centerX, 1, 10, (endY - 25));
             _vl.graphics.endFill();
 
-           drawGraph();
+            drawGraph();
             _centerX = centerX;
             _centerY = centerY;
         }

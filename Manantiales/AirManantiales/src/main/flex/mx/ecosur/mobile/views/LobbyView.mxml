@@ -2,6 +2,10 @@
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
         title="Manantiales de La Sierra" backgroundColor="#275837" backgroundAlpha="0.7"
         creationComplete="loadInitial(event)">
+    <fx:Metadata >
+        [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
+    </fx:Metadata>
+
     <fx:Declarations>
         <s:RemoteObject id="gameService" destination="gameService"
                         channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
@@ -50,8 +54,8 @@
         import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.event.PlayEvent;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
-        import mx.ecosur.multigame.manantiales.enum.Mode;
 
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
@@ -78,6 +82,7 @@
             } else {
                 gameService.startNewGame(FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN, "Manantiales", modeList.selectedItem.data);
             }
+            navigator.pushView(GameView);
         }
 
         protected function resultHandler(event:ResultEvent):void {
@@ -88,15 +93,21 @@
             for (var i:int = 0; i < response.length; i++) {
                 if (response[i] is ArrayCollection) {
                     var games:ArrayCollection = ArrayCollection(response[ i ]);
-                    _games.addAll(games);
+                    for (var j:int = 0; j < games.length; j++) {
+                        var  d:GameDAO = GameDAO(games [ j ]);
+                        if (d.gameType != "Gente") {
+                            _games.addItem(d);
+                        }
+                        
+                    }
                     updateGrid(gameGrid, _games);
                 } else if (response [ i ] is GameDAO) {
                     var dao:GameDAO = GameDAO(response [ i ]);
                     var added:Boolean = false;
                     for (var j:int = 0; j < _games.length; j++) {
-                        var c:GameDAO = GameDAO(_games [ j ]);
-                        if (c.gameId == dao.gameId) {
-                            c = dao;
+                        var d:GameDAO = GameDAO(_games [ j ]);
+                        if (d.gameId == dao.gameId) {
+                            d = dao;
                             added = true;
                             break;
                         }
@@ -123,13 +134,15 @@
         }
 
         protected function joinGame(event:MouseEvent):void {
-
-
-            trace("JoinGame, Event: [" + event + "]");
-            trace("Event target: [" + event.currentTarget);
-            trace("Event related object: [" + event.relatedObject);
-
-
+            var idx:int = gameGrid.selectedIndex;
+            var g:GameDAO = GameDAO(_games.getItemAt(idx));
+            if (!containsPlayer(g)) {
+                gameService.joinPendingGame(g.gameId, FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN);
+            } else {
+                trace("Dispatching new PlayEvent");
+                dispatchEvent(new PlayEvent("gameChosen", g.gameId,  g.gameType, FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN));
+            }
+            navigator.pushView(GameView);
         }
 
         private function updateGrid(grid:DataGrid, list:ArrayCollection):void {
@@ -166,6 +179,16 @@
             dataItem.status = GameState.getDescription(dao.status);
             return dataItem;
         }
+        
+        private function Logout(event:Event):void {
+            FlexGlobals.topLevelApplication.amfChannelSet.logout();
+            navigator.popToFirstView();
+        }
+
+        override public function createReturnObject():Object {
+            return LoginView.remoteServer;
+        }
+        
         ]]>
     </fx:Script>
 
@@ -173,7 +196,7 @@
         <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
     </s:layout>
 
-    <s:Group id="availableGroup" width="100%" >
+    <s:VGroup id="availableGroup" width="100%" >
         <s:Spacer/>
         <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)">
             <s:columns>
@@ -184,23 +207,43 @@
                 </s:ArrayList>
             </s:columns>
         </s:DataGrid>
-    </s:Group>
+    </s:VGroup>
 
-    <s:Group id="startGroup">
-        <s:layout>
-            <s:HorizontalLayout/>
-        </s:layout>
-        <s:SpinnerListContainer>
-            <s:SpinnerList id="modeList" dataProvider="{manModes}"/>
+    <s:Spacer height="50"/>
+
+    <s:HGroup id="startGroup">
+        <s:SpinnerListContainer width="100">
+            <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100%"/>
         </s:SpinnerListContainer>
         <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
         <s:RadioButton groupName="robots" id="ai" label="Robots"/>
         <s:Button label="Start Game" id="start" buttonDown="{createGame(event)}"
                   skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" />
-    </s:Group>
+    </s:HGroup>
 
-    <s:Group id="settingsGroup">
+    <s:Spacer height="50"/>
 
-    </s:Group>
+    <s:VGroup id="settingsGroup">
+        <s:Rect width="100%" height="100%">
+            <s:stroke>
+                <s:SolidColorStroke color="0x000000" weight="2" />
+            </s:stroke>
+        </s:Rect>
+        <s:VGroup left="10" top="10" right="10" bottom="10" width="90%" height="90%">
+            <s:Label fontSize="18" text="SETTINGS"/>
+            <s:DropDownList id="language" prompt="Language" width="140" selectedIndex="0">
+                <s:dataProvider>
+                    <s:ArrayList>
+                        <fx:String>English</fx:String>
+                        <fx:String>Español</fx:String>
+                    </s:ArrayList>
+                </s:dataProvider>
+            </s:DropDownList>
+            <s:HGroup>
+                <s:ToggleSwitch id="login" selected="true" skinClass="mx.ecosur.mobile.skins.LogOutSwitchSkin"
+                    slideDuration="200" change="Logout(event)"/>
+            </s:HGroup>
+        </s:VGroup>
+    </s:VGroup>
 
 </s:View>

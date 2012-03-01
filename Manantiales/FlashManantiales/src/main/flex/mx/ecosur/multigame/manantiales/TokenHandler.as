@@ -18,7 +18,7 @@ import flash.events.MouseEvent;
     import mx.ecosur.multigame.manantiales.token.ForestTokenStore;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
     import mx.ecosur.multigame.manantiales.token.IntensiveTokenStore;
-    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+    import mx.ecosur.multigame.manantiales.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.ManantialesTokenStore;
     import mx.ecosur.multigame.manantiales.token.ModerateToken;
     import mx.ecosur.multigame.manantiales.token.ModerateTokenStore;

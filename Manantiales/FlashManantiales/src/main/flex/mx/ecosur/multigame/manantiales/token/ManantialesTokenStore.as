@@ -7,7 +7,8 @@ package mx.ecosur.multigame.manantiales.token
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.manantiales.ManantialesGameController;
-    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+import mx.ecosur.multigame.manantiales.ManantialesToken;
+import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 

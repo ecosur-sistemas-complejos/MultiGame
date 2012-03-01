@@ -15,7 +15,7 @@ import mx.controls.Button;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.ForestToken;
     import mx.ecosur.multigame.manantiales.token.IntensiveToken;
-    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+    import mx.ecosur.multigame.manantiales.ManantialesToken;
     import mx.ecosur.multigame.manantiales.token.ModerateToken;
     import mx.ecosur.multigame.manantiales.token.SilvopastoralToken;
     import mx.ecosur.multigame.manantiales.token.UndevelopedToken;

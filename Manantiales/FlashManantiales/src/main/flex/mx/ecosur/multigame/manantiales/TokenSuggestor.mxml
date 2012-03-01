@@ -10,7 +10,7 @@
     <mx:Script>
       <![CDATA[
         import mx.collections.ArrayCollection;
-        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+        import mx.ecosur.multigame.manantiales.ManantialesToken;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
 
         private var _types:ArrayCollection;
@@ -30,7 +30,7 @@
             _types = new ArrayCollection();
             for (var i:int = 0; i < names.length; i++) {
                 var obj:Object = new Object();
-                obj.data = String (names.getItemAt(i));
+                obj.data = String(names.getItemAt(i));
                 obj.label = getLabel(obj.data);
 
                 _types.addItem(obj);
@@ -66,25 +66,25 @@
 
             switch (name) {
                 case TokenType.FOREST:
-                    ret = resourceManager.getString("Manantiales","manantiales.token.forest");
+                    ret = resourceManager.getString("Manantiales", "manantiales.token.forest");
                     break;
                 case TokenType.MODERATE:
-                    ret = resourceManager.getString("Manantiales","manantiales.token.moderate");
+                    ret = resourceManager.getString("Manantiales", "manantiales.token.moderate");
                     break;
                 case TokenType.INTENSIVE:
-                    ret = resourceManager.getString("Manantiales","manantiales.token.intensive")
+                    ret = resourceManager.getString("Manantiales", "manantiales.token.intensive")
                     break;
                 case TokenType.VIVERO:
-                    ret = resourceManager.getString("Manantiales","manantiales.token.vivero")
+                    ret = resourceManager.getString("Manantiales", "manantiales.token.vivero")
                     break;
                 case TokenType.SILVOPASTORAL:
-                    ret = resourceManager.getString("Manantiales","manantiales.token.silvopastoral")
+                    ret = resourceManager.getString("Manantiales", "manantiales.token.silvopastoral")
                     break;
             }
 
             return ret;
         }
-      ]]>
+        ]]>
     </mx:Script>
     <mx:VBox id="content" width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
         <mx:Text width="100%"

@@ -11,16 +11,15 @@
         import mx.rpc.events.ResultEvent;
 
         [Bindable]
-        private var remoteServer:String = "localhost";
+        public static var remoteServer:String = "localhost";
 
-       
-
-        protected function handleLogin(event:MouseEvent):void {
+        protected function handleLogin(event:Event):void {
             establishAMF();
         }
 
         protected function clearLabel(event:Event):void {
             statusLabel.text = "";
+            password.text = "";
         }
 
         protected function configure(event:Event):void {
@@ -50,6 +49,7 @@
 
         protected function faultHandler(event:FaultEvent, token:Object = null):void {
             statusLabel.text = "Connection failed! [" + event.fault.message + "]";
+            loggedin.selected = false;
         }
 
         
@@ -64,12 +64,13 @@
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
-        <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" />
+        <s:Label id="remote" text="Remote server: {remoteServer}" fontSize="18" textAlign="center" width="80%" />
         <s:Label text="Username: " />
         <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>
         <s:Label text="Password: "/>
         <s:TextInput id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"/>
-        <s:Button label="Log In" click="handleLogin(event)" skinClass="spark.skins.mobile.BeveledActionButtonSkin"/>
+        <s:ToggleSwitch id="loggedin" selected="false" skinClass="mx.ecosur.mobile.skins.LogOutSwitchSkin"
+                    slideDuration="200" change="handleLogin(event)"/>
     </s:Group>
 
     <s:Label id="statusLabel" color="yellow" fontWeight="bold" textAlign="center" width="90%"

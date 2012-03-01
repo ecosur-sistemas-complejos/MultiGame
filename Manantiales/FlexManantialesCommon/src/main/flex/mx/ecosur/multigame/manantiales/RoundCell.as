@@ -1,13 +1,9 @@
 package mx.ecosur.multigame.manantiales
     {
     import flash.filters.DropShadowFilter;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-
-import mx.ecosur.multigame.component.BoardCell;
-import mx.ecosur.multigame.component.Token;
-import mx.ecosur.multigame.enum.Color;
-import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+    import mx.ecosur.multigame.component.BoardCell;
+    import mx.ecosur.multigame.component.Token;
+    import mx.ecosur.multigame.enum.Color;
 
 public class RoundCell extends BoardCell
     {

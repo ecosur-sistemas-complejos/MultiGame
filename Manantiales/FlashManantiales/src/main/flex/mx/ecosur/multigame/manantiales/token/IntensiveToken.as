@@ -1,6 +1,7 @@
 package mx.ecosur.multigame.manantiales.token
 {
-    import mx.ecosur.multigame.manantiales.enum.TokenType;
+import mx.ecosur.multigame.manantiales.ManantialesToken;
+import mx.ecosur.multigame.manantiales.enum.TokenType;
 
     [ResourceBundle("Manantiales")]
     public class IntensiveToken extends ManantialesToken

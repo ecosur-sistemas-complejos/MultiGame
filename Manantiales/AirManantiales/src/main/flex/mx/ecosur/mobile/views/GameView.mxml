@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:m="mx.ecosur.multigame.manantiales.*">
+    <s:navigationContent>
+        <s:Button label="Back" buttonDown="navigator.popView()" />
+    </s:navigationContent>
+    <s:layout>
+        <s:HorizontalLayout/>
+    </s:layout>
+    <s:Group id="sideview" width="300">
+        <s:Rect width="100%" height="100%">
+            <s:stroke>
+                <s:SolidColorStroke color="0x000000" weight="2" />
+            </s:stroke>
+        </s:Rect>
+        <s:Label text="Sideview"/>
+        <s:Spacer/>
+    </s:Group>
+    <s:Group id="boardView" width="100%" height="100%">
+        <m:ManantialesBoard id="board" width="100%" height="100%"/>
+    </s:Group>
+</s:View>
