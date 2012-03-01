@@ -182,6 +182,16 @@ FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
 
+FLEX MOBILE THEME
+
+The "mobile" theme is available with the Flex SDK, under the frameworks/mobile path. Please install the correct
+version with the install plugin.  The following works well (please replace {flex-version} with the current
+version):
+
+mvn install:install-file -Dfile=mobile.swc -DgroupId=com.adobe.flex.framework -DartifactId=mobile
+    -Dpackaging=swc -Dversion={flex-version}  -DgeneratePom=true
+
+
 FLEX UNIT 4
 
   We are currently using FlexUnit 4 for the Flex based part of our unit tests. In order
