@@ -4,6 +4,7 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
 public class RoundCell extends BoardCell
     {

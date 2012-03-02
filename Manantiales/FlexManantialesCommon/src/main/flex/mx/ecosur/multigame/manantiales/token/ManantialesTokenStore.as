@@ -6,17 +6,16 @@ package mx.ecosur.multigame.manantiales.token
     import mx.collections.ArrayCollection;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
-    import mx.ecosur.multigame.manantiales.ManantialesGameController;
-import mx.ecosur.multigame.manantiales.ManantialesToken;
-import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.event.DragMoveEvent;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 
+    [Event (name="DragAndDrop", type="mx.ecosur.multigame.event.MoveEvent")]
     public class ManantialesTokenStore extends TokenStore
     {
         protected static const INITIAL_N_TOKENS:int = 6;
         protected var _tokenType:String;
-        protected var _controller:ManantialesGameController;
         private var _initialized:Boolean;
 
         public function ManantialesTokenStore() {
@@ -49,8 +48,7 @@ import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
             if (!_initialized) {
                 for (var i:int = 0; i < tokens.length; i++) {
                     var token:ManantialesToken = ManantialesToken (tokens.getItemAt(i));
-                    if (token && token.cell && token.cell.color == _controller._currentPlayer.color && 
-                            token.type == _tokenType) {
+                    if (token && token.cell && token.type == _tokenType) {
                         removeToken();
                     } 
                 }
@@ -65,14 +63,6 @@ import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
             }
         }
 
-        public function get controller():ManantialesGameController {
-            return _controller;
-        }
-
-        public function set controller(controller:ManantialesGameController):void {
-            _controller = controller;
-        }
-        
         public function get tokenType():String {
             return _tokenType;
         }
@@ -97,9 +87,10 @@ import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
                 var move:ManantialesMove = new ManantialesMove ();
                 move.currentCell = token.ficha;
                 move.destinationCell = null;
-                move.player = _controller._currentPlayer;
-                move.mode = _controller._game.mode;
-                _controller.sendMove(move);
+
+                var event:DragMoveEvent = new DragMoveEvent("DragAndDrop", move);
+                dispatchEvent(event);
+
             }
 
         }

@@ -1,5 +1,5 @@
 package mx.ecosur.multigame.manantiales.token {
-import mx.ecosur.multigame.manantiales.ManantialesToken;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
 public class UndevelopedToken extends ManantialesToken {
         

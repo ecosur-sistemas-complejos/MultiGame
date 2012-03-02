@@ -45,6 +45,14 @@
             _controller = new ManantialesGameController(this);
             _timer = new Timer(1000);
             _timer.addEventListener(TimerEvent.TIMER, updateTimer);
+
+            /* Event Listeners */
+            forestStore.addEventListener("DragAndDrop", controller.handleDragMoveEvent);
+            moderateStore.addEventListener("DragAndDrop", controller.handleDragMoveEvent);
+            intensiveStore.addEventListener("DragAndDrop", controller.handleDragMoveEvent);
+            viveroStore.addEventListener("DragAndDrop", controller.handleDragMoveEvent);
+            silvoStore.addEventListener("DragAndDrop", controller.handleDragMoveEvent);
+
         }
 
         public function destroy():void {
@@ -243,19 +251,19 @@
     </mx:ApplicationControlBar>
     <mx:states>
         <mx:State name="COMPETITIVE">
-            <mx:AddChild relativeTo="{leftBox}">
+            <mx:AddChild relativeTo="{leftBox}" creationPolicy="all">
                 <token:ForestTokenStore id="forestStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                     width="100%" />
             </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
+            <mx:AddChild relativeTo="{leftBox}" creationPolicy="all">
                    <token:ModerateTokenStore id="moderateStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                     width="100%"/>
             </mx:AddChild>
-            <mx:AddChild relativeTo="{leftBox}">
+            <mx:AddChild relativeTo="{leftBox}" creationPolicy="all">
                 <token:IntensiveTokenStore id="intensiveStore"
-                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                    currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                     width="100%"/>
             </mx:AddChild>
         </mx:State>
@@ -263,14 +271,14 @@
             <!-- Add Check Constraint viewer here, active on turn -->
         </mx:State>
         <mx:State name="SILVOPASTORAL" basedOn="COMPETITIVE">
-           <mx:AddChild relativeTo="{leftBox}">
+           <mx:AddChild relativeTo="{leftBox}" creationPolicy="all">
                <token:ViveroTokenStore id="viveroStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}"
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                 width="100%" />
            </mx:AddChild>
-           <mx:AddChild relativeTo="{leftBox}">
+           <mx:AddChild relativeTo="{leftBox}" creationPolicy="all">
                <token:SilvopastoralTokenStore id="silvoStore"
-                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}" controller="{controller}" 
+                currentPlayer="{currentPlayer}" tokenSize="{board.tokenSize}"
                 width="100%"/>
            </mx:AddChild>
         </mx:State>

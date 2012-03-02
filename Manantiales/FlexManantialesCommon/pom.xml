@@ -28,13 +28,13 @@
           <configuration>
               <debug>${debug}</debug>
               <includeResourceBundles>
-                  <bundle>Commons</bundle>
+                  <bundle>ManantialesCommon</bundle>
               </includeResourceBundles>
               <localesCompiled>
                   <compiled>en_US</compiled>
                   <compiled>es_ES</compiled>
               </localesCompiled>
-              <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
+              <localesSourcePath>${basedir}/src/main/resources/{locale}</localesSourcePath>
               <storepass/>
           </configuration>
           <dependencies>

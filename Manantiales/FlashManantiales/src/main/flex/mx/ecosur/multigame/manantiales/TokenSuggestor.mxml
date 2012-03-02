@@ -10,7 +10,7 @@
     <mx:Script>
       <![CDATA[
         import mx.collections.ArrayCollection;
-        import mx.ecosur.multigame.manantiales.ManantialesToken;
+        import mx.ecosur.multigame.manantiales.token.ManantialesToken;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
 
         private var _types:ArrayCollection;

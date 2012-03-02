@@ -3,7 +3,7 @@ package mx.ecosur.multigame.manantiales.token
 	
     import flash.events.MouseEvent;
 
-import mx.ecosur.multigame.manantiales.ManantialesToken;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
 import mx.events.DragEvent;
     import mx.ecosur.multigame.manantiales.enum.TokenType;

@@ -8,7 +8,6 @@
     /**
     * @author awaterma@ecosur.mx
     */
-
     package mx.ecosur.multigame.manantiales
     {
         import flash.display.Shape;
@@ -21,8 +20,9 @@
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
+    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
-        /**
+    /**
         * A ManantialesBoard is similar to the GenteBoard interfaces,
         * but cells are spaced in a much different manner, and not all
         * iumns and rows are filled in with actionable BoardCells.
@@ -47,6 +47,7 @@
         * as the location of the Manantial or Spring for individuals
         * living in the Ejido.
         */
+
         public class ManantialesBoard extends AbstractBoard {
 
         protected var _bg:Shape, _hl:Shape, _vl:Shape,
@@ -247,14 +248,14 @@
             _hl.graphics.beginFill(0x2E83BC);
             _hl.graphics.lineStyle(2, 0x2E83BC, 0.65);
                 /* x, y, width, height */
-            _hl.graphics.drawRect(1, centerY, (endX - 25), 10);
+            _hl.graphics.drawRect(1, centerY + 2.5, (endX - 25), 10);
             _hl.graphics.endFill();
 
             _vl.graphics.clear();
             _vl.graphics.beginFill(0x2E83BC);
             _vl.graphics.lineStyle(2, 0x2E83BC, 0.65);
                 /* x, y, width, height */
-            _vl.graphics.drawRect(centerX, 1, 10, (endY - 25));
+            _vl.graphics.drawRect(centerX + 2.5, 1, 10, (endY - 25));
             _vl.graphics.endFill();
 
             drawGraph();

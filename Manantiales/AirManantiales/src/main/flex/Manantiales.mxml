@@ -9,7 +9,7 @@
     <![CDATA[
         import mx.ecosur.mobile.views.*;
         import mx.messaging.ChannelSet;
-        import mx.ecosur.multigame.entity.*;
+        import mx.ecosur.multigame.entity.Registrant;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 

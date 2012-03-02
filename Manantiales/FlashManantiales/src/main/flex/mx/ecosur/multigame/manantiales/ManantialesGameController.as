@@ -14,6 +14,7 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.entity.GamePlayer;
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.enum.ExceptionType;
+    import mx.ecosur.multigame.event.DragMoveEvent;
     import mx.ecosur.multigame.manantiales.entity.CheckCondition;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
@@ -380,6 +381,13 @@ package mx.ecosur.multigame.manantiales
         private function handleEndResult (event:DynamicEvent):void {
             PopUpManager.removePopUp(this._endAlert);
             _endAlert = null;
+        }
+
+        public function handleDragMoveEvent (event:DragMoveEvent):void {
+            var m:ManantialesMove = ManantialesMove(event.move);
+            m.player = _currentPlayer;
+            m.mode = _game.mode;
+            sendMove(m);
         }
 
         /**

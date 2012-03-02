@@ -3,12 +3,12 @@
 package mx.ecosur.multigame.manantiales.token
 {
     import mx.ecosur.multigame.enum.Color;
-import mx.ecosur.multigame.manantiales.ManantialesToken;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 import mx.ecosur.multigame.manantiales.entity.Ficha;
 import mx.ecosur.multigame.manantiales.entity.Suggestion;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
 
-    [ResourceBundle("Manantiales")]
+    [ResourceBundle("ManantialesCommon")]
     public class SuggestionToken extends ManantialesToken {
 
         private var _suggestion:Suggestion;

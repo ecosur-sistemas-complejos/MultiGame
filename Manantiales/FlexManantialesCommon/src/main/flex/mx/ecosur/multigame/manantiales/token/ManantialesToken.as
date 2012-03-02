@@ -1,4 +1,4 @@
-package mx.ecosur.multigame.manantiales
+package mx.ecosur.multigame.manantiales.token
 {
     //import mx.ecosur.multigame.manantiales.token.*;
     import mx.controls.Image;
@@ -9,15 +9,11 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.enum.Color;
     import mx.ecosur.multigame.manantiales.entity.Ficha;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
-    import mx.resources.IResourceManager;
-    import mx.resources.ResourceManager;
 
-public class ManantialesToken extends Token
+    public class ManantialesToken extends Token
     {
         protected var _label:String;
         protected var _tooltip:String;
-        protected var _colorCode:uint;
-        protected var _bgImage:Image;
         protected var _territoryColor:Color;
         protected var _txt:Label;
         protected var _ficha:Ficha;
@@ -127,7 +123,7 @@ public class ManantialesToken extends Token
          *
          * @return the drag image
          */
-        /*
+
         override public function createDragImage():IFlexDisplayObject{
             var token:ManantialesToken;
             switch (_type) {
@@ -157,7 +153,7 @@ public class ManantialesToken extends Token
             token.width = width;
             token.height = height;
             return IFlexDisplayObject(token);
-        } */
+        }
 
         public function get placed():Boolean {
             return _placed;
