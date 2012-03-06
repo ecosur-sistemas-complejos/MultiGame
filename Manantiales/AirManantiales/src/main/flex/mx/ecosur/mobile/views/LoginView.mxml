@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-        title="Manantiales De La Sierra" add="addHandler(event)" backgroundColor="#275837" backgroundAlpha="0.7">
+        title="Manantiales De La Sierra" add="addHandler(event)" skinClass="mx.ecosur.mobile.skins.GradientSkin">
     <fx:Script>
     <![CDATA[
         import mx.core.FlexGlobals;
@@ -64,7 +64,7 @@
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
-        <s:Label id="remote" text="Remote server: {remoteServer}" fontSize="18" textAlign="center" width="80%" />
+        <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" />
         <s:Label text="Username: " />
         <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>
         <s:Label text="Password: "/>
@@ -73,7 +73,7 @@
                     slideDuration="200" change="handleLogin(event)"/>
     </s:Group>
 
-    <s:Label id="statusLabel" color="yellow" fontWeight="bold" textAlign="center" width="90%"
+    <s:Label id="statusLabel" color="red" fontWeight="bold" textAlign="center" width="90%"
              horizontalCenter="0" verticalCenter="300"/>
 
 </s:View>

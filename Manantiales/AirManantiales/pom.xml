@@ -9,7 +9,7 @@
   </parent> 
   <artifactId>air-manantiales</artifactId>
   <packaging>air</packaging>
-  <name>Manantiales Mobile Air</name>
+  <name>Manantiales Mobile Air Application</name>
 
   <properties>
       <air-sdk>/Users/awaterma/util/AdobeAIRSDK</air-sdk>

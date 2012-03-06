@@ -1,8 +1,91 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:c="mx.ecosur.multigame.component.*"
         xmlns:m="mx.ecosur.multigame.manantiales.*"
-        xmlns:t="mx.ecosur.multigame.manantiales.token.*">
+        xmlns:t="mx.ecosur.multigame.manantiales.token.*"
+        creationComplete="init(event)"  skinClass="mx.ecosur.mobile.skins.GradientSkin" >
+    <fx:Script>
+        <![CDATA[
+        import mx.core.FlexGlobals;
+        import mx.ecosur.mobile.Controller;
+        import mx.ecosur.multigame.enum.Color;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+        
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+
+        public static var gameId:int;
+
+        [Bindable]
+        protected var game:ManantialesGame;
+
+        [Bindable]
+        protected var player:ManantialesPlayer;
+
+        protected var controller:Controller;
+
+        private var tokenSize:int = 60;
+
+        public function resultHandler(event:ResultEvent):void {
+            game = ManantialesGame(event.result);
+            for (var i:int = 0; i< game.players.length; i++) {
+                var p:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
+                if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
+                    player = p;
+                    break;
+                }
+            }
+
+            currentState = game.mode;
+
+            if (game.players.length == 4) {
+                status.showMessage("Playing", Color.getColorCode(player.color));
+                forestStore.addEventListener("DragAndDrop", controller.dragAndDropResultHandler);
+                moderateStore.addEventListener("DragAndDrop", controller.dragAndDropResultHandler);
+                intensiveStore.addEventListener("DragAndDrop", controller.dragAndDropResultHandler);
+                
+                /* Activate everybody */
+                forestStore.active = true;
+                moderateStore.active = true;
+                intensiveStore.active = true;
+
+            } else {
+                status.showMessage("Waiting for more players ...", Color.getColorCode(player.color));
+            }
+
+        }
+
+        public function faultHandler(event:FaultEvent):void {
+            trace("Fault: " + event.fault);
+
+        }
+
+        private function init(event:Event):void {
+            controller = new Controller();
+            if (gameId != 0) {
+                gameService.getGame(gameId);
+            }
+
+            status.showMessage("Loading game ..", Color.getColorCode(Color.GREEN));
+        }
+
+        ]]>
+    </fx:Script>
+    <fx:Declarations>
+        <s:RemoteObject id="gameService" destination="gameService"
+                        channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+                        result="resultHandler(event)"
+                        fault="faultHandler(event)" />
+    </fx:Declarations>
+    <s:states>
+        <s:State name="WAITING"/>
+        <s:State name="COMPETITIVE"/>
+        <s:State name="BASIC_PUZZLE"/>
+        <s:State name="SILVOPASTORAL"/>
+        <s:State name="SILVO_PUZZLE"/>
+    </s:states>
     <s:navigationContent>
         <s:Button label="Back" buttonDown="navigator.popView()" />
     </s:navigationContent>
@@ -10,9 +93,20 @@
         <s:HorizontalLayout/>
     </s:layout>
     <s:Group id="sideview" width="300">
-        <t:ForestTokenStore tokenSize="10" width="100%"/>
-        <t:ModerateTokenStore tokenSize="10" width="100%"/>
-        <t:IntensiveTokenStore tokenSize="10" width="100%"/>
+        <s:layout>
+            <s:VerticalLayout/>
+        </s:layout>
+        <c:GameStatus id="status" width="100%" />
+        <t:ForestTokenStore id="forestStore"  tokenSize="{tokenSize}" width="100%" currentPlayer="{player}"
+                includeIn="COMPETITIVE,BASIC_PUZZLE,SILVOPASTORAL,SILVO_PUZZLE"/>
+        <t:ModerateTokenStore id="moderateStore" tokenSize="{tokenSize}" width="100%" currentPlayer="{player}"
+                includeIn="COMPETITIVE,BASIC_PUZZLE,SILVOPASTORAL,SILVO_PUZZLE"/>
+        <t:IntensiveTokenStore id="intensiveStore" tokenSize="{tokenSize}" width="100%" currentPlayer="{player}"
+                includeIn="COMPETITIVE,BASIC_PUZZLE,SILVOPASTORAL,SILVO_PUZZLE"/>
+        <t:ViveroTokenStore id="viveroStore" tokenSize="{tokenSize}" width="100%" currentPlayer="{player}"
+                includeIn="SILVOPASTORAL"/>
+        <t:SilvopastoralTokenStore id="silvoStore" tokenSize="{tokenSize}" width="100%" currentPlayer="{player}"
+                includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
     </s:Group>
     <s:Group id="boardView" width="100%" height="100%">
         <m:ManantialesBoard id="board" width="100%" height="100%"/>
