@@ -4,10 +4,13 @@ package mx.ecosur.multigame.manantiales.token
     import flash.events.MouseEvent;
 
     import mx.collections.ArrayCollection;
+    import mx.core.InteractionMode;
     import mx.ecosur.multigame.component.Token;
     import mx.ecosur.multigame.component.TokenStore;
     import mx.ecosur.multigame.event.DragMoveEvent;
+    import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
+    import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
     import mx.events.DragEvent;
     import mx.managers.DragManager;
 
@@ -37,20 +40,39 @@ package mx.ecosur.multigame.manantiales.token
         }
 
         override protected function selectToken(event:MouseEvent):void {
+            
             if (event.target is Token) {
                 var target:ManantialesToken = ManantialesToken(event.target);
+                target.setStyle ('interactionMode', InteractionMode.MOUSE);
                 target.selected = true;
                 target.placed = false;
             }
         }
 
-        public function init(tokens:ArrayCollection):void {
+        public function init(player:ManantialesPlayer):void {
+
             if (!_initialized) {
-                for (var i:int = 0; i < tokens.length; i++) {
-                    var token:ManantialesToken = ManantialesToken (tokens.getItemAt(i));
-                    if (token && token.cell && token.type == _tokenType) {
-                        removeToken();
-                    } 
+                var removals:int = 0;
+                switch (tokenType) {
+                    case TokenType.FOREST:
+                        removals = player.forested;
+                        break;
+                    case TokenType.MODERATE:
+                        removals = player.moderate;
+                        break;
+                    case TokenType.INTENSIVE:
+                        removals = player.intensive;
+                        break;
+                    case TokenType.VIVERO:
+                        removals = player.vivero;
+                        break;
+                    case TokenType.SILVOPASTORAL:
+                        removals = player.silvo;
+                        break;
+                }
+
+                for (var i:int = 0; i < removals; i++) {
+                    removeToken();
                 }
 
                 _initialized = true;

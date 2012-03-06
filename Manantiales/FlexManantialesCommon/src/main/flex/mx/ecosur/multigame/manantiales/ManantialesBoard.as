@@ -20,7 +20,6 @@
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
-    import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
     /**
         * A ManantialesBoard is similar to the GenteBoard interfaces,
@@ -69,9 +68,7 @@
                 for (var col:int = 0; col < _nCols; col++) {
                     if (_boardCells [ col ][ row ] != null) {
                         var cell:RoundCell = RoundCell(_boardCells[col][row]);
-                        var token:ManantialesToken = ManantialesToken(cell.token);
-                        if (token && token.type != TokenType.UNDEVELOPED)
-                            ret.addItem(token);
+                            ret.addItem(cell);
                     }
                 }
             }

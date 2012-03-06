@@ -106,7 +106,7 @@ import flash.events.MouseEvent;
             tokenStore.endMoveHandler = endMove;
             tokenStore.visible = true;
             tokenStore.active = true;
-            tokenStore.init(_gameWindow.board.boardCells);
+            tokenStore.init(_currentPlayer);
         }
 
         public function dragDropCell(evt:DragEvent):ManantialesMove {
