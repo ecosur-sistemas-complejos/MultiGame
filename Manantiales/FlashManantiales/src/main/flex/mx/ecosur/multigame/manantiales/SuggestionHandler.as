@@ -22,7 +22,10 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.enum.SuggestionStatus;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
-    import mx.effects.AnimateProperty;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+import mx.ecosur.multigame.manantiales.token.SuggestionToken;
+import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
+import mx.effects.AnimateProperty;
     import mx.events.DragEvent;
     import mx.events.DynamicEvent;
     import mx.events.EffectEvent;

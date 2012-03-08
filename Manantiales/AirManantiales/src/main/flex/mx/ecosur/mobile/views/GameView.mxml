@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:s="library://ns.adobe.com/flex/spark"
-        xmlns:c="mx.ecosur.multigame.component.*"
+        xmlns:c="mx.ecosur.mobile.component.*"
         xmlns:m="mx.ecosur.multigame.manantiales.*"
-        creationComplete="init(event)"  skinClass="mx.ecosur.mobile.skins.GradientSkin" >
+        name="gameView"
+        creationComplete="init(event)"  skinClass="mx.ecosur.mobile.skins.BitmapSkin" >
     <fx:Script>
         <![CDATA[
         import mx.core.FlexGlobals;
@@ -50,13 +51,13 @@
                     }
                 }
                 if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
-                    status.showMessage("It's your turn", Color.getColorCode(player.color));
+                    status.showMessage("It's your turn");
                 } else {
-                    status.showMessage(p.name + " to move", Color.getColorCode(player.color));
+                    status.showMessage(p.name + " to move");
                 }
                 
             } else {
-                status.showMessage("Waiting for more players ...", Color.getColorCode(player.color));
+                status.showMessage("Waiting for more players ...");
             }
 
         }
@@ -72,7 +73,9 @@
                 gameService.getGame(gameId);
             }
 
-            status.showMessage("Loading game ..", Color.getColorCode(Color.GREEN));
+            status.showMessage("Loading game ..");
+
+
         }
 
         ]]>
@@ -82,6 +85,13 @@
                         channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
                         result="resultHandler(event)"
                         fault="faultHandler(event)" />
+        <s:ArrayCollection id="tokenTypes">
+            <fx:Object label="Managed Forest" data="FOREST" />
+            <fx:Object label="Moderate Ranching" data="MODERATE" />
+            <fx:Object label="Intensive Ranching" data="INTENSIVE"/>
+            <fx:Object label="Nursery Establishment" data="VIVERO" includeIn="SILVOPASTORAL"/>
+            <fx:Object label="Silvopastoral Ranching" data="SILVOPASTORAL" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
+        </s:ArrayCollection>
     </fx:Declarations>
     <s:states>
         <s:State name="WAITING"/>
@@ -100,7 +110,10 @@
         <s:layout>
             <s:VerticalLayout/>
         </s:layout>
-        <c:GameStatus id="status" width="100%" />
+        <c:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="#F5F5DC"/>
+        <s:SpinnerListContainer >
+            <s:SpinnerList id="modeList" dataProvider="{tokenTypes}" width="300" fontSize="16" />
+        </s:SpinnerListContainer>
     </s:Group>
     <s:Group id="boardView" width="100%" height="100%">
         <m:ManantialesBoard id="board" width="100%" height="100%"/>

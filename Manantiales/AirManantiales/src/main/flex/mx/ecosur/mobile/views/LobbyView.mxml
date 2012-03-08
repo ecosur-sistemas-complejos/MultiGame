@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
         title="Manantiales de La Sierra" creationComplete="loadInitial(event)"
-        skinClass="mx.ecosur.mobile.skins.GradientSkin">
+        skinClass="mx.ecosur.mobile.skins.BitmapSkin">
     <fx:Metadata >
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
     </fx:Metadata>

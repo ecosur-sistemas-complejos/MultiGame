@@ -29,7 +29,9 @@ package mx.ecosur.multigame.manantiales
     import mx.ecosur.multigame.manantiales.enum.Mode;
     import mx.ecosur.multigame.manantiales.enum.TokenType;
     import mx.ecosur.multigame.manantiales.token.*;
-    import mx.ecosur.multigame.util.MessageReceiver;
+import mx.ecosur.multigame.manantiales.token.ManantialesToken;
+import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
+import mx.ecosur.multigame.util.MessageReceiver;
     import mx.events.CloseEvent;
     import mx.events.DynamicEvent;
     import mx.managers.PopUpManager;
