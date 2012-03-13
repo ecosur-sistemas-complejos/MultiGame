@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+    xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:me="mx.ecosur.multigame.manantiales.entity.*">
+    <fx:Declarations>
+        <me:ManantialesPlayer id="player1"/>
+        <me:ManantialesPlayer id="player2"/>
+        <me:ManantialesPlayer id="player3"/>
+        <me:ManantialesPlayer id="player4"/>
+    </fx:Declarations>
+    <fx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.manantiales.entity.*;
+
+        private var _game:ManantialesGame;
+        
+        private var _unused:SimpleAgent;
+
+        private static const TERRITORY:int = 48;
+
+        private var _deforested:int, _undeveloped:int;
+
+        [Bindable]
+        public var data:ArrayCollection;
+
+        public function get game():ManantialesGame {
+            return _game;
+        }
+
+        public function set game (game:ManantialesGame):void {
+            if (game.state = GameState.PLAY) {
+                if (game.players.length > 0)
+                    player1 = ManantialesPlayer(game.players[0]);
+                if (game.players.length > 1)
+                    player2 = ManantialesPlayer(game.players[1]);
+                if (game.players.length > 2)
+                player3 = ManantialesPlayer(game.players[2]);
+                if (game.players.length > 3)
+                    player4 = ManantialesPlayer(game.players[3]);
+            }
+
+            this._game = game;
+        }
+
+
+        public function updatePlayers ():void {
+            _deforested = 0, _undeveloped = TERRITORY;
+            for (var i:int = 0; i < _game.players.length; i++) {
+                var player:ManantialesPlayer = ManantialesPlayer(_game.players[i]);
+                var forested:int = player.forested;
+                var moderate:int = player.moderate;
+                var intensive:int = player.intensive;
+                var vivero:int = player.vivero;
+                var silvo:int = player.silvo;
+
+                _undeveloped = _undeveloped - (forested + moderate + intensive
+                        + vivero + silvo);
+                _deforested = _deforested + (moderate + intensive);
+            }
+            
+            scoreGrid.dataProvider = _game.players;
+            data = new ArrayCollection(
+                    [ { Name: "Deforested", value: _deforested}, { Name: "Undeveloped", value: _undeveloped}]);
+        }
+
+        ]]>
+    </fx:Script>
+    <s:DataGrid id="scoreGrid" width="100%" height="100%" doubleClickEnabled="true"
+                skinClass="mx.ecosur.mobile.skins.GridSkin">
+        <s:columns>
+            <s:ArrayList>
+                <s:GridColumn dataField="name" headerText="Name"/>
+                <s:GridColumn dataField="score" headerText="Score"/>
+                <s:GridColumn dataField="premiums" headerText="Premiums"/>
+            </s:ArrayList>
+        </s:columns>
+    </s:DataGrid>
+</s:Panel>

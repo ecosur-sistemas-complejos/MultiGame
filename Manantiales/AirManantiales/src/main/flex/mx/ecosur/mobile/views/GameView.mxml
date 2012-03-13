@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:s="library://ns.adobe.com/flex/spark"
-        xmlns:c="mx.ecosur.mobile.component.*"
-        xmlns:m="mx.ecosur.multigame.manantiales.*"
-        name="gameView"
-        creationComplete="init(event)"  skinClass="mx.ecosur.mobile.skins.BitmapSkin" >
+        xmlns:c="mx.ecosur.multigame.component.*"
+        xmlns:cm="mx.ecosur.mobile.component.*"
+        xmlns:m="mx.ecosur.multigame.manantiales.*" xmlns:mx="library://ns.adobe.com/flex/mx"
+        name="gameView" title="Manantiales de La Sierra"
+        creationComplete="init(event)" skinClass="mx.ecosur.mobile.skins.BitmapSkin">
     <fx:Script>
         <![CDATA[
         import mx.core.FlexGlobals;
@@ -13,78 +14,56 @@
         import mx.ecosur.multigame.enum.GameState;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
-        
+
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
 
         public static var gameId:int;
 
         [Bindable]
-        protected var game:ManantialesGame;
+        public var game:ManantialesGame;
 
         [Bindable]
-        protected var player:ManantialesPlayer;
+        public var player:ManantialesPlayer;
 
-        protected var controller:Controller;
+        private var controller:Controller;
 
-        private var tokenSize:int = 60;
+        public var tokenSize:int = 60;
 
-        public function resultHandler(event:ResultEvent):void {
-            game = ManantialesGame(event.result);
-            for (var i:int = 0; i< game.players.length; i++) {
-                var p:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
-                if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
-                    player = p;
-                    break;
-                }
-            }
-
-            currentState = game.mode;
-
-            if (game.state = GameState.PLAY) {
-                var current:ManantialesPlayer = null;
-                for (var i:int = 0; i < game.players.length; i++) {
-                    var p:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
-                    if (p.turn == true) {
-                        current = p;
-                        break;
-                    }
-                }
-                if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
-                    status.showMessage("It's your turn");
-                } else {
-                    status.showMessage(p.name + " to move");
-                }
-                
-            } else {
-                status.showMessage("Waiting for more players ...");
-            }
-
-        }
-
-        public function faultHandler(event:FaultEvent):void {
-            trace("Fault: " + event.fault);
-
-        }
-
-        private function init(event:Event):void {
-            controller = new Controller();
+        protected function init(event:Event):void {
+            controller = new Controller(this);
             if (gameId != 0) {
                 gameService.getGame(gameId);
             }
 
+            status.color = 0xFFFFFF;
             status.showMessage("Loading game ..");
 
 
         }
+        
+        protected function activateChat():void {
+            trace("Chat activated.");
+        }
+
+        protected function showScores():void {
+            trace("showscores...");
+        }
+
+        protected function endView():void {
+            game = null;
+            navigator.popView();
+        }        
+
+
 
         ]]>
     </fx:Script>
     <fx:Declarations>
         <s:RemoteObject id="gameService" destination="gameService"
                         channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
-                        result="resultHandler(event)"
-                        fault="faultHandler(event)" />
+                        result="controller.resultHandler(event)"
+                        fault="controller.faultHandler(event)" />
         <s:ArrayCollection id="tokenTypes">
             <fx:Object label="Managed Forest" data="FOREST" />
             <fx:Object label="Moderate Ranching" data="MODERATE" />
@@ -101,8 +80,17 @@
         <s:State name="SILVO_PUZZLE"/>
     </s:states>
     <s:navigationContent>
-        <s:Button label="Back" buttonDown="navigator.popView()" />
+        <s:Button label="Back" buttonDown="endView()"  />
     </s:navigationContent>
+    <s:actionContent>
+        <s:CalloutButton label="Chat" buttonDown="activateChat()" id="cbutton" >
+            <s:calloutContent>
+                <s:Group>
+                   <c:ChatPanel id="chat"/>
+                </s:Group>
+            </s:calloutContent>
+        </s:CalloutButton>
+    </s:actionContent>
     <s:layout>
         <s:HorizontalLayout/>
     </s:layout>
@@ -110,10 +98,20 @@
         <s:layout>
             <s:VerticalLayout/>
         </s:layout>
-        <c:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="#F5F5DC"/>
+        <cm:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="0xFFFFFF"/>
+        <cm:StatusBox id="timer" skinClass="mx.ecosur.mobile.skins.TimerSkin" color="0xFFFFFF" />
         <s:SpinnerListContainer >
             <s:SpinnerList id="modeList" dataProvider="{tokenTypes}" width="300" fontSize="16" />
         </s:SpinnerListContainer>
+        <cm:ScoreBox id="scorebox" width="300"/>
+        <s:Panel id="chartbox" width="300">
+            <mx:PieChart id="chart" showDataTips="true" height="145" width="295" horizontalCenter="40" >
+                <mx:series>
+                    <mx:PieSeries dataProvider="{scorebox.data}" field="value" nameField="Name" />
+                </mx:series>
+            </mx:PieChart>
+            <mx:Legend dataProvider="{chart}"/>
+        </s:Panel>
     </s:Group>
     <s:Group id="boardView" width="100%" height="100%">
         <m:ManantialesBoard id="board" width="100%" height="100%"/>

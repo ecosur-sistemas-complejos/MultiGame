@@ -60,6 +60,9 @@
         private var _modes:ArrayCollection = new ArrayCollection();
 
         protected function loadInitial(event:Event):void {
+            gameGrid.columnHeaderGroup.enabled = false;
+            gameGrid.columnHeaderGroup.visible = false;
+            
             /* Load save and pending games */
             gameService.getUnfinishedGames(FlexGlobals.topLevelApplication.registrant);
             gameService.getPendingGames(FlexGlobals.topLevelApplication.registrant);
@@ -193,7 +196,7 @@
     <s:VGroup id="availableGroup" width="100%" >
         <s:Spacer/>
 
-        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)">
+        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" skinClass="mx.ecosur.mobile.skins.GridSkin">
             <s:columns>
                 <s:ArrayList>
                     <s:GridColumn dataField="created" headerText="Date"/>

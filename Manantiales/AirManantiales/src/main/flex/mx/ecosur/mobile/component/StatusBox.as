@@ -26,9 +26,8 @@ import spark.components.TextArea;
         }
 
 
+        [Bindable]
         public function get color():uint {
-            if (_color == 0)
-                _color = 0xFFFACD;
             return _color;
         }
 
