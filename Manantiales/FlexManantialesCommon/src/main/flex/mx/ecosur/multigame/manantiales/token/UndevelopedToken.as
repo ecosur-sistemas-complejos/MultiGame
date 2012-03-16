@@ -1,12 +1,30 @@
 package mx.ecosur.multigame.manantiales.token {
-import mx.ecosur.multigame.manantiales.token.ManantialesToken;
 
-public class UndevelopedToken extends ManantialesToken {
+    public class UndevelopedToken extends ManantialesToken {
         
+        private var _col:int,  _row:int;
+    
         public function UndevelopedToken () {
             super ();
         }
-        
+
+
+        public function get col():int {
+            return _col;
+        }
+
+        public function set col(value:int):void {
+            _col = value;
+        }
+
+        public function get row():int {
+            return _row;
+        }
+
+        public function set row(value:int):void {
+            _row = value;
+        }
+
         override public function get colorCode():uint {
             return 0x00bb00;
         }

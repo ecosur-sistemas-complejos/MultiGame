@@ -12,6 +12,7 @@
         import mx.ecosur.mobile.Controller;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.manantiales.enum.TokenType;
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
@@ -64,13 +65,18 @@
                         channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
                         result="controller.resultHandler(event)"
                         fault="controller.faultHandler(event)" />
+        <s:Consumer id="listener" destination="multigame-destination"
+                fault="controller.messageFaultHandler(event)"
+                message="controller.messageResultHandler(event)"
+                />
         <s:ArrayCollection id="tokenTypes">
-            <fx:Object label="Managed Forest" data="FOREST" />
-            <fx:Object label="Moderate Ranching" data="MODERATE" />
-            <fx:Object label="Intensive Ranching" data="INTENSIVE"/>
-            <fx:Object label="Nursery Establishment" data="VIVERO" includeIn="SILVOPASTORAL"/>
-            <fx:Object label="Silvopastoral Ranching" data="SILVOPASTORAL" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
+            <fx:Object label="Managed Forest" data="{TokenType.FOREST}" />
+            <fx:Object label="Moderate Ranching" data="{TokenType.MODERATE}" />
+            <fx:Object label="Intensive Ranching" data="{TokenType.INTENSIVE}"/>
+            <fx:Object label="Nursery Establishment" data="{TokenType.VIVERO}" includeIn="SILVOPASTORAL"/>
+            <fx:Object label="Silvopastoral Ranching" data="{TokenType.SILVOPASTORAL}" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
         </s:ArrayCollection>
+        <mx:UIComponent id="alayer"/>
     </fx:Declarations>
     <s:states>
         <s:State name="WAITING"/>
@@ -86,7 +92,7 @@
         <s:CalloutButton label="Chat" buttonDown="activateChat()" id="cbutton" >
             <s:calloutContent>
                 <s:Group>
-                   <c:ChatPanel id="chat"/>
+                   <c:ChatPanel id="chat" creationComplete="{chat.init()}" />
                 </s:Group>
             </s:calloutContent>
         </s:CalloutButton>
@@ -101,7 +107,7 @@
         <cm:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="0xFFFFFF"/>
         <cm:StatusBox id="timer" skinClass="mx.ecosur.mobile.skins.TimerSkin" color="0xFFFFFF" />
         <s:SpinnerListContainer >
-            <s:SpinnerList id="modeList" dataProvider="{tokenTypes}" width="300" fontSize="16" />
+            <s:SpinnerList id="tokenType" dataProvider="{tokenTypes}" width="300" fontSize="16" />
         </s:SpinnerListContainer>
         <cm:ScoreBox id="scorebox" width="300"/>
         <s:Panel id="chartbox" width="300">
