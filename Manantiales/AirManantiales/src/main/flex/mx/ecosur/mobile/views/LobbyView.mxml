@@ -8,31 +8,25 @@
 
     <fx:Declarations>
         <s:RemoteObject id="gameService" destination="gameService"
-                        channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
-                        result="resultHandler(event)"
-                        fault="faultHandler(event)" />
-        <s:Consumer
-                id="listener"
-                destination="lobby-destination"
-                fault="messageFaultHandler(event)"
-                message="messageResultHandler(event)"
-                selector="NOTIFICATION_EVENT in ('CREATE','JOIN', 'DESTROY')"
-                />
-
+            channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+            result="resultHandler(event)"
+            fault="faultHandler(event)" />
+        <s:Consumer id="listener" destination="lobby-destination"
+            channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+            fault="messageFaultHandler(event)"
+            message="messageResultHandler(event)"
+            selector="NOTIFICATION_EVENT in ('CREATE','JOIN', 'DESTROY')"/>
         <s:ArrayCollection id="manModes">
             <fx:Object label="Competitive" data="COMPETITIVE" />
             <fx:Object label="Basic Puzzle" data="BASIC_PUZZLE" />
             <fx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
             <fx:Object label="Final Puzzle" data="SILVO_PUZZLE"/>
         </s:ArrayCollection>
-
         <fx:Array id="strategies">
             <fx:Object data="SIMPLE"/>
             <fx:Object data="SIMPLE"/>
             <fx:Object data="SIMPLE"/>
         </fx:Array>
-
-
     </fx:Declarations>
 
     <fx:Script>
@@ -42,11 +36,13 @@
         import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.multigame.enum.NotificationEvent;
         import mx.ecosur.multigame.event.PlayEvent;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
+        import mx.messaging.messages.IMessage;
         import mx.rpc.AsyncToken;
         import mx.rpc.AsyncToken;
 
@@ -62,10 +58,12 @@
         protected function loadInitial(event:Event):void {
             gameGrid.columnHeaderGroup.enabled = false;
             gameGrid.columnHeaderGroup.visible = false;
-            
+
             /* Load save and pending games */
             gameService.getUnfinishedGames(FlexGlobals.topLevelApplication.registrant);
             gameService.getPendingGames(FlexGlobals.topLevelApplication.registrant);
+
+            listener.subscribe();
         }
 
         protected function createGame(event:Event):void {
@@ -87,13 +85,13 @@
                 if (response[i] is ArrayCollection) {
                     var games:ArrayCollection = ArrayCollection(response[ i ]);
                     for (var j:int = 0; j < games.length; j++) {
-                        var  d:GameDAO = GameDAO(games [ j ]);
+                        var d:GameDAO = GameDAO(games [ j ]);
                         if (d.gameType != "Gente") {
                             _games.addItem(d);
                         }
-                        
+
                     }
-                    updateGrid(gameGrid, _games);
+                    updateGrid();
                 } else if (response [ i ] is GameDAO) {
                     var dao:GameDAO = GameDAO(response [ i ]);
                     var added:Boolean = false;
@@ -107,9 +105,9 @@
                     }
                     if (!added)
                         _games.addItem(dao);
-                    updateGrid(gameGrid, _games);
+                    updateGrid();
                 } else {
-                    trace ("Is MG? " + response[i] is ManantialesGame)
+                    trace("Is MG? " + response[i] is ManantialesGame)
                 }
             }
         }
@@ -123,7 +121,42 @@
         }
 
         protected function messageResultHandler(event:MessageEvent):void {
-            trace("Message received: " + event.message);
+            var message:IMessage = IMessage(event.message);
+            trace("Message: " + message);
+            var dao:GameDAO = GameDAO(message.body);
+            switch (message.headers.NOTIFICATION_EVENT) {
+                case NotificationEvent.CREATE:
+                    trace("Creating DAO: " + dao);
+                    if (dao.gameType != "GENTE") {
+                        _games.addItem(dao);
+                    }
+                    break;
+                case NotificationEvent.DESTROY:
+                    trace("Destroying DAO: " + dao);
+                    if (dao.gameType != "GENTE") {
+                        var idx:int = findIndex(dao);
+                        trace("Index to be removed: " + idx);
+                        if (idx > 0)
+                            _games.removeItemAt(idx);
+                    }
+                    break;
+                case NotificationEvent.JOIN:
+                    trace("Join event for DAO: " + dao);
+                    if (dao.gameType != "GENTE") {
+                        var idx:int = findIndex(dao);
+                        trace("Index to be updated: " + idx);
+                        if (idx > 0) {
+                            _games.removeItemAt(idx);
+                            _games.addItemAt(dao, idx);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            /* always update the grid for any changes */
+            updateGrid();
         }
 
         protected function joinGame(event:MouseEvent):void {
@@ -135,20 +168,19 @@
             if (!containsPlayer(g)) {
                 gameService.joinPendingGame(g.gameId, FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN);
             }
-            
+
             GameView.gameId = g.gameId;
             navigator.pushView(GameView);
         }
-        
 
-        private function updateGrid(grid:DataGrid, list:ArrayCollection):void {
+        private function updateGrid():void {
             var dataSource:ArrayCollection = new ArrayCollection();
-            for (var i:int = 0; i < list.length; i++) {
-                var dao:GameDAO = GameDAO(list [ i ]);
+            for (var i:int = 0; i < _games.length; i++) {
+                var dao:GameDAO = GameDAO(_games [ i ]);
                 dataSource.addItem(model(dao));
             }
-            
-            grid.dataProvider = dataSource;
+
+            gameGrid.dataProvider = dataSource;
         }
 
         private function containsPlayer(dao:GameDAO):Boolean {
@@ -176,7 +208,7 @@
             dataItem.status = GameState.getDescription(dao.status);
             return dataItem;
         }
-        
+
         private function Logout(event:Event):void {
             FlexGlobals.topLevelApplication.amfChannelSet.logout();
             navigator.popToFirstView();
@@ -186,6 +218,20 @@
             return LoginView.remoteServer;
         }
 
+        protected function findIndex(dao:GameDAO):int {
+            var idx:int = -1;
+            for (var i:int = 0; i < _games.length; i++) {
+                var ck:GameDAO = GameDAO(_games [ i ]);
+                if (ck.gameId = dao.gameId) {
+                    idx = i;
+                    break;
+                }
+            }
+            
+            
+            return idx;
+            
+        }
         ]]>
     </fx:Script>
 

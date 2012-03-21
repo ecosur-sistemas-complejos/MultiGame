@@ -18,13 +18,18 @@ import mx.core.FlexGlobals;
 import mx.ecosur.mobile.views.GameView;
 import mx.ecosur.multigame.entity.GameGrid;
 import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.enum.GameEvent;
 import mx.ecosur.multigame.enum.GameState;
 import mx.ecosur.multigame.enum.MoveStatus;
 import mx.ecosur.multigame.manantiales.RoundCell;
+import mx.ecosur.multigame.manantiales.entity.CheckCondition;
 import mx.ecosur.multigame.manantiales.entity.Ficha;
 import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 import mx.ecosur.multigame.manantiales.entity.ManantialesMove;
 import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+import mx.ecosur.multigame.manantiales.entity.Suggestion;
+import mx.ecosur.multigame.manantiales.enum.ManantialesEvent;
+import mx.ecosur.multigame.manantiales.enum.Mode;
 import mx.ecosur.multigame.manantiales.enum.TokenType;
 import mx.ecosur.multigame.manantiales.token.ForestToken;
 import mx.ecosur.multigame.manantiales.token.IntensiveToken;
@@ -34,7 +39,7 @@ import mx.ecosur.multigame.manantiales.token.SilvopastoralToken;
 import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
 import mx.ecosur.multigame.manantiales.token.ViveroToken;
 
-import mx.events.EffectEvent;
+import mx.effects.Sequence;
 import mx.messaging.events.MessageEvent;
 import mx.messaging.events.MessageFaultEvent;
 import mx.messaging.messages.IMessage;
@@ -42,15 +47,19 @@ import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
 
 import spark.effects.Animate;
+import spark.effects.easing.Bounce;
+
 import spark.effects.Move;
+import spark.effects.Fade;
+import spark.effects.SetAction;
 import spark.effects.animation.MotionPath;
 import spark.effects.animation.SimpleMotionPath;
-import spark.effects.easing.Bounce;
+import spark.effects.easing.Sine;
 
 public class Controller {
 
         private var _view:GameView;
-    
+
         public function Controller(view:GameView) {
             super();
             this._view = view;
@@ -69,10 +78,58 @@ public class Controller {
         public function messageResultHandler(event:MessageEvent):void {
             var message:IMessage = event.message;
             var gameEvent:String = message.headers.GAME_EVENT;
+
+            /* Holder objects */
+            var game:ManantialesGame, checkCondition:CheckCondition, suggestion:Suggestion, move:ManantialesMove;
             
-            trace("Received message: " + message);
-            trace("Headers: " + message.headers);
-            trace("GameEvent: " + gameEvent);
+            switch (gameEvent) {
+                case ManantialesEvent.BEGIN:
+                    game = ManantialesGame(message.body);
+                    updateGame(game);
+                    break;
+                case ManantialesEvent.CHAT:
+                    // handle chat
+                    break;
+                case ManantialesEvent.END:
+                    game = ManantialesGame(message.body);
+                    end(game);
+                    break;
+                case ManantialesEvent.MOVE_COMPLETE:
+                    move= ManantialesMove(message.body);
+                    addMove(move);
+                    break;
+                case ManantialesEvent.PLAYER_CHANGE:
+                    game = ManantialesGame(message.body);
+                    updateScores(game);
+                    break;
+                case ManantialesEvent.CONDITION_RAISED:
+                    checkCondition = CheckCondition(message.body);
+//                    handleCheckConstraint (checkCondition);
+                    break;
+                case ManantialesEvent.CONDITION_RESOLVED:
+                    checkCondition = CheckCondition(message.body);
+//                    handleCheckConstraintResolved (checkCondition);
+                    break;
+                case ManantialesEvent.CONDITION_TRIGGERED:
+                    checkCondition = CheckCondition(message.body);
+//                    handleCheckConstraintTriggered (checkCondition);
+                    break;
+                case ManantialesEvent.SUGGESTION_EVALUATED:
+                    suggestion = Suggestion(message.body);
+//                    _suggestionHandler.addSuggestion (suggestion);
+                    break;
+                case ManantialesEvent.SUGGESTION_APPLIED:
+                    suggestion = Suggestion(message.body);
+//                    _suggestionHandler.removeSuggestion (suggestion);
+                    break;
+                case GameEvent.EXPIRED:
+                    move = ManantialesMove(message.body);
+//                    handleExpiredMove(move);
+                    break;
+                default:
+                    break;
+                }
+            
         }
     
         public function messageFaultHandler(fault:MessageFaultEvent):void {
@@ -117,7 +174,7 @@ public class Controller {
 
             _view.timer.showMessage(_view.game.elapsedTime + " ms elapsed");
             populateBoard(_view.game);
-            populateScores(_view.game);
+            updateScores(_view.game);
 
         }
     
@@ -136,8 +193,8 @@ public class Controller {
                         tok.col = col;
                         tok.row = row;
                         roundCell.token = tok;
-                        tok.addEventListener(TouchEvent.TOUCH_TAP, tokenTapHandler);
-                        tok.addEventListener(MouseEvent.CLICK, tokenTapHandler);
+                        tok.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
+                        tok.addEventListener(MouseEvent.CLICK, tapHandler);
                     }
                 }
             }
@@ -152,7 +209,14 @@ public class Controller {
                     var token:ManantialesToken = createToken(ficha.type);
                     token.ficha = ficha;
                     _view.board.addToken(token);
+                    decorate(token);
                 }
+            }
+        }
+    
+        public function end(game:ManantialesGame):void {
+            if (game.state = GameState.ENDED) {
+                // show ended message
             }
         }
     
@@ -183,16 +247,31 @@ public class Controller {
             
         }
 
-        public function populateScores(game:ManantialesGame):void {
+        public function updateScores(game:ManantialesGame):void {
             _view.scorebox.game = game;
            _view.scorebox.updatePlayers();
         }
 
-        public function tokenTapHandler(event:Event):void {
+        /* Adds a move to the board that has arrived over the wire */
+        public function addMove (move:ManantialesMove):void {
+
+        }
+
+        public function tapHandler(event:Event):void {
             var dest:Point = new Point();
-            var targ:UndevelopedToken = UndevelopedToken(event.target);
+            var targ:ManantialesToken = ManantialesToken(event.currentTarget);
             var type:Object = _view.tokenTypes.getItemAt(_view.tokenType.selectedIndex);            
-            var rc:RoundCell = RoundCell(_view.board.getBoardCell(targ.col, targ.row));
+            
+            var column:int,  row:int;
+            if (targ is UndevelopedToken) {
+                column = UndevelopedToken(targ).col;
+                row = UndevelopedToken(targ).row;
+            } else {
+                column = targ.ficha.column;
+                row = targ.ficha.row;
+            }                               
+                
+            var rc:RoundCell = RoundCell(_view.board.getBoardCell(column,  row));
             dest.x = rc.x + (rc.width / 2); 
             dest.y = rc.y + (rc.height / 2);
             
@@ -207,8 +286,8 @@ public class Controller {
             /* Send the move over the wire */
             if (validateMove(rc,  tok)) {
                 rc.select(tok.cell.colorCode);
-                animate(targ,  tok,  rc,  dest);
-
+                decorate(tok);
+                currentPlayerMove(targ,  tok,  rc,  dest);
                 var move:ManantialesMove = new ManantialesMove();
                 move.status = MoveStatus.UNVERIFIED;
                 move.mode = _view.game.mode;
@@ -219,31 +298,38 @@ public class Controller {
             }
         }
 
-        private function animate(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell,  point:Point):void {
-            /* Bounce easing */
-            var bounce:Bounce = new Bounce();
-
-            /* Drop effect */
+        protected function currentPlayerMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
             
-            /* Removing this as having issues with child not being appended */
-            /*
+            /* Sin easer */
+            var sine:Sine = new Sine();
+            sine.easeInFraction = 0.7;
+
+            /* Move effect */
             var drop:Move = new Move();
             drop.target = start;
-            drop.xFrom = point.x;
-            drop.yFrom = point.y;
-            drop.xTo = point.x;
-            drop.yTo = _view.board.height - start.y;
-            drop.duration = 3000;            
-            drop.easer = b1;
-            drop.addEventListener(EffectEvent.EFFECT_END, removeTarget);
-            */
+            drop.xFrom = start.x;
+            drop.yFrom = start.y;
+            drop.xTo = start.x;
+            drop.yTo = _view.height - start.y;
+            drop.easer = sine;
+            drop.duration = 350;
 
-            /* Set the roundcell token */
-            roundCell.token = end;
+            /* Fade effect on existing token (after drop) */
+            var fade:Fade = new Fade();
+            fade.target = start;
+            fade.alphaFrom = 1.0;
+            fade.alphaTo = 0;
+            fade.duration = 800;
+           
+            /* Set action */
+            var sa:SetAction = new SetAction();
+            sa.target = roundCell;
+            sa.property="token";
+            sa.value=end;
 
-            /* Resize token */
-            var grw:Animate = new Animate();
-            grw.easer = bounce;
+            /* Bounce effect on new token */
+            var grw:Animate = new Animate();            
+            grw.easer = new Bounce();
             grw.target = end;
             var inc:SimpleMotionPath = new SimpleMotionPath();
             inc.property = "scaleX";
@@ -257,13 +343,13 @@ public class Controller {
             vect.push(inc);
             vect.push(dec);
             grw.motionPaths = vect;
-            grw.play();
-        }
-    
-        private function removeTarget (event:EffectEvent):void {
-            var mover:Move = Move(event.target);
-            var tok:ManantialesToken = ManantialesToken(mover.target);
-            _view.board.removeChild(tok);
+
+            var seq:Sequence = new Sequence();
+            seq.addChild(drop);
+            seq.addChild(fade);
+            seq.addChild(sa);
+            seq.addChild(grw);
+            seq.play();
         }
 
         private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {
@@ -286,6 +372,8 @@ public class Controller {
                         break;
                 }
             }
+
+            ret = ret && _view.player.turn;
         
             return ret;
         }
@@ -293,6 +381,27 @@ public class Controller {
         private function sendMove(move:ManantialesMove):void {
             _view.status.showMessage("Processing move ...");
             _view.gameService.doMove(_view.game, move);
+        }
+
+        private function decorate(tok:ManantialesToken):void {
+            switch (_view.currentState) {
+                case Mode.COMPETITIVE:
+                    if (tok.type == TokenType.FOREST || tok.type == TokenType.MODERATE) {
+                        tok.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
+                        tok.addEventListener(MouseEvent.CLICK, tapHandler);
+                    }
+                    break;
+                case Mode.SILVOPASTORAL:
+                    if (tok.type == TokenType.SILVOPASTORAL) {
+                        tok.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
+                        tok.addEventListener(MouseEvent.CLICK, tapHandler);
+                    }
+                    break;
+                default:
+                    tok.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
+                    tok.addEventListener(MouseEvent.CLICK, tapHandler);
+                    break;
+            }
         }
     }
 }

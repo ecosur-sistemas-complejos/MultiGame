@@ -26,6 +26,9 @@
 
         [Bindable]
         public var player:ManantialesPlayer;
+        
+        [Bindable]
+        public var activePlayer:ManantialesPlayer;
 
         private var controller:Controller;
 
@@ -33,14 +36,10 @@
 
         protected function init(event:Event):void {
             controller = new Controller(this);
-            if (gameId != 0) {
-                gameService.getGame(gameId);
-            }
-
+            gameService.getGame(gameId);
             status.color = 0xFFFFFF;
             status.showMessage("Loading game ..");
-
-
+            listener.subscribe();
         }
         
         protected function activateChat():void {
@@ -62,13 +61,13 @@
     </fx:Script>
     <fx:Declarations>
         <s:RemoteObject id="gameService" destination="gameService"
-                        channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
-                        result="controller.resultHandler(event)"
-                        fault="controller.faultHandler(event)" />
+               channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+               result="controller.resultHandler(event)"
+               fault="controller.faultHandler(event)" />
         <s:Consumer id="listener" destination="multigame-destination"
-                fault="controller.messageFaultHandler(event)"
-                message="controller.messageResultHandler(event)"
-                />
+               channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+               fault="controller.messageFaultHandler(event)"
+               message="controller.messageResultHandler(event)"/>
         <s:ArrayCollection id="tokenTypes">
             <fx:Object label="Managed Forest" data="{TokenType.FOREST}" />
             <fx:Object label="Moderate Ranching" data="{TokenType.MODERATE}" />
