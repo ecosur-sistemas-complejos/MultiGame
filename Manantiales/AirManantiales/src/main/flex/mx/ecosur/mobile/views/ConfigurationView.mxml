@@ -13,32 +13,26 @@
 
         ]]>
     </fx:Script>
-
     <s:navigationContent>
         <s:Button label="Back" buttonDown="navigator.popView()" />
     </s:navigationContent>
-
     <s:Group horizontalCenter="0" verticalCenter="0">
-
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
-
         <s:Label text="Remote Server: " />
         <s:TextInput id="server" width="80%" text="{data}"/>
-
-        <s:DropDownList id="language" prompt="Change Language" width="140" change="updateChoice(event)"
-                        selectedIndex="0">
-            <s:dataProvider>
-                <s:ArrayList>
-                    <fx:String>English</fx:String>
-                    <fx:String>Español</fx:String>
-                </s:ArrayList>
-            </s:dataProvider>
-        </s:DropDownList>
-
+        <s:SpinnerListContainer width="100">
+            <s:SpinnerList id="language" width="100%">
+                <s:dataProvider>
+                    <s:ArrayList>
+                        <fx:String>English</fx:String>
+                        <fx:String>Español</fx:String>
+                    </s:ArrayList>
+                </s:dataProvider>
+            </s:SpinnerList>
+        </s:SpinnerListContainer>
     </s:Group>
-
 </s:View>
 
 

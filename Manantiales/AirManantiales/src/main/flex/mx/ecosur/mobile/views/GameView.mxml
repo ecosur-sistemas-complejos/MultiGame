@@ -6,15 +6,29 @@
         xmlns:m="mx.ecosur.multigame.manantiales.*" xmlns:mx="library://ns.adobe.com/flex/mx"
         name="gameView" title="Manantiales de La Sierra"
         creationComplete="init(event)" skinClass="mx.ecosur.mobile.skins.BitmapSkin">
+    <fx:Style>
+        /* Some styles for board tokens */
+        @font-face {
+            src: url("../../../../assets/Verdana.ttf");
+            fontFamily: verdanaEmbed;
+            advancedAntiAliasing: true;
+        }
+
+        .manantialesToken {
+            fontSize: 40;
+            fontFamily: verdanaEmbed;
+            textAlign: center;
+            color: #ffffff;
+        }
+    </fx:Style>
     <fx:Script>
         <![CDATA[
+        import flash.text.TextLineMetrics;
+
         import mx.core.FlexGlobals;
         import mx.ecosur.mobile.Controller;
-        import mx.ecosur.multigame.enum.Color;
-        import mx.ecosur.multigame.enum.GameState;
+        import mx.ecosur.mobile.component.Alert;
         import mx.ecosur.multigame.manantiales.enum.TokenType;
-        import mx.rpc.events.FaultEvent;
-        import mx.rpc.events.ResultEvent;
 
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
@@ -33,7 +47,9 @@
         private var controller:Controller;
 
         public var tokenSize:int = 60;
-
+        
+        public static var SPACER:int = 30;
+        
         protected function init(event:Event):void {
             controller = new Controller(this);
             gameService.getGame(gameId);
@@ -41,22 +57,24 @@
             status.showMessage("Loading game ..");
             listener.subscribe();
         }
+       
+        public function alert(msg:String):void {
+            var a:Alert = new Alert();
+            a.open(board, true);
+            a.alertmsg.text = msg;
+            var metrics:TextLineMetrics = a.measureText(msg);            
+            a.x = (this.width - metrics.width) / 2;
+            a.y = (this.height - metrics.height) /3;
+        }
         
         protected function activateChat():void {
-            trace("Chat activated.");
-        }
-
-        protected function showScores():void {
-            trace("showscores...");
+            trace("Chat button activated.");
         }
 
         protected function endView():void {
             game = null;
             navigator.popView();
-        }        
-
-
-
+        } 
         ]]>
     </fx:Script>
     <fx:Declarations>
@@ -75,7 +93,6 @@
             <fx:Object label="Nursery Establishment" data="{TokenType.VIVERO}" includeIn="SILVOPASTORAL"/>
             <fx:Object label="Silvopastoral Ranching" data="{TokenType.SILVOPASTORAL}" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
         </s:ArrayCollection>
-        <mx:UIComponent id="alayer"/>
     </fx:Declarations>
     <s:states>
         <s:State name="WAITING"/>

@@ -71,8 +71,7 @@ public class Controller {
         }
     
         public function faultHandler(event:FaultEvent):void {
-            trace("Fault: " + event.fault);
-    
+            _view.alert(event.fault.message);
         }
     
         public function messageResultHandler(event:MessageEvent):void {
@@ -86,6 +85,7 @@ public class Controller {
                 case ManantialesEvent.BEGIN:
                     game = ManantialesGame(message.body);
                     updateGame(game);
+                    updatePlayers(game);
                     break;
                 case ManantialesEvent.CHAT:
                     // handle chat
@@ -100,18 +100,21 @@ public class Controller {
                     break;
                 case ManantialesEvent.PLAYER_CHANGE:
                     game = ManantialesGame(message.body);
-                    updateScores(game);
+                    updatePlayers(game);
                     break;
                 case ManantialesEvent.CONDITION_RAISED:
                     checkCondition = CheckCondition(message.body);
+                        _view.alert("CheckCondition Raised! [" + checkCondition.reason + "]");
 //                    handleCheckConstraint (checkCondition);
                     break;
                 case ManantialesEvent.CONDITION_RESOLVED:
                     checkCondition = CheckCondition(message.body);
+                        _view.alert("CheckCondition relieved! [" + checkCondition.reason + "]");
 //                    handleCheckConstraintResolved (checkCondition);
                     break;
                 case ManantialesEvent.CONDITION_TRIGGERED:
                     checkCondition = CheckCondition(message.body);
+                    _view.alert("Check condition triggered!")
 //                    handleCheckConstraintTriggered (checkCondition);
                     break;
                 case ManantialesEvent.SUGGESTION_EVALUATED:
@@ -124,6 +127,8 @@ public class Controller {
                     break;
                 case GameEvent.EXPIRED:
                     move = ManantialesMove(message.body);
+                    _view.alert("Expired Move!");
+                    end(_view.game);
 //                    handleExpiredMove(move);
                     break;
                 default:
@@ -133,7 +138,7 @@ public class Controller {
         }
     
         public function messageFaultHandler(fault:MessageFaultEvent):void {
-            trace("MessageFault: " + fault);
+            _view.alert(fault.faultString);
         }
 
         public function updateGame(game:ManantialesGame):void {
@@ -150,7 +155,7 @@ public class Controller {
 
             _view.currentState = _view.game.mode;
 
-            if (_view.game.state = GameState.PLAY) {
+            if (_view.game.state == GameState.PLAY) {
                 var current:ManantialesPlayer = null;
                 for (var i:int = 0; i < _view.game.players.length; i++) {
                     var p:ManantialesPlayer = ManantialesPlayer(_view.game.players [ i ]);
@@ -174,10 +179,9 @@ public class Controller {
 
             _view.timer.showMessage(_view.game.elapsedTime + " ms elapsed");
             populateBoard(_view.game);
-            updateScores(_view.game);
+            updatePlayers(_view.game);
 
         }
-    
     
         public function populateBoard(game:ManantialesGame):void {
             var grid:GameGrid = game.grid;
@@ -215,46 +219,33 @@ public class Controller {
         }
     
         public function end(game:ManantialesGame):void {
-            if (game.state = GameState.ENDED) {
-                // show ended message
+            if (game != null && game.state == GameState.ENDED) {
+                _view.alert("Game over.");
             }
         }
-    
-        private function createToken(type:String):ManantialesToken {
-            var token:ManantialesToken;
 
-            switch (type) {
-                case TokenType.FOREST:
-                    token = new ForestToken();
-                    break;
-                case TokenType.MODERATE:
-                    token = new ModerateToken();
-                    break;
-                case TokenType.INTENSIVE:
-                    token = new IntensiveToken();
-                    break;
-                case TokenType.VIVERO:
-                    token = new ViveroToken();
-                    break;
-                case TokenType.SILVOPASTORAL:
-                    token = new SilvopastoralToken();
-                    break;
-                default:
-                    break;
-            }
-            
-            return token;
-            
-        }
-
-        public function updateScores(game:ManantialesGame):void {
+        public function updatePlayers(game:ManantialesGame):void {
             _view.scorebox.game = game;
-           _view.scorebox.updatePlayers();
-        }
-
-        /* Adds a move to the board that has arrived over the wire */
-        public function addMove (move:ManantialesMove):void {
-
+            _view.scorebox.updatePlayers();
+           
+            var p:ManantialesPlayer;
+            
+            for (var i:int = 0; i < game.players.length; i++) {
+                var t:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
+                if (t.turn) {
+                    p = t;
+                    break;
+                }
+            }
+           
+            /* If active player is not current registrant, message the status box */
+            if (p.name != FlexGlobals.topLevelApplication.registrant.name) {
+                _view.status.color = Color.getColorCode(p.color);
+                _view.status.showMessage(p.name + "'s turn.");
+            } else {
+                _view.status.color = Color.getColorCode(p.color);
+                _view.status.showMessage("Your turn.");
+            }
         }
 
         public function tapHandler(event:Event):void {
@@ -287,7 +278,7 @@ public class Controller {
             if (validateMove(rc,  tok)) {
                 rc.select(tok.cell.colorCode);
                 decorate(tok);
-                currentPlayerMove(targ,  tok,  rc,  dest);
+                animateMove(targ,  tok,  rc,  dest);
                 var move:ManantialesMove = new ManantialesMove();
                 move.status = MoveStatus.UNVERIFIED;
                 move.mode = _view.game.mode;
@@ -298,7 +289,27 @@ public class Controller {
             }
         }
 
-        protected function currentPlayerMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
+        /* Adds a move to the board that has arrived over the wire */
+        public function addMove (move:ManantialesMove):void {
+            if (move.player.name != FlexGlobals.topLevelApplication.registrant.name) {
+                _view.status.showMessage(move.player.name + " has moved.");
+                var target:Ficha = Ficha (move.destinationCell);
+
+                /* NOTE: Need to add in handling of replacement moves */
+
+                var rc:RoundCell = RoundCell(_view.board.getBoardCell(target.column,  target.row));
+                var dest:Point = new Point();
+                dest.x = rc.x + (rc.width /2);
+                dest.y = rc.y + (rc.height / 2);
+
+                var current:ManantialesToken = ManantialesToken (rc.token);
+                var next:ManantialesToken = createToken(move.type);
+                next.ficha = target;
+                animateMove(current, next,  rc,  dest);
+            }
+        }
+
+        protected function animateMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
             
             /* Sin easer */
             var sine:Sine = new Sine();
@@ -306,11 +317,12 @@ public class Controller {
 
             /* Move effect */
             var drop:Move = new Move();
-            drop.target = start;
             drop.xFrom = start.x;
             drop.yFrom = start.y;
             drop.xTo = start.x;
             drop.yTo = _view.height - start.y;
+            
+            drop.target = start;
             drop.easer = sine;
             drop.duration = 350;
 
@@ -350,6 +362,33 @@ public class Controller {
             seq.addChild(sa);
             seq.addChild(grw);
             seq.play();
+        }
+
+        private function createToken(type:String):ManantialesToken {
+            var token:ManantialesToken;
+
+            switch (type) {
+                case TokenType.FOREST:
+                    token = new ForestToken();
+                    break;
+                case TokenType.MODERATE:
+                    token = new ModerateToken();
+                    break;
+                case TokenType.INTENSIVE:
+                    token = new IntensiveToken();
+                    break;
+                case TokenType.VIVERO:
+                    token = new ViveroToken();
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    token = new SilvopastoralToken();
+                    break;
+                default:
+                    break;
+            }
+
+            return token;
+
         }
 
         private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {

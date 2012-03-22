@@ -22,28 +22,27 @@
             <fx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
             <fx:Object label="Final Puzzle" data="SILVO_PUZZLE"/>
         </s:ArrayCollection>
-        <fx:Array id="strategies">
-            <fx:Object data="SIMPLE"/>
-            <fx:Object data="SIMPLE"/>
-            <fx:Object data="SIMPLE"/>
-        </fx:Array>
+        <s:ArrayList id="strategies">
+            <fx:String>SIMPLE</fx:String>
+            <fx:String>SIMPLE</fx:String>
+            <fx:String>SIMPLE</fx:String>
+        </s:ArrayList>
     </fx:Declarations>
 
     <fx:Script>
         <![CDATA[
         import mx.collections.ArrayCollection;
         import mx.core.FlexGlobals;
+        import mx.ecosur.mobile.component.Alert;
         import mx.ecosur.multigame.dao.GameDAO;
         import mx.ecosur.multigame.enum.Color;
         import mx.ecosur.multigame.enum.GameState;
         import mx.ecosur.multigame.enum.NotificationEvent;
-        import mx.ecosur.multigame.event.PlayEvent;
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
 
         import mx.messaging.events.MessageEvent;
         import mx.messaging.events.MessageFaultEvent;
         import mx.messaging.messages.IMessage;
-        import mx.rpc.AsyncToken;
         import mx.rpc.AsyncToken;
 
         import mx.rpc.events.FaultEvent;
@@ -54,6 +53,15 @@
         private var _games:ArrayCollection = new ArrayCollection();
 
         private var _modes:ArrayCollection = new ArrayCollection();
+
+        public function alert(msg:String):void {
+            var a:Alert = new Alert();
+            a.open(this, true);
+            a.alertmsg.text = msg;
+            var metrics:TextLineMetrics = a.measureText(msg);
+            a.x = (this.width - metrics.width) / 2;
+            a.y = (this.height - metrics.height) /3;
+        }
 
         protected function loadInitial(event:Event):void {
             gameGrid.columnHeaderGroup.enabled = false;
@@ -275,14 +283,16 @@
         </s:Rect>
         <s:VGroup left="10" top="10" right="10" bottom="10" width="90%" height="90%">
             <s:Label fontSize="18" text="SETTINGS"/>
-            <s:DropDownList id="language" prompt="Language" width="140" selectedIndex="0">
+            <s:SpinnerListContainer width="100">
+             <s:SpinnerList id="language" width="100%">
                 <s:dataProvider>
                     <s:ArrayList>
                         <fx:String>English</fx:String>
                         <fx:String>Español</fx:String>
                     </s:ArrayList>
                 </s:dataProvider>
-            </s:DropDownList>
+             </s:SpinnerList>
+            </s:SpinnerListContainer>
             <s:HGroup>
                 <s:ToggleSwitch id="login" selected="true" skinClass="mx.ecosur.mobile.skins.LogOutSwitchSkin"
                     slideDuration="200" change="Logout(event)"/>
