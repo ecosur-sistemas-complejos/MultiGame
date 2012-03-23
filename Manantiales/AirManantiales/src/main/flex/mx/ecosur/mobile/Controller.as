@@ -16,8 +16,10 @@ import flash.ui.MultitouchInputMode;
 
 import mx.core.FlexGlobals;
 import mx.ecosur.mobile.views.GameView;
+import mx.ecosur.multigame.entity.ChatMessage;
 import mx.ecosur.multigame.entity.GameGrid;
 import mx.ecosur.multigame.enum.Color;
+import mx.ecosur.multigame.enum.ExceptionType;
 import mx.ecosur.multigame.enum.GameEvent;
 import mx.ecosur.multigame.enum.GameState;
 import mx.ecosur.multigame.enum.MoveStatus;
@@ -38,10 +40,11 @@ import mx.ecosur.multigame.manantiales.token.ModerateToken;
 import mx.ecosur.multigame.manantiales.token.SilvopastoralToken;
 import mx.ecosur.multigame.manantiales.token.UndevelopedToken;
 import mx.ecosur.multigame.manantiales.token.ViveroToken;
+import mx.ecosur.multigame.util.MessageReceiver;
 
 import mx.effects.Sequence;
-import mx.messaging.events.MessageEvent;
-import mx.messaging.events.MessageFaultEvent;
+import mx.events.DynamicEvent;
+import mx.messaging.messages.ErrorMessage;
 import mx.messaging.messages.IMessage;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
@@ -59,6 +62,12 @@ import spark.effects.easing.Sine;
 public class Controller {
 
         private var _view:GameView;
+    
+        private var _gameId:int;
+    
+        private var _executingMove:ManantialesMove;
+    
+        private var receiver:MessageReceiver;
 
         public function Controller(view:GameView) {
             super();
@@ -66,15 +75,29 @@ public class Controller {
         }
 
         public function resultHandler(event:ResultEvent):void {
-            if (event.result is ManantialesGame)
+            if (event.result is ManantialesGame) {
+                var game:ManantialesGame = ManantialesGame (event.result);
+                _gameId = game.id;
+                if (receiver == null) {
+                    receiver = new MessageReceiver("multigame-destination", _gameId, FlexGlobals.topLevelApplication.amfChannelSet);
+                    receiver.addEventListener(MessageReceiver.PROCESS_MESSAGE, messageResultHandler);
+                }
                 updateGame (ManantialesGame(event.result));
+            }
         }
     
         public function faultHandler(event:FaultEvent):void {
-            _view.alert(event.fault.message);
+            var errorMessage:ErrorMessage = ErrorMessage(event.message);
+            if (errorMessage.extendedData != null){
+                if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
+                    undoMove(_executingMove);
+                }
+            } else {
+                _view.alert(event.fault.message);
+            }
         }
-    
-        public function messageResultHandler(event:MessageEvent):void {
+
+        public function messageResultHandler(event:DynamicEvent):void {
             var message:IMessage = event.message;
             var gameEvent:String = message.headers.GAME_EVENT;
 
@@ -88,7 +111,7 @@ public class Controller {
                     updatePlayers(game);
                     break;
                 case ManantialesEvent.CHAT:
-                    // handle chat
+                    updateChat(ChatMessage(message.body));
                     break;
                 case ManantialesEvent.END:
                     game = ManantialesGame(message.body);
@@ -125,11 +148,10 @@ public class Controller {
                     suggestion = Suggestion(message.body);
 //                    _suggestionHandler.removeSuggestion (suggestion);
                     break;
+                
                 case GameEvent.EXPIRED:
                     move = ManantialesMove(message.body);
-                    _view.alert("Expired Move!");
-                    end(_view.game);
-//                    handleExpiredMove(move);
+                    end(_view.game, "Expired move.");
                     break;
                 default:
                     break;
@@ -137,10 +159,6 @@ public class Controller {
             
         }
     
-        public function messageFaultHandler(fault:MessageFaultEvent):void {
-            _view.alert(fault.faultString);
-        }
-
         public function updateGame(game:ManantialesGame):void {
 
             _view.game = game;
@@ -218,10 +236,10 @@ public class Controller {
             }
         }
     
-        public function end(game:ManantialesGame):void {
-            if (game != null && game.state == GameState.ENDED) {
-                _view.alert("Game over.");
-            }
+        public function updateChat(msg:ChatMessage):void {
+            trace("Adding chatmessage: " + msg);
+            
+            _view.chat.addMessage(msg);
         }
 
         public function updatePlayers(game:ManantialesGame):void {
@@ -278,7 +296,7 @@ public class Controller {
             if (validateMove(rc,  tok)) {
                 rc.select(tok.cell.colorCode);
                 decorate(tok);
-                animateMove(targ,  tok,  rc,  dest);
+                animatePlayerMove(targ,  tok,  rc,  dest);
                 var move:ManantialesMove = new ManantialesMove();
                 move.status = MoveStatus.UNVERIFIED;
                 move.mode = _view.game.mode;
@@ -291,6 +309,7 @@ public class Controller {
 
         /* Adds a move to the board that has arrived over the wire */
         public function addMove (move:ManantialesMove):void {
+            _executingMove = null;
             if (move.player.name != FlexGlobals.topLevelApplication.registrant.name) {
                 _view.status.showMessage(move.player.name + " has moved.");
                 var target:Ficha = Ficha (move.destinationCell);
@@ -305,11 +324,82 @@ public class Controller {
                 var current:ManantialesToken = ManantialesToken (rc.token);
                 var next:ManantialesToken = createToken(move.type);
                 next.ficha = target;
-                animateMove(current, next,  rc,  dest);
+                animateMessagedMove(current, next,  rc,  dest);
             }
         }
 
-        protected function animateMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
+        public function undoMove(move:ManantialesMove):void {
+            var currentToken:ManantialesToken, replacedToken:ManantialesToken;
+            
+            /* If there is a 'replacementType', the moved replaced a token with a known value */
+           if (move.replacementType != null) {
+               replacedToken = createToken(move.replacementType);                                                
+               var f:Ficha = new Ficha();
+               f.column = move.currentCell.column;
+               f.row = move.currentCell.row;
+               f.color = move.currentCell.color;
+           } else {
+               /* otherwise, this move replaced a UNDEVELOPED token */
+               replacedToken = createToken(TokenType.UNDEVELOPED);  
+           }
+            
+           var rc:RoundCell = RoundCell(_view.board.getBoardCell(move.destinationCell.column, move.destinationCell.row));
+           var dest:Point = new Point();
+           dest.x = rc.x + (rc.width / 2);
+           dest.y = rc.y + (rc.height / 2);
+           
+           currentToken = ManantialesToken(rc.token);
+           _executingMove = null;
+           animateMessagedMove(currentToken,  replacedToken, rc,  dest);
+        }
+
+        public function end(game:ManantialesGame, msg:String = null):void {
+            if (game != null && game.state == GameState.ENDED) {
+                if (msg == null) {
+                    _view.alert("Game over.");
+                } else {
+                    _view.alert("Game over. "  + msg);
+                }
+            }
+        }
+    
+        protected function animateMessagedMove(start:ManantialesToken,  end:ManantialesToken,  cell:RoundCell,  dest:Point):void {
+
+            /* Fade effect on existing token (after drop) */
+            var fade:Fade = new Fade();
+            fade.target = start;
+            fade.alphaFrom = 1.0;
+            fade.alphaTo = 0;
+
+            /* Set action for new token */
+            var sa:SetAction = new SetAction();
+            sa.target = cell;
+            sa.property = "token";
+            sa.value = end;
+            
+            /* Fade out then in on new token */
+            var out:Fade = new Fade();
+            out.target = end;
+            out.alphaFrom = 1.0;
+            out.alphaTo = 0;
+            out.duration = 350;
+            
+            var fin:Fade = new Fade();
+            fin.target = end;
+            fin.alphaFrom = 0;
+            fin.alphaTo = 1.0;
+            fin.duration =  350;
+            fin.easer = new Bounce();
+            
+            var seq:Sequence = new Sequence();
+            seq.addChild(fade);
+            seq.addChild(sa);
+            seq.addChild(out);
+            seq.addChild(fin);
+            seq.play();
+        }
+
+        protected function animatePlayerMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
             
             /* Sin easer */
             var sine:Sine = new Sine();
@@ -383,6 +473,9 @@ public class Controller {
                 case TokenType.SILVOPASTORAL:
                     token = new SilvopastoralToken();
                     break;
+                case TokenType.UNDEVELOPED:
+                    token = new UndevelopedToken();
+                    break;
                 default:
                     break;
             }
@@ -419,6 +512,7 @@ public class Controller {
     
         private function sendMove(move:ManantialesMove):void {
             _view.status.showMessage("Processing move ...");
+            this._executingMove = move;
             _view.gameService.doMove(_view.game, move);
         }
 

@@ -17,7 +17,9 @@
     import mx.controls.Alert;
     import mx.ecosur.multigame.enum.GameEvent;
     import mx.events.DynamicEvent;
+    import mx.messaging.ChannelSet;
     import mx.messaging.Consumer;
+    import mx.messaging.channels.AMFChannel;
     import mx.messaging.events.MessageEvent;
     import mx.messaging.events.MessageFaultEvent;
     import mx.messaging.messages.IMessage;
@@ -51,7 +53,7 @@
          * @param gameId the id of the game being played
          *
          */
-        public function MessageReceiver(destination:String, gameId:int) {
+        public function MessageReceiver(destination:String, gameId:int, channelSet:ChannelSet= null) {
 
             //initialize empty array of messages
             _messages = new Array();
@@ -62,11 +64,16 @@
             _consumer.selector = "GAME_ID = " + gameId;
             _consumer.addEventListener(MessageEvent.MESSAGE, handleMessage);
             _consumer.addEventListener(MessageFaultEvent.FAULT, handleFault);
+           
+            if (channelSet)
+                _consumer.channelSet = channelSet;
             _consumer.subscribe();
 
             //initialize the time
             _processMessagesTimer = new Timer(1000, 1);
             _processMessagesTimer.addEventListener(TimerEvent.TIMER, handleTimer);
+            
+            
         }
 
         public function destroy():void{

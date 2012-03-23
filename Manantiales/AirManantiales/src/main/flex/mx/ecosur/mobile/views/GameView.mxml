@@ -32,6 +32,7 @@
 
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+        import mx.ecosur.multigame.util.MessageReceiver;
 
         public static var gameId:int;
 
@@ -41,23 +42,21 @@
         [Bindable]
         public var player:ManantialesPlayer;
         
-        [Bindable]
-        public var activePlayer:ManantialesPlayer;
-
-        private var controller:Controller;
-
         public var tokenSize:int = 60;
         
         public static var SPACER:int = 30;
         
-        protected function init(event:Event):void {
+        private var controller:Controller;
+        
+        protected function init(event:Event = null):void {
+            game = null;
+            player = null;
             controller = new Controller(this);
             gameService.getGame(gameId);
             status.color = 0xFFFFFF;
             status.showMessage("Loading game ..");
-            listener.subscribe();
         }
-       
+
         public function alert(msg:String):void {
             var a:Alert = new Alert();
             a.open(board, true);
@@ -68,11 +67,13 @@
         }
         
         protected function activateChat():void {
-            trace("Chat button activated.");
+            chat.currentPlayer = this.player;
+            chat.currentGame = this.game;
         }
 
         protected function endView():void {
             game = null;
+            gameId = 0;
             navigator.popView();
         } 
         ]]>
@@ -82,10 +83,6 @@
                channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
                result="controller.resultHandler(event)"
                fault="controller.faultHandler(event)" />
-        <s:Consumer id="listener" destination="multigame-destination"
-               channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
-               fault="controller.messageFaultHandler(event)"
-               message="controller.messageResultHandler(event)"/>
         <s:ArrayCollection id="tokenTypes">
             <fx:Object label="Managed Forest" data="{TokenType.FOREST}" />
             <fx:Object label="Moderate Ranching" data="{TokenType.MODERATE}" />
@@ -108,7 +105,8 @@
         <s:CalloutButton label="Chat" buttonDown="activateChat()" id="cbutton" >
             <s:calloutContent>
                 <s:Group>
-                   <c:ChatPanel id="chat" creationComplete="{chat.init()}" />
+                   <c:ChatPanel id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
+                           currentPlayer="{player}" currentGame="{game}" />
                 </s:Group>
             </s:calloutContent>
         </s:CalloutButton>

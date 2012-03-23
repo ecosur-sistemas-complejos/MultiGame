@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <application xmlns="http://ns.adobe.com/air/application/3.1">
-    <id>mx.ecosur.sample.ios-helloworld</id>
-    <filename>Hello World</filename>
-    <name>air-manantiales</name>
+    <id>mx.ecosur.mobile.ipad2.manantiales</id>
+    <filename>manantiales</filename>
+    <name>Manantiales de la Sierras</name>
     <description>An air (and iOS 5.1 ready) version of Manantiales de La Sierra</description>
     <copyright>ECOSUR 2012</copyright>
     <versionNumber>1.0.0</versionNumber>
     <versionLabel>1.0.0</versionLabel>
+    <iPhone>
+        <requestedDisplayResolution>high</requestedDisplayResolution>
+    </iPhone>
     <initialWindow>
         <content>${project.build.finalName}.swf</content>
         <title>Manantiales de La Sierra</title>
-        <systemChrome>standard</systemChrome>
         <aspectRatio>landscape</aspectRatio>
-        <transparent>false</transparent>
-        <visible>true</visible>
-        <minimizable>true</minimizable>
-        <maximizable>true</maximizable>
-        <resizable>true</resizable>
-        <width>800</width>
-        <height>600</height>
-        <x>150</x>
-        <y>150</y>
-        <minSize>800 600</minSize>
-        <maxSize>800 600</maxSize>
+        <width>1024</width>
+        <height>768</height>
+        <fullScreen>true</fullScreen>
+        <renderMode>cpu</renderMode>
     </initialWindow>
 </application>

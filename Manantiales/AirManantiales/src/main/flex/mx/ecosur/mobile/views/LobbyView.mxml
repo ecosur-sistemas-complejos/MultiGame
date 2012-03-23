@@ -48,6 +48,8 @@
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
 
+        import spark.components.NavigatorContent;
+
         protected var modalities:ArrayCollection = new ArrayCollection();
 
         private var _games:ArrayCollection = new ArrayCollection();
@@ -75,13 +77,13 @@
         }
 
         protected function createGame(event:Event):void {
+            GameView.gameId = 0;
             /* Only one type of Manantiales agent, so choice is not displayed in mobile client */
             if (ai.selected) {
                 gameService.startNewGameWithAI(FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN, "Manantiales", modeList.selectedItem.data, strategies);
             } else {
                 gameService.startNewGame(FlexGlobals.topLevelApplication.registrant, Color.UNKNOWN, "Manantiales", modeList.selectedItem.data);
             }
-            navigator.pushView(GameView);
         }
 
         protected function resultHandler(event:ResultEvent):void {
@@ -115,7 +117,9 @@
                         _games.addItem(dao);
                     updateGrid();
                 } else {
-                    trace("Is MG? " + response[i] is ManantialesGame)
+                    var g:ManantialesGame = ManantialesGame(event.result);                    
+                    GameView.gameId = g.id;
+                    navigator.pushView(GameView);
                 }
             }
         }

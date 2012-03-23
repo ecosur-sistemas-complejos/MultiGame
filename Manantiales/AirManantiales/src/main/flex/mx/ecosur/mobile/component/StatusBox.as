@@ -38,7 +38,6 @@ import spark.components.TextArea;
 
         public function showMessage(msg:String):void {
             this.textField.text = msg;
-            invalidateSkinState();
         }
     }
 }

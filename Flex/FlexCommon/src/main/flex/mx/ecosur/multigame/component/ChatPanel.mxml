@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-         title="{resourceManager.getString('Commons','chat.panel.title')}"
         creationComplete="init()">
     <fx:Metadata>
         [ResourceBundle("Commons")]
@@ -10,6 +9,7 @@
         <![CDATA[
         import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.entity.Game;
+        import mx.messaging.ChannelSet;
         import mx.messaging.Producer;
         import mx.utils.StringUtil;
 
@@ -23,14 +23,22 @@
         import mx.ecosur.multigame.entity.ChatMessage;
         import mx.ecosur.multigame.enum.GameEvent;
 
+        [Bindable]
         public var currentPlayer:GamePlayer;
+
+        [Bindable]
         public var currentGame:Game;
+
         private var _messages:ArrayCollection;
+
         private var producer:Producer;
 
-        public function init():void {
-            producer = new Producer();
+        public function init(channelSet:ChannelSet = null):void {
+            producer = new Producer();            
             producer.destination = "multigame-destination";
+            if (channelSet) {
+                producer.channelSet = channelSet;
+            }
         }
 
          /* Functions */
@@ -58,7 +66,6 @@
                 callLater(updateScroll);
             }
             _messages.addItem(chatMessage);
-
         }
 
         private function faultHandler(event:MessageFaultEvent):void {
@@ -66,13 +73,15 @@
         }
 
         private function updateScroll():void {
-
+            if (log.scroller != null && log.scroller.verticalScrollBar != null) {
+                log.scroller.verticalScrollBar.value = log.scroller.verticalScrollBar.maximum;
+            }
         }
         ]]>
     </fx:Script>
-    <s:TextArea id="log" width="100%" height="100%" paddingLeft="0" editable="false" />
+    <s:TextArea id="log" width="100%" heightInLines="10" paddingLeft="0" editable="false"/>
     <s:controlBarContent>
-        <s:TextArea id="msg" width="100%" height="40"/>
+        <s:TextArea id="msg" width="100%" heightInLines="3"/>
         <s:Button id="sendBtn" label="{resourceManager.getString('Commons','chat.panel.button')}" click="send()" color="#ffffff"/>
     </s:controlBarContent>
 </s:Panel>

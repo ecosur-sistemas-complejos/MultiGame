@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:ViewNavigatorApplication xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-  minWidth="800" minHeight="600" firstView="mx.ecosur.mobile.views.LoginView" splashScreenImage="@Embed('assets/splash.png')">
+  minWidth="1024" minHeight="768" firstView="mx.ecosur.mobile.views.LoginView" splashScreenImage="@Embed('assets/splash.png')">
 
     <fx:Declarations>
         <s:RemoteObject id="gameService" destination="gameService" channelSet="{amfChannelSet}"
