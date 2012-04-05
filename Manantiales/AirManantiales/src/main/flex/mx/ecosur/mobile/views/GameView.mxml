@@ -105,7 +105,7 @@
         <s:CalloutButton label="Chat" buttonDown="activateChat()" id="cbutton" >
             <s:calloutContent>
                 <s:Group>
-                   <c:ChatPanel id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
+                   <cm:MobileChat id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
                            currentPlayer="{player}" currentGame="{game}" />
                 </s:Group>
             </s:calloutContent>
@@ -124,14 +124,14 @@
             <s:SpinnerList id="tokenType" dataProvider="{tokenTypes}" width="300" fontSize="16" />
         </s:SpinnerListContainer>
         <cm:ScoreBox id="scorebox" width="300"/>
-        <s:Panel id="chartbox" width="300">
+        <s:Group id="chartbox" width="300">
             <mx:PieChart id="chart" showDataTips="true" height="145" width="295" horizontalCenter="40" >
                 <mx:series>
                     <mx:PieSeries dataProvider="{scorebox.data}" field="value" nameField="Name" />
                 </mx:series>
             </mx:PieChart>
             <mx:Legend dataProvider="{chart}"/>
-        </s:Panel>
+        </s:Group>
     </s:Group>
     <s:Group id="boardView" width="100%" height="100%">
         <m:ManantialesBoard id="board" width="100%" height="100%"/>

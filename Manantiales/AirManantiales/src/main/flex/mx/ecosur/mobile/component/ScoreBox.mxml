@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
     xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:me="mx.ecosur.multigame.manantiales.entity.*">
     <fx:Declarations>
         <me:ManantialesPlayer id="player1"/>
@@ -76,4 +76,4 @@
             </s:ArrayList>
         </s:columns>
     </s:DataGrid>
-</s:Panel>
+</s:VGroup>

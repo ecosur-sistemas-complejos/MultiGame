@@ -8,15 +8,30 @@
     <versionNumber>1.0.0</versionNumber>
     <versionLabel>1.0.0</versionLabel>
     <iPhone>
+        <InfoAdditions>
+            <![CDATA[
+                <key>UIDeviceFamily</key>
+                <array>
+                    <string>2</string>
+                </array>
+                <key>UIStatusBarStyle</key>
+                <string>UIStatusBarStyleBlackOpaque</string>
+                <key>UIRequiresPersistentWiFi</key>
+                <string>YES</string>
+                <key>UIApplicationExitsOnSuspend</key>
+                <string>YES</string>
+                ]]>
+        </InfoAdditions>
         <requestedDisplayResolution>high</requestedDisplayResolution>
     </iPhone>
     <initialWindow>
-        <content>${project.build.finalName}.swf</content>
+        <content>./${project.build.finalName}.swf</content>
         <title>Manantiales de La Sierra</title>
         <aspectRatio>landscape</aspectRatio>
-        <width>1024</width>
-        <height>768</height>
-        <fullScreen>true</fullScreen>
+        <fullScreen>false</fullScreen>
         <renderMode>cpu</renderMode>
+        <autoOrients>true</autoOrients>
+        <height>1024</height>
+        <width>768</width>
     </initialWindow>
 </application>

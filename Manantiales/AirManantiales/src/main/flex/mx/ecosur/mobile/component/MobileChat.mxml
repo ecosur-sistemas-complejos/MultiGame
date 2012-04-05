@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+         creationComplete="init()">
+    <fx:Metadata>
+        [ResourceBundle("Commons")]
+    </fx:Metadata>
+
+    <fx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+        import mx.ecosur.multigame.entity.Game;
+        import mx.events.FlexEvent;
+        import mx.messaging.ChannelSet;
+        import mx.messaging.Producer;
+        import mx.utils.StringUtil;
+
+        import mx.controls.Alert;
+
+        import mx.messaging.messages.AsyncMessage;
+        import mx.messaging.messages.IMessage;
+        import mx.messaging.events.MessageFaultEvent;
+
+        import mx.ecosur.multigame.entity.GamePlayer;
+        import mx.ecosur.multigame.entity.ChatMessage;
+        import mx.ecosur.multigame.enum.GameEvent;
+
+        [Bindable]
+        public var currentPlayer:GamePlayer;
+
+        [Bindable]
+        public var currentGame:Game;
+
+        protected var messages:ArrayCollection = new ArrayCollection();
+
+        private var producer:Producer;
+
+        public function init(channelSet:ChannelSet = null):void {
+            producer = new Producer();
+            producer.destination = "multigame-destination";
+            if (channelSet) {
+                producer.channelSet = channelSet;
+            }
+            msg.addEventListener(FlexEvent.ENTER, enterHandler);
+        }
+
+        protected function enterHandler(event:FlexEvent):void {
+            send();
+            msg.text = "";
+        }
+
+        /* Functions */
+        private function send():void {
+            if (StringUtil.trim(msg.text).length == 0) {
+                return;
+            }
+            var message:IMessage = new AsyncMessage();
+            var chatMessage:ChatMessage = new ChatMessage();
+            chatMessage.sender = currentPlayer;
+            chatMessage.body = msg.text;
+            chatMessage.dateSent = new Date();
+            message.body = chatMessage;
+            message.headers.GAME_ID = currentGame.id;
+            message.headers.GAME_EVENT = GameEvent.CHAT;
+            producer.send(message);
+        }
+
+        public function addMessage(chatMessage:ChatMessage):void {
+            log.dataProvider.addItem(chatMessage);
+        }
+
+        private function faultHandler(event:MessageFaultEvent):void {
+            trace(event.message);
+        }
+
+        ]]>
+    </fx:Script>
+    <s:Scroller height="100%" width="100%" id="scroller" minViewportInset="1" hasFocusableChildren="true">
+        <s:Group>
+            <s:layout>
+                <s:VerticalLayout/>
+            </s:layout>
+            <s:SkinnableDataContainer height="100%" id="log" width="100%" itemRenderer="mx.ecosur.mobile.renderers.ChatMessageRenderer" dataProvider="{messages}"/>
+            <s:TextInput id="msg" width="100%" skinClass="spark.skins.mobile.TextInputSkin"/>
+        </s:Group>
+    </s:Scroller>
+</s:Group>

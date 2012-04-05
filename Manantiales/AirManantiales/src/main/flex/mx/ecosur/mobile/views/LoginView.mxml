@@ -11,7 +11,7 @@
         import mx.rpc.events.ResultEvent;
 
         [Bindable]
-        public static var remoteServer:String = "localhost";
+        public static var remoteServer:String = "10.1.3.6";
 
         protected function handleLogin(event:Event):void {
             establishAMF();
@@ -56,9 +56,10 @@
         ]]>
     </fx:Script>
 
+    <!--
     <s:actionContent>
         <s:Button label="Configure Remote" buttonDown="configure(event)"/>
-    </s:actionContent>
+    </s:actionContent>-->
 
     <s:Group horizontalCenter="0" verticalCenter="0">
         <s:layout>
@@ -69,7 +70,7 @@
         <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>
         <s:Label text="Password: "/>
         <s:TextInput id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"/>
-        <s:ToggleSwitch id="loggedin" selected="false" skinClass="mx.ecosur.mobile.skins.LogOutSwitchSkin"
+        <s:ToggleSwitch id="loggedin" selected="false" skinClass="mx.ecosur.mobile.skins.LogInSwitchSkin"
                     slideDuration="200" change="handleLogin(event)"/>
     </s:Group>
 

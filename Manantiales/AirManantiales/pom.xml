@@ -8,13 +8,8 @@
       <version>2.1.0-SNAPSHOT</version> 
   </parent> 
   <artifactId>air-manantiales</artifactId>
-  <packaging>air</packaging>
+  <packaging>swf</packaging>
   <name>Manantiales Mobile Air Application</name>
-
-  <properties>
-      <air-sdk>/Users/awaterma/util/AdobeAIRSDK</air-sdk>
-  </properties>
-
   <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <resources>
@@ -25,9 +20,10 @@
     </resources>
       <plugins>
           <plugin>
-              <groupId>org.sonatype.flexmojos</groupId>
+              <!--groupId>org.sonatype.flexmojos</groupId-->
+              <groupId>net.flexmojos.oss</groupId>
               <artifactId>flexmojos-maven-plugin</artifactId>
-              <version>4.1-beta</version>
+              <version>5.1-beta-SNAPSHOT</version>
               <extensions>true</extensions>
               <dependencies>
                   <dependency>
@@ -69,30 +65,35 @@
                   </execution>
               </executions>
           </plugin>
-        <!--
         <plugin>
-             <groupId>org.codehaus.mojo</groupId>
+              <groupId>org.codehaus.mojo</groupId>
               <artifactId>exec-maven-plugin</artifactId>
               <version>1.2.1</version>
-            <executions>
+              <executions>
                 <execution>
-                    <id>run-adl</id>
+                    <id>run-adt</id>
                     <goals>
                         <goal>exec</goal>
                     </goals>
                 </execution>
-            </executions>
-            <configuration>
-                <executable>${air-sdk}/bin/adl</executable>
-                <workingDirectory>${project.basedir}</workingDirectory>
+              </executions>
+              <configuration>
+                <!-- Properties are pulled from maven settings.xml file -->
+                <executable>${air-sdk}/bin/adt</executable>
+                <workingDirectory>${project.build.directory}</workingDirectory>
                 <arguments>
-                    <argument>-profile mobileDevice</argument>
-                    <argument>-screensize iPad</argument>
-                    <argument>${project.build.directory}/descriptor.xml</argument>
+                    <argument>-package</argument>
+                    <argument>-target ipa-ad-hoc</argument>
+                    <argument>-provisioning-profile ${provisioning-profile}</argument>
+                    <argument>-storetype pkcs12</argument>
+                    <argument>-keystore ${keystore}</argument>
+                    <argument>Manantiales.ipa</argument>
+                    <argument>classes/descriptor.xml</argument>
+                    <argument>${project.build.finalName}.swf</argument>
+                    <argument>-platformsdk ${platformsdk}</argument>
                 </arguments>
-            </configuration>
+              </configuration>
         </plugin>
-        -->
       </plugins>
   </build>
 

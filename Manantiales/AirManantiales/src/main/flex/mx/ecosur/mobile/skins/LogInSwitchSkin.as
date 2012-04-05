@@ -9,9 +9,9 @@ package mx.ecosur.mobile.skins {
 
     import spark.skins.mobile.ToggleSwitchSkin;
 
-    public class LogOutSwitchSkin extends ToggleSwitchSkin {
+    public class LogInSwitchSkin extends ToggleSwitchSkin {
 
-        public function LogOutSwitchSkin() {
+        public function LogInSwitchSkin() {
             super();
             selectedLabel = "Login";
             unselectedLabel = "Logout";

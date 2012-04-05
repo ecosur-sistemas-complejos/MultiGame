@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-        title="Manantiales de La Sierra" creationComplete="loadInitial(event)"
+        title="Manantiales de La Sierra" creationComplete="init(event)"
         skinClass="mx.ecosur.mobile.skins.BitmapSkin">
     <fx:Metadata >
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
@@ -62,10 +62,14 @@
             a.alertmsg.text = msg;
             var metrics:TextLineMetrics = a.measureText(msg);
             a.x = (this.width - metrics.width) / 2;
-            a.y = (this.height - metrics.height) /3;
+            a.y = (this.height - metrics.height) / 3;
         }
 
-        protected function loadInitial(event:Event):void {
+        protected function init(event:Event):void {
+            /* Stage properties */
+            stage.scaleMode = StageScaleMode.NO_SCALE;
+            stage.align = StageAlign.TOP_LEFT;
+
             gameGrid.columnHeaderGroup.enabled = false;
             gameGrid.columnHeaderGroup.visible = false;
 
@@ -73,7 +77,11 @@
             gameService.getUnfinishedGames(FlexGlobals.topLevelApplication.registrant);
             gameService.getPendingGames(FlexGlobals.topLevelApplication.registrant);
 
+            /* subscribe the listener */
             listener.subscribe();
+
+            /* add swipe handler to data grid */
+            gameGrid.addEventListener (TransformGestureEvent.GESTURE_SWIPE, swipeGame);
         }
 
         protected function createGame(event:Event):void {
@@ -117,7 +125,7 @@
                         _games.addItem(dao);
                     updateGrid();
                 } else {
-                    var g:ManantialesGame = ManantialesGame(event.result);                    
+                    var g:ManantialesGame = ManantialesGame(event.result);
                     GameView.gameId = g.id;
                     navigator.pushView(GameView);
                 }
@@ -185,6 +193,11 @@
             navigator.pushView(GameView);
         }
 
+        protected function swipeGame(event:TransformGestureEvent):void {
+
+
+        }
+
         private function updateGrid():void {
             var dataSource:ArrayCollection = new ArrayCollection();
             for (var i:int = 0; i < _games.length; i++) {
@@ -239,22 +252,16 @@
                     break;
                 }
             }
-            
-            
+
+
             return idx;
-            
+
         }
         ]]>
     </fx:Script>
-
-    <s:layout>
-        <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
-    </s:layout>
-
     <s:VGroup id="availableGroup" width="100%" >
         <s:Spacer/>
-
-        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" skinClass="mx.ecosur.mobile.skins.GridSkin">
+        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" skinClass="mx.ecosur.mobile.skins.GridSkin" >
             <s:columns>
                 <s:ArrayList>
                     <s:GridColumn dataField="created" headerText="Date"/>
@@ -264,44 +271,32 @@
             </s:columns>
         </s:DataGrid>
     </s:VGroup>
-
-    <s:Spacer height="50"/>
-
-    <s:HGroup id="startGroup">
-        <s:SpinnerListContainer width="100">
-            <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100%"/>
-        </s:SpinnerListContainer>
-        <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
-        <s:RadioButton groupName="robots" id="ai" label="Robots"/>
-        <s:Button label="Start Game" id="start" buttonDown="{createGame(event)}"
-                  skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" />
-    </s:HGroup>
-
-    <s:Spacer height="50"/>
-
-    <s:VGroup id="settingsGroup">
-        <s:Rect width="100%" height="100%">
-            <s:stroke>
-                <s:SolidColorStroke color="0x000000" weight="2" />
-            </s:stroke>
-        </s:Rect>
-        <s:VGroup left="10" top="10" right="10" bottom="10" width="90%" height="90%">
-            <s:Label fontSize="18" text="SETTINGS"/>
+    <s:Group id="boxes">
+        <s:layout>
+            <s:TileLayout/>
+        </s:layout>
+        <s:HGroup id="starter">
             <s:SpinnerListContainer width="100">
-             <s:SpinnerList id="language" width="100%">
+                <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100%"/>
+            </s:SpinnerListContainer>
+            <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
+            <s:RadioButton groupName="robots" id="ai" label="Robots"/>
+            <s:Button label="Start Game" id="start" buttonDown="{createGame(event)}"
+                      skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" />
+        </s:HGroup>
+        <s:VGroup id="settings">
+            <s:SpinnerListContainer width="100">
+            <s:SpinnerList id="language" width="100%">
                 <s:dataProvider>
                     <s:ArrayList>
                         <fx:String>English</fx:String>
                         <fx:String>Español</fx:String>
                     </s:ArrayList>
                 </s:dataProvider>
-             </s:SpinnerList>
+            </s:SpinnerList>
             </s:SpinnerListContainer>
-            <s:HGroup>
-                <s:ToggleSwitch id="login" selected="true" skinClass="mx.ecosur.mobile.skins.LogOutSwitchSkin"
-                    slideDuration="200" change="Logout(event)"/>
-            </s:HGroup>
+            <s:ToggleSwitch id="login" selected="true" skinClass="mx.ecosur.mobile.skins.LogInSwitchSkin"
+                slideDuration="200" change="Logout(event)"/>
         </s:VGroup>
-    </s:VGroup>
-
+    </s:Group>
 </s:View>

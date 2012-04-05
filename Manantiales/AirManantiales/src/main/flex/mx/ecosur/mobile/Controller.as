@@ -88,12 +88,11 @@ public class Controller {
     
         public function faultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = ErrorMessage(event.message);
+            _view.status.showMessage(errorMessage.faultDetail);
             if (errorMessage.extendedData != null){
                 if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
                     undoMove(_executingMove);
                 }
-            } else {
-                _view.alert(event.fault.message);
             }
         }
 
@@ -296,7 +295,7 @@ public class Controller {
             if (validateMove(rc,  tok)) {
                 rc.select(tok.cell.colorCode);
                 decorate(tok);
-                animatePlayerMove(targ,  tok,  rc,  dest);
+                animateMove(targ,  tok,  rc,  dest);
                 var move:ManantialesMove = new ManantialesMove();
                 move.status = MoveStatus.UNVERIFIED;
                 move.mode = _view.game.mode;
@@ -324,11 +323,13 @@ public class Controller {
                 var current:ManantialesToken = ManantialesToken (rc.token);
                 var next:ManantialesToken = createToken(move.type);
                 next.ficha = target;
-                animateMessagedMove(current, next,  rc,  dest);
+                animateMove(current,  next,  rc,  dest);
+                //animateMessagedMove(current, next,  rc,  dest);
             }
         }
 
         public function undoMove(move:ManantialesMove):void {
+            _view.status.showMessage("Undoing move: " + move);
             var currentToken:ManantialesToken, replacedToken:ManantialesToken;
             
             /* If there is a 'replacementType', the moved replaced a token with a known value */
@@ -399,7 +400,7 @@ public class Controller {
             seq.play();
         }
 
-        protected function animatePlayerMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
+        protected function animateMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {
             
             /* Sin easer */
             var sine:Sine = new Sine();
