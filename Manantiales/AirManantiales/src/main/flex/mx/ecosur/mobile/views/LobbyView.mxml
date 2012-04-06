@@ -70,8 +70,8 @@
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
 
-            gameGrid.columnHeaderGroup.enabled = false;
-            gameGrid.columnHeaderGroup.visible = false;
+            //gameGrid.columnHeaderGroup.enabled = false;
+            //gameGrid.columnHeaderGroup.visible = false;
 
             /* Load save and pending games */
             gameService.getUnfinishedGames(FlexGlobals.topLevelApplication.registrant);
@@ -124,8 +124,8 @@
                     if (!added)
                         _games.addItem(dao);
                     updateGrid();
-                } else {
-                    var g:ManantialesGame = ManantialesGame(event.result);
+                } else if (response [ i ] is ManantialesGame) {
+                    var g:ManantialesGame = ManantialesGame(response [ i ]);
                     GameView.gameId = g.id;
                     navigator.pushView(GameView);
                 }
@@ -260,16 +260,7 @@
         ]]>
     </fx:Script>
     <s:VGroup id="availableGroup" width="100%" >
-        <s:Spacer/>
-        <s:DataGrid id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" skinClass="mx.ecosur.mobile.skins.GridSkin" >
-            <s:columns>
-                <s:ArrayList>
-                    <s:GridColumn dataField="created" headerText="Date"/>
-                    <s:GridColumn dataField="players" headerText="Players"/>
-                    <s:GridColumn dataField="status" headerText="Status"/>
-                </s:ArrayList>
-            </s:columns>
-        </s:DataGrid>
+        <s:List id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" itemRenderer="mx.ecosur.mobile.renderers.GameListRenderer"/>
     </s:VGroup>
     <s:Group id="boxes">
         <s:layout>
@@ -295,8 +286,6 @@
                 </s:dataProvider>
             </s:SpinnerList>
             </s:SpinnerListContainer>
-            <s:ToggleSwitch id="login" selected="true" skinClass="mx.ecosur.mobile.skins.LogInSwitchSkin"
-                slideDuration="200" change="Logout(event)"/>
         </s:VGroup>
     </s:Group>
 </s:View>

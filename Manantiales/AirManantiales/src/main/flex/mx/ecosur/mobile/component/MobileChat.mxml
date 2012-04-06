@@ -77,9 +77,9 @@
     <s:Scroller height="100%" width="100%" id="scroller" minViewportInset="1" hasFocusableChildren="true">
         <s:Group>
             <s:layout>
-                <s:VerticalLayout/>
+                <s:VerticalLayout paddingTop="10" />
             </s:layout>
-            <s:SkinnableDataContainer height="100%" id="log" width="100%" itemRenderer="mx.ecosur.mobile.renderers.ChatMessageRenderer" dataProvider="{messages}"/>
+            <s:SkinnableDataContainer height="100%" id="log" width="100%" itemRenderer="mx.ecosur.mobile.renderers.MessageRenderer" dataProvider="{messages}"/>
             <s:TextInput id="msg" width="100%" skinClass="spark.skins.mobile.TextInputSkin"/>
         </s:Group>
     </s:Scroller>

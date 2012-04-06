@@ -7,12 +7,16 @@
  */
 package mx.ecosur.mobile {
 
+import avmplus.parameterXml;
+
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.events.TimerEvent;
 import flash.events.TouchEvent;
 import flash.geom.Point;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
+import flash.utils.Timer;
 
 import mx.core.FlexGlobals;
 import mx.ecosur.mobile.views.GameView;
@@ -49,6 +53,8 @@ import mx.messaging.messages.IMessage;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
 
+import org.osmf.events.TimeEvent;
+
 import spark.effects.Animate;
 import spark.effects.easing.Bounce;
 
@@ -69,9 +75,19 @@ public class Controller {
     
         private var receiver:MessageReceiver;
 
+        private var timer:Timer;
+
+        private var current:Number;
+
+        private var limit:Number;
+
         public function Controller(view:GameView) {
             super();
             this._view = view;
+            limit = 45 * 60 * 1000;
+            timer = new Timer(1000,0);
+            timer.addEventListener(TimerEvent.TIMER, updateTime);
+            timer.start();
         }
 
         public function resultHandler(event:ResultEvent):void {
@@ -89,6 +105,7 @@ public class Controller {
         public function faultHandler(event:FaultEvent):void {
             var errorMessage:ErrorMessage = ErrorMessage(event.message);
             _view.status.showMessage(errorMessage.faultDetail);
+            _view.status.flashMessage();
             if (errorMessage.extendedData != null){
                 if(errorMessage.extendedData[ExceptionType.EXCEPTION_TYPE_KEY] == ExceptionType.INVALID_MOVE){
                     undoMove(_executingMove);
@@ -157,10 +174,10 @@ public class Controller {
                 }
             
         }
-    
-        public function updateGame(game:ManantialesGame):void {
 
+        public function updateGame(game:ManantialesGame):void {
             _view.game = game;
+            this.current = _view.game.elapsedTime;
 
             for (var i:int = 0; i < _view.game.players.length; i++) {
                 var p:ManantialesPlayer = ManantialesPlayer(_view.game.players [ i ]);
@@ -185,25 +202,19 @@ public class Controller {
                 if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
                     _view.status.color = Color.getColorCode(p.color);
                     _view.status.showMessage("It's your turn");
-                } else {
-                    _view.status.color = Color.getColorCode(p.color);
-                    _view.status.showMessage(p.name + " to move");
                 }
-
             } else {
                 _view.status.showMessage("Waiting for more players ...");
             }
 
-            _view.timer.showMessage(_view.game.elapsedTime + " ms elapsed");
             populateBoard(_view.game);
             updatePlayers(_view.game);
-
+            updateTime();
         }
     
         public function populateBoard(game:ManantialesGame):void {
             var grid:GameGrid = game.grid;
             _view.board.clearTokens();
-            Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 
             /* Setup undeveloped tokens first */
             for (var col:int = 0; col < _view.board.nCols; col++) {
@@ -339,19 +350,25 @@ public class Controller {
                f.column = move.currentCell.column;
                f.row = move.currentCell.row;
                f.color = move.currentCell.color;
+               replacedToken.ficha = f;
            } else {
                /* otherwise, this move replaced a UNDEVELOPED token */
-               replacedToken = createToken(TokenType.UNDEVELOPED);  
+               replacedToken = createToken(TokenType.UNDEVELOPED);
            }
-            
+
+           if (move.replacementType != TokenType.INTENSIVE || move.replacementType == null) {
+                replacedToken.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
+                replacedToken.addEventListener(MouseEvent.CLICK,  tapHandler);
+           }
+
            var rc:RoundCell = RoundCell(_view.board.getBoardCell(move.destinationCell.column, move.destinationCell.row));
            var dest:Point = new Point();
            dest.x = rc.x + (rc.width / 2);
            dest.y = rc.y + (rc.height / 2);
            
            currentToken = ManantialesToken(rc.token);
-           _executingMove = null;
-           animateMessagedMove(currentToken,  replacedToken, rc,  dest);
+           animateMove(currentToken,  replacedToken, rc,  dest);
+            _executingMove = null;
         }
 
         public function end(game:ManantialesGame, msg:String = null):void {
@@ -363,41 +380,39 @@ public class Controller {
                 }
             }
         }
-    
-        protected function animateMessagedMove(start:ManantialesToken,  end:ManantialesToken,  cell:RoundCell,  dest:Point):void {
 
-            /* Fade effect on existing token (after drop) */
-            var fade:Fade = new Fade();
-            fade.target = start;
-            fade.alphaFrom = 1.0;
-            fade.alphaTo = 0;
+        protected function updateTime(event:TimerEvent = null):void {
+            if (current < limit) {
+                current += 1000;
+                _view.timer.showMessage(currentTime() + " / 45:00");
+            } else {
+                _view.status.showMessage("Game expired.")
+                _view.timer.showMessage("45:00 / 45:00");
+                _view.status.flashMessage();
+                _view.timer.flashMessage();
+            }
+        }
 
-            /* Set action for new token */
-            var sa:SetAction = new SetAction();
-            sa.target = cell;
-            sa.property = "token";
-            sa.value = end;
-            
-            /* Fade out then in on new token */
-            var out:Fade = new Fade();
-            out.target = end;
-            out.alphaFrom = 1.0;
-            out.alphaTo = 0;
-            out.duration = 350;
-            
-            var fin:Fade = new Fade();
-            fin.target = end;
-            fin.alphaFrom = 0;
-            fin.alphaTo = 1.0;
-            fin.duration =  350;
-            fin.easer = new Bounce();
-            
-            var seq:Sequence = new Sequence();
-            seq.addChild(fade);
-            seq.addChild(sa);
-            seq.addChild(out);
-            seq.addChild(fin);
-            seq.play();
+        private function currentTime ():String {
+            var ret:String;
+            var minutes:int, seconds:Number;
+            seconds = Math.floor(current/1000);
+            if(seconds > 59) {
+                minutes = Math.floor(seconds / 60);
+                if (minutes >= 45)
+                    ret = "45:00";
+                else if (seconds %  60 > 9)
+                    ret = String(minutes) + ":" + String(seconds % 60);
+                else
+                    ret = String(minutes) + ":0" + String(seconds % 60);
+            } else {
+                if (seconds > 9)
+                    ret = "0:" + String(Math.floor(seconds));
+                else
+                    ret = "0:0" + String(Math.floor(seconds));
+            }
+
+            return ret;
         }
 
         protected function animateMove(start:ManantialesToken, end:ManantialesToken,  roundCell:RoundCell, dest:Point):void {

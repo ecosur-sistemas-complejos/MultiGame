@@ -20,10 +20,9 @@
     </resources>
       <plugins>
           <plugin>
-              <!--groupId>org.sonatype.flexmojos</groupId-->
-              <groupId>net.flexmojos.oss</groupId>
+              <groupId>org.sonatype.flexmojos</groupId>
               <artifactId>flexmojos-maven-plugin</artifactId>
-              <version>5.1-beta-SNAPSHOT</version>
+              <version>4.1-beta</version>
               <extensions>true</extensions>
               <dependencies>
                   <dependency>
