@@ -7,12 +7,11 @@
  */
 package mx.ecosur.mobile {
 
-import avmplus.parameterXml;
-
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.events.TimerEvent;
 import flash.events.TouchEvent;
+import flash.events.TransformGestureEvent;
 import flash.geom.Point;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
@@ -52,8 +51,6 @@ import mx.messaging.messages.ErrorMessage;
 import mx.messaging.messages.IMessage;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
-
-import org.osmf.events.TimeEvent;
 
 import spark.effects.Animate;
 import spark.effects.easing.Bounce;
@@ -369,6 +366,25 @@ public class Controller {
            currentToken = ManantialesToken(rc.token);
            animateMove(currentToken,  replacedToken, rc,  dest);
             _executingMove = null;
+        }
+
+        public function zoomHandler(event:TransformGestureEvent):void
+        {
+            _view.board.scaleX *= event.scaleX;
+            _view.board.scaleY *= event.scaleY;
+        }
+
+        public function panHandler(event:TransformGestureEvent):void
+        {
+            _view.board.x += event.offsetX;
+            _view.board.y += event.offsetY;
+        }
+
+
+        public function twoFingerTapHandler (event:TransformGestureEvent):void {
+            /* Resets board to all settings recorded */
+            trace("twoFingeredTap!");
+
         }
 
         public function end(game:ManantialesGame, msg:String = null):void {

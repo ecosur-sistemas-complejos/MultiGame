@@ -55,6 +55,17 @@
             gameService.getGame(gameId);
             status.color = 0xFFFFFF;
             status.showMessage("Loading game ..");
+
+            /* Setup the board for zooming */
+            Multitouch.inputMode = MultitouchInputMode.GESTURE;
+            board.addEventListener(TransformGestureEvent.GESTURE_ZOOM, controller.zoomHandler);
+
+            /* Setup the board for panning */
+            Multitouch.inputMode = MultitouchInputMode.GESTURE;
+            board.addEventListener(TransformGestureEvent.GESTURE_PAN, controller.panHandler);
+
+            /* Add double tap listener to restore board to correct size and location */
+            stage.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP, controller.twoFingerTapHandler);
         }
 
         public function alert(msg:String):void {
@@ -64,6 +75,33 @@
             var metrics:TextLineMetrics = a.measureText(msg);            
             a.x = (this.width - metrics.width) / 2;
             a.y = (this.height - metrics.height) /3;
+        }
+
+        protected function tokenLabeler(item:Object):String {
+            var amt:int = 0;
+            if (player == null) {
+
+            }
+
+            switch(item.data) {
+                case TokenType.FOREST:
+                    amt = 6 - player.forested;
+                    break;
+                case TokenType.MODERATE:
+                    amt = 6 - player.moderate;
+                    break;
+                case TokenType.INTENSIVE:
+                    amt = 6 - player.intensive;
+                    break;
+                case TokenType.VIVERO:
+                    amt = 6 - player.vivero;
+                    break;
+                case TokenType.SILVOPASTORAL:
+                    amt = 6 - player.silvo;
+                    break;
+            }
+
+            return item.label + " @ " + amt + " / 6 ";
         }
         
         protected function activateChat():void {
@@ -121,7 +159,7 @@
         <cm:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="0xFFFFFF"/>
         <cm:StatusBox id="timer" skinClass="mx.ecosur.mobile.skins.TimerSkin" color="0xFFFFFF" />
         <s:SpinnerListContainer >
-            <s:SpinnerList id="tokenType" dataProvider="{tokenTypes}" width="300" fontSize="16" />
+            <s:SpinnerList id="tokenType" dataProvider="{tokenTypes}" width="300" fontSize="16" labelFunction="tokenLabeler"/>
         </s:SpinnerListContainer>
         <cm:ScoreBox id="scorebox" width="300"/>
         <s:Group id="chartbox" width="300">
