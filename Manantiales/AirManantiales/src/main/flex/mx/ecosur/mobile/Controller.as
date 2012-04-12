@@ -13,8 +13,6 @@ import flash.events.TimerEvent;
 import flash.events.TouchEvent;
 import flash.events.TransformGestureEvent;
 import flash.geom.Point;
-import flash.ui.Multitouch;
-import flash.ui.MultitouchInputMode;
 import flash.utils.Timer;
 
 import mx.core.FlexGlobals;
@@ -258,24 +256,25 @@ public class Controller {
         public function updatePlayers(game:ManantialesGame):void {
             _view.scorebox.game = game;
             _view.scorebox.updatePlayers();
-           
-            var p:ManantialesPlayer;
-            
-            for (var i:int = 0; i < game.players.length; i++) {
-                var t:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
-                if (t.turn) {
-                    p = t;
-                    break;
+
+            if (game.state != GameState.ENDED) {
+                var p:ManantialesPlayer;
+
+                for (var i:int = 0; i < game.players.length; i++) {
+                    var t:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
+                    if (t.turn) {
+                        p = t;
+                        break;
+                    }
                 }
-            }
-           
-            /* If active player is not current registrant, message the status box */
-            if (p.name != FlexGlobals.topLevelApplication.registrant.name) {
-                _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage(p.name + "'s turn.");
-            } else {
-                _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage("Your turn.");
+                /* If active player is not current registrant, message the status box */
+                if (p.name != FlexGlobals.topLevelApplication.registrant.name) {
+                    _view.status.color = Color.getColorCode(p.color);
+                    _view.status.showMessage(p.name + "'s turn.");
+                } else {
+                    _view.status.color = Color.getColorCode(p.color);
+                    _view.status.showMessage("Your turn.");
+                }
             }
         }
 
@@ -345,32 +344,36 @@ public class Controller {
         public function undoMove(move:ManantialesMove):void {
             _view.status.showMessage("Undoing move: " + move);
             var currentToken:ManantialesToken, replacedToken:ManantialesToken;
-            
+            var rc:RoundCell = RoundCell(_view.board.getBoardCell(move.destinationCell.column, move.destinationCell.row));
+
             /* If there is a 'replacementType', the moved replaced a token with a known value */
-           if (move.replacementType != null) {
+            if (move.replacementType != null) {
                replacedToken = createToken(move.replacementType);                                                
                var f:Ficha = new Ficha();
                f.column = move.currentCell.column;
                f.row = move.currentCell.row;
                f.color = move.currentCell.color;
                replacedToken.ficha = f;
-           } else {
+            } else {
                /* otherwise, this move replaced a UNDEVELOPED token */
                replacedToken = createToken(TokenType.UNDEVELOPED);
-           }
+               if (rc.row == 4 || rc.column == 4) {
+                    /* Reset border cells to neutral color */
+                    rc.setStyle("cellBgColor", 0xA0A0A0);
+               }
+            }
 
-           if (move.replacementType != TokenType.INTENSIVE || move.replacementType == null) {
+            if (move.replacementType != TokenType.INTENSIVE || move.replacementType == null) {
                 replacedToken.addEventListener(TouchEvent.TOUCH_TAP, tapHandler);
                 replacedToken.addEventListener(MouseEvent.CLICK,  tapHandler);
-           }
+            }
 
-           var rc:RoundCell = RoundCell(_view.board.getBoardCell(move.destinationCell.column, move.destinationCell.row));
-           var dest:Point = new Point();
-           dest.x = rc.x + (rc.width / 2);
-           dest.y = rc.y + (rc.height / 2);
-           
-           currentToken = ManantialesToken(rc.token);
-           animateMove(currentToken,  replacedToken, rc,  dest);
+            var dest:Point = new Point();
+            dest.x = rc.x + (rc.width / 2);
+            dest.y = rc.y + (rc.height / 2);
+
+            currentToken = ManantialesToken(rc.token);
+            animateMove(currentToken,  replacedToken, rc,  dest);
             _executingMove = null;
         }
 
@@ -386,12 +389,12 @@ public class Controller {
             _view.board.y += event.offsetY;
         }
 
-
-        public function twoFingerTapHandler (event:TransformGestureEvent):void {
-            /* Resets board to all settings recorded */
-            trace("twoFingeredTap!");
-
+        public function quitGame():void {
+            gameService.quitGame(_view.game, _view.player);
+             _view.navigator.popView();
         }
+
+
 
         public function end(game:ManantialesGame, msg:String = null):void {
             if (game != null && game.state == GameState.ENDED) {

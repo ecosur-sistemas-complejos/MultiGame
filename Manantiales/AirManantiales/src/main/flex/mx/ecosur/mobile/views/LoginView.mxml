@@ -56,22 +56,16 @@
         ]]>
     </fx:Script>
 
-    <!--
-    <s:actionContent>
-        <s:Button label="Configure Remote" buttonDown="configure(event)"/>
-    </s:actionContent>-->
-
     <s:Group horizontalCenter="0" verticalCenter="0">
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
-        <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" />
-        <s:Label text="Username: " />
-        <s:TextInput id="username" width="80%" focusIn="clearLabel(event)"/>
-        <s:Label text="Password: "/>
-        <s:TextInput id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"/>
+        <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" horizontalCenter="0"/>
+        <s:TextInput prompt="username" id="username" width="80%" focusIn="clearLabel(event)" horizontalCenter="0"/>
+        <s:TextInput prompt="password" id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"
+                horizontalCenter="0"/>
         <s:ToggleSwitch id="loggedin" selected="false" skinClass="mx.ecosur.mobile.skins.LogInSwitchSkin"
-                    slideDuration="200" change="handleLogin(event)"/>
+                    slideDuration="200" change="handleLogin(event)" horizontalCenter="0"/>
     </s:Group>
 
     <s:Label id="statusLabel" color="red" fontWeight="bold" textAlign="center" width="90%"

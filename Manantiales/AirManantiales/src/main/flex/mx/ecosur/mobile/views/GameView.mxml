@@ -32,7 +32,6 @@
 
         import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
         import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
-        import mx.ecosur.multigame.util.MessageReceiver;
 
         public static var gameId:int;
 
@@ -56,26 +55,26 @@
             status.color = 0xFFFFFF;
             status.showMessage("Loading game ..");
 
-            /* Setup the board for zooming */
             Multitouch.inputMode = MultitouchInputMode.GESTURE;
+
+            /* Setup the board for zooming */
             board.addEventListener(TransformGestureEvent.GESTURE_ZOOM, controller.zoomHandler);
 
             /* Setup the board for panning */
-            Multitouch.inputMode = MultitouchInputMode.GESTURE;
             board.addEventListener(TransformGestureEvent.GESTURE_PAN, controller.panHandler);
 
-            /* Add double tap listener to restore board to correct size and location */
-            stage.addEventListener(GestureEvent.GESTURE_TWO_FINGER_TAP, controller.twoFingerTapHandler);
+            stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE, controller.quitGame);
         }
 
         public function alert(msg:String):void {
             var a:Alert = new Alert();
-            a.open(board, true);
+            a.open(this, true);
             a.alertmsg.text = msg;
             var metrics:TextLineMetrics = a.measureText(msg);            
             a.x = (this.width - metrics.width) / 2;
             a.y = (this.height - metrics.height) /3;
         }
+
 
         protected function activateChat():void {
             chat.currentPlayer = this.player;
@@ -120,6 +119,14 @@
                    <cm:MobileChat id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
                            currentPlayer="{player}" currentGame="{game}" />
                 </s:Group>
+            </s:calloutContent>
+        </s:CalloutButton>
+        <s:Spacer width="20"/>
+        <s:CalloutButton label="Quit" id="qbutton">
+            <s:calloutContent>
+                <s:VGroup>
+                    <s:Button label="Stop playing?" buttonDown="controller.quitGame()"/>
+                </s:VGroup>
             </s:calloutContent>
         </s:CalloutButton>
     </s:actionContent>

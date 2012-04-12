@@ -257,36 +257,32 @@
         }
         ]]>
     </fx:Script>
-    <s:Group id="availableGroup" width="100%" >
-        <s:layout>
-            <s:VerticalLayout />
-        </s:layout>
-        <s:List id="gameGrid" width="100%" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)" itemRenderer="mx.ecosur.mobile.renderers.GameListRenderer"/>
-    </s:Group>
     <s:Group id="boxes">
         <s:layout>
-            <s:TileLayout/>
+            <s:BasicLayout/>
         </s:layout>
-        <s:HGroup id="starter">
-            <s:SpinnerListContainer width="100">
-                <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100%"/>
+        <s:Group id="games" horizontalCenter="0" height="200">
+            <s:List id="gameGrid" width="1004" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)"
+                    itemRenderer="mx.ecosur.mobile.renderers.GameListRenderer" />
+        </s:Group>
+        <s:Group id="settings" horizontalCenter="0" verticalCenter="180">
+            <s:layout>
+                <s:HorizontalLayout/>
+            </s:layout>
+            <s:SpinnerListContainer >
+                <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100"/>
+                <s:SpinnerList id="language" width="80">
+                    <s:dataProvider>
+                        <s:ArrayList>
+                            <fx:String>English</fx:String>
+                            <fx:String>Español</fx:String>
+                        </s:ArrayList>
+                    </s:dataProvider>
+                </s:SpinnerList>
             </s:SpinnerListContainer>
             <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
             <s:RadioButton groupName="robots" id="ai" label="Robots"/>
-            <s:Button label="Start Game" id="start" buttonDown="{createGame(event)}"
-                      skinClass="spark.skins.mobile.ButtonBarLastButtonSkin" />
-        </s:HGroup>
-        <s:VGroup id="settings">
-            <s:SpinnerListContainer width="100">
-            <s:SpinnerList id="language" width="100%">
-                <s:dataProvider>
-                    <s:ArrayList>
-                        <fx:String>English</fx:String>
-                        <fx:String>Español</fx:String>
-                    </s:ArrayList>
-                </s:dataProvider>
-            </s:SpinnerList>
-            </s:SpinnerListContainer>
-        </s:VGroup>
+            <s:Button label="New Game" id="start" buttonDown="{createGame(event)}"/>
+        </s:Group>
     </s:Group>
 </s:View>
