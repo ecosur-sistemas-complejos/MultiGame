@@ -23,6 +23,7 @@
         public function loadMain():void {
             gameService.channelSet = amfChannelSet;
             gameService.registerPrincipal();
+            Multitouch.inputMode = MultitouchInputMode.GESTURE;
         }
 
         protected function resultHandler(event:ResultEvent):void {

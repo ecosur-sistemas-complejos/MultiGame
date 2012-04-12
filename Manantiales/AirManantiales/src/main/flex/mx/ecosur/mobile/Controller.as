@@ -51,6 +51,7 @@ import mx.messaging.messages.ErrorMessage;
 import mx.messaging.messages.IMessage;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
+import mx.rpc.remoting.RemoteObject;
 
 import spark.effects.Animate;
 import spark.effects.easing.Bounce;
@@ -65,6 +66,8 @@ import spark.effects.easing.Sine;
 public class Controller {
 
         private var _view:GameView;
+
+        private var gameService:RemoteObject;
     
         private var _gameId:int;
     
@@ -81,6 +84,7 @@ public class Controller {
         public function Controller(view:GameView) {
             super();
             this._view = view;
+            gameService = view.gameService;
             limit = 45 * 60 * 1000;
             timer = new Timer(1000,0);
             timer.addEventListener(TimerEvent.TIMER, updateTime);
@@ -140,18 +144,16 @@ public class Controller {
                     break;
                 case ManantialesEvent.CONDITION_RAISED:
                     checkCondition = CheckCondition(message.body);
-                        _view.alert("CheckCondition Raised! [" + checkCondition.reason + "]");
-//                    handleCheckConstraint (checkCondition);
+                    _view.alert("CheckCondition Raised! [" + checkCondition.reason + "]");
                     break;
                 case ManantialesEvent.CONDITION_RESOLVED:
                     checkCondition = CheckCondition(message.body);
-                        _view.alert("CheckCondition relieved! [" + checkCondition.reason + "]");
-//                    handleCheckConstraintResolved (checkCondition);
+                    _view.alert("CheckCondition relieved! [" + checkCondition.reason + "]");
                     break;
                 case ManantialesEvent.CONDITION_TRIGGERED:
                     checkCondition = CheckCondition(message.body);
                     _view.alert("Check condition triggered!")
-//                    handleCheckConstraintTriggered (checkCondition);
+                    refreshGame();
                     break;
                 case ManantialesEvent.SUGGESTION_EVALUATED:
                     suggestion = Suggestion(message.body);
@@ -170,6 +172,10 @@ public class Controller {
                     break;
                 }
             
+        }
+
+        private function refreshGame ():void {
+            gameService.getGame(_view.game.id);
         }
 
         public function updateGame(game:ManantialesGame):void {
@@ -406,6 +412,8 @@ public class Controller {
                 _view.timer.showMessage("45:00 / 45:00");
                 _view.status.flashMessage();
                 _view.timer.flashMessage();
+                timer.stop();
+                end(_view.game, "Time expired.")
             }
         }
 
@@ -545,7 +553,7 @@ public class Controller {
         private function sendMove(move:ManantialesMove):void {
             _view.status.showMessage("Processing move ...");
             this._executingMove = move;
-            _view.gameService.doMove(_view.game, move);
+            gameService.doMove(_view.game, move);
         }
 
         private function decorate(tok:ManantialesToken):void {
