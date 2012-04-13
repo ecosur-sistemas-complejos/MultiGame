@@ -63,7 +63,6 @@
             /* Setup the board for panning */
             board.addEventListener(TransformGestureEvent.GESTURE_PAN, controller.panHandler);
 
-            stage.addEventListener(TransformGestureEvent.GESTURE_SWIPE, controller.quitGame);
         }
 
         public function alert(msg:String):void {

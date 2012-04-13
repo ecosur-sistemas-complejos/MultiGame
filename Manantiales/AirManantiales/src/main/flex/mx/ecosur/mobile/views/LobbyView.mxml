@@ -263,7 +263,7 @@
         </s:layout>
         <s:Group id="games" horizontalCenter="0" height="200">
             <s:List id="gameGrid" width="1004" height="100%" doubleClickEnabled="true" doubleClick="joinGame(event)"
-                    itemRenderer="mx.ecosur.mobile.renderers.GameListRenderer" />
+                    itemRenderer="mx.ecosur.mobile.renderers.GameListRenderer" alpha="0.5" />
         </s:Group>
         <s:Group id="settings" horizontalCenter="0" verticalCenter="180">
             <s:layout>
