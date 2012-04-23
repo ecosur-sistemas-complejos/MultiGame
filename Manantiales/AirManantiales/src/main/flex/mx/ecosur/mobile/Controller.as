@@ -269,13 +269,13 @@ public class Controller {
             } else {
                 _view.status.color = Color.getColorCode(p.color);
                 _view.status.showMessage("Your turn.");
+                _executingMove = null;
             }
         }
     }
 
     /* Adds a move to the board that has arrived over the wire */
     public function addMove(move:ManantialesMove):void {
-        _executingMove = null;
         if (move.player.name != FlexGlobals.topLevelApplication.registrant.name) {
             _view.status.showMessage(move.player.name + " has moved.");
             var target:Ficha = Ficha(move.destinationCell);
@@ -520,9 +520,9 @@ public class Controller {
 
     private function validateMove(boardCell:RoundCell, token:ManantialesToken):Boolean {
         var ret:Boolean = false;
-        if (boardCell.color == token.cell.color && token.cell.color == _view.player.color && _view.player.turn) {
+        if (boardCell.color == token.cell.color && token.cell.color == _view.player.color) {
             ret = true;
-        } else if (boardCell.color == Color.UNKNOWN && _view.player.turn) {
+        } else if (boardCell.color == Color.UNKNOWN) {
             switch (token.cell.color) {
                 case Color.YELLOW:
                     ret = (boardCell.column < 5 && boardCell.row < 5);
@@ -538,9 +538,10 @@ public class Controller {
                     break;
             }
         }
-
+        /* It must be the current player's turn */
         ret = ret && _view.player.turn && _view.player.color == token.cell.color;
-
+        /* There cannot be a move executing */
+        ret = ret && _executingMove == null;
         return ret;
     }
 

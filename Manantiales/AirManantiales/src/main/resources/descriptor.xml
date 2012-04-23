@@ -25,13 +25,21 @@
         <requestedDisplayResolution>high</requestedDisplayResolution>
     </iPhone>
     <initialWindow>
-        <content>./${project.build.finalName}.swf</content>
+        <content>${project.build.finalName}.swf</content>
         <title>Manantiales de La Sierra</title>
+        <systemChrome>standard</systemChrome>
         <aspectRatio>landscape</aspectRatio>
-        <fullScreen>false</fullScreen>
-        <renderMode>cpu</renderMode>
-        <autoOrients>true</autoOrients>
-        <height>1024</height>
-        <width>768</width>
+        <transparent>false</transparent>
+        <visible>true</visible>
+        <minimizable>true</minimizable>
+        <maximizable>true</maximizable>
+        <resizable>true</resizable>
+        <width>1024</width>
+        <height>768</height>
+        <x>150</x>
+        <y>150</y>
+        <minSize>1024 768</minSize>
+        <maxSize>1024 768</maxSize>
     </initialWindow>
 </application>
+
