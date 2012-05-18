@@ -6,6 +6,9 @@
         xmlns:m="mx.ecosur.multigame.manantiales.*" xmlns:mx="library://ns.adobe.com/flex/mx"
         name="gameView" title="Manantiales de La Sierra - {game.mode}"
         creationComplete="init(event)" skinClass="mx.ecosur.mobile.skins.BitmapSkin">
+    <fx:Metadata>
+        [ResourceBundle('ManantialesAir')]
+    </fx:Metadata>
     <fx:Style>
         /* Some styles for board tokens */
         @font-face {
@@ -23,8 +26,6 @@
     </fx:Style>
     <fx:Script>
         <![CDATA[
-        import flash.text.TextLineMetrics;
-
         import mx.core.FlexGlobals;
         import mx.ecosur.mobile.Controller;
         import mx.ecosur.mobile.component.Alert;
@@ -53,7 +54,7 @@
             controller = new Controller(this);
             gameService.getGame(gameId);
             status.color = 0xFFFFFF;
-            status.showMessage("Loading game ..");
+            status.showMessage("{resourceManager.getString('ManantialesAir','game.loading')}");
 
             Multitouch.inputMode = MultitouchInputMode.GESTURE;
 
@@ -94,11 +95,11 @@
                result="controller.resultHandler(event)"
                fault="controller.faultHandler(event)" />
         <s:ArrayCollection id="tokenTypes">
-            <fx:Object label="Managed Forest" data="{TokenType.FOREST}" />
-            <fx:Object label="Moderate Ranching" data="{TokenType.MODERATE}" />
-            <fx:Object label="Intensive Ranching" data="{TokenType.INTENSIVE}"/>
-            <fx:Object label="Nursery Establishment" data="{TokenType.VIVERO}" includeIn="SILVOPASTORAL"/>
-            <fx:Object label="Silvopastoral Ranching" data="{TokenType.SILVOPASTORAL}" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','managed.forest')}" data="{TokenType.FOREST}" />
+            <fx:Object label="{resourceManager.getString('ManantialesAir','moderate.ranching')}" data="{TokenType.MODERATE}" />
+            <fx:Object label="{resourceManager.getString('ManantialesAir','intensive.ranching')}" data="{TokenType.INTENSIVE}"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','nursery.establishment')}" data="{TokenType.VIVERO}" includeIn="SILVOPASTORAL"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','silvopastoral.ranching')}" data="{TokenType.SILVOPASTORAL}" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
         </s:ArrayCollection>
     </fx:Declarations>
     <s:states>
@@ -109,10 +110,10 @@
         <s:State name="SILVO_PUZZLE"/>
     </s:states>
     <s:navigationContent>
-        <s:Button label="Back" buttonDown="endView()"  />
+        <s:Button label="{resourceManager.getString('ManantialesAir','button.back')}" buttonDown="endView()"  />
     </s:navigationContent>
     <s:actionContent>
-        <s:CalloutButton label="Chat" buttonDown="activateChat()" id="cbutton" >
+        <s:CalloutButton label="{resourceManager.getString('ManantialesAir','game.chat')}" buttonDown="activateChat()" id="cbutton" >
             <s:calloutContent>
                 <s:Group>
                    <cm:MobileChat id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
@@ -121,10 +122,10 @@
             </s:calloutContent>
         </s:CalloutButton>
         <s:Spacer width="20"/>
-        <s:CalloutButton label="Quit" id="qbutton">
+        <s:CalloutButton label="{resourceManager.getString('ManantialesAir','game.quit')}" id="qbutton">
             <s:calloutContent>
                 <s:VGroup>
-                    <s:Button label="Stop playing?" buttonDown="controller.quitGame()"/>
+                    <s:Button label="{resourceManager.getString('ManantialesAir','stop.playing')}" buttonDown="controller.quitGame()"/>
                 </s:VGroup>
             </s:calloutContent>
         </s:CalloutButton>
@@ -145,7 +146,7 @@
         <s:Group id="chartbox" width="300">
             <mx:PieChart id="chart" showDataTips="true" height="145" width="295" horizontalCenter="40" >
                 <mx:series>
-                    <mx:PieSeries dataProvider="{scorebox.data}" field="value" nameField="Name" />
+                    <mx:PieSeries dataProvider="{scorebox.data}" field="value" nameField="label" />
                 </mx:series>
             </mx:PieChart>
             <mx:Legend dataProvider="{chart}"/>

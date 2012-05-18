@@ -6,12 +6,14 @@
     <mx:Script>
         <![CDATA[
             import mx.controls.Alert;
+            import mx.resources.Locale;
 
             [Bindable]
             private var _html:String;
 
-            public function load(contentURL:String):void{
-                var urlRequest:URLRequest = new URLRequest(contentURL);
+            public function load(contentURL:String, locale:String):void{
+                locale = locale.substr(0,2);
+                var urlRequest:URLRequest = new URLRequest(contentURL+"?"+"locale="+locale);;
                 var urlLoader:URLLoader = new URLLoader();
                 urlLoader.addEventListener(Event.COMPLETE, urlLoadComplete);
                 urlLoader.addEventListener(IOErrorEvent.IO_ERROR, urlLoadError);

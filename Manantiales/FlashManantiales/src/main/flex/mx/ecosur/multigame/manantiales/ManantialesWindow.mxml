@@ -24,6 +24,9 @@
         import mx.events.MenuEvent;
         import mx.ecosur.multigame.entity.GamePlayer;
         import mx.ecosur.multigame.manantiales.enum.Mode;
+        import mx.managers.SystemManager;
+        import mx.resources.Locale;
+        import mx.resources.ResourceManager;
 
         /* required for compilation of class into runtime */
 
@@ -135,7 +138,8 @@
         private function handleMenuItemClick(evt:MenuEvent):void {
             if (evt.label == resourceManager.getString("Manantiales", "manantiales.menu.two.submenu")) {
                 _helpPanel = new HelpPanel();
-                _helpPanel.load("help-manantiales.jsp");
+                _helpPanel.load("help-manantiales.jsp", resourceManager.localeChain[0]);
+
                 _helpPanel.width = Math.min(width - 100, 600);
                 _helpPanel.height = height - 20;
                 _helpPanel.addEventListener("close", closeHelp);

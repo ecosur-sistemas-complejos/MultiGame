@@ -869,17 +869,16 @@ package mx.ecosur.multigame.gente{
         }
         
         private function validateMove(boardCell:BoardCell):Boolean{
-            
-            if(_moves.length == 0){
-                if(boardCell.row == Math.floor(_board.nRows / 2) && boardCell.column == Math.floor(_board.nCols / 2)){
-                    return true;
-                }else{
-                    return false;
-                }
-            }else if (boardCell.token == null){
-                return true;
+            var ret:Boolean = false;
+
+            if(_moves.length == 0)
+            {
+                if(boardCell.row == Math.floor(_board.nRows / 2) && boardCell.column == Math.floor(_board.nCols / 2))
+                    ret = true;
+            } else if (boardCell.token == null){
+                ret = true;
             }
-            return false;   
+            return ret && _executingMove == null;
         }
         
         private function getTeamMate():GamePlayer{

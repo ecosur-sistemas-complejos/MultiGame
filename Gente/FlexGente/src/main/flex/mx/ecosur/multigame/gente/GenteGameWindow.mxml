@@ -7,7 +7,7 @@
     
     <mx:Metadata>
         [Event(name="complete")]
-		[ResourceBundle("Commons")]
+        [ResourceBundle("Commons")]
         [ResourceBundle("Gente")]
     </mx:Metadata>
     
@@ -21,6 +21,9 @@
         import mx.ecosur.multigame.gente.entity.GenteMove;
         import mx.ecosur.multigame.gente.entity.GenteGame;
         import mx.ecosur.multigame.gente.entity.GentePlayer;
+        import mx.managers.SystemManager;
+        import mx.resources.Locale;
+        import mx.resources.ResourceManager;
 
         private var _controller:GenteGameController;
         private var _currentGame:GenteGame;
@@ -88,7 +91,7 @@
             if (evt.label == resourceManager.getString("Gente","gente.menu.two.submenu"))
             {
                 _helpPanel = new HelpPanel();
-                _helpPanel.load("help-gente.jsp");
+                _helpPanel.load("help-gente.jsp", resourceManager.localeChain[0]);
                 _helpPanel.width = Math.min(width - 100, 600);
                 _helpPanel.height = height - 20;
                 _helpPanel.addEventListener("close", closeHelp);

@@ -53,7 +53,7 @@
                     <mx:Label id="txtTrias" styleName="field"/>
                 </mx:GridItem>
                 <mx:GridItem>
-                    <mx:Label text="Tesseras" styleName="fieldLit"/>
+                    <mx:Label text="{resourceManager.getString('Gente','gente.panel.tesseras')}" styleName="fieldLit"/>
                 </mx:GridItem>
                 <mx:GridItem>
                     <mx:Label id="txtTesseras" styleName="field"/>

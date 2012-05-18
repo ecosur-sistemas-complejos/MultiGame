@@ -19,5 +19,5 @@
         <s:Spacer width="10"/>
         <s:Label text="{data.players}" fontSize="18"/>
     </s:HGroup>
-    <s:Spacer height="20"/>
+    <s:Spacer height="50"/>
 </s:ItemRenderer>

@@ -9,12 +9,13 @@ package mx.ecosur.mobile.skins {
 
     import spark.skins.mobile.ToggleSwitchSkin;
 
+    [ResourceBundle("ManantialesAir")]
     public class LogInSwitchSkin extends ToggleSwitchSkin {
 
         public function LogInSwitchSkin() {
             super();
-            selectedLabel = "Login";
-            unselectedLabel = "Logout";
+            selectedLabel = resourceManager.getString('ManantialesAir','login.switch.Login');
+            unselectedLabel = resourceManager.getString('ManantialesAir','login.switch.Logout');
         }
     }
 }

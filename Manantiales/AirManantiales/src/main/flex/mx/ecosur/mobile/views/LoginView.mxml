@@ -48,7 +48,7 @@
         }
 
         protected function faultHandler(event:FaultEvent, token:Object = null):void {
-            statusLabel.text = "Connection failed! [" + event.fault.message + "]";
+            statusLabel.text = "{resourceManager.getString('ManantialesAir','login.connection.failed')} [" + event.fault.message + "]";
             loggedin.selected = false;
         }
 
@@ -56,14 +56,18 @@
         ]]>
     </fx:Script>
 
+    <s:actionContent>
+        <s:Button label="{resourceManager.getString('ManantialesAir','login.configuration')}" buttonDown="configure(event)"/>
+    </s:actionContent>
+
     <s:Group horizontalCenter="0" verticalCenter="0">
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
         <s:Label id="remote" text="{remoteServer}" fontSize="18" textAlign="center" width="80%" horizontalCenter="0"
                 fontWeight="bold" fontStyle="italic" alpha="0.8"/>
-        <s:TextInput prompt="username" id="username" width="80%" focusIn="clearLabel(event)" horizontalCenter="0"/>
-        <s:TextInput prompt="password" id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"
+        <s:TextInput prompt="{resourceManager.getString('ManantialesAir','login.username')}" id="username" width="80%" focusIn="clearLabel(event)" horizontalCenter="0"/>
+        <s:TextInput prompt="{resourceManager.getString('ManantialesAir','login.password')}" id="password" displayAsPassword="true" width="80%" focusIn="clearLabel(event)"
                 horizontalCenter="0"/>
         <s:ToggleSwitch id="loggedin" selected="false" skinClass="mx.ecosur.mobile.skins.LogInSwitchSkin"
                     slideDuration="200" change="handleLogin(event)" horizontalCenter="0"/>

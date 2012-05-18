@@ -117,16 +117,16 @@ public class RuleFunctions {
         
         switch (condition.getType()) {
             case NORTHERN_BORDER_DEFORESTED:
-                ret = move.getBorder().equals(BorderType.NORTH);
+                if (move.getBorder() != null) ret = move.getBorder().equals(BorderType.NORTH);
                 break;
             case SOUTHERN_BORDER_DEFORESTED:
-                ret = move.getBorder().equals(BorderType.SOUTH);
+                if (move.getBorder() != null) ret = move.getBorder().equals(BorderType.SOUTH);
                 break;
             case WESTERN_BORDER_DEFORESTED:
-                ret = move.getBorder().equals(BorderType.WEST);
+                if (move.getBorder() != null) ret = move.getBorder().equals(BorderType.WEST);
                 break;
             case EASTERN_BORDER_DEFORESTED:
-                ret = move.getBorder().equals(BorderType.EAST);
+                if (move.getBorder() != null) ret = move.getBorder().equals(BorderType.EAST);
                 break;
             case MANANTIALES_DRY:
                 ret = move.isManantial();

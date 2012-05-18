@@ -1,33 +1,49 @@
 <?xml version="1.0"?>
 <s:View xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
-        title="Manantiales de La Sierra"  skinClass="mx.ecosur.mobile.skins.BitmapSkin">
+        title="Manantiales de La Sierra"  skinClass="mx.ecosur.mobile.skins.BitmapSkin" viewActivate="activate()">
+    <fx:Metadata>
+        [ResourceBundle('ManantialesAir')]
+    </fx:Metadata>
     <fx:Script>
         <![CDATA[
-        override public function createReturnObject():Object {
-            return server.text;
-        }
-        
-        protected function updateChoice(event:Event):void {
+            override public function createReturnObject():Object {
+                    return data;
+            }
 
-        }
+            protected function updateChoice(event:Event):void {
+                if (language.selectedItem == resourceManager.getString('ManantialesAir','language.english')) {
+                    resourceManager.localeChain = ["en_US"];
+                } else if (language.selectedItem == resourceManager.getString('ManantialesAir','language.spanish')) {
+                    resourceManager.localeChain = ["es_ES"];
+                }
+            }
 
+            private function activate():void {
+                if (resourceManager.localeChain == ["en_US"]) {
+                    language.selectedItem = resourceManager.getString('ManantialesAir','language.english');
+                } else if (resourceManager.localeChain == ["es_ES"]) {
+                    language.selectedItem = resourceManager.getString('Manantialesair','language.spanish');;
+                } else {
+                    trace("resourceManager localeChain not matched: ["  + resourceManager.localeChain + "]");
+                }
+
+                trace (resourceManager.localeChain);
+            }
         ]]>
     </fx:Script>
     <s:navigationContent>
-        <s:Button label="Back" buttonDown="navigator.popView()" />
+        <s:Button label="{resourceManager.getString('ManantialesAir','button.back')}" buttonDown="navigator.popView()" />
     </s:navigationContent>
     <s:Group horizontalCenter="0" verticalCenter="0">
         <s:layout>
             <s:VerticalLayout gap="10" paddingTop="10" paddingLeft="10" paddingRight="10" />
         </s:layout>
-        <s:Label text="Remote Server: " />
-        <s:TextInput id="server" width="80%" text="{data}"/>
         <s:SpinnerListContainer width="100">
-            <s:SpinnerList id="language" width="100%">
+            <s:SpinnerList id="language" width="100%" change="updateChoice(event)" >
                 <s:dataProvider>
                     <s:ArrayList>
-                        <fx:String>English</fx:String>
-                        <fx:String>Español</fx:String>
+                        <fx:String>{resourceManager.getString('ManantialesAir','language.english')}</fx:String>
+                        <fx:String>{resourceManager.getString('ManantialesAir','language.spanish')}</fx:String>
                     </s:ArrayList>
                 </s:dataProvider>
             </s:SpinnerList>

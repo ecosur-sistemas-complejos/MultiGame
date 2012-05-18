@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
     xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:me="mx.ecosur.multigame.manantiales.entity.*">
+    <fx:Metadata>
+        [ResourceBundle('ManantialesAir')]
+    </fx:Metadata>
     <fx:Declarations>
         <me:ManantialesPlayer id="player1"/>
         <me:ManantialesPlayer id="player2"/>
@@ -12,6 +15,9 @@
         import mx.collections.ArrayCollection;
         import mx.ecosur.multigame.enum.GameState;
         import mx.ecosur.multigame.manantiales.entity.*;
+
+        import mx.resources.IResourceManager;
+        import mx.resources.ResourceManager;
 
         private var _game:ManantialesGame;
         
@@ -43,7 +49,6 @@
             this._game = game;
         }
 
-
         public function updatePlayers ():void {
             _deforested = 0, _undeveloped = TERRITORY;
             for (var i:int = 0; i < _game.players.length; i++) {
@@ -61,7 +66,9 @@
             
             scoreGrid.dataProvider = _game.players;
             data = new ArrayCollection(
-                    [ { Name: "Deforested", value: _deforested}, { Name: "Undeveloped", value: _undeveloped}]);
+                    [ { Name: "Deforested", value: _deforested, label: resourceManager.getString("ManantialesAir","data.deforested")},
+                      { Name: "Undeveloped", value: _undeveloped, label: resourceManager.getString("ManantialesAir","data.undeveloped")}]
+            );
         }
 
         ]]>
@@ -70,9 +77,9 @@
                 skinClass="mx.ecosur.mobile.skins.GridSkin">
         <s:columns>
             <s:ArrayList>
-                <s:GridColumn dataField="name" headerText="Name"/>
-                <s:GridColumn dataField="score" headerText="Score"/>
-                <s:GridColumn dataField="premiums" headerText="Premiums"/>
+                <s:GridColumn dataField="name" headerText="{resourceManager.getString('ManantialesAir', 'scorebox.name')}"/>
+                <s:GridColumn dataField="score" headerText="{resourceManager.getString('ManantialesAir','scorebox.score')}"/>
+                <s:GridColumn dataField="premiums" headerText="{resourceManager.getString('ManantialesAir','scorebox.premiums')}"/>
             </s:ArrayList>
         </s:columns>
     </s:DataGrid>

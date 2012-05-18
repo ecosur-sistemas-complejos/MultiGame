@@ -4,6 +4,7 @@
         skinClass="mx.ecosur.mobile.skins.BitmapSkin">
     <fx:Metadata >
         [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
+        [ResourceBundle("ManantialesAir")]
     </fx:Metadata>
 
     <fx:Declarations>
@@ -130,11 +131,11 @@
         }
 
         protected function faultHandler(event:FaultEvent):void {
-            trace("Fault! [" + event.fault.message + "]");
+            trace("{resourceManager.getString('ManantialesAir','fault.message')} [" + event.fault.message + "]");
         }
 
         protected function messageFaultHandler(event:MessageFaultEvent):void {
-            trace("MessageFault! [" + event.faultString);
+            trace("{resoureceManager.getString('ManantialesAir','fault.message.fault')} [" + event.faultString);
         }
 
         protected function messageResultHandler(event:MessageEvent):void {
@@ -257,6 +258,11 @@
         }
         ]]>
     </fx:Script>
+
+    <s:actionContent>
+        <s:Button label="{resourceManager.getString('ManantialesAir','login.configuration')}" buttonDown="{navigator.pushView(ConfigurationView)}"/>
+    </s:actionContent>
+
     <s:Group id="boxes">
         <s:layout>
             <s:BasicLayout/>
@@ -271,18 +277,10 @@
             </s:layout>
             <s:SpinnerListContainer >
                 <s:SpinnerList id="modeList" dataProvider="{manModes}" width="100"/>
-                <s:SpinnerList id="language" width="80">
-                    <s:dataProvider>
-                        <s:ArrayList>
-                            <fx:String>English</fx:String>
-                            <fx:String>Español</fx:String>
-                        </s:ArrayList>
-                    </s:dataProvider>
-                </s:SpinnerList>
             </s:SpinnerListContainer>
-            <s:RadioButton groupName="robots" id="human" label="Humans" selected="true"/>
-            <s:RadioButton groupName="robots" id="ai" label="Robots"/>
-            <s:Button label="New Game" id="start" buttonDown="{createGame(event)}"/>
+            <s:RadioButton groupName="robots" id="human" label="{resourceManager.getString('ManantialesAir','lobby.human')}" selected="true"/>
+            <s:RadioButton groupName="robots" id="ai" label="{resourceManager.getString('ManantialesAir','lobby.robots')}"/>
+            <s:Button label="{resourceManager.getString('ManantialesAir','lobby.newgame')}" id="start" buttonDown="{createGame(event)}"/>
         </s:Group>
     </s:Group>
 </s:View>

@@ -129,12 +129,16 @@ public class ManantialesMove extends GridMove implements Comparable {
 
     @Transient
     public BorderType getBorder() {
-    	BorderType ret = null;
-    	if (destination != null) {
-    		ManantialesFicha f = (ManantialesFicha) destination;
-    		ret = f.getBorder();
-    	}
-    	return ret;
+        BorderType ret = BorderType.NONE;
+
+        if (getDestinationCell() != null) {
+            ManantialesFicha f = (ManantialesFicha) getDestinationCell();
+            ret = f.getBorder();
+        } else {
+            throw new RuntimeException("Border Request on Move with no Destination!");
+        }
+
+        return ret;
     }
 
     @Transient

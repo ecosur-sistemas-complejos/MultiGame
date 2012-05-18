@@ -10,6 +10,7 @@
         import mx.formatters.DateFormatter;
         import mx.ecosur.multigame.gente.entity.GentePlayer;
         import mx.ecosur.multigame.enum.Color;
+        import mx.resources.ResourceManager;
 
         private var _gentePlayer:GentePlayer;
 
@@ -58,7 +59,7 @@
                 <mx:Label id="playerTrias" styleName="field"/>
             </mx:GridItem>
             <mx:GridItem>
-                <mx:Label text="Tesseras" styleName="fieldLit"/>
+                <mx:Label text="{resourceManager.getString('Gente','gente.panel.tesseras')}" styleName="fieldLit"/>
             </mx:GridItem>
             <mx:GridItem>
                 <mx:Label id="playerTesseras" styleName="field"/>

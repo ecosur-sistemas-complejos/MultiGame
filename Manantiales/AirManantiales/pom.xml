@@ -37,6 +37,14 @@
                   <debug>true</debug>
                   <sourceFile>Manantiales.mxml</sourceFile>
                   <descriptorTemplate>target/classes/descriptor.xml</descriptorTemplate>
+                  <includeResourceBundles>
+                    <bundle>Manantiales</bundle>
+                  </includeResourceBundles>
+                  <localesCompiled>
+                      <compiled>en_US</compiled>
+                      <compiled>es_ES</compiled>
+                  </localesCompiled>
+                  <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
               </configuration>
           </plugin>
 

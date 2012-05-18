@@ -54,8 +54,7 @@ public class PuzzleSuggestion implements Suggestion {
         setMove ((ManantialesMove) move);
     }
 
-    //@OneToOne (cascade = CascadeType.ALL)
-    @Transient
+    @ManyToOne (cascade = CascadeType.ALL)
     public ManantialesMove getMove() {
         return move;
     }
@@ -72,7 +71,7 @@ public class PuzzleSuggestion implements Suggestion {
         return getSuggestor();
     }
 
-    @OneToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.ALL)
     public ManantialesPlayer getSuggestor() {
         return suggestor;
     }

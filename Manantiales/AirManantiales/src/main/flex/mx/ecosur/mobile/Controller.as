@@ -61,7 +61,13 @@ import spark.effects.animation.MotionPath;
 import spark.effects.animation.SimpleMotionPath;
 import spark.effects.easing.Sine;
 
+import mx.resources.IResourceManager;
+import mx.resources.ResourceManager;
+
+[ResourceBundle ("ManantialesAir")]
 public class Controller {
+
+    private var resourceManager:IResourceManager = ResourceManager.getInstance();
 
     private var _view:GameView;
 
@@ -142,15 +148,15 @@ public class Controller {
                 break;
             case ManantialesEvent.CONDITION_RAISED:
                 checkCondition = CheckCondition(message.body);
-                _view.alert("CheckCondition Raised! [" + checkCondition.reason + "]");
+                _view.alert(resourceManager.getString("ManantialesAir","checkcondition.raised") + " [" + checkCondition.reason + "]");
                 break;
             case ManantialesEvent.CONDITION_RESOLVED:
                 checkCondition = CheckCondition(message.body);
-                _view.alert("CheckCondition relieved! [" + checkCondition.reason + "]");
+                _view.alert(resourceManager.getString("ManantialesAir","checkcondition.resolved")+ "[" + checkCondition.reason + "]");
                 break;
             case ManantialesEvent.CONDITION_TRIGGERED:
                 checkCondition = CheckCondition(message.body);
-                _view.alert("Check condition triggered!")
+                _view.alert(resourceManager.getString("ManantialesAir","checkcondition.triggered"));
                 refreshGame();
                 break;
             case ManantialesEvent.SUGGESTION_EVALUATED:
@@ -164,7 +170,7 @@ public class Controller {
 
             case GameEvent.EXPIRED:
                 move = ManantialesMove(message.body);
-                end(_view.game, "Expired move.");
+                end(_view.game, resourceManager.getString("ManantialesAir","move.expired"));
                 break;
             default:
                 break;
@@ -198,10 +204,10 @@ public class Controller {
 
             if (p.name == FlexGlobals.topLevelApplication.registrant.name) {
                 _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage("It's your turn");
+                _view.status.showMessage(resourceManager.getString("ManantialesAir","your.turn"));
             }
         } else {
-            _view.status.showMessage("Waiting for more players ...");
+            _view.status.showMessage(resourceManager.getString("ManantialesAir","waiing"));
         }
 
         populateBoard(_view.game);
@@ -265,10 +271,10 @@ public class Controller {
             /* If active player is not current registrant, message the status box */
             if (p.name != FlexGlobals.topLevelApplication.registrant.name) {
                 _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage(p.name + "'s turn.");
+                _view.status.showMessage(p.name + " " + resourceManager.getString("ManantialesAir","player.turn"));
             } else {
                 _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage("Your turn.");
+                _view.status.showMessage(resourceManager.getString("ManantialesAir","your.turn"));
                 _executingMove = null;
             }
         }
@@ -290,8 +296,7 @@ public class Controller {
             var current:ManantialesToken = ManantialesToken(rc.token);
             var next:ManantialesToken = createToken(move.type);
             next.ficha = target;
-            animateMove(current, next, rc, dest);
-            //animateMessagedMove(current, next,  rc,  dest);
+            animateMessagedMove(current, next,  rc,  dest);
         }
     }
 
@@ -390,7 +395,7 @@ public class Controller {
             current += 1000;
             _view.timer.showMessage(currentTime() + " / 45:00");
         } else {
-            _view.status.showMessage("Game expired.")
+            _view.status.showMessage(resourceManager.getString("ManantialesAir","game.expired"))
             _view.timer.showMessage("45:00 / 45:00");
             _view.status.flashMessage();
             _view.timer.flashMessage();
@@ -433,7 +438,13 @@ public class Controller {
 
     private function refreshGame():void {
         gameService.getGame(_view.game.id);
-    }    protected function animateMove(start:ManantialesToken, end:ManantialesToken, roundCell:RoundCell, dest:Point):void {
+    }
+
+    protected function animateMessagedMove(start:ManantialesToken, end:ManantialesToken, roundCell:RoundCell, dest:Point) {
+        animateMove(start, end, roundCell,  dest);
+    }
+
+    protected function animateMove(start:ManantialesToken, end:ManantialesToken, roundCell:RoundCell, dest:Point):void {
 
         /* Sin easer */
         var sine:Sine = new Sine();
@@ -522,7 +533,9 @@ public class Controller {
         var ret:Boolean = false;
         if (boardCell.color == token.cell.color && token.cell.color == _view.player.color) {
             ret = true;
-        } else if (boardCell.color == Color.UNKNOWN) {
+        } else if (boardCell.color == Color.UNKNOWN &&
+                (token.type == TokenType.UNDEVELOPED || token.cell.color == _view.player.color))
+        {
             switch (token.cell.color) {
                 case Color.YELLOW:
                     ret = (boardCell.column < 5 && boardCell.row < 5);
@@ -546,7 +559,7 @@ public class Controller {
     }
 
     private function sendMove(move:ManantialesMove):void {
-        _view.status.showMessage("Processing move ...");
+        _view.status.showMessage(resourceManager.getString("ManantialesAir","move.processing"));
         this._executingMove = move;
         gameService.doMove(_view.game, move);
     }
