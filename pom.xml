@@ -53,6 +53,9 @@
         <name>Ecosur</name>
         <url>http://www.ecosur.mx</url>
     </organization>    
+    <scm>
+        <connection>scm:git:file://localhost/Users/awaterma/repository/multigame.super</connection>
+    </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.4.0.Beta2</drools.version>
@@ -60,7 +63,6 @@
         <flexmojos-version>4.1-beta</flexmojos-version>
     </properties>
     <dependencies>
-
         <!--  Fix for SLF4J binding (missing from drools-solver-core -->
         <!--  Use slf4j-jcl to show solver logging -->
         <dependency>
@@ -181,6 +183,13 @@
                             </configuration>
                         </plugin>
                     </reportPlugins>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
                 </configuration>
             </plugin>
         </plugins>
