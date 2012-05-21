@@ -459,8 +459,11 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
 
     @Test
     public void testBadYear () throws InvalidMoveException {
+
+        ManantialesFicha ficha = new ManantialesFicha(4,0, alice.getColor(), TokenType.MANAGED_FOREST);
         ManantialesMove move = new ManantialesMove ();
         move.setPlayer(alice);
+        move.setDestinationCell(ficha);
         move.setBadYear(true);
         game.move (move);
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
