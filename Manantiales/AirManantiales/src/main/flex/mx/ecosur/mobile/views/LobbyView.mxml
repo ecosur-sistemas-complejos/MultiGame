@@ -18,10 +18,10 @@
             message="messageResultHandler(event)"
             selector="NOTIFICATION_EVENT in ('CREATE','JOIN', 'DESTROY')"/>
         <s:ArrayCollection id="manModes">
-            <fx:Object label="Competitive" data="COMPETITIVE" />
-            <fx:Object label="Basic Puzzle" data="BASIC_PUZZLE" />
-            <fx:Object label="Silvopastoral" data="SILVOPASTORAL"/>
-            <fx:Object label="Final Puzzle" data="SILVO_PUZZLE"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','mode.competitive')}" data="COMPETITIVE" />
+            <!--<fx:Object label="{resourceManager.getString('ManantialesAir','mode.puzzle')}" data="BASIC_PUZZLE" />-->
+            <fx:Object label="{resourceManager.getString('ManantialesAir','mode.silvopastoral')}" data="SILVOPASTORAL"/>
+            <!--<fx:Object label="{resourceManager.getString('ManantialesAir','mode.silvo.puzzle'}" data="SILVO_PUZZLE"/>-->
         </s:ArrayCollection>
         <s:ArrayList id="strategies">
             <fx:String>SIMPLE</fx:String>
@@ -49,6 +49,8 @@
 
         import mx.rpc.events.FaultEvent;
         import mx.rpc.events.ResultEvent;
+
+        import spark.formatters.DateTimeFormatter;
 
         protected var modalities:ArrayCollection = new ArrayCollection();
 
@@ -203,7 +205,6 @@
                 var dao:GameDAO = GameDAO(_games [ i ]);
                 dataSource.addItem(model(dao));
             }
-
             gameGrid.dataProvider = dataSource;
         }
 
@@ -222,7 +223,9 @@
         private function model(dao:GameDAO):Object {
             var dataItem:Object = new Object();
             dataItem.gameType = dao.gameType;
-            dataItem.created = dao.creationDate;
+            var df:DateTimeFormatter = new DateTimeFormatter();
+            df.dateTimePattern = resourceManager.getString("ManantialesAir", "date.format");
+            dataItem.created = df.format (dao.creationDate);
             var p:String = "";
             for (var i:Number = 0; dao.players != null && i < dao.players.length; i++) {
                 p += dao.players[i] + ", ";
