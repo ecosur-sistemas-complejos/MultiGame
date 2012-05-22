@@ -23,7 +23,7 @@ import mx.events.EffectEvent;
 
 public class TokenStore extends UIComponent {
 
-    protected static const INITIAL_N_TOKENS:int = 50;
+    protected static const INITIAL_N_TOKENS:int = 91;
 
     protected var _bg:Shape;
     protected var _tokenSize:Number;
