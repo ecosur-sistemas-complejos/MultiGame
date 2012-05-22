@@ -8,7 +8,7 @@
       <version>2.1.0</version> 
   </parent> 
   <artifactId>air-manantiales</artifactId>
-  <packaging>air</packaging>
+  <packaging>swf</packaging>
   <name>Manantiales Mobile Air Application</name>
   <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
