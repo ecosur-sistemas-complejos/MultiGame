@@ -10,6 +10,44 @@
   <artifactId>air-manantiales</artifactId>
   <packaging>swf</packaging>
   <name>Manantiales Mobile Air Application</name>
+  <profiles>
+      <profile>
+          <id>air</id>
+          <build>
+              <defaultGoal>install</defaultGoal>
+              <plugins>
+                    <plugin>
+                      <groupId>org.sonatype.flexmojos</groupId>
+                      <artifactId>flexmojos-maven-plugin</artifactId>
+                      <version>4.1-beta</version>
+                      <extensions>true</extensions>
+                      <dependencies>
+                          <dependency>
+                              <groupId>com.adobe.flex</groupId>
+                              <artifactId>compiler</artifactId>
+                              <version>${flex-version}</version>
+                              <type>pom</type>
+                          </dependency>
+                      </dependencies>
+                      <configuration>
+                          <storepass>secret</storepass>
+                          <debug>true</debug>
+                          <sourceFile>Manantiales.mxml</sourceFile>
+                          <descriptorTemplate>target/classes/air-descriptor.xml</descriptorTemplate>
+                          <includeResourceBundles>
+                            <bundle>Manantiales</bundle>
+                          </includeResourceBundles>
+                          <localesCompiled>
+                              <compiled>en_US</compiled>
+                              <compiled>es_ES</compiled>
+                          </localesCompiled>
+                          <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
+                      </configuration>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+  </profiles>
   <build>
     <sourceDirectory>src/main/flex</sourceDirectory>
     <resources>
@@ -47,7 +85,6 @@
                   <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
               </configuration>
           </plugin>
-
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-resources-plugin</artifactId>

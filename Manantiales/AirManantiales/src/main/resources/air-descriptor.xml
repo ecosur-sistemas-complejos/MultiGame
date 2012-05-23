@@ -7,23 +7,6 @@
     <copyright>ECOSUR 2012</copyright>
     <versionNumber>1.0.0</versionNumber>
     <versionLabel>1.0.0</versionLabel>
-    <iPhone>
-        <InfoAdditions>
-            <![CDATA[
-                <key>UIDeviceFamily</key>
-                <array>
-                    <string>2</string>
-                </array>
-                <key>UIStatusBarStyle</key>
-                <string>UIStatusBarStyleBlackOpaque</string>
-                <key>UIRequiresPersistentWiFi</key>
-                <string>YES</string>
-                <key>UIApplicationExitsOnSuspend</key>
-                <string>YES</string>
-                ]]>
-        </InfoAdditions>
-        <requestedDisplayResolution>high</requestedDisplayResolution>
-    </iPhone>
     <initialWindow>
         <content>${project.build.finalName}.swf</content>
         <title>Manantiales de La Sierra</title>
@@ -36,6 +19,8 @@
         <resizable>false</resizable>
         <width>1024</width>
         <height>768</height>
+        <x>150</x>
+        <y>150</y>
         <minSize>1024 768</minSize>
         <maxSize>1024 768</maxSize>
     </initialWindow>
