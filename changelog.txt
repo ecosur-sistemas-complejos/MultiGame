@@ -73,3 +73,16 @@ FINAL Release Date: 14/12/11
     MG-84    FIXED   Full Games available to other players to JOIN
     MG-85    FIXED   Fix naming scheme
     MG-88    FIXED   JMeter Integration Tests
+
+2.1.0 Release Date: 21/05/12
+    [MG-92]  N/REP   Robots in GENTE can keep playing after a win
+    [MG-96]  FIXED   Language switch should change session's locale
+    [MG-99]  FIXED   NPE in Effects Cleared Area Rule
+    [MG-101] FIXED   "téseras" is misspelled as "tesseras" in spanish-language version
+    [MG-104] FIXED   Typo in "Calificar Movimiento" dialog
+    [MG-95]  FIXED   Migrate Game specific Entity Classes from FlexCommon to Respective Flex Game implementations
+    [MG-97]  FIXED   IL8N for Manantiales iPad Game
+    [MG-98]  FIXED   Multi-Touch for GameBoard in Manantiales iPad
+    [MG-87]  FIXED   iPad deployment with Flex 4.6
+    [MG-27]  FIXED   Update to Drools 5.3
+    [MG-89]  FIXED   Update infrastructure on server to restart on reboot
