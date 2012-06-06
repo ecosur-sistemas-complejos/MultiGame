@@ -7,6 +7,3 @@
 [submodule "Games"]
 	path = Games
 	url = git://github.com/ecosur-sistemas-complejos/MultiGame-Games.git
-[submodule "Research"]
-	path = Research
-	url = git@github.com:ecosur-sistemas-complejos/MultiGame-Research.git

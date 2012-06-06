@@ -24,6 +24,7 @@ If you're using git-flow, you could then start work on "featureName" with the fo
 
 NOTE: Be sure to use "git submodule update" when moving in-between branches at the top-level.
 
+
 JBOSS AS6 CONFIGURATION
 
 1. MySQL-DS.xml and Persistence.xml.
@@ -137,54 +138,59 @@ the EAR file is being deployed:
     if you use the "_default" Glassfish Derby datasource.
 
 
+FLEX CONFIGURATION
+
+BLAZEDS
+
+Two jar files from the "blazeds-3.3 turnkey distribution" are required to be placed in an accessible
+"lib" directory on the JBoss server (this has not been tested on Glassfish). These files are
+"flex-tomcat-common.jar" and "flex-tomcat-server.jar". They are used by BLAZEDS to perform remote
+authentication for the AdobeAIR/mobile client.
+
+On my development machine, I place both files into the <<JBOSS_HOME>>/server/default/lib folder.
+
+As the 2.1 project evolves, these files will be placed/located into a suitable maven repository
+for downstream use.
+
+Please see the following link for context:
+
+    http://livedocs.adobe.com/blazeds/1/blazeds_devguide/help.html?content=services_security_2.html
+
+And the following link to download the "turnkey" install:
+
+    http://opensource.adobe.com/wiki/display/blazeds/download+blazeds+3
+
+
 FLEXMOJOS INTERNATIONALIZATION CONFIGURATION
 
  This project is internationalized in English and Spanish, so it requires access to
  the Spanish flex framework locale files.  
 
  Unfortunately flex mojos requires localized versions of the flashplayer core libraries. 
- These must be imported from the us_US bundle.
+ These must be imported from the us_US bundle. (Please replace "${flex-version}" below
+ with the current version as defined in the games-module POM.)
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=flash-integration
-     -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
-     -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/flash-integration_rb.swc
+     -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
+     -Dfile=/path/to/flex-sdk/frameworks/locale/en_US/flash-integration_rb.swc
 
  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=playerglobal
-    -Dversion=4.1.0.16076 -Dclassifier=es_ES -Dpackaging=rb.swc
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/locale/en_US/playerglobal_rb.swc
+    -Dversion=${flex-version} -Dclassifier=es_ES -Dpackaging=rb.swc
+    -Dfile=/path/to/flex-sdk/frameworks/locale/en_US/playerglobal_rb.swc
 
  For more information:
     http://groups.google.com/group/flex-mojos/browse_thread/thread/5b5ff62290d1cb56/d7013abdae604828
 
 
-FLEX CONFIGURATION
+FLEX MOBILE THEME
 
-FRAMEWORK RUNTIME SHARED LIBRARIES
+The "mobile" theme is available with the Flex SDK, under the frameworks/mobile path. Please install the correct
+version with the install plugin.  The following works well (please replace {flex-version} with the current
+version):
 
-  This project uses signed framework libraries distributed by adobe and not present
-  in public repositories for legal reasons.
+mvn install:install-file -Dfile=mobile.swc -DgroupId=com.adobe.flex.framework -DartifactId=mobile
+    -Dpackaging=swc -Dversion={flex-version}  -DgeneratePom=true
 
-  These must be imported into your local repository
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=textLayout
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/textLayout_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=framework
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/framework_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=spark
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/spark_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=sparkskins
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/sparkskins_1.1.0.604.swz
-
-  mvn install:install-file -DgroupId=com.adobe.flex.framework -DartifactId=rpc
-    -Dversion=4.1.0.16076 -Dpackaging=swz
-    -Dfile=/path/to/flex-sdk-4.1.0.16076/frameworks/rsls/rpc_1.1.0.604.swz
 
 FLEX UNIT 4
 
@@ -199,4 +205,3 @@ FLEX UNIT 4
 
 **  All other dependencies are managed by means of Maven and repositories included in 
     the top-level pom.xml. **
-

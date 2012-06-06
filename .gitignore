@@ -127,3 +127,9 @@
 /.project
 /.settings/
 /multi-game.iws/.intellij/
+
+multigame.super.iws
+multigame.super.ipr
+release.properties
+pom.xml.releaseBackup
+pom.xml.tag
