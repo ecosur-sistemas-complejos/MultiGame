@@ -1,13 +1,26 @@
 GETTING STARTED
 
+GIT
+
+Multi-Game uses Git for version control. The top-level project (MultiGame) and all
+public submodules are stored on GitHub: 
+
+https://github.com/ecosur-sistemas-complejos/MultiGame
+
+All releases are tagged and two main branches exist: Master and Development. The Master
+branch always contains the latest "released" code, while development contains the working
+branch.
+
+
 SUBMODULES
 
 Multi-Game uses git submodules to reference the dependent projects that make it work.  
 We have split off the project into four separate aspects: Deploy, Engine, Games and
-Research.  Each submodule contains it's entire history from the onset of the project
-and will allow us to publish our finished games and research more quickly.
+Research.  Each submodule contains it's entire history from the onset of the project, with
+all history prior to the division into submodules held in the top-level project.
 
-To get started right away, simply do the following from the top of this project (MultiGame):
+To get started, simply do the following from the top of this project (MultiGame) after
+your successful clone:
 
     $git submodule init
     $git submodule update
@@ -70,6 +83,10 @@ MYSQL DATABASE CONFIGURATION
 
 
 GLASSFISH 3.1 CONFIGURATION
+
+NOTE: Glassfish is no longer officially supported, but the following instructions
+have worked on previous releases.
+
 
 The following configuration changes must be made on the Glassfish server to which
 the EAR file is being deployed:
