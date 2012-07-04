@@ -7,7 +7,7 @@
     <parent>
         <artifactId>manantiales-module</artifactId>
         <groupId>mx.ecosur</groupId>
-        <version>2.1.1</version>
+        <version>2.1.2-SNAPSHOT</version>
     </parent>
     <organization>
         <name>ECOSUR</name>
