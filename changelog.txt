@@ -60,21 +60,21 @@ BETA-2 Release Date: 15/Nov/11
     MG-68    FIXED  Rename Game Mode ENUMS
     MG-69    FIXED  Implement 45 Minute Time Limit
 
-RC-1 Release Date: 25/11/11
+RC-1 Release Date: 25/Nov/11
     MG-73    FIXED   SimpleAgent suggesting moves that are INVALID
     MG-75    FIXED   After passing an INVALID move, Robots create problems for determing NextPlayer
     MG-76    FIXED   Check Conditions Triggered Incorrectly
     MG-74    FIXED   Update Manantiales Documentation to reflect UserGuide from Luis
     MG-77    FIXED   Bonuses Awarded After 3 NOT 4 Points in Silvopastoral Modalities
 
-FINAL Release Date: 14/12/11
+FINAL Release Date: 14/Dec/11
     MG-50    FIXED   Runtime and Custom Exception Reasons Only in English
     MG-83    FIXED   Out of Memory Error
     MG-84    FIXED   Full Games available to other players to JOIN
     MG-85    FIXED   Fix naming scheme
     MG-88    FIXED   JMeter Integration Tests
 
-2.1.0 Release Date: 21/05/12
+2.1.0 Release Date: 21/May/12
     [MG-92]  N/REP   Robots in GENTE can keep playing after a win
     [MG-96]  FIXED   Language switch should change session's locale
     [MG-99]  FIXED   NPE in Effects Cleared Area Rule
@@ -84,5 +84,10 @@ FINAL Release Date: 14/12/11
     [MG-97]  FIXED   IL8N for Manantiales iPad Game
     [MG-98]  FIXED   Multi-Touch for GameBoard in Manantiales iPad
     [MG-87]  FIXED   iPad deployment with Flex 4.6
-    [MG-27]  FIXED   Update to Drools 5.3
+    [MG-27]  FIXED   Update to Drools 5.4
     [MG-89]  FIXED   Update infrastructure on server to restart on reboot
+
+2.1.1 Release Date: 04/Jul/12
+    [MG-107] WNF     Class Cast Exception in HornetQ JMS
+    [MG-108] FIXED   Unable to continue playing after 50 moves
+    [MG-114] FIXED   When player gets turn, cannot place token on board
