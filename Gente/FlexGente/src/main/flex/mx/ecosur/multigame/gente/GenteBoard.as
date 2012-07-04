@@ -12,12 +12,7 @@
 package mx.ecosur.multigame.gente {
     
     import flash.events.Event;
-
-import flash.text.TextField;
-
-import flash.text.TextFormat;
-
-import mx.controls.Image;
+    import mx.controls.Image;
     import mx.core.UIComponent;
     import mx.ecosur.multigame.component.BoardCell;
     import mx.ecosur.multigame.component.Token;

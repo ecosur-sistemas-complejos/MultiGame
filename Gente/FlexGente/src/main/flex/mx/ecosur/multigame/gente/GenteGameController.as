@@ -761,6 +761,7 @@ package mx.ecosur.multigame.gente{
         } 
         
         private function initTurn():void{
+            _executingMove = null;
             _tokenStore.active = true;
             _currentPlayer.play();
         }

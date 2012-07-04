@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox 
-	xmlns:mx="http://www.adobe.com/2006/mxml" 
-	xmlns:component="mx.ecosur.multigame.component.*" 
-	xmlns:pente="mx.ecosur.multigame.gente.*"
-	width="100%" height="100%" creationComplete="init()" remove="destroy()">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:component="mx.ecosur.multigame.component.*"
+         xmlns:pente="mx.ecosur.multigame.gente.*" width="100%" height="100%" creationComplete="init()" remove="destroy()">
     
     <mx:Metadata>
         [Event(name="complete")]
