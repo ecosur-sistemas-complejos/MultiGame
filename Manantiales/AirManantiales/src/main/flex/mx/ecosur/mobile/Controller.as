@@ -129,7 +129,6 @@ public class Controller {
             case ManantialesEvent.BEGIN:
                 game = ManantialesGame(message.body);
                 updateGame(game);
-                updatePlayers(game);
                 break;
             case ManantialesEvent.CHAT:
                 updateChat(ChatMessage(message.body));
@@ -144,7 +143,7 @@ public class Controller {
                 break;
             case ManantialesEvent.PLAYER_CHANGE:
                 game = ManantialesGame(message.body);
-                updatePlayers(game);
+                updateGame(game);
                 break;
             case ManantialesEvent.CONDITION_RAISED:
                 checkCondition = CheckCondition(message.body);
@@ -167,7 +166,6 @@ public class Controller {
                 suggestion = Suggestion(message.body);
 //                    _suggestionHandler.removeSuggestion (suggestion);
                 break;
-
             case GameEvent.EXPIRED:
                 move = ManantialesMove(message.body);
                 end(_view.game, resourceManager.getString("ManantialesAir","move.expired"));
@@ -257,25 +255,27 @@ public class Controller {
     public function updatePlayers(game:ManantialesGame):void {
         _view.scorebox.game = game;
         _view.scorebox.updatePlayers();
+        _executingMove = null;
 
         if (game.state != GameState.ENDED) {
             var p:ManantialesPlayer;
 
             for (var i:int = 0; i < game.players.length; i++) {
                 var t:ManantialesPlayer = ManantialesPlayer(game.players [ i ]);
+                /* One player will always have the turn */
                 if (t.turn) {
                     p = t;
                     break;
                 }
             }
+
             /* If active player is not current registrant, message the status box */
             if (p.name != FlexGlobals.topLevelApplication.registrant.name) {
                 _view.status.color = Color.getColorCode(p.color);
-                _view.status.showMessage(p.name + " " + resourceManager.getString("ManantialesAir","player.turn"));
+                _view.status.showMessage(p.name + resourceManager.getString("ManantialesAir","player.turn"));
             } else {
                 _view.status.color = Color.getColorCode(p.color);
                 _view.status.showMessage(resourceManager.getString("ManantialesAir","your.turn"));
-                _executingMove = null;
             }
         }
     }

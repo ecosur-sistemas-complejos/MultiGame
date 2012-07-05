@@ -11,7 +11,7 @@
         import mx.rpc.events.ResultEvent;
 
         [Bindable]
-        public static var remoteServer:String = "10.1.3.6";
+        public static var remoteServer:String = "10.42.43.1";
 
         protected function handleLogin(event:Event):void {
             establishAMF();
