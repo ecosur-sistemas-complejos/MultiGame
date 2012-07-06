@@ -2,8 +2,13 @@ GETTING STARTED
 
 GIT
 
-Multi-Game uses Git for version control. The top-level project (MultiGame) and all
-public submodules are stored on GitHub: 
+Multi-Game uses Git for version control. If you are not familiar with Git, you can 
+learn about how to use it (after downloading a distribution) with the following
+tutorial on GitHub:
+
+http://try.github.com/levels/1/challenges/1
+
+The top-level project (MultiGame) and all public submodules are stored on GitHub: 
 
 https://github.com/ecosur-sistemas-complejos/MultiGame
 
