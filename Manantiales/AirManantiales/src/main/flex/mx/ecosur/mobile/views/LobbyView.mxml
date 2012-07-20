@@ -147,13 +147,13 @@
             switch (message.headers.NOTIFICATION_EVENT) {
                 case NotificationEvent.CREATE:
                     trace("Creating DAO: " + dao);
-                    if (dao.gameType != "GENTE") {
+                    if (dao.gameType != "Gente") {
                         _games.addItem(dao);
                     }
                     break;
                 case NotificationEvent.DESTROY:
                     trace("Destroying DAO: " + dao);
-                    if (dao.gameType != "GENTE") {
+                    if (dao.gameType != "Gente") {
                         var idx:int = findIndex(dao);
                         trace("Index to be removed: " + idx);
                         if (idx > 0)
@@ -162,7 +162,7 @@
                     break;
                 case NotificationEvent.JOIN:
                     trace("Join event for DAO: " + dao);
-                    if (dao.gameType != "GENTE") {
+                    if (dao.gameType != "Gente") {
                         var idx:int = findIndex(dao);
                         trace("Index to be updated: " + idx);
                         if (idx > 0) {
