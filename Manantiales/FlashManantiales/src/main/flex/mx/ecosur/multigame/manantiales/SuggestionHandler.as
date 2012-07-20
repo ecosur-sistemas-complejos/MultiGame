@@ -255,8 +255,8 @@ import mx.effects.AnimateProperty;
             }
             
             // remove dragged image
-            if (evt.dragSource is ManantialesToken) {
-                var previous:ManantialesToken = ManantialesToken (evt.dragSource);
+            if (evt.dragInitiator is ManantialesToken) {
+                var previous:ManantialesToken = ManantialesToken (evt.dragInitiator);
                 if (previous != null && previous.ficha.column > 0 && previous.ficha.row > 0) {
                     var boardCell:BoardCell = _controller._gameWindow.board.getBoardCell(previous.cell.column, previous.cell.row);
                     var undeveloped:UndevelopedToken = new UndevelopedToken();

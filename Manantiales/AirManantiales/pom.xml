@@ -31,7 +31,7 @@
                       </dependencies>
                       <configuration>
                           <storepass>secret</storepass>
-                          <debug>true</debug>
+                          <debug>${debug}</debug>
                           <sourceFile>Manantiales.mxml</sourceFile>
                           <descriptorTemplate>target/classes/air-descriptor.xml</descriptorTemplate>
                           <includeResourceBundles>
@@ -72,7 +72,7 @@
               </dependencies>
               <configuration>
                   <storepass>secret</storepass>
-                  <debug>true</debug>
+                  <debug>${debug}</debug>
                   <sourceFile>Manantiales.mxml</sourceFile>
                   <descriptorTemplate>target/classes/descriptor.xml</descriptorTemplate>
                   <includeResourceBundles>
