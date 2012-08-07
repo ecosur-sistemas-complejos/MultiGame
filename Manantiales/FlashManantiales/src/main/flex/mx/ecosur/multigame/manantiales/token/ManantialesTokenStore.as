@@ -45,7 +45,6 @@ package mx.ecosur.multigame.manantiales.token
                 var target:ManantialesToken = ManantialesToken(event.target);
                 target.setStyle ('interactionMode', InteractionMode.MOUSE);
                 target.selected = true;
-                target.placed = false;
             }
         }
 
@@ -94,7 +93,7 @@ package mx.ecosur.multigame.manantiales.token
             if (evt.dragSource.hasFormat("token")){
                 var token:ManantialesToken = ManantialesToken(evt.dragSource.dataForFormat("token"));
 
-                if(token.placed && token.type == _tokenType && token.cell.color == _currentPlayer.color){
+                if(token.type == _tokenType && token.cell.color == _currentPlayer.color){
                     DragManager.acceptDragDrop(this);
                 }
             }

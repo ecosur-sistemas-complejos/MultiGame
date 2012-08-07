@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2010 ECOSUR, Andrew Waterman
+* Copyright (C) 2010-2012 ECOSUR, Andrew Waterman
 *
 * Licensed under the Academic Free License v. 3.2.
 * http://www.opensource.org/licenses/afl-3.0.php
@@ -1158,7 +1158,6 @@ public class ManantialesRulesTest extends JMSTestCaseAdapter {
         bob.setTurn(true);
         ManantialesMove move = new ManantialesMove (bob, man1, man3);
         game.move (move);
-
         assertEquals (MoveStatus.EVALUATED, move.getStatus());
         ArrayList filter = new ArrayList();
         List<Message> messageList = mockTopic.getReceivedMessageList();

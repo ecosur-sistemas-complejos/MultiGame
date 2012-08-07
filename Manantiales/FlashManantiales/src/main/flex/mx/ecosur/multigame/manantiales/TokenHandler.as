@@ -127,19 +127,20 @@ import flash.events.MouseEvent;
 
                 // define target cell
                 var targetCell:BoardCell = BoardCell(evt.currentTarget);
+
+                /* Get source */
                 var sourceToken:ManantialesToken = ManantialesToken (evt.dragSource.dataForFormat("source"));
 
-                if (sourceToken.placed) {
-                    if (sourceToken != null && sourceToken.cell != null) {
-                        move.currentCell = sourceToken.cell;
-                        var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(
-                                sourceToken.cell.column, sourceToken.cell.row));
-                        sourceCell.token = new UndevelopedToken();
-                        sourceCell.reset();
-                    }
+                if (sourceToken != null && sourceToken.cell != null) {
+                    move.currentCell = sourceToken.cell;
+                    var sourceCell:RoundCell = RoundCell (this._gameWindow.board.getBoardCell(
+                            sourceToken.cell.column, sourceToken.cell.row));
+                    sourceCell.token = new UndevelopedToken();
+                    sourceCell.reset();
                 }
 
-                if (targetCell.token.cell != null) {
+                /* Check for a non null cell and actual location on the board, otherwise this is from the token tray  */
+                if (targetCell.token.cell != null && targetCell.row > 0 && targetCell.column > 0 instanceof Ficha) {
                     move.currentCell = Ficha (targetCell.token.cell);
                 }
 
@@ -150,6 +151,7 @@ import flash.events.MouseEvent;
                 move.destinationCell = destination;
                 move.mode = _mode;
 
+                /* TODO: This switch needs cleaning up, and is not currently accurate (if working) */
                 if (move.currentCell == null
                         && (destToken.cell.color == _currentPlayer.color || destToken.cell.color == Color.UNKNOWN))
                 {
@@ -163,7 +165,10 @@ import flash.events.MouseEvent;
                         move.currentCell != null)
                 {
                     decrementStore(Ficha (move.destinationCell));
-                    incrementStore(Ficha (move.currentCell));
+                    if (move.currentCell instanceof Ficha)
+                        incrementStore(Ficha (move.currentCell));
+                    else
+                        move.currentCell = null;    // hack
                     move.player = _currentPlayer;
                     _gameWindow.controller.sendMove(move);
 

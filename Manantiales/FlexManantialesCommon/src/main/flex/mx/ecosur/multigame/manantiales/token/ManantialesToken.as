@@ -18,8 +18,7 @@ package mx.ecosur.multigame.manantiales.token
         protected var _txt:Label;
         protected var _ficha:Ficha;
         protected var _type:String;
-        protected var _placed:Boolean;
-    
+
         public function ManantialesToken()
         {
             super();
@@ -153,14 +152,6 @@ package mx.ecosur.multigame.manantiales.token
             token.width = width;
             token.height = height;
             return IFlexDisplayObject(token);
-        }
-
-        public function get placed():Boolean {
-            return _placed;
-        }
-
-        public function set placed(value:Boolean):void {
-            _placed = value;
         }
     }
 }

@@ -149,7 +149,7 @@ import mx.ecosur.multigame.util.MessageReceiver;
         }
 
         public function sendMove (move:ManantialesMove):void {
-            /* forcibly set the mode to that current state */
+            /* ensure the mode set to current state */
             move.mode = _game.mode;
             _gameWindow.gameStatus.showMessage(resourceManager.getString(
                     "Manantiales", "manantiales.move.processing"), Color.getColorCode(_currentPlayer.color));
