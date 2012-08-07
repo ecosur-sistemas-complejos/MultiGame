@@ -139,8 +139,7 @@ import flash.events.MouseEvent;
                     sourceCell.reset();
                 }
 
-                /* Check for a non null cell and actual location on the board, otherwise this is from the token tray  */
-                if (targetCell.token.cell != null && targetCell.row > 0 && targetCell.column > 0 instanceof Ficha) {
+                if (targetCell.token.cell != null) {
                     move.currentCell = Ficha (targetCell.token.cell);
                 }
 
