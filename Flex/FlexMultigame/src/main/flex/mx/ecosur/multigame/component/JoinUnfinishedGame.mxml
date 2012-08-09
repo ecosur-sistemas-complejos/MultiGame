@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" width="100%"
+          title="{resourceManager.getString('Lobby', 'unfinished.panel.title')}" creationComplete="init(event)">
+
+    <mx:Metadata>
+        [Event(name="gameChosen", type="mx.ecosur.multigame.event.PlayEvent")]
+        [ResourceBundle("Lobby")]
+    </mx:Metadata>
+
+    <mx:Script>
+        <![CDATA[
+        import mx.ecosur.multigame.dao.GameDAO;
+        import mx.ecosur.multigame.enum.GameState;
+        import mx.formatters.DateFormatter;
+        import mx.ecosur.multigame.event.PlayEvent;
+
+        import mx.collections.ArrayCollection;
+        import mx.managers.CursorManager;
+        import mx.messaging.events.MessageFaultEvent;
+        import mx.rpc.AsyncToken;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
+
+        import mx.controls.Alert;
+        import mx.ecosur.multigame.entity.Registrant;
+        import mx.ecosur.multigame.entity.Agent;
+        import mx.ecosur.multigame.entity.Game;
+
+        public var agent:Agent;
+        public var player:Registrant;
+        private var _games:ArrayCollection;
+
+        public function init(event:Event):void {
+            _games = new ArrayCollection();
+            gameService.getUnfinishedGames(player);
+        }
+
+        public function addGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            return addDAO(dao);
+        }
+
+        public function removeGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            return removeDAO(dao);
+        }
+
+        public function updateGame(game:Game):Boolean {
+            var dao:GameDAO = new GameDAO();
+            dao.initialize(game);
+            return updateDAO(dao);
+        }
+
+        function addDAO(dao:GameDAO):Boolean {
+            if (_games == null) 
+                _games = new ArrayCollection();
+            var ret:Boolean = false;
+            if (containsPlayer(dao)) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var d:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (d.gameId == dao.gameId) {
+                        idx = i;
+                    }
+                }
+
+                if (idx == -1) {
+                    _games.addItem(dao);
+                    updateDataGrid();
+                } else
+                    ret = false;
+            }
+            return ret;
+        }
+
+        function removeDAO(dao:GameDAO):Boolean {
+            var ret:Boolean = (_games != null);
+            if (ret) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var d:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (d.gameId == dao.gameId) {
+                        idx = i;
+                    }
+                }
+
+                if (idx >= 0) {
+                    _games.removeItemAt(idx);
+                    updateDataGrid();
+                } else
+                    ret = false;
+
+            }
+
+            return ret;
+        }
+
+        function updateDAO(dao:GameDAO):Boolean {
+            var ret:Boolean = (_games != null);
+            if (ret && containsPlayer(dao)) {
+                var idx:int = -1;
+                for (var i:int = 0; i < _games.length; i++) {
+                    var g:GameDAO = GameDAO(_games.getItemAt(i));
+                    if (g.gameId == dao.gameId) {
+                        idx = i;
+                    }
+                }
+
+                if (idx >= 0) {
+                    _games.removeItemAt(idx);
+                    _games.addItemAt(dao, idx);
+                    updateDataGrid();
+                } else
+                    ret = false;
+            }
+            return ret;
+        }
+
+        public function reload(event:Event):void {
+            var token:AsyncToken = gameService.getUnfinishedGames(player);
+            token.resultHandler = resultHandler;
+            token.faultHandler = faultHandler;
+        }
+
+        private function resultHandler(event:ResultEvent):void {
+            if (gamesDataGrid != null && gamesDataGrid.selectedItem == null) {
+                _games = ArrayCollection(event.result);
+                updateDataGrid();
+            }
+        }
+
+        private function messageFaultHandler (event:MessageFaultEvent):void {
+            CursorManager.removeBusyCursor();
+            Alert.show("Error [" + event.faultString + "]");
+        }
+
+        private function faultHandler(event:FaultEvent):void {
+            CursorManager.removeBusyCursor();
+            Alert.show(event.fault.faultString,
+                    "Error [" + event.fault.faultString + "]");
+        }
+
+        private function updateDataGrid():void {
+            var game:GameDAO;
+            var dataProvider:ArrayCollection = new ArrayCollection();
+            var dataItem:Object;
+            var df:DateFormatter = new DateFormatter();
+            df.formatString = "DD/MM/YYYY H:NN";
+            for (var i:Number = 0; i < _games.length; i++) {
+                game = GameDAO (_games.getItemAt(i));
+                dataItem = new Object();
+                dataItem.created = df.format(game.creationDate);
+                dataItem.gameType = game.gameType;
+                dataItem.players = extractPlayers(game);
+                dataItem.status = GameState.getDescription(game.status);
+                dataProvider.addItem(dataItem);
+            }
+
+            if (gamesDataGrid)
+                gamesDataGrid.dataProvider = dataProvider;
+        }
+
+        private function extractPlayers(game:GameDAO):String {
+            var ret:String = "";
+            for (var i:Number = 0; game.players != null && i < game.players.length; i++) {
+                ret += game.players[i] + ", ";
+            }
+
+            ret = ret.substring(0, ret.length - 2);
+            return ret;
+        }
+
+        private function joinGame():void {
+            CursorManager.setBusyCursor();
+            var idx:int = gamesDataGrid.selectedIndex;
+            if (idx < 0) idx = 0;
+            var dao:GameDAO = GameDAO(_games.getItemAt(idx));
+            dispatchEvent(new PlayEvent("gameChosen", dao.gameId,  dao.gameType, player));
+        }
+
+        private function containsPlayer(dao:GameDAO):Boolean {
+            var ret:Boolean = false;
+            for (var i:int = 0; i < dao.players.length; i++) {
+                if (dao.players[i] == player.name) {
+                    ret = true;
+                    break;
+                }
+            }
+
+            return ret;
+        }
+
+
+        ]]>
+    </mx:Script>
+    
+    <mx:RemoteObject id="gameService" destination="gameService" result="resultHandler(event)" fault="faultHandler(event)" />
+
+    <mx:VBox width="100%">
+        <mx:DataGrid id="gamesDataGrid" width="100%" rowCount="3" minWidth="700">
+            <mx:columns>
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column1')}"
+                                   dataField="created" width="120"/>
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column2')}"
+                                   dataField="gameType" width="80"/>
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column3')}"
+                                   dataField="players" wordWrap="true" />
+                <mx:DataGridColumn headerText="{resourceManager.getString('Lobby', 'unfinished.data.column4')}"
+                                   dataField="status" width="120" wordWrap="true"/>
+            </mx:columns>
+        </mx:DataGrid>
+        <mx:Form width="100%">
+            <mx:FormItem horizontalAlign="right" width="100%">
+                <mx:Button click="joinGame()" label="{resourceManager.getString('Lobby', 'unfinished.button')}"/>
+            </mx:FormItem>
+        </mx:Form>
+    </mx:VBox>
+    
+</mx:Panel>

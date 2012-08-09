@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009"
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:c="mx.ecosur.multigame.component.*"
+        xmlns:cm="mx.ecosur.mobile.component.*"
+        xmlns:m="mx.ecosur.multigame.manantiales.*" xmlns:mx="library://ns.adobe.com/flex/mx"
+        name="gameView" title="Manantiales de La Sierra - {game.mode}"
+        creationComplete="init(event)" skinClass="mx.ecosur.mobile.skins.BitmapSkin">
+    <fx:Metadata>
+        [ResourceBundle('ManantialesAir')]
+    </fx:Metadata>
+    <fx:Style>
+        /* Some styles for board tokens */
+        @font-face {
+            src: url("../../../../assets/Verdana.ttf");
+            fontFamily: verdanaEmbed;
+            advancedAntiAliasing: true;
+        }
+
+        .manantialesToken {
+            fontSize: 40;
+            fontFamily: verdanaEmbed;
+            textAlign: center;
+            color: #ffffff;
+        }
+    </fx:Style>
+    <fx:Script>
+        <![CDATA[
+        import mx.core.FlexGlobals;
+        import mx.ecosur.mobile.Controller;
+        import mx.ecosur.mobile.component.Alert;
+        import mx.ecosur.multigame.manantiales.enum.TokenType;
+
+        import mx.ecosur.multigame.manantiales.entity.ManantialesGame;
+        import mx.ecosur.multigame.manantiales.entity.ManantialesPlayer;
+
+        public static var gameId:int;
+
+        [Bindable]
+        public var game:ManantialesGame;
+
+        [Bindable]
+        public var player:ManantialesPlayer;
+        
+        public var tokenSize:int = 60;
+        
+        public static var SPACER:int = 30;
+        
+        private var controller:Controller;
+        
+        protected function init(event:Event = null):void {
+            game = null;
+            player = null;
+            controller = new Controller(this);
+            gameService.getGame(gameId);
+            status.color = 0xFFFFFF;
+            status.showMessage("{resourceManager.getString('ManantialesAir','game.loading')}");
+
+            Multitouch.inputMode = MultitouchInputMode.GESTURE;
+
+            /* Setup the board for zooming */
+            board.addEventListener(TransformGestureEvent.GESTURE_ZOOM, controller.zoomHandler);
+
+            /* Setup the board for panning */
+            board.addEventListener(TransformGestureEvent.GESTURE_PAN, controller.panHandler);
+
+        }
+
+        public function alert(msg:String):void {
+            var a:Alert = new Alert();
+            a.open(this, true);
+            a.alertmsg.text = msg;
+            var metrics:TextLineMetrics = a.measureText(msg);            
+            a.x = (this.width - metrics.width) / 2;
+            a.y = (this.height - metrics.height) /3;
+        }
+
+
+        protected function activateChat():void {
+            chat.currentPlayer = this.player;
+            chat.currentGame = this.game;
+            chat.log.dataProvider.removeAll();
+        }
+
+        protected function endView():void {
+            game = null;
+            gameId = 0;
+            navigator.popView();
+        } 
+        ]]>
+    </fx:Script>
+    <fx:Declarations>
+        <s:RemoteObject id="gameService" destination="gameService"
+               channelSet="{FlexGlobals.topLevelApplication.amfChannelSet}"
+               result="controller.resultHandler(event)"
+               fault="controller.faultHandler(event)" />
+        <s:ArrayCollection id="tokenTypes">
+            <fx:Object label="{resourceManager.getString('ManantialesAir','managed.forest')}" data="{TokenType.FOREST}" />
+            <fx:Object label="{resourceManager.getString('ManantialesAir','moderate.ranching')}" data="{TokenType.MODERATE}" />
+            <fx:Object label="{resourceManager.getString('ManantialesAir','intensive.ranching')}" data="{TokenType.INTENSIVE}"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','nursery.establishment')}" data="{TokenType.VIVERO}" includeIn="SILVOPASTORAL"/>
+            <fx:Object label="{resourceManager.getString('ManantialesAir','silvopastoral.ranching')}" data="{TokenType.SILVOPASTORAL}" includeIn="SILVOPASTORAL,SILVO_PUZZLE"/>
+        </s:ArrayCollection>
+    </fx:Declarations>
+    <s:states>
+        <s:State name="WAITING"/>
+        <s:State name="COMPETITIVE"/>
+        <s:State name="BASIC_PUZZLE"/>
+        <s:State name="SILVOPASTORAL"/>
+        <s:State name="SILVO_PUZZLE"/>
+    </s:states>
+    <s:navigationContent>
+        <s:Button label="{resourceManager.getString('ManantialesAir','button.back')}" buttonDown="endView()"  />
+    </s:navigationContent>
+    <s:actionContent>
+        <s:CalloutButton label="{resourceManager.getString('ManantialesAir','game.chat')}" buttonDown="activateChat()" id="cbutton" >
+            <s:calloutContent>
+                <s:Group>
+                   <cm:MobileChat id="chat" creationComplete="{chat.init(FlexGlobals.topLevelApplication.amfChannelSet)}"
+                           currentPlayer="{player}" currentGame="{game}" />
+                </s:Group>
+            </s:calloutContent>
+        </s:CalloutButton>
+        <s:Spacer width="20"/>
+        <s:CalloutButton label="{resourceManager.getString('ManantialesAir','game.quit')}" id="qbutton">
+            <s:calloutContent>
+                <s:VGroup>
+                    <s:Button label="{resourceManager.getString('ManantialesAir','stop.playing')}" buttonDown="controller.quitGame()"/>
+                </s:VGroup>
+            </s:calloutContent>
+        </s:CalloutButton>
+    </s:actionContent>
+    <s:layout>
+        <s:HorizontalLayout/>
+    </s:layout>
+    <s:Group id="sideview" width="300">
+        <s:layout>
+            <s:VerticalLayout/>
+        </s:layout>
+        <cm:StatusBox id="status" skinClass="mx.ecosur.mobile.skins.StatusSkin" color="0xFFFFFF"/>
+        <cm:StatusBox id="timer" skinClass="mx.ecosur.mobile.skins.TimerSkin" color="0xFFFFFF" />
+        <s:SpinnerListContainer >
+            <s:SpinnerList id="tokenType" dataProvider="{tokenTypes}" width="300" fontSize="16" />
+        </s:SpinnerListContainer>
+        <cm:ScoreBox id="scorebox" width="300"/>
+        <s:Group id="chartbox" width="300">
+            <mx:PieChart id="chart" showDataTips="true" height="145" width="295" horizontalCenter="40" >
+                <mx:series>
+                    <mx:PieSeries dataProvider="{scorebox.data}" field="value" nameField="label" />
+                </mx:series>
+            </mx:PieChart>
+            <mx:Legend dataProvider="{chart}"/>
+        </s:Group>
+    </s:Group>
+    <s:Group id="boardView" width="100%" height="100%" clipAndEnableScrolling="true">
+        <m:ManantialesBoard id="board" width="100%" height="100%"/>
+    </s:Group>
+</s:View>

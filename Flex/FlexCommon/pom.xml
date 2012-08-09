@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<modelVersion>4.0.0</modelVersion>
+<groupId>mx.ecosur</groupId>
+<artifactId>flex-commons</artifactId>
+<packaging>swc</packaging>
+<name>Flex Commons</name>
+<description>Common Flex Library for our participatory modeling games.</description>
+<parent>
+    <groupId>mx.ecosur</groupId>
+    <artifactId>flex-module</artifactId>
+    <version>2.1.2-SNAPSHOT</version>
+</parent>
+<build>
+    <sourceDirectory>src/main/flex</sourceDirectory>
+    <testSourceDirectory>src/test/flex</testSourceDirectory>
+    <finalName>flex-commons</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.sonatype.flexmojos</groupId>
+            <artifactId>flexmojos-maven-plugin</artifactId>
+            <version>${flexmojos-version}</version>
+            <extensions>true</extensions>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>create-rsl</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <flashPlayerCommand>flashplayer</flashPlayerCommand>
+                <debug>${debug}</debug>
+                <includeResourceBundles>
+                    <bundle>Commons</bundle>
+                </includeResourceBundles>
+                <localesCompiled>
+                    <compiled>en_US</compiled>
+                    <compiled>es_ES</compiled>
+                </localesCompiled>
+                <localesSourcePath>${basedir}/src/main/resources/locales/{locale}</localesSourcePath>
+                <storepass />
+            </configuration>
+            <dependencies>
+                <dependency>
+                  <groupId>com.adobe.flex</groupId>
+                  <artifactId>compiler</artifactId>
+                  <version>${flex-version}</version>
+                  <type>pom</type>
+                </dependency>
+                <dependency>
+                  <groupId>com.adobe.flex.compiler</groupId>
+                  <artifactId>asdoc</artifactId>
+                  <version>${flex-version}</version>
+                  <classifier>template</classifier>
+                  <type>zip</type>
+                </dependency>
+            </dependencies>
+        </plugin>
+    </plugins>
+</build>
+<dependencies>
+    <!-- Flex compiler -->
+    <dependency>
+        <groupId>com.adobe.flex.framework</groupId>
+        <artifactId>flex-framework</artifactId>
+        <version>${flex-version}</version>
+        <type>pom</type>
+    </dependency>
+    <dependency>
+         <groupId>com.adobe.flex.framework</groupId>
+         <artifactId>halo</artifactId>
+         <version>${flex-version}</version>
+         <type>swc</type>
+         <scope>theme</scope>
+         <classifier>theme</classifier>
+    </dependency>
+</dependencies>    
+</project>

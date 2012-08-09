@@ -1,0 +1,789 @@
+package mx.ecosur.multigame.manantiales;
+
+/*
+* Copyright (C) 2009 ECOSUR, Andrew Waterman
+*
+* Licensed under the Academic Free License v. 3.0.
+* http://www.opensource.org/licenses/afl-3.0.php
+*/
+
+import mx.ecosur.multigame.enums.*;
+import mx.ecosur.multigame.model.interfaces.*
+import mx.ecosur.multigame.grid.*;
+import mx.ecosur.multigame.grid.entity.*;
+import mx.ecosur.multigame.grid.util.*;
+import mx.ecosur.multigame.manantiales.entity.*;
+import mx.ecosur.multigame.manantiales.entity.ManantialesFicha;
+import mx.ecosur.multigame.manantiales.enums.*;
+import mx.ecosur.multigame.manantiales.util.*;
+
+import java.util.*;
+
+import function mx.ecosur.multigame.manantiales.util.RuleFunctions.*;
+
+global ManantialesMessageSender messageSender;
+
+declare Bonus
+    @role (event)
+    color : Color
+    type : TokenType
+end
+
+rule "bonuses reset and awarded each time"
+	agenda-group "initialize"
+when
+	$move: ManantialesMove (premium == true)	
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	player.setPremiums(0);
+	modify ($move) { setPlayer(player) };
+end
+
+#Rule to enforce only 6 of each type of token
+rule "only six intensives per player"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.INTENSIVE_PASTURE,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        ManantialesFicha (type == TokenType.INTENSIVE_PASTURE,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six moderates per player"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.MODERATE_PASTURE,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        ManantialesFicha (type == TokenType.MODERATE_PASTURE,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six managed forest per player"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.MANAGED_FOREST,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        ManantialesFicha (type == TokenType.MANAGED_FOREST,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six viveros per player"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.VIVERO,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        ManantialesFicha (type == TokenType.VIVERO,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "only six silvopastorales per player"
+    agenda-group "verify"
+    no-loop true
+when
+    $move : ManantialesMove (type == TokenType.SILVOPASTORAL,
+        $color : player.color)
+    $fichas : ArrayList( size == 6) from collect (
+        ManantialesFicha (type == TokenType.SILVOPASTORAL,
+            color == $color))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "evaluate-valid-suggestion"
+    agenda-group "verify"
+    no-loop true
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid)
+    $suggestion : PuzzleSuggestion ($suggestor : suggestor, status == SuggestionStatus.UNEVALUATED, $move : move)
+    eval ((ManantialesPlayer) $suggestor != (ManantialesPlayer) $move.getPlayer())
+    eval (isWithinTimeLimit($game, $move))
+then
+    modify ($suggestion) { setStatus (SuggestionStatus.EVALUATED) }
+end
+
+rule "accept-suggestion"
+    agenda-group "verify"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, $moves : moves)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.ACCEPT, $move : move)
+    eval (isWithinTimeLimit($game, $move))
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    modifiedGrid.removeCell ($move.getCurrentCell());
+    $move.setStatus (MoveStatus.VERIFIED);
+    if ($moves == null)
+        $moves = new LinkedHashSet();
+    $moves.add($move);
+    modify ($game) { setMoves ($moves), setGrid (modifiedGrid)}
+    insert ($move);
+    retract($suggestion);
+    messageSender.sendSuggestionApplied ($game, $suggestion);
+end
+
+rule "reject-suggestion"
+    agenda-group "verify"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.REJECT)
+then
+    retract ($suggestion);
+    messageSender.sendSuggestionApplied ($game, $suggestion);    
+end
+
+rule "evaluate-regular-move"
+    agenda-group "verify"
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
+        mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
+    eval (isValidReplacement($game.getGrid(), $move))
+    eval (isWithinTimeLimit($game, $move))
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+rule "evaluate-pass-move"
+    agenda-group "verify"
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
+        mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
+    $move  : ManantialesMove (badYear == true, status == MoveStatus.UNVERIFIED)
+    eval (isWithinTimeLimit($game, $move))
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+rule "mark-invalid-regular-move"
+    agenda-group "verify"
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
+        mode not in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
+    eval (!isValidReplacement($game.getGrid(), $move))
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "evaluate-puzzle-move"
+    agenda-group "verify"
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $grid : grid, 
+        mode in (Mode.BASIC_PUZZLE, Mode.SILVO_PUZZLE))
+    $move  : ManantialesMove (badYear == false, status == MoveStatus.UNVERIFIED)
+    eval (isWithinTimeLimit($game, $move))
+then
+    modify ($move) { setStatus (MoveStatus.VERIFIED) }
+end
+
+rule "message-time-limit-exceeded"
+    agenda-group "verify"
+when
+    $game : ManantialesGame (state == GameState.PLAY)
+    $move : ManantialesMove ()
+    eval (!isWithinTimeLimit($game, $move))
+then
+    modify ($move) { setStatus(MoveStatus.EXPIRED)};
+    modify ($game) { setState(GameState.ENDED)};
+    messageSender.sendTimeLimitExpired ($game, $move);
+end
+
+# MOVE RESTRICTIONS
+
+# This rule is only active for classic and silvopastoral games
+rule "intensive-replaces-moderate" 
+    agenda-group "verify"
+when
+    $game : ManantialesGame (state == GameState.PLAY, $grid : grid,
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL) )
+    $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED,
+        type == TokenType.INTENSIVE_PASTURE, replacementType != TokenType.MODERATE_PASTURE)
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end 
+
+# This rule is only active for classic and silvopastoral games
+rule "silvopastoral-replaces-vivero" 
+    agenda-group "verify"
+when
+    $game : ManantialesGame (state == GameState.PLAY, $grid : grid, 
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL) )
+    $move : ManantialesMove (badYear == false, status != MoveStatus.INVALID,
+        type == TokenType.SILVOPASTORAL, replacementType != TokenType.VIVERO)
+then
+    modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+rule "contiguous intensive"
+    agenda-group "verify"
+    no-loop true
+when
+        $graph : AdjGraph ()
+        $tok1  : ManantialesFicha (type == TokenType.INTENSIVE_PASTURE)
+        $move  : ManantialesMove ($tok2 : destinationCell != null, status != MoveStatus.INVALID,
+            type == TokenType.INTENSIVE_PASTURE)
+        eval (isContiguous ($graph, $tok1, $tok2))
+    then 
+        modify ($move) { setStatus (MoveStatus.INVALID) }
+end
+
+# CHECK CONDITIONS
+
+rule
+    "northern border deforested"
+    agenda-group "verify"
+    no-loop true
+    when
+        not CheckCondition (expired == false, type == ConditionType.NORTHERN_BORDER_DEFORESTED)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.NORTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))   
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
+            border == BorderType.NORTH, type == TokenType.MODERATE_PASTURE)  
+    then
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.NORTHERN_BORDER_DEFORESTED, $move.getPlayer(), $tok1, $tok2, 
+                (ManantialesFicha) $move.getDestinationCell());
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);
+        modify ($game) {setCheckConditions($checks)};
+        insert (constraint);
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule
+    "eastern border deforested"
+    agenda-group "verify"
+    no-loop true
+    when
+        not CheckCondition (expired == false, type == ConditionType.EASTERN_BORDER_DEFORESTED)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.EAST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.EAST,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))  
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
+            border == BorderType.EAST, type == TokenType.MODERATE_PASTURE)
+    then
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.EASTERN_BORDER_DEFORESTED, $move.getPlayer(), 
+            $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);
+        modify ($game) {setCheckConditions($checks)};
+        insert (constraint);
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule
+    "southern border deforested"
+    agenda-group "verify"
+    no-loop true    
+    when
+        not CheckCondition (expired == false, type == ConditionType.SOUTHERN_BORDER_DEFORESTED)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.SOUTH, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.SOUTH,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
+            border == BorderType.SOUTH, type == TokenType.MODERATE_PASTURE) 
+    then
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.SOUTHERN_BORDER_DEFORESTED, $move.getPlayer(), 
+            $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);
+        modify ($game) {setCheckConditions($checks)};
+        insert (constraint);
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+#Enforces the arroyo constraint (only 2 developments that deforest on the border)
+rule
+    "western border deforested"
+    agenda-group "verify"
+    no-loop true    
+    when
+        not CheckCondition (expired == false, type == ConditionType.WESTERN_BORDER_DEFORESTED)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $tok1 : ManantialesFicha ($id : id, border == BorderType.WEST, 
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, border == BorderType.WEST,
+            type in (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
+            border == BorderType.WEST, type == TokenType.MODERATE_PASTURE)
+    then
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.WESTERN_BORDER_DEFORESTED, $move.getPlayer(), 
+                $tok1, $tok2, (ManantialesFicha) $move.getDestinationCell());
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);
+        modify ($game) {setCheckConditions($checks)};
+        insert (constraint);
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule "manantiales"
+    agenda-group "verify"
+    no-loop true
+    when
+        not CheckCondition (expired == false, type == ConditionType.MANANTIALES_DRY)
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $tok1 : ManantialesFicha ($id : id, manantial == true, type in (
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $tok2 : ManantialesFicha (id > $id, $id2 : id, manantial == true, type in (
+            TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)) 
+        $move : ManantialesMove (badYear == false, status == MoveStatus.VERIFIED, destinationCell != null,
+            manantial == true, type == TokenType.MODERATE_PASTURE)
+    then 
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.MANANTIALES_DRY, $move.getPlayer(), $tok1, $tok2,
+            (ManantialesFicha) $move.getDestinationCell());
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);        
+        modify ($game) {setCheckConditions($checks)};
+        insert (constraint);
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule "evaluated-suggestion-notify"
+    agenda-group "move"
+    no-loop true
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $suggestion : PuzzleSuggestion (status == SuggestionStatus.EVALUATED)
+then
+    retract($suggestion);
+    messageSender.sendSuggestionEvaluated ($game, $suggestion);
+end
+
+rule "execute-new-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell == null,
+        destinationCell != null, $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.updateCell (cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED) };
+    insert ((ManantialesFicha) cell);
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "execute-pass-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move  : ManantialesMove (badYear == true, status == MoveStatus.VERIFIED, 
+        $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
+then
+    modify ($move) { setStatus (MoveStatus.MOVED)};
+end
+
+rule "execute-replace-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell != null,
+    	destinationCell != null, swap != true, $player : player)
+    $current : ManantialesFicha (column == $move.currentCell.column, row == $move.currentCell.row)    
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.removeCell ($move.getCurrentCell());
+    modifiedGrid.updateCell (cell);
+    retract ($current);
+    insert ((ManantialesFicha) cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED)};
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "execute-remove-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell != null,
+        destinationCell == null)
+    $current : ManantialesFicha (column == $move.currentCell.column, row == $move.currentCell.row)
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    GridCell cell = $move.getDestinationCell();
+    modifiedGrid.removeCell (cell);
+    retract ($current);
+    insert ((ManantialesFicha) cell);
+    modify ($game) { setGrid (modifiedGrid) };
+    modify ($move) { setStatus (MoveStatus.MOVED) };
+    messageSender.sendMoveComplete ($game, $move);
+end
+
+rule "execute-swap-move"
+    agenda-group "move"
+    lock-on-active
+when 
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move  : ManantialesMove (status == MoveStatus.VERIFIED, currentCell !=null,
+        destinationCell != null, swap == true, $player : player)
+    eval (!isWinner ($game.getMode(), (ManantialesPlayer) $player))
+    eval (!isSolved ($mode, $game))
+then
+    GameGrid modifiedGrid = $game.getGrid();
+    ManantialesFicha current = (ManantialesFicha) $move.getCurrentCell();
+    ManantialesFicha destination = (ManantialesFicha) $move.getDestinationCell();
+    #Swap coumn and row
+    ManantialesFicha temp = new ManantialesFicha (destination.getColumn(), destination.getRow(), destination.getColor(),
+        destination.getType());
+    destination.setColumn(current.getColumn());
+    destination.setRow (current.getRow());
+    current.setColumn(temp.getColumn());
+    current.setRow(temp.getRow());
+    #Update Grid and notify 
+    modifiedGrid.updateCell (destination);
+    modifiedGrid.updateCell (current);
+    modify ($game) { setGrid (modifiedGrid) }
+    #We construct two moves to broadcast and handle the swap
+    ManantialesMove swap1 = new ManantialesMove($move.getPlayer(), destination);
+    ManantialesMove swap2 = new ManantialesMove($move.getPlayer(), current);
+    swap1.setStatus(MoveStatus.MOVED);
+    swap2.setStatus(MoveStatus.MOVED);
+    retract ($move);
+    insert(swap1);
+    insert(swap2);
+    messageSender.sendMoveComplete ($game, swap1);
+    messageSender.sendMoveComplete ($game, swap2);
+end
+
+rule "move-effects-cleared-area"
+    agenda-group "evaluate"
+when
+    $move : ManantialesMove ($cell : destinationCell, badYear == false,
+        status != MoveStatus.INVALID, type in
+            (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+    $condition : CheckCondition (expired == false, $violators : violators)
+    not GridCell ($cell.row == row, $cell.column == column) from $violators
+    eval (effectsCondition ($condition, $move))
+then
+    modify ($move) { setBadYear(true), setDestinationCell(null)};
+end
+
+rule "territory-deforested"
+    agenda-group "evaluate"
+    no-loop true
+    when
+        $game : ManantialesGame (state == GameState.PLAY, $checks : checkConditions)
+        $move : ManantialesMove (status == MoveStatus.MOVED, type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE))
+        $list : ArrayList (size > 30) from collect (
+            ManantialesFicha (type in (
+                TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE)))
+        eval (!$game.hasCondition (ConditionType.TERRITORY_DEFORESTED))
+    then      
+        $list.add($move.getDestinationCell());  
+        CheckCondition constraint = new CheckCondition(
+            ConditionType.TERRITORY_DEFORESTED, $move.getPlayer(), $list);
+        if ($checks == null)
+            $checks = new HashSet();
+        $checks.add(constraint);
+        modify ($game) {setCheckConditions($checks)};
+        messageSender.sendConditionRaised ($game, constraint);
+end
+
+rule "resolve-check-constraint-with-empty-move"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $move   : ManantialesMove (badYear == false, status == MoveStatus.MOVED,
+        status == MoveStatus.MOVED, $cell : currentCell, type in
+        (TokenType.MODERATE_PASTURE, TokenType.INTENSIVE_PASTURE),
+            destinationCell == null)
+    $constraint : CheckCondition ($violators : violators, expired != true)
+    GridCell ($cell.row == row, $cell.column == column) from $violators
+    $game   : ManantialesGame ()
+then
+    modify ($constraint) { setExpired (true) };
+    Set constraints = $game.getCheckConditions();
+    constraints.remove ($constraint);
+    modify ($game) { setCheckConditions (constraints) };
+    messageSender.sendConditionResolved ($game, $constraint);
+end
+
+rule "resolve-check-constraint-with-replacement-move"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $move   : ManantialesMove (badYear == false, status == MoveStatus.MOVED,
+        status == MoveStatus.MOVED, $cell : destinationCell, type in
+        (TokenType.MANAGED_FOREST, TokenType.VIVERO, TokenType.SILVOPASTORAL))
+    $constraint : CheckCondition ($violators : violators, expired != true)
+    GridCell ($cell.row == row, $cell.column == column) from $violators
+    $game   : ManantialesGame ()
+then
+    modify($constraint) { setExpired(true) };
+    Set constraints = $game.getCheckConditions();
+    constraints.remove ($constraint);
+    modify ($game) { setCheckConditions (constraints) };
+    messageSender.sendConditionResolved ($game, $constraint);
+end
+
+# Conditions only expire in the classic or silvopastoral games.
+
+rule "expire-condition"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, 
+        mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL))
+    $move      : ManantialesMove ($player : player, status == MoveStatus.MOVED)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type not in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));  
+then
+    GameGrid grid = clearBorder ($game, $condition.getType());
+    Set conditions = $game.getCheckConditions();
+    conditions.remove ($condition);
+    modify ($condition) { setExpired (true) };
+    modify ($game) { 
+        setCheckConditions (conditions),
+        setGrid (grid), 
+        setCheckConditions (conditions)
+    };
+    messageSender.sendConditionTriggered ($game, $condition);
+end  
+
+rule "expire-terminal-condition"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game : ManantialesGame (state == GameState.PLAY, mode in (Mode.COMPETITIVE, Mode.SILVOPASTORAL))
+    $move : ManantialesMove ($player : player, status == MoveStatus.MOVED)
+    $condition : CheckCondition  (expired == false, $player2 : player, 
+        type in (ConditionType.MANANTIALES_DRY, ConditionType.TERRITORY_DEFORESTED))
+    eval (isPrecedingPlayer($game, (GridPlayer) $player, $player2));
+then
+    modify ($condition) { setExpired (true) };
+    modify ($game) {
+        getCheckConditions().add($condition),
+        setState (GameState.ENDED)
+    };
+    retract ($move)
+    messageSender.sendConditionTriggered ($game, $condition);
+    messageSender.sendEndGame ($game);
+end
+
+rule "remove-replaced-token-from-player"
+    agenda-group "evaluate"
+    no-loop true
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move : ManantialesMove (badYear == false, status == MoveStatus.MOVED, 
+        status == MoveStatus.MOVED, currentCell != null, destinationCell != null)
+then
+    ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+    switch ($move.getReplacementType()) {
+        case MANAGED_FOREST:
+            player.setForested(player.getForested() -  1);
+            break;
+        case MODERATE_PASTURE:
+            player.setModerate(player.getModerate() - 1);
+            break;
+        case INTENSIVE_PASTURE:
+            player.setIntensive(player.getIntensive() - 1);
+            break;
+        case VIVERO:
+            player.setVivero(player.getVivero() - 1);
+            break;
+        case SILVOPASTORAL:
+            player.setSilvo(player.getSilvo() - 1);
+            break;    
+        default:
+            break;
+    }
+    modify ($move) { setPlayer (player) };
+end
+
+rule "score-points"
+    agenda-group "evaluate"
+    no-loop true
+    salience -5
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move  : ManantialesMove (status == MoveStatus.MOVED, badYear == false)
+then
+    ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+    int ps = score (player, $game);
+    player.setScore(ps);
+    modify ($move) { setPlayer (player), setStatus (MoveStatus.EVALUATED) };
+end 
+
+rule "award-regular-intensive-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	exists (ManantialesGame (
+		mode in (Mode.COMPETITIVE, Mode.BASIC_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.INTENSIVE_PASTURE)	
+    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    	type == TokenType.INTENSIVE_PASTURE, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 3);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.INTENSIVE_PASTURE));
+end	
+
+rule "award-regular-forested-bonus"
+	agenda-group "evaluate"
+	salience 50
+when	
+	exists (ManantialesGame (
+		mode in (Mode.COMPETITIVE, Mode.BASIC_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.MANAGED_FOREST)	
+    $list : ArrayList (size >= 3) from collect (ManantialesFicha (
+    	type == TokenType.MANAGED_FOREST, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 3);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.MANAGED_FOREST));
+end	
+
+rule "award-silvo-intensive-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	exists (ManantialesGame (
+		mode in (Mode.SILVOPASTORAL, Mode.SILVO_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.INTENSIVE_PASTURE)	
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
+    	type == TokenType.INTENSIVE_PASTURE, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 4);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.INTENSIVE_PASTURE));
+end	
+
+rule "award-silvo-forested-bonus"
+	agenda-group "evaluate"
+	salience 50
+when	
+	exists (ManantialesGame (
+		mode in (Mode.SILVOPASTORAL, Mode.SILVO_PUZZLE)))
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.MANAGED_FOREST)	
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
+    	type == TokenType.MANAGED_FOREST, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 4);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.MANAGED_FOREST));
+end	
+
+
+rule "award-silvopastoral-bonus"
+	agenda-group "evaluate"
+	salience 50
+when
+	$move : ManantialesMove (status == MoveStatus.EVALUATED)
+	not Bonus (color == $move.player.color, type == TokenType.SILVOPASTORAL)	
+    $list : ArrayList (size >= 4) from collect (ManantialesFicha (
+    	type == TokenType.SILVOPASTORAL, $move.player.color == color))
+then
+	ManantialesPlayer player = (ManantialesPlayer) $move.getPlayer();
+	int value = player.getPremiums() + ($list.size() / 4);
+	player.setPremiums(value);	
+	modify ($move) { setPlayer (player) };
+	insert (new Bonus(player.getColor(), TokenType.SILVOPASTORAL));
+end	
+
+rule "score-bad-year"
+    agenda-group "evaluate"
+when
+    $game  : ManantialesGame (state == GameState.PLAY)
+    $move  : ManantialesMove (status == MoveStatus.MOVED, badYear == true)
+then
+    modify ($move) { setStatus (MoveStatus.EVALUATED) };
+end 
+
+rule "game-won"
+    agenda-group "evaluate"
+    no-loop true
+    salience -10
+when
+    $game  : ManantialesGame (state == GameState.PLAY, checkConditions.size == 0)
+    $move  : ManantialesMove ($player : player, status == MoveStatus.EVALUATED)
+    eval (isSolved ($game.getMode(), $game) || isWinner($game.getMode(), (ManantialesPlayer) $player))
+then
+    modify ($game) { setState (GameState.ENDED) };
+    messageSender.sendEndGame ($game);
+end
+
+rule "increment-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -15
+when
+    $game  : ManantialesGame (state == GameState.PLAY, $mode : mode)
+     move  : ManantialesMove (player.turn == true, status == MoveStatus.EVALUATED,
+        badYear == false, destinationCell != null, mode == $mode)
+then
+    incrementTurn ($game, move);
+end
+
+rule "skip-turn"
+    agenda-group "evaluate"
+    no-loop true
+    salience -15
+when
+    $game   : ManantialesGame (state == GameState.PLAY, $mode : mode)
+    $move   : ManantialesMove (player.turn == true, badYear == true,
+        mode == $mode)
+then
+    incrementTurn ($game, $move);
+end
