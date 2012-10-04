@@ -1,9 +1,9 @@
 [submodule "Deploy"]
 	path = Deploy
-	url = git://github.com/ecosur-sistemas-complejos/MultiGame-Deploy.git
+	url = git://github.com/awaterma /MultiGame-Deploy.git
 [submodule "Engine"]
 	path = Engine
-	url = git://github.com/ecosur-sistemas-complejos/MultiGame-Engine.git
+	url = git://github.com/awaterma/MultiGame-Engine.git
 [submodule "Games"]
 	path = Games
-	url = git://github.com/ecosur-sistemas-complejos/MultiGame-Games.git
+	url = git://github.com/awaterma/MultiGame-Games.git
