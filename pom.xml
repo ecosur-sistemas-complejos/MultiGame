@@ -54,7 +54,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.4.0.Beta2</drools.version>
-        <hibernate-version>3.6.6.Final</hibernate-version>
+        <hibernate-version>4.1.7.Final</hibernate-version>
         <flexmojos-version>4.1-beta</flexmojos-version>
     </properties>
     <dependencies>
