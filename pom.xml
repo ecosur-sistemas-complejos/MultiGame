@@ -18,6 +18,12 @@
             </comments>
         </license>
     </licenses>
+    <scm>
+        <!-- To use SCM, define "source-repository" in your settings.xml as the directory containing this project
+             and then modify the following line to point to the directory this project lives in -->
+        <connection>scm:git:file://localhost/{$source-repository}/multigame.super</connection>
+        <developerConnection>scm:git:ssh://github.com:ecosur-sistemas-complejos/MultiGame.git</developerConnection>
+    </scm>
     <developers>
       <developer>
         <name>Andrew Waterman</name>
@@ -45,12 +51,12 @@
           <role>Project Advisor</role>
           <role>Game Designer</role>
         </roles>
-    </contributor>
-  </contributors>
+      </contributor>
+    </contributors>
     <organization>
-        <name>Ecosur</name>
-        <url>http://www.ecosur.mx</url>
-    </organization>    
+        <name>Ecosur Sistemas Complejos (ChiapasGames)</name>
+        <url>http://www.chiapasgames.org</url>
+    </organization>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <drools.version>5.4.0.Beta2</drools.version>
