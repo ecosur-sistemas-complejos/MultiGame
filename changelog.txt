@@ -105,3 +105,18 @@ FINAL Release Date: 14/Dec/11
     [MG-122] WNF     Puzzle-Mode: Need way to make type suggestions for specific tokens to other players in game
     [MG-123] FIXED   Border Conditions Triggered by Replacement Moves on Borders
 
+2.1.3 Release Date: 12/Oct/12
+    [MG-106] CNR     Primary Key Violations in Log
+    [MG-124] CNR     Build Bug: FlexMojos requires 4.5 version for dependency copy in MultiGameWAR
+    [MG-125] FIXED   Two CheckConstraints triggered, only one resolved
+    [MG-126] FIXED   When Manantiales Dry Constraint Relieved Wrong message
+    [MG-127] FIXED   Cannot upgrade M in far Corner to I
+    [MG-130] FIXED   NPE in SuggestionHandler
+    [MG-131] FIXED   Stack trace indicating primary key violation in suggestions
+    [MG-133] FIXED   ConstraintViolation on Suggestion
+    [MG-134] FIXED   UI Updates passing moves missing current cell
+    [MG-136] FIXED   iOS: Invalid Move replaces wrong piece
+    [MG-135] FIXED   No Icons for iPAD application
+    [MG-137] FIXED   Remove recording of Chat in Database
+    [MG-138] FIXED   Create Privacy Policy
+
